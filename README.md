@@ -78,10 +78,10 @@ jobs:
 
 ## How to contribute
 
-If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github-services-engineering/super-linter/blob/master/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
 
 --------------------------------------------------------------------------------
 
 ### License
 
-- [License](https://github.com/github-services-engineering/super-linter/blob/master/LICENSE)
+- [License](https://github.com/github/super-linter/blob/master/LICENSE)
