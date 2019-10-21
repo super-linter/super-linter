@@ -10,7 +10,9 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **Python3** (Pylint)
 - **JSON** (JsonLint)
 - **MarkDown** (Markdownlint)
+- **Perl** (Perl)
 - **XML** (LibXML)
+- **Coffeescript** (coffeelint)
 
 ## How to use
 

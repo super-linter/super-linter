@@ -13,25 +13,43 @@ FROM python:alpine
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your codebase with Github Actions" \
+      com.github.actions.description="Lint your code base with Github Actions" \
       com.github.actions.icon="code" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
 
-##################
-# Run the Update #
-##################
+####################
+# Run APK installs #
+####################
 RUN apk add --no-cache \
-    bash git musl-dev jq \
-    npm nodejs bash git musl-dev jq gcc curl
+    bash git musl-dev curl gcc cabal \
+    npm nodejs \
+    libxml2-utils \
+    ruby ruby-bundler \
+    py3-setuptools
 
+####################
+# Run Pip installs #
+####################
 RUN pip install --upgrade --no-cache-dir \
-    awscli aws-sam-cli yq
+    pip ansible-lint
 
-####################################
-# Setup AWS CLI Command Completion #
-####################################
-RUN echo complete -C '/usr/local/bin/aws_completer' aws >> ~/.bashrc
+#####################
+# Run Pip3 Installs #
+#####################
+RUN pip3 install --upgrade --no-cache-dir \
+    yamllint pylint
+
+####################
+# Run NPM Installs #
+####################
+RUN npm -g install markdownlint-cli jsonlint prettyjson
+
+######################
+# Run Cabal installs #
+######################
+RUN cabal update \
+    && cabal install ShellCheck
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
