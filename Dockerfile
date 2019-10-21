@@ -22,17 +22,11 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash git musl-dev curl gcc cabal \
+    bash git musl-dev curl gcc \
     npm nodejs \
     libxml2-utils \
     ruby ruby-bundler \
-    py3-setuptools
-
-####################
-# Run Pip installs #
-####################
-RUN pip install --upgrade --no-cache-dir \
-    pip ansible-lint
+    py3-setuptools ansible-lint
 
 #####################
 # Run Pip3 Installs #
@@ -43,13 +37,14 @@ RUN pip3 install --upgrade --no-cache-dir \
 ####################
 # Run NPM Installs #
 ####################
-RUN npm -g install markdownlint-cli jsonlint prettyjson
+RUN npm -g install \
+    markdownlint-cli jsonlint prettyjson
 
 ######################
-# Run Cabal installs #
+# Install shellcheck #
 ######################
-RUN cabal update \
-    && cabal install ShellCheck
+RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
+    && cp "shellcheck-stable/shellcheck" /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
@@ -61,7 +56,8 @@ ENV GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
 ###########################
 # Copy files to container #
 ###########################
-COPY lib /action/lib
+COPY lib /action/lib \
+     && TEMPLATES /action/lib/.automation
 
 ######################
 # Set the entrypoint #
