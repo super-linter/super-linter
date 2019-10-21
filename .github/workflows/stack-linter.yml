@@ -1,0 +1,73 @@
+---
+#############################
+#############################
+## CI/CT/CD GitHub Actions ##
+#############################
+#############################
+name: Source Linter
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on: ['push']
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Source linter
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@master
+
+      #####################
+      # Install Ruby Libs #
+      #####################
+      - name: Set up Ruby
+        uses: actions/setup-ruby@master
+        with:
+          ruby-version: 2.6.x
+
+      ####################
+      # Install NPM Libs #
+      ####################
+      - name: Setup NPM
+        uses: actions/setup-node@master
+        with:
+          node-version: 10.x
+
+      #################################
+      # Install all base dependancies #
+      #################################
+      - name: Install Dependencies
+        shell: bash
+        run: ./.automation/install-deps.sh
+
+      #############################################
+      # Run the markup and markdown linter script #
+      #############################################
+      - name: Run Markup and Markdown Linter
+        shell: bash
+        run: ./.automation/markup-markdown-linter.sh
+
+      ###################################
+      # Run the scripting linter script #
+      ###################################
+      - name: Run Scripting Linter
+        shell: bash
+        run: ./.automation/scripting-linter.sh
