@@ -49,9 +49,9 @@ RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux
 ###########################################
 # Load GitHub Env Vars for Github Actions #
 ###########################################
-ENV GITHUB_SHA=${GITHUB_SHA}
-ENV GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}
-ENV GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
+ENV GITHUB_SHA=${GITHUB_SHA} \
+    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
+    GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
 
 ###########################
 # Copy files to container #
