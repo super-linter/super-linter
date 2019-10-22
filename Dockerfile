@@ -22,9 +22,9 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash git musl-dev curl gcc \
+    bash git musl-dev curl gcc jq\
     npm nodejs \
-    libxml2-utils \
+    libxml2-utils perl \
     ruby ruby-bundler \
     py3-setuptools ansible-lint
 
@@ -53,13 +53,19 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
 
-###########################
-# Copy files to container #
-###########################
-COPY lib /action/lib \
-     && TEMPLATES /action/lib/.automation
+#############################
+# Copy scripts to container #
+#############################
+COPY lib /action/lib
+
+##################################
+# Copy linter rules to container #
+##################################
+COPY TEMPLATES /action/lib/.automation
 
 ######################
 # Set the entrypoint #
 ######################
 ENTRYPOINT ["/action/lib/entrypoint.sh"]
+
+#CMD tail -f /dev/null
