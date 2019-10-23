@@ -78,13 +78,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$YAML_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" ]; then
     echo "User provided file:[$YAML_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$YAML_FILE_NAME" "$YAML_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" "$YAML_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -106,13 +106,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$MD_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" ]; then
     echo "User provided file:[$MD_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$MD_FILE_NAME" "$MD_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" "$MD_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -134,13 +134,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$PYTHON_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" ]; then
     echo "User provided file:[$PYTHON_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -162,13 +162,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$RUBY_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" ]; then
     echo "User provided file:[$RUBY_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$RUBY_FILE_NAME" "$RUBY_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" "$RUBY_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -190,13 +190,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$COFFEE_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" ]; then
     echo "User provided file:[$COFFEE_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -218,13 +218,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$ANSIBLE_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" ]; then
     echo "User provided file:[$ANSIBLE_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -265,7 +265,7 @@ LintJsonFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -290,7 +290,7 @@ LintJsonFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.json" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.json" 2>&1))
 
   ##################
   # Lint the files #
@@ -367,7 +367,7 @@ LintYmlFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -392,7 +392,7 @@ LintYmlFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
 
   ##################
   # Lint the files #
@@ -469,7 +469,7 @@ LintXmlFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -494,7 +494,7 @@ LintXmlFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.xml" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.xml" 2>&1))
 
   ##################
   # Lint the files #
@@ -571,7 +571,7 @@ LintMdFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -596,7 +596,7 @@ LintMdFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.md" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.md" 2>&1))
 
   ##################
   # Lint the files #
@@ -673,7 +673,7 @@ LintBashFiles()
   # Validate we have shellcheck installed #
   #########################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -698,7 +698,7 @@ LintBashFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.sh" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.sh" 2>&1))
 
   ##################
   # Lint the files #
@@ -776,7 +776,7 @@ LintPythonFiles()
   # Validate we have pylint installed #
   #####################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -801,7 +801,7 @@ LintPythonFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.py" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.py" 2>&1))
 
   ##################
   # Lint the files #
@@ -879,7 +879,7 @@ LintPerlFiles()
   # Validate we have perl installed #
   ###################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -904,7 +904,7 @@ LintPerlFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.pl" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.pl" 2>&1))
 
   ##################
   # Lint the files #
@@ -982,7 +982,7 @@ LintRubyFiles()
   # Validate we have perl installed #
   ###################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1007,7 +1007,7 @@ LintRubyFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.rb" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.rb" 2>&1))
 
   ##################
   # Lint the files #
@@ -1085,7 +1085,7 @@ LintCoffeeFiles()
   # Validate we have pylint installed #
   #####################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1110,7 +1110,7 @@ LintCoffeeFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.coffee" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.coffee" 2>&1))
 
   ##################
   # Lint the files #
@@ -1271,7 +1271,7 @@ LintAnsibleFiles()
   # Validate we have ansible-lint installed #
   ###########################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1299,7 +1299,7 @@ LintAnsibleFiles()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2164,SC2010
+    # shellcheck disable=SC2164,SC2010,SC2207
     LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
 
     ##################
