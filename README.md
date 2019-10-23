@@ -80,7 +80,7 @@ jobs:
 
 ## Docker Hub
 
-The **Docker** container that is built from this repository is located at:[Super Linter](https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter)
+The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
 
 ## How to contribute
 
