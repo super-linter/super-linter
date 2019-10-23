@@ -1,4 +1,4 @@
-#!/bin/bash
+cd "$GITHUB_WORKSPACE" || exit;#!/bin/bash
 
 ################################################################################
 ########### EntryPoint for Super-Linter @AdmiralAwkbar #########################
@@ -289,8 +289,8 @@ LintJsonFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.json" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.json" 2>&1))
 
   ##################
   # Lint the files #
@@ -391,8 +391,8 @@ LintYmlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
 
   ##################
   # Lint the files #
@@ -493,8 +493,8 @@ LintXmlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.xml" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.xml" 2>&1))
 
   ##################
   # Lint the files #
@@ -595,8 +595,8 @@ LintMdFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.md" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.md" 2>&1))
 
   ##################
   # Lint the files #
@@ -697,8 +697,8 @@ LintBashFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.sh" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.sh" 2>&1))
 
   ##################
   # Lint the files #
@@ -800,8 +800,8 @@ LintPythonFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.py" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.py" 2>&1))
 
   ##################
   # Lint the files #
@@ -903,8 +903,8 @@ LintPerlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.pl" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.pl" 2>&1))
 
   ##################
   # Lint the files #
@@ -1006,8 +1006,8 @@ LintRubyFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.rb" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.rb" 2>&1))
 
   ##################
   # Lint the files #
@@ -1109,8 +1109,8 @@ LintCoffeeFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207,SC2164
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.coffee" 2>&1))
+  # shellcheck disable=SC2207
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.coffee" 2>&1))
 
   ##################
   # Lint the files #
