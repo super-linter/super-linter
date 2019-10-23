@@ -78,13 +78,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$YAML_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" ]; then
     echo "User provided file:[$YAML_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$YAML_FILE_NAME" "$YAML_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" "$YAML_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -106,13 +106,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$MD_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" ]; then
     echo "User provided file:[$MD_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$MD_FILE_NAME" "$MD_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" "$MD_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -134,13 +134,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$PYTHON_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" ]; then
     echo "User provided file:[$PYTHON_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -162,13 +162,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$RUBY_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" ]; then
     echo "User provided file:[$RUBY_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$RUBY_FILE_NAME" "$RUBY_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" "$RUBY_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -190,13 +190,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$COFFEE_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" ]; then
     echo "User provided file:[$COFFEE_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
@@ -218,13 +218,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/$ANSIBLE_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" ]; then
     echo "User provided file:[$ANSIBLE_FILE_NAME], setting rules file..."
 
     ####################################
     # Move users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES" 2>&1)
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES" 2>&1)
 
     ###################
     # Load Error code #
