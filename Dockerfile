@@ -22,10 +22,10 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash git musl-dev curl gcc jq\
+    bash git musl-dev curl gcc jq \
     npm nodejs \
     libxml2-utils perl \
-    ruby ruby-bundler \
+    ruby ruby-dev ruby-bundler ruby-rdoc make\
     py3-setuptools ansible-lint
 
 #####################
@@ -38,7 +38,14 @@ RUN pip3 install --upgrade --no-cache-dir \
 # Run NPM Installs #
 ####################
 RUN npm -g install \
-    markdownlint-cli jsonlint prettyjson
+    markdownlint-cli \
+    jsonlint prettyjson \
+    coffeelint
+
+####################
+# Run GEM installs #
+####################
+RUN gem install rubocop
 
 ######################
 # Install shellcheck #

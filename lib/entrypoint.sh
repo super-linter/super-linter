@@ -8,25 +8,25 @@
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                # Default rules files location
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
 # YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                                 # Name of the file
-YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"     # Path to the yaml lint rules
+YAML_FILE_NAME='.yaml-lint.yml'                                     # Name of the file
+YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"         # Path to the yaml lint rules
 # MD Vars
-MD_FILE_NAME='.markdown-lint.yml'                               # Name of the file
-MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"         # Path to the markdown lint rules
+MD_FILE_NAME='.markdown-lint.yml'                                   # Name of the file
+MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"             # Path to the markdown lint rules
 # Python Vars
-PYTHON_FILE_NAME='.python-lint'                                 # Name of the file
-PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME" # Path to the python lint rules
+PYTHON_FILE_NAME='.python-lint'                                     # Name of the file
+PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to the python lint rules
 # Ruby Vars
-RUBY_FILE_NAME='.ruby-lint.yml'                                 # Name of the file
-RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"     # Path to the ruby lint rules
+RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of the file
+RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                            # Name of the file
-COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                # Name of the file
+COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to the coffescript lint rules
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                            # Name of the file
-ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
+ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
+ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the coffescript lint rules
 
 ###################
 # GitHub ENV Vars #
@@ -67,6 +67,13 @@ Header()
 GetLinterRules()
 {
   # Need to validate the rules files exist
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "Gathering Linter rules from repository, or defaulting..."
+  echo ""
 
   #####################################
   # Validate we have the linter rules #
@@ -92,6 +99,8 @@ GetLinterRules()
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$YAML_LINTER_RULES]"
   fi
 
   #####################################
@@ -118,6 +127,8 @@ GetLinterRules()
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$MD_LINTER_RULES]"
   fi
 
   #####################################
@@ -140,10 +151,12 @@ GetLinterRules()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$MD_FILE_NAME] as default!"
+      echo "ERROR! Failed to set file:[$PYTHON_FILE_NAME] as default!"
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$PYTHON_LINTER_RULES]"
   fi
 
   #####################################
@@ -170,6 +183,8 @@ GetLinterRules()
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$RUBY_LINTER_RULES]"
   fi
 
   #####################################
@@ -196,6 +211,8 @@ GetLinterRules()
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$COFFEE_LINTER_RULES]"
   fi
 
   #####################################
@@ -222,6 +239,8 @@ GetLinterRules()
       echo "ERROR:[$MV_CMD]"
       exit 1
     fi
+  else
+    echo "Using Default rules at:[$ANSIBLE_LINTER_RULES]"
   fi
 }
 ################################################################################
@@ -271,7 +290,7 @@ LintJsonFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.json" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.json" 2>&1))
 
   ##################
   # Lint the files #
@@ -475,7 +494,7 @@ LintXmlFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.xml" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.xml" 2>&1))
 
   ##################
   # Lint the files #
@@ -577,7 +596,7 @@ LintMdFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.md" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.md" 2>&1))
 
   ##################
   # Lint the files #
@@ -679,7 +698,7 @@ LintBashFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.sh" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.sh" 2>&1))
 
   ##################
   # Lint the files #
@@ -782,7 +801,7 @@ LintPythonFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.py" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.py" 2>&1))
 
   ##################
   # Lint the files #
@@ -885,7 +904,7 @@ LintPerlFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.pl" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.pl" 2>&1))
 
   ##################
   # Lint the files #
@@ -988,7 +1007,7 @@ LintRubyFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.rb" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.rb" 2>&1))
 
   ##################
   # Lint the files #
@@ -1091,7 +1110,7 @@ LintCoffeeFiles()
   # Get list of all files to lint #
   #################################
   # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f -name "*.coffee" 2>&1))
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.coffee" 2>&1))
 
   ##################
   # Lint the files #
@@ -1273,65 +1292,76 @@ LintAnsibleFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2164,SC2010
-  LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
+  ######################################################
+  # Only go into ansible linter if we have base folder #
+  ######################################################
+  if [ -d "$ANSIBLE_DIR" ]; then
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2164,SC2010
+    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
 
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
+    ##################
+    # Lint the files #
+    ##################
+    for FILE in "${LIST_FILES[@]}"
+    do
 
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
+      #######################################
+      # Make sure we dont lint node modules #
+      #######################################
+      # if [[ $FILE == *"node_modules"* ]]; then
+      #   # This is a node modules file
+      #   continue
+      # fi
 
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$ANSIBLE_DIR/$FILE" 2>&1)
+      ####################
+      # Get the filename #
+      ####################
+      FILE_NAME=$(basename "$ANSIBLE_DIR/$FILE" 2>&1)
 
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
+      ##############
+      # File print #
+      ##############
+      echo "---------------------------"
+      echo "File:[$FILE]"
 
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_FILE" "$ANSIBLE_DIR/$FILE" 2>&1)
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_FILE" "$ANSIBLE_DIR/$FILE" 2>&1)
 
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_ANSIBLE++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment error count
+        ((ERRORS_FOUND_ANSIBLE++))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    done
+  else
+    ########################
+    # No Ansible dir found #
+    ########################
+    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIR]"
+    echo "skipping ansible lint"
+  fi
 }
 ################################################################################
 #### Function Footer ###########################################################
