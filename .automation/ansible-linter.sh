@@ -84,7 +84,7 @@ LintAnsibleFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2164,SC2010
+  # shellcheck disable=SC2164,SC2010,SC2207
   LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
 
   ##################

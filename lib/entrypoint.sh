@@ -265,7 +265,7 @@ LintJsonFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -367,7 +367,7 @@ LintYmlFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -391,8 +391,8 @@ LintYmlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(find "$GITHUB_WORKSPACE" -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
+  # shellcheck disable=SC2207,SC2164
+  LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
 
   ##################
   # Lint the files #
@@ -469,7 +469,7 @@ LintXmlFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -493,7 +493,7 @@ LintXmlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.xml" 2>&1))
 
   ##################
@@ -571,7 +571,7 @@ LintMdFiles()
   # Validate we have yamllint installed #
   #######################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -595,7 +595,7 @@ LintMdFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.md" 2>&1))
 
   ##################
@@ -673,7 +673,7 @@ LintBashFiles()
   # Validate we have shellcheck installed #
   #########################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -697,7 +697,7 @@ LintBashFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.sh" 2>&1))
 
   ##################
@@ -776,7 +776,7 @@ LintPythonFiles()
   # Validate we have pylint installed #
   #####################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -800,7 +800,7 @@ LintPythonFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.py" 2>&1))
 
   ##################
@@ -879,7 +879,7 @@ LintPerlFiles()
   # Validate we have perl installed #
   ###################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -903,7 +903,7 @@ LintPerlFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.pl" 2>&1))
 
   ##################
@@ -982,7 +982,7 @@ LintRubyFiles()
   # Validate we have perl installed #
   ###################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1006,7 +1006,7 @@ LintRubyFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.rb" 2>&1))
 
   ##################
@@ -1085,7 +1085,7 @@ LintCoffeeFiles()
   # Validate we have pylint installed #
   #####################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1109,7 +1109,7 @@ LintCoffeeFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.coffee" 2>&1))
 
   ##################
@@ -1271,7 +1271,7 @@ LintAnsibleFiles()
   # Validate we have ansible-lint installed #
   ###########################################
   # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(which "$LINTER_NAME" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
   # Load the error code #
@@ -1299,7 +1299,7 @@ LintAnsibleFiles()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2164,SC2010
+    # shellcheck disable=SC2164,SC2010,SC2207
     LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
 
     ##################
