@@ -3,6 +3,7 @@
 This repository is for the **GitHub** Action to run a **Super-Linter**.  
 Developers on **GitHub** can call this Action to lint their code base with the following list of linters:
 
+
 - **Ruby** (Rubocop)
 - **Shell** (Shellcheck)
 - **Ansible** (Ansible-lint)
