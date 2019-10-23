@@ -289,7 +289,7 @@ LintJsonFiles()
   #################################
   # Get list of all files to lint #
   #################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2164
   LIST_FILES=($(cd "$GITHUB_WORKSPACE"; find . -type f -name "*.json" 2>&1))
 
   ##################
