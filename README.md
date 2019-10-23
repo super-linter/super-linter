@@ -3,14 +3,16 @@
 This repository is for the **GitHub** Action to run a **Super-Linter**.  
 Developers on **GitHub** can call this Action to lint their code base with the following list of linters:
 
-- Ruby (Rubocop)
-- Shell (Shellcheck)
-- Ansible (Ansible-lint)
-- YAML (Yamllint)
-- Python3 (Pylint)
-- JSON (JsonLint)
-- MarkDown (Markdownlint)
-- XML (LibXML)
+- **Ruby** (Rubocop)
+- **Shell** (Shellcheck)
+- **Ansible** (Ansible-lint)
+- **YAML** (Yamllint)
+- **Python3** (Pylint)
+- **JSON** (JsonLint)
+- **MarkDown** (Markdownlint)
+- **Perl** (Perl)
+- **XML** (LibXML)
+- **Coffeescript** (coffeelint)
 
 ## How to use
 
@@ -78,10 +80,10 @@ jobs:
 
 ## How to contribute
 
-If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github-services-engineering/super-linter/blob/master/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
 
 --------------------------------------------------------------------------------
 
 ### License
 
-- [License](https://github.com/github-services-engineering/super-linter/blob/master/LICENSE)
+- [License](https://github.com/github/super-linter/blob/master/LICENSE)

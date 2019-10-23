@@ -1,0 +1,51 @@
+##########################
+##########################
+## Ansible Linter rules ##
+##########################
+##########################
+
+#############################
+# Exclude paths from linter #
+#############################
+#exclude_paths:
+
+########################
+# Make output parsable #
+########################
+parseable: true
+
+#######################
+# Set output to quiet #
+#######################
+quiet: true
+
+#####################
+# Path to rules dir #
+#####################
+#rulesdir:
+
+################
+# Tags to skip #
+################
+skip_list:
+  - '602' # Allow compare to empty string
+  - '204' # Allow string length greater that 160 chars
+  - '301' # False positives for running command shells
+  - '303' # Allow git commands for push add, etc...
+  - '305' # Allow use of shell when you want
+  - '503' # Allow step to run like handler
+
+##################
+# Tags to follow #
+##################
+#tags:
+
+#############
+# Use rules #
+#############
+use_default_rules: true
+
+#################
+# Set verbosity #
+#################
+verbosity: 1

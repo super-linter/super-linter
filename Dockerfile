@@ -13,39 +13,66 @@ FROM python:alpine
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your codebase with Github Actions" \
+      com.github.actions.description="Lint your code base with Github Actions" \
       com.github.actions.icon="code" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
 
-##################
-# Run the Update #
-##################
+####################
+# Run APK installs #
+####################
 RUN apk add --no-cache \
-    bash git musl-dev jq \
-    npm nodejs bash git musl-dev jq gcc curl
+    bash git musl-dev curl gcc jq \
+    npm nodejs \
+    libxml2-utils perl \
+    ruby ruby-dev ruby-bundler ruby-rdoc make\
+    py3-setuptools ansible-lint
 
-RUN pip install --upgrade --no-cache-dir \
-    awscli aws-sam-cli yq
+#####################
+# Run Pip3 Installs #
+#####################
+RUN pip3 install --upgrade --no-cache-dir \
+    yamllint pylint
 
-####################################
-# Setup AWS CLI Command Completion #
-####################################
-RUN echo complete -C '/usr/local/bin/aws_completer' aws >> ~/.bashrc
+####################
+# Run NPM Installs #
+####################
+RUN npm -g install \
+    markdownlint-cli \
+    jsonlint prettyjson \
+    coffeelint
+
+####################
+# Run GEM installs #
+####################
+RUN gem install rubocop
+
+######################
+# Install shellcheck #
+######################
+RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
+    && cp "shellcheck-stable/shellcheck" /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
 ###########################################
-ENV GITHUB_SHA=${GITHUB_SHA}
-ENV GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}
-ENV GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
+ENV GITHUB_SHA=${GITHUB_SHA} \
+    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
+    GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
 
-###########################
-# Copy files to container #
-###########################
+#############################
+# Copy scripts to container #
+#############################
 COPY lib /action/lib
+
+##################################
+# Copy linter rules to container #
+##################################
+COPY TEMPLATES /action/lib/.automation
 
 ######################
 # Set the entrypoint #
 ######################
 ENTRYPOINT ["/action/lib/entrypoint.sh"]
+
+#CMD tail -f /dev/null
