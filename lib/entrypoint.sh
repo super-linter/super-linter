@@ -1,4 +1,4 @@
-cd "$GITHUB_WORKSPACE" || exit;#!/bin/bash
+#!/bin/bash
 
 ################################################################################
 ########### EntryPoint for Super-Linter @AdmiralAwkbar #########################
