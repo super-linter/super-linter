@@ -75,8 +75,47 @@ jobs:
       ################################
       - name: Lint Code Base
         uses: docker://admiralawkbar/super-linter:latest
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ANSIBLE: false
 ...
 ```
+## Env Vars
+The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality:
+- **VALIDATE_ALL_CODEBASE**
+  - Default: `true`
+  - Will parse the entire repository and find all files to validate across all types
+  - **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation
+- **VALIDATE_YAML**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_JSON**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_XML**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_MD**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_BASH**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_PERL**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_PYTHON**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_RUBY**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_COFFEE**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_ANSIBLE**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
 
 ## Docker Hub
 

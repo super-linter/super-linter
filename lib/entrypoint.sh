@@ -31,9 +31,26 @@ ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to th
 ###################
 # GitHub ENV Vars #
 ###################
-GITHUB_SHA="${GITHUB_SHA}"                # GitHub sha from the commit
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"  # Github Event Path
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"    # Github Workspace
+GITHUB_SHA="${GITHUB_SHA}"                        # GitHub sha from the commit
+GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"          # Github Event Path
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"            # Github Workspace
+VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"  # Boolean to validate all files
+VALIDATE_YAML="${VALIDATE_YAML}"                  # Boolean to validate language
+VALIDATE_JSON="${VALIDATE_JSON}"                  # Boolean to validate language
+VALIDATE_XML="${VALIDATE_XML}"                    # Boolean to validate language
+VALIDATE_MD="${VALIDATE_MD}"                      # Boolean to validate language
+VALIDATE_BASH="${VALIDATE_BASH}"                  # Boolean to validate language
+VALIDATE_PERL="${VALIDATE_PERL}"                  # Boolean to validate language
+VALIDATE_PYTHON="${VALIDATE_PYTHON}"              # Boolean to validate language
+VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
+VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
+VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
+
+################
+# Default Vars #
+################
+DEFAULT_VALIDATE_ALL_CODEBASE='true'      # Default value for validate all files
+DEFAULT_VALIDATE_LANGUAGE='true'          # Default to validate language
 
 ############
 # Counters #
@@ -100,7 +117,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$YAML_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$YAML_FILE_NAME], using Default rules at:[$YAML_LINTER_RULES]"
   fi
 
   #####################################
@@ -128,7 +145,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$MD_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$MD_FILE_NAME], using Default rules at:[$MD_LINTER_RULES]"
   fi
 
   #####################################
@@ -156,7 +173,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$PYTHON_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$PYTHON_FILE_NAME], using Default rules at:[$PYTHON_LINTER_RULES]"
   fi
 
   #####################################
@@ -184,7 +201,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$RUBY_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$RUBY_FILE_NAME], using Default rules at:[$RUBY_LINTER_RULES]"
   fi
 
   #####################################
@@ -212,7 +229,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$COFFEE_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$COFFEE_FILE_NAME], using Default rules at:[$COFFEE_LINTER_RULES]"
   fi
 
   #####################################
@@ -240,7 +257,7 @@ GetLinterRules()
       exit 1
     fi
   else
-    echo "Using Default rules at:[$ANSIBLE_LINTER_RULES]"
+    echo "Codebase does not have file:[.github/linters/$ANSIBLE_FILE_NAME], using Default rules at:[$ANSIBLE_LINTER_RULES]"
   fi
 }
 ################################################################################
@@ -1246,6 +1263,189 @@ GetGitHubVars()
   else
     echo "Successfully found:[GITHUB_REPO]"
   fi
+
+  ############################################
+  # Print headers for user provided env vars #
+  ############################################
+  echo ""
+  echo "--------------------------------------------"
+  echo "Gathering User provided information..."
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_ALL_CODEBASE=$(echo "$VALIDATE_ALL_CODEBASE" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_ALL_CODEBASE" != "false" ]]; then
+    # Set to true
+    VALIDATE_ALL_CODEBASE="$DEFAULT_VALIDATE_ALL_CODEBASE"
+    echo "- Validating ALL files in code base..."
+  else
+    # Its false
+    echo "- Only validating New, or Edited files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_YAML=$(echo "$VALIDATE_YAML" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_YAML" != "false" ]]; then
+    # Set to true
+    VALIDATE_YAML="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [YML] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [YML] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_JSON" != "false" ]]; then
+    # Set to true
+    VALIDATE_JSON="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [JSON] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [JSON] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_XML=$(echo "$VALIDATE_XML" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_XML" != "false" ]]; then
+    # Set to true
+    VALIDATE_XML="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [XML] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [XML] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_MD" != "false" ]]; then
+    # Set to true
+    VALIDATE_MD="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [MARKDOWN] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [MARKDOWN] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_BASH" != "false" ]]; then
+    # Set to true
+    VALIDATE_BASH="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [BASH] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [BASH] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_PERL" != "false" ]]; then
+    # Set to true
+    VALIDATE_PERL="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [PERL] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [PERL] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_PYTHON" != "false" ]]; then
+    # Set to true
+    VALIDATE_PYTHON="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [PYTHON] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [PYTHON] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_RUBY" != "false" ]]; then
+    # Set to true
+    VALIDATE_RUBY="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [RUBY] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [RUBY] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_COFFEE" != "false" ]]; then
+    # Set to true
+    VALIDATE_COFFEE="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [COFFEE] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [COFFEE] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_ANSIBLE" != "false" ]]; then
+    # Set to true
+    VALIDATE_ANSIBLE="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [ANSIBLE] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [ANSIBLE] files in code base..."
+  fi
 }
 ################################################################################
 #### Function LintAnsibleFiles #################################################
@@ -1364,6 +1564,26 @@ LintAnsibleFiles()
   fi
 }
 ################################################################################
+#### Function BuildFileList ####################################################
+BuildFileList()
+{
+  # Need to build a list of all files changed
+  # This can be pulled from the GITHUB_EVENT_PATH payload
+
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "Gathering list of files edited, or added in the commit..."
+  echo ""
+  echo "Echoing file contents:"
+  echo "-----------------------------"
+  cat "$GITHUB_EVENT_PATH"
+  echo "-----------------------------"
+
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer()
 {
@@ -1378,6 +1598,7 @@ Footer()
   echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
   echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
   echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
+  echo "ERRORS FOUND in COFFEE:[$ERRORS_FOUND_COFFEE]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
 
@@ -1393,6 +1614,7 @@ Footer()
      [ $ERRORS_FOUND_BASH -ne 0 ] || \
      [ $ERRORS_FOUND_PERL -ne 0 ] || \
      [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
+     [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
@@ -1424,59 +1646,82 @@ GetGitHubVars
 ########################
 GetLinterRules
 
-######################
-# Validate workspace #
-######################
+########################################
+# Get list of files changed if env set #
+########################################
+if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+  BuildFileList
+fi
 
 ######################
 # Lint the Yml Files #
 ######################
-LintYmlFiles
+if [ "$VALIDATE_YAML" == "true" ]; then
+  LintYmlFiles
+fi
 
 #######################
 # Lint the json files #
 #######################
-LintJsonFiles
+if [ "$VALIDATE_JSON" == "true" ]; then
+  LintJsonFiles
+fi
 
 ######################
 # Lint the XML Files #
 ######################
-LintXmlFiles
+if [ "$VALIDATE_XML" == "true" ]; then
+  LintXmlFiles
+fi
 
 ###########################
 # Lint the Markdown Files #
 ###########################
-LintMdFiles
+if [ "$VALIDATE_MD" == "true" ]; then
+  LintMdFiles
+fi
 
 #######################
 # Lint the bash files #
 #######################
-LintBashFiles
+if [ "$VALIDATE_BASH" == "true" ]; then
+  LintBashFiles
+fi
 
 #########################
 # Lint the python files #
 #########################
-LintPythonFiles
+if [ "$VALIDATE_PYTHON" == "true" ]; then
+  LintPythonFiles
+fi
 
 #######################
 # Lint the perl files #
 #######################
-LintPerlFiles
+if [ "$VALIDATE_PERL" == "true" ]; then
+  LintPerlFiles
+fi
 
 #######################
 # Lint the ruby files #
 #######################
-LintRubyFiles
+if [ "$VALIDATE_RUBY" == "true" ]; then
+  LintRubyFiles
+fi
 
 #########################
 # Lint the coffee files #
 #########################
-LintCoffeeFiles
+if [ "$VALIDATE_COFFEE" == "true" ]; then
+  LintCoffeeFiles
+fi
 
 ##########################
 # Lint the Ansible files #
 ##########################
-LintAnsibleFiles
+if [ "$VALIDATE_ANSIBLE" == "true" ]; then
+  LintAnsibleFiles
+fi
 
 ##########
 # Footer #
