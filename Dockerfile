@@ -84,6 +84,6 @@ COPY TEMPLATES /action/lib/.automation
 ######################
 # Set the entrypoint #
 ######################
-ENTRYPOINT ["/action/lib/entrypoint.sh"]
+ENTRYPOINT ["/action/lib/linter.sh"]
 
 #CMD tail -f /dev/null
