@@ -52,6 +52,19 @@ VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 DEFAULT_VALIDATE_ALL_CODEBASE='true'      # Default value for validate all files
 DEFAULT_VALIDATE_LANGUAGE='true'          # Default to validate language
 
+##########################
+# Array of changed files #
+##########################
+FILE_ARRAY_YML=()     # Array of files to check
+FILE_ARRAY_JSON=()    # Array of files to check
+FILE_ARRAY_XML=()     # Array of files to check
+FILE_ARRAY_MD=()      # Array of files to check
+FILE_ARRAY_BASH=()    # Array of files to check
+FILE_ARRAY_PERL=()    # Array of files to check
+FILE_ARRAY_RUBY=()    # Array of files to check
+FILE_ARRAY_PYTHON=()  # Array of files to check
+FILE_ARRAY_COFFEE=()  # Array of files to check
+
 ############
 # Counters #
 ############
@@ -303,11 +316,24 @@ LintJsonFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.json" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_JSON[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_JSON[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.json" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -405,11 +431,24 @@ LintYmlFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_YML[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_YML[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -507,11 +546,24 @@ LintXmlFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.xml" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_XML[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_XML[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.xml" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -609,11 +661,24 @@ LintMdFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.md" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_MD[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_MD[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.md" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -711,11 +776,24 @@ LintBashFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.sh" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_BASH[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.sh" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -814,11 +892,24 @@ LintPythonFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.py" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_PYTHON[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_PYTHON[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.py" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -917,11 +1008,24 @@ LintPerlFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.pl" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_PERL[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_PERL[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.pl" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -1020,11 +1124,24 @@ LintRubyFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.rb" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_RUBY[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_RUBY[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.rb" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -1123,11 +1240,24 @@ LintCoffeeFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
-  #################################
-  # Get list of all files to lint #
-  #################################
-  # shellcheck disable=SC2207
-  LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.coffee" 2>&1))
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_COFFEE[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_COFFEE[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.coffee" 2>&1))
+  fi
 
   ##################
   # Lint the files #
@@ -1182,6 +1312,122 @@ LintCoffeeFiles()
       echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
     fi
   done
+}
+################################################################################
+#### Function LintAnsibleFiles #################################################
+LintAnsibleFiles()
+{
+  ANSIBLE_DIR="$GITHUB_WORKSPACE/ansible" # Ansible directory
+
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "Linting Ansible files..."
+  echo "----------------------------------------------"
+  echo ""
+
+  ######################
+  # Name of the linter #
+  ######################
+  LINTER_NAME="ansible-lint"
+
+  ###########################################
+  # Validate we have ansible-lint installed #
+  ###########################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find $LINTER_NAME in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ######################################################
+  # Only go into ansible linter if we have base folder #
+  ######################################################
+  if [ -d "$ANSIBLE_DIR" ]; then
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2164,SC2010,SC2207
+    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
+
+    ##################
+    # Lint the files #
+    ##################
+    for FILE in "${LIST_FILES[@]}"
+    do
+
+      #######################################
+      # Make sure we dont lint node modules #
+      #######################################
+      # if [[ $FILE == *"node_modules"* ]]; then
+      #   # This is a node modules file
+      #   continue
+      # fi
+
+      ####################
+      # Get the filename #
+      ####################
+      FILE_NAME=$(basename "$ANSIBLE_DIR/$FILE" 2>&1)
+
+      ##############
+      # File print #
+      ##############
+      echo "---------------------------"
+      echo "File:[$FILE]"
+
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_FILE" "$ANSIBLE_DIR/$FILE" 2>&1)
+
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
+
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment error count
+        ((ERRORS_FOUND_ANSIBLE++))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    done
+  else
+    ########################
+    # No Ansible dir found #
+    ########################
+    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIR]"
+    echo "skipping ansible lint"
+  fi
 }
 ################################################################################
 #### Function GetGitHubVars ####################################################
@@ -1448,122 +1694,6 @@ GetGitHubVars()
   fi
 }
 ################################################################################
-#### Function LintAnsibleFiles #################################################
-LintAnsibleFiles()
-{
-  ANSIBLE_DIR="$GITHUB_WORKSPACE/ansible" # Ansible directory
-
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Linting Ansible files..."
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="ansible-lint"
-
-  ###########################################
-  # Validate we have ansible-lint installed #
-  ###########################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ######################################################
-  # Only go into ansible linter if we have base folder #
-  ######################################################
-  if [ -d "$ANSIBLE_DIR" ]; then
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2164,SC2010,SC2207
-    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
-
-    ##################
-    # Lint the files #
-    ##################
-    for FILE in "${LIST_FILES[@]}"
-    do
-
-      #######################################
-      # Make sure we dont lint node modules #
-      #######################################
-      # if [[ $FILE == *"node_modules"* ]]; then
-      #   # This is a node modules file
-      #   continue
-      # fi
-
-      ####################
-      # Get the filename #
-      ####################
-      FILE_NAME=$(basename "$ANSIBLE_DIR/$FILE" 2>&1)
-
-      ##############
-      # File print #
-      ##############
-      echo "---------------------------"
-      echo "File:[$FILE]"
-
-      ################################
-      # Lint the file with the rules #
-      ################################
-      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_FILE" "$ANSIBLE_DIR/$FILE" 2>&1)
-
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
-        #########
-        # Error #
-        #########
-        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-        echo "ERROR:[$LINT_CMD]"
-        # Increment error count
-        ((ERRORS_FOUND_ANSIBLE++))
-      else
-        ###########
-        # Success #
-        ###########
-        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-      fi
-    done
-  else
-    ########################
-    # No Ansible dir found #
-    ########################
-    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIR]"
-    echo "skipping ansible lint"
-  fi
-}
-################################################################################
 #### Function BuildFileList ####################################################
 BuildFileList()
 {
@@ -1577,11 +1707,121 @@ BuildFileList()
   echo "----------------------------------------------"
   echo "Gathering list of files edited, or added in the commit..."
   echo ""
-  echo "Echoing file contents:"
-  echo "-----------------------------"
-  cat "$GITHUB_EVENT_PATH"
-  echo "-----------------------------"
 
+  ################################################
+  # Get the Array of files changed in the comits #
+  ################################################
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only master..$GITHUB_SHA 2>&1))
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Error
+    echo "ERROR! failed tgo gain list of all files changed!"
+    echo "ERROR:[${RAW_FILE_ARRAY[*]}]"
+    exit 1
+  fi
+
+  #################################################
+  # Itterate through the array of all files found #
+  #################################################
+  for FILE in "${RAW_FILE_ARRAY[@]}"
+  do
+    ###########################
+    # Get the files extension #
+    ###########################
+    FILE_TYPE=$(basename "$FILE" | cut -f2 -d'.')
+
+    ###############################
+    # Convert string to lowercase #
+    ###############################
+    FILE_TYPE=$(echo "$FILE_TYPE" | awk '{print tolower($0)}')
+
+    #####################
+    # Get the YML files #
+    #####################
+    if [ "$FILE_TYPE" == "yml" ] || [ "$FILE_TYPE" == "yaml" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_YML+=("$FILE")
+    ######################
+    # Get the JSON files #
+    ######################
+    elif [ "$FILE_TYPE" == "json" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JSON+=("$FILE")
+    #####################
+    # Get the XML files #
+    #####################
+    elif [ "$FILE_TYPE" == "xml" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_XML+=("$FILE")
+    ##########################
+    # Get the MARKDOWN files #
+    ##########################
+    elif [ "$FILE_TYPE" == "md" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_MD+=("$FILE")
+    ######################
+    # Get the BASH files #
+    ######################
+    elif [ "$FILE_TYPE" == "sh" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_BASH+=("$FILE")
+    ######################
+    # Get the PERL files #
+    ######################
+    elif [ "$FILE_TYPE" == "pl" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_PERL+=("$FILE")
+    ######################
+    # Get the RUBY files #
+    ######################
+    elif [ "$FILE_TYPE" == "rb" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RUBY+=("$FILE")
+    ########################
+    # Get the PYTHON files #
+    ########################
+    elif [ "$FILE_TYPE" == "py" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_PYTHON+=("$FILE")
+    ########################
+    # Get the COFFEE files #
+    ########################
+    elif [ "$FILE_TYPE" == "coffee" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_COFFEE+=("$FILE")
+    else
+      ############################
+      # Extension was not found! #
+      ############################
+      echo "WARN! Failed to get file type for:[$FILE]!"
+    fi
+  done
 }
 ################################################################################
 #### Function Footer ###########################################################
