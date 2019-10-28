@@ -324,7 +324,10 @@ LintJsonFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_JSON[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_JSON[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[JSON]"
+  elif [ ${#FILE_ARRAY_JSON[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_JSON[@]}") # Copy the array into list
   else
@@ -439,7 +442,10 @@ LintYmlFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_YML[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_YML[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[YML]"
+  elif [ ${#FILE_ARRAY_YML[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_YML[@]}") # Copy the array into list
   else
@@ -554,7 +560,10 @@ LintXmlFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_XML[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_XML[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[XML]"
+  elif [ ${#FILE_ARRAY_XML[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_XML[@]}") # Copy the array into list
   else
@@ -669,7 +678,10 @@ LintMdFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_MD[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_MD[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[MARKDOWN]"
+  elif [ ${#FILE_ARRAY_MD[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_MD[@]}") # Copy the array into list
   else
@@ -784,7 +796,10 @@ LintBashFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_BASH[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[BASH]"
+  elif [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_BASH[@]}") # Copy the array into list
   else
@@ -900,7 +915,10 @@ LintPythonFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_PYTHON[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_PYTHON[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[PYTHON]"
+  elif [ ${#FILE_ARRAY_PYTHON[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_PYTHON[@]}") # Copy the array into list
   else
@@ -1016,7 +1034,10 @@ LintPerlFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_PERL[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_PERL[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[PERL]"
+  elif [ ${#FILE_ARRAY_PERL[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_PERL[@]}") # Copy the array into list
   else
@@ -1132,7 +1153,10 @@ LintRubyFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_RUBY[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_RUBY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[RUBY]"
+  elif [ ${#FILE_ARRAY_RUBY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_RUBY[@]}") # Copy the array into list
   else
@@ -1248,7 +1272,10 @@ LintCoffeeFiles()
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY_COFFEE[@]} -ne 0 ]; then
+  if [ ${#FILE_ARRAY_COFFEE[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[COFFEE]"
+  elif [ ${#FILE_ARRAY_COFFEE[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_COFFEE[@]}") # Copy the array into list
   else
@@ -1447,7 +1474,7 @@ GetGitHubVars()
     echo "ERROR:[$GITHUB_SHA]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_SHA]"
+    echo "Successfully found:[GITHUB_SHA], value:[$GITHUB_SHA]"
   fi
 
   ############################
@@ -1458,7 +1485,7 @@ GetGitHubVars()
     echo "ERROR:[$GITHUB_WORKSPACE]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_WORKSPACE]"
+    echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
   fi
 
   ############################
@@ -1469,7 +1496,7 @@ GetGitHubVars()
     echo "ERROR:[$GITHUB_EVENT_PATH]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_EVENT_PATH]"
+    echo "Successfully found:[GITHUB_EVENT_PATH], value:[$GITHUB_EVENT_PATH]"
   fi
 
   ##################################################
@@ -1490,7 +1517,7 @@ GetGitHubVars()
     echo "ERROR:[$GITHUB_ORG]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_ORG]"
+    echo "Successfully found:[GITHUB_ORG], value:[$GITHUB_ORG]"
   fi
 
   #######################
@@ -1507,7 +1534,7 @@ GetGitHubVars()
     echo "ERROR:[$GITHUB_REPO]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_REPO]"
+    echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
   fi
 
   ############################################
@@ -1530,7 +1557,7 @@ GetGitHubVars()
     echo "- Validating ALL files in code base..."
   else
     # Its false
-    echo "- Only validating New, or Edited files in code base..."
+    echo "- Only validating [new], or [edited] files in code base..."
   fi
 
   ###############################
@@ -1706,13 +1733,32 @@ BuildFileList()
   echo ""
   echo "----------------------------------------------"
   echo "Gathering list of files edited, or added in the commit..."
-  echo ""
+
+  #####################################################################
+  # Switch codebase back to master to get a list of all files changed #
+  #####################################################################
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout master 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Error
+    echo "Failed to switch to master branch to get files changed!"
+    echo "ERROR:[$SWITCH_CMD]"
+    exit 1
+  fi
 
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
-  # shellcheck disable=SC2207,SC2086
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only master..$GITHUB_SHA 2>&1))
+  # shellcheck disable=SC2207
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" 2>&1))
 
   #######################
   # Load the error code #
@@ -1737,12 +1783,14 @@ BuildFileList()
     ###########################
     # Get the files extension #
     ###########################
-    FILE_TYPE=$(basename "$FILE" | cut -f2 -d'.')
+    # Extract just the file and extension, reverse it, cut off extension,
+    # reverse it back, substitute to lowercase
+    FILE_TYPE=$(basename "$FILE" | rev | cut -f1 -d'.' | rev | awk '{print tolower($0)}')
 
-    ###############################
-    # Convert string to lowercase #
-    ###############################
-    FILE_TYPE=$(echo "$FILE_TYPE" | awk '{print tolower($0)}')
+    #########
+    # DEBUG #
+    #########
+    #echo "FILE_TYPE:[$FILE_TYPE]"
 
     #####################
     # Get the YML files #
@@ -1823,6 +1871,31 @@ BuildFileList()
       echo "WARN! Failed to get file type for:[$FILE]!"
     fi
   done
+
+  #########################################
+  # Need to switch back to branch of code #
+  #########################################
+  SWITCH2_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout --progress --force "$GITHUB_SHA" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Error
+    echo "Failed to switch back to branch!"
+    echo "ERROR:[$SWITCH2_CMD]"
+    exit 1
+  fi
+
+  ################
+  # Footer print #
+  ################
+  echo "Successfully gathered list of files..."
 }
 ################################################################################
 #### Function Footer ###########################################################
