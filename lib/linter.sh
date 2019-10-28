@@ -1711,7 +1711,7 @@ BuildFileList()
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
-  # shellcheck disable=SC2207
+  # shellcheck disable=SC2207,SC2086
   RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only master..$GITHUB_SHA 2>&1))
 
   #######################
