@@ -1712,7 +1712,7 @@ BuildFileList()
   # Get the Array of files changed in the comits #
   ################################################
   # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" 2>&1))
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only master..$GITHUB_SHA 2>&1))
 
   #######################
   # Load the error code #
@@ -1724,7 +1724,7 @@ BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "ERROR! failed tgo gain list of all files changed!"
+    echo "ERROR! Failed to gain a list of all files changed!"
     echo "ERROR:[${RAW_FILE_ARRAY[*]}]"
     exit 1
   fi
