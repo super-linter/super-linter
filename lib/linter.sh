@@ -1758,7 +1758,7 @@ BuildFileList()
   # Get the Array of files changed in the comits #
   ################################################
   # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" 2>&1))
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" --diff-filter=d 2>&1))
 
   #######################
   # Load the error code #
