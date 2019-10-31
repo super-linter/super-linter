@@ -1393,7 +1393,7 @@ LintAnsibleFiles()
     # Get list of all files to lint #
     #################################
     # shellcheck disable=SC2164,SC2010,SC2207
-    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls -I vault.yml -I galaxy.yml | grep ".yml" 2>&1))
+    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls | grep ".yml" 2>&1))
 
     ##################
     # Lint the files #
@@ -1401,13 +1401,13 @@ LintAnsibleFiles()
     for FILE in "${LIST_FILES[@]}"
     do
 
-      #######################################
-      # Make sure we dont lint node modules #
-      #######################################
-      # if [[ $FILE == *"node_modules"* ]]; then
-      #   # This is a node modules file
-      #   continue
-      # fi
+      ########################################
+      # Make sure we dont lint certain files #
+      ########################################
+      if [[ $FILE == *"vault.yml"* ]] || [[ $FILE == *"galaxy.yml"* ]]; then
+        # This is a file we dont look at
+        continue
+      fi
 
       ####################
       # Get the filename #
