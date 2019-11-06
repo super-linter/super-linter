@@ -24,6 +24,9 @@ RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to th
 # Coffee Vars
 COFFEE_FILE_NAME='.coffee-lint.json'                                # Name of the file
 COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to the coffescript lint rules
+# Javascript Vars
+JAVASCRIPT_FILE_NAME='.coffee-lint.json'                                # Name of the file
+JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
 ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the coffescript lint rules
@@ -45,6 +48,7 @@ VALIDATE_PYTHON="${VALIDATE_PYTHON}"              # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
+VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 
 ################
 # Default Vars #
@@ -55,29 +59,31 @@ DEFAULT_VALIDATE_LANGUAGE='true'          # Default to validate language
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_YML=()     # Array of files to check
-FILE_ARRAY_JSON=()    # Array of files to check
-FILE_ARRAY_XML=()     # Array of files to check
-FILE_ARRAY_MD=()      # Array of files to check
-FILE_ARRAY_BASH=()    # Array of files to check
-FILE_ARRAY_PERL=()    # Array of files to check
-FILE_ARRAY_RUBY=()    # Array of files to check
-FILE_ARRAY_PYTHON=()  # Array of files to check
-FILE_ARRAY_COFFEE=()  # Array of files to check
+FILE_ARRAY_YML=()         # Array of files to check
+FILE_ARRAY_JSON=()        # Array of files to check
+FILE_ARRAY_XML=()         # Array of files to check
+FILE_ARRAY_MD=()          # Array of files to check
+FILE_ARRAY_BASH=()        # Array of files to check
+FILE_ARRAY_PERL=()        # Array of files to check
+FILE_ARRAY_RUBY=()        # Array of files to check
+FILE_ARRAY_PYTHON=()      # Array of files to check
+FILE_ARRAY_COFFEE=()      # Array of files to check
+FILE_ARRAY_JAVASCRIPT=()  # Array of files to check
 
 ############
 # Counters #
 ############
-ERRORS_FOUND_YML=0      # Count of errors found
-ERRORS_FOUND_JSON=0     # Count of errors found
-ERRORS_FOUND_XML=0      # Count of errors found
-ERRORS_FOUND_MD=0       # Count of errors found
-ERRORS_FOUND_BASH=0     # Count of errors found
-ERRORS_FOUND_PERL=0     # Count of errors found
-ERRORS_FOUND_RUBY=0     # Count of errors found
-ERRORS_FOUND_PYTHON=0   # Count of errors found
-ERRORS_FOUND_COFFEE=0   # Count of errors found
-ERRORS_FOUND_ANSIBLE=0  # Count of errors found
+ERRORS_FOUND_YML=0          # Count of errors found
+ERRORS_FOUND_JSON=0         # Count of errors found
+ERRORS_FOUND_XML=0          # Count of errors found
+ERRORS_FOUND_MD=0           # Count of errors found
+ERRORS_FOUND_BASH=0         # Count of errors found
+ERRORS_FOUND_PERL=0         # Count of errors found
+ERRORS_FOUND_RUBY=0         # Count of errors found
+ERRORS_FOUND_PYTHON=0       # Count of errors found
+ERRORS_FOUND_COFFEE=0       # Count of errors found
+ERRORS_FOUND_ANSIBLE=0      # Count of errors found
+ERRORS_FOUND_JAVASCRIPT=0   # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -271,6 +277,34 @@ GetLinterRules()
     fi
   else
     echo "Codebase does not have file:[.github/linters/$ANSIBLE_FILE_NAME], using Default rules at:[$ANSIBLE_LINTER_RULES]"
+  fi
+
+  #####################################
+  # Validate we have the linter rules #
+  #####################################
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$JAVASCRIPT_FILE_NAME" ]; then
+    echo "User provided file:[$JAVASCRIPT_FILE_NAME], setting rules file..."
+
+    ####################################
+    # Move users into default location #
+    ####################################
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES" 2>&1)
+
+    ###################
+    # Load Error code #
+    ###################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      echo "ERROR! Failed to set file:[$JAVASCRIPT_FILE_NAME] as default!"
+      echo "ERROR:[$MV_CMD]"
+      exit 1
+    fi
+  else
+    echo "Codebase does not have file:[.github/linters/$JAVASCRIPT_FILE_NAME], using Default rules at:[$JAVASCRIPT_LINTER_RULES]"
   fi
 }
 ################################################################################
@@ -1341,6 +1375,192 @@ LintCoffeeFiles()
   done
 }
 ################################################################################
+#### Function LintJavascriptFiles ##############################################
+LintJavascriptFiles()
+{
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "Linting JavaScript files..."
+  echo "----------------------------------------------"
+  echo ""
+
+  ######################
+  # Name of the linter #
+  ######################
+  LINTER_NAME="eslint"
+
+  #####################################
+  # Validate we have pylint installed #
+  #####################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find $LINTER_NAME in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_JAVASCRIPT[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[COFFEE]"
+  elif [ ${#FILE_ARRAY_JAVASCRIPT[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_JAVASCRIPT[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.js" 2>&1))
+  fi
+
+  ##################
+  # Lint the files #
+  ##################
+  for FILE in "${LIST_FILES[@]}"
+  do
+
+    #######################################
+    # Make sure we dont lint node modules #
+    #######################################
+    if [[ $FILE == *"node_modules"* ]]; then
+      # This is a node modules file
+      continue
+    fi
+
+    ####################
+    # Get the filename #
+    ####################
+    FILE_NAME=$(basename "$FILE" 2>&1)
+
+    ##############
+    # File print #
+    ##############
+    echo "---------------------------"
+    echo "File:[$FILE]"
+
+    #############################
+    # Lint the file with ESLint #
+    #############################
+    Eslint "$FILE"
+
+    ###############################
+    # Lint the file with Standard #
+    ###############################
+    StandardLint "$FILE"
+
+  done
+}
+################################################################################
+#### Function Eslint ###########################################################
+Eslint()
+{
+  ####################
+  # Pull in the file #
+  ####################
+  FILE=$1
+
+  #####################
+  # Get the file name #
+  #####################
+  FILE_NAME=$(basename "$FILE" 2>&1)
+
+  ################################
+  # Lint the file with the rules #
+  ################################
+  LINT_CMD=$(eslint -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    #########
+    # Error #
+    #########
+    echo "ERROR! Found errors in [eslint] linter!"
+    echo "ERROR:[$LINT_CMD]"
+    # Increment error count
+    ((ERRORS_FOUND_JAVASCRIPT++))
+  else
+    ###########
+    # Success #
+    ###########
+    echo " - File:[$FILE_NAME] was linted with [eslint] successfully"
+  fi
+}
+################################################################################
+#### Function StandardLint #####################################################
+StandardLint()
+{
+  ####################
+  # Pull in the file #
+  ####################
+  FILE=$1
+
+  #####################
+  # Get the file name #
+  #####################
+  FILE_NAME=$(basename "$FILE" 2>&1)
+
+  ################################
+  # Lint the file with the rules #
+  ################################
+  STANDARD_LINT_CMD=$(standard "$FILE" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    #########
+    # Error #
+    #########
+    echo "ERROR! Found errors in [js standard] linter!"
+    echo "ERROR:[$STANDARD_LINT_CMD]"
+    # Increment error count
+    ((ERRORS_FOUND_JAVASCRIPT++))
+  else
+    ###########
+    # Success #
+    ###########
+    echo " - File:[$FILE_NAME] was linted with [js standard] successfully"
+  fi
+}
+################################################################################
 #### Function LintAnsibleFiles #################################################
 LintAnsibleFiles()
 {
@@ -1719,6 +1939,22 @@ GetGitHubVars()
     # Its false
     echo "- Excluding [ANSIBLE] files in code base..."
   fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_JAVASCRIPT=$(echo "$VALIDATE_JAVASCRIPT" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_JAVASCRIPT" != "false" ]]; then
+    # Set to true
+    VALIDATE_JAVASCRIPT="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [JAVASCRIPT] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [JAVASCRIPT] files in code base..."
+  fi
 }
 ################################################################################
 #### Function BuildFileList ####################################################
@@ -1864,6 +2100,14 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_COFFEE+=("$FILE")
+    ########################
+    # Get the COFFEE files #
+    ########################
+    elif [ "$FILE_TYPE" == "js" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JAVASCRIPT+=("$FILE")
     else
       ############################
       # Extension was not found! #
@@ -1915,6 +2159,7 @@ Footer()
   echo "ERRORS FOUND in COFFEE:[$ERRORS_FOUND_COFFEE]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
+  echo "ERRORS FOUND in JAVASCRIPT:[$ERRORS_FOUND_JAVASCRIPT]"
 
   echo ""
 
@@ -1930,6 +2175,7 @@ Footer()
      [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
      [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
+     [ $ERRORS_FOUND_JAVASCRIPT -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -2036,6 +2282,14 @@ fi
 if [ "$VALIDATE_ANSIBLE" == "true" ]; then
   LintAnsibleFiles
 fi
+
+#############################
+# Lint the Javascript files #
+#############################
+if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
+  LintJavascriptFiles
+fi
+
 
 ##########
 # Footer #
