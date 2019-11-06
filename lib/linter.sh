@@ -1423,7 +1423,7 @@ LintAnsibleFiles()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_FILE" "$ANSIBLE_DIR/$FILE" 2>&1)
+      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_RULES" "$ANSIBLE_DIR/$FILE" 2>&1)
 
       #######################
       # Load the error code #
