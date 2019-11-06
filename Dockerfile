@@ -40,7 +40,8 @@ RUN pip3 install --upgrade --no-cache-dir \
 RUN npm -g install \
     markdownlint-cli \
     jsonlint prettyjson \
-    coffeelint
+    coffeelint \
+    eslint standard
 
 ####################
 # Run GEM installs #
