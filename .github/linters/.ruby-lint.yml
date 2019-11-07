@@ -57,11 +57,6 @@ Metrics/CyclomaticComplexity:
 Layout/SpaceAroundEqualsInParameterDefault:
   EnforcedStyle: no_space
 
-# Most readable form.
-Layout/AlignHash:
-  EnforcedHashRocketStyle: table
-  EnforcedColonStyle: table
-
 # Indenting the chained dots beneath each other is not supported by this cop,
 # see https://github.com/bbatsov/rubocop/issues/1633
 Layout/MultilineOperationIndentation:
