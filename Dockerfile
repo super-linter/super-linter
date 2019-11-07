@@ -56,6 +56,8 @@ RUN npm -g --no-cache install \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser
 
+ # I think we could fix this with path but not sure the language...
+ # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
 ####################
 # Run GEM installs #
 ####################
