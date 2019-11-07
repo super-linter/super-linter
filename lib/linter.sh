@@ -25,7 +25,7 @@ RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to th
 COFFEE_FILE_NAME='.coffee-lint.json'                                # Name of the file
 COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to the coffescript lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME='.coffee-lint.json'                                # Name of the file
+JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
@@ -1493,7 +1493,7 @@ Eslint()
   ################################
   # Lint the file with the rules #
   ################################
-  LINT_CMD=$(cd "$GITHUB_WORKSPACE" | exit; eslint -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
+  LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; eslint -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
 
   #######################
   # Load the error code #
