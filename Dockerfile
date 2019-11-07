@@ -41,7 +41,8 @@ RUN npm -g install \
     markdownlint-cli \
     jsonlint prettyjson \
     coffeelint \
-    eslint standard
+    typescript eslint standard \
+    @typescript-eslint/parser
 
 ####################
 # Run GEM installs #
