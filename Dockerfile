@@ -40,7 +40,9 @@ RUN pip3 install --upgrade --no-cache-dir \
 RUN npm -g install \
     markdownlint-cli \
     jsonlint prettyjson \
-    coffeelint
+    coffeelint \
+    typescript eslint standard \
+    @typescript-eslint/parser
 
 ####################
 # Run GEM installs #
