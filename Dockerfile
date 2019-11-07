@@ -31,19 +31,33 @@ RUN apk add --no-cache \
 #####################
 # Run Pip3 Installs #
 #####################
-RUN pip3 install --upgrade --no-cache-dir \
+RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
     yamllint pylint
 
 ####################
 # Run NPM Installs #
 ####################
-RUN npm -g install \
+RUN npm -g --no-cache install \
     markdownlint-cli \
     jsonlint prettyjson \
     coffeelint \
-    typescript eslint standard \
+    typescript eslint \
+    standard \
+    babel-eslint \
+    @typescript-eslint/eslint-plugin \
+    @typescript-eslint/parser \
+    && npm --no-cache install \
+    markdownlint-cli \
+    jsonlint prettyjson \
+    coffeelint \
+    typescript eslint \
+    standard \
+    babel-eslint \
+    @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser
 
+ # I think we could fix this with path but not sure the language...
+ # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
 ####################
 # Run GEM installs #
 ####################
@@ -86,6 +100,7 @@ COPY TEMPLATES /action/lib/.automation
 ######################
 # Set the entrypoint #
 ######################
+#RUN find / -name node_modules
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 #CMD tail -f /dev/null
