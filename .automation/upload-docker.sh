@@ -195,6 +195,10 @@ BuildImage()
     echo "ERROR! failed to [build] Dockerfile!"
     echo "ERROR:[$BUILD_CMD]"
     exit 1
+  else
+    # SUCCESS
+    echo "Successfully Built image!"
+    echo "Info:[$BUILD_CMD]"
   fi
 }
 ################################################################################
@@ -232,11 +236,13 @@ UploadImage()
   else
     # SUCCESS
     echo "Successfully Uploaded Docker image to DockerHub!"
+    echo "Info:[$UPLOAD_CMD]"
   fi
 
   #########################
   # Get Image information #
   #########################
+  IFS=$'\n' # Set the delimit to newline
   GET_INFO_CMD=$(docker images | grep "$IMAGE_REPO" | grep "$IMAGE_VERSION" 2>&1)
 
   #######################
