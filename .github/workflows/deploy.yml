@@ -31,7 +31,15 @@ jobs:
     # Load all steps #
     ##################
     steps:
-      # Run Deploy script
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@master
+
+      #####################
+      # Run Deploy script #
+      #####################
       - name: Deploy image to DockerHub
         env:
           # Set the Env Vars
