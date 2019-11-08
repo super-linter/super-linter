@@ -259,6 +259,7 @@ UploadImage()
     REPO=$(echo "$GET_INFO_CMD" | cut -f1 -d' ')
     TAG=$(echo "$GET_INFO_CMD" | cut -f2 -d' ')
     IMAGE_ID=$(echo "$GET_INFO_CMD" | cut -f3 -d' ')
+    # shellcheck disable=SC2116
     SIZE=$(echo "${GET_INFO_CMD##* }")
 
     ###################
