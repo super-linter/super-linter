@@ -14,6 +14,7 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **Perl** (Perl)
 - **XML** (LibXML)
 - **Coffeescript** (coffeelint)
+- **Javascript** (eslint)(standard)
 
 ## How to use
 
@@ -116,7 +117,10 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **VALIDATE_ANSIBLE**
   - Default: `true`
   - Flag to enable or disable the linting process of the language
-
+- **VALIDATE_JAVASCRIPT**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+  
 ## Docker Hub
 
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
