@@ -149,7 +149,7 @@ LoginToDocker()
     exit 1
   else
     # SUCCESS
-    echo "Successfully authenticaterd to DockerHub!"
+    echo "Successfully authenticated to DockerHub!"
   fi
 }
 ################################################################################
@@ -180,7 +180,7 @@ BuildImage()
   ###################
   # Build the image #
   ###################
-  BUILD_CMD=$(docker build --no-cache -t "$IMAGE_REPO:$IMAGE_VERSION" "$DOCKERFILE_PATH" 2>&1)
+  BUILD_CMD=$(docker build --no-cache -t "$IMAGE_REPO:$IMAGE_VERSION" -f "$DOCKERFILE_PATH" . 2>&1)
 
   #######################
   # Load the error code #
