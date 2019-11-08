@@ -262,9 +262,9 @@ UploadImage()
     ################
     # Get the data #
     ################
-    REPO=$(echo "$GET_INFO_CMD" | cut -f1 -d' ')
-    TAG=$(echo "$GET_INFO_CMD" | cut -f2 -d' ')
-    IMAGE_ID=$(echo "$GET_INFO_CMD" | cut -f3 -d' ')
+    REPO=$(echo "$GET_INFO_CMD" | awk '{print $1}')
+    TAG=$(echo "$GET_INFO_CMD" | awk '{print $2}')
+    IMAGE_ID=$(echo "$GET_INFO_CMD" | awk '{print $3}')
     # shellcheck disable=SC2116
     SIZE=$(echo "${GET_INFO_CMD##* }")
 
