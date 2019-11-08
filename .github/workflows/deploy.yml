@@ -31,14 +31,14 @@ jobs:
     # Load all steps #
     ##################
     steps:
-      env:
-        # Set the Env Vars
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        IMAGE_REPO: admiralawkbar/super-linter
-        IMAGE_VERSION: latest
-        DOCKERFILE_PATH: Dockerfile
       # Run Deploy script
       - name: Deploy image to DockerHub
+        env:
+          # Set the Env Vars
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          IMAGE_REPO: admiralawkbar/super-linter
+          IMAGE_VERSION: latest
+          DOCKERFILE_PATH: Dockerfile
         shell: bash
         run: .automation/upload-docker.sh
