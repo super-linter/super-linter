@@ -1,0 +1,44 @@
+---
+#########################
+#########################
+## Deploy Docker Image ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+on:
+  push:
+    branches:
+      - 'master'
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Deploy Docker Image
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      # Run Deploy script
+      - name: Deploy image to DockerHub
+        env:
+          # Set the Env Vars
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          IMAGE_REPO: admiralawkbar/super-linter
+          IMAGE_VERSION: latest
+          DOCKERFILE_PATH: Dockerfile
+        shell: bash
+        run: .automation/upload-docker.sh
