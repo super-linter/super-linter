@@ -15,7 +15,6 @@
 #######################################
 on:
   push:
-    # Only run when the push is on master
     branches:
       - 'master'
 
@@ -23,13 +22,6 @@ on:
 # Set the Job #
 ###############
 jobs:
-  env:
-    # Set the Env Vars
-    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    IMAGE_REPO: admiralawkbar/super-linter
-    IMAGE_VERSION: latest
-    DOCKERFILE_PATH: Dockerfile
   build:
     # Name the Job
     name: Deploy Docker Image
@@ -39,6 +31,13 @@ jobs:
     # Load all steps #
     ##################
     steps:
+      env:
+        # Set the Env Vars
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        IMAGE_REPO: admiralawkbar/super-linter
+        IMAGE_VERSION: latest
+        DOCKERFILE_PATH: Dockerfile
       # Run Deploy script
       - name: Deploy image to DockerHub
         shell: bash
