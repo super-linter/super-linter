@@ -13,10 +13,11 @@
 #######################################
 # Start the job on all push to master #
 #######################################
-on: ["push"]
-  # Only run when the push is on master
-  branches:
-    - master
+on:
+  push:
+    # Only run when the push is on master
+    branches:
+      - 'master'
 
 ###############
 # Set the Job #
