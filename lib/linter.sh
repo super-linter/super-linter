@@ -2025,6 +2025,11 @@ BuildFileList()
     exit 1
   fi
 
+  #########
+  # Print #
+  #########
+  echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+  
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
