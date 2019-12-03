@@ -120,7 +120,9 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **VALIDATE_JAVASCRIPT**
   - Default: `true`
   - Flag to enable or disable the linting process of the language
-  
+- **ANSIBLE_DIRECTORY**
+  - Default: `/ansible`
+  - Flag to set the root directory for Ansible file location(s)
 ## Docker Hub
 
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
