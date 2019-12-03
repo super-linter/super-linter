@@ -2008,7 +2008,7 @@ BuildFileList()
   #####################################################################
   # Switch codebase back to master to get a list of all files changed #
   #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull; git checkout master origin/master 2>&1)
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull; git checkout master 2>&1)
 
   #######################
   # Load the error code #
