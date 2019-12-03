@@ -37,6 +37,7 @@ ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to th
 GITHUB_SHA="${GITHUB_SHA}"                        # GitHub sha from the commit
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"          # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"            # Github Workspace
+ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"          # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"  # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                  # Boolean to validate language
 VALIDATE_JSON="${VALIDATE_JSON}"                  # Boolean to validate language
@@ -53,8 +54,10 @@ VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'      # Default value for validate all files
-DEFAULT_VALIDATE_LANGUAGE='true'          # Default to validate language
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
+DEFAULT_VALIDATE_LANGUAGE='true'                      # Default to validate language
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
+RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 
 ##########################
 # Array of changed files #
@@ -1427,7 +1430,7 @@ LintJavascriptFiles()
   ############################################################
   if [ ${#FILE_ARRAY_JAVASCRIPT[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[COFFEE]"
+    echo " - No files found in chageset to lint for language:[JAVASCRIPT]"
   elif [ ${#FILE_ARRAY_JAVASCRIPT[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY_JAVASCRIPT[@]}") # Copy the array into list
@@ -1564,8 +1567,6 @@ StandardLint()
 #### Function LintAnsibleFiles #################################################
 LintAnsibleFiles()
 {
-  ANSIBLE_DIR="$GITHUB_WORKSPACE/ansible" # Ansible directory
-
   ################
   # print header #
   ################
@@ -1605,15 +1606,31 @@ LintAnsibleFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
   ######################################################
   # Only go into ansible linter if we have base folder #
   ######################################################
-  if [ -d "$ANSIBLE_DIR" ]; then
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2164,SC2010,SC2207
-    LIST_FILES=($(cd "$ANSIBLE_DIR"; ls | grep ".yml" 2>&1))
+  if [ -d "$ANSIBLE_DIRECTORY" ]; then
+
+    ############################################################
+    # Check to see if we need to go through array or all files #
+    ############################################################
+    if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+      # We need to only check the ansible playbooks that have updates
+      #LIST_FILES=("${ANSIBLE_ARRAY[@]}")
+      # shellcheck disable=SC2164,SC2010,SC2207
+      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+    else
+      #################################
+      # Get list of all files to lint #
+      #################################
+      # shellcheck disable=SC2164,SC2010,SC2207
+      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+    fi
 
     ##################
     # Lint the files #
@@ -1632,7 +1649,7 @@ LintAnsibleFiles()
       ####################
       # Get the filename #
       ####################
-      FILE_NAME=$(basename "$ANSIBLE_DIR/$FILE" 2>&1)
+      FILE_NAME=$(basename "$ANSIBLE_DIRECTORY/$FILE" 2>&1)
 
       ##############
       # File print #
@@ -1643,7 +1660,7 @@ LintAnsibleFiles()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_RULES" "$ANSIBLE_DIR/$FILE" 2>&1)
+      LINT_CMD=$("$LINTER_NAME" -v -c "$ANSIBLE_LINTER_RULES" "$ANSIBLE_DIRECTORY/$FILE" 2>&1)
 
       #######################
       # Load the error code #
@@ -1672,7 +1689,7 @@ LintAnsibleFiles()
     ########################
     # No Ansible dir found #
     ########################
-    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIR]"
+    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
     echo "skipping ansible lint"
   fi
 }
@@ -1955,6 +1972,24 @@ GetGitHubVars()
     # Its false
     echo "- Excluding [JAVASCRIPT] files in code base..."
   fi
+
+  ##############################
+  # Validate Ansible Directory #
+  ##############################
+  if [ -z "$ANSIBLE_DIRECTORY" ]; then
+    # No Value, need to default
+    ANSIBLE_DIRECTORY="$DEFAULT_ANSIBLE_DIRECTORY"
+  else
+    # Check if first char is '/'
+    if [[ ${ANSIBLE_DIRECTORY:0:1} == "/" ]]; then
+      # Remove first char
+      ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY:1}"
+    fi
+    # Need to give it full path
+    TEMP_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/$ANSIBLE_DIRECTORY"
+    # Set the value
+    ANSIBLE_DIRECTORY="$TEMP_ANSIBLE_DIRECTORY"
+  fi
 }
 ################################################################################
 #### Function BuildFileList ####################################################
@@ -1973,7 +2008,7 @@ BuildFileList()
   #####################################################################
   # Switch codebase back to master to get a list of all files changed #
   #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout master 2>&1)
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout master; git fetch 2>&1)
 
   #######################
   # Load the error code #
