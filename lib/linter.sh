@@ -2029,7 +2029,7 @@ BuildFileList()
   # Print #
   #########
   echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
-  
+
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
@@ -2054,8 +2054,14 @@ BuildFileList()
   #################################################
   # Itterate through the array of all files found #
   #################################################
+  echo "Files that have been modified in the commit(s):"
   for FILE in "${RAW_FILE_ARRAY[@]}"
   do
+    ##############
+    # Print file #
+    ##############
+    echo "File:[$FILE]"
+    
     ###########################
     # Get the files extension #
     ###########################
