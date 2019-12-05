@@ -46,6 +46,7 @@ RUN npm -g --no-cache install \
     babel-eslint \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser \
+    eslint-plugin-jest \
     && npm --no-cache install \
     markdownlint-cli \
     jsonlint prettyjson \
