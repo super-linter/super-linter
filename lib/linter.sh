@@ -1614,6 +1614,7 @@ StandardLint()
   # Lint the file with the rules #
   ################################
   echo " - Utilizing Env:[$ENV_STRING]"
+  # shellcheck disable=SC2086
   STANDARD_LINT_CMD=$(standard $ENV_STRING "$FILE" 2>&1)
 
   #######################
