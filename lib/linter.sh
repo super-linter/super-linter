@@ -1555,6 +1555,7 @@ StandardLint()
   # Get list of all environment variables #
   #########################################
   # Only env vars that are marked as true
+  # shellcheck disable=SC2207
   GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
 
   #######################
