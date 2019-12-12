@@ -1614,8 +1614,7 @@ StandardLint()
   # Lint the file with the rules #
   ################################
   echo " - Utilizing Env:[$ENV_STRING]"
-  echo "Running Command:[standard $ENV_STRING $FILE]"
-  STANDARD_LINT_CMD=$(standard "$ENV_STRING" "$FILE" 2>&1)
+  STANDARD_LINT_CMD=$(standard $ENV_STRING "$FILE" 2>&1)
 
   #######################
   # Load the error code #
