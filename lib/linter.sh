@@ -1545,6 +1545,16 @@ Eslint()
 #### Function StandardLint #####################################################
 StandardLint()
 {
+  ####################
+  # Pull in the file #
+  ####################
+  FILE=$1
+
+  #####################
+  # Get the file name #
+  #####################
+  FILE_NAME=$(basename "$FILE" 2>&1)
+
   #########################################################################
   # Need to get the ENV vars from the linter rules to run in command line #
   #########################################################################
@@ -1594,19 +1604,16 @@ StandardLint()
     # echo "ENV:[$ENV]"
     ENV_STRING+="--env ${ENV} "
   done
-  ####################
-  # Pull in the file #
-  ####################
-  FILE=$1
 
-  #####################
-  # Get the file name #
-  #####################
-  FILE_NAME=$(basename "$FILE" 2>&1)
+  ########################################
+  # Remove trailing and ending witespace #
+  ########################################
+  ENV_STRING="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
   ################################
   # Lint the file with the rules #
   ################################
+  echo " - Utilizing Env:[$ENV_STRING]"
   STANDARD_LINT_CMD=$(standard "$ENV_STRING" "$FILE" 2>&1)
 
   #######################
