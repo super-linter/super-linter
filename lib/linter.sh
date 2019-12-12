@@ -1545,6 +1545,54 @@ Eslint()
 #### Function StandardLint #####################################################
 StandardLint()
 {
+  #########################################################################
+  # Need to get the ENV vars from the linter rules to run in command line #
+  #########################################################################
+  # Set the IFS to newline
+  IFS=$'\n'
+
+  #########################################
+  # Get list of all environment variables #
+  #########################################
+  # Only env vars that are marked as true
+  GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to gain list of ENV vars to load!"
+    echo "ERROR:[${GET_ENV_ARRAY[*]}]"
+    exit 1
+  fi
+
+  ######################
+  # Set the env string #
+  ######################
+  ENV_STRING=''
+
+  #############################
+  # Pull out the envs to load #
+  #############################
+  for ENV in "${GET_ENV_ARRAY[@]}"
+  do
+    #############################
+    # remove spaces from return #
+    #############################
+    ENV="$(echo -e "${ENV}" | tr -d '[:space:]')"
+    ################################
+    # Get the env to add to string #
+    ################################
+    ENV="$(echo "${ENV}" | cut -d'"' -f2)"
+    # echo "ENV:[$ENV]"
+    ENV_STRING+="--env ${ENV} "
+  done
   ####################
   # Pull in the file #
   ####################
@@ -1558,7 +1606,7 @@ StandardLint()
   ################################
   # Lint the file with the rules #
   ################################
-  STANDARD_LINT_CMD=$(standard "$FILE" 2>&1)
+  STANDARD_LINT_CMD=$(standard "$ENV_STRING" "$FILE" 2>&1)
 
   #######################
   # Load the error code #
