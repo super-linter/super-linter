@@ -100,6 +100,14 @@ Header()
   echo "------ Github Actions Language Linter -------"
   echo "---------------------------------------------"
   echo ""
+
+  echo "--- DEBUG ---"
+  echo "---------------------------------------------"
+  RUNNER=$(whoami)
+  echo "Runner:[$RUNNER]"
+  echo "ENV:"
+  printenv
+  echo "---------------------------------------------"
 }
 ################################################################################
 #### Function GetLinterRules ###################################################
@@ -1440,6 +1448,36 @@ LintJavascriptFiles()
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
+  ######################
+  # Name of the linter #
+  ######################
+  LINTER_NAME="standard"
+
+  #####################################
+  # Validate we have pylint installed #
+  #####################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find $LINTER_NAME in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
   ##########################
   # Initialize empty Array #
   ##########################
@@ -1558,6 +1596,8 @@ StandardLint()
   #########################################################################
   # Need to get the ENV vars from the linter rules to run in command line #
   #########################################################################
+  # Copy orig IFS to var
+  ORIG_IFS="$IFS"
   # Set the IFS to newline
   IFS=$'\n'
 
@@ -1582,6 +1622,12 @@ StandardLint()
     echo "ERROR:[${GET_ENV_ARRAY[*]}]"
     exit 1
   fi
+
+  ##########################
+  # Set IFS back to normal #
+  ##########################
+  # Set IFS back to Orig
+  IFS="$ORIG_IFS"
 
   ######################
   # Set the env string #
