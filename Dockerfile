@@ -55,6 +55,7 @@ RUN npm -g --no-cache install \
     standard \
     babel-eslint \
     prettier \
+    eslint-config-prettier \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser
 
