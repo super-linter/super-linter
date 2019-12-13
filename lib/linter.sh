@@ -1554,7 +1554,7 @@ Eslint()
   ################################
   # Lint the file with the rules #
   ################################
-  LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; eslint -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
+  LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; eslint --no-eslintrc -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
 
   #######################
   # Load the error code #
