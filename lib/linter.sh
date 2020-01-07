@@ -87,6 +87,7 @@ ERRORS_FOUND_PYTHON=0       # Count of errors found
 ERRORS_FOUND_COFFEE=0       # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_JAVASCRIPT=0   # Count of errors found
+READ_ONLY_CHANGE_FLAG=0     # Flag set to 1 if files changed are not txt or md
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1757,6 +1758,14 @@ LintAnsibleFiles()
       LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
     fi
 
+    ###############################################################
+    # Set the list to empty if only MD and TXT files were changed #
+    ###############################################################
+    # No need to run the full ansible checks on read only file changes
+    if [ "$READ_ONLY_CHANGE_FLAG" eq 0 ]; then
+      LIST_FILES=()
+    fi
+
     ##################
     # Lint the files #
     ##################
@@ -2211,6 +2220,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_YML+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ######################
     # Get the JSON files #
     ######################
@@ -2219,6 +2232,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_JSON+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     #####################
     # Get the XML files #
     #####################
@@ -2227,6 +2244,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_XML+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ##########################
     # Get the MARKDOWN files #
     ##########################
@@ -2243,6 +2264,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_BASH+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ######################
     # Get the PERL files #
     ######################
@@ -2251,6 +2276,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_PERL+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ######################
     # Get the RUBY files #
     ######################
@@ -2259,6 +2288,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ########################
     # Get the PYTHON files #
     ########################
@@ -2267,6 +2300,10 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_PYTHON+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ########################
     # Get the COFFEE files #
     ########################
@@ -2275,19 +2312,31 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_COFFEE+=("$FILE")
-    ########################
-    # Get the COFFEE files #
-    ########################
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ############################
+    # Get the JavaScript files #
+    ############################
     elif [ "$FILE_TYPE" == "js" ]; then
       ################################
       # Append the file to the array #
       ################################
       FILE_ARRAY_JAVASCRIPT+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     else
       ############################
       # Extension was not found! #
       ############################
       echo "  - WARN! Failed to get filetype for:[$FILE]!"
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     fi
   done
 
