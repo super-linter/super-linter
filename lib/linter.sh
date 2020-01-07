@@ -1762,7 +1762,7 @@ LintAnsibleFiles()
     # Set the list to empty if only MD and TXT files were changed #
     ###############################################################
     # No need to run the full ansible checks on read only file changes
-    if [ "$READ_ONLY_CHANGE_FLAG" eq 0 ]; then
+    if [ "$READ_ONLY_CHANGE_FLAG" -eq 0 ]; then
       LIST_FILES=()
     fi
 
