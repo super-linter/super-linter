@@ -1763,7 +1763,14 @@ LintAnsibleFiles()
     ###############################################################
     # No need to run the full ansible checks on read only file changes
     if [ "$READ_ONLY_CHANGE_FLAG" -eq 0 ]; then
+      ##########################
+      # Set the array to empty #
+      ##########################
       LIST_FILES=()
+      ###################################
+      # Send message that were skipping #
+      ###################################
+      echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
     fi
 
     ##################
