@@ -64,7 +64,7 @@ RUN npm -g --no-cache install \
 ####################
 # Run GEM installs #
 ####################
-RUN gem install rubocop
+RUN gem install rubocop rubocop-rails
 
 ######################
 # Install shellcheck #
