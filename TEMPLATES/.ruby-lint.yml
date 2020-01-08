@@ -8,8 +8,12 @@
 ################################################################################
 
 # Set the linter to enable rails rules
-Rails:
-  Enabled: true
+# Note: the old style was to do the following. Now we just need to do the
+# require to allow rubocop to enable rails
+# https://stackoverflow.com/questions/41892310/how-to-enable-rubocop-rails-cops-automatically
+# Rails:
+#  Enabled: true
+require: rubocop-rails
 
 ################################################################################
 ############################# Security Rules ###################################
