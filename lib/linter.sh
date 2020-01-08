@@ -143,6 +143,7 @@ GetLinterVersions()
     ###################
     # Get the version #
     ###################
+    # shellcheck disable=SC2207
     GET_VERSION_CMD=($("$LINTER" --version 2>&1))
 
     #######################
@@ -160,7 +161,7 @@ GetLinterVersions()
       ##########################
       # Print the version info #
       ##########################
-      echo "$GET_VERSION_CMD[*]"
+      echo "${GET_VERSION_CMD[*]}"
       echo "---------------------------------------------"
     fi
   done
