@@ -31,6 +31,12 @@ JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path t
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
 ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the coffescript lint rules
 
+#######################################
+# Linter array for information prints #
+#######################################
+LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
+  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint")
+
 ###################
 # GitHub ENV Vars #
 ###################
@@ -101,6 +107,10 @@ Header()
   echo "------ Github Actions Language Linter -------"
   echo "---------------------------------------------"
   echo ""
+  echo "---------------------------------------------"
+  echo "The Super-Linter source code can be found at:"
+  echo " - https://github.com/github/super-linter"
+  echo "---------------------------------------------"
 
   # echo "--- DEBUG ---"
   # echo "---------------------------------------------"
@@ -109,6 +119,52 @@ Header()
   # echo "ENV:"
   # printenv
   # echo "---------------------------------------------"
+}
+################################################################################
+#### Function GetLinterVersions ################################################
+GetLinterVersions()
+{
+  #########################
+  # Print version headers #
+  #########################
+  echo ""
+  echo "---------------------------------------------"
+  echo "Linter Version Info:"
+  echo "---------------------------------------------"
+  echo ""
+
+  ##########################################################
+  # Go through the array of linters and print version info #
+  ##########################################################
+  for LINTER in "${LINTER_ARRAY[@]}"
+  do
+    echo "---------------------------------------------"
+    echo "[$LINTER]:"
+    ###################
+    # Get the version #
+    ###################
+    # shellcheck disable=SC2207
+    GET_VERSION_CMD=($("$LINTER" --version 2>&1))
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      echo "WARN! Failed to get version info for:[$LINTER]"
+      echo "---------------------------------------------"
+    else
+      ##########################
+      # Print the version info #
+      ##########################
+      echo "${GET_VERSION_CMD[*]}"
+      echo "---------------------------------------------"
+    fi
+  done
 }
 ################################################################################
 #### Function GetLinterRules ###################################################
@@ -2440,6 +2496,11 @@ GetGitHubVars
 # Get the linter rules #
 ########################
 GetLinterRules
+
+##################################
+# Get and print all version info #
+##################################
+GetLinterVersions
 
 ########################################
 # Get list of files changed if env set #
