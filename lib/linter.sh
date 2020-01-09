@@ -35,7 +35,7 @@ ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to th
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint")
+  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint" "node_modules/dockerfilelint/bin/dockerfilelint")
 
 ###################
 # GitHub ENV Vars #
@@ -56,6 +56,7 @@ VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"      # Boolean to validate language
 RUN_LOCAL="${RUN_LOCAL}"                          # Boolean to see if we are running locally
 
 ################
@@ -81,6 +82,7 @@ FILE_ARRAY_RUBY=()        # Array of files to check
 FILE_ARRAY_PYTHON=()      # Array of files to check
 FILE_ARRAY_COFFEE=()      # Array of files to check
 FILE_ARRAY_JAVASCRIPT=()  # Array of files to check
+FILE_ARRAY_DOCKER=()  # Array of files to check
 
 ############
 # Counters #
@@ -96,6 +98,7 @@ ERRORS_FOUND_PYTHON=0       # Count of errors found
 ERRORS_FOUND_COFFEE=0       # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_JAVASCRIPT=0   # Count of errors found
+ERRORS_FOUND_DOCKER=0       # Count of errors found
 READ_ONLY_CHANGE_FLAG=0     # Flag set to 1 if files changed are not txt or md
 
 ################################################################################
@@ -1894,6 +1897,120 @@ LintAnsibleFiles()
   fi
 }
 ################################################################################
+#### Function LintDockerFiles ####################################################
+LintDockerFiles()
+{
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "Linting Dockerfiles..."
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  ######################
+  # Name of the linter #
+  ######################
+  LINTER_NAME="dockerfilelint"
+  LINTER_PATH="node_modules/dockerfilelint/bin/dockerfilelint"
+
+  #########################################
+  # Validate we have shellcheck installed #
+  #########################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_PATH" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find $LINTER_NAME in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY_DOCKER[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[DOCKERFILE]"
+  elif [ ${#FILE_ARRAY_DOCKER[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY_DOCKER[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "Dockerfile" 2>&1))
+  fi
+
+  ##################
+  # Lint the files #
+  ##################
+  for FILE in "${LIST_FILES[@]}"
+  do
+
+    ####################
+    # Get the filename #
+    ####################
+    FILE_NAME=$(basename "$FILE" 2>&1)
+
+    ##############
+    # File print #
+    ##############
+    echo "---------------------------"
+    echo "File:[$FILE]"
+
+    ################################
+    # Lint the file with the rules #
+    ################################
+    LINT_CMD=$("$LINTER_PATH" "$FILE" 2>&1)
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      #########
+      # Error #
+      #########
+      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+      echo "ERROR:[$LINT_CMD]"
+      # Increment error count
+      ((ERRORS_FOUND_DOCKER++))
+    else
+      ###########
+      # Success #
+      ###########
+      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+    fi
+  done
+}
+################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars()
 {
@@ -2219,6 +2336,23 @@ GetGitHubVars()
     echo "- Excluding [JAVASCRIPT] files in code base..."
   fi
 
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_DOCKER" != "false" ]]; then
+    # Set to true
+    VALIDATE_DOCKER="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [DOCKER] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [DOCKER] files in code base..."
+  fi
+
+
   ##############################
   # Validate Ansible Directory #
   ##############################
@@ -2440,6 +2574,15 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE" == "Dockerfile" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_DOCKER+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     else
       ############################
       # Extension was not found! #
@@ -2500,6 +2643,7 @@ Footer()
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
   echo "ERRORS FOUND in JAVASCRIPT:[$ERRORS_FOUND_JAVASCRIPT]"
+  echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "----------------------------------------------"
   echo ""
 
@@ -2516,6 +2660,7 @@ Footer()
      [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
      [ $ERRORS_FOUND_JAVASCRIPT -ne 0 ] || \
+     [ $ERRORS_FOUND_DOCKER -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -2633,6 +2778,13 @@ fi
 #############################
 if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
   LintJavascriptFiles
+fi
+
+#############################
+# Lint the Dockerfiles #
+#############################
+if [ "$VALIDATE_DOCKER" == "true" ]; then
+  LintDockerFiles
 fi
 
 
