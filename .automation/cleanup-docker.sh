@@ -112,12 +112,7 @@ ValidateInput()
     ###################################
     # Remove non alpha-numberic chars #
     ###################################
-    BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -cd '[:alnum:]')
-
-    ############################################
-    # Set the IMAGE_VERSION to the BRANCH_NAME #
-    ############################################
-    IMAGE_VERSION="$BRANCH_NAME"
+    IMAGE_VERSION=$(echo "$IMAGE_VERSION" | tr -cd '[:alnum:]')
   else
     #############################################
     # Image is 'latest' and we will not destroy #
@@ -125,7 +120,7 @@ ValidateInput()
     echo "Image Tag is set to:[latest]..."
     echo "We will never destroy latest..."
     echo "Bye!"
-    exit 0
+    exit 1
   fi
 }
 ################################################################################
