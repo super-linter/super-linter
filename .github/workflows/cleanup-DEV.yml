@@ -35,9 +35,9 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-      - uses: actions/checkout@v2
-        run: |
-          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       ######################
       # Run Removal script #
