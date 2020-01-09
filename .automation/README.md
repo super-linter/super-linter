@@ -16,4 +16,4 @@ When the script is triggered in a branch, it will push with the tag:**NameOfBran
 - *testing*
 - *troubleshooting*
 - *debugging*
-- **Note:** The branch name will be reduced to AlpaNumeric for consistancy and uploading 
+- **Note:** The branch name will be reduced to AlpaNumeric for consistancy and uploading
