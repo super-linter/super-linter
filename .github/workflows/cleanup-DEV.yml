@@ -35,14 +35,12 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        if: github.event.pull_request.merged
         uses: actions/checkout@master
 
       ######################
       # Run Removal script #
       ######################
       - name: Remove old image from DockerHub
-        if: github.event.pull_request.merged
         env:
           # Set the Env Vars
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
