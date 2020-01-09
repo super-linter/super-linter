@@ -13,6 +13,7 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **XML** (LibXML)
 - **Coffeescript** (coffeelint)
 - **Javascript** (eslint)(standard)
+- **Dockerfile** (dockerfilelint)
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -120,6 +121,9 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **ANSIBLE_DIRECTORY**
   - Default: `/ansible`
   - Flag to set the root directory for Ansible file location(s)
+- **VALIDATE_DOCKER**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language  
 
 ## Docker Hub
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
