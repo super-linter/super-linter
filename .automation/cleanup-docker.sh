@@ -202,7 +202,7 @@ RemoveImage()
   TOKEN=$(curl -s -k \
     -H "Content-Type: application/json" \
     -X POST \
-    -d '{"username": "'$DOCKER_USERNAME'", "password": "'$DOCKER_PASSWORD'"}' \
+    -d "{\"username\": \"$DOCKER_USERNAME\", \"password\": \"$DOCKER_PASSWORD\"}" \
     "https://hub.docker.com/v2/users/login/" | jq -r .token 2>&1)
 
     #######################
@@ -245,7 +245,7 @@ RemoveImage()
     exit 1
   else
     # SUCCESS
-    echo "Successfully [removed] Docker image tag from DockerHub!"
+    echo "Successfully [removed] Docker image tag:[$IMAGE_VERSION] from DockerHub!"
   fi
 }
 ################################################################################

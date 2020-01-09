@@ -128,6 +128,7 @@ ValidateInput()
     # Set the IMAGE_VERSION to the BRANCH_NAME #
     ############################################
     IMAGE_VERSION="$BRANCH_NAME"
+    echo "Tag:[$IMAGE_VERSION]"
   else
     echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
   fi
