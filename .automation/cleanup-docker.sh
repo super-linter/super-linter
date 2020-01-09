@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ################################################################################
-############# Deploy Container to DockerHub @admiralawkbar #####################
+############# Cleanup Container on DockerHub @admiralawkbar ####################
 ################################################################################
 
-# NOTES: This script is used to upload a Dockerfile to DockerHub
+# NOTES: This script is used to remove a tagged image on DockerHub
 # Its based on being built from a GitHub Action, but could be easily updated
 # To be ran in a different medium.
 #
@@ -32,7 +32,7 @@ Header()
 {
   echo ""
   echo "-------------------------------------------------------"
-  echo "------ Github Actions Upload image to DockerHub -------"
+  echo "----- Github Actions remove image from DockerHub ------"
   echo "-------------------------------------------------------"
   echo ""
 }
@@ -137,18 +137,14 @@ ValidateInput()
     # Set the IMAGE_VERSION to the BRANCH_NAME #
     ############################################
     IMAGE_VERSION="$BRANCH_NAME"
-  fi
-
-
-  ############################
-  # Validate DOCKERFILE_PATH #
-  ############################
-  if [ -z "$DOCKERFILE_PATH" ]; then
-    echo "ERROR! Failed to get [DOCKERFILE_PATH]!"
-    echo "ERROR:[$DOCKERFILE_PATH]"
-    exit 1
   else
-    echo "Successfully found:[DOCKERFILE_PATH], value:[$DOCKERFILE_PATH]"
+    #############################################
+    # Image is 'latest' and we will not destroy #
+    #############################################
+    echo "Image Tag is set to:[latest]..."
+    echo "We will never destroy latest..."
+    echo "Bye!"
+    exit 0
   fi
 }
 ################################################################################
@@ -188,37 +184,54 @@ LoginToDocker()
   fi
 }
 ################################################################################
-#### Function BuildImage #######################################################
-BuildImage()
+#### Function RemoveImage ######################################################
+RemoveImage()
 {
   ################
   # Print header #
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Building the DockerFile image..."
+  echo "Removing the DockerFile image:[$IMAGE_REPO:$IMAGE_VERSION]"
   echo "----------------------------------------------"
   echo ""
 
+  #####################################
+  # Create Token to auth to DockerHub #
+  #####################################
+  TOKEN=$(curl -s -k \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{"username": "'$DOCKER_USERNAME'", "password": "'$DOCKER_PASSWORD'"}' \
+    "https://hub.docker.com/v2/users/login/" | jq -r .token 2>&1)
 
-  ################################
-  # Validate the DOCKERFILE_PATH #
-  ################################
-  if [ ! -f "$DOCKERFILE_PATH" ]; then
-    # No file found
-    echo "ERROR! failed to find Dockerfile at:[$DOCKERFILE_PATH]"
-    echo "Please make sure you give full path!"
-    echo "Example:[/configs/Dockerfile] or [Dockerfile] if at root directory"
-    exit 1
-  fi
+    #######################
+    # Load the ERROR_CODE #
+    #######################
+    ERROR_CODE=$?
 
-  ###################
-  # Build the image #
-  ###################
-  docker build --no-cache -t "$IMAGE_REPO:$IMAGE_VERSION" -f "$DOCKERFILE_PATH" . 2>&1
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      # ERROR
+      echo "ERROR! Failed to gain token from DockerHub!"
+      echo "ERROR:[$TOKEN]"
+      exit 1
+    else
+      # SUCCESS
+      echo "Successfully gained auth token from DockerHub!"
+    fi
+
+  #################################
+  # Remove the tag from DockerHub #
+  #################################
+  REMOVE_CMD=$(curl "https://hub.docker.com/v2/repositories/$IMAGE_REPO/tags/$IMAGE_VERSION/" \
+    -X DELETE \
+    -H "Authorization: JWT $TOKEN" 2>&1)
 
   #######################
-  # Load the error code #
+  # Load the ERROR_CODE #
   #######################
   ERROR_CODE=$?
 
@@ -227,88 +240,12 @@ BuildImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! failed to [build] Dockerfile!"
+    echo "ERROR! Failed to remove tag from DockerHub!"
+    echo "ERROR:[$REMOVE_CMD]"
     exit 1
   else
     # SUCCESS
-    echo "Successfully Built image!"
-    echo "Info:[$BUILD_CMD]"
-  fi
-}
-################################################################################
-#### Function UploadImage ######################################################
-UploadImage()
-{
-  ################
-  # Print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Uploading the DockerFile image..."
-  echo "----------------------------------------------"
-  echo ""
-
-  ############################################
-  # Upload the docker image that was created #
-  ############################################
-  docker push "$IMAGE_REPO:$IMAGE_VERSION" 2>&1
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # ERROR
-    echo "ERROR! failed to [upload] Dockerfile!"
-    exit 1
-  else
-    # SUCCESS
-    echo "Successfully Uploaded Docker image to DockerHub!"
-  fi
-
-  #########################
-  # Get Image information #
-  #########################
-  IFS=$'\n' # Set the delimit to newline
-  GET_INFO_CMD=$(docker images | grep "$IMAGE_REPO" | grep "$IMAGE_VERSION" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # ERROR
-    echo "ERROR! Failed to get information about built Image!"
-    echo "ERROR:[$GET_INFO_CMD]"
-    exit 1
-  else
-    ################
-    # Get the data #
-    ################
-    REPO=$(echo "$GET_INFO_CMD" | awk '{print $1}')
-    TAG=$(echo "$GET_INFO_CMD" | awk '{print $2}')
-    IMAGE_ID=$(echo "$GET_INFO_CMD" | awk '{print $3}')
-    # shellcheck disable=SC2116
-    SIZE=$(echo "${GET_INFO_CMD##* }")
-
-    ###################
-    # Print the goods #
-    ###################
-    echo "----------------------------------------------"
-    echo "Docker Image Details:"
-    echo "Repository:[$REPO]"
-    echo "Tag:[$TAG]"
-    echo "Image_ID:[$IMAGE_ID]"
-    echo "Size:[$SIZE]"
-    echo "----------------------------------------------"
+    echo "Successfully [removed] Docker image tag from DockerHub!"
   fi
 }
 ################################################################################
@@ -340,15 +277,10 @@ ValidateInput
 ######################
 LoginToDocker
 
-###################
-# Build the image #
-###################
-BuildImage
-
 ####################
-# Upload the image #
+# Remove the image #
 ####################
-UploadImage
+RemoveImage
 
 ##########
 # Footer #
