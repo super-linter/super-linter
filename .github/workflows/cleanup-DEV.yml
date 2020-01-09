@@ -16,6 +16,7 @@
 
 on:
   pull_request:
+    types: [closed]
 
 ###############
 # Set the Job #
