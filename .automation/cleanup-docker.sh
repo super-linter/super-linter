@@ -120,7 +120,7 @@ ValidateInput()
     echo "Image Tag is set to:[latest]..."
     echo "We will never destroy latest..."
     echo "Bye!"
-    exit 0
+    exit 1
   fi
 }
 ################################################################################
