@@ -18,13 +18,9 @@ Once the container has been downloaded to your local environment, you can then b
 ## Run the container Locally
 - You can run the container locally with the following **Base** flags to run your code:
   - `docker run -e RUN_LOCAL=true -v /path/to/local/codebase:/tmp/lint admiralawkbar/super-linter`
-  - **NOTE:** you need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint` so that the linter can pick up the code
+  - **NOTE:** You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint` so that the linter can pick up the code
+  - **NOTE:** The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted
 - You can add as many **Additional** flags as needed:
-  - **VALIDATE_ALL_CODEBASE**
-    - `-e VALIDATE_ALL_CODEBASE=<true|false>`
-    - Default: `true`
-    - Will parse the entire repository and find all files to validate across all types
-    - **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation
   - **VALIDATE_YAML**
     - `-e VALIDATE_YAML=<true|false>`
     - Default: `true`
