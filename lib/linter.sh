@@ -56,13 +56,16 @@ VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
+RUN_LOCAL="${RUN_LOCAL}"                          # Boolean to see if we are running locally
 
 ################
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
 DEFAULT_VALIDATE_LANGUAGE='true'                      # Default to validate language
+DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
+DEFAULT_RUN_LOCAL='false'                             # default value for debugging
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 
 ##########################
@@ -1900,75 +1903,116 @@ GetGitHubVars()
   echo "--------------------------------------------"
   echo "Gathering GitHub information..."
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ -z "$GITHUB_SHA" ]; then
-    echo "ERROR! Failed to get [GITHUB_SHA]!"
-    echo "ERROR:[$GITHUB_SHA]"
-    exit 1
-  else
-    echo "Successfully found:[GITHUB_SHA], value:[$GITHUB_SHA]"
+  ##########################
+  # Get the run local flag #
+  ##########################
+  if [ -z "$RUN_LOCAL" ]; then
+    ##################################
+    # No flag passed, set to default #
+    ##################################
+    RUN_LOCAL="$DEFAULT_RUN_LOCAL"
   fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
-    echo "ERROR:[$GITHUB_WORKSPACE]"
-    exit 1
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  RUN_LOCAL=$(echo "$RUN_LOCAL" | awk '{print tolower($0)}')
+  #################################
+  # Check if were running locally #
+  #################################
+  if [[ "$RUN_LOCAL" != "false" ]]; then
+    ##########################################
+    # We are running locally for a debug run #
+    ##########################################
+    echo "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
+    echo "bypassing GitHub Actions variables..."
+    echo "Linting all files in mapped directory:[$DEFAULT_WORKSPACE]"
+
+    # No need to touch or set the GITHUB_SHA
+    # No need to touch or set the GITHUB_EVENT_PATH
+    # No need to touch or set the GITHUB_ORG
+    # No need to touch or set the GITHUB_REPO
+
+    ############################
+    # Set the GITHUB_WORKSPACE #
+    ############################
+    GITHUB_WORKSPACE="$DEFAULT_WORKSPACE"
+
+    #################################
+    # Set the VALIDATE_ALL_CODEBASE #
+    #################################
+    VALIDATE_ALL_CODEBASE="$DEFAULT_VALIDATE_ALL_CODEBASE"
   else
-    echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
-  fi
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_SHA" ]; then
+      echo "ERROR! Failed to get [GITHUB_SHA]!"
+      echo "ERROR:[$GITHUB_SHA]"
+      exit 1
+    else
+      echo "Successfully found:[GITHUB_SHA], value:[$GITHUB_SHA]"
+    fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ -z "$GITHUB_EVENT_PATH" ]; then
-    echo "ERROR! Failed to get [GITHUB_EVENT_PATH]!"
-    echo "ERROR:[$GITHUB_EVENT_PATH]"
-    exit 1
-  else
-    echo "Successfully found:[GITHUB_EVENT_PATH], value:[$GITHUB_EVENT_PATH]"
-  fi
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_WORKSPACE" ]; then
+      echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
+      echo "ERROR:[$GITHUB_WORKSPACE]"
+      exit 1
+    else
+      echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
+    fi
 
-  ##################################################
-  # Need to pull the GitHub Vars from the env file #
-  ##################################################
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_EVENT_PATH" ]; then
+      echo "ERROR! Failed to get [GITHUB_EVENT_PATH]!"
+      echo "ERROR:[$GITHUB_EVENT_PATH]"
+      exit 1
+    else
+      echo "Successfully found:[GITHUB_EVENT_PATH], value:[$GITHUB_EVENT_PATH]"
+    fi
 
-  ######################
-  # Get the GitHub Org #
-  ######################
-  # shellcheck disable=SC2002
-  GITHUB_ORG=$(cat "$GITHUB_EVENT_PATH" | jq -r '.repository.owner.login' )
+    ##################################################
+    # Need to pull the GitHub Vars from the env file #
+    ##################################################
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ -z "$GITHUB_ORG" ]; then
-    echo "ERROR! Failed to get [GITHUB_ORG]!"
-    echo "ERROR:[$GITHUB_ORG]"
-    exit 1
-  else
-    echo "Successfully found:[GITHUB_ORG], value:[$GITHUB_ORG]"
-  fi
+    ######################
+    # Get the GitHub Org #
+    ######################
+    # shellcheck disable=SC2002
+    GITHUB_ORG=$(cat "$GITHUB_EVENT_PATH" | jq -r '.repository.owner.login' )
 
-  #######################
-  # Get the GitHub Repo #
-  #######################
-  # shellcheck disable=SC2002
-  GITHUB_REPO=$(cat "$GITHUB_EVENT_PATH"| jq -r '.repository.name' )
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_ORG" ]; then
+      echo "ERROR! Failed to get [GITHUB_ORG]!"
+      echo "ERROR:[$GITHUB_ORG]"
+      exit 1
+    else
+      echo "Successfully found:[GITHUB_ORG], value:[$GITHUB_ORG]"
+    fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ -z "$GITHUB_REPO" ]; then
-    echo "ERROR! Failed to get [GITHUB_REPO]!"
-    echo "ERROR:[$GITHUB_REPO]"
-    exit 1
-  else
-    echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
+    #######################
+    # Get the GitHub Repo #
+    #######################
+    # shellcheck disable=SC2002
+    GITHUB_REPO=$(cat "$GITHUB_EVENT_PATH"| jq -r '.repository.name' )
+
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_REPO" ]; then
+      echo "ERROR! Failed to get [GITHUB_REPO]!"
+      echo "ERROR:[$GITHUB_REPO]"
+      exit 1
+    else
+      echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
+    fi
   fi
 
   ############################################
@@ -1978,20 +2022,25 @@ GetGitHubVars()
   echo "--------------------------------------------"
   echo "Gathering User provided information..."
 
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_ALL_CODEBASE=$(echo "$VALIDATE_ALL_CODEBASE" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_ALL_CODEBASE" != "false" ]]; then
-    # Set to true
-    VALIDATE_ALL_CODEBASE="$DEFAULT_VALIDATE_ALL_CODEBASE"
-    echo "- Validating ALL files in code base..."
-  else
-    # Its false
-    echo "- Only validating [new], or [edited] files in code base..."
+  ###########################################
+  # Skip validation if were running locally #
+  ###########################################
+  if [[ "$RUN_LOCAL" != "true" ]]; then
+    ###############################
+    # Convert string to lowercase #
+    ###############################
+    VALIDATE_ALL_CODEBASE=$(echo "$VALIDATE_ALL_CODEBASE" | awk '{print tolower($0)}')
+    ######################################
+    # Validate we should check all files #
+    ######################################
+    if [[ "$VALIDATE_ALL_CODEBASE" != "false" ]]; then
+      # Set to true
+      VALIDATE_ALL_CODEBASE="$DEFAULT_VALIDATE_ALL_CODEBASE"
+      echo "- Validating ALL files in code base..."
+    else
+      # Its false
+      echo "- Only validating [new], or [edited] files in code base..."
+    fi
   fi
 
   ###############################
