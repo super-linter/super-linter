@@ -20,7 +20,7 @@ GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # Github Workspace
 DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
 DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
+IMAGE_VERSION="${GITHUB_SHA}"           # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
 
 ################################################################################

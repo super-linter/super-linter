@@ -98,17 +98,8 @@ ValidateInput()
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "$IMAGE_VERSION" ]; then
-    echo "ERROR! Failed to get [IMAGE_VERSION]!"
-    echo "ERROR:[$IMAGE_VERSION]"
-    exit 1
-  else
-    echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
-  fi
-
-  ##################################################
-  # Check if we need to get the name of the branch #
-  ##################################################
-  if [[ "$IMAGE_VERSION" != "latest" ]]; then
+    echo "WARN! Failed to get [IMAGE_VERSION]!"
+    echo "Pulling from Branch Name..."
     ##############################
     # Get the name of the branch #
     ##############################
@@ -137,8 +128,9 @@ ValidateInput()
     # Set the IMAGE_VERSION to the BRANCH_NAME #
     ############################################
     IMAGE_VERSION="$BRANCH_NAME"
+  else
+    echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
   fi
-
 
   ############################
   # Validate DOCKERFILE_PATH #

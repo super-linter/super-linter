@@ -47,6 +47,5 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_REPO: admiralawkbar/super-linter
-          IMAGE_VERSION: ${{ GITHUB_SHA }}
         shell: bash
         run: .automation/cleanup-docker.sh
