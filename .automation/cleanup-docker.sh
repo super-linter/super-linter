@@ -20,7 +20,7 @@ GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # Github Workspace
 DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
 DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
-IMAGE_VERSION="${GITHUB_SHA}"           # Version to tag the image
+IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
 
 ################################################################################
@@ -109,25 +109,6 @@ ValidateInput()
   # Check if we need to get the name of the branch #
   ##################################################
   if [[ "$IMAGE_VERSION" != "latest" ]]; then
-    ##############################
-    # Get the name of the branch #
-    ##############################
-    BRANCH_NAME=$(git branch --contains "$GITHUB_SHA" |awk '{print $2}' 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to get branch name!"
-      echo "ERROR:[$BRANCH_NAME]"
-      exit 1
-    fi
-
     ###################################
     # Remove non alpha-numberic chars #
     ###################################

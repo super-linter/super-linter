@@ -36,8 +36,6 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       ######################
       # Run Removal script #
@@ -48,5 +46,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_REPO: admiralawkbar/super-linter
+          IMAGE_VERSION: ${{ github.event.pull_request.head.ref }}
         shell: bash
         run: .automation/cleanup-docker.sh
