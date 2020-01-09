@@ -36,6 +36,7 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2
+        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
       ######################
       # Run Removal script #
