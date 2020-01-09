@@ -1,8 +1,6 @@
 # Super-Linter
-
 This repository is for the **GitHub** Action to run a **Super-Linter**.  
 Developers on **GitHub** can call this Action to lint their code base with the following list of linters:
-
 
 - **Ruby** (Rubocop)
 - **Shell** (Shellcheck)
@@ -17,7 +15,6 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **Javascript** (eslint)(standard)
 
 ## How to use
-
 To use this **GitHub** Action you will need to complete the following:
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/`
   - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
@@ -25,7 +22,6 @@ To use this **GitHub** Action you will need to complete the following:
 - Enjoy your more stable, and cleaner code base
 
 ### Example connecting GitHub Action Workflow
-
 In your repository you should have a `workflows` folder with **GitHub** Action similar to below:
 
 - `.github/workflows/linter.yml`
@@ -81,6 +77,7 @@ jobs:
           VALIDATE_ANSIBLE: false
 ...
 ```
+
 ## Env Vars
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality:
 - **VALIDATE_ALL_CODEBASE**
@@ -123,16 +120,17 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **ANSIBLE_DIRECTORY**
   - Default: `/ansible`
   - Flag to set the root directory for Ansible file location(s)
-## Docker Hub
 
+## Docker Hub
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
 
-## How to contribute
+## Running Super-Linter locally (troubleshooting/debugging/enhancements)
+If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/.github/run-linter-locally.md)
 
+## How to contribute
 If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
 
 --------------------------------------------------------------------------------
 
 ### License
-
 - [License](https://github.com/github/super-linter/blob/master/LICENSE)
