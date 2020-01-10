@@ -29,7 +29,11 @@ JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name o
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
-ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the coffescript lint rules
+ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the Ansible lint rules
+
+# Docker Vars
+DOCKER_FILE_NAME='.dockerfilelintrc'                                # Name of the file
+DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to the Docker lint rules
 
 #######################################
 # Linter array for information prints #
@@ -185,9 +189,9 @@ GetLinterRules()
   echo "Gathering Linter rules from repository, or defaulting..."
   echo ""
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  #########################################
+  # YML Validate we have the linter rules #
+  #########################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" ]; then
     echo "User provided file:[$YAML_FILE_NAME], setting rules file..."
 
@@ -213,9 +217,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$YAML_FILE_NAME], using Default rules at:[$YAML_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  ##############################################
+  # MarkDown Validate we have the linter rules #
+  ##############################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" ]; then
     echo "User provided file:[$MD_FILE_NAME], setting rules file..."
 
@@ -241,9 +245,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$MD_FILE_NAME], using Default rules at:[$MD_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  ############################################
+  # Python Validate we have the linter rules #
+  ############################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" ]; then
     echo "User provided file:[$PYTHON_FILE_NAME], setting rules file..."
 
@@ -269,9 +273,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$PYTHON_FILE_NAME], using Default rules at:[$PYTHON_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  ##########################################
+  # Ruby Validate we have the linter rules #
+  ##########################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" ]; then
     echo "User provided file:[$RUBY_FILE_NAME], setting rules file..."
 
@@ -297,9 +301,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$RUBY_FILE_NAME], using Default rules at:[$RUBY_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  ##################################################
+  # Coffeescript Validate we have the linter rules #
+  ##################################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" ]; then
     echo "User provided file:[$COFFEE_FILE_NAME], setting rules file..."
 
@@ -325,9 +329,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$COFFEE_FILE_NAME], using Default rules at:[$COFFEE_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  #############################################
+  # Ansible Validate we have the linter rules #
+  #############################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" ]; then
     echo "User provided file:[$ANSIBLE_FILE_NAME], setting rules file..."
 
@@ -353,9 +357,9 @@ GetLinterRules()
     echo "Codebase does not have file:[.github/linters/$ANSIBLE_FILE_NAME], using Default rules at:[$ANSIBLE_LINTER_RULES]"
   fi
 
-  #####################################
-  # Validate we have the linter rules #
-  #####################################
+  ################################################
+  # Javascript Validate we have the linter rules #
+  ################################################
   if [ -f "$GITHUB_WORKSPACE/.github/linters/$JAVASCRIPT_FILE_NAME" ]; then
     echo "User provided file:[$JAVASCRIPT_FILE_NAME], setting rules file..."
 
@@ -379,6 +383,34 @@ GetLinterRules()
     fi
   else
     echo "Codebase does not have file:[.github/linters/$JAVASCRIPT_FILE_NAME], using Default rules at:[$JAVASCRIPT_LINTER_RULES]"
+  fi
+
+  ############################################
+  # Docker Validate we have the linter rules #
+  ############################################
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$DOCKER_FILE_NAME" ]; then
+    echo "User provided file:[$DOCKER_FILE_NAME], setting rules file..."
+
+    ####################################
+    # Move users into default location #
+    ####################################
+    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES" 2>&1)
+
+    ###################
+    # Load Error code #
+    ###################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      echo "ERROR! Failed to set file:[$DOCKER_FILE_NAME] as default!"
+      echo "ERROR:[$MV_CMD]"
+      exit 1
+    fi
+  else
+    echo "Codebase does not have file:[.github/linters/$DOCKER_FILE_NAME], using Default rules at:[$DOCKER_LINTER_RULES]"
   fi
 }
 ################################################################################
@@ -1897,7 +1929,7 @@ LintAnsibleFiles()
   fi
 }
 ################################################################################
-#### Function LintDockerFiles ####################################################
+#### Function LintDockerFiles ##################################################
 LintDockerFiles()
 {
   ################
