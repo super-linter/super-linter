@@ -1915,7 +1915,7 @@ LintDockerFiles()
   # Name of the linter #
   ######################
   LINTER_NAME="dockerfilelint"
-  LINTER_PATH="node_modules/dockerfilelint/bin/dockerfilelint"
+  LINTER_PATH="/node_modules/dockerfilelint/bin/dockerfilelint"
 
   #########################################
   # Validate we have shellcheck installed #
@@ -1962,6 +1962,7 @@ LintDockerFiles()
     #################################
     # shellcheck disable=SC2207
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "Dockerfile" 2>&1))
+    echo "testing $LIST_FILES"
   fi
 
   ##################
@@ -1984,7 +1985,7 @@ LintDockerFiles()
     ################################
     # Lint the file with the rules #
     ################################
-    LINT_CMD=$("$LINTER_PATH" "$FILE" 2>&1)
+    LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; "$LINTER_PATH" "$FILE" 2>&1)
 
     #######################
     # Load the error code #
