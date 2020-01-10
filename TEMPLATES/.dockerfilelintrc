@@ -49,12 +49,12 @@ rules:
   # commands on the same line to reduce image size
   apt-get-update_require_install: on
 
-  # Consider using a \`--no-cache\` (supported in alpine linux >= 3.3) or
-  # \`--update\` followed by the command \`rm -rf /var/cache/apk/*\`
-  # when \`apk\` adding packages.  This will result in a smaller image size
+  # Consider using a `--no-cache` (supported in alpine linux >= 3.3) or
+  # `--update` followed by the command `rm -rf /var/cache/apk/*`
+  # when `apk` adding packages.  This will result in a smaller image size
   apkadd-missing_nocache_or_updaterm: on
 
-  # Consider using a \`--virtual\` or \`-t\` switch to group multiple packages
+  # Consider using a `--virtual` or `-t` switch to group multiple packages
   # for easy cleanup.  This will help ensure future authors will continue
   # to clean up build dependencies and other temporary packages
   apkadd-missing-virtual: on
