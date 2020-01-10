@@ -9,6 +9,8 @@
 # Default is 'on' for all rules #
 #  You can disable as needed.   #
 #################################
+# Additional Info can be found at:
+# https://github.com/replicatedhq/dockerfilelint
 
 # Set the rules
 rules:
