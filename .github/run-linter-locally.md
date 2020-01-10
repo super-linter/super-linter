@@ -66,6 +66,10 @@ Once the container has been downloaded to your local environment, you can then b
     - `-e VALIDATE_JAVASCRIPT=<true|false>`
     - Default: `true`
     - Flag to enable or disable the linting process of the language
+  - **VALIDATE_DOCKER**
+    - `-e VALIDATE_DOCKER=<true|false>`
+    - Default: `true`
+    - Flag to enable or disable the linting process of the language
   - **ANSIBLE_DIRECTORY**
     - `-e ANSIBLE_DIRECTORY=</path/local/to/codebase/with/ansible>`
     - Default: `/ansible`

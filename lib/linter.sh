@@ -56,7 +56,7 @@ VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"      # Boolean to validate language
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
 RUN_LOCAL="${RUN_LOCAL}"                          # Boolean to see if we are running locally
 
 ################
@@ -82,7 +82,7 @@ FILE_ARRAY_RUBY=()        # Array of files to check
 FILE_ARRAY_PYTHON=()      # Array of files to check
 FILE_ARRAY_COFFEE=()      # Array of files to check
 FILE_ARRAY_JAVASCRIPT=()  # Array of files to check
-FILE_ARRAY_DOCKER=()  # Array of files to check
+FILE_ARRAY_DOCKER=()      # Array of files to check
 
 ############
 # Counters #
