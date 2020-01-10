@@ -1962,7 +1962,6 @@ LintDockerFiles()
     #################################
     # shellcheck disable=SC2207
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "Dockerfile" 2>&1))
-    echo "testing $LIST_FILES"
   fi
 
   ##################
