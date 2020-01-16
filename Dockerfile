@@ -4,35 +4,43 @@
 ###########################################
 ###########################################
 
-##################
-# Get base image #
-##################
-FROM python:alpine
+################################################################################
+######################## PYTHON INTERMEDIATE CONTAINER #########################
+################################################################################
 
-#########################################
-# Label the instance and set maintainer #
-#########################################
-LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your code base with Github Actions" \
-      com.github.actions.icon="code" \
-      com.github.actions.color="red" \
-      maintainer="GitHub DevOps <github_devops@github.com>"
-
-####################
-# Run APK installs #
-####################
-RUN apk add --no-cache \
-    bash git musl-dev curl gcc jq \
-    npm nodejs \
-    libxml2-utils perl \
-    ruby ruby-dev ruby-bundler ruby-rdoc make\
-    py3-setuptools ansible-lint
+#####################################
+# Get base image for pyton and pip3 #
+#####################################
+FROM python:alpine as python-builder
 
 #####################
 # Run Pip3 Installs #
 #####################
 RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
     yamllint pylint yq
+
+################################################################################
+######################## RUBY INTERMEDIATE CONTAINER ###########################
+################################################################################
+
+####################################
+# Get base image for ruby and gems #
+####################################
+FROM ruby:2.6.5-alpine as ruby-builder
+
+####################
+# Run GEM installs #
+####################
+RUN gem install rubocop rubocop-rails
+
+################################################################################
+######################## NODEJS INTERMEDIATE CONTAINER #########################
+################################################################################
+
+#####################################
+# Get base image for nodejs and npm #
+#####################################
+FROM node:apline as node-builder
 
 ####################
 # Run NPM Installs #
@@ -59,12 +67,27 @@ RUN npm -g --no-cache install \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser
 
- # I think we could fix this with path but not sure the language...
- # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
+    # I think we could fix this with path but not sure the language...
+    # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
+
+################################################################################
+############################ BASE APP CONTAINER ################################
+################################################################################
+
+#####################################
+# Get base image for nodejs and npm #
+#####################################
+FROM python:apline
+
 ####################
-# Run GEM installs #
+# Run APK installs #
 ####################
-RUN gem install rubocop rubocop-rails
+RUN apk add --no-cache \
+    bash git musl-dev curl gcc jq \
+    npm nodejs \
+    libxml2-utils perl \
+    ruby ruby-dev ruby-bundler ruby-rdoc make \
+    py3-setuptools ansible-lint
 
 ######################
 # Install shellcheck #
@@ -103,10 +126,30 @@ COPY lib /action/lib
 ##################################
 COPY TEMPLATES /action/lib/.automation
 
+#####################################################
+# Copy PYTHON-BUILDER Libraries into base container #
+#####################################################
+
+###################################################
+# Copy RUBY-BUILDER Libraries into base container #
+###################################################
+
+#####################################################
+# Copy NODEJS-BUILDER Libraries into base container #
+#####################################################
+
+#########################################
+# Label the instance and set maintainer #
+#########################################
+LABEL com.github.actions.name="GitHub Super-Linter" \
+      com.github.actions.description="Lint your code base with Github Actions" \
+      com.github.actions.icon="code" \
+      com.github.actions.color="red" \
+      maintainer="GitHub DevOps <github_devops@github.com>"
+
 ######################
 # Set the entrypoint #
 ######################
-#RUN find / -name node_modules
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 #CMD tail -f /dev/null
