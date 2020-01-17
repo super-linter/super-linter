@@ -19,8 +19,8 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 To use this **GitHub** Action you will need to complete the following:
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/`
   - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
-- Add the **Github** Action: **Super-Linter** to your current **GitHub** Actions workflow
-- Enjoy your more stable, and cleaner code base
+- Add the **GitHub** Action: **Super-Linter** to your current **GitHub** Actions workflow
+- Enjoy your more *stable*, and *cleaner* code base
 
 ### Example connecting GitHub Action Workflow
 In your repository you should have a `workflows` folder with **GitHub** Action similar to below:
