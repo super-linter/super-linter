@@ -29,6 +29,12 @@ RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
 FROM ruby:2.6.5-alpine as ruby-builder
 
 ####################
+# Run APK installs #
+####################
+RUN apk add --no-cache \
+    make gcc musl-dev
+
+####################
 # Run GEM installs #
 ####################
 RUN gem install rubocop rubocop-rails
@@ -40,7 +46,7 @@ RUN gem install rubocop rubocop-rails
 #####################################
 # Get base image for nodejs and npm #
 #####################################
-FROM node:apline as node-builder
+FROM node:alpine as node-builder
 
 ####################
 # Run NPM Installs #
@@ -77,16 +83,16 @@ RUN npm -g --no-cache install \
 #####################################
 # Get base image for nodejs and npm #
 #####################################
-FROM python:apline
+FROM python:alpine
 
 ####################
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash git musl-dev curl gcc jq \
+    bash git curl jq \
     npm nodejs \
     libxml2-utils perl \
-    ruby ruby-dev ruby-bundler ruby-rdoc make \
+    ruby ruby-bundler \
     py3-setuptools ansible-lint
 
 ######################
@@ -129,14 +135,24 @@ COPY TEMPLATES /action/lib/.automation
 #####################################################
 # Copy PYTHON-BUILDER Libraries into base container #
 #####################################################
+# COPY --from=intermediate_container /intermediate/container/path /local/container/path
+COPY --from=python-builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
+COPY --from=python-builder /usr/local/bin /usr/local/bin
 
 ###################################################
 # Copy RUBY-BUILDER Libraries into base container #
 ###################################################
+# COPY --from=intermediate_container /intermediate/container/path /local/container/path
+COPY --from=ruby-builder /usr/local/lib/ruby/gems/2.6.0 /usr/lib/ruby/gems/2.6.0
+COPY --from=ruby-builder  /usr/local/bin /usr/local/bin
 
 #####################################################
 # Copy NODEJS-BUILDER Libraries into base container #
 #####################################################
+# COPY --from=intermediate_container /intermediate/container/path /local/container/path
+COPY --from=node-builder /node_modules /node_modules
+COPY --from=node-builder /usr/local/lib/node_modules /usr/lib/node_modules
+COPY --from=node-builder  /usr/local/bin /usr/local/bin
 
 #########################################
 # Label the instance and set maintainer #
