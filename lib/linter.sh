@@ -592,7 +592,7 @@ LintYmlFiles()
     ################################
     # Lint the file with the rules #
     ################################
-    LINT_CMD=$("$LINTER_NAME" "$YAML_LINTER_RULES" "$FILE" 2>&1)
+    LINT_CMD=$("$LINTER_NAME" -c "$YAML_LINTER_RULES" "$FILE" 2>&1)
 
     #######################
     # Load the error code #
