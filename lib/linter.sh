@@ -157,7 +157,7 @@ GetLinterVersions()
     ##############################
     # Check the shell for errors #
     ##############################
-    if [ $ERROR_CODE -ne 0 ] | [ -z $GET_VERSION_CMD ]; then
+    if [ $ERROR_CODE -ne 0 ] | [ -z "${GET_VERSION_CMD[*]}" ]; then
       echo "WARN! Failed to get version info for:[$LINTER]"
       echo "---------------------------------------------"
     else
