@@ -639,7 +639,7 @@ LintXmlFiles()
   LINTER_NAME="xmllint"
 
   #######################################
-  # Validate we have yamllint installed #
+  # Validate we have xmllint installed #
   #######################################
   # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
@@ -758,9 +758,9 @@ LintMdFiles()
   ######################
   LINTER_NAME="markdownlint"
 
-  #######################################
-  # Validate we have yamllint installed #
-  #######################################
+  ###########################################
+  # Validate we have markdownlint installed #
+  ###########################################
   # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
