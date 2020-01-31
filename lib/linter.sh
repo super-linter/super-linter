@@ -157,7 +157,7 @@ GetLinterVersions()
     ##############################
     # Check the shell for errors #
     ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
+    if [ $ERROR_CODE -ne 0 ] | [ -z "$GET_VERSION_CMD" ]; then
       echo "WARN! Failed to get version info for:[$LINTER]"
       echo "---------------------------------------------"
     else
@@ -399,7 +399,7 @@ LintJsonFiles()
   LINTER_NAME="jsonlint"
 
   #######################################
-  # Validate we have yamllint installed #
+  # Validate we have jsonlint installed #
   #######################################
   # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
