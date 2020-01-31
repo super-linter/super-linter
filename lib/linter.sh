@@ -39,7 +39,7 @@ DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to th
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint" "node_modules/dockerfilelint/bin/dockerfilelint")
+  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint" "/dockerfilelint/bin/dockerfilelint")
 
 ###################
 # GitHub ENV Vars #
@@ -1947,7 +1947,7 @@ LintDockerFiles()
   # Name of the linter #
   ######################
   LINTER_NAME="dockerfilelint"
-  LINTER_PATH="/node_modules/dockerfilelint/bin/dockerfilelint"
+  LINTER_PATH="/dockerfilelint/bin/dockerfilelint"
 
   #########################################
   # Validate we have shellcheck installed #
