@@ -575,14 +575,6 @@ LintYmlFiles()
     #####################
     FILE_NAME=$(basename "$FILE" 2>&1)
 
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
     ##############
     # File print #
     ##############
@@ -2492,7 +2484,7 @@ Footer()
   echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
   echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
   echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
-  echo "ERRORS FOUND IN MD:[$ERRORS_FOUND_MD]"
+  echo "ERRORS FOUND in MD:[$ERRORS_FOUND_MD]"
   echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
   echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
   echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
