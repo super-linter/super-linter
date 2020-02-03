@@ -1,0 +1,104 @@
+---
+###########################
+###########################
+## Dockerfile Lint rules ##
+###########################
+###########################
+
+#################################
+# Default is 'on' for all rules #
+#  You can disable as needed.   #
+#################################
+# Additional Info can be found at:
+# https://github.com/replicatedhq/dockerfilelint
+
+# Set the rules
+rules:
+  # All commands in a Dockerfile require at least 1 argument
+  required_params: on
+
+  # For clarity and readability, all instructions in
+  # a Dockerfile should be uppercase
+  uppercase_commands: on
+
+  # The first instruction in a Dockerfile must specify
+  # the base image using a FROM
+  from_first: on
+
+  # This line is not a valid Dockerfile line
+  invalid_line: on
+
+  # Use of sudo is not allowed in a Dockerfile
+  sudo_usage: on
+
+  # Consider using a `--no-install-recommends` when `apt-get`
+  # installing packages
+  apt-get_missing_param: on
+
+  # Consider using a `--no-install-recommends` when `apt-get`
+  # installing packages
+  apt-get_recommends: on
+
+  # Use of `apt-get upgrade` is not allowed in a Dockerfile
+  apt-get-upgrade: on
+
+  # Use of `apt-get dist-upgrade` is not allowed in a Dockerfile
+  apt-get-dist-upgrade: on
+
+  # All instances of `apt-get update` should have the `apt-get install`
+  # commands on the same line to reduce image size
+  apt-get-update_require_install: on
+
+  # Consider using a `--no-cache` (supported in alpine linux >= 3.3) or
+  # `--update` followed by the command `rm -rf /var/cache/apk/*`
+  # when `apk` adding packages.  This will result in a smaller image size
+  apkadd-missing_nocache_or_updaterm: on
+
+  # Consider using a `--virtual` or `-t` switch to group multiple packages
+  # for easy cleanup.  This will help ensure future authors will continue
+  # to clean up build dependencies and other temporary packages
+  apkadd-missing-virtual: on
+
+  # Exposing ports should only be valid port numbers
+  invalid_port: on
+
+  # Only valid commands are allowed in a Dockerfile
+  invalid_command: on
+
+  # Expose Only Container Port
+  expose_host_port: on
+
+  # Using LABEL should be in key=value format
+  label_invalid: on
+
+  # Base images should specify a tag to use
+  missing_tag: on
+
+  # Base images should not use the latest tag
+  latest_tag: on
+
+  # This command has extra arguments and will be ignored
+  extra_args: on
+
+  # This command requires additional arguments
+  missing_args: on
+
+  # All files referenced in an ADD command should
+  # be part of the Docker build context
+  add_src_invalid: on
+
+  # When adding multiple files, the destination should be a directory
+  add_dest_invalid: on
+
+  # Using a WORKDIR parameter that has spaces should be escaped
+  invalid_workdir: on
+
+  # The arguments to this command are invalid
+  invalid_format: on
+
+  # Use of apt-get update should be paired with
+  # rm -rf /var/lib/apt/lists/* in the same layer
+  apt-get_missing_rm: on
+
+  # This INSTRUCTION is deprecated as of Docker 1.13
+  deprecated_in_1.13: on

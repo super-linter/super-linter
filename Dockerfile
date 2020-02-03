@@ -59,6 +59,12 @@ RUN npm -g --no-cache install \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser
 
+####################################
+# Install dockerfilelint from repo #
+####################################
+
+RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfilelint && npm install
+
  # I think we could fix this with path but not sure the language...
  # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
 ####################
@@ -89,6 +95,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
+    VALIDATE_DOCKER=${VALIDATE_DOCKER} \
     VALIDATE_JAVASCRIPT=${VALIDATE_JAVASCRIPT} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL}
@@ -106,7 +113,4 @@ COPY TEMPLATES /action/lib/.automation
 ######################
 # Set the entrypoint #
 ######################
-#RUN find / -name node_modules
 ENTRYPOINT ["/action/lib/linter.sh"]
-
-#CMD tail -f /dev/null

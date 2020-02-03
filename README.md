@@ -13,12 +13,13 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **XML** (LibXML)
 - **Coffeescript** (coffeelint)
 - **Javascript** (eslint)(standard)
+- **Dockerfile** (dockerfilelint)
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/`
   - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
-- Add the **Github** Action: **Super-Linter** to your current **Github** Actions workflow
+- Add the **GitHub** Action: **Super-Linter** to your current **GitHub** Actions workflow
 - Enjoy your more *stable*, and *cleaner* code base
 
 ### Example connecting GitHub Action Workflow
@@ -120,6 +121,9 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **ANSIBLE_DIRECTORY**
   - Default: `/ansible`
   - Flag to set the root directory for Ansible file location(s)
+- **VALIDATE_DOCKER**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language  
 
 ## Docker Hub
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
@@ -128,7 +132,7 @@ The **Docker** container that is built from this repository is located at `https
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/.github/run-linter-locally.md)
 
 ## How to contribute
-If you would like to help contribute to this **Github** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
 
 --------------------------------------------------------------------------------
 
