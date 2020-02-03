@@ -64,8 +64,12 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
-RUN_LOCAL="${RUN_LOCAL}"                          # Boolean to see if we are running locally
-VERBOSE_OUTPUT="${VERBOSE_OUTPUT}"                # Boolean to see even more info (debug)
+
+##############
+# Debug Vars #
+##############
+RUN_LOCAL="${RUN_LOCAL}"              # Boolean to see if we are running locally
+VERBOSE_OUTPUT="${VERBOSE_OUTPUT}"    # Boolean to see even more info (debug)
 
 ################
 # Default Vars #
@@ -100,14 +104,15 @@ FILE_ARRAY_DOCKER=()      # Array of files to check
 ERRORS_FOUND_YML=0          # Count of errors found
 ERRORS_FOUND_JSON=0         # Count of errors found
 ERRORS_FOUND_XML=0          # Count of errors found
-ERRORS_FOUND_MD=0           # Count of errors found
+ERRORS_FOUND_MARKDOWN=0     # Count of errors found
 ERRORS_FOUND_BASH=0         # Count of errors found
 ERRORS_FOUND_PERL=0         # Count of errors found
 ERRORS_FOUND_RUBY=0         # Count of errors found
 ERRORS_FOUND_PYTHON=0       # Count of errors found
 ERRORS_FOUND_COFFEE=0       # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
-ERRORS_FOUND_JAVASCRIPT=0   # Count of errors found
+ERRORS_FOUND_STANDARD=0     # Count of errors found
+ERRORS_FOUND_ESLINT=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0       # Count of errors found
 
 ################################################################################
@@ -126,14 +131,6 @@ Header()
   echo "The Super-Linter source code can be found at:"
   echo " - https://github.com/github/super-linter"
   echo "---------------------------------------------"
-
-  # echo "--- DEBUG ---"
-  # echo "---------------------------------------------"
-  # RUNNER=$(whoami)
-  # echo "Runner:[$RUNNER]"
-  # echo "ENV:"
-  # printenv
-  # echo "---------------------------------------------"
 }
 ################################################################################
 #### Function GetLinterVersions ################################################
@@ -309,7 +306,7 @@ LintAnsibleFiles()
   echo ""
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo "Linting Ansible files..."
+  echo "Linting [Ansible] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
@@ -821,6 +818,19 @@ GetGitHubVars()
   # Convert string to lowercase #
   ###############################
   VERBOSE_OUTPUT=$(echo "$VERBOSE_OUTPUT" | awk '{print tolower($0)}')
+
+  ###################
+  # Debug on runner #
+  ###################
+  if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+    echo "--- DEBUG ---"
+    echo "---------------------------------------------"
+    RUNNER=$(whoami)
+    echo "Runner:[$RUNNER]"
+    echo "ENV:"
+    printenv
+    echo "---------------------------------------------"
+  fi
 }
 ################################################################################
 #### Function BuildFileList ####################################################
@@ -1084,7 +1094,6 @@ LintCodebase()
   LINTER_NAME="$1" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
   LINTER_COMMAND="$1" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="$1" && shift # Pull the variable and remove from array path  (Example: *.json)
-  ERROR_COUNTER="$1" && shift   # Pull the variable and remove from array path  (Example: $ERRORS_FOUND_JSON)
   FILE_ARRAY=("$@")             # Array of files to validate                    (Example: $FILE_ARRAY_JSON)
 
   ################
@@ -1093,7 +1102,7 @@ LintCodebase()
   echo ""
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo "Linting $FILE_TYPE files..."
+  echo "Linting [$FILE_TYPE] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
@@ -1141,8 +1150,8 @@ LintCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "$FILE_EXTENSIONS" 2>&1))
+    # shellcheck disable=SC2207,SC2086
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
   fi
 
   ##################
@@ -1172,7 +1181,7 @@ LintCodebase()
     ################################
     # Lint the file with the rules #
     ################################
-    LINT_CMD=$("$LINTER_COMMAND" "$FILE" 2>&1)
+    LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
 
     #######################
     # Load the error code #
@@ -1189,7 +1198,7 @@ LintCodebase()
       echo "ERROR! Found errors in [$LINTER_NAME] linter!"
       echo "ERROR:[$LINT_CMD]"
       # Increment the error count
-      ((ERROR_COUNTER++))
+      (("ERRORS_FOUND_$FILE_TYPE++"))
     else
       ###########
       # Success #
@@ -1211,14 +1220,15 @@ Footer()
   echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
   echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
   echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
-  echo "ERRORS FOUND in MD:[$ERRORS_FOUND_MD]"
+  echo "ERRORS FOUND in MARKDOWN:[$ERRORS_FOUND_MARKDOWN]"
   echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
   echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
   echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
   echo "ERRORS FOUND in COFFEE:[$ERRORS_FOUND_COFFEE]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
-  echo "ERRORS FOUND in JAVASCRIPT:[$ERRORS_FOUND_JAVASCRIPT]"
+  echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_ESLINT]"
+  echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_STANDARD]"
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "----------------------------------------------"
   echo ""
@@ -1229,13 +1239,14 @@ Footer()
   if [ $ERRORS_FOUND_YML -ne 0 ] || \
      [ $ERRORS_FOUND_JSON -ne 0 ] || \
      [ $ERRORS_FOUND_XML -ne 0 ] || \
-     [ $ERRORS_FOUND_MD -ne 0 ] || \
+     [ $ERRORS_FOUND_MARKDOWN -ne 0 ] || \
      [ $ERRORS_FOUND_BASH -ne 0 ] || \
      [ $ERRORS_FOUND_PERL -ne 0 ] || \
      [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
      [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
-     [ $ERRORS_FOUND_JAVASCRIPT -ne 0 ] || \
+     [ $ERRORS_FOUND_ESLINT -ne 0 ] || \
+     [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
      [ $ERRORS_FOUND_DOCKER -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
@@ -1309,8 +1320,8 @@ if [ "$VALIDATE_YAML" == "true" ]; then
   ######################
   # Lint the Yml Files #
   ######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" "'*.yml' -or -name '*.yaml'" "$ERRORS_FOUND_YML" "${FILE_ARRAY_YML[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "${FILE_ARRAY_YML[@]}"
 fi
 
 ################
@@ -1320,8 +1331,8 @@ if [ "$VALIDATE_JSON" == "true" ]; then
   #######################
   # Lint the json files #
   #######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "JSON" "jsonlint" "jsonlint" "'*.json'" "$ERRORS_FOUND_JSON" "${FILE_ARRAY_JSON[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "${FILE_ARRAY_JSON[@]}"
 fi
 
 ###############
@@ -1331,8 +1342,8 @@ if [ "$VALIDATE_XML" == "true" ]; then
   ######################
   # Lint the XML Files #
   ######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "XML" "xmllint" "xmllint" "'*.xml'" "$ERRORS_FOUND_XML" "${FILE_ARRAY_XML[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "${FILE_ARRAY_XML[@]}"
 fi
 
 ####################
@@ -1342,8 +1353,8 @@ if [ "$VALIDATE_MD" == "true" ]; then
   ###########################
   # Lint the Markdown Files #
   ###########################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" "'*.md'" "$ERRORS_FOUND_MD" "${FILE_ARRAY_MD[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$" "${FILE_ARRAY_MD[@]}"
 fi
 
 ################
@@ -1353,8 +1364,8 @@ if [ "$VALIDATE_BASH" == "true" ]; then
   #######################
   # Lint the bash files #
   #######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck" "'*.sh'" "$ERRORS_FOUND_BASH" "${FILE_ARRAY_BASH[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##################
@@ -1364,8 +1375,8 @@ if [ "$VALIDATE_PYTHON" == "true" ]; then
   #########################
   # Lint the python files #
   #########################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" "'*.py'" "$ERRORS_FOUND_PYTHON" "${FILE_ARRAY_PYTHON[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
 ################
@@ -1375,8 +1386,8 @@ if [ "$VALIDATE_PERL" == "true" ]; then
   #######################
   # Lint the perl files #
   #######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "PERL" "perl" "perl -Mstrict -cw" "'*.pl'" "$ERRORS_FOUND_PERL" "${FILE_ARRAY_PERL[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
 fi
 
 ################
@@ -1386,8 +1397,8 @@ if [ "$VALIDATE_RUBY" == "true" ]; then
   #######################
   # Lint the ruby files #
   #######################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" "'*.rb'" "$ERRORS_FOUND_RUBY" "${FILE_ARRAY_RUBY[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
 fi
 
 ########################
@@ -1397,8 +1408,8 @@ if [ "$VALIDATE_COFFEE" == "true" ]; then
   #########################
   # Lint the coffee files #
   #########################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" "'*.coffee'" "$ERRORS_FOUND_COFFEE" "${FILE_ARRAY_COFFEE[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEE[@]}"
 fi
 
 ###################
@@ -1426,9 +1437,9 @@ if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
   #############################
   # Lint the Javascript files #
   #############################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" "'*.js'" "$ERRORS_FOUND_JAVASCRIPT" "${FILE_ARRAY_JAVASCRIPT[@]}"
-  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" "'*.js'" "$ERRORS_FOUND_JAVASCRIPT" "${FILE_ARRAY_JAVASCRIPT[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
+  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
 fi
 
 ##################
@@ -1438,8 +1449,8 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
-  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
-  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" "Dockerfile" "$ERRORS_FOUND_DOCKER" "${FILE_ARRAY_DOCKER[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
 fi
 
 ##########
