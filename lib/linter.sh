@@ -1081,10 +1081,10 @@ LintCodebase()
   # Pull in the vars #
   ####################
   FILE_TYPE="$1" && shift       # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="$2" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="$3" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="$4" && shift # Pull the variable and remove from array path  (Example: *.json)
-  ERROR_COUNTER="$5" && shift   # Pull the variable and remove from array path  (Example: $ERRORS_FOUND_JSON)
+  LINTER_NAME="$1" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$1" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$1" && shift # Pull the variable and remove from array path  (Example: *.json)
+  ERROR_COUNTER="$1" && shift   # Pull the variable and remove from array path  (Example: $ERRORS_FOUND_JSON)
   FILE_ARRAY=("$@")             # Array of files to validate                    (Example: $FILE_ARRAY_JSON)
 
   ################
