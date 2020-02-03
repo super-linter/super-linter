@@ -1,7 +1,9 @@
 #!/bin/bash
 
 ################################################################################
-########### EntryPoint for Super-Linter @AdmiralAwkbar #########################
+################################################################################
+########### Super-Linter (Lint all the code) @AdmiralAwkbar ####################
+################################################################################
 ################################################################################
 
 ###########
@@ -27,10 +29,10 @@ COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to th
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
+STANDARD_LINTER_RULES=''                                                # ENV string to pass when running js standard
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
 ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the Ansible lint rules
-
 # Docker Vars
 DOCKER_FILE_NAME='.dockerfilelintrc'                                # Name of the file
 DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to the Docker lint rules
@@ -39,7 +41,8 @@ DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to th
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard" "ansible-lint" "/dockerfilelint/bin/dockerfilelint")
+  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint")
 
 ###################
 # GitHub ENV Vars #
@@ -62,6 +65,7 @@ VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
 RUN_LOCAL="${RUN_LOCAL}"                          # Boolean to see if we are running locally
+VERBOSE_OUTPUT="${VERBOSE_OUTPUT}"                # Boolean to see even more info (debug)
 
 ################
 # Default Vars #
@@ -70,8 +74,10 @@ DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for valida
 DEFAULT_VALIDATE_LANGUAGE='true'                      # Default to validate language
 DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
-DEFAULT_RUN_LOCAL='false'                             # default value for debugging
+DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
+DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
+READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 
 ##########################
 # Array of changed files #
@@ -103,7 +109,6 @@ ERRORS_FOUND_COFFEE=0       # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_JAVASCRIPT=0   # Count of errors found
 ERRORS_FOUND_DOCKER=0       # Count of errors found
-READ_ONLY_CHANGE_FLAG=0     # Flag set to 1 if files changed are not txt or md
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -114,7 +119,7 @@ Header()
 {
   echo ""
   echo "---------------------------------------------"
-  echo "------ Github Actions Language Linter -------"
+  echo "--- Github Actions Multi Language Linter ----"
   echo "---------------------------------------------"
   echo ""
   echo "---------------------------------------------"
@@ -181,24 +186,31 @@ GetLinterVersions()
 GetLinterRules()
 {
   # Need to validate the rules files exist
+
+  ################
+  # Pull in vars #
+  ################
+  FILE_NAME="$1"      # Name fo the linter file
+  FILE_LOCATION="$2"  # Location of the linter file
+
   ################
   # print header #
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Gathering Linter rules from repository, or defaulting..."
+  echo "Gathering users linter:[$FILE_NAME] rules from repository, or defaulting..."
   echo ""
 
-  #########################################
-  # YML Validate we have the linter rules #
-  #########################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" ]; then
-    echo "User provided file:[$YAML_FILE_NAME], setting rules file..."
+  #####################################
+  # Validate we have the linter rules #
+  #####################################
+  if [ -f "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" ]; then
+    echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
-    # Move users into default location #
+    # Copy users into default location #
     ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$YAML_FILE_NAME" "$YAML_LINTER_RULES" 2>&1)
+    CP_CMD=$(cp "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" "$FILE_LOCATION" 2>&1)
 
     ###################
     # Load Error code #
@@ -209,1477 +221,21 @@ GetLinterRules()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$YAML_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
+      echo "ERROR! Failed to set file:[$FILE_NAME] as default!"
+      echo "ERROR:[$CP_CMD]"
       exit 1
     fi
   else
-    echo "Codebase does not have file:[.github/linters/$YAML_FILE_NAME], using Default rules at:[$YAML_LINTER_RULES]"
-  fi
-
-  ##############################################
-  # MarkDown Validate we have the linter rules #
-  ##############################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" ]; then
-    echo "User provided file:[$MD_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$MD_FILE_NAME" "$MD_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$MD_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$MD_FILE_NAME], using Default rules at:[$MD_LINTER_RULES]"
-  fi
-
-  ############################################
-  # Python Validate we have the linter rules #
-  ############################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" ]; then
-    echo "User provided file:[$PYTHON_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$PYTHON_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$PYTHON_FILE_NAME], using Default rules at:[$PYTHON_LINTER_RULES]"
-  fi
-
-  ##########################################
-  # Ruby Validate we have the linter rules #
-  ##########################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" ]; then
-    echo "User provided file:[$RUBY_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$RUBY_FILE_NAME" "$RUBY_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$RUBY_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$RUBY_FILE_NAME], using Default rules at:[$RUBY_LINTER_RULES]"
-  fi
-
-  ##################################################
-  # Coffeescript Validate we have the linter rules #
-  ##################################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" ]; then
-    echo "User provided file:[$COFFEE_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$COFFEE_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$COFFEE_FILE_NAME], using Default rules at:[$COFFEE_LINTER_RULES]"
-  fi
-
-  #############################################
-  # Ansible Validate we have the linter rules #
-  #############################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" ]; then
-    echo "User provided file:[$ANSIBLE_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$ANSIBLE_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$ANSIBLE_FILE_NAME], using Default rules at:[$ANSIBLE_LINTER_RULES]"
-  fi
-
-  ################################################
-  # Javascript Validate we have the linter rules #
-  ################################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$JAVASCRIPT_FILE_NAME" ]; then
-    echo "User provided file:[$JAVASCRIPT_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$JAVASCRIPT_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$JAVASCRIPT_FILE_NAME], using Default rules at:[$JAVASCRIPT_LINTER_RULES]"
-  fi
-
-  ############################################
-  # Docker Validate we have the linter rules #
-  ############################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$DOCKER_FILE_NAME" ]; then
-    echo "User provided file:[$DOCKER_FILE_NAME], setting rules file..."
-
-    ####################################
-    # Move users into default location #
-    ####################################
-    MV_CMD=$(mv "$GITHUB_WORKSPACE/.github/linters/$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$DOCKER_FILE_NAME] as default!"
-      echo "ERROR:[$MV_CMD]"
-      exit 1
-    fi
-  else
-    echo "Codebase does not have file:[.github/linters/$DOCKER_FILE_NAME], using Default rules at:[$DOCKER_LINTER_RULES]"
+    ########################################################
+    # No user default provided, using the template default #
+    ########################################################
+    echo "Codebase does NOT have file:[.github/linters/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
   fi
 }
 ################################################################################
-#### Function LintJsonFiles ####################################################
-LintJsonFiles()
+#### Function GetStandardRules #################################################
+GetStandardRules()
 {
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting JSON files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="jsonlint"
-
-  #######################################
-  # Validate we have jsonlint installed #
-  #######################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_JSON[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[JSON]"
-  elif [ ${#FILE_ARRAY_JSON[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_JSON[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.json" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    if [[ $FILE == *"node_modules"* ]]; then
-      # This is a node modules file
-      continue
-    fi
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_JSON++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintYmlFiles #####################################################
-LintYmlFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting YAML files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="yamllint"
-
-  #######################################
-  # Validate we have yamllint installed #
-  #######################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_YML[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[YML]"
-  elif [ ${#FILE_ARRAY_YML[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_YML[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f \( -name "*.yml" -or -name "*.yaml" \) 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -c "$YAML_LINTER_RULES" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_YML++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintXmlFiles #####################################################
-LintXmlFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting XML files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="xmllint"
-
-  ######################################
-  # Validate we have xmllint installed #
-  ######################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_XML[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[XML]"
-  elif [ ${#FILE_ARRAY_XML[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_XML[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.xml" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_XML++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintMdFiles ######################################################
-LintMdFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Markdown files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="markdownlint"
-
-  ###########################################
-  # Validate we have markdownlint installed #
-  ###########################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_MD[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[MARKDOWN]"
-  elif [ ${#FILE_ARRAY_MD[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_MD[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.md" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -c "$MD_LINTER_RULES" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_MD++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintBashFiles ####################################################
-LintBashFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Bash files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="shellcheck"
-
-  #########################################
-  # Validate we have shellcheck installed #
-  #########################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_BASH[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[BASH]"
-  elif [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_BASH[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.sh" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_BASH++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintPythonFiles ##################################################
-LintPythonFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Python files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="pylint"
-
-  #####################################
-  # Validate we have pylint installed #
-  #####################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_PYTHON[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[PYTHON]"
-  elif [ ${#FILE_ARRAY_PYTHON[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_PYTHON[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.py" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" --rcfile "$PYTHON_LINTER_RULES" -E "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_PYTHON++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintPerlFiles ####################################################
-LintPerlFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Perl files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="perl"
-
-  ###################################
-  # Validate we have perl installed #
-  ###################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_PERL[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[PERL]"
-  elif [ ${#FILE_ARRAY_PERL[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_PERL[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.pl" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -Mstrict -cw "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_PERL++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintRubyFiles ####################################################
-LintRubyFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Ruby files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="rubocop"
-
-  ###################################
-  # Validate we have perl installed #
-  ###################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_RUBY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[RUBY]"
-  elif [ ${#FILE_ARRAY_RUBY[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_RUBY[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.rb" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -c "$RUBY_LINTER_RULES" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_RUBY++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintCoffeeFiles ##################################################
-LintCoffeeFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Coffee files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="coffeelint"
-
-  #####################################
-  # Validate we have pylint installed #
-  #####################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_COFFEE[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[COFFEE]"
-  elif [ ${#FILE_ARRAY_COFFEE[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_COFFEE[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.coffee" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    # if [[ $FILE == *"node_modules"* ]]; then
-    #   # This is a node modules file
-    #   continue
-    # fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$("$LINTER_NAME" -f "$COFFEE_LINTER_RULES" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_COFFEE++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
-}
-################################################################################
-#### Function LintJavascriptFiles ##############################################
-LintJavascriptFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting JavaScript files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="eslint"
-
-  #####################################
-  # Validate we have pylint installed #
-  #####################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="standard"
-
-  #####################################
-  # Validate we have pylint installed #
-  #####################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_JAVASCRIPT[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[JAVASCRIPT]"
-  elif [ ${#FILE_ARRAY_JAVASCRIPT[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_JAVASCRIPT[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "*.js" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
-    if [[ $FILE == *"node_modules"* ]]; then
-      # This is a node modules file
-      continue
-    fi
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    #############################
-    # Lint the file with ESLint #
-    #############################
-    Eslint "$FILE"
-
-    ###############################
-    # Lint the file with Standard #
-    ###############################
-    StandardLint "$FILE"
-
-  done
-}
-################################################################################
-#### Function Eslint ###########################################################
-Eslint()
-{
-  ####################
-  # Pull in the file #
-  ####################
-  FILE=$1
-
-  #####################
-  # Get the file name #
-  #####################
-  FILE_NAME=$(basename "$FILE" 2>&1)
-
-  ################################
-  # Lint the file with the rules #
-  ################################
-  LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; eslint --no-eslintrc -c "$JAVASCRIPT_LINTER_RULES" "$FILE" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    #########
-    # Error #
-    #########
-    echo "ERROR! Found errors in [eslint] linter!"
-    echo "ERROR:[$LINT_CMD]"
-    # Increment error count
-    ((ERRORS_FOUND_JAVASCRIPT++))
-  else
-    ###########
-    # Success #
-    ###########
-    echo " - File:[$FILE_NAME] was linted with [eslint] successfully"
-  fi
-}
-################################################################################
-#### Function StandardLint #####################################################
-StandardLint()
-{
-  ####################
-  # Pull in the file #
-  ####################
-  FILE=$1
-
-  #####################
-  # Get the file name #
-  #####################
-  FILE_NAME=$(basename "$FILE" 2>&1)
-
   #########################################################################
   # Need to get the ENV vars from the linter rules to run in command line #
   #########################################################################
@@ -1741,37 +297,7 @@ StandardLint()
   ########################################
   # Remove trailing and ending witespace #
   ########################################
-  ENV_STRING="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-
-  ################################
-  # Lint the file with the rules #
-  ################################
-  echo " - Utilizing Env:[$ENV_STRING]"
-  # shellcheck disable=SC2086
-  STANDARD_LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; standard $ENV_STRING "$FILE" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    #########
-    # Error #
-    #########
-    echo "ERROR! Found errors in [js standard] linter!"
-    echo "ERROR:[$STANDARD_LINT_CMD]"
-    # Increment error count
-    ((ERRORS_FOUND_JAVASCRIPT++))
-  else
-    ###########
-    # Success #
-    ###########
-    echo " - File:[$FILE_NAME] was linted with [js standard] successfully"
-  fi
+  STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 }
 ################################################################################
 #### Function LintAnsibleFiles #################################################
@@ -1919,120 +445,6 @@ LintAnsibleFiles()
     echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
     echo "skipping ansible lint"
   fi
-}
-################################################################################
-#### Function LintDockerFiles ##################################################
-LintDockerFiles()
-{
-  ################
-  # print header #
-  ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting Dockerfiles..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="dockerfilelint"
-  LINTER_PATH="/dockerfilelint/bin/dockerfilelint"
-
-  #########################################
-  # Validate we have shellcheck installed #
-  #########################################
-  # shellcheck disable=SC2230
-  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_PATH" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to find $LINTER_NAME in system!"
-    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
-    exit 1
-  else
-    # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
-  fi
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY_DOCKER[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[DOCKERFILE]"
-  elif [ ${#FILE_ARRAY_DOCKER[@]} -ne 0 ]; then
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY_DOCKER[@]}") # Copy the array into list
-  else
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "Dockerfile" 2>&1))
-  fi
-
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-
-    ####################
-    # Get the filename #
-    ####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
-
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
-
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; "$LINTER_PATH" "$FILE" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment error count
-      ((ERRORS_FOUND_DOCKER++))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
 }
 ################################################################################
 #### Function GetGitHubVars ####################################################
@@ -2394,6 +806,21 @@ GetGitHubVars()
     # Set the value
     ANSIBLE_DIRECTORY="$TEMP_ANSIBLE_DIRECTORY"
   fi
+
+  ############################
+  # Get the run verbose flag #
+  ############################
+  if [ -z "$VERBOSE_OUTPUT" ]; then
+    ##################################
+    # No flag passed, set to default #
+    ##################################
+    VERBOSE_OUTPUT="$DEFAULT_VERBOSE_OUTPUT"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VERBOSE_OUTPUT=$(echo "$VERBOSE_OUTPUT" | awk '{print tolower($0)}')
 }
 ################################################################################
 #### Function BuildFileList ####################################################
@@ -2647,6 +1074,131 @@ BuildFileList()
   echo "Successfully gathered list of files..."
 }
 ################################################################################
+#### Function LintCodebase #####################################################
+LintCodebase()
+{
+  ####################
+  # Pull in the vars #
+  ####################
+  FILE_TYPE="$1" && shift       # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="$2" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$3" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$4" && shift # Pull the variable and remove from array path  (Example: *.json)
+  ERROR_COUNTER="$5" && shift   # Pull the variable and remove from array path  (Example: $ERRORS_FOUND_JSON)
+  FILE_ARRAY=("$@")             # Array of files to validate                    (Example: $FILE_ARRAY_JSON)
+
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "Linting $FILE_TYPE files..."
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  #######################################
+  # Validate we have jsonlint installed #
+  #######################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################################
+  # Check to see if we need to go through array or all files #
+  ############################################################
+  if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+    # No files found in commit and user has asked to not validate code base
+    echo " - No files found in chageset to lint for language:[JSON]"
+  elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
+    # We have files added to array of files to check
+    LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -name "$FILE_EXTENSIONS" 2>&1))
+  fi
+
+  ##################
+  # Lint the files #
+  ##################
+  for FILE in "${LIST_FILES[@]}"
+  do
+    #####################
+    # Get the file name #
+    #####################
+    FILE_NAME=$(basename "$FILE" 2>&1)
+
+    #######################################
+    # Make sure we dont lint node modules #
+    #######################################
+    if [[ $FILE == *"node_modules"* ]]; then
+      # This is a node modules file
+      continue
+    fi
+
+    ##############
+    # File print #
+    ##############
+    echo "---------------------------"
+    echo "File:[$FILE]"
+
+    ################################
+    # Lint the file with the rules #
+    ################################
+    LINT_CMD=$("$LINTER_COMMAND" "$FILE" 2>&1)
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      #########
+      # Error #
+      #########
+      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+      echo "ERROR:[$LINT_CMD]"
+      # Increment the error count
+      ((ERROR_COUNTER++))
+    else
+      ###########
+      # Success #
+      ###########
+      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+    fi
+  done
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer()
 {
@@ -2713,104 +1265,182 @@ GetGitHubVars
 ########################
 # Get the linter rules #
 ########################
-GetLinterRules
+# Get yml rules
+GetLinterRules "$YAML_FILE_NAME" "$YAML_LINTER_RULES"
+# Get markdown rules
+GetLinterRules "$MD_FILE_NAME" "$MD_LINTER_RULES"
+# Get python rules
+GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
+# Get ruby rules
+GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
+# Get coffeescript rules
+GetLinterRules "$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES"
+# Get ansible rules
+GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
+# Get javascript rules
+GetLinterRules "$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES"
+# Get docker rules
+GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 
-##################################
-# Get and print all version info #
-##################################
-GetLinterVersions
+#################################
+# Check if were in verbose mode #
+#################################
+if [[ "$RUN_LOCAL" != "false" ]]; then
+  ##################################
+  # Get and print all version info #
+  ##################################
+  GetLinterVersions
+fi
 
-########################################
-# Get list of files changed if env set #
-########################################
+#############################################
+# check flag for validation of all codebase #
+#############################################
 if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
+  ########################################
+  # Get list of files changed if env set #
+  ########################################
   BuildFileList
 fi
 
-######################
-# Lint the Yml Files #
-######################
+###############
+# YML LINTING #
+###############
 if [ "$VALIDATE_YAML" == "true" ]; then
-  LintYmlFiles
+  ######################
+  # Lint the Yml Files #
+  ######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" "'*.yml' -or -name '*.yaml'" "$ERRORS_FOUND_YML" "${FILE_ARRAY_YML[@]}"
 fi
 
-#######################
-# Lint the json files #
-#######################
+################
+# JSON LINTING #
+################
 if [ "$VALIDATE_JSON" == "true" ]; then
-  LintJsonFiles
+  #######################
+  # Lint the json files #
+  #######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "JSON" "jsonlint" "jsonlint" "'*.json'" "$ERRORS_FOUND_JSON" "${FILE_ARRAY_JSON[@]}"
 fi
 
-######################
-# Lint the XML Files #
-######################
+###############
+# XML LINTING #
+###############
 if [ "$VALIDATE_XML" == "true" ]; then
-  LintXmlFiles
+  ######################
+  # Lint the XML Files #
+  ######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "XML" "xmllint" "xmllint" "'*.xml'" "$ERRORS_FOUND_XML" "${FILE_ARRAY_XML[@]}"
 fi
 
-###########################
-# Lint the Markdown Files #
-###########################
+####################
+# MARKDOWN LINTING #
+####################
 if [ "$VALIDATE_MD" == "true" ]; then
-  LintMdFiles
+  ###########################
+  # Lint the Markdown Files #
+  ###########################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" "'*.md'" "$ERRORS_FOUND_MD" "${FILE_ARRAY_MD[@]}"
 fi
 
-#######################
-# Lint the bash files #
-#######################
+################
+# BASH LINTING #
+################
 if [ "$VALIDATE_BASH" == "true" ]; then
-  LintBashFiles
+  #######################
+  # Lint the bash files #
+  #######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "BASH" "shellcheck" "shellcheck" "'*.sh'" "$ERRORS_FOUND_BASH" "${FILE_ARRAY_BASH[@]}"
 fi
 
-#########################
-# Lint the python files #
-#########################
+##################
+# PYTHON LINTING #
+##################
 if [ "$VALIDATE_PYTHON" == "true" ]; then
-  LintPythonFiles
+  #########################
+  # Lint the python files #
+  #########################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" "'*.py'" "$ERRORS_FOUND_PYTHON" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
-#######################
-# Lint the perl files #
-#######################
+################
+# PERL LINTING #
+################
 if [ "$VALIDATE_PERL" == "true" ]; then
-  LintPerlFiles
+  #######################
+  # Lint the perl files #
+  #######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "PERL" "perl" "perl -Mstrict -cw" "'*.pl'" "$ERRORS_FOUND_PERL" "${FILE_ARRAY_PERL[@]}"
 fi
 
-#######################
-# Lint the ruby files #
-#######################
+################
+# RUBY LINTING #
+################
 if [ "$VALIDATE_RUBY" == "true" ]; then
-  LintRubyFiles
+  #######################
+  # Lint the ruby files #
+  #######################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" "'*.rb'" "$ERRORS_FOUND_RUBY" "${FILE_ARRAY_RUBY[@]}"
 fi
 
-#########################
-# Lint the coffee files #
-#########################
+########################
+# COFFEESCRIPT LINTING #
+########################
 if [ "$VALIDATE_COFFEE" == "true" ]; then
-  LintCoffeeFiles
+  #########################
+  # Lint the coffee files #
+  #########################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" "'*.coffee'" "$ERRORS_FOUND_COFFEE" "${FILE_ARRAY_COFFEE[@]}"
 fi
 
-##########################
-# Lint the Ansible files #
-##########################
+###################
+# ANSIBLE LINTING #
+###################
 if [ "$VALIDATE_ANSIBLE" == "true" ]; then
+  ##########################
+  # Lint the Ansible files #
+  ##########################
+  # Due to the nature of how we want to validate Ansible, we cannot use the
+  # standard loop, since it looks for an ansible folder, excludes certain
+  # files, and looks for additional changes, it should be an outlier
   LintAnsibleFiles
 fi
 
-#############################
-# Lint the Javascript files #
-#############################
+######################
+# JAVASCRIPT LINTING #
+######################
 if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
-  LintJavascriptFiles
+  #################################
+  # Get Javascript standard rules #
+  #################################
+  GetStandardRules
+
+  #############################
+  # Lint the Javascript files #
+  #############################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" "'*.js'" "$ERRORS_FOUND_JAVASCRIPT" "${FILE_ARRAY_JAVASCRIPT[@]}"
+  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" "'*.js'" "$ERRORS_FOUND_JAVASCRIPT" "${FILE_ARRAY_JAVASCRIPT[@]}"
 fi
 
-#############################
-# Lint the Dockerfiles #
-#############################
+##################
+# DOCKER LINTING #
+##################
 if [ "$VALIDATE_DOCKER" == "true" ]; then
-  LintDockerFiles
+  #########################
+  # Lint the docker files #
+  #########################
+  # LintCodebase "NAME" "LINTER" "LINTER_CMD" "FILE_TYPES" "ERROR_COUNTER" "FILE_ARRAY"
+  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" "Dockerfile" "$ERRORS_FOUND_DOCKER" "${FILE_ARRAY_DOCKER[@]}"
 fi
-
 
 ##########
 # Footer #
