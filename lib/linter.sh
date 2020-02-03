@@ -1142,7 +1142,7 @@ LintCodebase()
   ############################################################
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[JSON]"
+    echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
