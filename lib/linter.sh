@@ -1285,7 +1285,7 @@ GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 #################################
 # Check if were in verbose mode #
 #################################
-if [[ "$RUN_LOCAL" != "false" ]]; then
+if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
   ##################################
   # Get and print all version info #
   ##################################
