@@ -1320,7 +1320,7 @@ TestCodebase()
     #########################################################
     # If not found, assume it should be linted successfully #
     #########################################################
-    if [ -z "$FILE_STATUS" ]; then
+    if [ -z "$FILE_STATUS" ] || [[ "$FILE" == *"README"* ]]; then
       ##################################
       # Set to good for proper linting #
       ##################################
