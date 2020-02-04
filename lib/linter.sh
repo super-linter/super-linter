@@ -64,6 +64,7 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
+TEST_CASE_RUN=="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
 
 ##############
 # Debug Vars #
@@ -79,10 +80,12 @@ DEFAULT_VALIDATE_LANGUAGE='true'                      # Default to validate lang
 DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
 DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
+
 
 ##########################
 # Array of changed files #
@@ -454,6 +457,21 @@ GetGitHubVars()
   echo "--------------------------------------------"
   echo "Gathering GitHub information..."
 
+  ###############################
+  # Get the Run test cases flag #
+  ###############################
+  if [ -z "$TEST_CASE_RUN" ]; then
+    ##################################
+    # No flag passed, set to default #
+    ##################################
+    TEST_CASE_RUN="$DEFAULT_TEST_CASE_RUN"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  TEST_CASE_RUN=$(echo "$TEST_CASE_RUN" | awk '{print tolower($0)}')
+
   ##########################
   # Get the run local flag #
   ##########################
@@ -468,6 +486,7 @@ GetGitHubVars()
   # Convert string to lowercase #
   ###############################
   RUN_LOCAL=$(echo "$RUN_LOCAL" | awk '{print tolower($0)}')
+
   #################################
   # Check if were running locally #
   #################################
@@ -1212,6 +1231,177 @@ LintCodebase()
   done
 }
 ################################################################################
+#### Function TestCodebase #####################################################
+TestCodebase()
+{
+  ####################
+  # Pull in the vars #
+  ####################
+  FILE_TYPE="$1"        # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="$2"      # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$3"   # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$4"  # Pull the variable and remove from array path  (Example: *.json)
+
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "Testing Codebase [$FILE_TYPE] files..."
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  #####################################
+  # Validate we have linter installed #
+  #####################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################
+  # Check if its ansible, as its the outlier #
+  ############################################
+  if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207,SC2086
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207,SC2086
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+  fi
+
+  ##################
+  # Lint the files #
+  ##################
+  for FILE in "${LIST_FILES[@]}"
+  do
+    #####################
+    # Get the file name #
+    #####################
+    FILE_NAME=$(basename "$FILE" 2>&1)
+
+    ############################
+    # Get the file pass status #
+    ############################
+    # Example: markdown_good_1.md -> good
+    FILE_STATUS=$(echo "$FILE_NAME" |cut -f2 -d'_')
+
+    ##############
+    # File print #
+    ##############
+    echo "---------------------------"
+    echo "File:[$FILE]"
+
+    ########################
+    # Set the lint command #
+    ########################
+    LINT_CMD=''
+
+    #####################
+    # Check for ansible #
+    #####################
+    if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
+      ########################################
+      # Make sure we dont lint certain files #
+      ########################################
+      if [[ $FILE == *"vault.yml"* ]] || [[ $FILE == *"galaxy.yml"* ]]; then
+        # This is a file we dont look at
+        continue
+      fi
+
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    else
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    fi
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ########################################
+    # Check for if it was supposed to pass #
+    ########################################
+    if [[ "$FILE_STATUS" == "good" ]]; then
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    else
+      #######################################
+      # File status = bad, this should fail #
+      #######################################
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -eq 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR! This file should have failed test case!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
+      fi
+    fi
+  done
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer()
 {
@@ -1262,6 +1452,51 @@ Footer()
   fi
 }
 ################################################################################
+#### Function RunTestCases #####################################################
+RunTestCases()
+{
+  # This loop will run the test cases and exclude user code
+  # This is called from the automation process to validate new code
+  # When a PR is opened, the new code is validated with the master branch
+  # version of linter.sh, and a new container is built with the latest codebase
+  # for testing. That container is spun up, and ran,
+  # with the flag: TEST_CASE_RUN=true
+  # So that the new code can be validated againt the test cases
+
+  #################
+  # Header prints #
+  #################
+  echo ""
+  echo "----------------------------------------------"
+  echo "-------------- TEST CASE RUN -----------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  #######################
+  # Test case languages #
+  #######################
+  TestCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$"
+  TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$"
+  TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$"
+  TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$"
+  TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
+  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
+  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
+  TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
+  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" ".*\.\(coffee\)\$"
+  TestCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
+  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
+
+  #################
+  # Footer prints #
+  #################
+  # Call the footer to display run information
+  # and exit with error code
+  Footer
+}
+################################################################################
 ############################### MAIN ###########################################
 ################################################################################
 
@@ -1305,6 +1540,17 @@ if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
   # Get and print all version info #
   ##################################
   GetLinterVersions
+fi
+
+###########################################
+# Check to see if this is a test case run #
+###########################################
+if [[ "$TEST_CASE_RUN" != "false" ]]; then
+  ###########################
+  # Run only the test cases #
+  ###########################
+  # Code will exit from inside this loop
+  RunTestCases
 fi
 
 #############################################

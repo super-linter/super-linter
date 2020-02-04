@@ -52,3 +52,11 @@ jobs:
           DOCKERFILE_PATH: Dockerfile
         shell: bash
         run: .automation/upload-docker.sh
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Run Test Cases
+        uses: docker://admiralawkbar/super-linter
+        env:
+          TEST_CASE_RUN: true
