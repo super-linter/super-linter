@@ -61,13 +61,10 @@ jobs:
         shell: bash
         run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
 
-      - name: Test
-        run: echo "${BRANCH_NAME}"
-
       ################################
       # Run Linter against code base #
       ################################
       - name: Run Test Cases
-        uses: "docker://admiralawkbar/super-linter:${{BRANCH_NAME}}"
+        uses: "docker://admiralawkbar/super-linter:${BRANCH_NAME}"
         env:
           TEST_CASE_RUN: true
