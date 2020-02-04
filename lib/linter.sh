@@ -1317,6 +1317,16 @@ TestCodebase()
     # Example: markdown_good_1.md -> good
     FILE_STATUS=$(echo "$FILE_NAME" |cut -f2 -d'_')
 
+    #########################################################
+    # If not found, assume it should be linted successfully #
+    #########################################################
+    if [ -z "$FILE_STATUS" ]; then
+      ##################################
+      # Set to good for proper linting #
+      ##################################
+      FILE_STATUS="good"
+    fi
+
     ##############
     # File print #
     ##############
@@ -1327,6 +1337,23 @@ TestCodebase()
     # Set the lint command #
     ########################
     LINT_CMD=''
+
+    #######################################
+    # Check if docker and get folder name #
+    #######################################
+    if [[ "$FILE_TYPE" == "DOCKER" ]]; then
+      if [[ "$FILE" == *"good"* ]]; then
+        #############
+        # Good file #
+        #############
+        FILE_STATUS='good'
+      else
+        ############
+        # Bad file #
+        ############
+        FILE_STATUS='bad'
+      fi
+    fi
 
     #####################
     # Check for ansible #
