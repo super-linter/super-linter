@@ -53,10 +53,14 @@ jobs:
         shell: bash
         run: .automation/upload-docker.sh
 
+      - name: debug
+        run: printenv
+        shell: bash
+
       ################################
       # Run Linter against code base #
       ################################
       - name: Run Test Cases
-        uses: docker://admiralawkbar/super-linter:${GITHUB_REF##*/}
+        uses: docker://admiralawkbar/super-linter:${GITHUB_REF}
         env:
           TEST_CASE_RUN: true
