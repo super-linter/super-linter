@@ -1,10 +1,11 @@
 var http = require('http')
-var createHandler = require('github-webhook-handler')
-var handler = createHandler({ path: '/webhook', secret: (process.env.SECRET) })
+var createHandler = require( 'github-webhook-handler')
 
-var userArray = ['user1']
+var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
 
-var teamDescription = 'Team of Robots'
+var userArray = [ 'user1' ]
+
+var teamDescription = Team of Robots
 var teamPrivacy = 'closed' // closed (visibile) / secret (hidden) are options here
 
 var teamName = process.env.GHES_TEAM_NAME

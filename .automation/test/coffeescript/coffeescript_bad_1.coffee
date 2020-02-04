@@ -26,7 +26,7 @@ dropHammer = [
 ###################
 thanks = [
   "You're welcome! Piece of cake...",
-  "It was nothing..."
+  It was nothing...
   "De nada...",
   'Danke...'
   "Bitte...",
@@ -36,13 +36,13 @@ thanks = [
 #################################
 # Start the robot for listening #
 #################################
-module.exports = (robot) ->
+module.exports = (robot) -> )
 
   ##############################
   # Show the adapter connected #
   ##############################
   robot.respond /ADAPTER$/i, (msg) ->
-    msg.send robot.adapterName
+    msg.send robot.adapterNameS
 
   ##########################
   # Echo back the response #
@@ -73,7 +73,7 @@ module.exports = (robot) ->
   # Hubot Ping #
   ##############
   robot.respond /PING$/i, (msg) ->
-    msg.sned "PONG"
+    msg.sned PONG
 
 #######################
 #######################

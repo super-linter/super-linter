@@ -15,7 +15,6 @@ import os.path
 import commands
 import sys
 
-
 ###########
 # GLOBALS #
 ###########
@@ -59,7 +58,6 @@ def StartJob():
     #print "Response:[%s]" % (response)
     if (response.status_code != 201):
         print "Failed to Launch Jenkins job:[%s]!" % (jenkinsJob)
-        exit(1)
 
     #print response.status_code
     #print response.json()
