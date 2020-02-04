@@ -1171,7 +1171,7 @@ LintCodebase()
     if [[ $FILE == *"node_modules"* ]]; then
       # This is a node modules file
       continue
-    elif [[ $FILE == *"$TEST_CASE_FOLDER" ]]; then
+    elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
       # This is the test cases, we should always skip
       continue
     fi
