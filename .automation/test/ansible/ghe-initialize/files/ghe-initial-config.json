@@ -1,0 +1,11 @@
+{
+  "private_mode": false,
+  "signup_enabled": true,
+  "github_hostname": "github-test.local",
+  "github_ssl": {
+    "enabled": false,
+    "cert": null,
+    "key": null
+  },
+  "auth_mode": "default"
+}

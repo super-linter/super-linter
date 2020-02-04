@@ -82,6 +82,7 @@ DEFAULT_RUN_LOCAL='false'                             # Default value for debugg
 DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
+TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
 
 ##########################
 # Array of changed files #
@@ -1164,11 +1165,14 @@ LintCodebase()
     #####################
     FILE_NAME=$(basename "$FILE" 2>&1)
 
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
+    #####################################################
+    # Make sure we dont lint node modules or test cases #
+    #####################################################
     if [[ $FILE == *"node_modules"* ]]; then
       # This is a node modules file
+      continue
+    elif [[ $FILE == *".automation/test" ]]; then
+      # This is the test cases, we should always skip
       continue
     fi
 
