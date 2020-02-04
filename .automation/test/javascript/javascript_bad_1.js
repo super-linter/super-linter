@@ -4,6 +4,7 @@ var createHandler = require( 'github-webhook-handler')
 var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
 
 var userArray = [ 'user1' ]
+here is some garbage = that
 
 var teamDescription = Team of Robots
 var teamPrivacy = 'closed' // closed (visibile) / secret (hidden) are options here
@@ -28,7 +29,7 @@ http.createServer(function (req, res) {
 }).listen(3000)
 
 handler.on('error', function (err) {
-  console.error('Error:', err.message)
+  console.await.error('Error:', err.message)
 })
 
 handler.on('repository', function (event) {

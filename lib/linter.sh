@@ -64,7 +64,7 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
-TEST_CASE_RUN=="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
+TEST_CASE_RUN="${TEST_CASE_RUN}"                  # Boolean to validate only test cases
 
 ##############
 # Debug Vars #
@@ -113,7 +113,7 @@ ERRORS_FOUND_BASH=0         # Count of errors found
 ERRORS_FOUND_PERL=0         # Count of errors found
 ERRORS_FOUND_RUBY=0         # Count of errors found
 ERRORS_FOUND_PYTHON=0       # Count of errors found
-ERRORS_FOUND_COFFEE=0       # Count of errors found
+ERRORS_FOUND_COFFEESCRIPT=0 # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_STANDARD=0     # Count of errors found
 ERRORS_FOUND_ESLINT=0       # Count of errors found
@@ -1418,7 +1418,7 @@ Footer()
   echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
   echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
   echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
-  echo "ERRORS FOUND in COFFEE:[$ERRORS_FOUND_COFFEE]"
+  echo "ERRORS FOUND in COFFEESCRIPT:[$ERRORS_FOUND_COFFEESCRIPT]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
   echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_ESLINT]"
@@ -1437,7 +1437,7 @@ Footer()
      [ $ERRORS_FOUND_BASH -ne 0 ] || \
      [ $ERRORS_FOUND_PERL -ne 0 ] || \
      [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
-     [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
+     [ $ERRORS_FOUND_COFFEESCRIPT -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
      [ $ERRORS_FOUND_ESLINT -ne 0 ] || \
      [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
