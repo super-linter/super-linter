@@ -1290,7 +1290,7 @@ TestCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
+    # shellcheck disable=SC2207,SC2086,SC2010
     LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
   else
     #################################
