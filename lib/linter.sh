@@ -24,8 +24,8 @@ PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to th
 RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                # Name of the file
-COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to the coffescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
@@ -90,17 +90,18 @@ TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_YML=()         # Array of files to check
-FILE_ARRAY_JSON=()        # Array of files to check
-FILE_ARRAY_XML=()         # Array of files to check
-FILE_ARRAY_MD=()          # Array of files to check
-FILE_ARRAY_BASH=()        # Array of files to check
-FILE_ARRAY_PERL=()        # Array of files to check
-FILE_ARRAY_RUBY=()        # Array of files to check
-FILE_ARRAY_PYTHON=()      # Array of files to check
-FILE_ARRAY_COFFEE=()      # Array of files to check
-FILE_ARRAY_JAVASCRIPT=()  # Array of files to check
-FILE_ARRAY_DOCKER=()      # Array of files to check
+FILE_ARRAY_YML=()           # Array of files to check
+FILE_ARRAY_JSON=()          # Array of files to check
+FILE_ARRAY_XML=()           # Array of files to check
+FILE_ARRAY_MD=()            # Array of files to check
+FILE_ARRAY_BASH=()          # Array of files to check
+FILE_ARRAY_PERL=()          # Array of files to check
+FILE_ARRAY_RUBY=()          # Array of files to check
+FILE_ARRAY_PYTHON=()        # Array of files to check
+FILE_ARRAY_COFFEESCRIPT=()  # Array of files to check
+FILE_ARRAY_ESLINT=()        # Array of files to check
+FILE_ARRAY_STANDARD=()      # Array of files to check
+FILE_ARRAY_DOCKER=()        # Array of files to check
 
 ############
 # Counters #
@@ -1038,7 +1039,7 @@ BuildFileList()
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_COFFEE+=("$FILE")
+      FILE_ARRAY_COFFEESCRIPT+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1483,7 +1484,7 @@ RunTestCases()
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
-  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" ".*\.\(coffee\)\$"
+  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
   TestCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
   TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
@@ -1524,7 +1525,7 @@ GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
 # Get ruby rules
 GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
 # Get coffeescript rules
-GetLinterRules "$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES"
+GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
 # Get ansible rules
 GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
 # Get javascript rules
@@ -1659,7 +1660,7 @@ if [ "$VALIDATE_COFFEE" == "true" ]; then
   # Lint the coffee files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEE[@]}"
+  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
 fi
 
 ###################
@@ -1688,8 +1689,8 @@ if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
-  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
+  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_ESLINT[@]}"
+  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_STANDARD[@]}"
 fi
 
 ##################
