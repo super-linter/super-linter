@@ -57,8 +57,8 @@ jobs:
       # Get the branch name #
       #######################
       - name: get the branch name
-         shell: bash
-         run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
+        shell: bash
+        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
 
       ################################
       # Run Linter against code base #
