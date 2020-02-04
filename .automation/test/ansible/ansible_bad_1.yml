@@ -16,13 +16,12 @@
 ######################
 ## Configure GitHub ##
 ######################
-- hosts: github_primary
+- hosts: Yo-Mama
   vars:
-    demo_github_initial_user: "{{ hostvars['localhost'].local_user }}"
     github_host: "{{ hostvars['github_primary'].ansible_host }}"
     probot_server_ip: "{{ hostvars['backup-utils'].ansible_host }}"
   roles:
-    - role: ghe-demo
+    - role: ghe-initialize
 
 ##########################################
 ## Run ghe-config-apply for all changes ##
@@ -34,9 +33,7 @@
 - hosts: github_primary
   tasks:
     - block:
-        - name: GHE-Config-Apply
-          include_role:
-            name: ghe-demo
-            tasks_from: ghe-config-apply.yml
+      include_role:
+        tasks_from: ghe-config-apply.yml
       tags:
         - github
