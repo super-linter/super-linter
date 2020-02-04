@@ -53,18 +53,12 @@ jobs:
         shell: bash
         run: .automation/upload-docker.sh
 
-      #######################
-      # Get the branch name #
-      #######################
-      - name: Extract branch name
-        shell: bash
-        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
-
       ################################
       # Run Linter against code base #
       ################################
       - name: Run Test Cases
         shell: bash
         run: |
+          echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
           docker pull admiralawkbar/super-linter:${BRANCH_NAME}
           docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -v ${GITHUB_WORKSPACE}:/tmp/lint admiralawkbar/super-linter:${BRANCH_NAME}
