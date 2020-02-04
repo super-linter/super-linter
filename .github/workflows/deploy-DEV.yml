@@ -57,6 +57,6 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Run Test Cases
-        uses: docker://admiralawkbar/super-linter:${{ github.ref }}
+        uses: docker://admiralawkbar/super-linter:{{ github.ref }}
         env:
           TEST_CASE_RUN: true
