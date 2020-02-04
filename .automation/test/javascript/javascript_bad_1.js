@@ -16,6 +16,9 @@ var orgRepos = []
 
 // var creator = ""
 
+var foo = someFunction();
+var bar = a + 1;
+
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
     console.log(err)
