@@ -24,8 +24,8 @@ PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to th
 RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                # Name of the file
-COFFEE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"     # Path to the coffescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
@@ -64,6 +64,7 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
+TEST_CASE_RUN="${TEST_CASE_RUN}"                  # Boolean to validate only test cases
 
 ##############
 # Debug Vars #
@@ -79,24 +80,28 @@ DEFAULT_VALIDATE_LANGUAGE='true'                      # Default to validate lang
 DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
 DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
+TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
+
 
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_YML=()         # Array of files to check
-FILE_ARRAY_JSON=()        # Array of files to check
-FILE_ARRAY_XML=()         # Array of files to check
-FILE_ARRAY_MD=()          # Array of files to check
-FILE_ARRAY_BASH=()        # Array of files to check
-FILE_ARRAY_PERL=()        # Array of files to check
-FILE_ARRAY_RUBY=()        # Array of files to check
-FILE_ARRAY_PYTHON=()      # Array of files to check
-FILE_ARRAY_COFFEE=()      # Array of files to check
-FILE_ARRAY_JAVASCRIPT=()  # Array of files to check
-FILE_ARRAY_DOCKER=()      # Array of files to check
+FILE_ARRAY_YML=()           # Array of files to check
+FILE_ARRAY_JSON=()          # Array of files to check
+FILE_ARRAY_XML=()           # Array of files to check
+FILE_ARRAY_MD=()            # Array of files to check
+FILE_ARRAY_BASH=()          # Array of files to check
+FILE_ARRAY_PERL=()          # Array of files to check
+FILE_ARRAY_RUBY=()          # Array of files to check
+FILE_ARRAY_PYTHON=()        # Array of files to check
+FILE_ARRAY_COFFEESCRIPT=()  # Array of files to check
+FILE_ARRAY_ESLINT=()        # Array of files to check
+FILE_ARRAY_STANDARD=()      # Array of files to check
+FILE_ARRAY_DOCKER=()        # Array of files to check
 
 ############
 # Counters #
@@ -109,7 +114,7 @@ ERRORS_FOUND_BASH=0         # Count of errors found
 ERRORS_FOUND_PERL=0         # Count of errors found
 ERRORS_FOUND_RUBY=0         # Count of errors found
 ERRORS_FOUND_PYTHON=0       # Count of errors found
-ERRORS_FOUND_COFFEE=0       # Count of errors found
+ERRORS_FOUND_COFFEESCRIPT=0 # Count of errors found
 ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_STANDARD=0     # Count of errors found
 ERRORS_FOUND_ESLINT=0       # Count of errors found
@@ -453,6 +458,21 @@ GetGitHubVars()
   echo "--------------------------------------------"
   echo "Gathering GitHub information..."
 
+  ###############################
+  # Get the Run test cases flag #
+  ###############################
+  if [ -z "$TEST_CASE_RUN" ]; then
+    ##################################
+    # No flag passed, set to default #
+    ##################################
+    TEST_CASE_RUN="$DEFAULT_TEST_CASE_RUN"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  TEST_CASE_RUN=$(echo "$TEST_CASE_RUN" | awk '{print tolower($0)}')
+
   ##########################
   # Get the run local flag #
   ##########################
@@ -467,6 +487,7 @@ GetGitHubVars()
   # Convert string to lowercase #
   ###############################
   RUN_LOCAL=$(echo "$RUN_LOCAL" | awk '{print tolower($0)}')
+
   #################################
   # Check if were running locally #
   #################################
@@ -1018,7 +1039,7 @@ BuildFileList()
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_COFFEE+=("$FILE")
+      FILE_ARRAY_COFFEESCRIPT+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1164,11 +1185,14 @@ LintCodebase()
     #####################
     FILE_NAME=$(basename "$FILE" 2>&1)
 
-    #######################################
-    # Make sure we dont lint node modules #
-    #######################################
+    #####################################################
+    # Make sure we dont lint node modules or test cases #
+    #####################################################
     if [[ $FILE == *"node_modules"* ]]; then
       # This is a node modules file
+      continue
+    elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
+      # This is the test cases, we should always skip
       continue
     fi
 
@@ -1208,6 +1232,204 @@ LintCodebase()
   done
 }
 ################################################################################
+#### Function TestCodebase #####################################################
+TestCodebase()
+{
+  ####################
+  # Pull in the vars #
+  ####################
+  FILE_TYPE="$1"        # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="$2"      # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$3"   # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$4"  # Pull the variable and remove from array path  (Example: *.json)
+
+  ################
+  # print header #
+  ################
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "Testing Codebase [$FILE_TYPE] files..."
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  #####################################
+  # Validate we have linter installed #
+  #####################################
+  # shellcheck disable=SC2230
+  VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to find [$LINTER_NAME] in system!"
+    echo "ERROR:[$VALIDATE_INSTALL_CMD]"
+    exit 1
+  else
+    # Success
+    echo "Successfully found binary in system"
+    echo "Location:[$VALIDATE_INSTALL_CMD]"
+  fi
+
+  ##########################
+  # Initialize empty Array #
+  ##########################
+  LIST_FILES=()
+
+  ############################################
+  # Check if its ansible, as its the outlier #
+  ############################################
+  if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207,SC2086,SC2010
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
+  else
+    #################################
+    # Get list of all files to lint #
+    #################################
+    # shellcheck disable=SC2207,SC2086
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+  fi
+
+  ##################
+  # Lint the files #
+  ##################
+  for FILE in "${LIST_FILES[@]}"
+  do
+    #####################
+    # Get the file name #
+    #####################
+    FILE_NAME=$(basename "$FILE" 2>&1)
+
+    ############################
+    # Get the file pass status #
+    ############################
+    # Example: markdown_good_1.md -> good
+    FILE_STATUS=$(echo "$FILE_NAME" |cut -f2 -d'_')
+
+    #########################################################
+    # If not found, assume it should be linted successfully #
+    #########################################################
+    if [ -z "$FILE_STATUS" ] || [[ "$FILE" == *"README"* ]]; then
+      ##################################
+      # Set to good for proper linting #
+      ##################################
+      FILE_STATUS="good"
+    fi
+
+    ##############
+    # File print #
+    ##############
+    echo "---------------------------"
+    echo "File:[$FILE]"
+
+    ########################
+    # Set the lint command #
+    ########################
+    LINT_CMD=''
+
+    #######################################
+    # Check if docker and get folder name #
+    #######################################
+    if [[ "$FILE_TYPE" == "DOCKER" ]]; then
+      if [[ "$FILE" == *"good"* ]]; then
+        #############
+        # Good file #
+        #############
+        FILE_STATUS='good'
+      else
+        ############
+        # Bad file #
+        ############
+        FILE_STATUS='bad'
+      fi
+    fi
+
+    #####################
+    # Check for ansible #
+    #####################
+    if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
+      ########################################
+      # Make sure we dont lint certain files #
+      ########################################
+      if [[ $FILE == *"vault.yml"* ]] || [[ $FILE == *"galaxy.yml"* ]]; then
+        # This is a file we dont look at
+        continue
+      fi
+
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    else
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    fi
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ########################################
+    # Check for if it was supposed to pass #
+    ########################################
+    if [[ "$FILE_STATUS" == "good" ]]; then
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    else
+      #######################################
+      # File status = bad, this should fail #
+      #######################################
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -eq 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR! This file should have failed test case!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
+      fi
+    fi
+  done
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer()
 {
@@ -1224,7 +1446,7 @@ Footer()
   echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
   echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
   echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
-  echo "ERRORS FOUND in COFFEE:[$ERRORS_FOUND_COFFEE]"
+  echo "ERRORS FOUND in COFFEESCRIPT:[$ERRORS_FOUND_COFFEESCRIPT]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
   echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_ESLINT]"
@@ -1243,7 +1465,7 @@ Footer()
      [ $ERRORS_FOUND_BASH -ne 0 ] || \
      [ $ERRORS_FOUND_PERL -ne 0 ] || \
      [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
-     [ $ERRORS_FOUND_COFFEE -ne 0 ] || \
+     [ $ERRORS_FOUND_COFFEESCRIPT -ne 0 ] || \
      [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
      [ $ERRORS_FOUND_ESLINT -ne 0 ] || \
      [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
@@ -1256,6 +1478,51 @@ Footer()
     # Successful exit
     exit 0
   fi
+}
+################################################################################
+#### Function RunTestCases #####################################################
+RunTestCases()
+{
+  # This loop will run the test cases and exclude user code
+  # This is called from the automation process to validate new code
+  # When a PR is opened, the new code is validated with the master branch
+  # version of linter.sh, and a new container is built with the latest codebase
+  # for testing. That container is spun up, and ran,
+  # with the flag: TEST_CASE_RUN=true
+  # So that the new code can be validated againt the test cases
+
+  #################
+  # Header prints #
+  #################
+  echo ""
+  echo "----------------------------------------------"
+  echo "-------------- TEST CASE RUN -----------------"
+  echo "----------------------------------------------"
+  echo ""
+
+  #######################
+  # Test case languages #
+  #######################
+  TestCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$"
+  TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$"
+  TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$"
+  TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$"
+  TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
+  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
+  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
+  TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
+  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
+  TestCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
+  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
+
+  #################
+  # Footer prints #
+  #################
+  # Call the footer to display run information
+  # and exit with error code
+  Footer
 }
 ################################################################################
 ############################### MAIN ###########################################
@@ -1285,7 +1552,7 @@ GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
 # Get ruby rules
 GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
 # Get coffeescript rules
-GetLinterRules "$COFFEE_FILE_NAME" "$COFFEE_LINTER_RULES"
+GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
 # Get ansible rules
 GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
 # Get javascript rules
@@ -1301,6 +1568,17 @@ if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
   # Get and print all version info #
   ##################################
   GetLinterVersions
+fi
+
+###########################################
+# Check to see if this is a test case run #
+###########################################
+if [[ "$TEST_CASE_RUN" != "false" ]]; then
+  ###########################
+  # Run only the test cases #
+  ###########################
+  # Code will exit from inside this loop
+  RunTestCases
 fi
 
 #############################################
@@ -1409,7 +1687,7 @@ if [ "$VALIDATE_COFFEE" == "true" ]; then
   # Lint the coffee files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEE_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEE[@]}"
+  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
 fi
 
 ###################
@@ -1438,8 +1716,8 @@ if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
-  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT[@]}"
+  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_ESLINT[@]}"
+  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_STANDARD[@]}"
 fi
 
 ##################

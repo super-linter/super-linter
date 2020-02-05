@@ -1,0 +1,17 @@
+#####################
+#####################
+## Heres some vars ##
+#####################
+#####################
+
+############
+# Env Vars #
+############
+env:
+  browser: here: there : again "yep"
+  es6: 0
+  jest: yes
+
+Here: there 'is' something going on
+
+something: "For 'Nothing'" 123

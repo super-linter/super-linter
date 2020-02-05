@@ -1,0 +1,112 @@
+{
+  "enterprise": {
+    "private_mode": {{ core_private_mode }},
+    "public_pages": {{ core_public_pages }},
+    "subdomain_isolation": {{ core_subdomain_isolation }},
+    "signup_enabled": {{ core_signup_enabled }},
+    "identicons_host": "dotcom",
+    "http_proxy": {{ core_http_proxy }},
+    "http_noproxy": {{ core_http_noproxy }},
+    "auth_mode": "default",
+    "builtin_auth_fallback": {{ core_builtin_auth_fallback }},
+    "expire_sessions": {{ core_expire_sessions }},
+    "avatar": null
+    },
+    "cas": {
+      "url": {{ cas_url }}
+    },
+    "saml": {
+      "sso_url": {{ saml_sso_url }},
+      "certificate": {{ saml_certificate }},
+      "certificate_path": "{{ saml_certificate_path }}",
+      "issuer": {{ saml_issuer }},
+      "name_id_format": "{{ saml_name_id_format }}",
+      "idp_initiated_sso": {{ saml_idp_initiated_sso }},
+      "disable_admin_demote": {{ saml_disable_admin_demote }},
+      "signature_method": "{{ saml_signature_method }}",
+      "digest_method": "{{ saml_digest_method }}",
+      "username_attribute": {{ saml_username_attribute }},
+      "full_name_attribute": "{{ saml_full_name_attribute }}",
+      "emails_attribute": "{{ saml_emails_attribute }}",
+      "ssh_keys_attribute": "{{ saml_ssh_keys_attribute }}",
+      "gpg_keys_attribute": "{{ saml_gpg_keys_attribute }}"
+    },
+    "github_oauth": null,
+    "smtp": {
+      "enabled": {{ smtp_enabled }},
+      "address": {{ smtp_address }},
+      "authentication": {{ smtp_authentication }},
+      "port": {{ smtp_port }},
+      "domain": {{ smtp_domain }},
+      "username": {{ smtp_username }},
+      "user_name": {{ smtp_user_name }},
+      "password": {{ smtp_password }},
+      "support_address": "{{ smtp_support_address }}",
+      "support_address_type": "{{ smtp_support_address_type }}",
+      "noreply_address": "{{ smtp_noreply_address }}",
+      "discard_to_noreply_address": {{ smtp_discard_to_noreply_address }}
+    },
+    "ntp": {
+      "primary_server": "{{ ntp_primary_server }}",
+      "secondary_server": "{{ ntp_secondary_server }}"
+    },
+    "timezone": null,
+    "snmp": {
+      "enabled": {{ snmp_enabled }},
+      "version": {{ snmp_version }},
+      "community": "{{ snmp_community }}",
+      "users": [
+
+      ]
+    },
+    "syslog": {
+      "enabled": {{ syslog_enabled }},
+      "server": "{{ syslog_server }}",
+      "protocol_name": "{{ syslog_protocol_name }}",
+      "tls_enabled": {{ syslog_tls_enabled }},
+      "cert": {{ syslog_cert }}
+    },
+    "assets": null,
+    "pages": {
+      "enabled": {{ pages_enabled }}
+    },
+    "collectd": {
+      "enabled": {{ collectd_enabled }},
+      "server": "{{ collectd_server }}",
+      "port": {{ collectd_port }},
+      "encryption": {{ collectd_encryption }},
+      "username": {{ collectd_username }},
+      "password": {{ collectd_password }}
+    },
+    "mapping": {
+      "enabled": {{ mapping_enabled }},
+      "tileserver": {{ mapping_tileserver }},
+      "token": {{ mapping_token }}
+    },
+    "load_balancer": {
+      "http_forward": {{ loadbalancer_http_forward }},
+      "proxy_protocol": {{ loadbalancer_proxy_protocol }}
+    },
+    "abuse_rate_limiting": {
+      "enabled": {{ abuse_rate_limiting_enabled }},
+      "requests_per_minute": {{ abuse_rate_limiting_requests_per_minute }},
+      "cpu_millis_per_minute": {{ abuse_rate_limiting_cpu_millis_per_minute }},
+      "search_cpu_millis_per_minute": {{ abuse_rate_limiting_search_cpu_millis_per_minute }}
+    },
+    "api_rate_limiting": {
+      "enabled": {{ api_rate_limiting_enabled }},
+      "unauthenticated_rate_limit": {{ api_rate_limiting_unauthenticated_rate_limit }},
+      "default_rate_limit": {{ api_rate_limiting_default_rate_limit }},
+      "search_unauthenticated_rate_limit": {{ api_rate_limiting_search_unauthenticated_rate_limit }},
+      "search_default_rate_limit": {{ api_rate_limiting_search_default_rate_limit }},
+      "lfs_unauthenticated_rate_limit": {{ api_rate_limiting_lfs_unauthenticated_rate_limit }},
+      "lfs_default_rate_limit": {{ api_rate_limiting_lfs_default_rate_limit }},
+      "graphql_unauthenticated_rate_limit": {{ api_rate_limiting_graphql_unauthenticated_rate_limit }},
+      "graphql_default_rate_limit": {{ api_rate_limiting_graphql_default_rate_limit }}
+    },
+    "governor": {
+      "quotas_enabled": {{ governor_quotas_enabled }},
+      "limit_user": {{ governor_limit_user }},
+      "limit_network": {{ governor_limit_network }}
+    }
+  }
