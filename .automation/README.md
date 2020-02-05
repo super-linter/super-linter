@@ -11,9 +11,12 @@ This script uses **GitHub Actions** so that a push to the repository is committe
 - Build the **Docker** container for **Super-Linter** using that source code
 - Upload the container to **DockerHub**
 
-When the script is triggered on master, it will push with the tag:**latest** which is used by all scripting for general avilablity.
+When the script is triggered on master, it will push with the tag:**latest** which is used by all scripting for general availability.
 When the script is triggered in a branch, it will push with the tag:**NameOfBranch** which can be used for:
 - *testing*
 - *troubleshooting*
 - *debugging*
-- **Note:** The branch name will be reduced to AlpaNumeric for consistancy and uploading
+- **Note:** The branch name will be reduced to AlpaNumeric for consistency and uploading
+
+## test
+This folder holds all **Test Cases** to help run the *CI/CT/CD* process for the **Super-Linter**.
