@@ -17,3 +17,6 @@ When the script is triggered in a branch, it will push with the tag:**NameOfBran
 - *troubleshooting*
 - *debugging*
 - **Note:** The branch name will be reduced to AlpaNumeric for consistancy and uploading
+
+# test
+This folder holds all **Test Cases** to help run the *CI/CT/CD* process for the **Super-Linter**.
