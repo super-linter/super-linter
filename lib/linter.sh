@@ -822,10 +822,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_GO" != "false" ]]; then
     # Set to true
     VALIDATE_GO="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [Golang] files in code base..."
+    echo "- Validating [GOLANG] files in code base..."
   else
     # Its false
-    echo "- Excluding [Golang] files in code base..."
+    echo "- Excluding [GOLANG] files in code base..."
   fi
 
   ##############################
