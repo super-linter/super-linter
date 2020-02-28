@@ -25,8 +25,9 @@ RUN apk add --no-cache \
     bash git musl-dev curl gcc jq \
     npm nodejs \
     libxml2-utils perl \
-    ruby ruby-dev ruby-bundler ruby-rdoc make\
-    py3-setuptools ansible-lint
+    ruby ruby-dev ruby-bundler ruby-rdoc make \
+    py3-setuptools ansible-lint \
+    go
 
 #####################
 # Run Pip3 Installs #
@@ -62,11 +63,11 @@ RUN npm -g --no-cache install \
 ####################################
 # Install dockerfilelint from repo #
 ####################################
-
 RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfilelint && npm install
 
  # I think we could fix this with path but not sure the language...
  # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
+
 ####################
 # Run GEM installs #
 ####################
@@ -77,6 +78,12 @@ RUN gem install rubocop:0.74 rubocop-rails rubocop-github:0.13
 ######################
 RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
     && cp "shellcheck-stable/shellcheck" /usr/bin/
+
+#####################
+# Install Go Linter #
+#####################
+ARG GO_VERSION='v1.23.7'
+RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
@@ -97,6 +104,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
     VALIDATE_DOCKER=${VALIDATE_DOCKER} \
     VALIDATE_JAVASCRIPT=${VALIDATE_JAVASCRIPT} \
+    VALIDATE_GO=${VALIDATE_GO} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN}
