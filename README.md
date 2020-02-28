@@ -13,6 +13,7 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **XML** (LibXML)
 - **Coffeescript** (coffeelint)
 - **Javascript** (eslint)(standard)
+- **Golang** (golangci-lint)
 - **Dockerfile** (dockerfilelint)
 
 ## How to use
@@ -121,7 +122,10 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
   - Flag to set the root directory for Ansible file location(s)
 - **VALIDATE_DOCKER**
   - Default: `true`
-  - Flag to enable or disable the linting process of the language  
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_GO**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
 - **VERBOSE_OUTPUT**
   - Default: `false`
   - Flag to enable additional information about the linter, versions, and additional output

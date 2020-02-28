@@ -36,13 +36,16 @@ ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to th
 # Docker Vars
 DOCKER_FILE_NAME='.dockerfilelintrc'                                # Name of the file
 DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to the Docker lint rules
+# Golang Vars
+GO_FILE_NAME='.golangci.yml'                                        # Name of the file
+GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to the Docker lint rules
 
 #######################################
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint")
 
 ###################
 # GitHub ENV Vars #
@@ -64,6 +67,7 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
+VALIDATE_GO="${VALIDATE_GO}"                      # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                  # Boolean to validate only test cases
 
 ##############
@@ -102,6 +106,7 @@ FILE_ARRAY_COFFEESCRIPT=()  # Array of files to check
 FILE_ARRAY_ESLINT=()        # Array of files to check
 FILE_ARRAY_STANDARD=()      # Array of files to check
 FILE_ARRAY_DOCKER=()        # Array of files to check
+FILE_ARRAY_GO=()        # Array of files to check
 
 ############
 # Counters #
@@ -119,6 +124,7 @@ ERRORS_FOUND_ANSIBLE=0      # Count of errors found
 ERRORS_FOUND_STANDARD=0     # Count of errors found
 ERRORS_FOUND_ESLINT=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0       # Count of errors found
+ERRORS_FOUND_GO=0           # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -806,6 +812,21 @@ GetGitHubVars()
     echo "- Excluding [DOCKER] files in code base..."
   fi
 
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_GO" != "false" ]]; then
+    # Set to true
+    VALIDATE_GO="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [GOLANG] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [GOLANG] files in code base..."
+  fi
 
   ##############################
   # Validate Ansible Directory #
@@ -1052,6 +1073,18 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_JAVASCRIPT+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ########################
+    # Get the Golang files #
+    ########################
+  elif [ "$FILE_TYPE" == "go" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_GO+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1452,6 +1485,7 @@ Footer()
   echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_ESLINT]"
   echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_STANDARD]"
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
+  echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
   echo "----------------------------------------------"
   echo ""
 
@@ -1470,6 +1504,7 @@ Footer()
      [ $ERRORS_FOUND_ESLINT -ne 0 ] || \
      [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
      [ $ERRORS_FOUND_DOCKER -ne 0 ] || \
+     [ $ERRORS_FOUND_GO -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -1511,6 +1546,7 @@ RunTestCases()
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
+  TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
   TestCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
   TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
@@ -1557,6 +1593,8 @@ GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
 GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
 # Get javascript rules
 GetLinterRules "$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES"
+# Get Golang rules
+GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 # Get docker rules
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 
@@ -1688,6 +1726,17 @@ if [ "$VALIDATE_COFFEE" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
+fi
+
+##################
+# GOLANG LINTING #
+##################
+if [ "$VALIDATE_GO" == "true" ]; then
+  #########################
+  # Lint the golang files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
 fi
 
 ###################
