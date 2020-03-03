@@ -45,7 +45,10 @@ name: Lint Code Base
 #############################
 # Start the job on all push #
 #############################
-on: ['push']
+on:
+  push:
+    branches-ignore:
+      - 'master'
 
 ###############
 # Set the Job #
