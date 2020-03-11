@@ -130,7 +130,7 @@ ERRORS_FOUND_STANDARD=0     # Count of errors found
 ERRORS_FOUND_ESLINT=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0       # Count of errors found
 ERRORS_FOUND_GO=0           # Count of errors found
-ERRORS_FOUND_TERRARFORM=0   # Count of errors found
+ERRORS_FOUND_TERRAFORM=0    # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1527,21 +1527,21 @@ Footer()
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  if [ $ERRORS_FOUND_YML -ne 0 ] || \
-     [ $ERRORS_FOUND_JSON -ne 0 ] || \
-     [ $ERRORS_FOUND_XML -ne 0 ] || \
-     [ $ERRORS_FOUND_MARKDOWN -ne 0 ] || \
-     [ $ERRORS_FOUND_BASH -ne 0 ] || \
-     [ $ERRORS_FOUND_PERL -ne 0 ] || \
-     [ $ERRORS_FOUND_PYTHON -ne 0 ] || \
-     [ $ERRORS_FOUND_COFFEESCRIPT -ne 0 ] || \
-     [ $ERRORS_FOUND_ANSIBLE -ne 0 ] || \
-     [ $ERRORS_FOUND_ESLINT -ne 0 ] || \
-     [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
-     [ $ERRORS_FOUND_DOCKER -ne 0 ] || \
-     [ $ERRORS_FOUND_GO -ne 0 ] || \
-     [ $ERRORS_FOUND_TERRAFORM -ne 0 ] || \
-     [ $ERRORS_FOUND_RUBY -ne 0 ]; then
+  if [ "$ERRORS_FOUND_YML" -ne 0 ] || \
+     [ "$ERRORS_FOUND_JSON" -ne 0 ] || \
+     [ "$ERRORS_FOUND_XML" -ne 0 ] || \
+     [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] || \
+     [ "$ERRORS_FOUND_BASH" -ne 0 ] || \
+     [ "$ERRORS_FOUND_PERL" -ne 0 ] || \
+     [ "$ERRORS_FOUND_PYTHON" -ne 0 ] || \
+     [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] || \
+     [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] || \
+     [ "$ERRORS_FOUND_ESLINT" -ne 0 ] || \
+     [ "$ERRORS_FOUND_STANDARD" -ne 0 ] || \
+     [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
+     [ "$ERRORS_FOUND_GO" -ne 0 ] || \
+     [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
+     [ "$ERRORS_FOUND_RUBY" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
