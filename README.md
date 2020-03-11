@@ -15,6 +15,7 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **Javascript** (eslint)(standard)
 - **Golang** (golangci-lint)
 - **Dockerfile** (dockerfilelint)
+- **Terraform** (tflint)
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -127,6 +128,9 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
   - Default: `true`
   - Flag to enable or disable the linting process of the language
 - **VALIDATE_GO**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language
+- **VALIDATE_TERRAFORM**
   - Default: `true`
   - Flag to enable or disable the linting process of the language
 - **VERBOSE_OUTPUT**

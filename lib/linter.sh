@@ -38,14 +38,17 @@ DOCKER_FILE_NAME='.dockerfilelintrc'                                # Name of th
 DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"     # Path to the Docker lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                        # Name of the file
-GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to the Docker lint rules
+GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to the Go lint rules
+# Terraform Vars
+TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
+TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
 
 #######################################
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
 
 ###################
 # GitHub ENV Vars #
@@ -68,6 +71,7 @@ VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
 VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                      # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                  # Boolean to validate only test cases
 
 ##############
@@ -106,7 +110,8 @@ FILE_ARRAY_COFFEESCRIPT=()  # Array of files to check
 FILE_ARRAY_ESLINT=()        # Array of files to check
 FILE_ARRAY_STANDARD=()      # Array of files to check
 FILE_ARRAY_DOCKER=()        # Array of files to check
-FILE_ARRAY_GO=()        # Array of files to check
+FILE_ARRAY_GO=()            # Array of files to check
+FILE_ARRAY_TERRAFORM=()     # Array of files to check
 
 ############
 # Counters #
@@ -125,6 +130,7 @@ ERRORS_FOUND_STANDARD=0     # Count of errors found
 ERRORS_FOUND_ESLINT=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0       # Count of errors found
 ERRORS_FOUND_GO=0           # Count of errors found
+ERRORS_FOUND_TERRARFORM=0   # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -828,6 +834,22 @@ GetGitHubVars()
     echo "- Excluding [GOLANG] files in code base..."
   fi
 
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_TERRAFORM" != "false" ]]; then
+    # Set to true
+    VALIDATE_TERRAFORM="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [TERRAFORM] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [TERRAFORM] files in code base..."
+  fi
+
   ##############################
   # Validate Ansible Directory #
   ##############################
@@ -1080,11 +1102,23 @@ BuildFileList()
     ########################
     # Get the Golang files #
     ########################
-  elif [ "$FILE_TYPE" == "go" ]; then
+    elif [ "$FILE_TYPE" == "go" ]; then
       ################################
       # Append the file to the array #
       ################################
       FILE_ARRAY_GO+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ###########################
+    # Get the Terraform files #
+    ###########################
+    elif [ "$FILE_TYPE" == "tf" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_TERRAFORM+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1486,6 +1520,7 @@ Footer()
   echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_STANDARD]"
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
+  echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
   echo "----------------------------------------------"
   echo ""
 
@@ -1505,6 +1540,7 @@ Footer()
      [ $ERRORS_FOUND_STANDARD -ne 0 ] || \
      [ $ERRORS_FOUND_DOCKER -ne 0 ] || \
      [ $ERRORS_FOUND_GO -ne 0 ] || \
+     [ $ERRORS_FOUND_TERRAFORM -ne 0 ] || \
      [ $ERRORS_FOUND_RUBY -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -1552,6 +1588,7 @@ RunTestCases()
   TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
+  TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
 
   #################
   # Footer prints #
@@ -1579,24 +1616,26 @@ GetGitHubVars
 ########################
 # Get the linter rules #
 ########################
-# Get yml rules
+# Get YML rules
 GetLinterRules "$YAML_FILE_NAME" "$YAML_LINTER_RULES"
-# Get markdown rules
+# Get Markdown rules
 GetLinterRules "$MD_FILE_NAME" "$MD_LINTER_RULES"
-# Get python rules
+# Get Python rules
 GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
-# Get ruby rules
+# Get Ruby rules
 GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
-# Get coffeescript rules
+# Get Coffeescript rules
 GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
-# Get ansible rules
+# Get Ansible rules
 GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
-# Get javascript rules
+# Get JavaScript rules
 GetLinterRules "$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES"
 # Get Golang rules
 GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
-# Get docker rules
+# Get Docker rules
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
+# Get Terraform rules
+GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 
 #################################
 # Check if were in verbose mode #
@@ -1737,6 +1776,17 @@ if [ "$VALIDATE_GO" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
+fi
+
+#####################
+# TERRAFORM LINTING #
+#####################
+if [ "$VALIDATE_TERRAFORM" == "true" ]; then
+  ############################
+  # Lint the Terraform files #
+  ############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
 fi
 
 ###################

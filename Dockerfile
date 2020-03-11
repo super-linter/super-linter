@@ -85,6 +85,11 @@ RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux
 ARG GO_VERSION='v1.23.7'
 RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
+##################
+# Install TFLint #
+##################
+RUN curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip
+
 ###########################################
 # Load GitHub Env Vars for Github Actions #
 ###########################################
@@ -105,6 +110,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_DOCKER=${VALIDATE_DOCKER} \
     VALIDATE_JAVASCRIPT=${VALIDATE_JAVASCRIPT} \
     VALIDATE_GO=${VALIDATE_GO} \
+    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN}
