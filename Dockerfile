@@ -77,7 +77,7 @@ RUN gem install rubocop:0.74 rubocop-rails rubocop-github:0.13
 # Install shellcheck #
 ######################
 RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
-    && cp "shellcheck-stable/shellcheck" /usr/bin/
+    && mv "shellcheck-stable/shellcheck" /usr/bin/
 
 #####################
 # Install Go Linter #
@@ -89,7 +89,7 @@ RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master
 # Install TFLint #
 ##################
 RUN curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
-    && cp "tflint" /usr/bin/
+    && mv "tflint" /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
