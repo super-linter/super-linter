@@ -88,7 +88,8 @@ RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master
 ##################
 # Install TFLint #
 ##################
-RUN curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip
+RUN curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
+    && cp "tflint" /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for Github Actions #
