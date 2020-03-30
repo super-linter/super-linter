@@ -26,6 +26,10 @@ Security/Open:
 ############################# Metrics Rules ####################################
 ################################################################################
 
+# Commonly used screens these days easily fit more than 80 characters.
+Metrics/LineLength:
+  Max: 120
+
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
@@ -72,10 +76,6 @@ Layout/SpaceInsideBlockBraces:
 # foo} means hash, foo } means block.
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
-
-# Commonly used screens these days easily fit more than 80 characters.
-Layout/LineLength:
-  Max: 120
 
 ################################################################################
 ########################### Style Rules ########################################
