@@ -58,7 +58,8 @@ RUN npm -g --no-cache install \
     prettier \
     eslint-config-prettier \
     @typescript-eslint/eslint-plugin \
-    @typescript-eslint/parser
+    @typescript-eslint/parser \
+    eslint-plugin-jest
 
 ####################################
 # Install dockerfilelint from repo #
