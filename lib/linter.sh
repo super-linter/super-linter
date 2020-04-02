@@ -1551,6 +1551,7 @@ TestCodebase()
         #########
         echo "ERROR! Found errors in [$LINTER_NAME] linter!"
         echo "ERROR:[$LINT_CMD]"
+        echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
       else
@@ -1573,6 +1574,7 @@ TestCodebase()
         echo "ERROR! Found errors in [$LINTER_NAME] linter!"
         echo "ERROR! This file should have failed test case!"
         echo "ERROR:[$LINT_CMD]"
+        echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
       else
