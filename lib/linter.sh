@@ -1916,7 +1916,7 @@ if [ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]; then
   #################################
   # Get Javascript standard rules #
   #################################
-  GetStandardRules
+  GetStandardRules "javascript"
   #############################
   # Lint the Javascript files #
   #############################
@@ -1940,7 +1940,7 @@ if [ "$VALIDATE_TYPESCRIPT_STANDARD" == "true" ]; then
   #################################
   # Get Typescript standard rules #
   #################################
-  GetStandardRules
+  GetStandardRules "typescript"
   #############################
   # Lint the Typescript files #
   #############################
