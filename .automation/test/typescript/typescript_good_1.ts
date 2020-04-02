@@ -1,6 +1,6 @@
 const spiderman = (person) => {
-  return 'Hello, ' + person;
+  return 'Hello, ' + person
 }
 
-const user = 'Peter Parker';
-console.log(spiderman(user));
+const user = 'Peter Parker'
+console.log(spiderman(user))
