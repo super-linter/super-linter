@@ -1,7 +1,7 @@
 // https://github.com/terraform-linters/tflint/blob/master/docs/guides/config.md
 config {
   module = true
-  deep_check = true
+  deep_check = false
   force = false
 
   // aws_credentials = {
@@ -20,7 +20,7 @@ config {
 }
 
 rule "aws_instance_invalid_type" {
-  enabled = true
+  enabled = false
 }
 
 rule "aws_instance_previous_type" {
