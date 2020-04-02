@@ -62,10 +62,22 @@ Once the container has been downloaded to your local environment, you can then b
     - `-e VALIDATE_ANSIBLE=<true|false>`
     - Default: `true`
     - Flag to enable or disable the linting process of the language
-  - **VALIDATE_JAVASCRIPT**
-    - `-e VALIDATE_JAVASCRIPT=<true|false>`
+  - **VALIDATE_JAVASCRIPT_ES**
+    - `-e VALIDATE_JAVASCRIPT_ES=<true|false>`
     - Default: `true`
-    - Flag to enable or disable the linting process of the language
+    - Flag to enable or disable the linting process of the language (Utilizing: eslint)
+  - **VALIDATE_JAVASCRIPT_STANDARD**
+    - `-e VALIDATE_JAVASCRIPT_STANDARD=<true|false>`
+    - Default: `true`
+    - Flag to enable or disable the linting process of the language (Utilizing: standard)
+  - **VALIDATE_TYPESCRIPT_ES**
+    - `-e VALIDATE_TYPESCRIPT_ES=<true|false>`
+    - Default: `true`
+    - Flag to enable or disable the linting process of the language (Utilizing: eslint)
+  - **VALIDATE_TYPESCRIPT_STANDARD**
+    - `-e VALIDATE_TYPESCRIPT_STANDARD=<true|false>`
+    - Default: `true`
+    - Flag to enable or disable the linting process of the language (Utilizing: standard)
   - **VALIDATE_DOCKER**
     - `-e VALIDATE_DOCKER=<true|false>`
     - Default: `true`

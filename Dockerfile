@@ -58,7 +58,8 @@ RUN npm -g --no-cache install \
     prettier \
     eslint-config-prettier \
     @typescript-eslint/eslint-plugin \
-    @typescript-eslint/parser
+    @typescript-eslint/parser \
+    eslint-plugin-jest
 
 ####################################
 # Install dockerfilelint from repo #
@@ -109,7 +110,10 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
     VALIDATE_DOCKER=${VALIDATE_DOCKER} \
-    VALIDATE_JAVASCRIPT=${VALIDATE_JAVASCRIPT} \
+    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
+    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
+    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
+    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \

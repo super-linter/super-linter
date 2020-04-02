@@ -13,6 +13,7 @@ Developers on **GitHub** can call this Action to lint their code base with the f
 - **XML** (LibXML)
 - **Coffeescript** (coffeelint)
 - **Javascript** (eslint)(standard)
+- **Typescript** (eslint)(standard)
 - **Golang** (golangci-lint)
 - **Dockerfile** (dockerfilelint)
 - **Terraform** (tflint)
@@ -118,9 +119,18 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **VALIDATE_ANSIBLE**
   - Default: `true`
   - Flag to enable or disable the linting process of the language
-- **VALIDATE_JAVASCRIPT**
+- **VALIDATE_JAVASCRIPT_ES**
   - Default: `true`
-  - Flag to enable or disable the linting process of the language
+  - Flag to enable or disable the linting process of the language (Utilizing: eslint)
+- **VALIDATE_JAVASCRIPT_STANDARD**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language (Utilizing: standard)
+- **VALIDATE_TYPESCRIPT_ES**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language (Utilizing: eslint)
+- **VALIDATE_TYPESCRIPT_STANDARD**
+  - Default: `true`
+  - Flag to enable or disable the linting process of the language (Utilizing: standard)
 - **ANSIBLE_DIRECTORY**
   - Default: `/ansible`
   - Flag to set the root directory for Ansible file location(s)

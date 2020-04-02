@@ -29,7 +29,11 @@ COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to 
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
-STANDARD_LINTER_RULES=''                                                # ENV string to pass when running js standard
+JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
+# Typecript Vars
+TYPESCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
+TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
+TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                               # Name of the file
 ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"   # Path to the Ansible lint rules
@@ -53,26 +57,29 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 ###################
 # GitHub ENV Vars #
 ###################
-GITHUB_SHA="${GITHUB_SHA}"                        # GitHub sha from the commit
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"          # Github Event Path
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"            # Github Workspace
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"          # Ansible Directory
-VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"  # Boolean to validate all files
-VALIDATE_YAML="${VALIDATE_YAML}"                  # Boolean to validate language
-VALIDATE_JSON="${VALIDATE_JSON}"                  # Boolean to validate language
-VALIDATE_XML="${VALIDATE_XML}"                    # Boolean to validate language
-VALIDATE_MD="${VALIDATE_MD}"                      # Boolean to validate language
-VALIDATE_BASH="${VALIDATE_BASH}"                  # Boolean to validate language
-VALIDATE_PERL="${VALIDATE_PERL}"                  # Boolean to validate language
-VALIDATE_PYTHON="${VALIDATE_PYTHON}"              # Boolean to validate language
-VALIDATE_RUBY="${VALIDATE_RUBY}"                  # Boolean to validate language
-VALIDATE_COFFEE="${VALIDATE_COFFEE}"              # Boolean to validate language
-VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"            # Boolean to validate language
-VALIDATE_JAVASCRIPT="${VALIDATE_JAVASCRIPT}"      # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"              # Boolean to validate language
-VALIDATE_GO="${VALIDATE_GO}"                      # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"        # Boolean to validate language
-TEST_CASE_RUN="${TEST_CASE_RUN}"                  # Boolean to validate only test cases
+GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the commit
+GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
+ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
+VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
+VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
+VALIDATE_JSON="${VALIDATE_JSON}"                      # Boolean to validate language
+VALIDATE_XML="${VALIDATE_XML}"                        # Boolean to validate language
+VALIDATE_MD="${VALIDATE_MD}"                          # Boolean to validate language
+VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate language
+VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
+VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
+VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
+VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
+VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                # Boolean to validate language
+VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"              # Boolean to validate language
+VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"  # Boolean to validate language
+VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"              # Boolean to validate language
+VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to validate language
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
+VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
 # Debug Vars #
@@ -98,39 +105,43 @@ TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_YML=()           # Array of files to check
-FILE_ARRAY_JSON=()          # Array of files to check
-FILE_ARRAY_XML=()           # Array of files to check
-FILE_ARRAY_MD=()            # Array of files to check
-FILE_ARRAY_BASH=()          # Array of files to check
-FILE_ARRAY_PERL=()          # Array of files to check
-FILE_ARRAY_RUBY=()          # Array of files to check
-FILE_ARRAY_PYTHON=()        # Array of files to check
-FILE_ARRAY_COFFEESCRIPT=()  # Array of files to check
-FILE_ARRAY_ESLINT=()        # Array of files to check
-FILE_ARRAY_STANDARD=()      # Array of files to check
-FILE_ARRAY_DOCKER=()        # Array of files to check
-FILE_ARRAY_GO=()            # Array of files to check
-FILE_ARRAY_TERRAFORM=()     # Array of files to check
+FILE_ARRAY_YML=()                   # Array of files to check
+FILE_ARRAY_JSON=()                  # Array of files to check
+FILE_ARRAY_XML=()                   # Array of files to check
+FILE_ARRAY_MD=()                    # Array of files to check
+FILE_ARRAY_BASH=()                  # Array of files to check
+FILE_ARRAY_PERL=()                  # Array of files to check
+FILE_ARRAY_RUBY=()                  # Array of files to check
+FILE_ARRAY_PYTHON=()                # Array of files to check
+FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
+FILE_ARRAY_JAVASCRIPT_ES=()         # Array of files to check
+FILE_ARRAY_JAVASCRIPT_STANDARD=()   # Array of files to check
+FILE_ARRAY_TYPESCRIPT_ES=()         # Array of files to check
+FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
+FILE_ARRAY_DOCKER=()                # Array of files to check
+FILE_ARRAY_GO=()                    # Array of files to check
+FILE_ARRAY_TERRAFORM=()             # Array of files to check
 
 ############
 # Counters #
 ############
-ERRORS_FOUND_YML=0          # Count of errors found
-ERRORS_FOUND_JSON=0         # Count of errors found
-ERRORS_FOUND_XML=0          # Count of errors found
-ERRORS_FOUND_MARKDOWN=0     # Count of errors found
-ERRORS_FOUND_BASH=0         # Count of errors found
-ERRORS_FOUND_PERL=0         # Count of errors found
-ERRORS_FOUND_RUBY=0         # Count of errors found
-ERRORS_FOUND_PYTHON=0       # Count of errors found
-ERRORS_FOUND_COFFEESCRIPT=0 # Count of errors found
-ERRORS_FOUND_ANSIBLE=0      # Count of errors found
-ERRORS_FOUND_STANDARD=0     # Count of errors found
-ERRORS_FOUND_ESLINT=0       # Count of errors found
-ERRORS_FOUND_DOCKER=0       # Count of errors found
-ERRORS_FOUND_GO=0           # Count of errors found
-ERRORS_FOUND_TERRAFORM=0    # Count of errors found
+ERRORS_FOUND_YML=0                  # Count of errors found
+ERRORS_FOUND_JSON=0                 # Count of errors found
+ERRORS_FOUND_XML=0                  # Count of errors found
+ERRORS_FOUND_MARKDOWN=0             # Count of errors found
+ERRORS_FOUND_BASH=0                 # Count of errors found
+ERRORS_FOUND_PERL=0                 # Count of errors found
+ERRORS_FOUND_RUBY=0                 # Count of errors found
+ERRORS_FOUND_PYTHON=0               # Count of errors found
+ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
+ERRORS_FOUND_ANSIBLE=0              # Count of errors found
+ERRORS_FOUND_JAVASCRIPT_STANDARD=0  # Count of errors found
+ERRORS_FOUND_JAVASCRIPT_ES=0        # Count of errors found
+ERRORS_FOUND_TYPESCRIPT_STANDARD=0  # Count of errors found
+ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
+ERRORS_FOUND_DOCKER=0               # Count of errors found
+ERRORS_FOUND_GO=0                   # Count of errors found
+ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -250,6 +261,11 @@ GetLinterRules()
 #### Function GetStandardRules #################################################
 GetStandardRules()
 {
+  ################
+  # Pull In Vars #
+  ################
+  LINTER="$1" # Type: javascript | typescript
+
   #########################################################################
   # Need to get the ENV vars from the linter rules to run in command line #
   #########################################################################
@@ -262,8 +278,14 @@ GetStandardRules()
   # Get list of all environment variables #
   #########################################
   # Only env vars that are marked as true
-  # shellcheck disable=SC2207
-  GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+  GET_ENV_ARRAY=()
+  if [[ "$LINTER" == "javascript" ]]; then
+    # shellcheck disable=SC2207
+    GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+  elif [[ "$LINTER" == "typescript" ]]; then
+    # shellcheck disable=SC2207
+    GET_ENV_ARRAY=($(yq .env "$TYPESCRIPT_LINTER_RULES" |grep true))
+  fi
 
   #######################
   # Load the error code #
@@ -311,7 +333,11 @@ GetStandardRules()
   ########################################
   # Remove trailing and ending witespace #
   ########################################
-  STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  if [[ "$LINTER" == "javascript" ]]; then
+    JAVASCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  elif [[ "$LINTER" == "typescript" ]]; then
+    TYPESCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  fi
 }
 ################################################################################
 #### Function LintAnsibleFiles #################################################
@@ -789,17 +815,65 @@ GetGitHubVars()
   ###############################
   # Convert string to lowercase #
   ###############################
-  VALIDATE_JAVASCRIPT=$(echo "$VALIDATE_JAVASCRIPT" | awk '{print tolower($0)}')
+  VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
   ######################################
   # Validate we should check all files #
   ######################################
-  if [[ "$VALIDATE_JAVASCRIPT" != "false" ]]; then
+  if [[ "$VALIDATE_JAVASCRIPT_ES" != "false" ]]; then
     # Set to true
-    VALIDATE_JAVASCRIPT="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JAVASCRIPT] files in code base..."
+    VALIDATE_JAVASCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [JAVASCRIPT(eslint)] files in code base..."
   else
     # Its false
-    echo "- Excluding [JAVASCRIPT] files in code base..."
+    echo "- Excluding [JAVASCRIPT(eslint)] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_JAVASCRIPT_STANDARD=$(echo "$VALIDATE_JAVASCRIPT_STANDARD" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_JAVASCRIPT_STANDARD" != "false" ]]; then
+    # Set to true
+    VALIDATE_JAVASCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [JAVASCRIPT(standard)] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [JAVASCRIPT(standard)] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_TYPESCRIPT_ES=$(echo "$VALIDATE_TYPESCRIPT_ES" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_TYPESCRIPT_ES" != "false" ]]; then
+    # Set to true
+    VALIDATE_TYPESCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [TYPESCRIPT(eslint)] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [TYPESCRIPT(eslint)] files in code base..."
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  VALIDATE_TYPESCRIPT_STANDARD=$(echo "$VALIDATE_TYPESCRIPT_STANDARD" | awk '{print tolower($0)}')
+  ######################################
+  # Validate we should check all files #
+  ######################################
+  if [[ "$VALIDATE_TYPESCRIPT_STANDARD" != "false" ]]; then
+    # Set to true
+    VALIDATE_TYPESCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
+    echo "- Validating [TYPESCRIPT(standard)] files in code base..."
+  else
+    # Its false
+    echo "- Excluding [TYPESCRIPT(standard)] files in code base..."
   fi
 
   ###############################
@@ -1094,7 +1168,21 @@ BuildFileList()
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_JAVASCRIPT+=("$FILE")
+      FILE_ARRAY_JAVASCRIPT_ES+=("$FILE")
+      FILE_ARRAY_JAVASCRIPT_STANDARD+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ############################
+    # Get the TypeScript files #
+    ############################
+    elif [ "$FILE_TYPE" == "ts" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_TYPESCRIPT_ES+=("$FILE")
+      FILE_ARRAY_TYPESCRIPT_STANDARD+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1463,6 +1551,7 @@ TestCodebase()
         #########
         echo "ERROR! Found errors in [$LINTER_NAME] linter!"
         echo "ERROR:[$LINT_CMD]"
+        echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
       else
@@ -1485,6 +1574,7 @@ TestCodebase()
         echo "ERROR! Found errors in [$LINTER_NAME] linter!"
         echo "ERROR! This file should have failed test case!"
         echo "ERROR:[$LINT_CMD]"
+        echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
       else
@@ -1516,8 +1606,10 @@ Footer()
   echo "ERRORS FOUND in COFFEESCRIPT:[$ERRORS_FOUND_COFFEESCRIPT]"
   echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
   echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
-  echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_ESLINT]"
-  echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_STANDARD]"
+  echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_JAVASCRIPT_ES]"
+  echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_JAVASCRIPT_STANDARD]"
+  echo "ERRORS FOUND in TYPESCRIPT(eslint):[$ERRORS_FOUND_TYPESCRIPT_ES]"
+  echo "ERRORS FOUND in TYPESCRIPT(Standard):[$ERRORS_FOUND_TYPESCRIPT_STANDARD]"
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
   echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
@@ -1536,8 +1628,10 @@ Footer()
      [ "$ERRORS_FOUND_PYTHON" -ne 0 ] || \
      [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] || \
      [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] || \
-     [ "$ERRORS_FOUND_ESLINT" -ne 0 ] || \
-     [ "$ERRORS_FOUND_STANDARD" -ne 0 ] || \
+     [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] || \
+     [ "$ERRORS_FOUND_JAVASCRIPT_STANDARD" -ne 0 ] || \
+     [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] || \
+     [ "$ERRORS_FOUND_TYPESCRIPT_STANDARD" -ne 0 ] || \
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
@@ -1584,8 +1678,10 @@ RunTestCases()
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
-  TestCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
-  TestCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$"
+  TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$"
+  TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$"
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
@@ -1630,6 +1726,8 @@ GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
 GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
 # Get JavaScript rules
 GetLinterRules "$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES"
+# Get TypeScript rules
+GetLinterRules "$TYPESCRIPT_FILE_NAME" "$TYPESCRIPT_LINTER_RULES"
 # Get Golang rules
 GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 # Get Docker rules
@@ -1805,18 +1903,50 @@ fi
 ######################
 # JAVASCRIPT LINTING #
 ######################
-if [ "$VALIDATE_JAVASCRIPT" == "true" ]; then
-  #################################
-  # Get Javascript standard rules #
-  #################################
-  GetStandardRules
-
+if [ "$VALIDATE_JAVASCRIPT_ES" == "true" ]; then
   #############################
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ESLINT" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_ESLINT[@]}"
-  LintCodebase "STANDARD" "standard" "standard $STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_STANDARD[@]}"
+  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
+fi
+
+######################
+# JAVASCRIPT LINTING #
+######################
+if [ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]; then
+  #################################
+  # Get Javascript standard rules #
+  #################################
+  GetStandardRules "javascript"
+  #############################
+  # Lint the Javascript files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
+fi
+
+######################
+# TYPESCRIPT LINTING #
+######################
+if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
+  #############################
+  # Lint the Typescript files #
+  #############################
+  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
+fi
+######################
+# TYPESCRIPT LINTING #
+######################
+if [ "$VALIDATE_TYPESCRIPT_STANDARD" == "true" ]; then
+  #################################
+  # Get Typescript standard rules #
+  #################################
+  GetStandardRules "typescript"
+  #############################
+  # Lint the Typescript files #
+  #############################
+  LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
 fi
 
 ##################
