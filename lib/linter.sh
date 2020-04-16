@@ -1229,7 +1229,7 @@ BuildFileList()
       #################
       # Check if bash #
       #################
-      if [[ "$GET_FILE_TYPE_CMD" =~ *"Bourne-Again shell script"* ]]; then
+      if [[ "$GET_FILE_TYPE_CMD" == *"Bourne-Again shell script"* ]]; then
         #######################
         # It is a bash script #
         #######################
@@ -1243,7 +1243,7 @@ BuildFileList()
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
         ##########################################################
         READ_ONLY_CHANGE_FLAG=1
-      elif [[ "$GET_FILE_TYPE_CMD" =~ *"Ruby script"* ]]; then
+      elif [[ "$GET_FILE_TYPE_CMD" == *"Ruby script"* ]]; then
         #######################
         # It is a Ruby script #
         #######################
