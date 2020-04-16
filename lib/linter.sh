@@ -1221,14 +1221,52 @@ BuildFileList()
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
     else
-      ############################
-      # Extension was not found! #
-      ############################
-      echo "  - WARN! Failed to get filetype for:[$FILE]!"
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
+      ##############################################
+      # Use file to see if we can parse what it is #
+      ##############################################
+      GET_FILE_TYPE_CMD=$(file "$FILE" 2>&1)
+
+      #################
+      # Check if bash #
+      #################
+      if [[ "$GET_FILE_TYPE_CMD" =~ *"Bourne-Again shell script"* ]]; then
+        #######################
+        # It is a bash script #
+        #######################
+        echo "WARN! Found bash script without extension:[.sh]"
+        echo "Please update file with proper extensions."
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_BASH+=("$FILE")
+        ##########################################################
+        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+        ##########################################################
+        READ_ONLY_CHANGE_FLAG=1
+      elif [[ "$GET_FILE_TYPE_CMD" =~ *"Ruby script"* ]]; then
+        #######################
+        # It is a Ruby script #
+        #######################
+        echo "WARN! Found ruby script without extension:[.rb]"
+        echo "Please update file with proper extensions."
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_RUBY+=("$FILE")
+        ##########################################################
+        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+        ##########################################################
+        READ_ONLY_CHANGE_FLAG=1
+      else
+        ############################
+        # Extension was not found! #
+        ############################
+        echo "  - WARN! Failed to get filetype for:[$FILE]!"
+        ##########################################################
+        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+        ##########################################################
+        READ_ONLY_CHANGE_FLAG=1
+      fi
     fi
   done
 

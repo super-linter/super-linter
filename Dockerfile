@@ -22,7 +22,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash git git-lfs musl-dev curl gcc jq \
+    bash git git-lfs musl-dev curl gcc jq file\
     npm nodejs \
     libxml2-utils perl \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
