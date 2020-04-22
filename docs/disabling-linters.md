@@ -5,11 +5,28 @@ Below is examples and documentation for each language and the various methods to
 --------------------------------------------------------------------------------
 
 ## Ruby
-### Rubocop Config file
-### Rubocop disable single line
-### Rubocop disable code block
-### Rubocop disable entire file
+- [Rubocop](https://github.com/rubocop-hq/rubocop)
 
+### Rubocop Config file
+- `.ruby-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.ruby-lint.yml`
+
+### Rubocop disable single line
+```ruby
+method(argument) # rubocop:disable SomeRule, SomeOtherRule
+```
+
+### Rubocop disable code block
+```ruby
+# rubocop:disable
+This is a long line
+var="this is some other stuff"
+# rubocop:enable
+```
+
+### Rubocop disable entire file
+If you need to ignore an entire file, you can update the `.ruby-lint.yml`
 --------------------------------------------------------------------------------
 
 ## Shell
