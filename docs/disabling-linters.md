@@ -13,10 +13,10 @@ Below is examples and documentation for each language and the various methods to
 - [Perl](#perl)
 - [XML](#xml)
 - [Coffeescript](#coffeescript)
-- [Javascript Eslint](#javascript-(eslint))
-- [Javascript Standard](#javascript-(standard))
-- [Typescript Eslint](#typescript-(eslint))
-- [Typescript Standard](#typescript-(standard))
+- [Javascript Eslint](#javascript-eslint)
+- [Javascript Standard](#javascript-standard)
+- [Typescript Eslint](#typescript-eslint)
+- [Typescript Standard](#typescript-standard)
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
@@ -347,7 +347,7 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 
 --------------------------------------------------------------------------------
 
-## Javascript (eslint)
+## Javascript eslint
 - [eslint](https://eslint.org/)
 
 ### Javascript eslint Config file
@@ -384,7 +384,7 @@ alert('foo')
 
 --------------------------------------------------------------------------------
 
-## Javascript (standard)
+## Javascript standard
 - [standard js](https://standardjs.com/)
 
 ### Javascript standard Config file
@@ -401,7 +401,7 @@ alert('foo')
 
 --------------------------------------------------------------------------------
 
-## Typescript (eslint)
+## Typescript eslint
 - [eslint](https://eslint.org/)
 
 ### Typescript eslint Config file
@@ -437,7 +437,7 @@ alert('foo')
 
 --------------------------------------------------------------------------------
 
-## Typescript (standard)
+## Typescript standard
 - [standardjs](https://standardjs.com/)
 
 ### Typescript standard Config file
