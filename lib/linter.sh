@@ -221,10 +221,8 @@ GetLinterRules()
   ################
   # print header #
   ################
-  echo ""
   echo "----------------------------------------------"
   echo "Gathering users linter:[$FILE_NAME] rules from repository, or defaulting..."
-  echo ""
 
   #####################################
   # Validate we have the linter rules #
@@ -254,7 +252,7 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    echo "Codebase does NOT have file:[.github/linters/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    echo "  -> Codebase does NOT have file:[.github/linters/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
   fi
 }
 ################################################################################
@@ -380,8 +378,11 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    if [ $DEBUG -ne 0 ]; then
+      # Success
+      echo "Successfully found binary in system"
+      echo "Location:[$VALIDATE_INSTALL_CMD]"
+    fi
   fi
 
   ##########################
@@ -1634,6 +1635,7 @@ Footer()
   echo "The script has completed"
   echo "----------------------------------------------"
   echo "----------------------------------------------"
+  echo ""
   echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
   echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
   echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
@@ -1651,6 +1653,7 @@ Footer()
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
   echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
+  echo ""
   echo "----------------------------------------------"
   echo ""
 
