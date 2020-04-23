@@ -8,7 +8,7 @@ Below is examples and documentation for each language and the various methods to
 - [Rubocop](https://github.com/rubocop-hq/rubocop)
 
 ### Rubocop Config file
-- `.ruby-lint.yml`
+- `.github/linters/.ruby-lint.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.ruby-lint.yml`
 - **Note:** We use the Default **GitHub** Rule set from [Rubocop-GitHub](https://github.com/github/rubocop-github)
@@ -55,7 +55,7 @@ AllCops:
 --------------------------------------------------------------------------------
 
 ## Shell
-**Shellcheck** is an opensource tool we use for linting and validation of shell scripting.
+**Shellcheck** is an opensource tool we use for linting and validation of the shell scripting language.
 - [Shellcheck](https://github.com/koalaman/shellcheck)
 
 ### Shellcheck Config file
@@ -94,10 +94,46 @@ moreThings()
 --------------------------------------------------------------------------------
 
 ## YAML
+- [YamlLint](https://github.com/adrienverge/yamllint)
+
 ### Yamllint Config file
+- `.github/linters/.yaml-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.yaml-lint.yml`
+
 ### Yamllint disable single line
+```yml
+This line is waaaaaaaaaay too long  # yamllint disable-line
+```
+
 ### Yamllint disable code block
+```yml
+# yamllint disable rule:colons
+- Lorem       : ipsum
+  dolor       : sit amet,
+  consectetur : adipiscing elit
+# yamllint enable
+```
+
 ### Yamllint disable entire file
+If you need to ignore an entire file, you can update the `.yaml-lint.yml` to ignore certain files and locations
+```yml
+# For all rules
+ignore: |
+  *.dont-lint-me.yaml
+  /bin/
+  !/bin/*.lint-me-anyway.yaml
+
+rules:
+  key-duplicates:
+    ignore: |
+      generated
+      *.template.yaml
+  trailing-spaces:
+    ignore: |
+      *.ignore-trailing-spaces.yaml
+      /ascii-art/*
+```
 
 --------------------------------------------------------------------------------
 
