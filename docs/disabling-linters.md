@@ -11,6 +11,7 @@ Below is examples and documentation for each language and the various methods to
 - `.ruby-lint.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.ruby-lint.yml`
+- **Note:** We use the Default **GitHub** Rule set from [Rubocop-GitHub](https://github.com/github/rubocop-github)
 
 ### Rubocop disable single line
 ```ruby
@@ -26,14 +27,61 @@ var="this is some other stuff"
 ```
 
 ### Rubocop disable entire file
-If you need to ignore an entire file, you can update the `.ruby-lint.yml`
+If you need to ignore an entire file, you can update the `.ruby-lint.yml` to ignore certain files and locations
+
+```yml
+inherit_from:
+  - .rubocop_todo.yml
+  - .rubocop_app_overrides.yml
+
+inherit_mode:
+  merge:
+    - Exclude
+
+Rails:
+  Enabled: true
+
+AllCops:
+  TargetRubyVersion: 2.5.1
+  EnabledByDefault: true
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/{rails,rake}'
+    - !ruby/regexp /old_and_unused\.rb$/
+```
+
 --------------------------------------------------------------------------------
 
 ## Shell
+**Shellcheck** is an opensource tool we use for linting and validation of shell scripting.
+- [Shellcheck](https://github.com/koalaman/shellcheck)
+
 ### Shellcheck Config file
+- There is no top level *configuration file* available at this time
+
 ### Shellcheck disable single line
+```bash
+echo "Terrible stuff" # shellcheck disable=SC2059,SC2086
+```
+
 ### Shellcheck disable code block
+```bash
+# shellcheck disable=SC2059,SC2086
+echo "some hot garbage"
+echo "More garbage code"
+```
+
 ### Shellcheck disable entire file
+- **Note:** The disable must be on the second line of the code right after the shebang
+```bash
+#!/bin/sh
+# shellcheck disable=SC2059,SC1084
+
+echo "stuff"
+moreThings()
+```
 
 --------------------------------------------------------------------------------
 
