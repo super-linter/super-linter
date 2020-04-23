@@ -195,10 +195,19 @@ Here is more data
 --------------------------------------------------------------------------------
 
 ## XML
+- [XML](http://xmlsoft.org/)
+
 ### LibXML Config file
+- There is no top level *configuration file* available at this time
+
 ### LibXML disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### LibXML disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### LibXML disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
