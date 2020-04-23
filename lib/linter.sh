@@ -378,7 +378,7 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [ "$DEBUG" -ne 0 ]; then
+    if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
       # Success
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
