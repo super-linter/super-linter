@@ -22,6 +22,7 @@ Below is examples and documentation for each language and the various methods to
 - [Terraform](#terraform)
 
 <!-- toc -->
+
 --------------------------------------------------------------------------------
 
 ## Ruby
@@ -347,15 +348,50 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 --------------------------------------------------------------------------------
 
 ## Javascript (eslint)
+- [eslint](https://eslint.org/)
+
 ### Javascript eslint Config file
+- `.github/linters/.eslintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.eslintrc.yml`
+
 ### Javascript eslint disable single line
+```javascript
+var thing = new Thing(); // eslint-disable-line no-use-before-define
+thing.sayHello();
+
+function Thing() {
+
+     this.sayHello = function() { console.log("hello"); };
+
+}
+```
+
 ### Javascript eslint disable code block
+```javascript
+/*eslint-disable */
+
+//suppress all warnings between comments
+alert('foo')
+
+/*eslint-enable */
+```
 ### Javascript eslint disable entire file
+- Place at the top of the file:
+```javascript
+/* eslint-disable */
+```
 
 --------------------------------------------------------------------------------
 
 ## Javascript (standard)
+- [standard js](https://standardjs.com/)
+
 ### Javascript standard Config file
+- `.github/linters/.eslintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.eslintrc.yml`
+
 ### Javascript standard disable single line
 ### Javascript standard disable code block
 ### Javascript standard disable entire file
@@ -363,15 +399,47 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 --------------------------------------------------------------------------------
 
 ## Typescript (eslint)
+- [eslint](https://eslint.org/)
+
+### Typescript eslint Config file
+- `.github/linters/.eslintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.eslintrc.yml`
 
 ### Typescript eslint disable single line
+```typescript
+var thing = new Thing(); // eslint-disable-line no-use-before-define
+thing.sayHello();
+
+function Thing() {
+
+     this.sayHello = function() { console.log("hello"); };
+
+}
+```
+
 ### Typescript eslint disable code block
+```typescript
+/*eslint-disable */
+
+//suppress all warnings between comments
+alert('foo')
+
+/*eslint-enable */
+```
 ### Typescript eslint disable entire file
+```typescript
+/* eslint-disable */
+```
 
 --------------------------------------------------------------------------------
 
 ## Typescript (standard)
 ### Typescript standard Config file
+- `.github/linters/.eslintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.eslintrc.yml`
+
 ### Typescript standard disable single line
 ### Typescript standard disable code block
 ### Typescript standard disable entire file
