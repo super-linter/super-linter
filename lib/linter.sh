@@ -11,6 +11,7 @@
 ###########
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
+LINTER_PATH='.github/linters'                                       # Default linter path
 # YAML Vars
 YAML_FILE_NAME='.yaml-lint.yml'                                     # Name of the file
 YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"         # Path to the yaml lint rules
@@ -227,13 +228,13 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
     # Copy users into default location #
     ####################################
-    CP_CMD=$(cp "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" "$FILE_LOCATION" 2>&1)
+    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
 
     ###################
     # Load Error code #
@@ -252,7 +253,7 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    echo "  -> Codebase does NOT have file:[.github/linters/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
   fi
 }
 ################################################################################
@@ -350,7 +351,6 @@ LintAnsibleFiles()
   echo "Linting [Ansible] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo ""
 
   ######################
   # Name of the linter #
@@ -378,7 +378,7 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [ $DEBUG -ne 0 ]; then
+    if [ "$DEBUG" -ne 0 ]; then
       # Success
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
