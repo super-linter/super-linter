@@ -1320,7 +1320,6 @@ LintCodebase()
   echo "Linting [$FILE_TYPE] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo ""
 
   #######################################
   # Validate we have jsonlint installed #
