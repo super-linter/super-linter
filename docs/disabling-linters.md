@@ -85,11 +85,34 @@ moreThings()
 --------------------------------------------------------------------------------
 
 ## Ansible
-### Ansible-lint Config file
-### Ansible-lint disable single line
-### Ansible-lint disable code block
-### Ansible-lint disable entire file
+- [ansible-lint](https://github.com/ansible/ansible-lint)
 
+### Ansible-lint Config file
+- `.github/linters/.ansible-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.ansible-lint.yml`
+
+### Ansible-lint disable single line
+```yml
+- name: this would typically fire GitHasVersionRule 401 and BecomeUserWithoutBecomeRule 501
+  become_user: alice  # noqa 401 501
+  git: src=/path/to/git/repo dest=checkout
+```
+### Ansible-lint disable code block
+```yml
+- name: this would typically fire GitHasVersionRule 401
+  git: src=/path/to/git/repo dest=checkout
+  tags:
+  - skip_ansible_lint
+```
+
+### Ansible-lint disable entire file
+```yml
+- name: this would typically fire GitHasVersionRule 401
+  git: src=/path/to/git/repo dest=checkout
+  tags:
+  - skip_ansible_lint
+```
 --------------------------------------------------------------------------------
 
 ## YAML
@@ -137,10 +160,55 @@ rules:
 --------------------------------------------------------------------------------
 
 ## Python3
+- [pylint](https://www.pylint.org/)
+
 ### Pylint Config file
+- `.github/linters/.python-lint`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.python-lint`
+
 ### Pylint disable single line
+```python
+global VAR # pylint: disable=global-statement
+```
+
 ### Pylint disable code block
+```python
+"""pylint option block-disable"""
+
+__revision__ = None
+
+class Foo(object):
+    """block-disable test"""
+
+    def __init__(self):
+        pass
+
+    def meth1(self, arg):
+        """this issues a message"""
+        print(self)
+
+    def meth2(self, arg):
+        """and this one not"""
+        # pylint: disable=unused-argument
+        print(self\
+              + "foo")
+
+    def meth3(self):
+        """test one line disabling"""
+        # no error
+        print(self.bla) # pylint: disable=no-member
+        # error
+        print(self.blop)
+```
+
 ### Pylint disable entire file
+```python
+#!/bin/python3
+# pylint: skip-file
+
+var = "terrible code down here..."
+```
 
 --------------------------------------------------------------------------------
 
