@@ -291,6 +291,7 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 - There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
+
 ## Dockerfile
 -[dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
 
@@ -311,9 +312,20 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 --------------------------------------------------------------------------------
 
 ## Terraform
+- [tflint](https://github.com/terraform-linters/tflint)
+
 ### tflint standard Config file
+- `.github/linters/.tflint.hcl`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.tflint.hcl`
+
 ### tflint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### tflint disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### tflint disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
