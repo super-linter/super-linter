@@ -2,21 +2,23 @@
 This repository is for the **GitHub Action** to run a **Super-Linter**.  
 Developers on **GitHub** can call this Action to lint their code base with the following list of linters:
 
-- **Ruby** (Rubocop)
-- **Shell** (Shellcheck)
-- **Ansible** (Ansible-lint)
-- **YAML** (Yamllint)
-- **Python3** (Pylint)
-- **JSON** (JsonLint)
-- **MarkDown** (Markdownlint)
-- **Perl** (Perl)
-- **XML** (LibXML)
-- **Coffeescript** (coffeelint)
-- **Javascript** (eslint)(standard)
-- **Typescript** (eslint)(standard)
-- **Golang** (golangci-lint)
-- **Dockerfile** (dockerfilelint)
-- **Terraform** (tflint)
+| *Language* | *Linter* |
+|---|---|
+| **Ruby** | Rubocop |
+| **Shell** | Shellcheck |
+| **Ansible** | Ansible-lint |
+| **YAML** | Yamllint |
+| **Python3** | Pylint |
+| **JSON** | JsonLint |
+| **MarkDown** | Markdownlint |
+| **Perl** | Perl |
+| **XML** | LibXML |
+| **Coffeescript** | coffeelint |
+| **Javascript** | eslint standard |
+| **Typescript** | eslint standard |
+| **Golang** | golangci-lint |
+| **Dockerfile** | dockerfilelint |
+| **Terraform** | tflint |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -151,6 +153,9 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/` of your repository
   - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
+
+## Disabling rules
+If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
 ## Docker Hub
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
