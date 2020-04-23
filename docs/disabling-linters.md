@@ -263,10 +263,19 @@ Here is more data
 --------------------------------------------------------------------------------
 
 ## Perl
+- [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)
+
 ### Perl Config file
+- There is no top level *configuration file* available at this time
+
 ### Perl disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Perl disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Perl disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
