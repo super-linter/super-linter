@@ -388,13 +388,16 @@ alert('foo')
 - [standard js](https://standardjs.com/)
 
 ### Javascript standard Config file
-- `.github/linters/.eslintrc.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.eslintrc.yml`
+- There is no top level *configuration file* available at this time
 
 ### Javascript standard disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Javascript standard disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Javascript standard disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
@@ -435,14 +438,19 @@ alert('foo')
 --------------------------------------------------------------------------------
 
 ## Typescript (standard)
+- [standardjs](https://standardjs.com/)
+
 ### Typescript standard Config file
-- `.github/linters/.eslintrc.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.eslintrc.yml`
+- There is no top level *configuration file* available at this time
 
 ### Typescript standard disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Typescript standard disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Typescript standard disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
