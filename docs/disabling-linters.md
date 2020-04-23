@@ -158,7 +158,7 @@ rules:
 - [Markdownlint rules](https://awesomeopensource.com/project/DavidAnson/markdownlint)
 
 ### Markdownlint Config file
-- `.markdown-lint.yml`
+- `.github/linters/.markdown-lint.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.markdownlint.yml`
 
@@ -212,10 +212,32 @@ Here is more data
 --------------------------------------------------------------------------------
 
 ## Coffeescript
+- [coffeelint](http://www.coffeelint.org/)
+
 ### coffeelint Config file
+- `.github/linters/.coffee-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.coffee.yml`
+
 ### coffeelint disable single line
+```Coffeescript
+# coffeelint: disable=max_line_length
+foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+# coffeelint: enable=max_line_length
+```
+
 ### coffeelint disable code block
+```Coffeescript
+# coffeelint: disable
+foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+bar = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+baz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+# coffeelint: enable
+```
+
 ### coffeelint disable entire file
+- You can encapsulate the entire file with the *code block format* to disable an entire file from being parsed
 
 --------------------------------------------------------------------------------
 
