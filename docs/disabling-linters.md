@@ -55,7 +55,6 @@ AllCops:
 --------------------------------------------------------------------------------
 
 ## Shell
-**Shellcheck** is an opensource tool we use for linting and validation of the shell scripting language.
 - [Shellcheck](https://github.com/koalaman/shellcheck)
 
 ### Shellcheck Config file
@@ -146,10 +145,19 @@ rules:
 --------------------------------------------------------------------------------
 
 ## JSON
+- [jsonlint](https://github.com/zaach/jsonlint)
+
 ### JsonLint Config file
+- There is no top level *configuration file* available at this time
+
 ### JsonLint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### JsonLint disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### JsonLint disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
