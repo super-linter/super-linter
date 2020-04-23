@@ -274,10 +274,21 @@ taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/
 --------------------------------------------------------------------------------
 
 ## Golang
+- [golangci-lint](https://github.com/golangci/golangci-lint)
+
 ### golangci-lint standard Config file
+- `.github/linters/.golangci.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.golangci.yml`
+
 ### golangci-lint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### golangci-lint disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### golangci-lint disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 ## Dockerfile
