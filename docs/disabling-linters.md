@@ -1,5 +1,5 @@
 # Disabling linters and rules
-If you find you need to ignore certain errors and warnings, you will need to know the format to disable the linter rules.  
+If you find you need to ignore certain **errors** and **warnings**, you will need to know the *format* to disable the **Super-Linter** rules.  
 Below is examples and documentation for each language and the various methods to disable.
 
 ## Table of contents
