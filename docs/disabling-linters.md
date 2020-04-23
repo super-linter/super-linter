@@ -27,7 +27,7 @@ var="this is some other stuff"
 ```
 
 ### Rubocop disable entire file
-If you need to ignore an entire file, you can update the `.ruby-lint.yml` to ignore certain files and locations
+If you need to ignore an entire file, you can update the `.github/linters/.ruby-lint.yml` to ignore certain files and locations
 
 ```yml
 inherit_from:
@@ -116,7 +116,7 @@ This line is waaaaaaaaaay too long  # yamllint disable-line
 ```
 
 ### Yamllint disable entire file
-If you need to ignore an entire file, you can update the `.yaml-lint.yml` to ignore certain files and locations
+If you need to ignore an entire file, you can update the `.github/linters/.yaml-lint.yml` to ignore certain files and locations
 ```yml
 # For all rules
 ignore: |
@@ -250,10 +250,21 @@ Here is more data
 
 --------------------------------------------------------------------------------
 ## Dockerfile
+-[dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
+
 ### Dockerfilelint standard Config file
+- `.github/linters/.dockerfilelintrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.dockerfilelintrc`
+
 ### Dockerfilelint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Dockerfilelint disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
 ### Dockerfilelint disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
 
