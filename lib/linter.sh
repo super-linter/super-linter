@@ -11,6 +11,7 @@
 ###########
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
+LINTER_PATH='.github/linters'                                       # Default linter path
 # YAML Vars
 YAML_FILE_NAME='.yaml-lint.yml'                                     # Name of the file
 YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"         # Path to the yaml lint rules
@@ -221,21 +222,19 @@ GetLinterRules()
   ################
   # print header #
   ################
-  echo ""
   echo "----------------------------------------------"
   echo "Gathering users linter:[$FILE_NAME] rules from repository, or defaulting..."
-  echo ""
 
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
     # Copy users into default location #
     ####################################
-    CP_CMD=$(cp "$GITHUB_WORKSPACE/.github/linters/$FILE_NAME" "$FILE_LOCATION" 2>&1)
+    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
 
     ###################
     # Load Error code #
@@ -254,7 +253,7 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    echo "Codebase does NOT have file:[.github/linters/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
   fi
 }
 ################################################################################
@@ -352,7 +351,6 @@ LintAnsibleFiles()
   echo "Linting [Ansible] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo ""
 
   ######################
   # Name of the linter #
@@ -380,8 +378,11 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+      # Success
+      echo "Successfully found binary in system"
+      echo "Location:[$VALIDATE_INSTALL_CMD]"
+    fi
   fi
 
   ##########################
@@ -1319,7 +1320,6 @@ LintCodebase()
   echo "Linting [$FILE_TYPE] files..."
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo ""
 
   #######################################
   # Validate we have jsonlint installed #
@@ -1634,6 +1634,7 @@ Footer()
   echo "The script has completed"
   echo "----------------------------------------------"
   echo "----------------------------------------------"
+  echo ""
   echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
   echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
   echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
@@ -1651,6 +1652,7 @@ Footer()
   echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
   echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
   echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
+  echo ""
   echo "----------------------------------------------"
   echo ""
 
