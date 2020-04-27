@@ -145,7 +145,7 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 - **VALIDATE_TERRAFORM**
   - Default: `true`
   - Flag to enable or disable the linting process of the language
-- **VERBOSE_OUTPUT**
+- **ACTIONS_RUNNER_DEBUG**
   - Default: `false`
   - Flag to enable additional information about the linter, versions, and additional output
 
@@ -161,7 +161,7 @@ If you need to disable certain *rules* and *functionality*, you can view [Disabl
 The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
 
 ## Running Super-Linter locally (troubleshooting/debugging/enhancements)
-If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/.github/run-linter-locally.md)
+If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
 
 ### CI/CT/CD
 The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.

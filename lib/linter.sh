@@ -85,8 +85,8 @@ TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only
 ##############
 # Debug Vars #
 ##############
-RUN_LOCAL="${RUN_LOCAL}"              # Boolean to see if we are running locally
-VERBOSE_OUTPUT="${VERBOSE_OUTPUT}"    # Boolean to see even more info (debug)
+RUN_LOCAL="${RUN_LOCAL}"                        # Boolean to see if we are running locally
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info (debug)
 
 ################
 # Default Vars #
@@ -97,7 +97,7 @@ DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if run
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
-DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
+DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
@@ -219,16 +219,11 @@ GetLinterRules()
   FILE_NAME="$1"      # Name fo the linter file
   FILE_LOCATION="$2"  # Location of the linter file
 
-  ################
-  # print header #
-  ################
-  echo "----------------------------------------------"
-  echo "Gathering users linter:[$FILE_NAME] rules from repository, or defaulting..."
-
   #####################################
   # Validate we have the linter rules #
   #####################################
   if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
+    echo "----------------------------------------------"
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
@@ -253,7 +248,9 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+      echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    fi
   fi
 }
 ################################################################################
@@ -378,7 +375,7 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
       # Success
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
@@ -624,13 +621,17 @@ GetGitHubVars()
       echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
     fi
   fi
-
+}
+################################################################################
+#### Function GetValidationInfo ################################################
+GetValidationInfo()
+{
   ############################################
   # Print headers for user provided env vars #
   ############################################
   echo ""
   echo "--------------------------------------------"
-  echo "Gathering User provided information..."
+  echo "Gathering user validation information..."
 
   ###########################################
   # Skip validation if were running locally #
@@ -946,22 +947,22 @@ GetGitHubVars()
   ############################
   # Get the run verbose flag #
   ############################
-  if [ -z "$VERBOSE_OUTPUT" ]; then
+  if [ -z "$ACTIONS_RUNNER_DEBUG" ]; then
     ##################################
     # No flag passed, set to default #
     ##################################
-    VERBOSE_OUTPUT="$DEFAULT_VERBOSE_OUTPUT"
+    ACTIONS_RUNNER_DEBUG="$DEFAULT_ACTIONS_RUNNER_DEBUG"
   fi
 
   ###############################
   # Convert string to lowercase #
   ###############################
-  VERBOSE_OUTPUT=$(echo "$VERBOSE_OUTPUT" | awk '{print tolower($0)}')
+  ACTIONS_RUNNER_DEBUG=$(echo "$ACTIONS_RUNNER_DEBUG" | awk '{print tolower($0)}')
 
   ###################
   # Debug on runner #
   ###################
-  if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
     echo "--- DEBUG ---"
     echo "---------------------------------------------"
     RUNNER=$(whoami)
@@ -1749,6 +1750,14 @@ Header
 # needed to connect back and update checks
 GetGitHubVars
 
+##########################################
+# Get the langugages we need to validate #
+##########################################
+if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+  # Get the flags for langugaes to validate
+  GetValidationInfo
+fi
+
 ########################
 # Get the linter rules #
 ########################
@@ -1778,7 +1787,7 @@ GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 #################################
 # Check if were in verbose mode #
 #################################
-if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
   ##################################
   # Get and print all version info #
   ##################################
