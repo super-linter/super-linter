@@ -685,6 +685,11 @@ GetValidationInfo()
     fi
   fi
 
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ###############################
   # Convert string to lowercase #
   ###############################
@@ -695,10 +700,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_YAML" != "false" ]]; then
     # Set to true
     VALIDATE_YAML="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [YML] files in code base..."
+    PRINT_ARRAY+=("- Validating [YML] files in code base...")
   else
     # Its false
-    echo "- Excluding [YML] files in code base..."
+    PRINT_ARRAY+=("- Excluding [YML] files in code base...")
   fi
 
   ###############################
@@ -711,10 +716,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_JSON" != "false" ]]; then
     # Set to true
     VALIDATE_JSON="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JSON] files in code base..."
+    PRINT_ARRAY+=("- Validating [JSON] files in code base...")
   else
     # Its false
-    echo "- Excluding [JSON] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JSON] files in code base...")
   fi
 
   ###############################
@@ -727,10 +732,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_XML" != "false" ]]; then
     # Set to true
     VALIDATE_XML="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [XML] files in code base..."
+    PRINT_ARRAY+=("- Validating [XML] files in code base...")
   else
     # Its false
-    echo "- Excluding [XML] files in code base..."
+    PRINT_ARRAY+=("- Excluding [XML] files in code base...")
   fi
 
   ###############################
@@ -743,10 +748,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_MD" != "false" ]]; then
     # Set to true
     VALIDATE_MD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [MARKDOWN] files in code base..."
+    PRINT_ARRAY+=("- Validating [MARKDOWN] files in code base...")
   else
     # Its false
-    echo "- Excluding [MARKDOWN] files in code base..."
+    PRINT_ARRAY+=("- Excluding [MARKDOWN] files in code base...")
   fi
 
   ###############################
@@ -759,10 +764,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_BASH" != "false" ]]; then
     # Set to true
     VALIDATE_BASH="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [BASH] files in code base..."
+    PRINT_ARRAY+=("- Validating [BASH] files in code base...")
   else
     # Its false
-    echo "- Excluding [BASH] files in code base..."
+    PRINT_ARRAY+=("- Excluding [BASH] files in code base...")
   fi
 
   ###############################
@@ -775,10 +780,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_PERL" != "false" ]]; then
     # Set to true
     VALIDATE_PERL="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [PERL] files in code base..."
+    PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
     # Its false
-    echo "- Excluding [PERL] files in code base..."
+    PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
   fi
 
   ###############################
@@ -791,10 +796,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_PYTHON" != "false" ]]; then
     # Set to true
     VALIDATE_PYTHON="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [PYTHON] files in code base..."
+    PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
   else
     # Its false
-    echo "- Excluding [PYTHON] files in code base..."
+    PRINT_ARRAY+=("- Excluding [PYTHON] files in code base...")
   fi
 
   ###############################
@@ -807,10 +812,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_RUBY" != "false" ]]; then
     # Set to true
     VALIDATE_RUBY="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [RUBY] files in code base..."
+    PRINT_ARRAY+=("- Validating [RUBY] files in code base...")
   else
     # Its false
-    echo "- Excluding [RUBY] files in code base..."
+    PRINT_ARRAY+=("- Excluding [RUBY] files in code base...")
   fi
 
   ###############################
@@ -823,10 +828,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_COFFEE" != "false" ]]; then
     # Set to true
     VALIDATE_COFFEE="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [COFFEE] files in code base..."
+    PRINT_ARRAY+=("- Validating [COFFEE] files in code base...")
   else
     # Its false
-    echo "- Excluding [COFFEE] files in code base..."
+    PRINT_ARRAY+=("- Excluding [COFFEE] files in code base...")
   fi
 
   ###############################
@@ -839,10 +844,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_ANSIBLE" != "false" ]]; then
     # Set to true
     VALIDATE_ANSIBLE="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [ANSIBLE] files in code base..."
+    PRINT_ARRAY+=("- Validating [ANSIBLE] files in code base...")
   else
     # Its false
-    echo "- Excluding [ANSIBLE] files in code base..."
+    PRINT_ARRAY+=("- Excluding [ANSIBLE] files in code base...")
   fi
 
   ###############################
@@ -855,10 +860,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_JAVASCRIPT_ES" != "false" ]]; then
     # Set to true
     VALIDATE_JAVASCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JAVASCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Validating [JAVASCRIPT(eslint)] files in code base...")
   else
     # Its false
-    echo "- Excluding [JAVASCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JAVASCRIPT(eslint)] files in code base...")
   fi
 
   ###############################
@@ -871,10 +876,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_JAVASCRIPT_STANDARD" != "false" ]]; then
     # Set to true
     VALIDATE_JAVASCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JAVASCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Validating [JAVASCRIPT(standard)] files in code base...")
   else
     # Its false
-    echo "- Excluding [JAVASCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JAVASCRIPT(standard)] files in code base...")
   fi
 
   ###############################
@@ -887,10 +892,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_TYPESCRIPT_ES" != "false" ]]; then
     # Set to true
     VALIDATE_TYPESCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TYPESCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Validating [TYPESCRIPT(eslint)] files in code base...")
   else
     # Its false
-    echo "- Excluding [TYPESCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TYPESCRIPT(eslint)] files in code base...")
   fi
 
   ###############################
@@ -903,10 +908,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_TYPESCRIPT_STANDARD" != "false" ]]; then
     # Set to true
     VALIDATE_TYPESCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TYPESCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Validating [TYPESCRIPT(standard)] files in code base...")
   else
     # Its false
-    echo "- Excluding [TYPESCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TYPESCRIPT(standard)] files in code base...")
   fi
 
   ###############################
@@ -919,10 +924,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_DOCKER" != "false" ]]; then
     # Set to true
     VALIDATE_DOCKER="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [DOCKER] files in code base..."
+    PRINT_ARRAY+=("- Validating [DOCKER] files in code base...")
   else
     # Its false
-    echo "- Excluding [DOCKER] files in code base..."
+    PRINT_ARRAY+=("- Excluding [DOCKER] files in code base...")
   fi
 
   ###############################
@@ -935,10 +940,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_GO" != "false" ]]; then
     # Set to true
     VALIDATE_GO="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [GOLANG] files in code base..."
+    PRINT_ARRAY+=("- Validating [GOLANG] files in code base...")
   else
     # Its false
-    echo "- Excluding [GOLANG] files in code base..."
+    PRINT_ARRAY+=("- Excluding [GOLANG] files in code base...")
   fi
 
   ###############################
@@ -951,10 +956,10 @@ GetValidationInfo()
   if [[ "$VALIDATE_TERRAFORM" != "false" ]]; then
     # Set to true
     VALIDATE_TERRAFORM="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TERRAFORM] files in code base..."
+    PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     # Its false
-    echo "- Excluding [TERRAFORM] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
   fi
 
   ##############################
@@ -1001,7 +1006,15 @@ GetValidationInfo()
   # Debug on runner #
   ###################
   if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-    echo "--- DEBUG ---"
+    ###########################
+    # Print the validate info #
+    ###########################
+    for LINE in "${PRINT_ARRAY[@]}"
+    do
+      echo "$LINE"
+    done
+
+    echo "--- DEBUG INFO ---"
     echo "---------------------------------------------"
     RUNNER=$(whoami)
     echo "Runner:[$RUNNER]"
@@ -1828,10 +1841,7 @@ GetGitHubVars
 ##########################################
 # Get the langugages we need to validate #
 ##########################################
-if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-  # Get the flags for langugaes to validate
-  GetValidationInfo
-fi
+GetValidationInfo
 
 ########################
 # Get the linter rules #
