@@ -1755,9 +1755,9 @@ Footer()
     ##################
     # Print if not 0 #
     ##################
-    if [ "${ERROR_COUNTER}" -ne 0 ]; then
+    if [ "${!ERROR_COUNTER}" -ne 0 ]; then
       # Print the goods
-      echo "ERRORS FOUND in $LANGUAGE:[$ERROR_COUNTER]"
+      echo "ERRORS FOUND in $LANGUAGE:[${!ERROR_COUNTER}]"
     fi
   done
 
