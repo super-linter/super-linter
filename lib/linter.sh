@@ -1422,6 +1422,13 @@ LintCodebase()
     #################################
     # shellcheck disable=SC2207,SC2086
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+
+    ############################################################
+    # Set it back to empty if loaded with blanks from scanning #
+    ############################################################
+    if [ ${#LIST_FILES[@]} -lt 1 ]; then
+      LIST_FILES=()
+    fi
   fi
 
   if [ $SKIP_FLAG -eq 0 ]; then
