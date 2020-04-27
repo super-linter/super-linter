@@ -94,6 +94,10 @@ Once the container has been downloaded to your local environment, you can then b
     - `-e ANSIBLE_DIRECTORY=</path/local/to/codebase/with/ansible>`
     - Default: `/ansible`
     - Flag to set the root directory for Ansible file location(s)
+  - **ACTIONS_RUNNER_DEBUG**
+    - `-e ACTIONS_RUNNER_DEBUG=<true|false>`
+    - Default: `false`
+    - Flag to enable or disable additional debug info
 
 ## Troubleshooting
 

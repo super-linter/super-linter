@@ -55,6 +55,13 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
 
+#############################
+# Language array for prints #
+#############################
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
+  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM')
+
 ###################
 # GitHub ENV Vars #
 ###################
@@ -85,8 +92,8 @@ TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only
 ##############
 # Debug Vars #
 ##############
-RUN_LOCAL="${RUN_LOCAL}"              # Boolean to see if we are running locally
-VERBOSE_OUTPUT="${VERBOSE_OUTPUT}"    # Boolean to see even more info (debug)
+RUN_LOCAL="${RUN_LOCAL}"                        # Boolean to see if we are running locally
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info (debug)
 
 ################
 # Default Vars #
@@ -97,11 +104,10 @@ DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if run
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
-DEFAULT_VERBOSE_OUTPUT='false'                        # Default value for debugging output
+DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugging output
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
-
 
 ##########################
 # Array of changed files #
@@ -219,16 +225,11 @@ GetLinterRules()
   FILE_NAME="$1"      # Name fo the linter file
   FILE_LOCATION="$2"  # Location of the linter file
 
-  ################
-  # print header #
-  ################
-  echo "----------------------------------------------"
-  echo "Gathering users linter:[$FILE_NAME] rules from repository, or defaulting..."
-
   #####################################
   # Validate we have the linter rules #
   #####################################
   if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
+    echo "----------------------------------------------"
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
@@ -253,7 +254,9 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+      echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+    fi
   fi
 }
 ################################################################################
@@ -342,15 +345,20 @@ GetStandardRules()
 #### Function LintAnsibleFiles #################################################
 LintAnsibleFiles()
 {
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting [Ansible] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
+  PRINT_ARRAY+=("")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("Linting [Ansible] files...")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
 
   ######################
   # Name of the linter #
@@ -378,7 +386,7 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       # Success
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
@@ -389,6 +397,11 @@ LintAnsibleFiles()
   # Initialize empty Array #
   ##########################
   LIST_FILES=()
+
+  #######################
+  # Create flag to skip #
+  #######################
+  SKIP_FLAG=0
 
   ######################################################
   # Only go into ansible linter if we have base folder #
@@ -423,7 +436,24 @@ LintAnsibleFiles()
       ###################################
       # Send message that were skipping #
       ###################################
-      echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      #echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      ############################
+      # Create flag to skip loop #
+      ############################
+      SKIP_FLAG=1
+    fi
+
+    ####################################
+    # Check if we have data to look at #
+    ####################################
+    if [ $SKIP_FLAG -eq 0 ]; then
+      for LINE in "${PRINT_ARRAY[@]}"
+      do
+        #########################
+        # Print the header line #
+        #########################
+        echo "$LINE"
+      done
     fi
 
     ##################
@@ -479,12 +509,17 @@ LintAnsibleFiles()
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
       fi
     done
-  else
-    ########################
-    # No Ansible dir found #
-    ########################
-    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
-    echo "skipping ansible lint"
+  else # No ansible directory found in path
+    ###############################
+    # Check to see if debug is on #
+    ###############################
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+      ########################
+      # No Ansible dir found #
+      ########################
+      echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
+      echo "skipping ansible lint"
+    fi
   fi
 }
 ################################################################################
@@ -624,13 +659,17 @@ GetGitHubVars()
       echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
     fi
   fi
-
+}
+################################################################################
+#### Function GetValidationInfo ################################################
+GetValidationInfo()
+{
   ############################################
   # Print headers for user provided env vars #
   ############################################
   echo ""
   echo "--------------------------------------------"
-  echo "Gathering User provided information..."
+  echo "Gathering user validation information..."
 
   ###########################################
   # Skip validation if were running locally #
@@ -653,6 +692,11 @@ GetGitHubVars()
     fi
   fi
 
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ###############################
   # Convert string to lowercase #
   ###############################
@@ -663,10 +707,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_YAML" != "false" ]]; then
     # Set to true
     VALIDATE_YAML="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [YML] files in code base..."
+    PRINT_ARRAY+=("- Validating [YML] files in code base...")
   else
     # Its false
-    echo "- Excluding [YML] files in code base..."
+    PRINT_ARRAY+=("- Excluding [YML] files in code base...")
   fi
 
   ###############################
@@ -679,10 +723,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_JSON" != "false" ]]; then
     # Set to true
     VALIDATE_JSON="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JSON] files in code base..."
+    PRINT_ARRAY+=("- Validating [JSON] files in code base...")
   else
     # Its false
-    echo "- Excluding [JSON] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JSON] files in code base...")
   fi
 
   ###############################
@@ -695,10 +739,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_XML" != "false" ]]; then
     # Set to true
     VALIDATE_XML="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [XML] files in code base..."
+    PRINT_ARRAY+=("- Validating [XML] files in code base...")
   else
     # Its false
-    echo "- Excluding [XML] files in code base..."
+    PRINT_ARRAY+=("- Excluding [XML] files in code base...")
   fi
 
   ###############################
@@ -711,10 +755,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_MD" != "false" ]]; then
     # Set to true
     VALIDATE_MD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [MARKDOWN] files in code base..."
+    PRINT_ARRAY+=("- Validating [MARKDOWN] files in code base...")
   else
     # Its false
-    echo "- Excluding [MARKDOWN] files in code base..."
+    PRINT_ARRAY+=("- Excluding [MARKDOWN] files in code base...")
   fi
 
   ###############################
@@ -727,10 +771,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_BASH" != "false" ]]; then
     # Set to true
     VALIDATE_BASH="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [BASH] files in code base..."
+    PRINT_ARRAY+=("- Validating [BASH] files in code base...")
   else
     # Its false
-    echo "- Excluding [BASH] files in code base..."
+    PRINT_ARRAY+=("- Excluding [BASH] files in code base...")
   fi
 
   ###############################
@@ -743,10 +787,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_PERL" != "false" ]]; then
     # Set to true
     VALIDATE_PERL="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [PERL] files in code base..."
+    PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
     # Its false
-    echo "- Excluding [PERL] files in code base..."
+    PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
   fi
 
   ###############################
@@ -759,10 +803,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_PYTHON" != "false" ]]; then
     # Set to true
     VALIDATE_PYTHON="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [PYTHON] files in code base..."
+    PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
   else
     # Its false
-    echo "- Excluding [PYTHON] files in code base..."
+    PRINT_ARRAY+=("- Excluding [PYTHON] files in code base...")
   fi
 
   ###############################
@@ -775,10 +819,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_RUBY" != "false" ]]; then
     # Set to true
     VALIDATE_RUBY="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [RUBY] files in code base..."
+    PRINT_ARRAY+=("- Validating [RUBY] files in code base...")
   else
     # Its false
-    echo "- Excluding [RUBY] files in code base..."
+    PRINT_ARRAY+=("- Excluding [RUBY] files in code base...")
   fi
 
   ###############################
@@ -791,10 +835,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_COFFEE" != "false" ]]; then
     # Set to true
     VALIDATE_COFFEE="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [COFFEE] files in code base..."
+    PRINT_ARRAY+=("- Validating [COFFEE] files in code base...")
   else
     # Its false
-    echo "- Excluding [COFFEE] files in code base..."
+    PRINT_ARRAY+=("- Excluding [COFFEE] files in code base...")
   fi
 
   ###############################
@@ -807,10 +851,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_ANSIBLE" != "false" ]]; then
     # Set to true
     VALIDATE_ANSIBLE="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [ANSIBLE] files in code base..."
+    PRINT_ARRAY+=("- Validating [ANSIBLE] files in code base...")
   else
     # Its false
-    echo "- Excluding [ANSIBLE] files in code base..."
+    PRINT_ARRAY+=("- Excluding [ANSIBLE] files in code base...")
   fi
 
   ###############################
@@ -823,10 +867,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_JAVASCRIPT_ES" != "false" ]]; then
     # Set to true
     VALIDATE_JAVASCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JAVASCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Validating [JAVASCRIPT(eslint)] files in code base...")
   else
     # Its false
-    echo "- Excluding [JAVASCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JAVASCRIPT(eslint)] files in code base...")
   fi
 
   ###############################
@@ -839,10 +883,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_JAVASCRIPT_STANDARD" != "false" ]]; then
     # Set to true
     VALIDATE_JAVASCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [JAVASCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Validating [JAVASCRIPT(standard)] files in code base...")
   else
     # Its false
-    echo "- Excluding [JAVASCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [JAVASCRIPT(standard)] files in code base...")
   fi
 
   ###############################
@@ -855,10 +899,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_TYPESCRIPT_ES" != "false" ]]; then
     # Set to true
     VALIDATE_TYPESCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TYPESCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Validating [TYPESCRIPT(eslint)] files in code base...")
   else
     # Its false
-    echo "- Excluding [TYPESCRIPT(eslint)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TYPESCRIPT(eslint)] files in code base...")
   fi
 
   ###############################
@@ -871,10 +915,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_TYPESCRIPT_STANDARD" != "false" ]]; then
     # Set to true
     VALIDATE_TYPESCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TYPESCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Validating [TYPESCRIPT(standard)] files in code base...")
   else
     # Its false
-    echo "- Excluding [TYPESCRIPT(standard)] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TYPESCRIPT(standard)] files in code base...")
   fi
 
   ###############################
@@ -887,10 +931,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_DOCKER" != "false" ]]; then
     # Set to true
     VALIDATE_DOCKER="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [DOCKER] files in code base..."
+    PRINT_ARRAY+=("- Validating [DOCKER] files in code base...")
   else
     # Its false
-    echo "- Excluding [DOCKER] files in code base..."
+    PRINT_ARRAY+=("- Excluding [DOCKER] files in code base...")
   fi
 
   ###############################
@@ -903,10 +947,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_GO" != "false" ]]; then
     # Set to true
     VALIDATE_GO="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [GOLANG] files in code base..."
+    PRINT_ARRAY+=("- Validating [GOLANG] files in code base...")
   else
     # Its false
-    echo "- Excluding [GOLANG] files in code base..."
+    PRINT_ARRAY+=("- Excluding [GOLANG] files in code base...")
   fi
 
   ###############################
@@ -919,10 +963,10 @@ GetGitHubVars()
   if [[ "$VALIDATE_TERRAFORM" != "false" ]]; then
     # Set to true
     VALIDATE_TERRAFORM="$DEFAULT_VALIDATE_LANGUAGE"
-    echo "- Validating [TERRAFORM] files in code base..."
+    PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     # Its false
-    echo "- Excluding [TERRAFORM] files in code base..."
+    PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
   fi
 
   ##############################
@@ -946,23 +990,38 @@ GetGitHubVars()
   ############################
   # Get the run verbose flag #
   ############################
-  if [ -z "$VERBOSE_OUTPUT" ]; then
+  if [ -z "$ACTIONS_RUNNER_DEBUG" ]; then
     ##################################
     # No flag passed, set to default #
     ##################################
-    VERBOSE_OUTPUT="$DEFAULT_VERBOSE_OUTPUT"
+    ACTIONS_RUNNER_DEBUG="$DEFAULT_ACTIONS_RUNNER_DEBUG"
   fi
 
   ###############################
   # Convert string to lowercase #
   ###############################
-  VERBOSE_OUTPUT=$(echo "$VERBOSE_OUTPUT" | awk '{print tolower($0)}')
+  ACTIONS_RUNNER_DEBUG=$(echo "$ACTIONS_RUNNER_DEBUG" | awk '{print tolower($0)}')
+
+  ############################
+  # Set to true if not false #
+  ############################
+  if [ "$ACTIONS_RUNNER_DEBUG" != "false" ]; then
+    ACTIONS_RUNNER_DEBUG="true"
+  fi
 
   ###################
   # Debug on runner #
   ###################
-  if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
-    echo "--- DEBUG ---"
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    ###########################
+    # Print the validate info #
+    ###########################
+    for LINE in "${PRINT_ARRAY[@]}"
+    do
+      echo "$LINE"
+    done
+
+    echo "--- DEBUG INFO ---"
     echo "---------------------------------------------"
     RUNNER=$(whoami)
     echo "Runner:[$RUNNER]"
@@ -981,14 +1040,16 @@ BuildFileList()
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Pulling in code history and branches..."
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    echo ""
+    echo "----------------------------------------------"
+    echo "Pulling in code history and branches..."
+  fi
 
   #####################################################################
   # Switch codebase back to master to get a list of all files changed #
   #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull; git checkout master 2>&1)
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout master 2>&1)
 
   #######################
   # Load the error code #
@@ -1008,9 +1069,11 @@ BuildFileList()
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    echo ""
+    echo "----------------------------------------------"
+    echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+  fi
 
   ################################################
   # Get the Array of files changed in the comits #
@@ -1311,15 +1374,20 @@ LintCodebase()
   FILE_EXTENSIONS="$1" && shift # Pull the variable and remove from array path  (Example: *.json)
   FILE_ARRAY=("$@")             # Array of files to validate                    (Example: $FILE_ARRAY_JSON)
 
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting [$FILE_TYPE] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
+  PRINT_ARRAY+=("")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("Linting [$FILE_TYPE] files...")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
 
   #######################################
   # Validate we have jsonlint installed #
@@ -1342,8 +1410,10 @@ LintCodebase()
     exit 1
   else
     # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+      echo "Successfully found binary in system"
+      echo "Location:[$VALIDATE_INSTALL_CMD]"
+    fi
   fi
 
   ##########################
@@ -1351,12 +1421,18 @@ LintCodebase()
   ##########################
   LIST_FILES=()
 
+  ################
+  # Set the flag #
+  ################
+  SKIP_FLAG=0
+
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
+    SKIP_FLAG=1
+    # echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
@@ -1366,63 +1442,93 @@ LintCodebase()
     #################################
     # shellcheck disable=SC2207,SC2086
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+
+    ############################################################
+    # Set it back to empty if loaded with blanks from scanning #
+    ############################################################
+    if [ ${#LIST_FILES[@]} -lt 1 ]; then
+      ######################
+      # Set to empty array #
+      ######################
+      LIST_FILES=()
+      #############################
+      # Skip as we found no files #
+      #############################
+      SKIP_FLAG=1
+    fi
   fi
 
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
+  ###############################
+  # Check if any data was found #
+  ###############################
+  if [ $SKIP_FLAG -eq 0 ]; then
+    ######################
+    # Print Header array #
+    ######################
+    for LINE in "${PRINT_ARRAY[@]}"
+    do
+      #########################
+      # Print the header info #
+      #########################
+      echo "$LINE"
+    done
 
-    #####################################################
-    # Make sure we dont lint node modules or test cases #
-    #####################################################
-    if [[ $FILE == *"node_modules"* ]]; then
-      # This is a node modules file
-      continue
-    elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
-      # This is the test cases, we should always skip
-      continue
-    fi
+    ##################
+    # Lint the files #
+    ##################
+    for FILE in "${LIST_FILES[@]}"
+    do
+      #####################
+      # Get the file name #
+      #####################
+      FILE_NAME=$(basename "$FILE" 2>&1)
 
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
+      #####################################################
+      # Make sure we dont lint node modules or test cases #
+      #####################################################
+      if [[ $FILE == *"node_modules"* ]]; then
+        # This is a node modules file
+        continue
+      elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
+        # This is the test cases, we should always skip
+        continue
+      fi
 
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      ##############
+      # File print #
+      ##############
+      echo "---------------------------"
+      echo "File:[$FILE]"
 
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment the error count
-      (("ERRORS_FOUND_$FILE_TYPE++"))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
+
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    done
+  fi
 }
 ################################################################################
 #### Function TestCodebase #####################################################
@@ -1635,26 +1741,25 @@ Footer()
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
-  echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
-  echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
-  echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
-  echo "ERRORS FOUND in MARKDOWN:[$ERRORS_FOUND_MARKDOWN]"
-  echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
-  echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
-  echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
-  echo "ERRORS FOUND in COFFEESCRIPT:[$ERRORS_FOUND_COFFEESCRIPT]"
-  echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
-  echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
-  echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_JAVASCRIPT_ES]"
-  echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_JAVASCRIPT_STANDARD]"
-  echo "ERRORS FOUND in TYPESCRIPT(eslint):[$ERRORS_FOUND_TYPESCRIPT_ES]"
-  echo "ERRORS FOUND in TYPESCRIPT(Standard):[$ERRORS_FOUND_TYPESCRIPT_STANDARD]"
-  echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
-  echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
-  echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
-  echo ""
-  echo "----------------------------------------------"
-  echo ""
+
+  ##############################
+  # Prints for errors if found #
+  ##############################
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"
+  do
+    ###########################
+    # Build the error counter #
+    ###########################
+    ERROR_COUNTER="ERRORS_FOUND_$LANGUAGE"
+
+    ##################
+    # Print if not 0 #
+    ##################
+    if [ "${!ERROR_COUNTER}" -ne 0 ]; then
+      # Print the goods
+      echo "ERRORS FOUND in $LANGUAGE:[${!ERROR_COUNTER}]"
+    fi
+  done
 
   ###############################
   # Exit with 1 if errors found #
@@ -1680,6 +1785,13 @@ Footer()
     echo "Exiting with errors found!"
     exit 1
   else
+    #################
+    # Footer prints #
+    #################
+    echo ""
+    echo "All file(s) linted successfully with no errors detected"
+    echo "----------------------------------------------"
+    echo ""
     # Successful exit
     exit 0
   fi
@@ -1749,6 +1861,11 @@ Header
 # needed to connect back and update checks
 GetGitHubVars
 
+##########################################
+# Get the langugages we need to validate #
+##########################################
+GetValidationInfo
+
 ########################
 # Get the linter rules #
 ########################
@@ -1778,7 +1895,7 @@ GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 #################################
 # Check if were in verbose mode #
 #################################
-if [[ "$VERBOSE_OUTPUT" != "false" ]]; then
+if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
   ##################################
   # Get and print all version info #
   ##################################
