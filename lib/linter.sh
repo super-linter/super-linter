@@ -55,6 +55,13 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
 
+#############################
+# Language array for prints #
+#############################
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
+  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM')
+
 ###################
 # GitHub ENV Vars #
 ###################
@@ -1440,10 +1447,20 @@ LintCodebase()
     # Set it back to empty if loaded with blanks from scanning #
     ############################################################
     if [ ${#LIST_FILES[@]} -lt 1 ]; then
+      ######################
+      # Set to empty array #
+      ######################
       LIST_FILES=()
+      #############################
+      # Skip as we found no files #
+      #############################
+      SKIP_FLAG=1
     fi
   fi
 
+  ###############################
+  # Check if any data was found #
+  ###############################
   if [ $SKIP_FLAG -eq 0 ]; then
     ######################
     # Print Header array #
@@ -1724,23 +1741,29 @@ Footer()
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
-  echo "ERRORS FOUND in YAML:[$ERRORS_FOUND_YML]"
-  echo "ERRORS FOUND in JSON:[$ERRORS_FOUND_JSON]"
-  echo "ERRORS FOUND in XML:[$ERRORS_FOUND_XML]"
-  echo "ERRORS FOUND in MARKDOWN:[$ERRORS_FOUND_MARKDOWN]"
-  echo "ERRORS FOUND in BASH:[$ERRORS_FOUND_BASH]"
-  echo "ERRORS FOUND in PERL:[$ERRORS_FOUND_PERL]"
-  echo "ERRORS FOUND in PYTHON:[$ERRORS_FOUND_PYTHON]"
-  echo "ERRORS FOUND in COFFEESCRIPT:[$ERRORS_FOUND_COFFEESCRIPT]"
-  echo "ERRORS FOUND in RUBY:[$ERRORS_FOUND_RUBY]"
-  echo "ERRORS FOUND in ANSIBLE:[$ERRORS_FOUND_ANSIBLE]"
-  echo "ERRORS FOUND in JAVASCRIPT(eslint):[$ERRORS_FOUND_JAVASCRIPT_ES]"
-  echo "ERRORS FOUND in JAVASCRIPT(Standard):[$ERRORS_FOUND_JAVASCRIPT_STANDARD]"
-  echo "ERRORS FOUND in TYPESCRIPT(eslint):[$ERRORS_FOUND_TYPESCRIPT_ES]"
-  echo "ERRORS FOUND in TYPESCRIPT(Standard):[$ERRORS_FOUND_TYPESCRIPT_STANDARD]"
-  echo "ERRORS FOUND in DOCKER:[$ERRORS_FOUND_DOCKER]"
-  echo "ERRORS FOUND in GO:[$ERRORS_FOUND_GO]"
-  echo "ERRORS FOUND in TERRAFORM:[$ERRORS_FOUND_TERRAFORM]"
+
+  ##############################
+  # Prints for errors if found #
+  ##############################
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"
+  do
+    ###########################
+    # Build the error counter #
+    ###########################
+    ERROR_COUNTER="ERRORS_FOUND_$LANGUAGE"
+
+    ##################
+    # Print if not 0 #
+    ##################
+    if [ "$ERROR_COUNTER" -ne 0 ]; then
+      # Print the goods
+      echo "ERRORS FOUND in $LANGUAGE:[$ERROR_COUNTER]"
+    fi
+  done
+
+  #################
+  # Footer prints #
+  #################
   echo ""
   echo "----------------------------------------------"
   echo ""
