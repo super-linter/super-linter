@@ -982,14 +982,16 @@ BuildFileList()
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Pulling in code history and branches..."
+  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    echo ""
+    echo "----------------------------------------------"
+    echo "Pulling in code history and branches..."
+  fi
 
   #####################################################################
   # Switch codebase back to master to get a list of all files changed #
   #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull; git checkout master 2>&1)
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout master 2>&1)
 
   #######################
   # Load the error code #
@@ -1009,9 +1011,11 @@ BuildFileList()
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    echo ""
+    echo "----------------------------------------------"
+    echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+  fi
 
   ################################################
   # Get the Array of files changed in the comits #
