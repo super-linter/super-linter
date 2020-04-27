@@ -1761,13 +1761,6 @@ Footer()
     fi
   done
 
-  #################
-  # Footer prints #
-  #################
-  echo ""
-  echo "----------------------------------------------"
-  echo ""
-
   ###############################
   # Exit with 1 if errors found #
   ###############################
@@ -1792,6 +1785,13 @@ Footer()
     echo "Exiting with errors found!"
     exit 1
   else
+    #################
+    # Footer prints #
+    #################
+    echo ""
+    echo "All file(s) linted successfully with no errors detected"
+    echo "----------------------------------------------"
+    echo ""
     # Successful exit
     exit 0
   fi
