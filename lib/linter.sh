@@ -102,7 +102,6 @@ RAW_FILE_ARRAY=()                                     # Array of all files that 
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
 
-
 ##########################
 # Array of changed files #
 ##########################
@@ -248,7 +247,7 @@ GetLinterRules()
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
     fi
   fi
@@ -380,7 +379,7 @@ LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       # Success
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
@@ -507,7 +506,7 @@ LintAnsibleFiles()
     ###############################
     # Check to see if debug is on #
     ###############################
-    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       ########################
       # No Ansible dir found #
       ########################
@@ -991,10 +990,17 @@ GetValidationInfo()
   ###############################
   ACTIONS_RUNNER_DEBUG=$(echo "$ACTIONS_RUNNER_DEBUG" | awk '{print tolower($0)}')
 
+  ############################
+  # Set to true if not false #
+  ############################
+  if [ "$ACTIONS_RUNNER_DEBUG" != "false" ]; then
+    ACTIONS_RUNNER_DEBUG="true"
+  fi
+
   ###################
   # Debug on runner #
   ###################
-  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo "--- DEBUG ---"
     echo "---------------------------------------------"
     RUNNER=$(whoami)
@@ -1014,7 +1020,7 @@ BuildFileList()
   ################
   # print header #
   ################
-  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
     echo "Pulling in code history and branches..."
@@ -1043,7 +1049,7 @@ BuildFileList()
   ################
   # print header #
   ################
-  if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
     echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
@@ -1384,7 +1390,7 @@ LintCodebase()
     exit 1
   else
     # Success
-    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
@@ -1815,7 +1821,7 @@ GetGitHubVars
 ##########################################
 # Get the langugages we need to validate #
 ##########################################
-if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
   # Get the flags for langugaes to validate
   GetValidationInfo
 fi
@@ -1849,7 +1855,7 @@ GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 #################################
 # Check if were in verbose mode #
 #################################
-if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
   ##################################
   # Get and print all version info #
   ##################################
