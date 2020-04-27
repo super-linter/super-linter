@@ -339,15 +339,20 @@ GetStandardRules()
 #### Function LintAnsibleFiles #################################################
 LintAnsibleFiles()
 {
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting [Ansible] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
+  PRINT_ARRAY+=("")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("Linting [Ansible] files...")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
 
   ######################
   # Name of the linter #
@@ -387,6 +392,11 @@ LintAnsibleFiles()
   ##########################
   LIST_FILES=()
 
+  #######################
+  # Create flag to skip #
+  #######################
+  SKIP_FLAG=0
+
   ######################################################
   # Only go into ansible linter if we have base folder #
   ######################################################
@@ -420,7 +430,24 @@ LintAnsibleFiles()
       ###################################
       # Send message that were skipping #
       ###################################
-      echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      #echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      ############################
+      # Create flag to skip loop #
+      ############################
+      SKIP_FLAG=1
+    fi
+
+    ####################################
+    # Check if we have data to look at #
+    ####################################
+    if [ $SKIP_FLAG -eq 0 ]; then
+      for LINE in "${PRINT_ARRAY[@]}"
+      do
+        #########################
+        # Print the header line #
+        #########################
+        echo "$LINE"
+      done
     fi
 
     ##################
@@ -476,12 +503,17 @@ LintAnsibleFiles()
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
       fi
     done
-  else
-    ########################
-    # No Ansible dir found #
-    ########################
-    echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
-    echo "skipping ansible lint"
+  else # No ansible directory found in path
+    ###############################
+    # Check to see if debug is on #
+    ###############################
+    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+      ########################
+      # No Ansible dir found #
+      ########################
+      echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
+      echo "skipping ansible lint"
+    fi
   fi
 }
 ################################################################################
@@ -1316,15 +1348,20 @@ LintCodebase()
   FILE_EXTENSIONS="$1" && shift # Pull the variable and remove from array path  (Example: *.json)
   FILE_ARRAY=("$@")             # Array of files to validate                    (Example: $FILE_ARRAY_JSON)
 
+  ######################
+  # Create Print Array #
+  ######################
+  PRINT_ARRAY=()
+
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Linting [$FILE_TYPE] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
+  PRINT_ARRAY+=("")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("Linting [$FILE_TYPE] files...")
+  PRINT_ARRAY+=("----------------------------------------------")
+  PRINT_ARRAY+=("----------------------------------------------")
 
   #######################################
   # Validate we have jsonlint installed #
@@ -1347,8 +1384,10 @@ LintCodebase()
     exit 1
   else
     # Success
-    echo "Successfully found binary in system"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    if [[ "$ACTIONS_RUNNER_DEBUG" != "false" ]]; then
+      echo "Successfully found binary in system"
+      echo "Location:[$VALIDATE_INSTALL_CMD]"
+    fi
   fi
 
   ##########################
@@ -1356,12 +1395,18 @@ LintCodebase()
   ##########################
   LIST_FILES=()
 
+  ################
+  # Set the flag #
+  ################
+  SKIP_FLAG=0
+
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
-    echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
+    SKIP_FLAG=1
+    # echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
@@ -1373,61 +1418,74 @@ LintCodebase()
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
   fi
 
-  ##################
-  # Lint the files #
-  ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
-    #####################
-    # Get the file name #
-    #####################
-    FILE_NAME=$(basename "$FILE" 2>&1)
+  if [ $SKIP_FLAG -eq 0 ]; then
+    ######################
+    # Print Header array #
+    ######################
+    for LINE in "${PRINT_ARRAY[@]}"
+    do
+      #########################
+      # Print the header info #
+      #########################
+      echo "$LINE"
+    done
 
-    #####################################################
-    # Make sure we dont lint node modules or test cases #
-    #####################################################
-    if [[ $FILE == *"node_modules"* ]]; then
-      # This is a node modules file
-      continue
-    elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
-      # This is the test cases, we should always skip
-      continue
-    fi
+    ##################
+    # Lint the files #
+    ##################
+    for FILE in "${LIST_FILES[@]}"
+    do
+      #####################
+      # Get the file name #
+      #####################
+      FILE_NAME=$(basename "$FILE" 2>&1)
 
-    ##############
-    # File print #
-    ##############
-    echo "---------------------------"
-    echo "File:[$FILE]"
+      #####################################################
+      # Make sure we dont lint node modules or test cases #
+      #####################################################
+      if [[ $FILE == *"node_modules"* ]]; then
+        # This is a node modules file
+        continue
+      elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
+        # This is the test cases, we should always skip
+        continue
+      fi
 
-    ################################
-    # Lint the file with the rules #
-    ################################
-    LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      ##############
+      # File print #
+      ##############
+      echo "---------------------------"
+      echo "File:[$FILE]"
 
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
+      ################################
+      # Lint the file with the rules #
+      ################################
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      #########
-      # Error #
-      #########
-      echo "ERROR! Found errors in [$LINTER_NAME] linter!"
-      echo "ERROR:[$LINT_CMD]"
-      # Increment the error count
-      (("ERRORS_FOUND_$FILE_TYPE++"))
-    else
-      ###########
-      # Success #
-      ###########
-      echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
-    fi
-  done
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
+
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ $ERROR_CODE -ne 0 ]; then
+        #########
+        # Error #
+        #########
+        echo "ERROR! Found errors in [$LINTER_NAME] linter!"
+        echo "ERROR:[$LINT_CMD]"
+        # Increment the error count
+        (("ERRORS_FOUND_$FILE_TYPE++"))
+      else
+        ###########
+        # Success #
+        ###########
+        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+      fi
+    done
+  fi
 }
 ################################################################################
 #### Function TestCodebase #####################################################
