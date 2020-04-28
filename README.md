@@ -178,4 +178,4 @@ If you would like to help contribute to this **GitHub** Action, please see [CONT
 --------------------------------------------------------------------------------
 
 ### License
-- [License](https://github.com/github/super-linter/blob/master/LICENSE)
+- [MIT License](https://github.com/github/super-linter/blob/master/LICENSE)
