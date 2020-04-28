@@ -29,6 +29,11 @@ Work in Progress pull requests are also welcome to get feedback early on, or if 
 - Create a branch with a name that identifies the user and nature of the changes (similar to `user/branch-purpose`)
 - Open a pull request and request a review from a member of the appropriate `@github/services-account-engineering` and/or `@github/services-engineering` teams
 
+## Releasing
+If you are the current maintainer of this action:
+1. 
+
+
 ## Resources
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
