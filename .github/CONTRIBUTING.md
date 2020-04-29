@@ -31,8 +31,9 @@ Work in Progress pull requests are also welcome to get feedback early on, or if 
 
 ## Releasing
 If you are the current maintainer of this action:
-1. 
-
+1. Create a [Tag](https://stackoverflow.com/questions/18216991/create-a-tag-in-a-github-repository)
+2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) document explaining details of Release
+3. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
 
 ## Resources
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)

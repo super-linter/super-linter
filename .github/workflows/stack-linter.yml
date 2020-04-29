@@ -42,3 +42,5 @@ jobs:
       ################################
       - name: Lint Code Base
         uses: docker://admiralawkbar/super-linter:latest
+        env:
+          VALIDATE_ALL_CODEBASE: false
