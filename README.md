@@ -1,6 +1,14 @@
 # Super-Linter
 This repository is for the **GitHub Action** to run a **Super-Linter**.  
-Developers on **GitHub** can call this Action to lint their code base with the following list of linters:
+It is a simple combination on various linters, written in `bash`, to help validate your source code.  
+
+The end goal of this tool:
+- Prevent broken code from being uploaded to *master* branches
+- Help establish coding best practices across multiple languages
+- Build guidelines for code layout and format
+- Automate the process to help streamline code reviews
+
+Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
 | *Language* | *Linter* |
 |---|---|
@@ -171,6 +179,12 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
 - These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
 - When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
   - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
+
+## Limitations
+Below are a list of the known limitations for the **Github Super-Linter**:
+- Due to being completely packaged at run time, you will not be able to update dependancies or change versions of the enclosed linters and binaries
+- Reading additional details from `package.json` are not read by the **Github Super-Linter**
+- Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
