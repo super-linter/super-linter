@@ -157,6 +157,38 @@ ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 #### Function Header ###########################################################
 Header()
 {
+  echo '                      :     :'
+  echo '                __    |     |    _,_'
+  echo '               (  ~~^-l_____],.-~  /'
+  echo '                \    ")\ "^k. (_,-"'
+  echo '                 `>._  \ _ `\  \'
+  echo '              _.-~/ ^k. (0)  ` (0'
+  echo '           .-~   {    ~` ~    ..T'
+  echo '          /   .   "-..       _.-/'
+  echo '         /    Y        .   "T'
+  echo '        Y     l         ~-./l_'
+  echo '        |      \          . .<'
+  echo '        |       `-.._  __,/"r'
+  echo '        l   .-~~"-.    /    I'
+  echo '         Y         Y "~[    |'
+  echo '          \         \_.^--, ['
+  echo '           \            _~> |'
+  echo '            \      ___)--~  |'
+  echo '             ^.       :     l'
+  echo '               ^.  __.j     |'
+  echo '                 Y    I     |'
+  echo '                 l    l     I'
+  echo '                  Y\__/\    |'
+  echo '                   \    ^.  |'
+  echo '                    \___/~-^.'
+  echo '                     ^.      ~"--.,_'
+  echo '                      |~-.___/     ~-.'
+  echo '                      |    ~Y--.,__/   .'
+  echo '                      :     :     "x    \'
+  echo '                                    \__/ \.'
+  echo '                                     \    ]'
+  echo '                                      ^..^'
+  echo '                                        V'
   echo ""
   echo "---------------------------------------------"
   echo "--- Github Actions Multi Language Linter ----"
