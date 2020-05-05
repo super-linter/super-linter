@@ -8,6 +8,12 @@ The end goal of this tool:
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
 
+## How it Works
+
+The super-linter finds issues and reports them to the console output. Fixes are suggested in the console output but not automatically fixed, and a status check will show up as failed on the pull request.
+
+## Supported Linters
+
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
 | *Language* | *Linter* |
