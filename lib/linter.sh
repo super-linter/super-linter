@@ -158,7 +158,14 @@ ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 #### Function Header ###########################################################
 Header()
 {
+  ###############################
+  # Give them the possum action #
+  ###############################
   /bin/bash possum.sh
+
+  ##########
+  # Prints #
+  ##########
   echo ""
   echo "---------------------------------------------"
   echo "--- Github Actions Multi Language Linter ----"
