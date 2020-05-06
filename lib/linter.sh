@@ -161,7 +161,7 @@ Header()
   ###############################
   # Give them the possum action #
   ###############################
-  /bin/bash possum.sh
+  /bin/bash /action/lib/possum.sh
 
   ##########
   # Prints #
