@@ -189,7 +189,7 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
 
 ## Limitations
 Below are a list of the known limitations for the **Github Super-Linter**:
-- Due to being completely packaged at run time, you will not be able to update dependancies or change versions of the enclosed linters and binaries
+- Due to being completely packaged at run time, you will not be able to update dependencies or change versions of the enclosed linters and binaries
 - Reading additional details from `package.json` are not read by the **Github Super-Linter**
 - Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
