@@ -6,7 +6,7 @@ We're thrilled that you'd like to contribute to this project. Your help is essen
 [Pull Requests][pulls] are used for adding new playbooks, roles, and documents to the repository, or editing the existing ones.
 
 **With write access**
-1. Clone the repository (only if you do not have write access)
+1. Clone the repository (only if you have write access)
 1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change
 1. Push and [submit a pull request][pr]
@@ -24,14 +24,14 @@ Here are a few things you can do that will increase the likelihood of your pull 
 - Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
 - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
-Work in Progress pull requests are also welcome to get feedback early on, or if there is something blocking you.
+Draft pull requests are also welcome to get feedback early on, or if there is something blocking you.
 
 - Create a branch with a name that identifies the user and nature of the changes (similar to `user/branch-purpose`)
-- Open a pull request and request a review from a member of the appropriate `@github/services-account-engineering` and/or `@github/services-engineering` teams
+- Open a pull request
 
 ## Releasing
 If you are the current maintainer of this action:
-1. Create a [Tag](https://stackoverflow.com/questions/18216991/create-a-tag-in-a-github-repository)
+1. Create a [Tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
 2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) document explaining details of Release
 3. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
 
