@@ -100,69 +100,31 @@ jobs:
 ...
 ```
 
-## Env Vars
+## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality:
-- **VALIDATE_ALL_CODEBASE**
-  - Default: `true`
-  - Will parse the entire repository and find all files to validate across all types
-  - **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation
-- **VALIDATE_YAML**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_JSON**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_XML**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_MD**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_BASH**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_PERL**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_PYTHON**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_RUBY**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_COFFEE**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_ANSIBLE**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_JAVASCRIPT_ES**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language (Utilizing: eslint)
-- **VALIDATE_JAVASCRIPT_STANDARD**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language (Utilizing: standard)
-- **VALIDATE_TYPESCRIPT_ES**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language (Utilizing: eslint)
-- **VALIDATE_TYPESCRIPT_STANDARD**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language (Utilizing: standard)
-- **ANSIBLE_DIRECTORY**
-  - Default: `/ansible`
-  - Flag to set the root directory for Ansible file location(s)
-- **VALIDATE_DOCKER**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_GO**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **VALIDATE_TERRAFORM**
-  - Default: `true`
-  - Flag to enable or disable the linting process of the language
-- **ACTIONS_RUNNER_DEBUG**
-  - Default: `false`
-  - Flag to enable additional information about the linter, versions, and additional output
+
+| **ENV VAR** | **Default Value** | **Notes** |
+| --- | --- | --- |
+| **VALIDATE_ALL_CODEBASE** | `true` | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
+| **VALIDATE_YAML** | `true` |Flag to enable or disable the linting process of the language. |
+| **VALIDATE_JSON** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_XML** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_MD** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_BASH** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PERL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
+| **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
+| **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
+| **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
+| **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
+| **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
