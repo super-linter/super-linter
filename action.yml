@@ -1,5 +1,5 @@
-name: super-linter
-author: github
+name: 'Super-Linter'
+author: 'GitHub'
 description: It is a simple combination on various linters, written in bash, to help validate your source code.
 runs: 
   using: 'docker'
