@@ -1,7 +1,4 @@
 ######################################################################
 # These owners will be the default owners for everything in the repo #
 ######################################################################
-*       @github/services-devops-engineers
-*       @github/services-implementation-engineers
-*       @github/services-solution-architects
-*       @github/data-portability
+*       @admiralawkbar, @jwiebalk, @zkoppert
