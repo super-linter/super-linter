@@ -710,12 +710,13 @@ GetValidationInfo()
   # Convert strings to lowercase #
   ################################
   VALIDATE_YAML=$(echo "$VALIDATE_YAML" | awk '{print tolower($0)}')
+  VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
   ################################################
   ANY_SET="false"
-  if [[ -n "$VALIDATE_YAML" ]]; then
+  if [[ -n "$VALIDATE_YAML" || -n "$VALIDATE_JSON" ]]; then
     ANY_SET="true"
   fi
 
@@ -733,6 +734,20 @@ GetValidationInfo()
     VALIDATE_YAML="true"
   fi
 
+  ####################################
+  # Validate if we should check JSON #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_JSON" ]]; then
+      # JSON flag was not set - default to false
+      VALIDATE_JSON="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_JSON="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -741,20 +756,9 @@ GetValidationInfo()
   else
     PRINT_ARRAY+=("- Excluding [YAML] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_JSON" != "false" ]]; then
-    # Set to true
-    VALIDATE_JSON="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_JSON" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [JSON] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [JSON] files in code base...")
   fi
 
