@@ -706,20 +706,40 @@ GetValidationInfo()
   ######################
   PRINT_ARRAY=()
 
-  ###############################
-  # Convert string to lowercase #
-  ###############################
+  ################################
+  # Convert strings to lowercase #
+  ################################
   VALIDATE_YAML=$(echo "$VALIDATE_YAML" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_YAML" != "false" ]]; then
-    # Set to true
-    VALIDATE_YAML="$DEFAULT_VALIDATE_LANGUAGE"
-    PRINT_ARRAY+=("- Validating [YML] files in code base...")
+
+  ################################################
+  # Determine if any linters were explicitly set #
+  ################################################
+  ANY_SET="false"
+  if [[ -n "$VALIDATE_YAML" ]]; then
+    ANY_SET="true"
+  fi
+
+  ####################################
+  # Validate if we should check YAML #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_YAML" ]]; then
+      # YAML flag was not set - default to false
+      VALIDATE_YAML="false"
+    fi
   else
-    # Its false
-    PRINT_ARRAY+=("- Excluding [YML] files in code base...")
+    # No linter flags were set - default all to true
+    VALIDATE_YAML="true"
+  fi
+
+  #######################################
+  # Print which linters we are enabling #
+  #######################################
+  if [[ "$VALIDATE_YAML" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [YAML] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [YAML] files in code base...")
   fi
 
   ###############################
