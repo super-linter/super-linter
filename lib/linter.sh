@@ -711,12 +711,43 @@ GetValidationInfo()
   ################################
   VALIDATE_YAML=$(echo "$VALIDATE_YAML" | awk '{print tolower($0)}')
   VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
+  VALIDATE_XML=$(echo "$VALIDATE_XML" | awk '{print tolower($0)}')
+  VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
+  VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
+  VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
+  VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
+  VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
+  VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
+  VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
+  VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
+  VALIDATE_JAVASCRIPT_STANDARD=$(echo "$VALIDATE_JAVASCRIPT_STANDARD" | awk '{print tolower($0)}')
+  VALIDATE_TYPESCRIPT_ES=$(echo "$VALIDATE_TYPESCRIPT_ES" | awk '{print tolower($0)}')
+  VALIDATE_TYPESCRIPT_STANDARD=$(echo "$VALIDATE_TYPESCRIPT_STANDARD" | awk '{print tolower($0)}')
+  VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
+  VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
+  VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
   ################################################
   ANY_SET="false"
-  if [[ -n "$VALIDATE_YAML" || -n "$VALIDATE_JSON" ]]; then
+  if [[ -n "$VALIDATE_YAML" || \
+        -n "$VALIDATE_JSON" || \
+        -n "$VALIDATE_XML" || \
+        -n "$VALIDATE_MD" || \
+        -n "$VALIDATE_BASH" || \
+        -n "$VALIDATE_PERL" || \
+        -n "$VALIDATE_PYTHON" || \
+        -n "$VALIDATE_RUBY" || \
+        -n "$VALIDATE_COFFEE" || \
+        -n "$VALIDATE_ANSIBLE" || \
+        -n "$VALIDATE_JAVASCRIPT_ES" || \
+        -n "$VALIDATE_JAVASCRIPT_STANDARD" || \
+        -n "$VALIDATE_TYPESCRIPT_ES" || \
+        -n "$VALIDATE_TYPESCRIPT_STANDARD" || \
+        -n "$VALIDATE_DOCKER" || \
+        -n "$VALIDATE_GO" || \
+        -n "$VALIDATE_TERRAFORM" ]]; then
     ANY_SET="true"
   fi
 
@@ -748,6 +779,216 @@ GetValidationInfo()
     VALIDATE_JSON="true"
   fi
 
+  ###################################
+  # Validate if we should check XML #
+  ###################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_XML" ]]; then
+      # XML flag was not set - default to false
+      VALIDATE_XML="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_XML="true"
+  fi
+
+  ########################################
+  # Validate if we should check MARKDOWN #
+  ########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_MD" ]]; then
+      # MD flag was not set - default to false
+      VALIDATE_MD="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_MD="true"
+  fi
+
+  ####################################
+  # Validate if we should check BASH #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_BASH" ]]; then
+      # BASH flag was not set - default to false
+      VALIDATE_BASH="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_BASH="true"
+  fi
+
+  ####################################
+  # Validate if we should check PERL #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_PERL" ]]; then
+      # PERL flag was not set - default to false
+      VALIDATE_PERL="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_PERL="true"
+  fi
+
+  ######################################
+  # Validate if we should check PYTHON #
+  ######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_PYTHON" ]]; then
+      # PYTHON flag was not set - default to false
+      VALIDATE_PYTHON="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_PYTHON="true"
+  fi
+
+  ####################################
+  # Validate if we should check RUBY #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_RUBY" ]]; then
+      # RUBY flag was not set - default to false
+      VALIDATE_RUBY="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_RUBY="true"
+  fi
+
+  ######################################
+  # Validate if we should check COFFEE #
+  ######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_COFFEE" ]]; then
+      # COFFEE flag was not set - default to false
+      VALIDATE_COFFEE="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_COFFEE="true"
+  fi
+
+  #######################################
+  # Validate if we should check ANSIBLE #
+  #######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_ANSIBLE" ]]; then
+      # ANSIBLE flag was not set - default to false
+      VALIDATE_ANSIBLE="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_ANSIBLE="true"
+  fi
+
+  #############################################
+  # Validate if we should check JAVASCRIPT_ES #
+  #############################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_JAVASCRIPT_ES" ]]; then
+      # JAVASCRIPT_ES flag was not set - default to false
+      VALIDATE_JAVASCRIPT_ES="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_JAVASCRIPT_ES="true"
+  fi
+
+  ###################################################
+  # Validate if we should check JAVASCRIPT_STANDARD #
+  ###################################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_JAVASCRIPT_STANDARD" ]]; then
+      # JAVASCRIPT_STANDARD flag was not set - default to false
+      VALIDATE_JAVASCRIPT_STANDARD="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_JAVASCRIPT_STANDARD="true"
+  fi
+
+  #############################################
+  # Validate if we should check TYPESCRIPT_ES #
+  #############################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_TYPESCRIPT_ES" ]]; then
+      # TYPESCRIPT_ES flag was not set - default to false
+      VALIDATE_TYPESCRIPT_ES="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_TYPESCRIPT_ES="true"
+  fi
+
+  ###################################################
+  # Validate if we should check TYPESCRIPT_STANDARD #
+  ###################################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_TYPESCRIPT_STANDARD" ]]; then
+      # TYPESCRIPT_STANDARD flag was not set - default to false
+      VALIDATE_TYPESCRIPT_STANDARD="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_TYPESCRIPT_STANDARD="true"
+  fi
+
+  ######################################
+  # Validate if we should check DOCKER #
+  ######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_DOCKER" ]]; then
+      # DOCKER flag was not set - default to false
+      VALIDATE_DOCKER="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_DOCKER="true"
+  fi
+
+  ##################################
+  # Validate if we should check GO #
+  ##################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_GO" ]]; then
+      # GO flag was not set - default to false
+      VALIDATE_GO="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_GO="true"
+  fi
+
+  #########################################
+  # Validate if we should check TERRAFORM #
+  #########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_TERRAFORM" ]]; then
+      # TERRAFORM flag was not set - default to false
+      VALIDATE_TERRAFORM="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_TERRAFORM="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -761,244 +1002,79 @@ GetValidationInfo()
   else
     PRINT_ARRAY+=("- Excluding [JSON] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_XML=$(echo "$VALIDATE_XML" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_XML" != "false" ]]; then
-    # Set to true
-    VALIDATE_XML="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_XML" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [XML] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [XML] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_MD" != "false" ]]; then
-    # Set to true
-    VALIDATE_MD="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_MD" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [MARKDOWN] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [MARKDOWN] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_BASH" != "false" ]]; then
-    # Set to true
-    VALIDATE_BASH="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_BASH" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [BASH] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [BASH] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_PERL" != "false" ]]; then
-    # Set to true
-    VALIDATE_PERL="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_PERL" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_PYTHON" != "false" ]]; then
-    # Set to true
-    VALIDATE_PYTHON="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_PYTHON" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [PYTHON] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_RUBY" != "false" ]]; then
-    # Set to true
-    VALIDATE_RUBY="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_RUBY" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [RUBY] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [RUBY] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_COFFEE" != "false" ]]; then
-    # Set to true
-    VALIDATE_COFFEE="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_COFFEE" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [COFFEE] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [COFFEE] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_ANSIBLE" != "false" ]]; then
-    # Set to true
-    VALIDATE_ANSIBLE="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_ANSIBLE" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [ANSIBLE] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [ANSIBLE] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_JAVASCRIPT_ES" != "false" ]]; then
-    # Set to true
-    VALIDATE_JAVASCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_JAVASCRIPT_ES" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [JAVASCRIPT(eslint)] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [JAVASCRIPT(eslint)] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_JAVASCRIPT_STANDARD=$(echo "$VALIDATE_JAVASCRIPT_STANDARD" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_JAVASCRIPT_STANDARD" != "false" ]]; then
-    # Set to true
-    VALIDATE_JAVASCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [JAVASCRIPT(standard)] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [JAVASCRIPT(standard)] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_TYPESCRIPT_ES=$(echo "$VALIDATE_TYPESCRIPT_ES" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_TYPESCRIPT_ES" != "false" ]]; then
-    # Set to true
-    VALIDATE_TYPESCRIPT_ES="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_TYPESCRIPT_ES" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [TYPESCRIPT(eslint)] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [TYPESCRIPT(eslint)] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_TYPESCRIPT_STANDARD=$(echo "$VALIDATE_TYPESCRIPT_STANDARD" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_TYPESCRIPT_STANDARD" != "false" ]]; then
-    # Set to true
-    VALIDATE_TYPESCRIPT_STANDARD="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_TYPESCRIPT_STANDARD" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [TYPESCRIPT(standard)] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [TYPESCRIPT(standard)] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_DOCKER" != "false" ]]; then
-    # Set to true
-    VALIDATE_DOCKER="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_DOCKER" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [DOCKER] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [DOCKER] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_GO" != "false" ]]; then
-    # Set to true
-    VALIDATE_GO="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_GO" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [GOLANG] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [GOLANG] files in code base...")
   fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
-  ######################################
-  # Validate we should check all files #
-  ######################################
-  if [[ "$VALIDATE_TERRAFORM" != "false" ]]; then
-    # Set to true
-    VALIDATE_TERRAFORM="$DEFAULT_VALIDATE_LANGUAGE"
+  if [[ "$VALIDATE_TERRAFORM" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
-    # Its false
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
   fi
 
