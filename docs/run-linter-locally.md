@@ -23,29 +23,7 @@ Once the container has been downloaded to your local environment, you can then b
   - **NOTE:** The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted
 
 ### Flags for running Locally
-You can add as many **Additional** flags as needed:
-
-| **ENV VAR** | **Command** | **Default Value** | **Notes** |
-| --- | --- | --- | --- |
-| **VALIDATE_YAML** | `-e VALIDATE_YAML=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_JSON** | `-e VALIDATE_JSON=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_XML** | `-e VALIDATE_XML=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_MD** | `-e VALIDATE_MD=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_BASH** | `-e VALIDATE_BASH=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_PERL** | `-e VALIDATE_PERL=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_PYTHON** | `-e VALIDATE_PYTHON=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_RUBY** | `-e VALIDATE_RUBY=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_COFFEE** | `-e VALIDATE_COFFEE=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_ANSIBLE** | `-e VALIDATE_ANSIBLE=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_JAVASCRIPT_ES** | `-e VALIDATE_JAVASCRIPT_ES=<true\|false>` | `true` | Flag to enable or disable the linting process of the language (Utilizing: eslint) |
-| **VALIDATE_JAVASCRIPT_STANDARD** | `-e VALIDATE_JAVASCRIPT_STANDARD=<true\|false>` | `true` | Flag to enable or disable the linting process of the language (Utilizing: standard) |
-| **VALIDATE_TYPESCRIPT_ES** | `-e VALIDATE_TYPESCRIPT_ES=<true\|false>` | `true` | Flag to enable or disable the linting process of the language (Utilizing: eslint) |
-| **VALIDATE_TYPESCRIPT_STANDARD** | `-e VALIDATE_TYPESCRIPT_STANDARD=<true\|false>` | `true` | Flag to enable or disable the linting process of the language (Utilizing: standard) |
-| **VALIDATE_DOCKER** | `-e VALIDATE_DOCKER=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_GO** | `-e VALIDATE_GO=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **VALIDATE_TERRAFORM** | `-e VALIDATE_TERRAFORM=<true\|false>` | `true` | Flag to enable or disable the linting process of the language |
-| **ANSIBLE_DIRECTORY** | `-e ANSIBLE_DIRECTORY=</path/local/to/codebase/with/ansible>` | `/ansible` | Flag to set the root directory for Ansible file location(s) |
-| **ACTIONS_RUNNER_DEBUG** | `-e ACTIONS_RUNNER_DEBUG=<true\|false>` | `false` | Flag to enable or disable additional debug info |
+You can add as many **Additional** flags as needed, documented in [README.md](../README.md#Environment-variables)
 
 ## Troubleshooting
 

@@ -101,7 +101,14 @@ jobs:
 ```
 
 ## Environment variables
-The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality:
+The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
+
+*Note:* All the `VALIDATE_[LANGAUGE]` variables behave in a specific way.  
+If none of them are passed, then they all default to true.  
+However if any one of the variables are set, we default to leaving any unset variable to false.  
+This means that if you run the linter "out of the box", all langauges will be checked.
+But if you wish to select specific linters, we give you full control to choose which linters are run,
+and won't run anything unexpected.
 
 | **ENV VAR** | **Default Value** | **Notes** |
 | --- | --- | --- |
@@ -120,10 +127,10 @@ The super-linter allows you to pass the following `ENV` variables to be able to 
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
-| **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
+| **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 
 ### Template rules files
