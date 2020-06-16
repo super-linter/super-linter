@@ -77,7 +77,7 @@ RUN gem install rubocop:0.74 rubocop-rails rubocop-github:0.13
 ######################
 # Install shellcheck #
 ######################
-RUN wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
+RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv \
     && mv "shellcheck-stable/shellcheck" /usr/bin/
 
 #####################
