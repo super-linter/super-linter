@@ -35,15 +35,10 @@ RUN apk add --no-cache \
 RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
     yamllint pylint yq
 
-###################################
-# COPY .npmrc to docker container #
-###################################
-COPY lib/.npmrc ~/.npmrc
-
 ####################
 # Run NPM Installs #
 ####################
-RUN npm -g --no-cache install \
+RUN npm config set package-lock false && npm config set loglevel error && npm -g --no-cache install \
     markdownlint-cli \
     jsonlint prettyjson \
     coffeelint \
