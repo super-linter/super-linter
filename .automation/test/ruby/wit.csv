@@ -1,0 +1,12 @@
+Project: etc... Ignore
+ID,Work Item Type,Title,Assigned To,State,Tags
+1,Task,Sample task #1,Sample User1,Closed,
+2,Task,Sample task #2,Sample User1,Closed,
+43,Bug,Sample bug #1,Sample User2,Closed,
+44,Task,Sample task #3,Sample User1,Closed,
+55,Bug,Sample bug #2,Sample User3,Resolved,
+107,Task,Sample task #4,,Active,
+108,Task,Sample task #5,,Active,
+117,Test Case,Sample Test Case A,Sample User2,Closed,
+118,Issue,Sample Issue X,User X,Closed,
+2624,Task,Sample Task #6,Somebody Else,Active,
