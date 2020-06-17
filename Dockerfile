@@ -35,6 +35,11 @@ RUN apk add --no-cache \
 RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
     yamllint pylint yq
 
+###################################
+# COPY .npmrc to docker container #
+###################################
+COPY lib/.npmrc ~/.npmrc
+
 ####################
 # Run NPM Installs #
 ####################
