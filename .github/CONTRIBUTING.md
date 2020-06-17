@@ -31,7 +31,7 @@ Draft pull requests are also welcome to get feedback early on, or if there is so
 
 ## Releasing
 If you are the current maintainer of this action:
-1. Create a [Tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
+1. Update `README.md` to reflect new version number in the suggested workflow file section
 2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) document explaining details of Release
 3. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
 
