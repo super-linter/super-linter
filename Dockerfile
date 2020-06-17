@@ -38,28 +38,30 @@ RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
 ####################
 # Run NPM Installs #
 ####################
-RUN npm -g --no-cache install \
-    markdownlint-cli \
-    jsonlint prettyjson \
-    coffeelint \
-    typescript eslint \
-    standard \
-    babel-eslint \
-    @typescript-eslint/eslint-plugin \
-    @typescript-eslint/parser \
-    eslint-plugin-jest \
-    && npm --no-cache install \
-    markdownlint-cli \
-    jsonlint prettyjson \
-    coffeelint \
-    typescript eslint \
-    standard \
-    babel-eslint \
-    prettier \
-    eslint-config-prettier \
-    @typescript-eslint/eslint-plugin \
-    @typescript-eslint/parser \
-    eslint-plugin-jest
+RUN npm config set package-lock false \
+    && npm config set loglevel error \
+    && npm -g --no-cache install \
+      markdownlint-cli \
+      jsonlint prettyjson \
+      coffeelint \
+      typescript eslint \
+      standard \
+      babel-eslint \
+      @typescript-eslint/eslint-plugin \
+      @typescript-eslint/parser \
+      eslint-plugin-jest \
+      && npm --no-cache install \
+      markdownlint-cli \
+      jsonlint prettyjson \
+      coffeelint \
+      typescript eslint \
+      standard \
+      babel-eslint \
+      prettier \
+      eslint-config-prettier \
+      @typescript-eslint/eslint-plugin \
+      @typescript-eslint/parser \
+      eslint-plugin-jest
 
 ####################################
 # Install dockerfilelint from repo #
@@ -88,12 +90,12 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 # Install Go Linter #
 #####################
 ARG GO_VERSION='v1.23.7'
-RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
+RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
 # Install TFLint #
 ##################
-RUN curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
+RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
 ###########################################
