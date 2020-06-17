@@ -93,7 +93,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v1.0.0
+        uses: github/super-linter@v2.0.0
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
