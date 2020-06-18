@@ -251,15 +251,16 @@ var = "terrible code down here..."
 --------------------------------------------------------------------------------
 
 ## Markdown
-- [Markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli#readme)
-- [Markdownlint rules](https://awesomeopensource.com/project/DavidAnson/markdownlint)
+- [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli#readme)
+- [markdownlint rule documentation](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
+- [markdownlint inline comment syntax](https://github.com/DavidAnson/markdownlint#configuration)
 
-### Markdownlint Config file
+### markdownlint Config file
 - `.github/linters/.markdown-lint.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.markdownlint.yml`
 
-### Markdownlint disable single line
+### markdownlint disable single line
 ```markdown
 ## Here is some document
 Here is some random data
@@ -268,7 +269,7 @@ any violation you want
 <!-- markdownlint-restore -->
 Here is more data
 ```
-### Markdownlint disable code block
+### markdownlint disable code block
 ```markdown
 ## Here is some document
 Here is some random data
@@ -278,7 +279,7 @@ any violations you want
 Here is more data
 ```
 
-### Markdownlint disable entire file
+### markdownlint disable entire file
 - You can encapsulate the entire file with the *code block format* to disable an entire file from being parsed
 
 --------------------------------------------------------------------------------
