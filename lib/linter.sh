@@ -1899,7 +1899,7 @@ Footer()
   # Exit with 0 if errors disabled #
   ##################################
   
-  if ${ERRORS_DISABLED} then
+  if ${DISABLE_ERRORS} then
     exit 0
   fi
 
