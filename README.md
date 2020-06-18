@@ -48,7 +48,6 @@ In your repository you should have a `.github/workflows` folder with **GitHub** 
 This file should have the following code:
 
 ```yml
----
 ###########################
 ###########################
 ## Linter GitHub Actions ##
@@ -97,7 +96,6 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
-...
 ```
 
 ## Environment variables
