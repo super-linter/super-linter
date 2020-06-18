@@ -24,7 +24,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **YAML** | Yamllint |
 | **Python3** | Pylint |
 | **JSON** | JsonLint |
-| **Markdown** | Markdownlint |
+| **Markdown** | markdownlint |
 | **Perl** | Perl |
 | **XML** | LibXML |
 | **CoffeeScript** | coffeelint |
