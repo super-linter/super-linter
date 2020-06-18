@@ -26,6 +26,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
+| **PHP**          | [PHP](https://www.php.net/)                                              |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
 | **Ruby**         | [Rubocop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
@@ -119,6 +120,7 @@ and won't run anything unexpected.
 | **VALIDATE_MD** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_BASH** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PERL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |

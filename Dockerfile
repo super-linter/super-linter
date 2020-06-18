@@ -27,7 +27,8 @@ RUN apk add --no-cache \
     libxml2-utils perl \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
     py3-setuptools ansible-lint \
-    go
+    go \
+    php7
 
 #####################
 # Run Pip3 Installs #
@@ -111,6 +112,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_BASH=${VALIDATE_BASH} \
     VALIDATE_PERL=${VALIDATE_PERL} \
+    VALIDATE_PHP=${VALIDATE_PHP} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
