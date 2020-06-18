@@ -319,7 +319,7 @@ Here is more data
 --------------------------------------------------------------------------------
 
 ## Coffeescript
-- [coffeelint](http://www.coffeelint.org/)
+- [coffeelint](https://coffeelint.github.io/)
 
 ### coffeelint Config file
 - `.github/linters/.coffee-lint.yml`
