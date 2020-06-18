@@ -5,6 +5,7 @@
 ################################################################################
 
 # NOTES: This script is used to upload a Dockerfile to DockerHub
+# under the GitHub organization
 # Its based on being built from a GitHub Action, but could be easily updated
 # To be ran in a different medium.
 #
