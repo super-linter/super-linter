@@ -69,6 +69,7 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
 GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the commit
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"            # Default Git Branch to use (master by default)
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
@@ -1154,10 +1155,10 @@ BuildFileList()
     echo "Pulling in code history and branches..."
   fi
 
-  #####################################################################
-  # Switch codebase back to master to get a list of all files changed #
-  #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout master 2>&1)
+  #################################################################################
+  # Switch codebase back to the default branch to get a list of all files changed #
+  #################################################################################
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout "$DEFAULT_BRANCH" 2>&1)
 
   #######################
   # Load the error code #
@@ -1169,7 +1170,7 @@ BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "Failed to switch to master branch to get files changed!"
+    echo "Failed to switch to $DEFAULT_BRANCH branch to get files changed!"
     echo "ERROR:[$SWITCH_CMD]"
     exit 1
   fi
@@ -1180,14 +1181,14 @@ BuildFileList()
   if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
-    echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+    echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
   fi
 
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
   # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" --diff-filter=d 2>&1))
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
 
   #######################
   # Load the error code #
@@ -1910,7 +1911,7 @@ RunTestCases()
 {
   # This loop will run the test cases and exclude user code
   # This is called from the automation process to validate new code
-  # When a PR is opened, the new code is validated with the master branch
+  # When a PR is opened, the new code is validated with the default branch
   # version of linter.sh, and a new container is built with the latest codebase
   # for testing. That container is spun up, and ran,
   # with the flag: TEST_CASE_RUN=true
