@@ -18,7 +18,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 
 | *Language* | *Linter* |
 |---|---|
-| **Ruby** | Rubocop |
+| **Ruby** | RuboCop |
 | **Shell** | Shellcheck |
 | **Ansible** | Ansible-lint |
 | **YAML** | Yamllint |
