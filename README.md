@@ -142,7 +142,7 @@ You can use the **GitHub** **Super-Linter** *with* or *without* your own persona
 If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
 ## Docker Hub
-The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/admiralawkbar/super-linter`
+The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/github/super-linter`
 
 ## Running Super-Linter locally (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
