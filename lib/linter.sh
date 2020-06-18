@@ -109,7 +109,7 @@ DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugg
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
-DEFULAT_DISABLE_ERRORS='false'                        # Default to enabling errors
+DEFAULT_DISABLE_ERRORS='false'                        # Default to enabling errors
 
 ##########################
 # Array of changed files #
