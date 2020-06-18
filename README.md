@@ -87,7 +87,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       ################################
       # Run Linter against code base #
