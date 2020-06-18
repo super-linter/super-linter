@@ -103,7 +103,7 @@ jobs:
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-*Note:* All the `VALIDATE_[LANGAUGE]` variables behave in a specific way.  
+*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.  
 If none of them are passed, then they all default to true.  
 However if any one of the variables are set, we default to leaving any unset variable to false.  
 This means that if you run the linter "out of the box", all langauges will be checked.
