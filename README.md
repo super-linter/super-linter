@@ -18,18 +18,18 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 
 | *Language* | *Linter* |
 |---|---|
-| **Ruby** | Rubocop |
+| **Ruby** | RuboCop |
 | **Shell** | Shellcheck |
 | **Ansible** | Ansible-lint |
 | **YAML** | Yamllint |
 | **Python3** | Pylint |
 | **JSON** | JsonLint |
-| **Markdown** | markdownlint |
+| **Markdown** | Markdownlint |
 | **Perl** | Perl |
 | **XML** | LibXML |
-| **Coffeescript** | coffeelint |
-| **Javascript** | eslint standard |
-| **Typescript** | eslint standard |
+| **CoffeeScript** | coffeelint |
+| **JavaScript** | eslint standard |
+| **TypeScript** | eslint standard |
 | **Golang** | golangci-lint |
 | **Dockerfile** | dockerfilelint |
 | **Terraform** | tflint |
@@ -142,7 +142,7 @@ You can use the **GitHub** **Super-Linter** *with* or *without* your own persona
 If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
 ## Docker Hub
-The **Docker** container that is built from this repository is located at `https://cloud.docker.com/u/admiralawkbar/repository/docker/admiralawkbar/super-linter`
+The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/admiralawkbar/super-linter`
 
 ## Running Super-Linter locally (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
@@ -157,9 +157,9 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
   - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Limitations
-Below are a list of the known limitations for the **Github Super-Linter**:
+Below are a list of the known limitations for the **GitHub Super-Linter**:
 - Due to being completely packaged at run time, you will not be able to update dependencies or change versions of the enclosed linters and binaries
-- Reading additional details from `package.json` are not read by the **Github Super-Linter**
+- Reading additional details from `package.json` are not read by the **GitHub Super-Linter**
 - Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
 ## How to contribute
