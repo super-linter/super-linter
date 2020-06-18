@@ -1096,6 +1096,30 @@ GetValidationInfo()
     # Set the value
     ANSIBLE_DIRECTORY="$TEMP_ANSIBLE_DIRECTORY"
   fi
+  
+  ###############################
+  # Get the disable errors flag #
+  ###############################
+  if [ -z "$DISABLE_ERRORS" ]; then
+    ##################################
+    # No flag passed, set to default #
+    ##################################
+    DISABLE_ERRORS="$DEFAULT_DISABLE_ERRORS"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  DSIABLE_ERRORS=$(echo "$DISABLE_ERRORS" | awk '{print tolower($0)}')
+
+  ############################
+  # Set to false if not true #
+  ############################
+  if [ "$DISABLE_ERRORS" != "true" ]; then
+    ACTIONS_RUNNER_DEBUG="false"
+  fi
+
+
 
   ############################
   # Get the run verbose flag #
