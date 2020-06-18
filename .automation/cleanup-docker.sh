@@ -61,6 +61,34 @@ ValidateInput()
     echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
   fi
 
+  #######################
+  # Validate IMAGE_REPO #
+  #######################
+  if [ -z "$IMAGE_REPO" ]; then
+    # No repo was pulled
+    echo "ERROR! Failed to get [IMAGE_REPO]!"
+    echo "ERROR:[$IMAGE_REPO]"
+    exit 1
+  elif [[ "$IMAGE_REPO" == "github/super-linter" ]]; then
+    # Found our main repo
+    echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
+  else
+    # This is a fork and we cant pull vars or any info
+    echo "WARN! No image to cleanup as this is a forked branch, and not being built with current automation!"
+    exit 0
+  fi
+
+  ##########################
+  # Validate IMAGE_VERSION #
+  ##########################
+  if [ -z "$IMAGE_VERSION" ]; then
+    echo "ERROR! Failed to get [IMAGE_VERSION]!"
+    echo "ERROR:[$IMAGE_VERSION]"
+    exit 1
+  else
+    echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
+  fi
+
   ############################
   # Validate DOCKER_USERNAME #
   ############################
@@ -81,28 +109,6 @@ ValidateInput()
     exit 1
   else
     echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
-  fi
-
-  #######################
-  # Validate IMAGE_REPO #
-  #######################
-  if [ -z "$IMAGE_REPO" ]; then
-    echo "ERROR! Failed to get [IMAGE_REPO]!"
-    echo "ERROR:[$IMAGE_REPO]"
-    exit 1
-  else
-    echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
-  fi
-
-  ##########################
-  # Validate IMAGE_VERSION #
-  ##########################
-  if [ -z "$IMAGE_VERSION" ]; then
-    echo "ERROR! Failed to get [IMAGE_VERSION]!"
-    echo "ERROR:[$IMAGE_VERSION]"
-    exit 1
-  else
-    echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
   fi
 
   ##################################################
