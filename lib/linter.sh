@@ -1895,6 +1895,14 @@ Footer()
     fi
   done
 
+  ##################################
+  # Exit with 0 if errors disabled #
+  ##################################
+  
+  if ${ERRORS_DISABLED} then
+    exit 0
+  fi
+
   ###############################
   # Exit with 1 if errors found #
   ###############################
