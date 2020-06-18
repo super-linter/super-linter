@@ -1116,7 +1116,7 @@ GetValidationInfo()
   # Set to false if not true #
   ############################
   if [ "$DISABLE_ERRORS" != "true" ]; then
-    ACTIONS_RUNNER_DEBUG="false"
+    DISABLE_ERRORS="false"
   fi
 
 
