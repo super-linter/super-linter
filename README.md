@@ -18,21 +18,21 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 
 | *Language* | *Linter* |
 |---|---|
-| **Ruby** | [Rubocop](https://github.com/rubocop-hq/rubocop) |
-| **Shell** | [Shellcheck](https://github.com/koalaman/shellcheck) |
 | **Ansible** | [ansible-lint](https://github.com/ansible/ansible-lint) |
-| **YAML** | [YamlLint](https://github.com/adrienverge/yamllint) |
-| **Python3** | [pylint](https://www.pylint.org/) |
+| **CoffeeScript** | [coffeelint](http://www.coffeelint.org/) |
+| **Dockerfile** | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) |
+| **Golang** | [golangci-lint](https://github.com/golangci/golangci-lint) |
+| **JavaScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
 | **JSON** | [jsonlint](https://github.com/zaach/jsonlint) |
 | **Markdown** | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **Perl** | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl) |
-| **XML** | [LibXML](http://xmlsoft.org/) |
-| **CoffeeScript** | [coffeelint](http://www.coffeelint.org/) |
-| **JavaScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
-| **TypeScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
-| **Golang** | [golangci-lint](https://github.com/golangci/golangci-lint) |
-| **Dockerfile** | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) |
+| **Python3** | [pylint](https://www.pylint.org/) |
+| **Ruby** | [Rubocop](https://github.com/rubocop-hq/rubocop) |
+| **Shell** | [Shellcheck](https://github.com/koalaman/shellcheck) |
 | **Terraform** | [tflint](https://github.com/terraform-linters/tflint) |
+| **TypeScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
+| **XML** | [LibXML](http://xmlsoft.org/) |
+| **YAML** | [YamlLint](https://github.com/adrienverge/yamllint) |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
