@@ -18,21 +18,21 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 
 | *Language* | *Linter* |
 |---|---|
-| **Ruby** | RuboCop |
-| **Shell** | Shellcheck |
-| **Ansible** | Ansible-lint |
-| **YAML** | Yamllint |
-| **Python3** | Pylint |
-| **JSON** | JsonLint |
-| **Markdown** | markdownlint |
-| **Perl** | Perl |
-| **XML** | LibXML |
-| **CoffeeScript** | coffeelint |
-| **JavaScript** | eslint standard |
-| **TypeScript** | eslint standard |
-| **Golang** | golangci-lint |
-| **Dockerfile** | dockerfilelint |
-| **Terraform** | tflint |
+| **Ruby** | [Rubocop](https://github.com/rubocop-hq/rubocop) |
+| **Shell** | [Shellcheck](https://github.com/koalaman/shellcheck) |
+| **Ansible** | [ansible-lint](https://github.com/ansible/ansible-lint) |
+| **YAML** | [YamlLint](https://github.com/adrienverge/yamllint) |
+| **Python3** | [pylint](https://www.pylint.org/) |
+| **JSON** | [jsonlint](https://github.com/zaach/jsonlint) |
+| **Markdown** | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
+| **Perl** | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl) |
+| **XML** | [LibXML](http://xmlsoft.org/) |
+| **CoffeeScript** | [coffeelint](http://www.coffeelint.org/) |
+| **JavaScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
+| **TypeScript** | [eslint](https://eslint.org/) [standard js](https://standardjs.com/) |
+| **Golang** | [golangci-lint](https://github.com/golangci/golangci-lint) |
+| **Dockerfile** | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) |
+| **Terraform** | [tflint](https://github.com/terraform-linters/tflint) |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
