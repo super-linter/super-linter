@@ -24,12 +24,12 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **YAML** | Yamllint |
 | **Python3** | Pylint |
 | **JSON** | JsonLint |
-| **MarkDown** | Markdownlint |
+| **Markdown** | Markdownlint |
 | **Perl** | Perl |
 | **XML** | LibXML |
-| **Coffeescript** | coffeelint |
-| **Javascript** | eslint standard |
-| **Typescript** | eslint standard |
+| **CoffeeScript** | coffeelint |
+| **JavaScript** | eslint standard |
+| **TypeScript** | eslint standard |
 | **Golang** | golangci-lint |
 | **Dockerfile** | dockerfilelint |
 | **Terraform** | tflint |
@@ -157,9 +157,9 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
   - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Limitations
-Below are a list of the known limitations for the **Github Super-Linter**:
+Below are a list of the known limitations for the **GitHub Super-Linter**:
 - Due to being completely packaged at run time, you will not be able to update dependencies or change versions of the enclosed linters and binaries
-- Reading additional details from `package.json` are not read by the **Github Super-Linter**
+- Reading additional details from `package.json` are not read by the **GitHub Super-Linter**
 - Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
 ## How to contribute
