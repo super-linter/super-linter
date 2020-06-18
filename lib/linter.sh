@@ -1110,7 +1110,7 @@ GetValidationInfo()
   ###############################
   # Convert string to lowercase #
   ###############################
-  DSIABLE_ERRORS=$(echo "$DISABLE_ERRORS" | awk '{print tolower($0)}')
+  DISABLE_ERRORS=$(echo "$DISABLE_ERRORS" | awk '{print tolower($0)}')
 
   ############################
   # Set to false if not true #
