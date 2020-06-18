@@ -1,6 +1,6 @@
 # Super-Linter
 This repository is for the **GitHub Action** to run a **Super-Linter**.  
-It is a simple combination on various linters, written in `bash`, to help validate your source code.  
+It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
 - Prevent broken code from being uploaded to *master* branches

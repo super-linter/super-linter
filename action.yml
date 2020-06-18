@@ -1,7 +1,7 @@
 name: 'Super-Linter'
 author: 'GitHub'
-description: 'It is a simple combination on various linters, written in bash, to help validate your source code.'
-runs: 
+description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
+runs:
   using: 'docker'
   image: 'Dockerfile'
 branding:
