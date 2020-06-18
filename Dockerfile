@@ -89,7 +89,7 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 #####################
 # Install Go Linter #
 #####################
-ARG GO_VERSION='v1.23.7'
+ARG GO_VERSION='v1.27.0'
 RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
