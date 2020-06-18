@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-############# Cleanup Container on DockerHub @admiralawkbar ####################
+############# Cleanup Image on DockerHub @admiralawkbar ########################
 ################################################################################
 
 # NOTES: This script is used to remove a tagged image on DockerHub
