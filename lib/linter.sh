@@ -89,6 +89,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate lang
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
+DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
 
 ##############
 # Debug Vars #
@@ -108,6 +109,7 @@ DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugg
 RAW_FILE_ARRAY=()                                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
+DEFULAT_DISABLE_ERRORS='false'                        # Default to enabling errors
 
 ##########################
 # Array of changed files #
