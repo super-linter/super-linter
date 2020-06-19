@@ -1653,12 +1653,7 @@ LintCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      #Special Handling for Powershell Required
-      if [ $FILE_TYPE -eq 'POWERSHELL' ];then
-      
-      else 
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
-      fi
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
 
       #######################
       # Load the error code #
@@ -2285,7 +2280,7 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   # Lint the powershell files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES -Path '" ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
+  LintCodebase "POWERSHELL" "/action/lib/pwshlint.ps1" "/action/lib/pwshlint.ps1 $POWERSHELL_LINTER_RULES " ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
