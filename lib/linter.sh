@@ -48,20 +48,25 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
+# CSS Vars
+CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
+CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
+
 
 #######################################
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint", "inspectcode")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" 
+  "tflint" "inspectcode" "stylelint")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM', 'CSHARP')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS' 'CSHARP')
 
 ###################
 # GitHub ENV Vars #
@@ -90,6 +95,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate lang
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_CSHARP="${VALIDATE_CSHARP}"                  # Boolean to validate language
+VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
@@ -102,7 +108,7 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
@@ -131,6 +137,7 @@ FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
 FILE_ARRAY_CSHARP=()                # Array of files to check
+FILE_ARRAY_CSS=()                   # Array of files to check
 
 ############
 # Counters #
@@ -153,6 +160,7 @@ ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 ERRORS_FOUND_CSHARP=0               # Count of errors found
+ERRORS_FOUND_CSS=0                  # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -730,6 +738,7 @@ GetValidationInfo()
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
   VALIDATE_CSHARP=$(echo "$VALIDATE_CSHARP" | awk '{print tolower($0)}')
+  VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -753,6 +762,7 @@ GetValidationInfo()
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
         -n "$VALIDATE_CSHARP" ]]; then
+        -n "$VALIDATE_CSS" ]]; then
     ANY_SET="true"
   fi
 
@@ -1006,6 +1016,18 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_CSHARP="true"
+  ###################################
+  # Validate if we should check CSS #
+  ###################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CSS" ]]; then
+      # CSS flag was not set - default to false
+      VALIDATE_CSS="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CSS="true"
   fi
 
   #######################################
@@ -1100,6 +1122,10 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [CSHARP] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [CSHARP] files in code base...")
+  if [[ "$VALIDATE_CSS" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CSS] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CSS] files in code base...")
   fi
 
   ##############################
@@ -1404,6 +1430,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_TERRAFORM+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "css" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CSS+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1923,7 +1958,8 @@ Footer()
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSHARP" -ne 0 ] || \
-     [ "$ERRORS_FOUND_RUBY" -ne 0 ]; then
+     [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CSS" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
@@ -1981,6 +2017,7 @@ RunTestCases()
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
   TestCodebase "CSHARP" "inspectcode" "inspectcode.sh" ".*\.\(cs\)\$"
+  TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
 
   #################
   # Footer prints #
@@ -2035,6 +2072,8 @@ GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 # Get Terraform rules
 GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+# Get CSS rules
+GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
 
 #################################
 # Check if were in verbose mode #
@@ -2259,6 +2298,20 @@ if [ "$VALIDATE_TYPESCRIPT_STANDARD" == "true" ]; then
   # Lint the Typescript files #
   #############################
   LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
+fi
+
+###############
+# CSS LINTING #
+###############
+if [ "$VALIDATE_CSS" == "true" ]; then
+  #################################
+  # Get CSS standard rules #
+  #################################
+  GetStandardRules "stylelint"
+  #############################
+  # Lint the CSS files #
+  #############################
+  LintCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
 fi
 
 ##################

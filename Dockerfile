@@ -43,17 +43,19 @@ RUN npm config set package-lock false \
     && npm -g --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
       eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
@@ -61,7 +63,9 @@ RUN npm config set package-lock false \
       eslint-config-prettier \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
-      eslint-plugin-jest
+      eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard
 
 ####################################
 # Install dockerfilelint from repo #
@@ -131,6 +135,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSHARP=${VALIDATE_CSHARP} \
+    VALIDATE_CSS=${VALIDATE_CSS} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \

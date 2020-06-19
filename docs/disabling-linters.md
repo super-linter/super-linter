@@ -20,6 +20,7 @@ Below is examples and documentation for each language and the various methods to
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
+- [CSS](#stylelint)
 
 <!-- toc -->
 
@@ -319,7 +320,7 @@ Here is more data
 --------------------------------------------------------------------------------
 
 ## Coffeescript
-- [coffeelint](http://www.coffeelint.org/)
+- [coffeelint](https://coffeelint.github.io/)
 
 ### coffeelint Config file
 - `.github/linters/.coffee-lint.yml`
@@ -511,3 +512,35 @@ alert('foo')
 - There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
+
+## CSS
+- [stylelint](https://stylelint.io/)
+
+### stylelint standard Config file
+- `.github/linters/.stylelintrc.json`
+
+### stylelint disable single line
+```css
+#id {
+  /* stylelint-disable-next-line declaration-no-important */
+  color: pink !important;
+}
+```
+
+### stylelint disable code block
+```css
+/* stylelint-disable */
+a {}
+/* stylelint-enable */
+```
+
+### stylelint disable entire file
+- You can disable entire files with the `ignoreFiles` property in `.stylelintrc.json`
+```json
+{
+  "ignoreFiles": [
+    "styles/ignored/wildcards/*.css",
+    "styles/ignored/specific-file.css"
+   ]
+}
+```
