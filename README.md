@@ -27,7 +27,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
-| **Ruby**         | [Rubocop](https://github.com/rubocop-hq/rubocop)                         |
+| **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
 | **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
