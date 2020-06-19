@@ -54,14 +54,14 @@ TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path 
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint", "inspectcode")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM', 'CSHARP')
 
 ###################
 # GitHub ENV Vars #
@@ -89,6 +89,7 @@ VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to val
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+VALIDATE_CSHARP="${VALIDATE_CSHARP}"                  # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
@@ -129,6 +130,7 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
+FILE_ARRAY_CSHARP=()                # Array of files to check
 
 ############
 # Counters #
@@ -150,6 +152,7 @@ ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
 ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
+ERRORS_FOUND_CSHARP=0               # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -726,6 +729,7 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  VALIDATE_CSHARP=$(echo "$VALIDATE_CSHARP" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -747,7 +751,8 @@ GetValidationInfo()
         -n "$VALIDATE_TYPESCRIPT_STANDARD" || \
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
-        -n "$VALIDATE_TERRAFORM" ]]; then
+        -n "$VALIDATE_TERRAFORM" || \
+        -n "$VALIDATE_CSHARP" ]]; then
     ANY_SET="true"
   fi
 
@@ -989,6 +994,20 @@ GetValidationInfo()
     VALIDATE_TERRAFORM="true"
   fi
 
+  #########################################
+  # Validate if we should check CSHARP #
+  #########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CSHARP" ]]; then
+      # CSHARP flag was not set - default to false
+      VALIDATE_CSHARP="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CSHARP="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -1076,6 +1095,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
+  fi
+  if [[ "$VALIDATE_CSHARP" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CSHARP] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CSHARP] files in code base...")
   fi
 
   ##############################
@@ -1389,6 +1413,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_DOCKER+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE" == "cs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CSHARP+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1889,6 +1922,7 @@ Footer()
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CSHARP" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -1946,6 +1980,7 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
+  TestCodebase "CSHARP" "inspectcode" "inspectcode.sh" ".*\.\(cs\)\$"
 
   #################
   # Footer prints #
@@ -2151,6 +2186,17 @@ if [ "$VALIDATE_TERRAFORM" == "true" ]; then
   ############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
+fi
+
+#####################
+# CSHARP LINTING #
+#####################
+if [ "$VALIDATE_CSHARP" == "true" ]; then
+  ############################
+  # Lint the Terraform files #
+  ############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "CSHARP" "inspectcode" "inspectcode.sh" ".*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###################

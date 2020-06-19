@@ -98,6 +98,13 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
+########################################
+# Install Resharper Command Line Tools #
+########################################
+RUN curl -Ls "$(curl -Ls https://download-cf.jetbrains.com/resharper/ReSharperUltimate.2020.1.3/JetBrains.ReSharper.CommandLineTools.Unix.2020.1.3.tar.gz)" -o resharper.tar.gz \
+    && tar -xf resharper.tar.gz -C /usr/bin/resharper \
+    && rm resharper.tar.gz
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -123,6 +130,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
+    VALIDATE_CSHARP=${VALIDATE_CSHARP} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
