@@ -19,7 +19,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
-| **CoffeeScript** | [coffeelint](http://www.coffeelint.org/)                                 |
+| **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                                 |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |

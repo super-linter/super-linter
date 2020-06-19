@@ -43,7 +43,7 @@ RUN npm config set package-lock false \
     && npm -g --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
@@ -53,7 +53,7 @@ RUN npm config set package-lock false \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
