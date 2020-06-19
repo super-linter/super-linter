@@ -48,20 +48,24 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
+# Powershell Vars
+POWERSHELL_FILE_NAME='.powershell-psccriptanalyzer.psd1'                  # Name of the file
+POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME"    # Path to the Powershell lint rules
+
 
 #######################################
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint" "powershell")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'POWERSHELL')
 
 ###################
 # GitHub ENV Vars #
@@ -88,6 +92,7 @@ VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to val
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
@@ -2223,6 +2228,17 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+######################
+# POWERSHELL LINTING #
+######################
+if [ "$VALIDATE_POWERSHELL" == "true" ]; then
+  #############################
+  # Lint the powershell files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES -Path' " 'ps[md]?1$' "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
