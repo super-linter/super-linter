@@ -137,6 +137,7 @@ and won't run anything unexpected.
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
+| **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
 | **DEFAULT_WORKSPACE** | `/tmp/lint` | The location containing files to lint if you are running locally. |
 
 ### Template rules files
