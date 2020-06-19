@@ -49,7 +49,7 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
 # Powershell Vars
-POWERSHELL_FILE_NAME='.powershell-psccriptanalyzer.psd1'                  # Name of the file
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                   # Name of the file
 POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME"    # Path to the Powershell lint rules
 
 
@@ -133,6 +133,8 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
+FILE_ARRAY_POWERSHELL=()             # Array of files to check
+
 
 ############
 # Counters #
@@ -154,6 +156,7 @@ ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
 ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
+ERRORS_FOUND_POWERSHELL=0            # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -730,6 +733,7 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -751,7 +755,9 @@ GetValidationInfo()
         -n "$VALIDATE_TYPESCRIPT_STANDARD" || \
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
-        -n "$VALIDATE_TERRAFORM" ]]; then
+        -n "$VALIDATE_TERRAFORM" || \
+        -n "$VALIDATE_POWERSHELL" \
+        ]]; then
     ANY_SET="true"
   fi
 
@@ -993,6 +999,20 @@ GetValidationInfo()
     VALIDATE_TERRAFORM="true"
   fi
 
+  #########################################
+  # Validate if we should check POWERSHELL #
+  #########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_POWERSHELL" ]]; then
+      # POWERSHELL flag was not set - default to false
+      VALIDATE_POWERSHELL="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_POWERSHELL="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -1080,6 +1100,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
+  fi
+  if [[ "$VALIDATE_POWERSHELL" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [POWERSHELL] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
   fi
 
   ##############################
@@ -1388,6 +1413,18 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    ###########################
+    # Get the Powershell files #
+    ###########################
+    elif [ "$FILE_TYPE" == "ps1" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_POWERSHELL+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "$FILE" == "Dockerfile" ]; then
       ################################
       # Append the file to the array #
@@ -1616,7 +1653,12 @@ LintCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      #Special Handling for Powershell Required
+      if [ $FILE_TYPE -eq 'POWERSHELL' ];then
+      
+      else 
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      fi
 
       #######################
       # Load the error code #
@@ -1893,6 +1935,7 @@ Footer()
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
+     [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
@@ -1950,6 +1993,7 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
+  TestCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES'" ".*\.\(ps\.\*\)\$"
 
   #################
   # Footer prints #
@@ -2004,6 +2048,9 @@ GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 # Get Terraform rules
 GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+# Get Terraform rules
+GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
+
 
 #################################
 # Check if were in verbose mode #
@@ -2238,7 +2285,7 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   # Lint the powershell files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES -Path' " 'ps[md]?1$' "${FILE_ARRAY_POWERSHELL[@]}"
+  LintCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES -Path '" ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
