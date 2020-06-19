@@ -3,7 +3,7 @@
 #You can also use ln -s /path /tmp/lint as an alternative
 #If you do neither, this will default to running against the test automation files
 tmppath=/tmp/lint
-if [ ! -L tmppath ]; then
+if [ ! -L $tmppath ]; then
   ln -s $PWD/.automation/test $tmppath
 fi
 
