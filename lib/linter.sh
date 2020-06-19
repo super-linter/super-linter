@@ -141,7 +141,7 @@ FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
-FILE_ARRAAY_CLOJURE=()              # Array of files to check
+FILE_ARRAY_CLOJURE=()              # Array of files to check
 
 ############
 # Counters #
