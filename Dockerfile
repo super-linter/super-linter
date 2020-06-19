@@ -105,9 +105,10 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
 #####################
 # Install clj-kondo #
 #####################
-RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v2020.06.12/clj-kondo-2020.06.12-linux-static-amd64.zip \
-    && unzip clj-kondo-2020.06.12-linux-static-amd64.zip \
-    && rm clj-kondo-2020.06.12-linux-static-amd64.zip \
+ARG CLJ_KONDO_VERSION='2020.06.12'
+RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KONDO_VERSION}/clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
+    && unzip clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
+    && rm clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && mv clj-kondo /usr/bin/
 
 ###########################################
