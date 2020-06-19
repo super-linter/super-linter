@@ -20,4 +20,4 @@ A clear and concise description of any alternative solutions or features you've 
 Add any other context or screenshots about the feature request here.
 
 **Note**
-If this is a request to add a new language, after submitting this issue check out [the wiki](https://github.com/github/super-linter/wiki/Adding-new-language-support) for more info on how to accomplish that. 
+If this is a request to add a new language, after submitting this issue check out [the wiki](https://github.com/github/super-linter/wiki/Adding-new-language-support) for more info on how to accomplish that.
