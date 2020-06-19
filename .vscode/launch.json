@@ -7,8 +7,12 @@
         {
             "type": "bashdb",
             "request": "launch",
-            "name": "Bash-Debug (simplest configuration)",
-            "program": "${file}"
+            "name": "Test Linter",
+            "program": ".vscode/testlinter.sh",
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "group": "aLinter"
+            }
         }
     ]
 }
