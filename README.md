@@ -133,6 +133,7 @@ and won't run anything unexpected.
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
+| **DEFAULT_WORKSPACE** | `/tmp/lint` | The location containing files to lint if you are running locally. |
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
