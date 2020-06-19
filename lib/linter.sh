@@ -51,6 +51,9 @@ TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path 
 # CSS Vars
 CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
 CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
+# Clojure Vars
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'
+CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 
 
 #######################################
@@ -59,14 +62,15 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint")
+  "stylelint" "clj-kondo")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS'
+  'CLOJURE')
 
 ###################
 # GitHub ENV Vars #
@@ -95,6 +99,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate lang
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
+VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
@@ -136,6 +141,7 @@ FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
+FILE_ARRAAY_CLOJURE=()              # Array of files to check
 
 ############
 # Counters #
@@ -158,6 +164,7 @@ ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 ERRORS_FOUND_CSS=0                  # Count of errors found
+ERRORS_FOUND_CLOJURE=0              # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -735,6 +742,7 @@ GetValidationInfo()
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)')
+  VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -757,7 +765,8 @@ GetValidationInfo()
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
-        -n "$VALIDATE_CSS" ]]; then
+        -n "$VALIDATE_CSS" || \
+        -n "$VALIDATE_CLOJURE" ]]; then
     ANY_SET="true"
   fi
 
@@ -1014,6 +1023,20 @@ GetValidationInfo()
   fi
 
   #######################################
+  # Validate if we should check Clojure #
+  #######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CLOJURE" ]]; then
+      # Clojure flag was not set - default to false
+      VALIDATE_CLOJURE="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CLOJURE="true"
+  fi
+
+  #######################################
   # Print which linters we are enabling #
   #######################################
   if [[ "$VALIDATE_YAML" == "true" ]]; then
@@ -1105,6 +1128,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [CSS] files in code base...")
+  fi
+  if [[ "$VALIDATE_CLOJURE" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CLOJURE] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CLOJURE] files in code base...")
   fi
 
   ##############################
@@ -1427,6 +1455,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_DOCKER+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE" == "clj" ] || [ "$FILE" == "cljs" ] || [ "$FILE" == "cljc" ] || [ "$FILE" == "edn" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CLOJURE+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1986,6 +2023,7 @@ RunTestCases()
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
+  TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES" ".*\.\(clj\)\$"
 
   #################
   # Footer prints #
@@ -2280,6 +2318,20 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+###################
+# CLOJURE LINTING #
+###################
+if [ "$VALIDATE_CLOJURE" == "true" ]; then
+  #################################
+  # Get Clojure standard rules #
+  #################################
+  GetStandardRules "clj-kondo"
+  #########################
+  # Lint the Clojure files #
+  #########################
+  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES" ".*\.\(clj\)\$" "${FILE_ARRAY_CLOJURE[@]}"
 fi
 
 ##########

@@ -102,6 +102,14 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
+#####################
+# Install clj-kondo #
+#####################
+RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v2020.06.12/clj-kondo-2020.06.12-linux-static-amd64.zip \
+    && unzip clj-kondo-2020.06.12-linux-static-amd64.zip \
+    && rm clj-kondo-2020.06.12-linux-static-amd64.zip \
+    && mv clj-kondo /usr/bin/
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -128,6 +136,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSS=${VALIDATE_CSS} \
+    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
