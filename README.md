@@ -34,6 +34,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **XML**          | [LibXML](http://xmlsoft.org/)                                            |
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
+| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -135,6 +136,7 @@ and won't run anything unexpected.
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |

@@ -21,6 +21,7 @@ Below is examples and documentation for each language and the various methods to
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
 - [CSS](#stylelint)
+- [ENV](#dotenv-linter)
 
 <!-- toc -->
 
@@ -544,3 +545,22 @@ a {}
    ]
 }
 ```
+
+--------------------------------------------------------------------------------
+
+## ENV
+- [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
+
+### dotenv-linter Config file
+- There is no top level *configuration file* available at this time
+
+### dotenv-linter disable single line
+```env
+# Comment line will be ignored
+```
+
+### dotenv-linter disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### dotenv-linter disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
