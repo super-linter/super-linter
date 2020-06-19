@@ -555,7 +555,7 @@ a {}
 - There is no top level *configuration file* available at this time
 
 ### dotenv-linter disable single line
-```
+```env
 # Comment line will be ignored
 ```
 
