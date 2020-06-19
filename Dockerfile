@@ -98,6 +98,41 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
+#########################################
+# Install Powershell + PSScriptAnalyzer #
+#########################################
+# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
+# Slightly modified to always retrieve latest stable Powershell version
+RUN apk add --no-cache \
+    ca-certificates \
+    less \
+    ncurses-terminfo-base \
+    krb5-libs \
+    libgcc \
+    libintl \
+    libssl1.1 \
+    libstdc++ \
+    tzdata \
+    userspace-rcu \
+    zlib \
+    icu-libs \
+    curl \ 
+    lttng-ust \ 
+    && \
+    mkdir -p /opt/microsoft/powershell/7 \
+    && \
+    curl -s https://api.github.com/repos/powershell/powershell/releases/latest \
+    | grep browser_download_url \
+    | grep linux-alpine-x64 \
+    | cut -d '"' -f 4 \
+    | xargs -n 1 wget -O - \
+    | tar -xzC /opt/microsoft/powershell/7 \
+    && \
+    ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
+    && \
+    pwsh -c 'install-module psscriptanalyzer -force'
+    
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
