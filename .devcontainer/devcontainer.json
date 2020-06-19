@@ -11,11 +11,13 @@
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
-		"terminal.integrated.shell.linux": null
+		"terminal.integrated.shell.linux": "/bin/ash"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": []
+	"extensions": [
+		"rogalmic.bash-debug"
+	]
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
