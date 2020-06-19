@@ -3,4 +3,4 @@ param(
     [String]$SettingsPath,
     [String]$FileToAnalyze
 )
-Invoke-ScriptAnalyzer -Settings $SettingsPath -Path $FileToAnalyze
+$ScriptAnalyzerResults = Invoke-ScriptAnalyzer -EnableExit -Settings $SettingsPath -Path $FileToAnalyze
