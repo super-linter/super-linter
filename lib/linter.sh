@@ -98,6 +98,7 @@ VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate lang
 VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
+LINTER_PATH="${LINTER_PATH}"                          # Linter Path Directory
 
 ##############
 # Debug Vars #
@@ -568,6 +569,16 @@ GetGitHubVars()
   # Convert string to lowercase #
   ###############################
   TEST_CASE_RUN=$(echo "$TEST_CASE_RUN" | awk '{print tolower($0)}')
+
+  #####################################
+  # Get the Linter path               #
+  #####################################
+  if [ -z "$LINTER_PATH" ]; then
+    ###################################
+    # No flag passed, set to default  #
+    ###################################
+    LINTER_PATH="$DEFAULT_LINTER_PATH"
+  fi
 
   ##########################
   # Get the run local flag #

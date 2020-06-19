@@ -118,6 +118,7 @@ and won't run anything unexpected.
 | --- | --- | --- |
 | **VALIDATE_ALL_CODEBASE** | `true` | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
 | **DEFAULT_BRANCH** | `master` | The name of the repository default branch. |
+| **LINTER_PATH** | `.github/linters` | Directory for all linter configuration rules. |
 | **VALIDATE_YAML** | `true` |Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JSON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_XML** | `true` | Flag to enable or disable the linting process of the language. |
