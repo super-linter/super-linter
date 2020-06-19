@@ -74,6 +74,7 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
 GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the commit
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"            # Default Git Branch to use (master by default)
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
@@ -106,7 +107,7 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
@@ -175,7 +176,7 @@ Header()
   ##########
   echo ""
   echo "---------------------------------------------"
-  echo "--- Github Actions Multi Language Linter ----"
+  echo "--- GitHub Actions Multi Language Linter ----"
   echo "---------------------------------------------"
   echo ""
   echo "---------------------------------------------"
@@ -1183,10 +1184,10 @@ BuildFileList()
     echo "Pulling in code history and branches..."
   fi
 
-  #####################################################################
-  # Switch codebase back to master to get a list of all files changed #
-  #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout master 2>&1)
+  #################################################################################
+  # Switch codebase back to the default branch to get a list of all files changed #
+  #################################################################################
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout "$DEFAULT_BRANCH" 2>&1)
 
   #######################
   # Load the error code #
@@ -1198,7 +1199,7 @@ BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "Failed to switch to master branch to get files changed!"
+    echo "Failed to switch to $DEFAULT_BRANCH branch to get files changed!"
     echo "ERROR:[$SWITCH_CMD]"
     exit 1
   fi
@@ -1209,14 +1210,14 @@ BuildFileList()
   if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
-    echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+    echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
   fi
 
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
   # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" --diff-filter=d 2>&1))
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
 
   #######################
   # Load the error code #
@@ -1949,7 +1950,7 @@ RunTestCases()
 {
   # This loop will run the test cases and exclude user code
   # This is called from the automation process to validate new code
-  # When a PR is opened, the new code is validated with the master branch
+  # When a PR is opened, the new code is validated with the default branch
   # version of linter.sh, and a new container is built with the latest codebase
   # for testing. That container is spun up, and ran,
   # with the flag: TEST_CASE_RUN=true
@@ -2003,9 +2004,9 @@ RunTestCases()
 Header
 
 #######################
-# Get Github Env Vars #
+# Get GitHub Env Vars #
 #######################
-# Need to pull in all the Github variables
+# Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
 

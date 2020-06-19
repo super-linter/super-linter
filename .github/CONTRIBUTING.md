@@ -40,6 +40,6 @@ If you are the current maintainer of this action:
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
 - [GitHub Help](https://help.github.com)
 
-[pulls]: https://github.com/github/github-demo-stack/pulls
-[pr]: https://github.com/github/github-demo-stack/compare
-[fork]: https://github.com/github/github-demo-stack/fork
+[pulls]: https://github.com/github/super-linter/pulls
+[pr]: https://github.com/github/super-linter/compare
+[fork]: https://github.com/github/super-linter/fork
