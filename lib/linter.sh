@@ -1096,7 +1096,7 @@ GetValidationInfo()
     # Set the value
     ANSIBLE_DIRECTORY="$TEMP_ANSIBLE_DIRECTORY"
   fi
-  
+
   ###############################
   # Get the disable errors flag #
   ###############################
@@ -1118,8 +1118,6 @@ GetValidationInfo()
   if [ "$DISABLE_ERRORS" != "true" ]; then
     DISABLE_ERRORS="false"
   fi
-
-
 
   ############################
   # Get the run verbose flag #
@@ -1898,15 +1896,13 @@ Footer()
   ##################################
   # Exit with 0 if errors disabled #
   ##################################
-  
-  if ${DISABLE_ERRORS} then
+  if [ "$DISABLE_ERRORS" == "true" ]; then
+    echo "WARN! Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[$DISABLE_ERRORS]"
     exit 0
-  fi
-
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  if [ "$ERRORS_FOUND_YML" -ne 0 ] || \
+  elif [ "$ERRORS_FOUND_YML" -ne 0 ] || \
      [ "$ERRORS_FOUND_JSON" -ne 0 ] || \
      [ "$ERRORS_FOUND_XML" -ne 0 ] || \
      [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] || \
