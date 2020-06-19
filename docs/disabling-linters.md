@@ -7,6 +7,7 @@ Below are examples and documentation for each language and the various methods t
 - [Shell](#shell)
 - [Ansible](#ansible)
 - [YAML](#yaml)
+- [AWS CloudFormation templates](#cfn)
 - [Python](#python3)
 - [JSON](#json)
 - [Markdown](#markdown)
@@ -234,6 +235,42 @@ class Foo(object):
 # pylint: skip-file
 
 var = "terrible code down here..."
+```
+
+--------------------------------------------------------------------------------
+
+## AWS CloudFormation templates
+- [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)
+
+### cfn-lint Config file
+- `.github/linters/.cfnlintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.cfnlintrc.yml`
+
+### cfn-lint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### cfn-lint disable code block
+You can disable both [template](https://github.com/aws-cloudformation/cfn-python-lint/#template-based-metadata) or [resource](https://github.com/aws-cloudformation/cfn-python-lint/#resource-based-metadata) via [metadata](https://github.com/aws-cloudformation/cfn-python-lint/#metadata):
+```yaml
+Resources:
+  myInstance:
+    Type: AWS::EC2::Instance
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+          - E3030
+    Properties:
+      InstanceType: nt.x4superlarge
+      ImageId: ami-abc1234
+```
+
+### cfn-lint disable entire file
+If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yml` to ignore certain files and locations
+```yaml
+ignore_templates:
+- codebuild.yaml
 ```
 
 --------------------------------------------------------------------------------

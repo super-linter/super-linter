@@ -22,6 +22,9 @@ MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"             # Path to th
 # Python Vars
 PYTHON_FILE_NAME='.python-lint'                                     # Name of the file
 PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to the python lint rules
+# Cloudformation Vars
+CFN_FILE_NAME='.cfnlintrc.yml'                                      # Name of the file
+CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"           # Path to the python lint rules
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
@@ -67,7 +70,8 @@ CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo" "spectral")
+  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo" "spectral"
+  "cfn-lint")
 
 #############################
 # Language array for prints #
@@ -75,7 +79,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE' 'OPENAPI')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE' 'OPENAPI' 'CFN')
 
 ###################
 # GitHub ENV Vars #
@@ -94,6 +98,7 @@ VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate lang
 VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                        # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
+VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"  # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                # Boolean to validate language
@@ -146,6 +151,7 @@ FILE_ARRAY_PERL=()                  # Array of files to check
 FILE_ARRAY_PHP=()                   # Array of files to check
 FILE_ARRAY_RUBY=()                  # Array of files to check
 FILE_ARRAY_PYTHON=()                # Array of files to check
+FILE_ARRAY_CFN=()                   # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()         # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=()   # Array of files to check
@@ -173,6 +179,7 @@ ERRORS_FOUND_PERL=0                 # Count of errors found
 ERRORS_FOUND_PHP=0                  # Count of errors found
 ERRORS_FOUND_RUBY=0                 # Count of errors found
 ERRORS_FOUND_PYTHON=0               # Count of errors found
+ERRORS_FOUND_CFN=0                  # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
 ERRORS_FOUND_ANSIBLE=0              # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0  # Count of errors found
@@ -605,6 +612,17 @@ DetectOpenAPIFile()
   fi
 }
 
+#### Function DetectCloudFormationFile #########################################
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
+DetectCloudFormationFile()
+{
+  if grep 'AWSTemplateFormatVersion' "${1}" > /dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars()
@@ -791,6 +809,7 @@ GetValidationInfo()
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
   VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
   VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
+  VALIDATE_CLOUDFORMATION=$(echo "$VALIDATE_CLOUDFORMATION" | awk '{print tolower($0)}')
   VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
   VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
   VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
@@ -820,6 +839,7 @@ GetValidationInfo()
         -n "$VALIDATE_PERL" || \
         -n "$VALIDATE_PHP" || \
         -n "$VALIDATE_PYTHON" || \
+        -n "$VALIDATE_CLOUDFORMATION" || \
         -n "$VALIDATE_RUBY" || \
         -n "$VALIDATE_COFFEE" || \
         -n "$VALIDATE_ANSIBLE" || \
@@ -949,6 +969,20 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_PYTHON="true"
+  fi
+
+  ##############################################
+  # Validate if we should check Cloudformation #
+  ##############################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CLOUDFORMATION" ]]; then
+      # CFN flag was not set - default to false
+      VALIDATE_CLOUDFORMATION="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CLOUDFORMATION="true"
   fi
 
   ####################################
@@ -1217,6 +1251,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PYTHON] files in code base...")
+  fi
+  if [[ "$VALIDATE_CLOUDFORMATION" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CFN] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CFN] files in code base...")
   fi
   if [[ "$VALIDATE_RUBY" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [RUBY] files in code base...")
@@ -1505,6 +1544,18 @@ BuildFileList()
       if DetectOpenAPIFile "$FILE"; then
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    #####################
+    # Get the CFN files #
+    #####################
+    elif [ "$FILE_TYPE" == "json" ] || [ "$FILE_TYPE" == "yml" ] || [ "$FILE_TYPE" == "yaml" ] && DetectCloudFormationFile "$FILE"; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CFN+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1924,6 +1975,17 @@ LintCodebase()
         continue
       fi
 
+      # don't test normal json/yaml files wih cfn-lint
+      if [ "$LINTER_NAME" == "cfn-lint" ] && ! DetectCloudFormationFile "$GITHUB_WORKSPACE/$FILE"; then
+        # TODO: PRINT_ARRAY still contains "Linting [CFN] files..."
+        continue
+      fi
+
+      # don't test CloudFormation files with {json,yaml}lint
+      if [ "$LINTER_NAME" == "jsonlint" ] || [ "$LINTER_NAME" == "yamllint" ] && DetectCloudFormationFile "$GITHUB_WORKSPACE/$FILE"; then
+        continue
+      fi
+
       ##############
       # File print #
       ##############
@@ -2054,6 +2116,15 @@ TestCodebase()
     # Set IFS back to default #
     ###########################
     IFS="$DEFAULT_IFS"
+
+    # don't check yaml/json files with cnf-lint
+    # don't check CloudFormation files with json/yaml linters
+    if [ "$FILE_TYPE" == "CFN" ]; then
+      LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" ! -path "*./json*" ! -path "*./yml*" 2>&1))
+    fi
+    if [ "$FILE_TYPE" == "JSON" ] || [ "$FILE_TYPE" == "YML" ]; then
+      LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" ! -path "*./cfn*" 2>&1))
+    fi
   fi
 
   ##################
@@ -2240,6 +2311,7 @@ Footer()
      [ "$ERRORS_FOUND_PERL" -ne 0 ] || \
      [ "$ERRORS_FOUND_PHP" -ne 0 ] || \
      [ "$ERRORS_FOUND_PYTHON" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CFN" -ne 0 ] || \
      [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] || \
      [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] || \
      [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] || \
@@ -2319,6 +2391,7 @@ RunTestCases()
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
+  TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$"
 
   #################
   # Footer prints #
@@ -2357,6 +2430,8 @@ GetLinterRules "$YAML_FILE_NAME" "$YAML_LINTER_RULES"
 GetLinterRules "$MD_FILE_NAME" "$MD_LINTER_RULES"
 # Get Python rules
 GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
+# Get CloudFormation rules
+GetLinterRules "$CFN_FILE_NAME" "$CFN_LINTER_RULES"
 # Get Ruby rules
 GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
 # Get Coffeescript rules
@@ -2473,6 +2548,17 @@ if [ "$VALIDATE_PYTHON" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
+fi
+
+###############
+# CFN LINTING #
+###############
+if [ "$VALIDATE_CLOUDFORMATION" == "true" ]; then
+  #################################
+  # Lint the CloudFormation files #
+  #################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CFN[@]}"
 fi
 
 ################

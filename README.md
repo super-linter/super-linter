@@ -32,30 +32,31 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
-| *Language*       | *Linter*                                                                 |
-| ---              | ---                                                                      |
-| **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
-| **CSS**          | [stylelint](https://stylelint.io/)                                       |
-| **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
-| **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
-| **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
-| **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
-| **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
-| **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
-| **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
-| **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
-| **PHP**          | [PHP](https://www.php.net/)                                              |
-| **Python3**      | [pylint](https://www.pylint.org/)                                        |
-| **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
-| **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
-| **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
-| **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
-| **XML**          | [LibXML](http://xmlsoft.org/)                                            |
-| **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
-| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
-| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
-| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
-| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
+| *Language*                       | *Linter*                                                                 |
+| ---                              | ---                                                                      |
+| **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
+| **CSS**                          | [stylelint](https://stylelint.io/)                                       |
+| **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
+| **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                              |
+| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
+| **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
+| **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
+| **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                            |
+| **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
+| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
+| **PHP**                          | [PHP](https://www.php.net/)                                              |
+| **Python3**                      | [pylint](https://www.pylint.org/)                                        |
+| **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
+| **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
+| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint)                    |
+| **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
+| **XML**                          | [LibXML](http://xmlsoft.org/)                                            |
+| **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
+| **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
+| **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                            |
+| **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                      |
+| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)       |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -167,6 +168,7 @@ and won't run anything unexpected.
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |

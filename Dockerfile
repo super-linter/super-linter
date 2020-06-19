@@ -53,7 +53,7 @@ RUN mkdir -p /opt/microsoft/powershell/7 \
 # Run Pip3 Installs #
 #####################
 RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
-    yamllint pylint yq
+    yamllint pylint yq cfn-lint
 
 ####################
 # Run NPM Installs #
