@@ -48,20 +48,25 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
+# CSS Vars
+CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
+CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
+
 
 #######################################
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint")
+  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
+  "stylelint")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS')
 
 ###################
 # GitHub ENV Vars #
@@ -69,6 +74,7 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
 GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the commit
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"            # Default Git Branch to use (master by default)
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
@@ -88,6 +94,7 @@ VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to val
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
 
@@ -101,7 +108,7 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE='/tmp/lint'                         # Default workspace if running locally
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
@@ -130,6 +137,7 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
+FILE_ARRAY_CSS=()                   # Array of files to check
 
 ############
 # Counters #
@@ -151,6 +159,7 @@ ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
 ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
+ERRORS_FOUND_CSS=0                  # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -169,7 +178,7 @@ Header()
   ##########
   echo ""
   echo "---------------------------------------------"
-  echo "--- Github Actions Multi Language Linter ----"
+  echo "--- GitHub Actions Multi Language Linter ----"
   echo "---------------------------------------------"
   echo ""
   echo "---------------------------------------------"
@@ -727,6 +736,7 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -748,7 +758,8 @@ GetValidationInfo()
         -n "$VALIDATE_TYPESCRIPT_STANDARD" || \
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
-        -n "$VALIDATE_TERRAFORM" ]]; then
+        -n "$VALIDATE_TERRAFORM" || \
+        -n "$VALIDATE_CSS" ]]; then
     ANY_SET="true"
   fi
 
@@ -990,6 +1001,20 @@ GetValidationInfo()
     VALIDATE_TERRAFORM="true"
   fi
 
+  ###################################
+  # Validate if we should check CSS #
+  ###################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CSS" ]]; then
+      # CSS flag was not set - default to false
+      VALIDATE_CSS="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CSS="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -1077,6 +1102,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
+  fi
+  if [[ "$VALIDATE_CSS" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CSS] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CSS] files in code base...")
   fi
 
   ##############################
@@ -1178,10 +1208,10 @@ BuildFileList()
     echo "Pulling in code history and branches..."
   fi
 
-  #####################################################################
-  # Switch codebase back to master to get a list of all files changed #
-  #####################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout master 2>&1)
+  #################################################################################
+  # Switch codebase back to the default branch to get a list of all files changed #
+  #################################################################################
+  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout "$DEFAULT_BRANCH" 2>&1)
 
   #######################
   # Load the error code #
@@ -1193,7 +1223,7 @@ BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "Failed to switch to master branch to get files changed!"
+    echo "Failed to switch to $DEFAULT_BRANCH branch to get files changed!"
     echo "ERROR:[$SWITCH_CMD]"
     exit 1
   fi
@@ -1204,14 +1234,14 @@ BuildFileList()
   if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
-    echo "Generating Diff with:[git diff --name-only 'master..$GITHUB_SHA' --diff-filter=d]"
+    echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
   fi
 
   ################################################
   # Get the Array of files changed in the comits #
   ################################################
   # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "master..$GITHUB_SHA" --diff-filter=d 2>&1))
+  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
 
   #######################
   # Load the error code #
@@ -1403,6 +1433,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_TERRAFORM+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "css" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CSS+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1918,7 +1957,8 @@ Footer()
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
-     [ "$ERRORS_FOUND_RUBY" -ne 0 ]; then
+     [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CSS" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
@@ -1940,7 +1980,7 @@ RunTestCases()
 {
   # This loop will run the test cases and exclude user code
   # This is called from the automation process to validate new code
-  # When a PR is opened, the new code is validated with the master branch
+  # When a PR is opened, the new code is validated with the default branch
   # version of linter.sh, and a new container is built with the latest codebase
   # for testing. That container is spun up, and ran,
   # with the flag: TEST_CASE_RUN=true
@@ -1975,6 +2015,7 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
+  TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
 
   #################
   # Footer prints #
@@ -1993,9 +2034,9 @@ RunTestCases()
 Header
 
 #######################
-# Get Github Env Vars #
+# Get GitHub Env Vars #
 #######################
-# Need to pull in all the Github variables
+# Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
 
@@ -2029,6 +2070,8 @@ GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 # Get Terraform rules
 GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+# Get CSS rules
+GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
 
 #################################
 # Check if were in verbose mode #
@@ -2242,6 +2285,20 @@ if [ "$VALIDATE_TYPESCRIPT_STANDARD" == "true" ]; then
   # Lint the Typescript files #
   #############################
   LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
+fi
+
+###############
+# CSS LINTING #
+###############
+if [ "$VALIDATE_CSS" == "true" ]; then
+  #################################
+  # Get CSS standard rules #
+  #################################
+  GetStandardRules "stylelint"
+  #############################
+  # Lint the CSS files #
+  #############################
+  LintCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
 fi
 
 ##################

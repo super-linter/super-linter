@@ -13,7 +13,7 @@ FROM python:alpine
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your code base with Github Actions" \
+      com.github.actions.description="Lint your code base with GitHub Actions" \
       com.github.actions.icon="code" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
@@ -43,17 +43,19 @@ RUN npm config set package-lock false \
     && npm -g --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
       eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
@@ -61,7 +63,9 @@ RUN npm config set package-lock false \
       eslint-config-prettier \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
-      eslint-plugin-jest
+      eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard
 
 ####################################
 # Install dockerfilelint from repo #
@@ -89,7 +93,7 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 #####################
 # Install Go Linter #
 #####################
-ARG GO_VERSION='v1.23.7'
+ARG GO_VERSION='v1.27.0'
 RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
@@ -99,11 +103,12 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
     && mv "tflint" /usr/bin/
 
 ###########################################
-# Load GitHub Env Vars for Github Actions #
+# Load GitHub Env Vars for GitHub Actions #
 ###########################################
 ENV GITHUB_SHA=${GITHUB_SHA} \
     GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
     VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
     VALIDATE_YAML=${VALIDATE_YAML} \
     VALIDATE_JSON=${VALIDATE_JSON} \
@@ -122,6 +127,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
+    VALIDATE_CSS=${VALIDATE_CSS} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \

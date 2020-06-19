@@ -74,7 +74,7 @@
   ###################################
   # Set the GHE Admin Password fact #
   ###################################
-  - name: Set the Github Admin password fact
+  - name: Set the GitHub Admin password fact
     set_fact:
       github_admin_password: "{{ github_admin_password }}"
 

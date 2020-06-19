@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-############# Cleanup Container on DockerHub @admiralawkbar ####################
+############# Cleanup Image on DockerHub @admiralawkbar ########################
 ################################################################################
 
 # NOTES: This script is used to remove a tagged image on DockerHub
@@ -16,7 +16,7 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # Github Workspace
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
 DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
 DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
@@ -32,7 +32,7 @@ Header()
 {
   echo ""
   echo "-------------------------------------------------------"
-  echo "----- Github Actions remove image from DockerHub ------"
+  echo "----- GitHub Actions remove image from DockerHub ------"
   echo "-------------------------------------------------------"
   echo ""
 }
