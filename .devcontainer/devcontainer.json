@@ -23,7 +23,7 @@
 	// "forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postCreateCommand": "ln -s /workspaces/super-linter/.automation/test /tmp/lint",
+	//"postCreateCommand": "ln -s /workspaces/super-linter/.automation/test /tmp/lint",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
