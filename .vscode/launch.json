@@ -9,6 +9,7 @@
             "request": "launch",
             "name": "Test Linter",
             "program": ".vscode/testlinter.sh",
+            "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
             "presentation": {
                 "group": "aLinter"
