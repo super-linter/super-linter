@@ -26,20 +26,20 @@ Below is examples and documentation for each language and the various methods to
 --------------------------------------------------------------------------------
 
 ## Ruby
-- [Rubocop](https://github.com/rubocop-hq/rubocop)
+- [RuboCop](https://github.com/rubocop-hq/rubocop)
 
-### Rubocop Config file
+### RuboCop Config file
 - `.github/linters/.ruby-lint.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.ruby-lint.yml`
-- **Note:** We use the Default **GitHub** Rule set from [Rubocop-GitHub](https://github.com/github/rubocop-github)
+- **Note:** We use the Default **GitHub** Rule set from [RuboCop-GitHub](https://github.com/github/rubocop-github)
 
-### Rubocop disable single line
+### RuboCop disable single line
 ```ruby
 method(argument) # rubocop:disable SomeRule, SomeOtherRule
 ```
 
-### Rubocop disable code block
+### RuboCop disable code block
 ```ruby
 # rubocop:disable
 This is a long line
@@ -47,7 +47,7 @@ var="this is some other stuff"
 # rubocop:enable
 ```
 
-### Rubocop disable entire file
+### RuboCop disable entire file
 If you need to ignore an entire file, you can update the `.github/linters/.ruby-lint.yml` to ignore certain files and locations
 
 ```yml
