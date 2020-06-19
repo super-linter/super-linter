@@ -168,7 +168,7 @@ Header()
   ##########
   echo ""
   echo "---------------------------------------------"
-  echo "--- Github Actions Multi Language Linter ----"
+  echo "--- GitHub Actions Multi Language Linter ----"
   echo "---------------------------------------------"
   echo ""
   echo "---------------------------------------------"
@@ -1964,9 +1964,9 @@ RunTestCases()
 Header
 
 #######################
-# Get Github Env Vars #
+# Get GitHub Env Vars #
 #######################
-# Need to pull in all the Github variables
+# Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
 

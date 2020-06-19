@@ -27,7 +27,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
-| **Ruby**         | [Rubocop](https://github.com/rubocop-hq/rubocop)                         |
+| **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
 | **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
@@ -143,7 +143,7 @@ You can use the **GitHub** **Super-Linter** *with* or *without* your own persona
 If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
 ## Docker Hub
-The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/admiralawkbar/super-linter`
+The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/github/super-linter`
 
 ## Running Super-Linter locally (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
