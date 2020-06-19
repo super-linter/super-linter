@@ -17,13 +17,13 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"rogalmic.bash-debug"
-	]
+	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	// "postCreateCommand": "apt-get update && apt-get install -y curl",
+	"postCreateCommand": "ln -s /workspaces/super-linter/.automation/test /tmp/lint",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
