@@ -105,7 +105,8 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
 ########################################
 # Install Resharper Command Line Tools #
 ########################################
-RUN curl -Ls "$(curl -Ls https://download-cf.jetbrains.com/resharper/ReSharperUltimate.2020.1.3/JetBrains.ReSharper.CommandLineTools.Unix.2020.1.3.tar.gz)" -o resharper.tar.gz \
+ARG RESHARPER_ULTIMATE_VERSION='2020.1.3'
+RUN wget -qO- "https://download-cf.jetbrains.com/resharper/ReSharperUltimate.${RESHARPER_ULTIMATE_VERSION}/JetBrains.ReSharper.CommandLineTools.Unix.${RESHARPER_ULTIMATE_VERSION}.tar.gz)" -o resharper.tar.gz \
     && tar -xf resharper.tar.gz -C /usr/bin/resharper \
     && rm resharper.tar.gz
 
