@@ -739,8 +739,8 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
-  VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)')
-  VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)')
+  VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
+  VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
