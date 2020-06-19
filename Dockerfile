@@ -110,6 +110,12 @@ RUN wget -qO- "https://download-cf.jetbrains.com/resharper/ReSharperUltimate.${R
     && tar -xf resharper.tar.gz -C /usr/bin/resharper \
     && rm resharper.tar.gz
 
+##################
+# Install dotenv-linter #
+##################
+RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
+    && mv "dotenv-linter" /usr/bin
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -137,10 +143,12 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSHARP=${VALIDATE_CSHARP} \
     VALIDATE_CSS=${VALIDATE_CSS} \
+    VALIDATE_ENV=${VALIDATE_ENV} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
-    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG}
+    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
+    DISABLE_ERRORS=${DISABLE_ERRORS}
 
 #############################
 # Copy scripts to container #
