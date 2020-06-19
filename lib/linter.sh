@@ -59,14 +59,14 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint")
+  "stylelint" "dotenv-linter")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS')
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS' "ENV")
 
 ###################
 # GitHub ENV Vars #
@@ -95,6 +95,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate lang
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
+VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 
 ##############
@@ -136,6 +137,7 @@ FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
+FILE_ARRAY_ENV=()                   # Array of files to check
 
 ############
 # Counters #
@@ -158,6 +160,7 @@ ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 ERRORS_FOUND_CSS=0                  # Count of errors found
+ERRORS_FOUND_ENV=0                  # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -735,6 +738,7 @@ GetValidationInfo()
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)')
+  VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -757,7 +761,8 @@ GetValidationInfo()
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
-        -n "$VALIDATE_CSS" ]]; then
+        -n "$VALIDATE_CSS" || \
+        -n "$VALIDATE_ENV" ]]; then
     ANY_SET="true"
   fi
 
@@ -1013,6 +1018,20 @@ GetValidationInfo()
     VALIDATE_CSS="true"
   fi
 
+  ####################################
+  # Validate if we should check ENV #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_ENV" ]]; then
+      # ENV flag was not set - default to false
+      VALIDATE_ENV="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_ENV="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -1105,6 +1124,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [CSS] files in code base...")
+  fi
+  if [[ "$VALIDATE_ENV" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [ENV] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [ENV] files in code base...")
   fi
 
   ##############################
@@ -1418,6 +1442,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_CSS+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "env" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_ENV+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1928,7 +1961,8 @@ Footer()
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
-     [ "$ERRORS_FOUND_CSS" -ne 0 ]; then
+     [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
+     [ "$ERRORS_FOUND_ENV" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
@@ -1986,6 +2020,7 @@ RunTestCases()
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
+  TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
 
   #################
   # Footer prints #
@@ -2269,6 +2304,17 @@ if [ "$VALIDATE_CSS" == "true" ]; then
   # Lint the CSS files #
   #############################
   LintCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
+fi
+
+################
+# ENV LINTING #
+################
+if [ "$VALIDATE_ENV" == "true" ]; then
+  #######################
+  # Lint the env files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ##################
