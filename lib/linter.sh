@@ -67,8 +67,8 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
 # GitHub ENV Vars #
 ###################
 GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the commit
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
+GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # GitHub Event Path
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # GitHub Workspace
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
@@ -167,7 +167,7 @@ Header()
   ##########
   echo ""
   echo "---------------------------------------------"
-  echo "--- Github Actions Multi Language Linter ----"
+  echo "--- GitHub Actions Multi Language Linter ----"
   echo "---------------------------------------------"
   echo ""
   echo "---------------------------------------------"
@@ -1963,9 +1963,9 @@ RunTestCases()
 Header
 
 #######################
-# Get Github Env Vars #
+# Get GitHub Env Vars #
 #######################
-# Need to pull in all the Github variables
+# Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
 

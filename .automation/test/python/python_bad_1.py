@@ -89,7 +89,7 @@ def delete_label(label_id):
     Delete the specified label
     :param label_id: Label's node id.
     :type label_id: str
-    :return: Github API request response.
+    :return: GitHub API request response.
     """
 
     query_variables = {
