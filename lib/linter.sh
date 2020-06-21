@@ -32,7 +32,7 @@ COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to 
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
-# Typecript Vars
+# Typescript Vars
 TYPESCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
