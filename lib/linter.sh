@@ -354,9 +354,9 @@ GetStandardRules()
     ENV_STRING+="--env ${ENV} "
   done
 
-  ########################################
-  # Remove trailing and ending witespace #
-  ########################################
+  #########################################
+  # Remove trailing and ending whitespace #
+  #########################################
   if [[ "$LINTER" == "javascript" ]]; then
     JAVASCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   elif [[ "$LINTER" == "typescript" ]]; then
