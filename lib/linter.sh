@@ -2018,7 +2018,7 @@ RunTestCases()
   # version of linter.sh, and a new container is built with the latest codebase
   # for testing. That container is spun up, and ran,
   # with the flag: TEST_CASE_RUN=true
-  # So that the new code can be validated againt the test cases
+  # So that the new code can be validated against the test cases
 
   #################
   # Header prints #
