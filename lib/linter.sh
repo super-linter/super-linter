@@ -1282,9 +1282,9 @@ BuildFileList()
     exit 1
   fi
 
-  #################################################
-  # Itterate through the array of all files found #
-  #################################################
+  ################################################
+  # Iterate through the array of all files found #
+  ################################################
   echo ""
   echo "----------------------------------------------"
   echo "Files that have been modified in the commit(s):"
