@@ -154,9 +154,9 @@ This line is waaaaaaaaaay too long  # yamllint disable-line
 ### Yamllint disable code block
 ```yml
 # yamllint disable rule:colons
-- Lorem       : ipsum
-  dolor       : sit amet,
-  consectetur : adipiscing elit
+- Key         : value
+  dolor       : sit,
+  foo         : bar
 # yamllint enable
 ```
 
@@ -220,9 +220,9 @@ class Foo(object):
     def meth3(self):
         """test one line disabling"""
         # no error
-        print(self.bla) # pylint: disable=no-member
+        print(self.baz) # pylint: disable=no-member
         # error
-        print(self.blop)
+        print(self.baz)
 ```
 
 ### Pylint disable entire file

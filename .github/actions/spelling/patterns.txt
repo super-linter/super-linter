@@ -1,0 +1,3 @@
+https?:\S*
+# ignore long runs of a single character:
+([A-Za-z])\1{3,}
