@@ -2075,9 +2075,9 @@ Header
 # needed to connect back and update checks
 GetGitHubVars
 
-##########################################
-# Get the langugages we need to validate #
-##########################################
+#########################################
+# Get the languages we need to validate #
+#########################################
 GetValidationInfo
 
 ########################
