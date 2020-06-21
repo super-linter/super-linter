@@ -129,6 +129,7 @@ VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to vali
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
+VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
 
@@ -743,6 +744,7 @@ Footer() {
     exit 0
   fi
 }
+
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
@@ -1067,6 +1069,18 @@ if [ "$VALIDATE_KOTLIN" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+########################
+# EDITORCONFIG LINTING #
+########################
+echo ed: "$VALIDATE_EDITORCONFIG"
+if [ "$VALIDATE_EDITORCONFIG" == "true" ]; then
+  ####################################
+  # Lint the files with editorconfig #
+  ####################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ##################

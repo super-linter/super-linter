@@ -159,6 +159,12 @@ RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KON
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
+################################
+# Install editorconfig-checker #
+################################
+RUN wget -qO- "https://github.com/editorconfig-checker/editorconfig-checker/releases/latest/download/ec-linux-amd64.tar.gz" | tar -xzf - \
+        && mv "bin/ec-linux-amd64" /usr/bin/editorconfig-checker
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -193,6 +199,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
+    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
