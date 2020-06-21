@@ -96,14 +96,14 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.0.0
+        uses: docker://github/super-linter:v2.1.1
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v2.0.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.0.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:** Using the line:`uses: docker://github/super-linter:v2.1.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.1.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
@@ -147,7 +147,7 @@ and won't run anything unexpected.
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/` of your repository
-  - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
+  - If your repository does not have rules files, they will fall back to defaults in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES)
 
 ## Disabling rules
 If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)

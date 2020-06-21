@@ -477,7 +477,7 @@ alert('foo')
 --------------------------------------------------------------------------------
 
 ## Dockerfile
--[dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
+- [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
 
 ### Dockerfilelint standard Config file
 - `.github/linters/.dockerfilelintrc`
