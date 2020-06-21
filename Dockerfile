@@ -81,7 +81,7 @@ RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfi
 RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
 
 # Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
-# We then need to promot the correct verion, uninstall, and fix deps
+# We then need to promote the correct verion, uninstall, and fix deps
 RUN sh -c 'gem install --default rubocop:0.74.0;  yes | gem uninstall rubocop:0.85.1 -a -x -I; gem install rubocop:0.74.0'
 
 ######################
