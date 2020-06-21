@@ -115,9 +115,9 @@ ValidateInput()
   # Check if we need to get the name of the branch #
   ##################################################
   if [[ "$IMAGE_VERSION" != "latest" ]]; then
-    ###################################
-    # Remove non alpha-numberic chars #
-    ###################################
+    ##################################
+    # Remove non alpha-numeric chars #
+    ##################################
     IMAGE_VERSION=$(echo "$IMAGE_VERSION" | tr -cd '[:alnum:]')
   else
     #############################################

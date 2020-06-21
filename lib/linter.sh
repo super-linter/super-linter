@@ -32,7 +32,7 @@ COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to 
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
-# Typecript Vars
+# Typescript Vars
 TYPESCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
@@ -354,9 +354,9 @@ GetStandardRules()
     ENV_STRING+="--env ${ENV} "
   done
 
-  ########################################
-  # Remove trailing and ending witespace #
-  ########################################
+  #########################################
+  # Remove trailing and ending whitespace #
+  #########################################
   if [[ "$LINTER" == "javascript" ]]; then
     JAVASCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   elif [[ "$LINTER" == "typescript" ]]; then
@@ -1261,9 +1261,9 @@ BuildFileList()
     echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
   fi
 
-  ################################################
-  # Get the Array of files changed in the comits #
-  ################################################
+  #################################################
+  # Get the Array of files changed in the commits #
+  #################################################
   # shellcheck disable=SC2207
   RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
 
@@ -1282,9 +1282,9 @@ BuildFileList()
     exit 1
   fi
 
-  #################################################
-  # Itterate through the array of all files found #
-  #################################################
+  ################################################
+  # Iterate through the array of all files found #
+  ################################################
   echo ""
   echo "----------------------------------------------"
   echo "Files that have been modified in the commit(s):"
@@ -1636,7 +1636,7 @@ LintCodebase()
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
     SKIP_FLAG=1
-    # echo " - No files found in chageset to lint for language:[$FILE_TYPE]"
+    # echo " - No files found in changeset to lint for language:[$FILE_TYPE]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
@@ -2018,7 +2018,7 @@ RunTestCases()
   # version of linter.sh, and a new container is built with the latest codebase
   # for testing. That container is spun up, and ran,
   # with the flag: TEST_CASE_RUN=true
-  # So that the new code can be validated againt the test cases
+  # So that the new code can be validated against the test cases
 
   #################
   # Header prints #
@@ -2075,9 +2075,9 @@ Header
 # needed to connect back and update checks
 GetGitHubVars
 
-##########################################
-# Get the langugages we need to validate #
-##########################################
+#########################################
+# Get the languages we need to validate #
+#########################################
 GetValidationInfo
 
 ########################

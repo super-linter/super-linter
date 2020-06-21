@@ -57,10 +57,10 @@
       group: admin
       mode: 0644
 
-  #########################################################
-  # Set up Admin password, License, and Initial Setttings #
-  #########################################################
-  - name: Setup License, Admin Password, and Initial Setttings
+  ########################################################
+  # Set up Admin password, License, and Initial Settings #
+  ########################################################
+  - name: Setup License, Admin Password, and Initial Settings
     command: curl --fail -Lk \
       -X POST "https://{{ ansible_host }}:8443/setup/api/start" \
       -F license=@/tmp/ghe-license.ghl \
