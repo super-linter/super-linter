@@ -770,7 +770,7 @@ GetValidationInfo()
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
-        -n "$VALIDATE_POWERSHELL" \
+        -n "$VALIDATE_POWERSHELL" || \
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" ]]; then
     ANY_SET="true"
