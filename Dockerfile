@@ -108,6 +108,12 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
 RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
     && mv "dotenv-linter" /usr/bin
 
+#######################
+# Install Rust Linter #
+#######################
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && rustup component add clippy
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -124,6 +130,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_PERL=${VALIDATE_PERL} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
+    VALIDATE_RUST=${VALIDATE_RUST} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
     VALIDATE_DOCKER=${VALIDATE_DOCKER} \

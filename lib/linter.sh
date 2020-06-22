@@ -64,7 +64,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'RUST' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS' "ENV")
 
@@ -85,6 +85,7 @@ VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate lang
 VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
+VALIDATE_RUST="${VALIDATE_RUST}"                      # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"              # Boolean to validate language
@@ -129,6 +130,7 @@ FILE_ARRAY_MD=()                    # Array of files to check
 FILE_ARRAY_BASH=()                  # Array of files to check
 FILE_ARRAY_PERL=()                  # Array of files to check
 FILE_ARRAY_RUBY=()                  # Array of files to check
+FILE_ARRAY_RUST=()                  # Array of files to check
 FILE_ARRAY_PYTHON=()                # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()         # Array of files to check
@@ -151,6 +153,7 @@ ERRORS_FOUND_MARKDOWN=0             # Count of errors found
 ERRORS_FOUND_BASH=0                 # Count of errors found
 ERRORS_FOUND_PERL=0                 # Count of errors found
 ERRORS_FOUND_RUBY=0                 # Count of errors found
+ERRORS_FOUND_RUST=0                 # Count of errors found
 ERRORS_FOUND_PYTHON=0               # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
 ERRORS_FOUND_ANSIBLE=0              # Count of errors found
@@ -730,6 +733,7 @@ GetValidationInfo()
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
   VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
   VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
+  VALIDATE_RUST=$(echo "$VALIDATE_RUST" | awk '{print tolower($0)}')
   VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
   VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
   VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
@@ -754,6 +758,7 @@ GetValidationInfo()
         -n "$VALIDATE_PERL" || \
         -n "$VALIDATE_PYTHON" || \
         -n "$VALIDATE_RUBY" || \
+        -n "$VALIDATE_RUST" || \
         -n "$VALIDATE_COFFEE" || \
         -n "$VALIDATE_ANSIBLE" || \
         -n "$VALIDATE_JAVASCRIPT_ES" || \
@@ -878,6 +883,20 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_RUBY="true"
+  fi
+
+  ####################################
+  # Validate if we should check RUST #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_RUST" ]]; then
+      # RUBY flag was not set - default to false
+      VALIDATE_RUST="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_RUST="true"
   fi
 
   ######################################
@@ -1076,6 +1095,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [RUBY] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [RUBY] files in code base...")
+  fi
+  if [[ "$VALIDATE_RUST" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [RUST] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [RUST] files in code base...")
   fi
   if [[ "$VALIDATE_COFFEE" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [COFFEE] files in code base...")
@@ -1383,6 +1407,18 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ######################
+    # Get the RUST files #
+    ######################
+    elif [ "$FILE_TYPE" == "rs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RUST+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1991,6 +2027,7 @@ Footer()
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
+     [ "$ERRORS_FOUND_RUST" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ]; then
     # Failed exit
@@ -2040,6 +2077,7 @@ RunTestCases()
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
+  TestCodebase "RUST" "cargo clippy" "cargo clippy" ".*\.\(rs\)\$"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
@@ -2225,6 +2263,17 @@ if [ "$VALIDATE_RUBY" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+fi
+
+################
+# RUST LINTING #
+################
+if [ "$VALIDATE_RUST" == "true" ]; then
+  #######################
+  # Lint the rust files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "RUST" "cargo clippy" "cargo clippy" ".*\.\(rs\)\$" "${FILE_ARRAY_RUST[@]}"
 fi
 
 ########################

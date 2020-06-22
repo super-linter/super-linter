@@ -29,6 +29,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
 | **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
+| **Rust**         | [Clippy](https://github.com/rust-lang/rust-clippy)                       |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
 | **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
@@ -126,6 +127,7 @@ and won't run anything unexpected.
 | **VALIDATE_PERL** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_RUST** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
 | **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
