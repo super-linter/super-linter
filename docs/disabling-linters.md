@@ -20,8 +20,8 @@ Below is examples and documentation for each language and the various methods to
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
-- [CSS](#stylelint)
-- [ENV](#dotenv-linter)
+- [CSS](#css)
+- [ENV](#env)
 
 <!-- toc -->
 
