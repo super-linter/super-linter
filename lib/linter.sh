@@ -2085,7 +2085,7 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
-  TestCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES'" ".*\.\(ps\.\*\)\$"
+  TestCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path'" ".*\.\(ps\.\*\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
 
@@ -2405,7 +2405,7 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   # Lint the powershell files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "PowerShell" "pwsh -c 'Invoke-ScriptAnalyzer -Settings $POWERSHELL_LINTER_RULES $POWERSHELL_LINTER_RULES'" ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
+  LintCodebase "POWERSHELL" "PowerShell" "pwsh -c 'Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path'" ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
