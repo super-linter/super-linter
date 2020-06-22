@@ -27,7 +27,25 @@ RUN apk add --no-cache \
     libxml2-utils perl \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
     py3-setuptools ansible-lint \
-    go
+    go \
+    ca-certificates less ncurses-terminfo-base \
+    krb5-libs libgcc libintl libssl1.1 libstdc++ \
+    tzdata userspace-rcu zlib icu-libs lttng-ust
+
+#########################################
+# Install Powershell + PSScriptAnalyzer #
+#########################################
+# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
+# Slightly modified to always retrieve latest stable Powershell version
+RUN mkdir -p /opt/microsoft/powershell/7 \
+    && curl -s https://api.github.com/repos/powershell/powershell/releases/latest \
+    | grep browser_download_url \
+    | grep linux-alpine-x64 \
+    | cut -d '"' -f 4 \
+    | xargs -n 1 wget -O - \
+    | tar -xzC /opt/microsoft/powershell/7 \
+    && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
+    && pwsh -c 'install-module psscriptanalyzer -force'
 
 #####################
 # Run Pip3 Installs #
@@ -82,7 +100,10 @@ RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
 
 # Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
 # We then need to promote the correct version, uninstall, and fix deps
-RUN sh -c 'gem install --default rubocop:0.74.0;  yes | gem uninstall rubocop:0.85.1 -a -x -I; gem install rubocop:0.74.0'
+RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop | grep rubocop | awk "{print $2}" | cut -d"(" -f2 | cut -d"," -f1); \
+  gem install --default rubocop:0.74.0; \
+  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; \
+  gem install rubocop:0.74.0'
 
 ######################
 # Install shellcheck #
@@ -135,6 +156,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
