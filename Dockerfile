@@ -13,7 +13,7 @@ FROM python:alpine
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your code base with Github Actions" \
+      com.github.actions.description="Lint your code base with GitHub Actions" \
       com.github.actions.icon="code" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
@@ -28,7 +28,25 @@ RUN apk add --no-cache \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
     py3-setuptools ansible-lint \
     go \
-    php7
+    php7 \
+    ca-certificates less ncurses-terminfo-base \
+    krb5-libs libgcc libintl libssl1.1 libstdc++ \
+    tzdata userspace-rcu zlib icu-libs lttng-ust
+
+#########################################
+# Install Powershell + PSScriptAnalyzer #
+#########################################
+# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
+# Slightly modified to always retrieve latest stable Powershell version
+RUN mkdir -p /opt/microsoft/powershell/7 \
+    && curl -s https://api.github.com/repos/powershell/powershell/releases/latest \
+    | grep browser_download_url \
+    | grep linux-alpine-x64 \
+    | cut -d '"' -f 4 \
+    | xargs -n 1 wget -O - \
+    | tar -xzC /opt/microsoft/powershell/7 \
+    && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
+    && pwsh -c 'install-module psscriptanalyzer -force'
 
 #####################
 # Run Pip3 Installs #
@@ -44,17 +62,19 @@ RUN npm config set package-lock false \
     && npm -g --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
       eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
-      coffeelint \
+      @coffeelint/cli \
       typescript eslint \
       standard \
       babel-eslint \
@@ -62,7 +82,9 @@ RUN npm config set package-lock false \
       eslint-config-prettier \
       @typescript-eslint/eslint-plugin \
       @typescript-eslint/parser \
-      eslint-plugin-jest
+      eslint-plugin-jest \
+      stylelint \
+      stylelint-config-standard
 
 ####################################
 # Install dockerfilelint from repo #
@@ -78,8 +100,11 @@ RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfi
 RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
 
 # Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
-# We then need to promot the correct verion, uninstall, and fix deps
-RUN sh -c 'gem install --default rubocop:0.74.0;  yes | gem uninstall rubocop:0.85.1 -a -x -I; gem install rubocop:0.74.0'
+# We then need to promote the correct version, uninstall, and fix deps
+RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop | grep rubocop | awk "{print $2}" | cut -d"(" -f2 | cut -d"," -f1); \
+  gem install --default rubocop:0.74.0; \
+  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; \
+  gem install rubocop:0.74.0'
 
 ######################
 # Install shellcheck #
@@ -90,7 +115,7 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 #####################
 # Install Go Linter #
 #####################
-ARG GO_VERSION='v1.23.7'
+ARG GO_VERSION='v1.27.0'
 RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
@@ -99,12 +124,19 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
+#########################
+# Install dotenv-linter #
+#########################
+RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
+    && mv "dotenv-linter" /usr/bin
+
 ###########################################
-# Load GitHub Env Vars for Github Actions #
+# Load GitHub Env Vars for GitHub Actions #
 ###########################################
 ENV GITHUB_SHA=${GITHUB_SHA} \
     GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
     VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
     VALIDATE_YAML=${VALIDATE_YAML} \
     VALIDATE_JSON=${VALIDATE_JSON} \
@@ -124,10 +156,14 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
+    VALIDATE_CSS=${VALIDATE_CSS} \
+    VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
-    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG}
+    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
+    DISABLE_ERRORS=${DISABLE_ERRORS}
 
 #############################
 # Copy scripts to container #

@@ -48,7 +48,7 @@ jobs:
           # Set the Env Vars
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_REPO: admiralawkbar/super-linter
+          IMAGE_REPO: github/super-linter
           DOCKERFILE_PATH: Dockerfile
         shell: bash
         run: .automation/upload-docker.sh
@@ -66,5 +66,5 @@ jobs:
       - name: Run Test Cases
         shell: bash
         run: |
-          docker pull admiralawkbar/super-linter:${BRANCH_NAME}
-          docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -v ${GITHUB_WORKSPACE}:/tmp/lint admiralawkbar/super-linter:${BRANCH_NAME}
+          docker pull github/super-linter:${BRANCH_NAME}
+          docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${BRANCH_NAME}

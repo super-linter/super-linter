@@ -42,9 +42,9 @@
       group: admin
       mode: 0644
 
-  #########################################################
-  # Set up Admin password, License, and Initial Setttings #
-  #########################################################
+  ########################################################
+  # Set up Admin password, License, and Initial Settings #
+  ########################################################
   - name: Setup Splunk
     # yamllint disable
     shell: curl --fail -Lk \

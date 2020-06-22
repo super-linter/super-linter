@@ -31,15 +31,17 @@ Draft pull requests are also welcome to get feedback early on, or if there is so
 
 ## Releasing
 If you are the current maintainer of this action:
-1. Update `README.md` to reflect new version number in the suggested workflow file section
-2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) document explaining details of Release
-3. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
+1. Update `README.md` and the wiki to reflect new version number in the example workflow file sections
+2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) with a summarized changelog
+3. Publish the docker image to GitHub package registry
+4. Publish the docker image to Docker Hub
+5. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
 
 ## Resources
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
 - [GitHub Help](https://help.github.com)
 
-[pulls]: https://github.com/github/github-demo-stack/pulls
-[pr]: https://github.com/github/github-demo-stack/compare
-[fork]: https://github.com/github/github-demo-stack/fork
+[pulls]: https://github.com/github/super-linter/pulls
+[pr]: https://github.com/github/super-linter/compare
+[fork]: https://github.com/github/super-linter/fork
