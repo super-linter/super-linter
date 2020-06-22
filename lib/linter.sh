@@ -2405,7 +2405,7 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   # Lint the powershell files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "PowerShell" "pwsh -c 'Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path'" ".*\.\(ps[md]\?1\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
+  LintCodebase "POWERSHELL" "pwsh" "pwsh -c 'Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path'" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
