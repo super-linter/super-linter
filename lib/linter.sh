@@ -1739,10 +1739,26 @@ LintCodebase()
       echo "---------------------------"
       echo "File:[$FILE]"
 
-      ################################
-      # Lint the file with the rules #
-      ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      ####################
+      # Set the base Var #
+      ####################
+      LINT_CMD=''
+
+      #######################################
+      # Corner case for Powershell subshell #
+      #######################################
+      if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+        ################################
+        # Lint the file with the rules #
+        ################################
+        # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" \' 2>&1 ; exit "$?")
+      else
+        ################################
+        # Lint the file with the rules #
+        ################################
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      fi
 
       #######################
       # Load the error code #
@@ -1913,8 +1929,8 @@ TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      # Need to append "'" to make the pwsh call syntax correct
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" \' 2>&1)
+      # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" \' 2>&1 ; exit "$?")
     else
       ################################
       # Lint the file with the rules #
