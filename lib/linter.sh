@@ -1944,7 +1944,7 @@ TestCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*/ansible*" 2>&1)
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/*" 2>&1)
   fi
 
   ##################
