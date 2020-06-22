@@ -48,10 +48,12 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
+# Powershell Vars
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                   # Name of the file
+POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME"    # Path to the Powershell lint rules
 # CSS Vars
 CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
 CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
-
 
 #######################################
 # Linter array for information prints #
@@ -59,14 +61,15 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter")
+  "stylelint" "dotenv-linter" "powershell")
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS' "ENV")
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS'
+  'ENV' 'POWERSHELL')
 
 ###################
 # GitHub ENV Vars #
@@ -94,6 +97,7 @@ VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to val
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
 VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
@@ -138,6 +142,7 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
+FILE_ARRAY_POWERSHELL=()             # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
 
@@ -161,6 +166,7 @@ ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
 ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
+ERRORS_FOUND_POWERSHELL=0           # Count of errors found
 ERRORS_FOUND_CSS=0                  # Count of errors found
 ERRORS_FOUND_ENV=0                  # Count of errors found
 
@@ -739,6 +745,7 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
 
@@ -763,6 +770,7 @@ GetValidationInfo()
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
+        -n "$VALIDATE_POWERSHELL" || \
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" ]]; then
     ANY_SET="true"
@@ -1006,6 +1014,20 @@ GetValidationInfo()
     VALIDATE_TERRAFORM="true"
   fi
 
+  #########################################
+  # Validate if we should check POWERSHELL #
+  #########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_POWERSHELL" ]]; then
+      # POWERSHELL flag was not set - default to false
+      VALIDATE_POWERSHELL="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_POWERSHELL="true"
+  fi
+
   ###################################
   # Validate if we should check CSS #
   ###################################
@@ -1121,6 +1143,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [TERRAFORM] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
+  fi
+  if [[ "$VALIDATE_POWERSHELL" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [POWERSHELL] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
   fi
   if [[ "$VALIDATE_CSS" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
@@ -1461,6 +1488,14 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    ###########################
+    # Get the Powershell files #
+    ###########################
+    elif [ "$FILE_TYPE" == "ps1" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_POWERSHELL+=("$FILE")
     elif [ "$FILE_TYPE" == "css" ]; then
       ################################
       # Append the file to the array #
@@ -1704,10 +1739,26 @@ LintCodebase()
       echo "---------------------------"
       echo "File:[$FILE]"
 
-      ################################
-      # Lint the file with the rules #
-      ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      ####################
+      # Set the base Var #
+      ####################
+      LINT_CMD=''
+
+      #######################################
+      # Corner case for Powershell subshell #
+      #######################################
+      if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+        ################################
+        # Lint the file with the rules #
+        ################################
+        # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+      else
+        ################################
+        # Lint the file with the rules #
+        ################################
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      fi
 
       #######################
       # Load the error code #
@@ -1874,6 +1925,12 @@ TestCodebase()
       # Lint the file with the rules #
       ################################
       LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+      ################################
+      # Lint the file with the rules #
+      ################################
+      # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
     else
       ################################
       # Lint the file with the rules #
@@ -1990,6 +2047,7 @@ Footer()
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
+     [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ]; then
@@ -2049,6 +2107,7 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
+  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$"
 
@@ -2105,6 +2164,8 @@ GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 # Get Terraform rules
 GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+# Get PowerShell rules
+GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
 # Get CSS rules
 GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
 
@@ -2356,6 +2417,17 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+######################
+# POWERSHELL LINTING #
+######################
+if [ "$VALIDATE_POWERSHELL" == "true" ]; then
+  #############################
+  # Lint the powershell files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########
