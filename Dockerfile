@@ -27,7 +27,8 @@ RUN apk add --no-cache \
     libxml2-utils perl \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
     py3-setuptools ansible-lint \
-    go \
+    go \ 
+    openjdk8-jre \
     php7 \
     ca-certificates less ncurses-terminfo-base \
     krb5-libs libgcc libintl libssl1.1 libstdc++ \
@@ -130,6 +131,12 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
 RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
     && mv "dotenv-linter" /usr/bin
 
+##################
+# Install ktlint #
+##################
+RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
+    && mv "ktlint" /usr/bin/
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -158,6 +165,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \

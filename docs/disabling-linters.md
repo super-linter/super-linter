@@ -21,8 +21,9 @@ Below is examples and documentation for each language and the various methods to
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
-- [CSS](#css)
-- [ENV](#env)
+- [CSS](#stylelint)
+- [ENV](#dotenv-linter)
+- [Kotlin](#kotlin)
 
 <!-- toc -->
 
@@ -581,4 +582,28 @@ a {}
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### dotenv-linter disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Kotlin
+- [ktlint](https://github.com/pinterest/ktlint)
+
+### ktlint Config file
+- There is no top level *configuration file* available at this time
+
+### ktlint disable single line
+```kotlin
+import package.* // ktlint-disable no-wildcard-imports
+```
+
+### ktlint disable code block
+```kotlin
+/* ktlint-disable no-wildcard-imports */
+import package.a.*
+import package.b.*
+/* ktlint-enable no-wildcard-imports */
+```
+
+### ktlint disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
