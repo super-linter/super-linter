@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1003,SC2016,SC1091
 
 ################################################################################
 ################################################################################
@@ -265,8 +264,7 @@ GetLinterVersions()
     ###################
     # Get the version #
     ###################
-    # shellcheck disable=SC2207
-    GET_VERSION_CMD=($("$LINTER" --version 2>&1))
+    mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
 
     #######################
     # Load the error code #
@@ -357,11 +355,9 @@ GetStandardRules()
   # Only env vars that are marked as true
   GET_ENV_ARRAY=()
   if [[ "$LINTER" == "javascript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$JAVASCRIPT_LINTER_RULES" | grep true)
   elif [[ "$LINTER" == "typescript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$TYPESCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$TYPESCRIPT_LINTER_RULES" | grep true)
   fi
 
   #######################
@@ -612,8 +608,7 @@ GetGitHubVars()
     ######################
     # Get the GitHub Org #
     ######################
-    # shellcheck disable=SC2002
-    GITHUB_ORG=$(cat "$GITHUB_EVENT_PATH" | jq -r '.repository.owner.login' )
+    GITHUB_ORG=$(jq -r '.repository.owner.login' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
@@ -629,8 +624,7 @@ GetGitHubVars()
     #######################
     # Get the GitHub Repo #
     #######################
-    # shellcheck disable=SC2002
-    GITHUB_REPO=$(cat "$GITHUB_EVENT_PATH"| jq -r '.repository.name' )
+    GITHUB_REPO=$(jq -r '.repository.name' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
