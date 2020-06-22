@@ -5,6 +5,7 @@
 ################################################################################
 
 # NOTES: This script is used to upload a Dockerfile to DockerHub
+# under the GitHub organization
 # Its based on being built from a GitHub Action, but could be easily updated
 # To be ran in a different medium.
 #
@@ -16,7 +17,7 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # Github Workspace
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
 DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
 DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
@@ -32,7 +33,7 @@ Header()
 {
   echo ""
   echo "-------------------------------------------------------"
-  echo "------ Github Actions Upload image to DockerHub -------"
+  echo "------ GitHub Actions Upload image to DockerHub -------"
   echo "-------------------------------------------------------"
   echo ""
 }
@@ -119,9 +120,9 @@ ValidateInput()
       exit 1
     fi
 
-    ###################################
-    # Remove non alpha-numberic chars #
-    ###################################
+    ##################################
+    # Remove non alpha-numeric chars #
+    ##################################
     BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -cd '[:alnum:]')
 
     ############################################
