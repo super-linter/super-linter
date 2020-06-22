@@ -66,7 +66,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS'
   'ENV' 'POWERSHELL')
@@ -86,6 +86,7 @@ VALIDATE_XML="${VALIDATE_XML}"                        # Boolean to validate lang
 VALIDATE_MD="${VALIDATE_MD}"                          # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
+VALIDATE_PHP="${VALIDATE_PHP}"                        # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
@@ -132,6 +133,7 @@ FILE_ARRAY_XML=()                   # Array of files to check
 FILE_ARRAY_MD=()                    # Array of files to check
 FILE_ARRAY_BASH=()                  # Array of files to check
 FILE_ARRAY_PERL=()                  # Array of files to check
+FILE_ARRAY_PHP=()                   # Array of files to check
 FILE_ARRAY_RUBY=()                  # Array of files to check
 FILE_ARRAY_PYTHON=()                # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
@@ -155,6 +157,7 @@ ERRORS_FOUND_XML=0                  # Count of errors found
 ERRORS_FOUND_MARKDOWN=0             # Count of errors found
 ERRORS_FOUND_BASH=0                 # Count of errors found
 ERRORS_FOUND_PERL=0                 # Count of errors found
+ERRORS_FOUND_PHP=0                  # Count of errors found
 ERRORS_FOUND_RUBY=0                 # Count of errors found
 ERRORS_FOUND_PYTHON=0               # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
@@ -734,6 +737,7 @@ GetValidationInfo()
   VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
   VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
+  VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
   VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
   VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
   VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
@@ -759,6 +763,7 @@ GetValidationInfo()
         -n "$VALIDATE_MD" || \
         -n "$VALIDATE_BASH" || \
         -n "$VALIDATE_PERL" || \
+        -n "$VALIDATE_PHP" || \
         -n "$VALIDATE_PYTHON" || \
         -n "$VALIDATE_RUBY" || \
         -n "$VALIDATE_COFFEE" || \
@@ -858,6 +863,20 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_PERL="true"
+  fi
+
+  ####################################
+  # Validate if we should check PHP #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_PHP" ]]; then
+      # PHP flag was not set - default to false
+      VALIDATE_PHP="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_PHP="true"
   fi
 
   ######################################
@@ -1088,6 +1107,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
+  fi
+  if [[ "$VALIDATE_PHP" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [PHP] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [PHP] files in code base...")
   fi
   if [[ "$VALIDATE_PYTHON" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
@@ -1398,6 +1422,18 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_PERL+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ######################
+    # Get the PHP files #
+    ######################
+    elif [ "$FILE_TYPE" == "php" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_PHP+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -2037,6 +2073,7 @@ Footer()
      [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] || \
      [ "$ERRORS_FOUND_BASH" -ne 0 ] || \
      [ "$ERRORS_FOUND_PERL" -ne 0 ] || \
+     [ "$ERRORS_FOUND_PHP" -ne 0 ] || \
      [ "$ERRORS_FOUND_PYTHON" -ne 0 ] || \
      [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] || \
      [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] || \
@@ -2097,6 +2134,7 @@ RunTestCases()
   TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
+  TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
@@ -2275,6 +2313,17 @@ if [ "$VALIDATE_PERL" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+fi
+
+################
+# PHP LINTING #
+################
+if [ "$VALIDATE_PHP" == "true" ]; then
+  #######################
+  # Lint the PHP files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
 fi
 
 ################
