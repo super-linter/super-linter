@@ -100,9 +100,10 @@ RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
 
 # Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
 # We then need to promote the correct version, uninstall, and fix deps
-RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop |grep rubocop |awk "{print $2}" |cut -d"(" -f2|cut -d"," -f1); \
+RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop | grep rubocop | awk "{print $2}" | cut -d"(" -f2| cut -d"," -f1); \
   gem install --default rubocop:0.74.0; \
-  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; gem install rubocop:0.74.0'
+  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; \
+  gem install rubocop:0.74.0'
 
 ######################
 # Install shellcheck #
