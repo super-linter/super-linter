@@ -111,7 +111,7 @@ RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/downloa
 ##################
 # Install ktlint #
 ##################
-RUN curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.37.2/ktlint && chmod a+x ktlint \
+RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
 ###########################################
