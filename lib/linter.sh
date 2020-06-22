@@ -1042,9 +1042,9 @@ GetValidationInfo()
     VALIDATE_CSS="true"
   fi
 
-  ####################################
+  ###################################
   # Validate if we should check ENV #
-  ####################################
+  ###################################
   if [[ "$ANY_SET" == "true" ]]; then
     # Some linter flags were set - only run those set to true
     if [[ -z "$VALIDATE_ENV" ]]; then
@@ -2109,7 +2109,7 @@ RunTestCases()
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
   TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
-  TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
+  TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$"
 
   #################
   # Footer prints #
@@ -2397,15 +2397,15 @@ if [ "$VALIDATE_CSS" == "true" ]; then
   LintCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
 fi
 
-################
+###############
 # ENV LINTING #
-################
+###############
 if [ "$VALIDATE_ENV" == "true" ]; then
   #######################
   # Lint the env files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ##################

@@ -123,9 +123,9 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
-##################
+#########################
 # Install dotenv-linter #
-##################
+#########################
 RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
     && mv "dotenv-linter" /usr/bin
 
