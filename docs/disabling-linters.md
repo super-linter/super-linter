@@ -11,6 +11,7 @@ Below is examples and documentation for each language and the various methods to
 - [JSON](#json)
 - [Markdown](#markdown)
 - [Perl](#perl)
+- [PHP](#php)
 - [XML](#xml)
 - [Coffeescript](#coffeescript)
 - [Javascript Eslint](#javascript-eslint)
@@ -300,6 +301,23 @@ Here is more data
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### Perl disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## PHP
+- [PHP](https://www.php.net/)
+
+### PHP Config file
+- There is no top level *configuration file* available at this time
+
+### PHP disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
