@@ -3,7 +3,7 @@ This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
-- Prevent broken code from being uploaded to *master* branches
+- Prevent broken code from being uploaded to the default branch (Usually `master`)
 - Help establish coding best practices across multiple languages
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
@@ -19,7 +19,8 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
-| **CoffeeScript** | [coffeelint](http://www.coffeelint.org/)                                 |
+| **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
@@ -33,7 +34,8 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **XML**          | [LibXML](http://xmlsoft.org/)                                            |
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
-| **Powershell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -94,12 +96,14 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v2.0.0
+        uses: docker://github/super-linter:v2.1.1
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
 ...
 ```
+
+**NOTE:** Using the line:`uses: docker://github/super-linter:v2.1.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.1.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
@@ -114,6 +118,7 @@ and won't run anything unexpected.
 | **ENV VAR** | **Default Value** | **Notes** |
 | --- | --- | --- |
 | **VALIDATE_ALL_CODEBASE** | `true` | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
+| **DEFAULT_BRANCH** | `master` | The name of the repository default branch. |
 | **VALIDATE_YAML** | `true` |Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JSON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_XML** | `true` | Flag to enable or disable the linting process of the language. |
@@ -132,13 +137,17 @@ and won't run anything unexpected.
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_POWERSHELL** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
+| **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
+| **DEFAULT_WORKSPACE** | `/tmp/lint` | The location containing files to lint if you are running locally. |
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/` of your repository
-  - If your repository does not have rules files, they will fall back to defaults in this repositories `TEMPLATE` folder
+  - If your repository does not have rules files, they will fall back to defaults in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES)
 
 ## Disabling rules
 If you need to disable certain *rules* and *functionality*, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
@@ -156,7 +165,7 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
   - `.automation/test` contains all test cases for each language that should be validated
 - These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
 - When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
-  - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
+  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:

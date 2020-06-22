@@ -20,6 +20,7 @@ Once the container has been downloaded to your local environment, you can then b
   - `docker run -e RUN_LOCAL=true -v /path/to/local/codebase:/tmp/lint github/super-linter`
     - To run against a single file you can use: `docker run -e RUN_LOCAL=true -v /path/to/local/codebase/file:/tmp/lint/file github/super-linter`
   - **NOTE:** You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint` so that the linter can pick up the code
+  - **NOTE:** If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
   - **NOTE:** The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted
 
 ### Flags for running Locally
