@@ -1026,6 +1026,7 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_POWERSHELL="true"
+  fi
 
   ###################################
   # Validate if we should check CSS #
@@ -1147,6 +1148,7 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [POWERSHELL] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
+  fi
   if [[ "$VALIDATE_CSS" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
