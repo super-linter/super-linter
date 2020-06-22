@@ -87,8 +87,7 @@ CheckGHEProcess()
     ####################################################
     # Check to see if the process is alive and running #
     ####################################################
-    # shellcheck disable=SC2009
-    CHECK_PROCESS_CMD=$(ps -aef |grep "$GHE_APPLY_COMMAND" |grep -v grep 2>&1)
+    CHECK_PROCESS_CMD=$(pgrep -f "$GHE_APPLY_COMMAND" 2>&1)
 
     #######################
     # Load the error code #

@@ -1,5 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC1003,SC2016
 
 ################################################################################
 ################################################################################
@@ -212,8 +211,7 @@ GetLinterVersions()
     ###################
     # Get the version #
     ###################
-    # shellcheck disable=SC2207
-    GET_VERSION_CMD=($("$LINTER" --version 2>&1))
+    mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
 
     #######################
     # Load the error code #
@@ -304,11 +302,9 @@ GetStandardRules()
   # Only env vars that are marked as true
   GET_ENV_ARRAY=()
   if [[ "$LINTER" == "javascript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$JAVASCRIPT_LINTER_RULES" | grep true)
   elif [[ "$LINTER" == "typescript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$TYPESCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$TYPESCRIPT_LINTER_RULES" | grep true)
   fi
 
   #######################
@@ -390,7 +386,6 @@ LintAnsibleFiles()
   ###########################################
   # Validate we have ansible-lint installed #
   ###########################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -436,14 +431,12 @@ LintAnsibleFiles()
     if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
       # We need to only check the ansible playbooks that have updates
       #LIST_FILES=("${ANSIBLE_ARRAY[@]}")
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
     else
       #################################
       # Get list of all files to lint #
       #################################
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
     fi
 
     ###############################################################
@@ -650,8 +643,7 @@ GetGitHubVars()
     ######################
     # Get the GitHub Org #
     ######################
-    # shellcheck disable=SC2002
-    GITHUB_ORG=$(cat "$GITHUB_EVENT_PATH" | jq -r '.repository.owner.login' )
+    GITHUB_ORG=$(jq -r '.repository.owner.login' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
@@ -667,8 +659,7 @@ GetGitHubVars()
     #######################
     # Get the GitHub Repo #
     #######################
-    # shellcheck disable=SC2002
-    GITHUB_REPO=$(cat "$GITHUB_EVENT_PATH"| jq -r '.repository.name' )
+    GITHUB_REPO=$(jq -r '.repository.name' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
@@ -1235,7 +1226,7 @@ BuildFileList()
   #################################################################################
   # Switch codebase back to the default branch to get a list of all files changed #
   #################################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout "$DEFAULT_BRANCH" 2>&1)
+  SWITCH_CMD=$(git -C "$GITHUB_WORKSPACE" pull --quiet; git -C "$GITHUB_WORKSPACE" checkout "$DEFAULT_BRANCH" 2>&1)
 
   #######################
   # Load the error code #
@@ -1258,14 +1249,13 @@ BuildFileList()
   if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
-    echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
+    echo "Generating Diff with:[git -C '$GITHUB_WORKSPACE' diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
   fi
 
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
+  mapfile -t RAW_FILE_ARRAY < <(git -C "$GITHUB_WORKSPACE" diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1)
 
   #######################
   # Load the error code #
@@ -1541,7 +1531,7 @@ BuildFileList()
   #########################################
   # Need to switch back to branch of code #
   #########################################
-  SWITCH2_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout --progress --force "$GITHUB_SHA" 2>&1)
+  SWITCH2_CMD=$(git -C "$GITHUB_WORKSPACE" checkout --progress --force "$GITHUB_SHA" 2>&1)
 
   #######################
   # Load the error code #
@@ -1596,7 +1586,6 @@ LintCodebase()
   #######################################
   # Validate we have jsonlint installed #
   #######################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -1644,8 +1633,7 @@ LintCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE" -type f -regex "$FILE_EXTENSIONS" 2>&1)
 
     ############################################################
     # Set it back to empty if loaded with blanks from scanning #
@@ -1760,7 +1748,6 @@ TestCodebase()
   #####################################
   # Validate we have linter installed #
   #####################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -1794,14 +1781,12 @@ TestCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086,SC2010
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
+    mapfile -t LIST_FILES < <(ls "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/*.yml" 2>&1)
   else
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1)
   fi
 
   ##################
