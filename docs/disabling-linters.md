@@ -20,8 +20,8 @@ Below is examples and documentation for each language and the various methods to
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
-- [CSS](#stylelint)
-- [ENV](#dotenv-linter)
+- [CSS](#css)
+- [ENV](#env)
 
 <!-- toc -->
 
@@ -477,7 +477,7 @@ alert('foo')
 --------------------------------------------------------------------------------
 
 ## Dockerfile
--[dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
+- [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
 
 ### Dockerfilelint standard Config file
 - `.github/linters/.dockerfilelintrc`

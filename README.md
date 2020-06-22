@@ -163,7 +163,7 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
   - `.automation/test` contains all test cases for each language that should be validated
 - These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
 - When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
-  - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
+  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:

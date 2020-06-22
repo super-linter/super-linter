@@ -120,9 +120,9 @@ ValidateInput()
       exit 1
     fi
 
-    ###################################
-    # Remove non alpha-numberic chars #
-    ###################################
+    ##################################
+    # Remove non alpha-numeric chars #
+    ##################################
     BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -cd '[:alnum:]')
 
     ############################################
