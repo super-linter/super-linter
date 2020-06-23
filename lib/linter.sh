@@ -95,10 +95,15 @@ VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"              # Boolean to val
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"  # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"              # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to validate language
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
+VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
+VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
+VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                  # Boolean to validate language
-TEST_CASE_RUN="${TEST_CASE_RUN}"                          # Boolean to validate only test cases
-DISABLE_ERRORS="${DISABLE_ERRORS}"                        # Boolean to enable warning-only output without throwing errors
+TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
+DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
 
 ##############
 # Debug Vars #
