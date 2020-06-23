@@ -612,6 +612,7 @@ import package.b.*
 
 ## Clojure
 - [clj-kondo](https://github.com/borkdude/clj-kondo)
+- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
 
 ### clj-kondo standard Config file
 - `.github/linters/.clj-kondo/config.edn`
