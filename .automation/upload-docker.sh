@@ -396,6 +396,11 @@ Header
 ##################
 ValidateInput
 
+###################
+# Build the image #
+###################
+BuildImage
+
 ######################
 # Login to DockerHub #
 ######################
@@ -418,11 +423,6 @@ else
   echo "Registry:[$REGISTRY]"
   exit 1
 fi
-
-###################
-# Build the image #
-###################
-BuildImage
 
 ####################
 # Upload the image #
