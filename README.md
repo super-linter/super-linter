@@ -2,7 +2,7 @@
 This repository is for the **GitHub Action** to run a **Super-Linter**.  
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
-The end goal of this tool:
+The _end goal_ of this tool:
 - Prevent broken code from being uploaded to the default branch (Usually `master`)
 - Help establish coding best practices across multiple languages
 - Build guidelines for code layout and format
