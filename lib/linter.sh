@@ -12,7 +12,7 @@
 ###########
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
-LINTER_PATH='.github/linters'                                       # Default linter path
+DEFAULT_LINTER_RULES_PATH='.github/linters'                         # Default linter path
 # YAML Vars
 YAML_FILE_NAME='.yaml-lint.yml'                                     # Name of the file
 YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"         # Path to the yaml lint rules
@@ -91,14 +91,14 @@ VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"              # Boolean to val
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"  # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"              # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
-VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
-VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
-VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
-TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
-DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
-LINTER_PATH="${LINTER_PATH}"                          # Linter Path Directory
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"                      # Boolean to validate language
+VALIDATE_GO="${VALIDATE_GO}"                              # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                # Boolean to validate language
+VALIDATE_CSS="${VALIDATE_CSS}"                            # Boolean to validate language
+VALIDATE_ENV="${VALIDATE_ENV}"                            # Boolean to validate language
+TEST_CASE_RUN="${TEST_CASE_RUN}"                          # Boolean to validate only test cases
+DISABLE_ERRORS="${DISABLE_ERRORS}"                        # Boolean to enable warning-only output without throwing errors
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
 
 ##############
 # Debug Vars #
@@ -251,14 +251,14 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" ]; then
     echo "----------------------------------------------"
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
     # Copy users into default location #
     ####################################
-    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
+    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
 
     ###################
     # Load Error code #
@@ -278,7 +278,7 @@ GetLinterRules()
     # No user default provided, using the template default #
     ########################################################
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
     fi
   fi
 }
@@ -569,16 +569,6 @@ GetGitHubVars()
   # Convert string to lowercase #
   ###############################
   TEST_CASE_RUN=$(echo "$TEST_CASE_RUN" | awk '{print tolower($0)}')
-
-  #####################################
-  # Get the Linter path               #
-  #####################################
-  if [ -z "$LINTER_PATH" ]; then
-    ###################################
-    # No flag passed, set to default  #
-    ###################################
-    LINTER_PATH="$DEFAULT_LINTER_PATH"
-  fi
 
   ##########################
   # Get the run local flag #
