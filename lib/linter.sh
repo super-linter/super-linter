@@ -150,7 +150,7 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
-FILE_ARRAY_POWERSHELL=()             # Array of files to check
+FILE_ARRAY_POWERSHELL=()            # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
 FILE_ARRAY_CLOJURE=()               # Array of files to check
@@ -2159,6 +2159,7 @@ Footer()
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
      [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
