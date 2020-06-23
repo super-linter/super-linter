@@ -3,7 +3,5 @@ nvq
 rdoc
 setuptools
 uninstall
-Jv
 wget
 WORKDIR
-xzf
