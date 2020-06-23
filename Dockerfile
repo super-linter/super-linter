@@ -40,7 +40,7 @@ RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
 ####################
 RUN npm config set package-lock false \
     && npm config set loglevel error \
-    && npm -g --no-cache install \
+    && npm -g --no-cache --quiet install \
       markdownlint-cli \
       jsonlint prettyjson \
       coffeelint \
