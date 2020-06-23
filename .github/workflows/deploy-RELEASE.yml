@@ -48,6 +48,7 @@ jobs:
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: ${{ github.ref }}
           DOCKERFILE_PATH: Dockerfile
+          REGISTRY: Docker
         shell: bash
         run: .automation/upload-docker.sh
 
@@ -62,5 +63,6 @@ jobs:
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: ${{ github.ref }}
           DOCKERFILE_PATH: Dockerfile
+          REGISTRY: GPR
         shell: bash
         run: .automation/upload-docker.sh
