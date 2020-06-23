@@ -5,7 +5,7 @@ var handler = createHandler({ path: '/webhook', secret: (process.env.SECRET) })
 var userArray = ['user1']
 
 var teamDescription = 'Team of Robots'
-var teamPrivacy = 'closed' // closed (visibile) / secret (hidden) are options here
+var teamPrivacy = 'closed' // closed (visible) / secret (hidden) are options here
 
 var teamName = process.env.GHES_TEAM_NAME
 var teamAccess = 'pull' // pull,push,admin options here
