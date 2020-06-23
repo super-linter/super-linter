@@ -11,6 +11,7 @@ Below is examples and documentation for each language and the various methods to
 - [JSON](#json)
 - [Markdown](#markdown)
 - [Perl](#perl)
+- [PHP](#php)
 - [XML](#xml)
 - [Coffeescript](#coffeescript)
 - [Javascript Eslint](#javascript-eslint)
@@ -22,6 +23,7 @@ Below is examples and documentation for each language and the various methods to
 - [Terraform](#terraform)
 - [CSS](#stylelint)
 - [ENV](#dotenv-linter)
+- [Kotlin](#kotlin)
 
 <!-- toc -->
 
@@ -303,6 +305,23 @@ Here is more data
 
 --------------------------------------------------------------------------------
 
+## PHP
+- [PHP](https://www.php.net/)
+
+### PHP Config file
+- There is no top level *configuration file* available at this time
+
+### PHP disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
 ## XML
 - [XML](http://xmlsoft.org/)
 
@@ -563,4 +582,28 @@ a {}
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### dotenv-linter disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Kotlin
+- [ktlint](https://github.com/pinterest/ktlint)
+
+### ktlint Config file
+- There is no top level *configuration file* available at this time
+
+### ktlint disable single line
+```kotlin
+import package.* // ktlint-disable no-wildcard-imports
+```
+
+### ktlint disable code block
+```kotlin
+/* ktlint-disable no-wildcard-imports */
+import package.a.*
+import package.b.*
+/* ktlint-enable no-wildcard-imports */
+```
+
+### ktlint disable entire file
 - There is currently **No** way to disable rules inline of the file(s)

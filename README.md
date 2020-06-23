@@ -27,6 +27,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
+| **PHP**          | [PHP](https://www.php.net/)                                              |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
 | **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
@@ -34,7 +35,9 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **XML**          | [LibXML](http://xmlsoft.org/)                                            |
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
+| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
+| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -95,7 +98,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.1.1
+        uses: docker://github/super-linter:v2.1.0
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
@@ -125,6 +128,7 @@ and won't run anything unexpected.
 | **VALIDATE_MD** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_BASH** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PERL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
@@ -135,9 +139,11 @@ and won't run anything unexpected.
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_POWERSHELL** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
@@ -164,7 +170,7 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
   - `.automation/test` contains all test cases for each language that should be validated
 - These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
 - When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
-  - **Note:** The branches **Docker** container is also removed from **DockerHub** to cleanup after itself
+  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:
