@@ -406,7 +406,7 @@ BuildImage
 ######################
 if [[ "$REGISTRY" == "Docker" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
-  Authenticate "$DOCKER_USERNAME" "$DOCKER_PASSWORD" "https://docker.com" "Dockerhub"
+  Authenticate "$DOCKER_USERNAME" "$DOCKER_PASSWORD" "" "Dockerhub"
 
 ####################################
 # Login to GitHub Package Registry #
