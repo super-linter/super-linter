@@ -125,6 +125,13 @@ READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files c
 TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
 DEFAULT_DISABLE_ERRORS='false'                        # Default to enabling errors
 
+##############
+# Format     #
+##############
+OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
+OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
+REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+
 ##########################
 # Array of changed files #
 ##########################
@@ -1782,6 +1789,16 @@ LintCodebase()
       echo "$LINE"
     done
 
+    ####################################
+    # Prepare context if OUTPUT_FORMAT #
+    ####################################
+    if [ -n "${OUTPUT_FORMAT}" ] ; then
+      TMPFILE=$(mktemp -q /tmp/super-linter.XXXXXX)
+      INDEX=0
+      mkdir -p "${REPORT_OUTPUT_FOLDER}"
+      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
+    fi
+
     ##################
     # Lint the files #
     ##################
@@ -1802,6 +1819,8 @@ LintCodebase()
         # This is the test cases, we should always skip
         continue
       fi
+
+      (("INDEX++"))
 
       ##############
       # File print #
@@ -1846,13 +1865,37 @@ LintCodebase()
         echo "ERROR:[$LINT_CMD]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if [ -n "${OUTPUT_FORMAT}" ] ; then
+          echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          echo "  ERROR:[$LINT_CMD]" >> "${TMPFILE}"
+        fi
+
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if [ -n "${OUTPUT_FORMAT}" ] ; then
+          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+        fi
       fi
     done
+
+    #################################
+    # Generate report in TAP format #
+    #################################
+    if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
+      echo "1..${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+    fi
   fi
 }
 ################################################################################
@@ -2073,6 +2116,14 @@ Footer()
   echo "----------------------------------------------"
   echo ""
 
+
+  ###################################
+  # Prints output report if enabled #
+  ###################################
+  if [ -z "${FORMAT_REPORT}" ] ; then
+    echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+  fi
+
   ##############################
   # Prints for errors if found #
   ##############################
@@ -2200,6 +2251,17 @@ RunTestCases()
 # Header #
 ##########
 Header
+
+##############################################################
+# check flag for validating the report folder does not exist #
+##############################################################
+if [ -n "${OUTPUT_FORMAT}" ]; then
+  if [ -d "${REPORT_OUTPUT_FOLDER}" ] ; then
+    echo "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
+    echo "Please remove the folder and try again."
+    exit 1
+  fi
+fi
 
 #######################
 # Get GitHub Env Vars #
