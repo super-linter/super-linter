@@ -497,6 +497,16 @@ LintAnsibleFiles()
       done
     fi
 
+    ####################################
+    # Prepare context if OUTPUT_FORMAT #
+    ####################################
+    if [ -n "${OUTPUT_FORMAT}" ] ; then
+      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
+      INDEX=0
+      mkdir -p "${REPORT_OUTPUT_FOLDER}"
+      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
+    fi
+
     ##################
     # Lint the files #
     ##################
@@ -510,6 +520,11 @@ LintAnsibleFiles()
         # This is a file we dont look at
         continue
       fi
+
+      ##################################
+      # Increase the linted file index #
+      ##################################
+      (("INDEX++"))
 
       ####################
       # Get the filename #
@@ -543,13 +558,37 @@ LintAnsibleFiles()
         echo "ERROR:[$LINT_CMD]"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if [ -n "${OUTPUT_FORMAT}" ] ; then
+          echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          echo "  ERROR:[$LINT_CMD]" >> "${TMPFILE}"
+        fi
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if [ -n "${OUTPUT_FORMAT}" ] ; then
+          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+        fi
       fi
     done
+
+    #################################
+    # Generate report in TAP format #
+    #################################
+    if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
+      echo "1..${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+    fi
+
   else # No ansible directory found in path
     ###############################
     # Check to see if debug is on #
@@ -1793,7 +1832,7 @@ LintCodebase()
     # Prepare context if OUTPUT_FORMAT #
     ####################################
     if [ -n "${OUTPUT_FORMAT}" ] ; then
-      TMPFILE=$(mktemp -q /tmp/super-linter.XXXXXX)
+      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
       INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
       REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
@@ -1820,6 +1859,9 @@ LintCodebase()
         continue
       fi
 
+      ##################################
+      # Increase the linted file index #
+      ##################################
       (("INDEX++"))
 
       ##############
