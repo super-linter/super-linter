@@ -37,13 +37,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      ##########################
-      # Get the Relase version #
-      ##########################
-      - name: Extract Release Version
-        shell: bash
-        run: echo "::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF/refs\/tags\//})"
-
       ###################################
       # Run Deploy script for Dockerhub #
       ###################################
@@ -53,7 +46,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${RELEASE_VERSION}
+          IMAGE_VERSION: ${{ github.event.release.tag_name }}
           DOCKERFILE_PATH: Dockerfile
           REGISTRY: Docker
         shell: bash
@@ -68,7 +61,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.GPR_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.GPR_PASSWORD }}
           IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${RELEASE_VERSION}
+          IMAGE_VERSION: ${{ github.event.release.tag_name }}
           DOCKERFILE_PATH: Dockerfile
           REGISTRY: GPR
         shell: bash
