@@ -4,4 +4,4 @@ https?:\S*
 # Any CLI args (-xzf -aef)
 \ -\w+\b
 # Hex colors (dummy group to not be treated as comment)
-(#)([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})
+(?:#)([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})
