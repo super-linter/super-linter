@@ -99,14 +99,14 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.1.0
+        uses: docker://github/super-linter:v2.2.0
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v2.1.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.1.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:** Using the line:`uses: docker://github/super-linter:v2.2.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.2.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
@@ -122,6 +122,7 @@ and won't run anything unexpected.
 | --- | --- | --- |
 | **VALIDATE_ALL_CODEBASE** | `true` | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
 | **DEFAULT_BRANCH** | `master` | The name of the repository default branch. |
+| **LINTER_RULES_PATH** | `.github/linters` | Directory for all linter configuration rules. |
 | **VALIDATE_YAML** | `true` |Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JSON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_XML** | `true` | Flag to enable or disable the linting process of the language. |
