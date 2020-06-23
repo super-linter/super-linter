@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # CMD
 HELLO_WORLD=($(echo "Hello World" | cut -f1 -d' ' 2>&1))
