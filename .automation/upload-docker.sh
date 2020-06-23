@@ -212,10 +212,10 @@ Authenticate()
   ################
   # Pull in Vars #
   ################
-  USERNAME="$1" # Name to auth with
-  PASSWD="$2"   # Password to auth with
-  URL="$3"      # Url to auth towards
-  NAME="$4"     # name of the service
+  USERNAME="$1"   # Name to auth with
+  PASSWORD="$2"   # Password to auth with
+  URL="$3"        # Url to auth towards
+  NAME="$4"       # name of the service
 
   ################
   # Print header #
