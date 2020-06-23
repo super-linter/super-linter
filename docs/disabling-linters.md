@@ -607,3 +607,22 @@ import package.b.*
 
 ### ktlint disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Clojure
+- [clj-kondo](https://github.com/borkdude/clj-kondo)
+
+### clj-kondo standard Config file
+- `.github/linters/.clj-kondo/config.edn`
+
+### clj-kondo disable single line
+- There is currently **No** way to disable rules in a single line
+
+### clj-kondo disable code block
+- There is currently **No** way to disable rules in a code block
+
+### clj-kondo disable entire file
+```clojure
+{:output {:exclude-files ["path/to/file"]}}
+```
