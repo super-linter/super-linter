@@ -85,12 +85,13 @@ RUN npm config set package-lock false \
       @typescript-eslint/parser \
       eslint-plugin-jest \
       stylelint \
-      stylelint-config-standard
+      stylelint-config-standard \
+      > /dev/null
 
 ####################################
 # Install dockerfilelint from repo #
 ####################################
-RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfilelint && npm install
+RUN git clone https://github.com/replicatedhq/dockerfilelint.git && cd /dockerfilelint && npm install > /dev/null
 
  # I think we could fix this with path but not sure the language...
  # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
