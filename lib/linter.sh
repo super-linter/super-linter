@@ -78,7 +78,7 @@ GITHUB_SHA="${GITHUB_SHA}"                            # GitHub sha from the comm
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"              # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                # Github Workspace
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"            # Default Git Branch to use (master by default)
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY:-ansible}"     # Ansible Directory
+ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"              # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"      # Boolean to validate all files
 VALIDATE_YAML="${VALIDATE_YAML}"                      # Boolean to validate language
 VALIDATE_JSON="${VALIDATE_JSON}"                      # Boolean to validate language
@@ -114,9 +114,9 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                              # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"               # Default workspace if running locally
-DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/$ANSIBLE_DIRECTORY"  # Default Ansible Directory
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
 DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
@@ -1922,7 +1922,7 @@ TestCodebase()
     # Get list of all files to lint #
     #################################
     # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./$ANSIBLE_DIRECTORY*" 2>&1))
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
   fi
 
   ##################
@@ -1994,7 +1994,7 @@ TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$ANSIBLE_DIRECTORY" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
     elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
       ################################
       # Lint the file with the rules #
