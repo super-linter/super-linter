@@ -500,7 +500,7 @@ LintAnsibleFiles()
     ####################################
     # Prepare context if OUTPUT_FORMAT #
     ####################################
-    if [ -n "${OUTPUT_FORMAT}" ] ; then
+    if IsTAP ; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
       INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
@@ -562,7 +562,7 @@ LintAnsibleFiles()
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if [ -n "${OUTPUT_FORMAT}" ] ; then
+        if IsTAP ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
           printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
@@ -575,7 +575,7 @@ LintAnsibleFiles()
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if [ -n "${OUTPUT_FORMAT}" ] ; then
+        if IsTAP ; then
           echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
         fi
       fi
@@ -584,8 +584,8 @@ LintAnsibleFiles()
     #################################
     # Generate report in TAP format #
     #################################
-    if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
 
@@ -1831,7 +1831,7 @@ LintCodebase()
     ####################################
     # Prepare context if OUTPUT_FORMAT #
     ####################################
-    if [ -n "${OUTPUT_FORMAT}" ] ; then
+    if IsTAP ; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
       INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
@@ -1911,7 +1911,7 @@ LintCodebase()
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if [ -n "${OUTPUT_FORMAT}" ] ; then
+        if IsTAP ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
           printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
@@ -1925,7 +1925,7 @@ LintCodebase()
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if [ -n "${OUTPUT_FORMAT}" ] ; then
+        if IsTAP ; then
           echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
         fi
       fi
@@ -1934,8 +1934,8 @@ LintCodebase()
     #################################
     # Generate report in TAP format #
     #################################
-    if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   fi
@@ -2284,6 +2284,16 @@ RunTestCases()
   # Call the footer to display run information
   # and exit with error code
   Footer
+}
+################################################################################
+#### Function IsTap ############################################################
+IsTAP()
+{
+  if [ "${OUTPUT_FORMAT}" == "tap" ] ; then
+    return 0
+  else
+    return 1
+  fi
 }
 ################################################################################
 ############################### MAIN ###########################################
