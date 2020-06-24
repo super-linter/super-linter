@@ -564,7 +564,7 @@ LintAnsibleFiles()
         #######################################################
         if [ -n "${OUTPUT_FORMAT}" ] ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          echo "  ERROR:[$LINT_CMD]" >> "${TMPFILE}"
+          printf "  ---\n  but:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
       else
         ###########
@@ -1913,7 +1913,7 @@ LintCodebase()
         #######################################################
         if [ -n "${OUTPUT_FORMAT}" ] ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          echo "  ERROR:[$LINT_CMD]" >> "${TMPFILE}"
+          printf "  ---\n  but:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
 
       else
