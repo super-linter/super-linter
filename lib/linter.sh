@@ -564,7 +564,7 @@ LintAnsibleFiles()
         #######################################################
         if [ -n "${OUTPUT_FORMAT}" ] ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          printf "  ---\n  but:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
+          printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
       else
         ###########
@@ -585,7 +585,7 @@ LintAnsibleFiles()
     # Generate report in TAP format #
     #################################
     if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
-      echo "1..${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      printf "TAP version 13\n1..%s" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
 
@@ -1913,7 +1913,7 @@ LintCodebase()
         #######################################################
         if [ -n "${OUTPUT_FORMAT}" ] ; then
           echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          printf "  ---\n  but:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
+          printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
 
       else
@@ -1935,7 +1935,7 @@ LintCodebase()
     # Generate report in TAP format #
     #################################
     if [ -n "${OUTPUT_FORMAT}" ] && [ ${INDEX} -gt 0 ] ; then
-      echo "1..${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      printf "TAP version 13\n1..%s" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   fi
