@@ -189,10 +189,10 @@ CheckGHEProcess
 ####################
 RunConfigApply
 
-##########################################
+###########################################
 # We're going to run it again after a nap #
-# to make sure there is no crazy actions #
-##########################################
+# to make sure there is no crazy actions  #
+###########################################
 sleep 300s
 
 ######################
