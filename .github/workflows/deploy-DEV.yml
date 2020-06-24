@@ -43,13 +43,14 @@ jobs:
       #####################
       # Run Deploy script #
       #####################
-      - name: Deploy image to DockerHub
+      - name: Deploy DEV image to DockerHub
         env:
           # Set the Env Vars
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_REPO: github/super-linter
           DOCKERFILE_PATH: Dockerfile
+          REGISTRY: Docker
         shell: bash
         run: .automation/upload-docker.sh
 

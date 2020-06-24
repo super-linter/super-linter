@@ -19,4 +19,5 @@ When the script is triggered in a branch, it will push with the tag:**NameOfBran
 - **Note:** The branch name will be reduced to alphanumeric for consistency and uploading
 
 ## test
+
 This folder holds all **Test Cases** to help run the *CI/CT/CD* process for the **Super-Linter**.

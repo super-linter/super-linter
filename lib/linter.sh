@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC1003,SC2016
 
 ################################################################################
@@ -12,7 +12,7 @@
 ###########
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
-LINTER_PATH='.github/linters'                                       # Default linter path
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"           # Linter Path Directory
 # YAML Vars
 YAML_FILE_NAME='.yaml-lint.yml'                                     # Name of the file
 YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"         # Path to the yaml lint rules
@@ -48,10 +48,12 @@ GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"             # Path to th
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                        # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"    # Path to the Terraform lint rules
+# Powershell Vars
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                   # Name of the file
+POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME"    # Path to the Powershell lint rules
 # CSS Vars
 CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
 CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
-
 
 #######################################
 # Linter array for information prints #
@@ -59,14 +61,15 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter")
+  "stylelint" "dotenv-linter" "powershell" "ktlint")
 
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RUBY' 'PYTHON'
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM' 'CSS' "ENV")
+  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
+  'ENV' 'POWERSHELL' 'KOTLIN')
 
 ###################
 # GitHub ENV Vars #
@@ -83,6 +86,7 @@ VALIDATE_XML="${VALIDATE_XML}"                        # Boolean to validate lang
 VALIDATE_MD="${VALIDATE_MD}"                          # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
+VALIDATE_PHP="${VALIDATE_PHP}"                        # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
@@ -93,9 +97,11 @@ VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"              # Boolean to val
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
 VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
+VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
+VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                  # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
 
@@ -108,16 +114,16 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
-DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
-DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
-DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugging output
-RAW_FILE_ARRAY=()                                     # Array of all files that were changed
-READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
-TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
-DEFAULT_DISABLE_ERRORS='false'                        # Default to enabling errors
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
+DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
+DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
+RAW_FILE_ARRAY=()                     # Array of all files that were changed
+READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
+TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
+DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
 
 ##########################
 # Array of changed files #
@@ -128,6 +134,7 @@ FILE_ARRAY_XML=()                   # Array of files to check
 FILE_ARRAY_MD=()                    # Array of files to check
 FILE_ARRAY_BASH=()                  # Array of files to check
 FILE_ARRAY_PERL=()                  # Array of files to check
+FILE_ARRAY_PHP=()                   # Array of files to check
 FILE_ARRAY_RUBY=()                  # Array of files to check
 FILE_ARRAY_PYTHON=()                # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
@@ -138,8 +145,10 @@ FILE_ARRAY_TYPESCRIPT_STANDARD=()   # Array of files to check
 FILE_ARRAY_DOCKER=()                # Array of files to check
 FILE_ARRAY_GO=()                    # Array of files to check
 FILE_ARRAY_TERRAFORM=()             # Array of files to check
+FILE_ARRAY_POWERSHELL=()            # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
+FILE_ARRAY_KOTLIN=()                # Array of files to check
 
 ############
 # Counters #
@@ -150,6 +159,7 @@ ERRORS_FOUND_XML=0                  # Count of errors found
 ERRORS_FOUND_MARKDOWN=0             # Count of errors found
 ERRORS_FOUND_BASH=0                 # Count of errors found
 ERRORS_FOUND_PERL=0                 # Count of errors found
+ERRORS_FOUND_PHP=0                  # Count of errors found
 ERRORS_FOUND_RUBY=0                 # Count of errors found
 ERRORS_FOUND_PYTHON=0               # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
@@ -161,8 +171,10 @@ ERRORS_FOUND_TYPESCRIPT_ES=0        # Count of errors found
 ERRORS_FOUND_DOCKER=0               # Count of errors found
 ERRORS_FOUND_GO=0                   # Count of errors found
 ERRORS_FOUND_TERRAFORM=0            # Count of errors found
+ERRORS_FOUND_POWERSHELL=0           # Count of errors found
 ERRORS_FOUND_CSS=0                  # Count of errors found
 ERRORS_FOUND_ENV=0                  # Count of errors found
+ERRORS_FOUND_KOTLIN=0               # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -250,14 +262,14 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" ]; then
     echo "----------------------------------------------"
     echo "User provided file:[$FILE_NAME], setting rules file..."
 
     ####################################
     # Copy users into default location #
     ####################################
-    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
+    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
 
     ###################
     # Load Error code #
@@ -277,7 +289,7 @@ GetLinterRules()
     # No user default provided, using the template default #
     ########################################################
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "  -> Codebase does NOT have file:[$LINTER_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
     fi
   fi
 }
@@ -728,6 +740,7 @@ GetValidationInfo()
   VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
   VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
+  VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
   VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
   VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
   VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
@@ -739,8 +752,10 @@ GetValidationInfo()
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
+  VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
+  VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -752,6 +767,7 @@ GetValidationInfo()
         -n "$VALIDATE_MD" || \
         -n "$VALIDATE_BASH" || \
         -n "$VALIDATE_PERL" || \
+        -n "$VALIDATE_PHP" || \
         -n "$VALIDATE_PYTHON" || \
         -n "$VALIDATE_RUBY" || \
         -n "$VALIDATE_COFFEE" || \
@@ -763,8 +779,10 @@ GetValidationInfo()
         -n "$VALIDATE_DOCKER" || \
         -n "$VALIDATE_GO" || \
         -n "$VALIDATE_TERRAFORM" || \
+        -n "$VALIDATE_POWERSHELL" || \
         -n "$VALIDATE_CSS" || \
-        -n "$VALIDATE_ENV" ]]; then
+        -n "$VALIDATE_ENV" || \
+        -n "$VALIDATE_KOTLIN" ]]; then
     ANY_SET="true"
   fi
 
@@ -850,6 +868,20 @@ GetValidationInfo()
   else
     # No linter flags were set - default all to true
     VALIDATE_PERL="true"
+  fi
+
+  ####################################
+  # Validate if we should check PHP #
+  ####################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_PHP" ]]; then
+      # PHP flag was not set - default to false
+      VALIDATE_PHP="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_PHP="true"
   fi
 
   ######################################
@@ -1006,6 +1038,20 @@ GetValidationInfo()
     VALIDATE_TERRAFORM="true"
   fi
 
+  #########################################
+  # Validate if we should check POWERSHELL #
+  #########################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_POWERSHELL" ]]; then
+      # POWERSHELL flag was not set - default to false
+      VALIDATE_POWERSHELL="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_POWERSHELL="true"
+  fi
+
   ###################################
   # Validate if we should check CSS #
   ###################################
@@ -1020,9 +1066,9 @@ GetValidationInfo()
     VALIDATE_CSS="true"
   fi
 
-  ####################################
+  ###################################
   # Validate if we should check ENV #
-  ####################################
+  ###################################
   if [[ "$ANY_SET" == "true" ]]; then
     # Some linter flags were set - only run those set to true
     if [[ -z "$VALIDATE_ENV" ]]; then
@@ -1033,6 +1079,21 @@ GetValidationInfo()
     # No linter flags were set - default all to true
     VALIDATE_ENV="true"
   fi
+
+  ######################################
+  # Validate if we should check KOTLIN #
+  ######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_KOTLIN" ]]; then
+      # ENV flag was not set - default to false
+      VALIDATE_KOTLIN="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_KOTLIN="true"
+  fi
+
 
   #######################################
   # Print which linters we are enabling #
@@ -1066,6 +1127,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
+  fi
+  if [[ "$VALIDATE_PHP" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [PHP] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [PHP] files in code base...")
   fi
   if [[ "$VALIDATE_PYTHON" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [PYTHON] files in code base...")
@@ -1122,6 +1188,11 @@ GetValidationInfo()
   else
     PRINT_ARRAY+=("- Excluding [TERRAFORM] files in code base...")
   fi
+  if [[ "$VALIDATE_POWERSHELL" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [POWERSHELL] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
+  fi
   if [[ "$VALIDATE_CSS" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
@@ -1131,6 +1202,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [ENV] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [ENV] files in code base...")
+  fi
+  if [[ "$VALIDATE_KOTLIN" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [KOTLIN] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [KOTLIN] files in code base...")
   fi
 
   ##############################
@@ -1376,6 +1452,18 @@ BuildFileList()
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
     ######################
+    # Get the PHP files #
+    ######################
+    elif [ "$FILE_TYPE" == "php" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_PHP+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ######################
     # Get the RUBY files #
     ######################
     elif [ "$FILE_TYPE" == "rb" ]; then
@@ -1461,6 +1549,14 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    ###########################
+    # Get the Powershell files #
+    ###########################
+    elif [ "$FILE_TYPE" == "ps1" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_POWERSHELL+=("$FILE")
     elif [ "$FILE_TYPE" == "css" ]; then
       ################################
       # Append the file to the array #
@@ -1475,6 +1571,15 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_ENV+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "kt" ] || [ "$FILE_TYPE" == "kts" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_KOTLIN+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1704,10 +1809,26 @@ LintCodebase()
       echo "---------------------------"
       echo "File:[$FILE]"
 
-      ################################
-      # Lint the file with the rules #
-      ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      ####################
+      # Set the base Var #
+      ####################
+      LINT_CMD=''
+
+      #######################################
+      # Corner case for Powershell subshell #
+      #######################################
+      if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+        ################################
+        # Lint the file with the rules #
+        ################################
+        # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+      else
+        ################################
+        # Lint the file with the rules #
+        ################################
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      fi
 
       #######################
       # Load the error code #
@@ -1874,6 +1995,12 @@ TestCodebase()
       # Lint the file with the rules #
       ################################
       LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+    elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+      ################################
+      # Lint the file with the rules #
+      ################################
+      # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
     else
       ################################
       # Lint the file with the rules #
@@ -1980,6 +2107,7 @@ Footer()
      [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] || \
      [ "$ERRORS_FOUND_BASH" -ne 0 ] || \
      [ "$ERRORS_FOUND_PERL" -ne 0 ] || \
+     [ "$ERRORS_FOUND_PHP" -ne 0 ] || \
      [ "$ERRORS_FOUND_PYTHON" -ne 0 ] || \
      [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] || \
      [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] || \
@@ -1990,9 +2118,11 @@ Footer()
      [ "$ERRORS_FOUND_DOCKER" -ne 0 ] || \
      [ "$ERRORS_FOUND_GO" -ne 0 ] || \
      [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] || \
+     [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
-     [ "$ERRORS_FOUND_ENV" -ne 0 ]; then
+     [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
+     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
@@ -2039,6 +2169,7 @@ RunTestCases()
   TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
+  TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
@@ -2049,8 +2180,10 @@ RunTestCases()
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
+  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
+  TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
 
   #################
   # Footer prints #
@@ -2105,6 +2238,8 @@ GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
 GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
 # Get Terraform rules
 GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+# Get PowerShell rules
+GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
 # Get CSS rules
 GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
 
@@ -2214,6 +2349,17 @@ if [ "$VALIDATE_PERL" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+fi
+
+################
+# PHP LINTING #
+################
+if [ "$VALIDATE_PHP" == "true" ]; then
+  #######################
+  # Lint the PHP files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
 fi
 
 ################
@@ -2336,15 +2482,26 @@ if [ "$VALIDATE_CSS" == "true" ]; then
   LintCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
 fi
 
-################
+###############
 # ENV LINTING #
-################
+###############
 if [ "$VALIDATE_ENV" == "true" ]; then
   #######################
   # Lint the env files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILE_ARRAY_ENV[@]}"
+fi
+
+##################
+# KOTLIN LINTING #
+##################
+if [ "$VALIDATE_KOTLIN" == "true" ]; then
+  #######################
+  # Lint the Kotlin files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ##################
@@ -2356,6 +2513,17 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+######################
+# POWERSHELL LINTING #
+######################
+if [ "$VALIDATE_POWERSHELL" == "true" ]; then
+  #############################
+  # Lint the powershell files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ##########

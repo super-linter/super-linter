@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 ############# Deploy Container to DockerHub @admiralawkbar #####################
@@ -20,6 +20,9 @@
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
 DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
 DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
+GPR_USERNAME="${GPR_USERNAME}"          # Username to login to GitHub package registry
+GPR_TOKEN="${GPR_TOKEN}"                # Password to login to GitHub package registry
+REGISTRY="${REGISTRY}"                  # What registry to upload | <GPR> or <Docker>
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
 IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
@@ -33,7 +36,7 @@ Header()
 {
   echo ""
   echo "-------------------------------------------------------"
-  echo "------ GitHub Actions Upload image to DockerHub -------"
+  echo "---- GitHub Actions Upload image to [$REGISTRY] ----"
   echo "-------------------------------------------------------"
   echo ""
 }
@@ -51,9 +54,9 @@ ValidateInput()
   echo "----------------------------------------------"
   echo ""
 
-  ############################
+  #############################
   # Validate GITHUB_WORKSPACE #
-  ############################
+  #############################
   if [ -z "$GITHUB_WORKSPACE" ]; then
     echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
     echo "ERROR:[$GITHUB_WORKSPACE]"
@@ -62,27 +65,76 @@ ValidateInput()
     echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
   fi
 
-  ############################
-  # Validate DOCKER_USERNAME #
-  ############################
-  if [ -z "$DOCKER_USERNAME" ]; then
-    echo "ERROR! Failed to get [DOCKER_USERNAME]!"
-    echo "ERROR:[$DOCKER_USERNAME]"
+  #####################
+  # Validate REGISTRY #
+  #####################
+  if [ -z "$REGISTRY" ]; then
+    echo "ERROR! Failed to get [REGISTRY]!"
+    echo "ERROR:[$REGISTRY]"
     exit 1
   else
-    echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
+    echo "Successfully found:[REGISTRY], value:[$REGISTRY]"
   fi
 
-  ############################
-  # Validate DOCKER_PASSWORD #
-  ############################
-  if [ -z "$DOCKER_PASSWORD" ]; then
-    echo "ERROR! Failed to get [DOCKER_PASSWORD]!"
-    echo "ERROR:[$DOCKER_PASSWORD]"
-    exit 1
+  #####################################################
+  # See if we need values for GitHub package Registry #
+  #####################################################
+  if [[ "$REGISTRY" == "GPR" ]]; then
+    #########################
+    # Validate GPR_USERNAME #
+    #########################
+    if [ -z "$GPR_USERNAME" ]; then
+      echo "ERROR! Failed to get [GPR_USERNAME]!"
+      echo "ERROR:[$GPR_USERNAME]"
+      exit 1
+    else
+      echo "Successfully found:[GPR_USERNAME], value:[$GPR_USERNAME]"
+    fi
+
+    ######################
+    # Validate GPR_TOKEN #
+    ######################
+    if [ -z "$GPR_TOKEN" ]; then
+      echo "ERROR! Failed to get [GPR_TOKEN]!"
+      echo "ERROR:[$GPR_TOKEN]"
+      exit 1
+    else
+      echo "Successfully found:[GPR_TOKEN], value:[********]"
+    fi
+  ########################################
+  # See if we need values for Ducker hub #
+  ########################################
+  elif [[ "$REGISTRY" == "Docker" ]]; then
+    ############################
+    # Validate DOCKER_USERNAME #
+    ############################
+    if [ -z "$DOCKER_USERNAME" ]; then
+      echo "ERROR! Failed to get [DOCKER_USERNAME]!"
+      echo "ERROR:[$DOCKER_USERNAME]"
+      exit 1
+    else
+      echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
+    fi
+
+    ############################
+    # Validate DOCKER_PASSWORD #
+    ############################
+    if [ -z "$DOCKER_PASSWORD" ]; then
+      echo "ERROR! Failed to get [DOCKER_PASSWORD]!"
+      echo "ERROR:[$DOCKER_PASSWORD]"
+      exit 1
+    else
+      echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
+    fi
+  ###########################################
+  # We were not passed a registry to update #
+  ###########################################
   else
-    echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
+    echo "ERROR! Failed to find a valid registry!"
+    echo "Registry:[$REGISTRY]"
+    exit 1
   fi
+
 
   #######################
   # Validate IMAGE_REPO #
@@ -93,6 +145,14 @@ ValidateInput()
     exit 1
   else
     echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
+    ###############################################
+    # Need to see if GPR registry and update name #
+    ###############################################
+    if [[ "$REGISTRY" == "GPR" ]]; then
+      NAME="docker.pkg.github/$IMAGE_REPO"
+      IMAGE_REPO="$NAME"
+      echo "Updated [IMAGE_REPO] to:[$IMAGE_REPO] for GPR"
+    fi
   fi
 
   ##########################
@@ -146,22 +206,30 @@ ValidateInput()
   fi
 }
 ################################################################################
-#### Function LoginToDocker ####################################################
-LoginToDocker()
+#### Function Authenticate #####################################################
+Authenticate()
 {
+  ################
+  # Pull in Vars #
+  ################
+  USERNAME="$1"   # Name to auth with
+  PASSWORD="$2"   # Password to auth with
+  URL="$3"        # Url to auth towards
+  NAME="$4"       # name of the service
+
   ################
   # Print header #
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Login to DockerHub..."
+  echo "Login to $NAME..."
   echo "----------------------------------------------"
   echo ""
 
-  ######################
-  # Login to DockerHub #
-  ######################
-  LOGIN_CMD=$(docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" 2>&1)
+  ###################
+  # Auth to service #
+  ###################
+  LOGIN_CMD=$(docker login "$URL" --username "$USERNAME" --password "$PASSWORD" 2>&1)
 
   #######################
   # Load the error code #
@@ -173,12 +241,12 @@ LoginToDocker()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to authenticate to DockerHub!"
+    echo "ERROR! Failed to authenticate to $NAME!"
     echo "ERROR:[$LOGIN_CMD]"
     exit 1
   else
     # SUCCESS
-    echo "Successfully authenticated to DockerHub!"
+    echo "Successfully authenticated to $NAME!"
   fi
 }
 ################################################################################
@@ -193,7 +261,6 @@ BuildImage()
   echo "Building the DockerFile image..."
   echo "----------------------------------------------"
   echo ""
-
 
   ################################
   # Validate the DOCKERFILE_PATH #
@@ -238,7 +305,7 @@ UploadImage()
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Uploading the DockerFile image..."
+  echo "Uploading the DockerFile image to $REGISTRY..."
   echo "----------------------------------------------"
   echo ""
 
@@ -261,7 +328,7 @@ UploadImage()
     exit 1
   else
     # SUCCESS
-    echo "Successfully Uploaded Docker image to DockerHub!"
+    echo "Successfully Uploaded Docker image to $REGISTRY!"
   fi
 
   #########################
@@ -329,15 +396,33 @@ Header
 ##################
 ValidateInput
 
-######################
-# Login to DockerHub #
-######################
-LoginToDocker
-
 ###################
 # Build the image #
 ###################
 BuildImage
+
+######################
+# Login to DockerHub #
+######################
+if [[ "$REGISTRY" == "Docker" ]]; then
+  # Authenticate "Username" "Password" "Url" "Name"
+  Authenticate "$DOCKER_USERNAME" "$DOCKER_PASSWORD" "" "Dockerhub"
+
+####################################
+# Login to GitHub Package Registry #
+####################################
+elif [[ "$REGISTRY" == "GPR" ]]; then
+  # Authenticate "Username" "Password" "Url" "Name"
+  Authenticate "$GPR_USERNAME" "$GPR_TOKEN" "https://docker.pkg.github.com" "GitHub Package Registry"
+
+else
+  #########
+  # ERROR #
+  #########
+  echo "ERROR! Registry not set correctly!"
+  echo "Registry:[$REGISTRY]"
+  exit 1
+fi
 
 ####################
 # Upload the image #
