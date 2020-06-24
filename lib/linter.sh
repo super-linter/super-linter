@@ -114,16 +114,16 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
-DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
-DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
-DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugging output
-RAW_FILE_ARRAY=()                                     # Array of all files that were changed
-READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
-TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
-DEFAULT_DISABLE_ERRORS='false'                        # Default to enabling errors
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
+DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
+DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
+RAW_FILE_ARRAY=()                     # Array of all files that were changed
+READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
+TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
+DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
 
 ##########################
 # Array of changed files #
@@ -1822,7 +1822,7 @@ LintCodebase()
         # Lint the file with the rules #
         ################################
         # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
       else
         ################################
         # Lint the file with the rules #
