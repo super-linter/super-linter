@@ -1,0 +1,23 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Example",
+    "version": "1.0",
+    "contact": {
+      "name": "Justin Kalland",
+      "email": "justin@kalland.com"
+    },
+    "description": "Test for super-linter"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {},
+  "tags": [
+    {
+      "name": "example"
+    }
+  ]
+}
