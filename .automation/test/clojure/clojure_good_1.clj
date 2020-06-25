@@ -7,8 +7,7 @@
 (str/join "" "")
 
 (defn foo-fn [x]
-    (let [y (fn [] (inc x))
-          z y]
+    (let [y (fn [] (inc x))]
         (y)))
 
 (letfn
