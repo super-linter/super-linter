@@ -3,7 +3,7 @@
 
 ################################################################################
 ################################################################################
-########### Super-Linter (Lint all the code) @AdmiralAwkbar ####################
+########### Super-Linter (Lint all the code) @admiralawkbar ####################
 ################################################################################
 ################################################################################
 
@@ -27,7 +27,7 @@ RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of th
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
 COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
-COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffeescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
