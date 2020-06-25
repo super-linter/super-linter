@@ -32,6 +32,7 @@ pwsh
 rcu
 rhc
 ry
+tada
 terminfo
 tzdata
 userspace
