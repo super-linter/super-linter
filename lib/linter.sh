@@ -2236,7 +2236,7 @@ RunTestCases()
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
-  TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(yml\|yaml\|json\)\$"
+  TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
 
   #################
   # Footer prints #
