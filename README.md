@@ -149,6 +149,7 @@ and won't run anything unexpected.
 | **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
+| **RUBY_CONFIG_FILE** | `.ruby-lint.yml` | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)|
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
 | **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |

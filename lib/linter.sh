@@ -23,7 +23,7 @@ MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"             # Path to th
 PYTHON_FILE_NAME='.python-lint'                                     # Name of the file
 PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to the python lint rules
 # Ruby Vars
-RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of the file
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
 COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
