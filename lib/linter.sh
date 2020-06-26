@@ -2300,7 +2300,7 @@ RunTestCases()
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$"
   TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
-  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$"
+  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
   TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
@@ -2472,7 +2472,7 @@ if [ "$VALIDATE_PYTHON" == "true" ]; then
   # Lint the python files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES -E" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
+  LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
 ################
