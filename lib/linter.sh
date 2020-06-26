@@ -833,7 +833,7 @@ GetValidationInfo()
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" || \
         -n "$VALIDATE_CLOJURE" || \
-        -n "$VALIDATE_OPENAPI" ]] \
+        -n "$VALIDATE_OPENAPI" || \
         -n "$VALIDATE_KOTLIN" ]]; then
     ANY_SET="true"
   fi
