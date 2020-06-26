@@ -132,6 +132,7 @@ RAW_FILE_ARRAY=()                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
 DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
+DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 
 ##########################
 # Array of changed files #
@@ -1856,11 +1857,21 @@ LintCodebase()
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
   else
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
     #################################
     # Get list of all files to lint #
     #################################
     # shellcheck disable=SC2207,SC2086
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="$DEFAULT_IFS"
 
     ############################################################
     # Set it back to empty if loaded with blanks from scanning #
@@ -2028,11 +2039,21 @@ TestCodebase()
     # shellcheck disable=SC2207,SC2086,SC2010
     LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
   else
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
     #################################
     # Get list of all files to lint #
     #################################
     # shellcheck disable=SC2207,SC2086
     LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="$DEFAULT_IFS"
   fi
 
   ##################
@@ -2660,6 +2681,11 @@ fi
 if [ "$VALIDATE_OPENAPI" == "true" ]; then
   # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
   if [ "$VALIDATE_ALL_CODEBASE" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
     # shellcheck disable=SC2207
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
     for FILE in "${LIST_FILES[@]}"
@@ -2668,6 +2694,11 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
     done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="$DEFAULT_IFS"
   fi
 
   ##########################
