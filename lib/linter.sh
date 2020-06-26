@@ -581,7 +581,7 @@ DetectOpenAPIFile()
   ###############################
   # Check the file for keywords #
   ###############################
-  egrep '"openapi":|"swagger":|^openapi:|^swagger:' "$GITHUB_WORKSPACE/$FILE" > /dev/null
+  grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "$GITHUB_WORKSPACE/$FILE" > /dev/null
 
   #######################
   # Load the error code #
@@ -2232,7 +2232,7 @@ Footer()
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
-     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] \
+     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] || \
      [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
      [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
@@ -2660,6 +2660,7 @@ fi
 if [ "$VALIDATE_OPENAPI" == "true" ]; then
   # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
   if [ "$VALIDATE_ALL_CODEBASE" == "true" ]; then
+    # shellcheck disable=SC2207
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
     for FILE in "${LIST_FILES[@]}"
     do
