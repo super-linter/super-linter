@@ -1,7 +1,0 @@
-musl
-nvq
-rdoc
-setuptools
-uninstall
-wget
-WORKDIR

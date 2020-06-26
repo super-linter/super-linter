@@ -1,0 +1,2 @@
+{:linters {:unresolved-symbol {:exclude [(compojure.api.sweet/defroutes)]}
+           :refer-all         {:exclude [clj-time.jdbc]}}}
