@@ -11,16 +11,16 @@ The end goal of this tool:
 
 ## Table of Contents
 
-* [How it works](#how-it-works)
-* [Supported linters](#supported-linters)
-* [Usage](#how-to-use)
-* [Environment variables](#environment-variables)
-* [Disable rules](#disabling-rules)
-* [Docker Hub](#docker-hub)
-* [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
-  * [CI / CT/ CD](#cictcd)
-* [Limitations](#limitations)
-* [Contributing](#how-to-contribute)
+- [How it works](#how-it-works)
+- [Supported linters](#supported-linters)
+- [Usage](#how-to-use)
+- [Environment variables](#environment-variables)
+- [Disable rules](#disabling-rules)
+- [Docker Hub](#docker-hub)
+- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
+  - [CI / CT/ CD](#cictcd)
+- [Limitations](#limitations)
+- [Contributing](#how-to-contribute)
 
 ## How it Works
 
