@@ -617,7 +617,6 @@ DetectOpenAPIFile()
 DetectCloudFormationFile()
 {
   # AWSTemplateFormatVersion is optional
-  # grep -E '("|)AWSTemplateFormatVersion("|):'
   if grep 'AWSTemplateFormatVersion' "${1}" > /dev/null; then
     return 0
   fi
