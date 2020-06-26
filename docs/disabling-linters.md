@@ -1,6 +1,6 @@
 # Disabling linters and Rules
 If you find you need to ignore certain **errors** and **warnings**, you will need to know the *format* to disable the **Super-Linter** rules.  
-Below is examples and documentation for each language and the various methods to disable.
+Below are examples and documentation for each language and the various methods to disable.
 
 ## Table of Linters
 - [Ruby](#ruby)
@@ -11,6 +11,7 @@ Below is examples and documentation for each language and the various methods to
 - [JSON](#json)
 - [Markdown](#markdown)
 - [Perl](#perl)
+- [PHP](#php)
 - [XML](#xml)
 - [Coffeescript](#coffeescript)
 - [Javascript Eslint](#javascript-eslint)
@@ -22,6 +23,7 @@ Below is examples and documentation for each language and the various methods to
 - [Terraform](#terraform)
 - [CSS](#stylelint)
 - [ENV](#dotenv-linter)
+- [Kotlin](#kotlin)
 
 <!-- toc -->
 
@@ -154,9 +156,9 @@ This line is waaaaaaaaaay too long  # yamllint disable-line
 ### Yamllint disable code block
 ```yml
 # yamllint disable rule:colons
-- Lorem       : ipsum
-  dolor       : sit amet,
-  consectetur : adipiscing elit
+- Key         : value
+  dolor       : sit,
+  foo         : bar
 # yamllint enable
 ```
 
@@ -220,9 +222,9 @@ class Foo(object):
     def meth3(self):
         """test one line disabling"""
         # no error
-        print(self.bla) # pylint: disable=no-member
+        print(self.baz) # pylint: disable=no-member
         # error
-        print(self.blop)
+        print(self.baz)
 ```
 
 ### Pylint disable entire file
@@ -299,6 +301,23 @@ Here is more data
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### Perl disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## PHP
+- [PHP](https://www.php.net/)
+
+### PHP Config file
+- There is no top level *configuration file* available at this time
+
+### PHP disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
 
 --------------------------------------------------------------------------------
@@ -564,3 +583,47 @@ a {}
 
 ### dotenv-linter disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Kotlin
+- [ktlint](https://github.com/pinterest/ktlint)
+
+### ktlint Config file
+- There is no top level *configuration file* available at this time
+
+### ktlint disable single line
+```kotlin
+import package.* // ktlint-disable no-wildcard-imports
+```
+
+### ktlint disable code block
+```kotlin
+/* ktlint-disable no-wildcard-imports */
+import package.a.*
+import package.b.*
+/* ktlint-enable no-wildcard-imports */
+```
+
+### ktlint disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Clojure
+- [clj-kondo](https://github.com/borkdude/clj-kondo)
+- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
+
+### clj-kondo standard Config file
+- `.github/linters/.clj-kondo/config.edn`
+
+### clj-kondo disable single line
+- There is currently **No** way to disable rules in a single line
+
+### clj-kondo disable code block
+- There is currently **No** way to disable rules in a code block
+
+### clj-kondo disable entire file
+```clojure
+{:output {:exclude-files ["path/to/file"]}}
+```

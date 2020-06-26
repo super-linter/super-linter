@@ -40,7 +40,7 @@ jobs:
       #####################
       # Run Deploy script #
       #####################
-      - name: Deploy image to DockerHub
+      - name: Deploy latest image to DockerHub
         env:
           # Set the Env Vars
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -48,5 +48,6 @@ jobs:
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: latest
           DOCKERFILE_PATH: Dockerfile
+          REGISTRY: Docker
         shell: bash
         run: .automation/upload-docker.sh

@@ -1,0 +1,68 @@
+---
+#########################
+#########################
+## Deploy Docker Image ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+on:
+  release:
+    # Want to run the automation when a release is created
+    types: ['created']
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Deploy Docker Image - Release
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      ###################################
+      # Run Deploy script for Dockerhub #
+      ###################################
+      - name: Deploy Release image to Dockerhub
+        env:
+          # Set the Env Vars
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          IMAGE_REPO: github/super-linter
+          IMAGE_VERSION: ${{ github.event.release.tag_name }}
+          DOCKERFILE_PATH: Dockerfile
+          REGISTRY: Docker
+        shell: bash
+        run: .automation/upload-docker.sh
+
+      #############################
+      # Run Deploy script for GPR #
+      #############################
+      - name: Deploy Release image to GitHub Package Registry
+        env:
+          # Set the Env Vars
+          GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+          IMAGE_REPO: github/super-linter
+          IMAGE_VERSION: ${{ github.event.release.tag_name }}
+          DOCKERFILE_PATH: Dockerfile
+          REGISTRY: GPR
+        shell: bash
+        run: .automation/upload-docker.sh
