@@ -29,11 +29,11 @@ RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to th
 COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
 COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffeescript lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Typescript Vars
-TYPESCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Ansible Vars

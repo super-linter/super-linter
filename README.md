@@ -152,8 +152,10 @@ and won't run anything unexpected.
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
 | **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **JAVASCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **TYPESCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
