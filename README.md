@@ -20,7 +20,7 @@ The end goal of this tool:
 * [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
   * [CI / CT/ CD](#cictcd)
 * [Limitations](#limitations)
-
+* [Contributing](#how-to-contribute)
 
 ## How it Works
 
