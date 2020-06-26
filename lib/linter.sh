@@ -29,11 +29,11 @@ RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to th
 COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
 COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffeescript lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Typescript Vars
-TYPESCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Ansible Vars
@@ -98,7 +98,6 @@ VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate lang
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"              # Boolean to validate language
-JAVASCRIPT_ES_CONFIG_FILE="${JAVASCRIPT_ES_CONFIG_FILE}"              # Filename for eslint configuration (ex: .eslintrc.yml, .eslintrc.json)
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"  # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"              # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"  # Boolean to validate language
@@ -126,7 +125,6 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
-DEFAULT_JAVASCRIPT_ES_CONFIG_FILE=".eslintrc.yml"       # Default eslint configuration filename
 DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
 DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
@@ -1318,19 +1316,6 @@ GetValidationInfo()
     # Set the value
     ANSIBLE_DIRECTORY="$TEMP_ANSIBLE_DIRECTORY"
   fi
-	
-  #########################################
-  # Get the eslint configuration filename #
-  #########################################
-  if [ -z "$JAVASCRIPT_ES_CONFIG_FILE" ]; then
-    ######################################
-    # No filename passed, set to default #
-    ######################################
-    JAVASCRIPT_ES_CONFIG_FILE="$DEFAULT_JAVASCRIPT_ES_CONFIG_FILE"
-  fi
-  # Set Javascript Vars based on JAVASCRIPT_ES_CONFIG_FILE
-  JAVASCRIPT_FILE_NAME='$JAVASCRIPT_ES_CONFIG_FILE'                       # Name of the file
-  JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
 
   ###############################
   # Get the disable errors flag #
