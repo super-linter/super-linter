@@ -54,6 +54,9 @@ POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME"    # Pat
 # CSS Vars
 CSS_FILE_NAME='.stylelintrc.json'                                   # Name of the file
 CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to the CSS lint rules
+# OpenAPI Vars
+OPENAPI_FILE_NAME='.openapirc.yml'                                   # Name of the file
+OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"   # Path to the OpenAPI lint rules
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
@@ -64,8 +67,7 @@ CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo")
-
+  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo" "spectral")
 
 #############################
 # Language array for prints #
@@ -73,7 +75,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE' 'OPENAPI')
 
 ###################
 # GitHub ENV Vars #
@@ -107,6 +109,7 @@ VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                # Boolean to validate lang
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                  # Boolean to validate language
+VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                      # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warning-only output without throwing errors
 
@@ -155,6 +158,7 @@ FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
 FILE_ARRAY_CLOJURE=()               # Array of files to check
 FILE_ARRAY_KOTLIN=()                # Array of files to check
+FILE_ARRAY_OPENAPI=()               # Array of files to check
 
 ############
 # Counters #
@@ -182,6 +186,7 @@ ERRORS_FOUND_CSS=0                  # Count of errors found
 ERRORS_FOUND_ENV=0                  # Count of errors found
 ERRORS_FOUND_CLOJURE=0              # Count of errors found
 ERRORS_FOUND_KOTLIN=0               # Count of errors found
+ERRORS_FOUND_OPENAPI=0              # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -563,6 +568,42 @@ LintAnsibleFiles()
     fi
   fi
 }
+
+################################################################################
+#### Function DetectOpenAPIFile ################################################
+DetectOpenAPIFile()
+{
+  ################
+  # Pull in vars #
+  ################
+  FILE="$1"
+
+  ###############################
+  # Check the file for keywords #
+  ###############################
+  grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "$GITHUB_WORKSPACE/$FILE" > /dev/null
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -eq 0 ]; then
+    ########################
+    # Found string in file #
+    ########################
+	  return 0
+  else
+    ###################
+    # No string match #
+    ###################
+	  return 1
+  fi
+}
+
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars()
@@ -764,6 +805,7 @@ GetValidationInfo()
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
   VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)')
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
+  VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -791,6 +833,7 @@ GetValidationInfo()
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" || \
         -n "$VALIDATE_CLOJURE" || \
+        -n "$VALIDATE_OPENAPI" || \
         -n "$VALIDATE_KOTLIN" ]]; then
     ANY_SET="true"
   fi
@@ -1103,6 +1146,19 @@ GetValidationInfo()
     VALIDATE_KOTLIN="true"
   fi
 
+  #######################################
+  # Validate if we should check OPENAPI #
+  #######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_OPENAPI" ]]; then
+      # OPENAPI flag was not set - default to false
+      VALIDATE_OPENAPI="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_OPENAPI="true"
+  fi
 
   #######################################
   # Validate if we should check Clojure #
@@ -1235,6 +1291,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [KOTLIN] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [KOTLIN] files in code base...")
+  fi
+  if [[ "$VALIDATE_OPENAPI" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [OPENAPI] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [OPENAPI] files in code base...")
   fi
 
   ##############################
@@ -1419,6 +1480,12 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_YML+=("$FILE")
+      ############################
+      # Check if file is OpenAPI #
+      ############################
+      if DetectOpenAPIFile "$FILE"; then
+        FILE_ARRAY_OPENAPI+=("$FILE")
+      fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -1431,6 +1498,12 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_JSON+=("$FILE")
+      ############################
+      # Check if file is OpenAPI #
+      ############################
+      if DetectOpenAPIFile "$FILE"; then
+        FILE_ARRAY_OPENAPI+=("$FILE")
+      fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -2159,6 +2232,7 @@ Footer()
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
+     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] || \
      [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
      [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
@@ -2223,6 +2297,7 @@ RunTestCases()
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
+  TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
 
   #################
   # Footer prints #
@@ -2577,6 +2652,29 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
+fi
+
+###################
+# OPENAPI LINTING #
+###################
+if [ "$VALIDATE_OPENAPI" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
+  if [ "$VALIDATE_ALL_CODEBASE" == "true" ]; then
+    # shellcheck disable=SC2207
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
+    for FILE in "${LIST_FILES[@]}"
+    do
+      if DetectOpenAPIFile "$FILE"; then
+        FILE_ARRAY_OPENAPI+=("$FILE")
+      fi
+    done
+  fi
+
+  ##########################
+  # Lint the OpenAPI files #
+  ##########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" "disabledfileext" "${FILE_ARRAY_OPENAPI[@]}"
 fi
 
 ##########

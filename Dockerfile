@@ -27,7 +27,7 @@ RUN apk add --no-cache \
     libxml2-utils perl \
     ruby ruby-dev ruby-bundler ruby-rdoc make \
     py3-setuptools ansible-lint \
-    go \ 
+    go \
     openjdk8-jre \
     php7 \
     ca-certificates less ncurses-terminfo-base \
@@ -72,6 +72,7 @@ RUN npm config set package-lock false \
       eslint-plugin-jest \
       stylelint \
       stylelint-config-standard \
+      @stoplight/spectral \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
@@ -178,6 +179,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
+    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
