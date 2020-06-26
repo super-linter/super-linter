@@ -1,7 +1,0 @@
-cw
-Mstrict
-printenv
-rcfile
-tf
-tolower
-whoami
