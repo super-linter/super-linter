@@ -616,11 +616,25 @@ DetectOpenAPIFile()
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
 DetectCloudFormationFile()
 {
+  # AWSTemplateFormatVersion is optional
+  # grep -E '("|)AWSTemplateFormatVersion("|):'
   if grep 'AWSTemplateFormatVersion' "${1}" > /dev/null; then
     return 0
-  else
-    return 1
   fi
+  if cat "${1}" | shyaml --quiet get-type AWSTemplateFormatVersion > /dev/null; then
+    return 0
+  fi
+
+  if cat "${1}" | jq -e 'has("Resources")' > /dev/null 2>&1; then
+    if cat "${1}" | jq ".Resources[].Type" 2>/dev/null | grep -q -E "(AWS|Alexa|Custom)"; then
+      return 0
+    fi
+  fi
+  if cat "${1}" | shyaml values-0 Resources | grep -q -E "Type: (AWS|Alexa|Custom)"; then
+    return 0
+  fi
+
+  return 1
 }
 
 ################################################################################
