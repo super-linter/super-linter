@@ -573,10 +573,33 @@ LintAnsibleFiles()
 #### Function DetectOpenAPIFile ################################################
 DetectOpenAPIFile()
 {
-  egrep '"openapi":|"swagger":|^openapi:|^swagger:' $GITHUB_WORKSPACE/$1 > /dev/null
-  if [ $? -eq 0 ]; then
+  ################
+  # Pull in vars #
+  ################
+  FILE="$1"
+
+  ###############################
+  # Check the file for keywords #
+  ###############################
+  egrep '"openapi":|"swagger":|^openapi:|^swagger:' "$GITHUB_WORKSPACE/$FILE" > /dev/null
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -eq 0 ]; then
+    ########################
+    # Found string in file #
+    ########################
 	  return 0
   else
+    ###################
+    # No string match #
+    ###################
 	  return 1
   fi
 }
@@ -1460,7 +1483,7 @@ BuildFileList()
       ############################
       # Check if file is OpenAPI #
       ############################
-      if DetectOpenAPIFile $FILE; then
+      if DetectOpenAPIFile "$FILE"; then
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
       ##########################################################
@@ -1478,7 +1501,7 @@ BuildFileList()
       ############################
       # Check if file is OpenAPI #
       ############################
-      if DetectOpenAPIFile $FILE; then
+      if DetectOpenAPIFile "$FILE"; then
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
       ##########################################################
@@ -2640,7 +2663,7 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
     LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
     for FILE in "${LIST_FILES[@]}"
     do
-      if DetectOpenAPIFile $FILE; then
+      if DetectOpenAPIFile "$FILE"; then
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
     done
