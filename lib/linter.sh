@@ -3,7 +3,7 @@
 
 ################################################################################
 ################################################################################
-########### Super-Linter (Lint all the code) @AdmiralAwkbar ####################
+########### Super-Linter (Lint all the code) @admiralawkbar ####################
 ################################################################################
 ################################################################################
 
@@ -27,7 +27,7 @@ RUBY_FILE_NAME='.ruby-lint.yml'                                     # Name of th
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
 COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
-COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffescript lint rules
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffeescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME='.eslintrc.yml'                                    # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
@@ -57,6 +57,9 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                   # Name of the file
 OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"   # Path to the OpenAPI lint rules
+# Clojure Vars
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'
+CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 
 #######################################
 # Linter array for information prints #
@@ -64,7 +67,7 @@ OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"   # Path to th
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "spectral")
+  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo" "spectral")
 
 #############################
 # Language array for prints #
@@ -72,7 +75,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'ENV' 'POWERSHELL' 'KOTLIN' 'OPENAPI')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE' 'OPENAPI')
 
 ###################
 # GitHub ENV Vars #
@@ -102,6 +105,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                  # Boolean to validate lang
 VALIDATE_GO="${VALIDATE_GO}"                          # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                        # Boolean to validate language
 VALIDATE_ENV="${VALIDATE_ENV}"                        # Boolean to validate language
+VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"            # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"          # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                  # Boolean to validate language
@@ -118,16 +122,16 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info 
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
-DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible" # Default Ansible Directory
-DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
-DEFAULT_ACTIONS_RUNNER_DEBUG='false'                  # Default value for debugging output
-RAW_FILE_ARRAY=()                                     # Array of all files that were changed
-READ_ONLY_CHANGE_FLAG=0                               # Flag set to 1 if files changed are not txt or md
-TEST_CASE_FOLDER='.automation/test'                   # Folder for test cases we should always ignore
-DEFAULT_DISABLE_ERRORS='false'                        # Default to enabling errors
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
+DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
+DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
+RAW_FILE_ARRAY=()                     # Array of all files that were changed
+READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
+TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
+DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
 
 ##########################
 # Array of changed files #
@@ -152,6 +156,7 @@ FILE_ARRAY_TERRAFORM=()             # Array of files to check
 FILE_ARRAY_POWERSHELL=()            # Array of files to check
 FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
+FILE_ARRAY_CLOJURE=()               # Array of files to check
 FILE_ARRAY_KOTLIN=()                # Array of files to check
 FILE_ARRAY_OPENAPI=()               # Array of files to check
 
@@ -179,6 +184,7 @@ ERRORS_FOUND_TERRAFORM=0            # Count of errors found
 ERRORS_FOUND_POWERSHELL=0           # Count of errors found
 ERRORS_FOUND_CSS=0                  # Count of errors found
 ERRORS_FOUND_ENV=0                  # Count of errors found
+ERRORS_FOUND_CLOJURE=0              # Count of errors found
 ERRORS_FOUND_KOTLIN=0               # Count of errors found
 ERRORS_FOUND_OPENAPI=0              # Count of errors found
 
@@ -774,6 +780,7 @@ GetValidationInfo()
   VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
+  VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)')
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
 
@@ -802,8 +809,9 @@ GetValidationInfo()
         -n "$VALIDATE_POWERSHELL" || \
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" || \
-        -n "$VALIDATE_KOTLIN" || \
-        -n "$VALIDATE_OPENAPI" ]]; then
+        -n "$VALIDATE_CLOJURE" || \
+        -n "$VALIDATE_OPENAPI" ]] \
+        -n "$VALIDATE_KOTLIN" ]]; then
     ANY_SET="true"
   fi
 
@@ -1130,6 +1138,20 @@ GetValidationInfo()
   fi
 
   #######################################
+  # Validate if we should check Clojure #
+  #######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_CLOJURE" ]]; then
+      # Clojure flag was not set - default to false
+      VALIDATE_CLOJURE="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CLOJURE="true"
+  fi
+
+  #######################################
   # Print which linters we are enabling #
   #######################################
   if [[ "$VALIDATE_YAML" == "true" ]]; then
@@ -1231,6 +1253,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [CSS] files in code base...")
+  fi
+  if [[ "$VALIDATE_CLOJURE" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CLOJURE] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CLOJURE] files in code base...")
   fi
   if [[ "$VALIDATE_ENV" == "true" ]]; then
     PRINT_ARRAY+=("- Validating [ENV] files in code base...")
@@ -1644,6 +1671,15 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE" == "clj" ] || [ "$FILE" == "cljs" ] || [ "$FILE" == "cljc" ] || [ "$FILE" == "edn" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CLOJURE+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     else
       ##############################################
       # Use file to see if we can parse what it is #
@@ -1873,7 +1909,7 @@ LintCodebase()
         # Lint the file with the rules #
         ################################
         # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
       else
         ################################
         # Lint the file with the rules #
@@ -2173,8 +2209,9 @@ Footer()
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
-     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] || \
-     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ]; then
+     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] \
+     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
+     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
     echo "Exiting with errors found!"
     exit 1
@@ -2235,6 +2272,7 @@ RunTestCases()
   TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
+  TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
 
@@ -2566,6 +2604,20 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+###################
+# CLOJURE LINTING #
+###################
+if [ "$VALIDATE_CLOJURE" == "true" ]; then
+  #################################
+  # Get Clojure standard rules #
+  #################################
+  GetStandardRules "clj-kondo"
+  #########################
+  # Lint the Clojure files #
+  #########################
+  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "${FILE_ARRAY_CLOJURE[@]}"
 fi
 
 ######################

@@ -157,9 +157,9 @@ This line is waaaaaaaaaay too long  # yamllint disable-line
 ### Yamllint disable code block
 ```yml
 # yamllint disable rule:colons
-- Lorem       : ipsum
-  dolor       : sit amet,
-  consectetur : adipiscing elit
+- Key         : value
+  dolor       : sit,
+  foo         : bar
 # yamllint enable
 ```
 
@@ -223,9 +223,9 @@ class Foo(object):
     def meth3(self):
         """test one line disabling"""
         # no error
-        print(self.bla) # pylint: disable=no-member
+        print(self.baz) # pylint: disable=no-member
         # error
-        print(self.blop)
+        print(self.baz)
 ```
 
 ### Pylint disable entire file
@@ -629,3 +629,23 @@ import package.b.*
 ### OpenAPI disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
 - However, you can make [rule exceptions](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/6-exceptions.md?srn=gh/stoplightio/spectral/docs/guides/6-exceptions.md) in the config for individual file(s).
+
+--------------------------------------------------------------------------------
+
+## Clojure
+- [clj-kondo](https://github.com/borkdude/clj-kondo)
+- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
+
+### clj-kondo standard Config file
+- `.github/linters/.clj-kondo/config.edn`
+
+### clj-kondo disable single line
+- There is currently **No** way to disable rules in a single line
+
+### clj-kondo disable code block
+- There is currently **No** way to disable rules in a code block
+
+### clj-kondo disable entire file
+```clojure
+{:output {:exclude-files ["path/to/file"]}}
+```

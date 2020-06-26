@@ -132,6 +132,15 @@ RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/r
 RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz" -O - -q | tar -xzf - \
     && mv "dotenv-linter" /usr/bin
 
+#####################
+# Install clj-kondo #
+#####################
+ARG CLJ_KONDO_VERSION='2020.06.12'
+RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KONDO_VERSION}/clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
+    && unzip clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
+    && rm clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
+    && mv clj-kondo /usr/bin/
+
 ##################
 # Install ktlint #
 ##################
@@ -167,6 +176,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \

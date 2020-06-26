@@ -29,7 +29,7 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
+# Compiled binary add-ons (https://nodejs.org/api/addons.html)
 build/Release
 
 # Dependency directories
@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+
+# clj-kondo cache
+.cache

@@ -8,9 +8,25 @@ The end goal of this tool:
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
 
+
+## Table of Contents
+
+- [How it works](#how-it-works)
+- [Supported linters](#supported-linters)
+- [Usage](#how-to-use)
+- [Environment variables](#environment-variables)
+- [Disable rules](#disabling-rules)
+- [Docker Hub](#docker-hub)
+- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
+  - [CI / CT/ CD](#cictcd)
+- [Limitations](#limitations)
+- [Contributing](#how-to-contribute)
+
 ## How it Works
 
 The super-linter finds issues and reports them to the console output. Fixes are suggested in the console output but not automatically fixed, and a status check will show up as failed on the pull request.
+
+The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
 
 ## Supported Linters
 
@@ -20,6 +36,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
@@ -144,6 +161,7 @@ and won't run anything unexpected.
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
@@ -164,6 +182,8 @@ The **Docker** container that is built from this repository is located at `https
 
 ## Running Super-Linter locally (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
+
+Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
 
 ### CI/CT/CD
 The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
