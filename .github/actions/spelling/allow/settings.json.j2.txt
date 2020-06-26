@@ -1,4 +1,0 @@
-dotcom
-identicons
-oauth
-timezone
