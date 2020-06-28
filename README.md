@@ -56,6 +56,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 | **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
+| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -167,6 +168,7 @@ and won't run anything unexpected.
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |

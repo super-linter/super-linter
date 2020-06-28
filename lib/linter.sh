@@ -57,6 +57,9 @@ CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"           # Path to th
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                   # Name of the file
 OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"   # Path to the OpenAPI lint rules
+# Protocol Buffers Vars
+PROTOBUF_FILE_NAME='.protolintrc.yml'                                   # Name of the file
+PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME"   # Path to the Protocol Buffers lint rules
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
@@ -67,7 +70,7 @@ CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "clj-kondo" "spectral")
+  "stylelint" "dotenv-linter" "powershell" "ktlint" "protolint" "clj-kondo" "spectral")
 
 #############################
 # Language array for prints #
@@ -75,7 +78,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'CLOJURE' 'OPENAPI')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTO' 'CLOJURE' 'OPENAPI')
 
 ###################
 # GitHub ENV Vars #
@@ -159,6 +162,7 @@ FILE_ARRAY_CSS=()                   # Array of files to check
 FILE_ARRAY_ENV=()                   # Array of files to check
 FILE_ARRAY_CLOJURE=()               # Array of files to check
 FILE_ARRAY_KOTLIN=()                # Array of files to check
+FILE_ARRAY_PROTOBUF=()              # Array of files to check
 FILE_ARRAY_OPENAPI=()               # Array of files to check
 
 ############
@@ -187,6 +191,7 @@ ERRORS_FOUND_CSS=0                  # Count of errors found
 ERRORS_FOUND_ENV=0                  # Count of errors found
 ERRORS_FOUND_CLOJURE=0              # Count of errors found
 ERRORS_FOUND_KOTLIN=0               # Count of errors found
+ERRORS_FOUND_PROTOBUF=0             # Count of errors found
 ERRORS_FOUND_OPENAPI=0              # Count of errors found
 
 ################################################################################
@@ -806,6 +811,7 @@ GetValidationInfo()
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
   VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)')
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
+  VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
 
   ################################################
@@ -834,6 +840,7 @@ GetValidationInfo()
         -n "$VALIDATE_CSS" || \
         -n "$VALIDATE_ENV" || \
         -n "$VALIDATE_CLOJURE" || \
+        -n "$VALIDATE_PROTOBUF" || \
         -n "$VALIDATE_OPENAPI" || \
         -n "$VALIDATE_KOTLIN" ]]; then
     ANY_SET="true"
@@ -1162,6 +1169,20 @@ GetValidationInfo()
   fi
 
   #######################################
+  # Validate if we should check PROTOBUF #
+  #######################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_PROTOBUF" ]]; then
+      # PROTOBUF flag was not set - default to false
+      VALIDATE_PROTOBUF="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_PROTOBUF="true"
+  fi
+
+  #######################################
   # Validate if we should check Clojure #
   #######################################
   if [[ "$ANY_SET" == "true" ]]; then
@@ -1297,6 +1318,11 @@ GetValidationInfo()
     PRINT_ARRAY+=("- Validating [OPENAPI] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [OPENAPI] files in code base...")
+  fi
+  if [[ "$VALIDATE_PROTOBUF" == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [PROTOBUF] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [PROTOBUF] files in code base...")
   fi
 
   ##############################
@@ -1682,6 +1708,18 @@ BuildFileList()
       # Append the file to the array #
       ################################
       FILE_ARRAY_KOTLIN+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ############################
+    # Get the Protocol Buffers files #
+    ############################
+    elif [ "$FILE_TYPE" == "proto" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_PROTOBUF+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -2254,6 +2292,7 @@ Footer()
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
      [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] || \
+     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] || \
      [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
      [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
@@ -2318,6 +2357,7 @@ RunTestCases()
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
+  TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
 
   #################
@@ -2662,6 +2702,17 @@ if [ "$VALIDATE_CLOJURE" == "true" ]; then
   # Lint the Clojure files #
   #########################
   LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "${FILE_ARRAY_CLOJURE[@]}"
+fi
+
+##################
+# PROTOBUF LINTING #
+##################
+if [ "$VALIDATE_PROTOBUF" == "true" ]; then
+  #######################
+  # Lint the Protocol Buffers files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$" "${FILE_ARRAY_PROTOBUF[@]}"
 fi
 
 ######################

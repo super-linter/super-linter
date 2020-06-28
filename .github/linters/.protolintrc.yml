@@ -1,0 +1,7 @@
+# Lint directives.
+lint:
+  # Linter rules.
+  # Run `protolint list` to see all available rules.
+  rules:
+    # Set the default to all linters.
+    all_default: false
