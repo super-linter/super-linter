@@ -85,7 +85,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTO' 'CLOJURE' 'OPENAPI')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI')
 
 ###################
 # GitHub ENV Vars #
@@ -606,11 +606,6 @@ Footer()
     # Build the error counter #
     ###########################
     ERROR_COUNTER="ERRORS_FOUND_$LANGUAGE"
-
-    #################################
-    # Fix Integer Expression errors #
-    #################################
-    ERROR_COUNTER="${ERROR_COUNTER/.*}"
 
     ##################
     # Print if not 0 #
