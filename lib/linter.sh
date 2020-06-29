@@ -10,8 +10,7 @@
 #########################
 # Source Function Files #
 #########################
-source ./validation.sh # Source the main validation function script
-source ./buildFileList.sh # Source the main build file list function script
+source /action/lib/*.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
