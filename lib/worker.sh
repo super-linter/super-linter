@@ -209,10 +209,11 @@ function TestCodebase()
   ####################
   # Pull in the vars #
   ####################
-  FILE_TYPE="$1"        # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="$2"      # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="$3"   # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="$4"  # Pull the variable and remove from array path  (Example: *.json)
+  FILE_TYPE="$1"              # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="$2"            # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$3"         # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$4"        # Pull the variable and remove from array path  (Example: *.json)
+  INDVIDUAL_TEST_FOLDER="$5"  # Folder for specific tests
 
   ################
   # print header #
@@ -274,7 +275,7 @@ function TestCodebase()
     # Get list of all files to lint #
     #################################
     # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find . -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find  "$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
 
     ###########################
     # Set IFS back to default #
@@ -442,31 +443,33 @@ function RunTestCases()
   #######################
   # Test case languages #
   #######################
-  TestCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$"
-  TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$"
-  TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$"
-  TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$"
-  TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$"
-  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$"
-  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$"
-  TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$"
-  TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$"
-  TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$"
-  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$"
-  TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$"
-  TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$"
-  TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$"
-  TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$"
-  TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$"
-  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint"
-  TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$"
-  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$"
-  TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$"
-  TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$"
-  TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$"
-  TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$"
-  TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$"
-  TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$"
+  # TestCodebase "Language" "Linter" "Linter-command" "Regex to find files" "Test Folder"
+  TestCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "yml"
+  TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
+  TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
+  TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$" "markdown"
+  TestCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$" "shell"
+  TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$" "python"
+  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
+  TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "php"
+  TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "ruby"
+  TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "golang"
+  TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f $COFFEESCRIPT_LINTER_RULES" ".*\.\(coffee\)\$" "coffeescript"
+  TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "javascript"
+  TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$" "javascript"
+  TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
+  TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
+  TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "docker"
+  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint" "ansible"
+  TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
+  TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "cfn"
+  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
+  TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "css"
+  TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
+  TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
+  TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
+  TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$" "protobuf"
+  TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$" "openapi"
 
   #################
   # Footer prints #

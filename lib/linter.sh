@@ -775,6 +775,8 @@ GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
 # Get CSS rules
 GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
+# Get CFN rules
+GetLinterRules "$CFN_FILE_NAME" "$CFN_LINTER_RULES"
 
 #################################
 # Check if were in verbose mode #
