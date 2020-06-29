@@ -24,6 +24,8 @@ Below are examples and documentation for each language and the various methods t
 - [CSS](#stylelint)
 - [ENV](#dotenv-linter)
 - [Kotlin](#kotlin)
+- [OpenAPI](#openapi)
+- [Protocol Buffers](#protocol-buffers)
 
 <!-- toc -->
 
@@ -607,3 +609,91 @@ import package.b.*
 
 ### ktlint disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## OpenAPI
+- [spectral](https://github.com/stoplightio/spectral)
+
+### OpenAPI Config file
+- `.github/linters/.openapirc.yml`
+- You can add, extend, and disable rules
+- Documentation at [Spectral Custom Rulesets](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/4-custom-rulesets.md)
+- File should be located at: `.github/linters/.openapirc.yml`
+
+### OpenAPI disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### OpenAPI disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### OpenAPI disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+- However, you can make [rule exceptions](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/6-exceptions.md?srn=gh/stoplightio/spectral/docs/guides/6-exceptions.md) in the config for individual file(s).
+
+--------------------------------------------------------------------------------
+
+## Protocol Buffers
+
+- [protolint](https://github.com/yoheimuta/protolint)
+
+### protolint Config file
+
+- `.github/linters/.protolintrc.yml`
+- You can add, extend, and disable rules
+- Documentation at [Rules](https://github.com/yoheimuta/protolint#rules) and [Configuring](https://github.com/yoheimuta/protolint#configuring)
+
+### protolint disable single line
+
+```protobuf
+enum Foo {
+  // protolint:disable:next ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  firstValue = 0;
+  second_value = 1;  // protolint:disable:this ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  THIRD_VALUE = 2;
+}
+```
+
+### protolint disable code block
+
+```protobuf
+// protolint:disable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+enum Foo {
+  firstValue = 0;
+  second_value = 1;
+  THIRD_VALUE = 2;
+}
+// protolint:enable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+```
+
+### protolint disable entire file
+
+- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yml`
+
+```yaml
+# Lint directives.
+lint:
+  # Linter files to walk.
+  files:
+    # The specific files to exclude.
+    exclude:
+      - path/to/file
+```
+
+## Clojure
+- [clj-kondo](https://github.com/borkdude/clj-kondo)
+- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
+
+### clj-kondo standard Config file
+- `.github/linters/.clj-kondo/config.edn`
+
+### clj-kondo disable single line
+- There is currently **No** way to disable rules in a single line
+
+### clj-kondo disable code block
+- There is currently **No** way to disable rules in a code block
+
+### clj-kondo disable entire file
+```clojure
+{:output {:exclude-files ["path/to/file"]}}
+```

@@ -1,5 +1,5 @@
 # Super-Linter
-This repository is for the **GitHub Action** to run a **Super-Linter**.  
+This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
@@ -7,6 +7,20 @@ The end goal of this tool:
 - Help establish coding best practices across multiple languages
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
+
+
+## Table of Contents
+
+- [How it works](#how-it-works)
+- [Supported linters](#supported-linters)
+- [Usage](#how-to-use)
+- [Environment variables](#environment-variables)
+- [Disable rules](#disabling-rules)
+- [Docker Hub](#docker-hub)
+- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
+  - [CI / CT/ CD](#cictcd)
+- [Limitations](#limitations)
+- [Contributing](#how-to-contribute)
 
 ## How it Works
 
@@ -22,6 +36,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
@@ -40,6 +55,8 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
+| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
+| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -100,21 +117,21 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.2.0
+        uses: docker://github/super-linter:v3
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v2.2.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.2.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:** Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.  
-If none of them are passed, then they all default to true.  
-However if any one of the variables are set, we default to leaving any unset variable to false.  
+*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.
+If none of them are passed, then they all default to true.
+However if any one of the variables are set, we default to leaving any unset variable to false.
 This means that if you run the linter "out of the box", all languages will be checked.
 But if you wish to select specific linters, we give you full control to choose which linters are run,
 and won't run anything unexpected.
@@ -133,11 +150,14 @@ and won't run anything unexpected.
 | **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
+| **RUBY_CONFIG_FILE** | `.ruby-lint.yml` | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)|
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
 | **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **JAVASCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **TYPESCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
@@ -145,7 +165,10 @@ and won't run anything unexpected.
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
@@ -184,6 +207,12 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 
