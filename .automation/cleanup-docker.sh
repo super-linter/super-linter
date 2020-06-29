@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 ############# Cleanup Image on DockerHub @admiralawkbar ########################
@@ -8,7 +8,7 @@
 # Its based on being built from a GitHub Action, but could be easily updated
 # To be ran in a different medium.
 #
-# PRE-Reqs:
+# PRE-Requirements:
 # - Dockerfile
 # - System with Docker installed
 # - Global variables met

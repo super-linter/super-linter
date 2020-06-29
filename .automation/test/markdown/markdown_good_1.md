@@ -16,5 +16,5 @@ ls -la
 
 ### Walk away
 
-Were all done **here**.
+We're all done **here**.
 - [Link Action](https://github.com)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Script to run ghe-config-apply on the primary GHES instance
@@ -35,7 +35,7 @@ CheckGHEPid()
     ################################################
     if [ ! -f "$GHE_CONFIG_PID" ]; then
       # File not found
-      echo "Were good to move forward, no .pid file found at:[$GHE_CONFIG_PID]"
+      echo "We're good to move forward, no .pid file found at:[$GHE_CONFIG_PID]"
     else
       # Found the pid running, need to sleep
       echo "Current PID found, sleeping $SLEEP_SECONDS seconds before next check..."
@@ -189,10 +189,10 @@ CheckGHEProcess
 ####################
 RunConfigApply
 
-##########################################
-# Were going to run it again after a nap #
-# to make sure there is no crazy actions #
-##########################################
+###########################################
+# We're going to run it again after a nap #
+# to make sure there is no crazy actions  #
+###########################################
 sleep 300s
 
 ######################
