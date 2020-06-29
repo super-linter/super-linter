@@ -26,6 +26,8 @@ REGISTRY="${REGISTRY}"                  # What registry to upload | <GPR> or <Do
 IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
 IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
+MAJOR_TAG=''                            # Major tag version if we need to update it
+UPDATE_MAJOR_TAG=0                      # Flag to deploy the major tag version as well
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
@@ -194,6 +196,30 @@ ValidateInput()
     echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
   fi
 
+  ##################################
+  # Set regex for getting tag info #
+  ##################################
+  REGEX='(v[0-9]+\.[0-9]+\.[0-9]+)' # Matches 'v1.2.3'
+
+  ######################################################################
+  # Check if this is a latest to a versioned release at create new tag #
+  ######################################################################
+  if [[ "$IMAGE_VERSION" =~ $REGEX ]]; then
+    # Need to get the major version, and set flag to update
+
+    #####################
+    # Set the major tag #
+    #####################
+    MAJOR_TAG=$(echo "$IMAGE_VERSION" | cut -d '.' -f1)
+
+    ###################################
+    # Set flag for updating major tag #
+    ###################################
+    UPDATE_MAJOR_TAG=1
+
+    echo "- Also deploying a major tag of:[$MAJOR_TAG]"
+  fi
+
   ############################
   # Validate DOCKERFILE_PATH #
   ############################
@@ -293,7 +319,31 @@ BuildImage()
   else
     # SUCCESS
     echo "Successfully Built image!"
-    echo "Info:[$BUILD_CMD]"
+  fi
+
+  ########################################################
+  # Need to see if we need to tag a major update as well #
+  ########################################################
+  if [ $UPDATE_MAJOR_TAG -eq 1 ]; then
+    # Tag the image with the major tag as well
+    docker build -t "$IMAGE_REPO:$MAJOR_TAG" -f "$DOCKERFILE_PATH" . 2>&1
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      # ERROR
+      echo "ERROR! failed to [tag] Dockerfile!"
+      exit 1
+    else
+      # SUCCESS
+      echo "Successfully tagged image!"
+    fi
   fi
 }
 ################################################################################
@@ -328,7 +378,7 @@ UploadImage()
     exit 1
   else
     # SUCCESS
-    echo "Successfully Uploaded Docker image to $REGISTRY!"
+    echo "Successfully Uploaded Docker image:[$IMAGE_VERSION] to $REGISTRY!"
   fi
 
   #########################
@@ -370,6 +420,33 @@ UploadImage()
     echo "Image_ID:[$IMAGE_ID]"
     echo "Size:[$SIZE]"
     echo "----------------------------------------------"
+  fi
+
+  ###############################################################
+  # Check if we need to upload the major tagged version as well #
+  ###############################################################
+  if [ $UPDATE_MAJOR_TAG -eq 1 ]; then
+    ############################################
+    # Upload the docker image that was created #
+    ############################################
+    docker push "$IMAGE_REPO:$MAJOR_TAG" 2>&1
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      # ERROR
+      echo "ERROR! failed to [upload] MAJOR_TAG:[$MAJOR_TAG] Dockerfile!"
+      exit 1
+    else
+      # SUCCESS
+      echo "Successfully Uploaded TAGOR_TAG:[$MAJOR_TAG] Docker image to $REGISTRY!"
+    fi
   fi
 }
 ################################################################################
