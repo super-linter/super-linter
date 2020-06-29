@@ -143,9 +143,13 @@ DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 ###############################################################
 # shellcheck disable=SC2034
 DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
+# shellcheck disable=SC2034
 RAW_FILE_ARRAY=()                     # Array of all files that were changed
+# shellcheck disable=SC2034
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
+# shellcheck disable=SC2034
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
+# shellcheck disable=SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
 
 ##########################
@@ -602,6 +606,11 @@ Footer()
     # Build the error counter #
     ###########################
     ERROR_COUNTER="ERRORS_FOUND_$LANGUAGE"
+
+    #################################
+    # Fix Integer Expression errors #
+    #################################
+    ERROR_COUNTER="${ERROR_COUNTER/.*}"
 
     ##################
     # Print if not 0 #
