@@ -8,6 +8,20 @@ The end goal of this tool:
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
 
+
+## Table of Contents
+
+- [How it works](#how-it-works)
+- [Supported linters](#supported-linters)
+- [Usage](#how-to-use)
+- [Environment variables](#environment-variables)
+- [Disable rules](#disabling-rules)
+- [Docker Hub](#docker-hub)
+- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
+  - [CI / CT/ CD](#cictcd)
+- [Limitations](#limitations)
+- [Contributing](#how-to-contribute)
+
 ## How it Works
 
 The super-linter finds issues and reports them to the console output. Fixes are suggested in the console output but not automatically fixed, and a status check will show up as failed on the pull request.
@@ -22,6 +36,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
@@ -40,6 +55,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
+| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -133,11 +149,14 @@ and won't run anything unexpected.
 | **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
+| **RUBY_CONFIG_FILE** | `.ruby-lint.yml` | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)|
 | **VALIDATE_COFFEE** | `true` | Flag to enable or disable the linting process of the language . |
 | **VALIDATE_ANSIBLE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **JAVASCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
+| **TYPESCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
@@ -145,7 +164,9 @@ and won't run anything unexpected.
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
