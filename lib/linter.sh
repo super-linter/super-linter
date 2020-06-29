@@ -450,11 +450,11 @@ DetectOpenAPIFile()
 	  return 1
   fi
 }
-
+################################################################################
 #### Function DetectCloudFormationFile #########################################
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
 DetectCloudFormationFile()
 {
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
   # AWSTemplateFormatVersion is optional
   if grep 'AWSTemplateFormatVersion' "${1}" > /dev/null; then
     return 0
@@ -677,6 +677,7 @@ Footer()
      [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CFN" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
      [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] || \
      [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] || \

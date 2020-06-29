@@ -100,18 +100,26 @@ function BuildFileList()
     #echo "FILE_TYPE:[$FILE_TYPE]"
 
     #####################
-    # Get the YML files #
+    # Get the CFN files #
     #####################
-    if [ "$FILE_TYPE" == "yml" ] || [ "$FILE_TYPE" == "yaml" ]; then
+    if [ "$FILE_TYPE" == "json" ] || [ "$FILE_TYPE" == "yml" ] || [ "$FILE_TYPE" == "yaml" ] && DetectCloudFormationFile "$FILE"; then
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_YML+=("$FILE")
-      ############################
-      # Check if file is OpenAPI #
-      ############################
-      if DetectOpenAPIFile "$FILE"; then
-        FILE_ARRAY_OPENAPI+=("$FILE")
+      FILE_ARRAY_CFN+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+
+      #####################################
+      # Check if the file is CFN template #
+      #####################################
+      if DetectCloudFormationFile "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_CFN+=("$FILE")
       fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
@@ -129,7 +137,20 @@ function BuildFileList()
       # Check if file is OpenAPI #
       ############################
       if DetectOpenAPIFile "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
         FILE_ARRAY_OPENAPI+=("$FILE")
+      fi
+
+      #####################################
+      # Check if the file is CFN template #
+      #####################################
+      if DetectCloudFormationFile "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_CFN+=("$FILE")
       fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
