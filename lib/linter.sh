@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1003,SC2016
+# shellcheck disable=SC1003,SC2016,SC1091
 
 ################################################################################
 ################################################################################
@@ -126,23 +126,27 @@ DISABLE_ERRORS="${DISABLE_ERRORS}"                    # Boolean to enable warnin
 ##############
 # Debug Vars #
 ##############
-RUN_LOCAL="${RUN_LOCAL}"                        # Boolean to see if we are running locally
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG}"  # Boolean to see even more info (debug)
+RUN_LOCAL="${RUN_LOCAL}"                                # Boolean to see if we are running locally
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}"   # Boolean to see even more info (debug)
 
 ################
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                    # Default value for validate all files
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"     # Default workspace if running locally
-DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
 DEFAULT_RUN_LOCAL='false'             # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'         # Flag to tell code to run only test cases
-DEFAULT_ACTIONS_RUNNER_DEBUG='false'  # Default value for debugging output
+DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
+
+###############################################################
+# Default Vars that are called in Subs and need to be ignored #
+###############################################################
+# shellcheck disable=SC2034
+DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
 RAW_FILE_ARRAY=()                     # Array of all files that were changed
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
-DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
-DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
+DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
 
 ##########################
 # Array of changed files #
@@ -966,7 +970,7 @@ if [ "$VALIDATE_KOTLIN" == "true" ]; then
   # Lint the Kotlin files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
 fi
 
 ##################
