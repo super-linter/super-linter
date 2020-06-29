@@ -1,5 +1,5 @@
 # Super-Linter
-This repository is for the **GitHub Action** to run a **Super-Linter**.  
+This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
@@ -129,9 +129,9 @@ jobs:
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.  
-If none of them are passed, then they all default to true.  
-However if any one of the variables are set, we default to leaving any unset variable to false.  
+*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.
+If none of them are passed, then they all default to true.
+However if any one of the variables are set, we default to leaving any unset variable to false.
 This means that if you run the linter "out of the box", all languages will be checked.
 But if you wish to select specific linters, we give you full control to choose which linters are run,
 and won't run anything unexpected.
@@ -207,6 +207,12 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 

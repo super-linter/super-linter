@@ -659,6 +659,14 @@ GetGitHubVars()
     ##########################################
     echo "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
     echo "bypassing GitHub Actions variables..."
+
+    ############################
+    # Set the GITHUB_WORKSPACE #
+    ############################
+    if [ -z "$GITHUB_WORKSPACE" ]; then
+      GITHUB_WORKSPACE="$DEFAULT_WORKSPACE"
+    fi
+    
     echo "Linting all files in mapped directory:[$DEFAULT_WORKSPACE]"
 
     # No need to touch or set the GITHUB_SHA
@@ -666,10 +674,6 @@ GetGitHubVars()
     # No need to touch or set the GITHUB_ORG
     # No need to touch or set the GITHUB_REPO
 
-    ############################
-    # Set the GITHUB_WORKSPACE #
-    ############################
-    GITHUB_WORKSPACE="$DEFAULT_WORKSPACE"
 
     #################################
     # Set the VALIDATE_ALL_CODEBASE #
