@@ -563,7 +563,7 @@ LintAnsibleFiles()
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
           printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
       else
@@ -1912,7 +1912,7 @@ LintCodebase()
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "nok ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
           printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
         fi
 
