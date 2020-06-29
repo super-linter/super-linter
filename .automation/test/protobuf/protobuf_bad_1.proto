@@ -1,0 +1,48 @@
+syntax = "proto3";
+// A broken example of the official reference
+// See https://developers.google.com/protocol-buffers/docs/reference/proto3-spec#proto_file
+package examplePb;
+
+option java_package = "com.example.foo";
+
+import "other.proto";
+import public "new.proto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+import "myproject/other_protos.proto";
+import "myproject/main_protos.proto";
+
+enum enumAllowingAlias {
+    option allow_alias = true;
+    UNKNOWN = 0;
+    STARTED = 1;
+    RUNNING = 2 [(custom_option) = "hello world"];
+}
+message outer {
+    option (my_option).a = true;
+    // inner is an inner message.
+    message inner {   // Level 2
+      int64 ival = 1;
+    }
+    repeated inner inner_message = 2;
+    EnumAllowingAlias enum_field =3;
+    map<int32, string> my_map = 4;
+  string reason_for_error = 5;
+  string  end_of_support_version= 6;
+    message AccountForAdmin {}
+  message SpecialEndOfSupport {}
+  required inner inner_message = 7;
+  group Result = 8 {
+    string url = 9;
+  }
+  repeated group Result = 10 {
+  }
+  repeated inner paper = 11;
+  repeated group Regular = 12 {
+  }
+}
+service SearchApi {
+    rpc search (SearchRequest) returns (SearchResponse) {};
+};

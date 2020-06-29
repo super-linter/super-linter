@@ -126,6 +126,14 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
 
+######################
+# Install protolint #
+######################
+RUN curl -LsS "$(curl -Ls https://api.github.com/repos/yoheimuta/protolint/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" -o protolint.tar.gz \
+    && tar -xzf protolint.tar.gz \
+    && rm protolint.tar.gz \
+    && mv "protolint" /usr/bin/
+
 #########################
 # Install dotenv-linter #
 #########################
@@ -180,6 +188,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
+    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
