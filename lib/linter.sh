@@ -454,24 +454,51 @@ DetectOpenAPIFile()
 #### Function DetectCloudFormationFile #########################################
 DetectCloudFormationFile()
 {
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1" # File that we need to validate
+
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
   # AWSTemplateFormatVersion is optional
-  if grep 'AWSTemplateFormatVersion' "${1}" > /dev/null; then
-    return 0
-  fi
-  if cat "${1}" | shyaml --quiet get-type AWSTemplateFormatVersion > /dev/null; then
+  #######################################
+  # Check if file has AWS Template info #
+  #######################################
+  if grep 'AWSTemplateFormatVersion' "$FILE" > /dev/null; then
+    # Found it
     return 0
   fi
 
-  if cat "${1}" | jq -e 'has("Resources")' > /dev/null 2>&1; then
-    if cat "${1}" | jq ".Resources[].Type" 2>/dev/null | grep -q -E "(AWS|Alexa|Custom)"; then
+  ###################################################
+  # Check if file has AWSTemplateFormatVersion info #
+  ###################################################
+  if shyaml --quiet get-type AWSTemplateFormatVersion > /dev/null < "$FILE"; then
+    # Found it
+    return 0
+  fi
+
+  ###############################
+  # check if file has resources #
+  ###############################
+  if jq -e 'has("Resources")' > /dev/null 2>&1 < "$FILE"; then
+    # Check if AWS Alexa or custom
+    if jq ".Resources[].Type" 2>/dev/null | grep -q -E "(AWS|Alexa|Custom)" < "$FILE"; then
+      # Found it
       return 0
     fi
   fi
-  if cat "${1}" | shyaml values-0 Resources | grep -q -E "Type: (AWS|Alexa|Custom)"; then
+
+  ################################
+  # See if it contains resources #
+  ################################
+  if shyaml values-0 Resources | grep -q -E "Type: (AWS|Alexa|Custom)" < "$FILE"; then
+    # Found it
     return 0
   fi
 
+  ##########################################
+  # No identifiers of a CFN template found #
+  ##########################################
   return 1
 }
 
