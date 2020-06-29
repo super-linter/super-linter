@@ -798,6 +798,7 @@ if [[ "$TEST_CASE_RUN" != "false" ]]; then
   # Code will exit from inside this loop
   RunTestCases
 fi
+
 #############################################
 # check flag for validation of all codebase #
 #############################################
@@ -999,6 +1000,7 @@ if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
   #############################
   LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
 fi
+
 ######################
 # TYPESCRIPT LINTING #
 ######################
