@@ -1695,7 +1695,7 @@ BuildFileList()
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "$FILE" == "clj" ] || [ "$FILE" == "cljs" ] || [ "$FILE" == "cljc" ] || [ "$FILE" == "edn" ]; then
+    elif [ "$FILE_TYPE" == "clj" ] || [ "$FILE_TYPE" == "cljs" ] || [ "$FILE_TYPE" == "cljc" ] || [ "$FILE_TYPE" == "edn" ]; then
       ################################
       # Append the file to the array #
       ################################
