@@ -35,16 +35,22 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
+| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/) |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
+| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
+| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
+| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
 | **PHP**          | [PHP](https://www.php.net/)                                              |
+| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
 | **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
@@ -52,11 +58,6 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **XML**          | [LibXML](http://xmlsoft.org/)                                            |
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
-| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
-| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
-| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
-| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
-| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -168,6 +169,7 @@ and won't run anything unexpected.
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |

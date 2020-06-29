@@ -29,6 +29,9 @@ MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"             # Path to th
 # Python Vars
 PYTHON_FILE_NAME='.python-lint'                                     # Name of the file
 PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"     # Path to the python lint rules
+# Cloudformation Vars
+CFN_FILE_NAME='.cfnlintrc.yml'                                      # Name of the file
+CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"           # Path to the python lint rules
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
@@ -77,7 +80,9 @@ CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "protolint" "clj-kondo" "spectral")
+  "stylelint" "dotenv-linter" "powershell" "ktlint" "protolint" "clj-kondo"
+  "spectral" "cfn-lint")
+
 
 #############################
 # Language array for prints #
@@ -85,7 +90,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN')
 
 ###################
 # GitHub ENV Vars #
@@ -104,6 +109,7 @@ VALIDATE_BASH="${VALIDATE_BASH}"                      # Boolean to validate lang
 VALIDATE_PERL="${VALIDATE_PERL}"                      # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                        # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                  # Boolean to validate language
+VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"  # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                      # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                  # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                # Boolean to validate language
@@ -164,6 +170,7 @@ FILE_ARRAY_PERL=()                  # Array of files to check
 FILE_ARRAY_PHP=()                   # Array of files to check
 FILE_ARRAY_RUBY=()                  # Array of files to check
 FILE_ARRAY_PYTHON=()                # Array of files to check
+FILE_ARRAY_CFN=()                   # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()          # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()         # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=()   # Array of files to check
@@ -192,6 +199,7 @@ ERRORS_FOUND_PERL=0                 # Count of errors found
 ERRORS_FOUND_PHP=0                  # Count of errors found
 ERRORS_FOUND_RUBY=0                 # Count of errors found
 ERRORS_FOUND_PYTHON=0               # Count of errors found
+ERRORS_FOUND_CFN=0                  # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0         # Count of errors found
 ERRORS_FOUND_ANSIBLE=0              # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0  # Count of errors found
@@ -442,6 +450,57 @@ DetectOpenAPIFile()
 	  return 1
   fi
 }
+################################################################################
+#### Function DetectCloudFormationFile #########################################
+DetectCloudFormationFile()
+{
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1" # File that we need to validate
+
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
+  # AWSTemplateFormatVersion is optional
+  #######################################
+  # Check if file has AWS Template info #
+  #######################################
+  if grep 'AWSTemplateFormatVersion' "$FILE" > /dev/null; then
+    # Found it
+    return 0
+  fi
+
+  ###################################################
+  # Check if file has AWSTemplateFormatVersion info #
+  ###################################################
+  if shyaml --quiet get-type AWSTemplateFormatVersion > /dev/null < "$FILE"; then
+    # Found it
+    return 0
+  fi
+
+  ###############################
+  # check if file has resources #
+  ###############################
+  if jq -e 'has("Resources")' > /dev/null 2>&1 < "$FILE"; then
+    # Check if AWS Alexa or custom
+    if jq ".Resources[].Type" 2>/dev/null | grep -q -E "(AWS|Alexa|Custom)" < "$FILE"; then
+      # Found it
+      return 0
+    fi
+  fi
+
+  ################################
+  # See if it contains resources #
+  ################################
+  if shyaml values-0 Resources | grep -q -E "Type: (AWS|Alexa|Custom)" < "$FILE"; then
+    # Found it
+    return 0
+  fi
+
+  ##########################################
+  # No identifiers of a CFN template found #
+  ##########################################
+  return 1
+}
 
 ################################################################################
 #### Function GetGitHubVars ####################################################
@@ -645,6 +704,7 @@ Footer()
      [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] || \
      [ "$ERRORS_FOUND_RUBY" -ne 0 ] || \
      [ "$ERRORS_FOUND_CSS" -ne 0 ] || \
+     [ "$ERRORS_FOUND_CFN" -ne 0 ] || \
      [ "$ERRORS_FOUND_ENV" -ne 0 ] || \
      [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] || \
      [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] || \
@@ -715,6 +775,8 @@ GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
 GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
 # Get CSS rules
 GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
+# Get CFN rules
+GetLinterRules "$CFN_FILE_NAME" "$CFN_LINTER_RULES"
 
 #################################
 # Check if were in verbose mode #
@@ -811,6 +873,17 @@ if [ "$VALIDATE_PYTHON" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
+fi
+
+###############
+# CFN LINTING #
+###############
+if [ "$VALIDATE_CLOUDFORMATION" == "true" ]; then
+  #################################
+  # Lint the CloudFormation files #
+  #################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CFN[@]}"
 fi
 
 ################
@@ -927,6 +1000,7 @@ if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
   #############################
   LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
 fi
+
 ######################
 # TYPESCRIPT LINTING #
 ######################
