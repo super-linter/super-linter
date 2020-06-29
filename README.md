@@ -1,5 +1,5 @@
 # Super-Linter
-This repository is for the **GitHub Action** to run a **Super-Linter**.  
+This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
@@ -32,31 +32,33 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
-| *Language*                       | *Linter*                                                                 |
-| ---                              | ---                                                                      |
-| **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
-| **CSS**                          | [stylelint](https://stylelint.io/)                                       |
-| **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
-| **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                              |
-| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
-| **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
-| **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
-| **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                            |
-| **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
-| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
-| **PHP**                          | [PHP](https://www.php.net/)                                              |
-| **Python3**                      | [pylint](https://www.pylint.org/)                                        |
-| **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
-| **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
-| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint)                    |
-| **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
-| **XML**                          | [LibXML](http://xmlsoft.org/)                                            |
-| **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
-| **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
-| **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
-| **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                            |
-| **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                      |
+| *Language*       | *Linter*                                                                 |
+| ---              | ---                                                                      |
+| **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
+| **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
+| **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
+| **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
+| **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
+| **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
+| **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
+| **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
+| **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
+| **PHP**          | [PHP](https://www.php.net/)                                              |
+| **Python3**      | [pylint](https://www.pylint.org/)                                        |
+| **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
+| **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
+| **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
+| **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
+| **XML**          | [LibXML](http://xmlsoft.org/)                                            |
+| **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
+| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
+| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
+| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
+| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 | **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)       |
+
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
@@ -117,21 +119,21 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.2.0
+        uses: docker://github/super-linter:v3
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v2.2.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.2.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:** Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.  
-If none of them are passed, then they all default to true.  
-However if any one of the variables are set, we default to leaving any unset variable to false.  
+*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.
+If none of them are passed, then they all default to true.
+However if any one of the variables are set, we default to leaving any unset variable to false.
 This means that if you run the linter "out of the box", all languages will be checked.
 But if you wish to select specific linters, we give you full control to choose which linters are run,
 and won't run anything unexpected.
@@ -169,6 +171,7 @@ and won't run anything unexpected.
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
@@ -207,6 +210,12 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 

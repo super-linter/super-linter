@@ -1,0 +1,16 @@
+name: Keep the versions up-to-date
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  actions-tagger:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Actions-R-Us/actions-tagger@latest
+        with:
+          publish_latest_tag: true
+        env:
+          GITHUB_TOKEN: "${{secrets.GITHUB_TOKEN}}"
