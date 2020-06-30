@@ -59,7 +59,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
 
 ## How to use
-<img height="250" align="right" src="https://github.com/github/super-linter/blob/quickstart/docs/how-to.gif?raw=true" alt="How to gif">
+<img height="512" src="https://github.com/github/super-linter/blob/quickstart/docs/how-to.gif?raw=true" alt="How to gif">
 
 To use this **GitHub** Action you will need to complete the following:
 1. Create a new file in your repository called `.github/workflows/linter.yml`
