@@ -49,7 +49,8 @@ RUN mkdir -p /opt/microsoft/powershell/7 \
     | xargs -n 1 wget -O - \
     | tar -xzC /opt/microsoft/powershell/7 \
     && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
-    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -Repository PSGallery -RequiredVersion ${PSSA_VERSION} -Scope CurrentUser -Force'
+    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -Repository PSGallery -RequiredVersion ${PSSA_VERSION} -Scope CurrentUser -Force' \
+    && pwsh -c 'Import-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Force'
 
 #####################
 # Run Pip3 Installs #
