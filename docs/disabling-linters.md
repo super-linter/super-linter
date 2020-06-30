@@ -1,7 +1,7 @@
 # Disabling linters and Rules
 Linters can often require configuring to ensure they work with your codebase and your team's coding style, to avoid flagging false-positives. Super-Linter has set up some default configuration for each linter which should work reasonably well with common code bases but many of the linters can be configured to disable certain rules or configure the rules to ignore certain pieces of codes.
 
-To run with your own configuration for a linter, copy the relevant [`TEMPLATE` configuration file for the linter you are using from this repo](https://github.com/github/super-linter/tree/master/TEMPLATES) into the `.github/linters` folder in your own repository, and then edit it to modify, disable - or even add - rules and configuration to suite how you want your code checked.
+To run with your own configuration for a linter, copy the relevant [`TEMPLATE` configuration file for the linter you are using from this repo](https://github.com/github/super-linter/tree/master/TEMPLATES) into the `.github/linters` folder in your own repository, and then edit it to modify, disable - or even add - rules and configuration to suit how you want your code checked.
 
 How the changes are made differ for each linter, and also how much Super-Linter has decided to change the linter's defaults. So, for some linters (e.g. [pylint for python](https://github.com/github/super-linter/blob/master/TEMPLATES/.python-lint)), there may be a large configuration file. For others (e.g. [eslint for JavaScript](https://github.com/github/super-linter/blob/master/TEMPLATES/.stylelintrc.json)) the default configuration file may initially be nearly empty. And for some (e.g. StandardJS) it may not be possible to change configuration at all so there is not Template file.
 
