@@ -364,14 +364,14 @@ function TestCodebase()
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
         # Increment counter that check was ran
-        (("$TESTS_RAN++"))
+        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
         # Increment counter that check was ran
-        (("$TESTS_RAN++"))
+        ((TESTS_RAN++))
       fi
     else
       #######################################
@@ -391,14 +391,14 @@ function TestCodebase()
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
         # Increment counter that check was ran
-        (("$TESTS_RAN++"))
+        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
         # Increment counter that check was ran
-        (("$TESTS_RAN++"))
+        ((TESTS_RAN++))
       fi
     fi
   done
