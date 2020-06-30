@@ -47,7 +47,7 @@ RUN mkdir -p /opt/microsoft/powershell/7 \
     | xargs -n 1 wget -O - \
     | tar -xzC /opt/microsoft/powershell/7 \
     && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
-    && pwsh -c 'install-module psscriptanalyzer -force'
+    && pwsh -c 'install-module psscriptanalyzer -Scope AllUsers -force'
 
 #####################
 # Run Pip3 Installs #
