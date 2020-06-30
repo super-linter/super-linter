@@ -7,7 +7,7 @@ How the changes are made differ for each linter, and also how much Super-Linter 
 
 Where a configuration file exists in your repo, it will be used in preference to the default one in the Super-Linter `TEMPLATES` directory (not in addition to it), and where one doesn't exist the `TEMPLATES` version will be used. So you should copy all configuration required from the template and not just the config you want to change.
 
-It is possible to have custom configuration for some linters, and continue to use the default from `TEMPLATES` directory for others, so if you use Python and JavaScript and only need to tweak the Python rules, then only have a custom configuration for pylint and continue to use the default TEMPLATE from the main repo for ESLint, for example.
+It is possible to have custom configuration for some linters, and continue to use the default from `TEMPLATES` directory for others, so if you use Python and JavaScript and only need to tweak the Python rules, then only have a custom configuration for pylint and continue to use the default `TEMPLATE` from the main repo for ESLint, for example.
 
 For some linters it is also possible to override rules on a case by case level with directives in your code. Where this is possible we try to note how to do this in the specific linter sections below, but the official linter documentation will likely give more detail on this.
 
