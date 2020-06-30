@@ -253,30 +253,10 @@ function TestCodebase()
   ##########################
   LIST_FILES=()
 
-  ############################################
-  # Check if its ansible, as its the outlier #
-  ############################################
-  if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
-    #################################
-    # Get list of all files to lint #
-    #################################
-    mapfile -t LIST_FILES < <(ls "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/*.yml" 2>&1)
-  else
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    #################################
-    # Get list of all files to lint #
-    #################################
-    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1)
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="$DEFAULT_IFS"
-  fi
+  #################################
+  # Get list of all files to lint #
+  #################################
+  mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/ghe-initialize/*" 2>&1)
 
   ##################
   # Lint the files #

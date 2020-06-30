@@ -9,11 +9,11 @@
 #########################
 # Source Function Files #
 #########################
-# shellcheck source=../lib/buildFileList.sh
+# shellcheck source=/dev/null
 source /action/lib/buildFileList.sh   # Source the function script(s)
-# shellcheck source=../lib/validation.sh
+# shellcheck source=/dev/null
 source /action/lib/validation.sh      # Source the function script(s)
-# shellcheck source=../lib/worker.sh
+# shellcheck source=/dev/null
 source /action/lib/worker.sh          # Source the function script(s)
 
 ###########
@@ -150,10 +150,15 @@ DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
 DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
+echo "${DEFAULT_DISABLE_ERRORS}" > /dev/null 2>&1 || true # Workaround SC2034
 RAW_FILE_ARRAY=()                     # Array of all files that were changed
+echo "${RAW_FILE_ARRAY[*]}" > /dev/null 2>&1 || true # Workaround SC2034
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
+echo "${READ_ONLY_CHANGE_FLAG}" > /dev/null 2>&1 || true # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
+echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true # Workaround SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
+echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
 
 ##########################
 # Array of changed files #

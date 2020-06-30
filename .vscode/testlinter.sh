@@ -22,5 +22,5 @@ fi
 #########################
 export RUN_LOCAL=true
 
-# shellcheck source=../lib/linter.sh
+# shellcheck source=/dev/null
 source "$PWD"/lib/linter.sh
