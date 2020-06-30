@@ -80,7 +80,7 @@ CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "powershell" "ktlint" "protolint" "clj-kondo"
+  "stylelint" "dotenv-linter" "pwsh" "ktlint" "protolint" "clj-kondo"
   "spectral" "cfn-lint")
 
 
