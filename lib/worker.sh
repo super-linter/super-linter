@@ -57,7 +57,7 @@ function LintCodebase()
   else
     # Success
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "Successfully found binary in system"
+      echo "Successfully found binary for [$LINTER_NAME] in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
   fi
@@ -67,32 +67,30 @@ function LintCodebase()
   ###############################################################
   if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
     VALIDATE_PSSA_MODULE=$(pwsh -c "(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name" 2>&1)
-    echo "VALIDATE_PSSA_MODULE: $VALIDATE_PSSA_MODULE"
-  fi
-  # If module found, ensure Invoke-ScriptAnalyzer command is available
-  if [[ "$VALIDATE_PSSA_MODULE" == "PSScriptAnalyzer" ]]; then
-    VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
-    echo "VALIDATE_PSSA_CMD: $VALIDATE_PSSA_CMD"
-  fi
+    # If module found, ensure Invoke-ScriptAnalyzer command is available
+    if [[ "$VALIDATE_PSSA_MODULE" == "PSScriptAnalyzer" ]]; then
+      VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
+    fi
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
 
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Failed
-    echo "ERROR! Failed to import [PSScriptAnalyzer] for [$LINTER_NAME] in system!"
-    echo "ERROR:[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]"
-    exit 1
-  else
-    # Success
-    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "Successfully imported module [$VALIDATE_PSSA_MODULE]"
-      echo "Successfully found command in system [$VALIDATE_PSSA_CMD]"
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ $ERROR_CODE -ne 0 ]; then
+      # Failed
+      echo "ERROR! Failed find module [PSScriptAnalyzer] for [$LINTER_NAME] in system!"
+      echo "ERROR:[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]" 
+      exit 1
+    else
+      # Success
+      if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+        echo "Successfully found module [$VALIDATE_PSSA_MODULE] in system"
+        echo "Successfully found command [$VALIDATE_PSSA_CMD] in system"
+      fi
     fi
   fi
 
