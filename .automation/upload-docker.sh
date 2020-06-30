@@ -151,7 +151,7 @@ ValidateInput()
     # Need to see if GPR registry and update name #
     ###############################################
     if [[ "$REGISTRY" == "GPR" ]]; then
-      NAME="docker.pkg.github.com/$IMAGE_REPO"
+      NAME="docker.pkg.github.com/$IMAGE_REPO/super-linter"
       IMAGE_REPO="$NAME"
       echo "Updated [IMAGE_REPO] to:[$IMAGE_REPO] for GPR"
     fi

@@ -145,7 +145,7 @@ RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/downloa
 #####################
 # Install clj-kondo #
 #####################
-ARG CLJ_KONDO_VERSION='2020.06.12'
+ARG CLJ_KONDO_VERSION='2020.06.21'
 RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KONDO_VERSION}/clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && unzip clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && rm clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
