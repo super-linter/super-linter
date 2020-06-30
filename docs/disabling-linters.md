@@ -22,7 +22,7 @@ Below are examples and documentation for each language and the various methods t
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
-- [CSS](#stylelint)
+- [CSS](#css)
 - [ENV](#dotenv-linter)
 - [Kotlin](#kotlin)
 - [OpenAPI](#openapi)
