@@ -35,9 +35,9 @@ function LintCodebase()
   PRINT_ARRAY+=("----------------------------------------------")
   PRINT_ARRAY+=("----------------------------------------------")
 
-  #######################################
-  # Validate we have jsonlint installed #
-  #######################################
+  #####################################
+  # Validate we have linter installed #
+  #####################################
   # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
@@ -59,6 +59,40 @@ function LintCodebase()
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       echo "Successfully found binary in system"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
+    fi
+  fi
+
+  ###############################################################
+  # For POWERSHELL, ensure PSScriptAnalyzer module is available #
+  ###############################################################
+  if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+    VALIDATE_PSSA_MODULE=$(pwsh -c "(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name" 2>&1)
+    echo "VALIDATE_PSSA_MODULE: $VALIDATE_PSSA_MODULE"
+  fi
+  # If module found, ensure Invoke-ScriptAnalyzer command is available
+  if [[ "$VALIDATE_PSSA_MODULE" == "PSScriptAnalyzer" ]]; then
+    VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
+    echo "VALIDATE_PSSA_CMD: $VALIDATE_PSSA_CMD"
+  fi
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Failed
+    echo "ERROR! Failed to import [PSScriptAnalyzer] for [$LINTER_NAME] in system!"
+    echo "ERROR:[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]"
+    exit 1
+  else
+    # Success
+    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+      echo "Successfully imported module [$VALIDATE_PSSA_MODULE]"
+      echo "Successfully found command in system [$VALIDATE_PSSA_CMD]"
     fi
   fi
 
@@ -169,7 +203,7 @@ function LintCodebase()
         # Lint the file with the rules #
         ################################
         # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
       else
         ################################
         # Lint the file with the rules #
@@ -358,7 +392,7 @@ function TestCodebase()
       # Lint the file with the rules #
       ################################
       # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; pwsh -c "$LINTER_COMMAND $FILE"; exit $? 2>&1)
     else
       ################################
       # Lint the file with the rules #
