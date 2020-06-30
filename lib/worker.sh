@@ -212,6 +212,7 @@ function TestCodebase()
   LINTER_COMMAND="$3"         # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="$4"        # Pull the variable and remove from array path  (Example: *.json)
   INDVIDUAL_TEST_FOLDER="$5"  # Folder for specific tests
+  TESTS_RAN=0                 # Incremented when tests are ran, this will help find failed finds
 
   ################
   # print header #
@@ -327,7 +328,7 @@ function TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
     elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
       ################################
       # Lint the file with the rules #
@@ -362,11 +363,15 @@ function TestCodebase()
         echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+        # Increment counter that check was ran
+        (("$TESTS_RAN++"))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+        # Increment counter that check was ran
+        (("$TESTS_RAN++"))
       fi
     else
       #######################################
@@ -385,14 +390,30 @@ function TestCodebase()
         echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+        # Increment counter that check was ran
+        (("$TESTS_RAN++"))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
+        # Increment counter that check was ran
+        (("$TESTS_RAN++"))
       fi
     fi
   done
+
+  ##############################
+  # Validate we ran some tests #
+  ##############################
+  if [ "$TESTS_RAN" -eq 0 ]; then
+    #################################################
+    # We failed to find files and no tests were ran #
+    #################################################
+    echo "ERROR! Failed to find any tests ran for the Linter:[$LINTER_NAME]"!
+    echo "Please validate logic or that tests exist!"
+    exit 1
+  fi
 }
 ################################################################################
 #### Function RunTestCases #####################################################
