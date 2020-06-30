@@ -38,7 +38,6 @@ function LintCodebase()
   #######################################
   # Validate we have jsonlint installed #
   #######################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -91,8 +90,7 @@ function LintCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE" -type f -regex "$FILE_EXTENSIONS" 2>&1)
 
     ###########################
     # Set IFS back to default #
@@ -229,7 +227,6 @@ function TestCodebase()
   #####################################
   # Validate we have linter installed #
   #####################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -263,8 +260,7 @@ function TestCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086,SC2010
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
+    mapfile -t LIST_FILES < <(ls "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/*.yml" 2>&1)
   else
     ###############################################################################
     # Set the file seperator to newline to allow for grabbing objects with spaces #
@@ -274,8 +270,7 @@ function TestCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find  "$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1)
 
     ###########################
     # Set IFS back to default #
@@ -505,7 +500,6 @@ function LintAnsibleFiles()
   ###########################################
   # Validate we have ansible-lint installed #
   ###########################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -551,14 +545,12 @@ function LintAnsibleFiles()
     if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
       # We need to only check the ansible playbooks that have updates
       #LIST_FILES=("${ANSIBLE_ARRAY[@]}")
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
     else
       #################################
       # Get list of all files to lint #
       #################################
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
+      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
     fi
 
     ###############################################################

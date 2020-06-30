@@ -9,8 +9,11 @@
 #########################
 # Source Function Files #
 #########################
+# shellcheck source=../lib/buildFileList.sh
 source /action/lib/buildFileList.sh   # Source the function script(s)
+# shellcheck source=../lib/validation.sh
 source /action/lib/validation.sh      # Source the function script(s)
+# shellcheck source=../lib/worker.sh
 source /action/lib/worker.sh          # Source the function script(s)
 
 ###########
@@ -146,15 +149,10 @@ DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
-# shellcheck disable=SC2034
 DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
-# shellcheck disable=SC2034
 RAW_FILE_ARRAY=()                     # Array of all files that were changed
-# shellcheck disable=SC2034
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
-# shellcheck disable=SC2034
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
-# shellcheck disable=SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
 
 ##########################
@@ -1103,8 +1101,7 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"
     do
       if DetectOpenAPIFile "$FILE"; then
