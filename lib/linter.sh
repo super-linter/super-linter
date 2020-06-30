@@ -491,7 +491,7 @@ DetectCloudFormationFile()
   ################################
   # See if it contains resources #
   ################################
-  if shyaml values-0 Resources | grep -q -E "Type: (AWS|Alexa|Custom)" < "$FILE"; then
+  if shyaml values-0 Resources 2> /dev/null | grep -q -E "Type: (AWS|Alexa|Custom)" < "$FILE"; then
     # Found it
     return 0
   fi
