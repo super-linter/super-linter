@@ -519,19 +519,10 @@ function LintAnsibleFiles()
   ######################################################
   if [ -d "$ANSIBLE_DIRECTORY" ]; then
 
-    ############################################################
-    # Check to see if we need to go through array or all files #
-    ############################################################
-    if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-      # We need to only check the ansible playbooks that have updates
-      #LIST_FILES=("${ANSIBLE_ARRAY[@]}")
-      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
-    else
-      #################################
-      # Get list of all files to lint #
-      #################################
-      mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
-    fi
+    #################################
+    # Get list of all files to lint #
+    #################################
+    mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
 
     ###############################################################
     # Set the list to empty if only MD and TXT files were changed #
