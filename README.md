@@ -59,9 +59,11 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
 
 ## How to use
+<img height="250" align="right" src="https://github.com/github/super-linter/blob/quickstart/docs/how-to.gif?raw=true" alt="How to gif">
+
 To use this **GitHub** Action you will need to complete the following:
 1. Create a new file in your repository called `.github/workflows/linter.yml`
-2. Copy the example workflow from below into that new file
+2. Copy the example workflow from below into that new file, no extra configuration required
 3. Commit that file to a new branch
 4. Open up a pull request and observe the action working
 5. Enjoy your more *stable*, and *cleaner* code base
