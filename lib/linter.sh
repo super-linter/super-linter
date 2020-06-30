@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1003,SC2016,SC1091
 
 ################################################################################
 ################################################################################
@@ -10,8 +9,11 @@
 #########################
 # Source Function Files #
 #########################
+# shellcheck source=/dev/null
 source /action/lib/buildFileList.sh   # Source the function script(s)
+# shellcheck source=/dev/null
 source /action/lib/validation.sh      # Source the function script(s)
+# shellcheck source=/dev/null
 source /action/lib/worker.sh          # Source the function script(s)
 
 ###########
@@ -147,16 +149,16 @@ DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
-# shellcheck disable=SC2034
 DEFAULT_DISABLE_ERRORS='false'        # Default to enabling errors
-# shellcheck disable=SC2034
+echo "${DEFAULT_DISABLE_ERRORS}" > /dev/null 2>&1 || true # Workaround SC2034
 RAW_FILE_ARRAY=()                     # Array of all files that were changed
-# shellcheck disable=SC2034
+echo "${RAW_FILE_ARRAY[*]}" > /dev/null 2>&1 || true # Workaround SC2034
 READ_ONLY_CHANGE_FLAG=0               # Flag set to 1 if files changed are not txt or md
-# shellcheck disable=SC2034
+echo "${READ_ONLY_CHANGE_FLAG}" > /dev/null 2>&1 || true # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test'   # Folder for test cases we should always ignore
-# shellcheck disable=SC2034
+echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true # Workaround SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"   # Default Ansible Directory
+echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
 
 ##########################
 # Array of changed files #
@@ -265,8 +267,7 @@ GetLinterVersions()
     ###################
     # Get the version #
     ###################
-    # shellcheck disable=SC2207
-    GET_VERSION_CMD=($("$LINTER" --version 2>&1))
+    mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
 
     #######################
     # Load the error code #
@@ -357,11 +358,9 @@ GetStandardRules()
   # Only env vars that are marked as true
   GET_ENV_ARRAY=()
   if [[ "$LINTER" == "javascript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$JAVASCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$JAVASCRIPT_LINTER_RULES" | grep true)
   elif [[ "$LINTER" == "typescript" ]]; then
-    # shellcheck disable=SC2207
-    GET_ENV_ARRAY=($(yq .env "$TYPESCRIPT_LINTER_RULES" |grep true))
+    mapfile -t GET_ENV_ARRAY < <(yq .env "$TYPESCRIPT_LINTER_RULES" | grep true)
   fi
 
   #######################
@@ -612,8 +611,7 @@ GetGitHubVars()
     ######################
     # Get the GitHub Org #
     ######################
-    # shellcheck disable=SC2002
-    GITHUB_ORG=$(cat "$GITHUB_EVENT_PATH" | jq -r '.repository.owner.login' )
+    GITHUB_ORG=$(jq -r '.repository.owner.login' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
@@ -629,8 +627,7 @@ GetGitHubVars()
     #######################
     # Get the GitHub Repo #
     #######################
-    # shellcheck disable=SC2002
-    GITHUB_REPO=$(cat "$GITHUB_EVENT_PATH"| jq -r '.repository.name' )
+    GITHUB_REPO=$(jq -r '.repository.name' < "$GITHUB_EVENT_PATH" )
 
     ############################
     # Validate we have a value #
@@ -1109,8 +1106,7 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    # shellcheck disable=SC2207
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"
     do
       if DetectOpenAPIFile "$FILE"; then
