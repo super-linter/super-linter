@@ -8,7 +8,6 @@ The end goal of this tool:
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
 
-
 ## Table of Contents
 
 - [How it works](#how-it-works)
@@ -61,9 +60,12 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 
 ## How to use
 To use this **GitHub** Action you will need to complete the following:
-- Add the **GitHub** Action: **Super-Linter** to your current **GitHub** Actions workflow
-- Enjoy your more *stable*, and *cleaner* code base
-- Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
+1. Create a new file in your repository called `.github/workflows/linter.yml`
+2. Copy the example workflow from below into that new file
+3. Commit that file to a new branch
+4. Open up a pull request and observe the action working
+5. Enjoy your more *stable*, and *cleaner* code base
+6. Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
 
 ### Example connecting GitHub Action Workflow
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
