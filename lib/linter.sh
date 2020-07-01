@@ -991,7 +991,7 @@ if [ "$VALIDATE_ANSIBLE" == "true" ]; then
   # Due to the nature of how we want to validate Ansible, we cannot use the
   # standard loop, since it looks for an ansible folder, excludes certain
   # files, and looks for additional changes, it should be an outlier
-  LintAnsibleFiles
+  LintAnsibleFiles "$ANSIBLE_LINTER_RULES" # Passing rules but not needed, dont want to exclude unused var
 fi
 
 ######################
