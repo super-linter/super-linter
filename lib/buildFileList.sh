@@ -9,15 +9,14 @@
 ################################################################################
 ################################################################################
 #### Function BuildFileList ####################################################
-function BuildFileList()
-{
+function BuildFileList() {
   # Need to build a list of all files changed
   # This can be pulled from the GITHUB_EVENT_PATH payload
 
   ################
   # print header #
   ################
-  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+  if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
     echo "Pulling in code history and branches..."
@@ -26,7 +25,10 @@ function BuildFileList()
   #################################################################################
   # Switch codebase back to the default branch to get a list of all files changed #
   #################################################################################
-  SWITCH_CMD=$(git -C "$GITHUB_WORKSPACE" pull --quiet; git -C "$GITHUB_WORKSPACE" checkout "$DEFAULT_BRANCH" 2>&1)
+  SWITCH_CMD=$(
+    git -C "$GITHUB_WORKSPACE" pull --quiet
+    git -C "$GITHUB_WORKSPACE" checkout "$DEFAULT_BRANCH" 2>&1
+  )
 
   #######################
   # Load the error code #
@@ -46,7 +48,7 @@ function BuildFileList()
   ################
   # print header #
   ################
-  if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+  if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
     echo ""
     echo "----------------------------------------------"
     echo "Generating Diff with:[git diff --name-only '$DEFAULT_BRANCH..$GITHUB_SHA' --diff-filter=d]"
@@ -78,8 +80,7 @@ function BuildFileList()
   echo ""
   echo "----------------------------------------------"
   echo "Files that have been modified in the commit(s):"
-  for FILE in "${RAW_FILE_ARRAY[@]}"
-  do
+  for FILE in "${RAW_FILE_ARRAY[@]}"; do
     ##############
     # Print file #
     ##############
@@ -371,7 +372,7 @@ function BuildFileList()
       #################
       # Check if bash #
       #################
-      if [[ "$GET_FILE_TYPE_CMD" == *"Bourne-Again shell script"* ]]; then
+      if [[ $GET_FILE_TYPE_CMD == *"Bourne-Again shell script"* ]]; then
         #######################
         # It is a bash script #
         #######################
@@ -385,7 +386,7 @@ function BuildFileList()
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
         ##########################################################
         READ_ONLY_CHANGE_FLAG=1
-      elif [[ "$GET_FILE_TYPE_CMD" == *"Ruby script"* ]]; then
+      elif [[ $GET_FILE_TYPE_CMD == *"Ruby script"* ]]; then
         #######################
         # It is a Ruby script #
         #######################
@@ -412,7 +413,7 @@ function BuildFileList()
     fi
   done
 
-  echo ${READ_ONLY_CHANGE_FLAG}  > /dev/null 2>&1 || true # Workaround SC2034
+  echo ${READ_ONLY_CHANGE_FLAG} > /dev/null 2>&1 || true # Workaround SC2034
 
   #########################################
   # Need to switch back to branch of code #

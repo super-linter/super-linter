@@ -17,25 +17,24 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
-DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
-GPR_USERNAME="${GPR_USERNAME}"          # Username to login to GitHub package registry
-GPR_TOKEN="${GPR_TOKEN}"                # Password to login to GitHub package registry
-REGISTRY="${REGISTRY}"                  # What registry to upload | <GPR> or <Docker>
-IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
-MAJOR_TAG=''                            # Major tag version if we need to update it
-UPDATE_MAJOR_TAG=0                      # Flag to deploy the major tag version as well
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
+DOCKER_USERNAME="${DOCKER_USERNAME}"   # Username to login to DockerHub
+DOCKER_PASSWORD="${DOCKER_PASSWORD}"   # Password to login to DockerHub
+GPR_USERNAME="${GPR_USERNAME}"         # Username to login to GitHub package registry
+GPR_TOKEN="${GPR_TOKEN}"               # Password to login to GitHub package registry
+REGISTRY="${REGISTRY}"                 # What registry to upload | <GPR> or <Docker>
+IMAGE_REPO="${IMAGE_REPO}"             # Image repo to upload the image
+IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
+DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
+MAJOR_TAG=''                           # Major tag version if we need to update it
+UPDATE_MAJOR_TAG=0                     # Flag to deploy the major tag version as well
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
 ################################################################################
 ################################################################################
 #### Function Header ###########################################################
-Header()
-{
+Header() {
   echo ""
   echo "-------------------------------------------------------"
   echo "---- GitHub Actions Upload image to [$REGISTRY] ----"
@@ -44,8 +43,7 @@ Header()
 }
 ################################################################################
 #### Function ValidateInput ####################################################
-ValidateInput()
-{
+ValidateInput() {
   # Need to validate we have the basic variables
   ################
   # Print header #
@@ -81,7 +79,7 @@ ValidateInput()
   #####################################################
   # See if we need values for GitHub package Registry #
   #####################################################
-  if [[ "$REGISTRY" == "GPR" ]]; then
+  if [[ $REGISTRY == "GPR" ]]; then
     #########################
     # Validate GPR_USERNAME #
     #########################
@@ -106,7 +104,7 @@ ValidateInput()
   ########################################
   # See if we need values for Ducker hub #
   ########################################
-  elif [[ "$REGISTRY" == "Docker" ]]; then
+  elif [[ $REGISTRY == "Docker" ]]; then
     ############################
     # Validate DOCKER_USERNAME #
     ############################
@@ -137,7 +135,6 @@ ValidateInput()
     exit 1
   fi
 
-
   #######################
   # Validate IMAGE_REPO #
   #######################
@@ -150,7 +147,7 @@ ValidateInput()
     ###############################################
     # Need to see if GPR registry and update name #
     ###############################################
-    if [[ "$REGISTRY" == "GPR" ]]; then
+    if [[ $REGISTRY == "GPR" ]]; then
       NAME="docker.pkg.github.com/$IMAGE_REPO/super-linter"
       IMAGE_REPO="$NAME"
       echo "Updated [IMAGE_REPO] to:[$IMAGE_REPO] for GPR"
@@ -166,7 +163,7 @@ ValidateInput()
     ##############################
     # Get the name of the branch #
     ##############################
-    BRANCH_NAME=$(git -C "$GITHUB_WORKSPACE" branch --contains "$GITHUB_SHA" |awk '{print $2}' 2>&1)
+    BRANCH_NAME=$(git -C "$GITHUB_WORKSPACE" branch --contains "$GITHUB_SHA" | awk '{print $2}' 2>&1)
 
     #######################
     # Load the error code #
@@ -204,7 +201,7 @@ ValidateInput()
   ######################################################################
   # Check if this is a latest to a versioned release at create new tag #
   ######################################################################
-  if [[ "$IMAGE_VERSION" =~ $REGEX ]]; then
+  if [[ $IMAGE_VERSION =~ $REGEX ]]; then
     # Need to get the major version, and set flag to update
 
     #####################
@@ -233,15 +230,14 @@ ValidateInput()
 }
 ################################################################################
 #### Function Authenticate #####################################################
-Authenticate()
-{
+Authenticate() {
   ################
   # Pull in Vars #
   ################
-  USERNAME="$1"   # Name to auth with
-  PASSWORD="$2"   # Password to auth with
-  URL="$3"        # Url to auth towards
-  NAME="$4"       # name of the service
+  USERNAME="$1" # Name to auth with
+  PASSWORD="$2" # Password to auth with
+  URL="$3"      # Url to auth towards
+  NAME="$4"     # name of the service
 
   ################
   # Print header #
@@ -277,8 +273,7 @@ Authenticate()
 }
 ################################################################################
 #### Function BuildImage #######################################################
-BuildImage()
-{
+BuildImage() {
   ################
   # Print header #
   ################
@@ -348,8 +343,7 @@ BuildImage()
 }
 ################################################################################
 #### Function UploadImage ######################################################
-UploadImage()
-{
+UploadImage() {
   ################
   # Print header #
   ################
@@ -450,8 +444,7 @@ UploadImage()
 }
 ################################################################################
 #### Function Footer ###########################################################
-Footer()
-{
+Footer() {
   echo ""
   echo "-------------------------------------------------------"
   echo "The step has completed"
@@ -480,14 +473,14 @@ BuildImage
 ######################
 # Login to DockerHub #
 ######################
-if [[ "$REGISTRY" == "Docker" ]]; then
+if [[ $REGISTRY == "Docker" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
   Authenticate "$DOCKER_USERNAME" "$DOCKER_PASSWORD" "" "Dockerhub"
 
 ####################################
 # Login to GitHub Package Registry #
 ####################################
-elif [[ "$REGISTRY" == "GPR" ]]; then
+elif [[ $REGISTRY == "GPR" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
   Authenticate "$GPR_USERNAME" "$GPR_TOKEN" "https://docker.pkg.github.com" "GitHub Package Registry"
 

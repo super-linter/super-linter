@@ -9,8 +9,7 @@
 ################################################################################
 ################################################################################
 #### Function LintCodebase #####################################################
-function LintCodebase()
-{
+function LintCodebase() {
   ####################
   # Pull in the vars #
   ####################
@@ -55,7 +54,7 @@ function LintCodebase()
     exit 1
   else
     # Success
-    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
       echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system${NC}"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
@@ -119,8 +118,7 @@ function LintCodebase()
     ######################
     # Print Header array #
     ######################
-    for LINE in "${PRINT_ARRAY[@]}"
-    do
+    for LINE in "${PRINT_ARRAY[@]}"; do
       #########################
       # Print the header info #
       #########################
@@ -130,8 +128,7 @@ function LintCodebase()
     ##################
     # Lint the files #
     ##################
-    for FILE in "${LIST_FILES[@]}"
-    do
+    for FILE in "${LIST_FILES[@]}"; do
       #####################
       # Get the file name #
       #####################
@@ -162,17 +159,24 @@ function LintCodebase()
       #######################################
       # Corner case for Powershell subshell #
       #######################################
-      if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+      if [[ $FILE_TYPE == "POWERSHELL" ]]; then
         ################################
         # Lint the file with the rules #
         ################################
         # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
+        LINT_CMD=$(
+          cd "$GITHUB_WORKSPACE" || exit
+          pwsh -c "($LINTER_COMMAND $FILE)"
+          exit $? 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
         ################################
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+        LINT_CMD=$(
+          cd "$GITHUB_WORKSPACE" || exit
+          $LINTER_COMMAND "$FILE" 2>&1
+        )
       fi
 
       #######################
@@ -202,17 +206,16 @@ function LintCodebase()
 }
 ################################################################################
 #### Function TestCodebase #####################################################
-function TestCodebase()
-{
+function TestCodebase() {
   ####################
   # Pull in the vars #
   ####################
-  FILE_TYPE="$1"              # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="$2"            # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="$3"         # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="$4"        # Pull the variable and remove from array path  (Example: *.json)
-  INDVIDUAL_TEST_FOLDER="$5"  # Folder for specific tests
-  TESTS_RAN=0                 # Incremented when tests are ran, this will help find failed finds
+  FILE_TYPE="$1"             # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="$2"           # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="$3"        # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="$4"       # Pull the variable and remove from array path  (Example: *.json)
+  INDVIDUAL_TEST_FOLDER="$5" # Folder for specific tests
+  TESTS_RAN=0                # Incremented when tests are ran, this will help find failed finds
 
   ################
   # print header #
@@ -262,8 +265,7 @@ function TestCodebase()
   ##################
   # Lint the files #
   ##################
-  for FILE in "${LIST_FILES[@]}"
-  do
+  for FILE in "${LIST_FILES[@]}"; do
     #####################
     # Get the file name #
     #####################
@@ -273,12 +275,12 @@ function TestCodebase()
     # Get the file pass status #
     ############################
     # Example: markdown_good_1.md -> good
-    FILE_STATUS=$(echo "$FILE_NAME" |cut -f2 -d'_')
+    FILE_STATUS=$(echo "$FILE_NAME" | cut -f2 -d'_')
 
     #########################################################
     # If not found, assume it should be linted successfully #
     #########################################################
-    if [ -z "$FILE_STATUS" ] || [[ "$FILE" == *"README"* ]]; then
+    if [ -z "$FILE_STATUS" ] || [[ $FILE == *"README"* ]]; then
       ##################################
       # Set to good for proper linting #
       ##################################
@@ -299,8 +301,8 @@ function TestCodebase()
     #######################################
     # Check if docker and get folder name #
     #######################################
-    if [[ "$FILE_TYPE" == "DOCKER" ]]; then
-      if [[ "$FILE" == *"good"* ]]; then
+    if [[ $FILE_TYPE == "DOCKER" ]]; then
+      if [[ $FILE == *"good"* ]]; then
         #############
         # Good file #
         #############
@@ -316,7 +318,7 @@ function TestCodebase()
     #####################
     # Check for ansible #
     #####################
-    if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
+    if [[ $FILE_TYPE == "ANSIBLE" ]]; then
       ########################################
       # Make sure we dont lint certain files #
       ########################################
@@ -328,18 +330,28 @@ function TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
-    elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+      LINT_CMD=$(
+        cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit
+        $LINTER_COMMAND "$FILE" 2>&1
+      )
+    elif [[ $FILE_TYPE == "POWERSHELL" ]]; then
       ################################
       # Lint the file with the rules #
       ################################
       # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
+      LINT_CMD=$(
+        cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit
+        pwsh -c "($LINTER_COMMAND $FILE)"
+        exit $? 2>&1
+      )
     else
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      LINT_CMD=$(
+        cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit
+        $LINTER_COMMAND "$FILE" 2>&1
+      )
     fi
 
     #######################
@@ -350,7 +362,7 @@ function TestCodebase()
     ########################################
     # Check for if it was supposed to pass #
     ########################################
-    if [[ "$FILE_STATUS" == "good" ]]; then
+    if [[ $FILE_STATUS == "good" ]]; then
       ##############################
       # Check the shell for errors #
       ##############################
@@ -417,8 +429,7 @@ function TestCodebase()
 }
 ################################################################################
 #### Function RunTestCases #####################################################
-function RunTestCases()
-{
+function RunTestCases() {
   # This loop will run the test cases and exclude user code
   # This is called from the automation process to validate new code
   # When a PR is opened, the new code is validated with the default branch
@@ -476,8 +487,7 @@ function RunTestCases()
 }
 ################################################################################
 #### Function LintAnsibleFiles #################################################
-function LintAnsibleFiles()
-{
+function LintAnsibleFiles() {
   ######################
   # Create Print Array #
   ######################
@@ -518,7 +528,7 @@ function LintAnsibleFiles()
     exit 1
   else
     # Success
-    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
       # Success
       echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
@@ -568,8 +578,7 @@ function LintAnsibleFiles()
     # Check if we have data to look at #
     ####################################
     if [ $SKIP_FLAG -eq 0 ]; then
-      for LINE in "${PRINT_ARRAY[@]}"
-      do
+      for LINE in "${PRINT_ARRAY[@]}"; do
         #########################
         # Print the header line #
         #########################
@@ -580,8 +589,7 @@ function LintAnsibleFiles()
     ##################
     # Lint the files #
     ##################
-    for FILE in "${LIST_FILES[@]}"
-    do
+    for FILE in "${LIST_FILES[@]}"; do
 
       ########################################
       # Make sure we dont lint certain files #
@@ -634,7 +642,7 @@ function LintAnsibleFiles()
     ###############################
     # Check to see if debug is on #
     ###############################
-    if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
+    if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
       ########################
       # No Ansible dir found #
       ########################
