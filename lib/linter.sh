@@ -751,7 +751,7 @@ Footer()
      [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] || \
      [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
     # Failed exit
-    echo "Exiting with errors found!"
+    echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
   else
     #################
