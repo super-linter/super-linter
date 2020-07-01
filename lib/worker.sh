@@ -390,7 +390,7 @@ function TestCodebase()
       # Lint the file with the rules #
       ################################
       # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; pwsh -c "$LINTER_COMMAND $FILE"; exit $? 2>&1)
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
     else
       ################################
       # Lint the file with the rules #
