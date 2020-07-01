@@ -39,7 +39,7 @@ function BuildFileList()
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
     echo "Failed to switch to $DEFAULT_BRANCH branch to get files changed!"
-    echo "ERROR:[$SWITCH_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SWITCH_CMD]${NC}"
     exit 1
   fi
 
@@ -67,8 +67,8 @@ function BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "ERROR! Failed to gain a list of all files changed!"
-    echo "ERROR:[${RAW_FILE_ARRAY[*]}]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain a list of all files changed!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${RAW_FILE_ARRAY[*]}]${NC}"
     exit 1
   fi
 
@@ -375,7 +375,7 @@ function BuildFileList()
         #######################
         # It is a bash script #
         #######################
-        echo "WARN! Found bash script without extension:[.sh]"
+        echo -e "${NC}${F[Y]}WARN!${NC} Found bash script without extension:[.sh]${NC}"
         echo "Please update file with proper extensions."
         ################################
         # Append the file to the array #
@@ -389,7 +389,7 @@ function BuildFileList()
         #######################
         # It is a Ruby script #
         #######################
-        echo "WARN! Found ruby script without extension:[.rb]"
+        echo -e "${NC}${F[Y]}WARN!${NC} Found ruby script without extension:[.rb]${NC}"
         echo "Please update file with proper extensions."
         ################################
         # Append the file to the array #
@@ -403,7 +403,7 @@ function BuildFileList()
         ############################
         # Extension was not found! #
         ############################
-        echo "  - WARN! Failed to get filetype for:[$FILE]!"
+        echo -e "${NC}${F[Y]}  - WARN!${NC} Failed to get filetype for:[$FILE]!${NC}"
         ##########################################################
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
         ##########################################################
@@ -430,7 +430,7 @@ function BuildFileList()
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
     echo "Failed to switch back to branch!"
-    echo "ERROR:[$SWITCH2_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SWITCH2_CMD]${NC}"
     exit 1
   fi
 
@@ -439,5 +439,5 @@ function BuildFileList()
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Successfully gathered list of files..."
+  echo -e "${NC}${F[B]}Successfully gathered list of files...${NC}"
 }
