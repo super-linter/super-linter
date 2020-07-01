@@ -26,7 +26,7 @@ function BuildFileList()
   #################################################################################
   # Switch codebase back to the default branch to get a list of all files changed #
   #################################################################################
-  SWITCH_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git pull --quiet; git checkout "$DEFAULT_BRANCH" 2>&1)
+  SWITCH_CMD=$(git -C "$GITHUB_WORKSPACE" pull --quiet; git -C "$GITHUB_WORKSPACE" checkout "$DEFAULT_BRANCH" 2>&1)
 
   #######################
   # Load the error code #
@@ -417,7 +417,7 @@ function BuildFileList()
   #########################################
   # Need to switch back to branch of code #
   #########################################
-  SWITCH2_CMD=$(cd "$GITHUB_WORKSPACE" || exit; git checkout --progress --force "$GITHUB_SHA" 2>&1)
+  SWITCH2_CMD=$(git -C "$GITHUB_WORKSPACE" checkout --progress --force "$GITHUB_SHA" 2>&1)
 
   #######################
   # Load the error code #
