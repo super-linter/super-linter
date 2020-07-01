@@ -74,7 +74,7 @@ ValidateInput()
     echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
   else
     # This is a fork and we cant pull vars or any info
-    echo "WARN! No image to cleanup as this is a forked branch, and not being built with current automation!"
+    echo -e "${NC}${F[Y]}WARN!${NC} No image to cleanup as this is a forked branch, and not being built with current automation!"
     exit 0
   fi
 

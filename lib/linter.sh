@@ -279,7 +279,7 @@ GetLinterVersions()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      echo "WARN! Failed to get version info for:[$LINTER]"
+      echo -e "${NC}${F[Y]}WARN!${NC} Failed to get version info for:[$LINTER]"
       echo "---------------------------------------------"
     else
       ##########################
@@ -580,7 +580,7 @@ GetGitHubVars()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_SHA]"
       exit 1
     else
-      echo "Successfully found:[GITHUB_SHA], value:[$GITHUB_SHA]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[$GITHUB_SHA]${NC}"
     fi
 
     ############################
@@ -591,7 +591,7 @@ GetGitHubVars()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
       exit 1
     else
-      echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[$GITHUB_WORKSPACE]${NC}"
     fi
 
     ############################
@@ -602,7 +602,7 @@ GetGitHubVars()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_EVENT_PATH]"
       exit 1
     else
-      echo "Successfully found:[GITHUB_EVENT_PATH], value:[$GITHUB_EVENT_PATH]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[$GITHUB_EVENT_PATH]${F[B]}"
     fi
 
     ##################################################
@@ -622,7 +622,7 @@ GetGitHubVars()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_ORG]"
       exit 1
     else
-      echo "Successfully found:[GITHUB_ORG], value:[$GITHUB_ORG]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[$GITHUB_ORG]${NC}"
     fi
 
     #######################
@@ -638,7 +638,7 @@ GetGitHubVars()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_REPO]"
       exit 1
     else
-      echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[$GITHUB_REPO]${NC}"
     fi
   fi
 }
@@ -679,8 +679,8 @@ function ValidatePowershellModules()
   else
     # Success
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "Successfully found module [$VALIDATE_PSSA_MODULE] in system"
-      echo "Successfully found command [$VALIDATE_PSSA_CMD] in system"
+      echo -e "${NC}${F[B]}Successfully found module ${F[W]}[$VALIDATE_PSSA_MODULE]${F[B]} in system${NC}"
+      echo -e "${NC}${F[B]}Successfully found command ${F[W]}[$VALIDATE_PSSA_CMD]${F[B]} in system${NC}"
     fi
   fi
 }

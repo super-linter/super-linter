@@ -374,7 +374,7 @@ function BuildFileList()
         #######################
         # It is a bash script #
         #######################
-        echo "WARN! Found bash script without extension:[.sh]"
+        echo -e "${NC}${F[Y]}WARN!${NC} Found bash script without extension:[.sh]"
         echo "Please update file with proper extensions."
         ################################
         # Append the file to the array #
@@ -388,7 +388,7 @@ function BuildFileList()
         #######################
         # It is a Ruby script #
         #######################
-        echo "WARN! Found ruby script without extension:[.rb]"
+        echo -e "${NC}${F[Y]}WARN!${NC} Found ruby script without extension:[.rb]"
         echo "Please update file with proper extensions."
         ################################
         # Append the file to the array #
@@ -402,7 +402,7 @@ function BuildFileList()
         ############################
         # Extension was not found! #
         ############################
-        echo "  - WARN! Failed to get filetype for:[$FILE]!"
+        echo -e "${NC}${F[Y]}  - WARN!${NC} Failed to get filetype for:[$FILE]!"
         ##########################################################
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
         ##########################################################

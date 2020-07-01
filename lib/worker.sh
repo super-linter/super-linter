@@ -638,7 +638,7 @@ function LintAnsibleFiles()
       ########################
       # No Ansible dir found #
       ########################
-      echo "WARN! No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
+      echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
       echo "skipping ansible lint"
     fi
   fi

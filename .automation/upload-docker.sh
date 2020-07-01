@@ -64,7 +64,7 @@ ValidateInput()
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
     exit 1
   else
-    echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[$GITHUB_WORKSPACE]${NC}"
   fi
 
   #####################
@@ -75,7 +75,7 @@ ValidateInput()
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$REGISTRY]"
     exit 1
   else
-    echo "Successfully found:[REGISTRY], value:[$REGISTRY]"
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[REGISTRY]${F[B]}, value:${F[W]}[$REGISTRY]${NC}"
   fi
 
   #####################################################
@@ -90,7 +90,7 @@ ValidateInput()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GPR_USERNAME]"
       exit 1
     else
-      echo "Successfully found:[GPR_USERNAME], value:[$GPR_USERNAME]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GPR_USERNAME]${F[B]}, value:${F[W]}[$GPR_USERNAME]${NC}"
     fi
 
     ######################
@@ -101,7 +101,7 @@ ValidateInput()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GPR_TOKEN]"
       exit 1
     else
-      echo "Successfully found:[GPR_TOKEN], value:[********]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GPR_TOKEN]${F[B]}, value:${F[W]}[********]${NC}"
     fi
   ########################################
   # See if we need values for Ducker hub #
@@ -115,7 +115,7 @@ ValidateInput()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_USERNAME]"
       exit 1
     else
-      echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[DOCKER_USERNAME]${F[B]}, value:${F[W]}[$DOCKER_USERNAME]${NC}"
     fi
 
     ############################
@@ -126,7 +126,7 @@ ValidateInput()
       echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_PASSWORD]"
       exit 1
     else
-      echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[DOCKER_PASSWORD]${F[B]}, value:${F[B]}[********]${NC}"
     fi
   ###########################################
   # We were not passed a registry to update #
@@ -146,7 +146,7 @@ ValidateInput()
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_REPO]"
     exit 1
   else
-    echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[$IMAGE_REPO]${NC}"
     ###############################################
     # Need to see if GPR registry and update name #
     ###############################################
@@ -161,7 +161,7 @@ ValidateInput()
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "$IMAGE_VERSION" ]; then
-    echo "WARN! Failed to get [IMAGE_VERSION]!"
+    echo -e "${NC}${F[Y]}WARN!${NC} Failed to get [IMAGE_VERSION]!"
     echo "Pulling from Branch Name..."
     ##############################
     # Get the name of the branch #
@@ -193,7 +193,7 @@ ValidateInput()
     IMAGE_VERSION="$BRANCH_NAME"
     echo "Tag:[$IMAGE_VERSION]"
   else
-    echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[IMAGE_VERSION]${F[B]}, value:${F[W]}[$IMAGE_VERSION]${NC}"
   fi
 
   ##################################
@@ -228,7 +228,7 @@ ValidateInput()
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKERFILE_PATH]"
     exit 1
   else
-    echo "Successfully found:[DOCKERFILE_PATH], value:[$DOCKERFILE_PATH]"
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[DOCKERFILE_PATH]${F[B]}, value:${F[W]}[$DOCKERFILE_PATH]${NC}"
   fi
 }
 ################################################################################
@@ -272,7 +272,7 @@ Authenticate()
     exit 1
   else
     # SUCCESS
-    echo "Successfully authenticated to $NAME!"
+    echo -e "${NC}${F[B]}Successfully authenticated to $NAME!${NC}"
   fi
 }
 ################################################################################
@@ -378,7 +378,7 @@ UploadImage()
     exit 1
   else
     # SUCCESS
-    echo "Successfully Uploaded Docker image:[$IMAGE_VERSION] to $REGISTRY!"
+    echo -e "${NC}${F[B]}Successfully Uploaded Docker image:${F[W]}[$IMAGE_VERSION]${F[B]} to $REGISTRY!${NC}"
   fi
 
   #########################
@@ -444,7 +444,7 @@ UploadImage()
       exit 1
     else
       # SUCCESS
-      echo "Successfully Uploaded TAGOR_TAG:[$MAJOR_TAG] Docker image to $REGISTRY!"
+      echo -e "${NC}${F[B]}Successfully Uploaded TAGOR_TAG:${F[W]}[$MAJOR_TAG]${F[B]} Docker image to $REGISTRY!${NC}"
     fi
   fi
 }
