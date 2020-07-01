@@ -308,20 +308,20 @@ GetLinterRules()
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}" ]; then
     echo "----------------------------------------------"
-    echo "User provided file:[$LANGUAGE_FILE_NAME], setting rules file..."
+    echo "User provided file:[${!LANGUAGE_FILE_NAME}], setting rules file..."
 
     ########################################
     # Update the path to the file location #
     ########################################
-    declare "$LANGUAGE_LINTER_RULES=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME"
+    declare "${LANGUAGE_LINTER_RULES}=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}"
   else
     ########################################################
     # No user default provided, using the template default #
     ########################################################
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME], using Default rules at:[$LANGUAGE_LINTER_RULES]"
+      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
     fi
   fi
 }
