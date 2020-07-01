@@ -125,7 +125,8 @@ jobs:
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:**  
+Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**.   Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. *This can be far more costly in time...*
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
@@ -204,7 +205,7 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:
 - Due to being completely packaged at run time, you will not be able to update dependencies or change versions of the enclosed linters and binaries
-- Reading additional details from `package.json` are not read by the **GitHub Super-Linter**
+- Additional details from `package.json` are not read by the **GitHub Super-Linter**
 - Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
 ## How to contribute
