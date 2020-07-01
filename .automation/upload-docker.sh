@@ -272,7 +272,7 @@ Authenticate()
     exit 1
   else
     # SUCCESS
-    echo -e "${NC}${F[B]}Successfully authenticated to $NAME!${NC}"
+    echo -e "${NC}${F[B]}Successfully authenticated to ${F[C]}$NAME${F[B]}!${NC}"
   fi
 }
 ################################################################################
@@ -378,7 +378,7 @@ UploadImage()
     exit 1
   else
     # SUCCESS
-    echo -e "${NC}${F[B]}Successfully Uploaded Docker image:${F[W]}[$IMAGE_VERSION]${F[B]} to $REGISTRY!${NC}"
+    echo -e "${NC}${F[B]}Successfully Uploaded Docker image:${F[W]}[$IMAGE_VERSION]${F[B]} to ${F[C]}$REGISTRY${F[B]}!${NC}"
   fi
 
   #########################
@@ -444,7 +444,7 @@ UploadImage()
       exit 1
     else
       # SUCCESS
-      echo -e "${NC}${F[B]}Successfully Uploaded TAGOR_TAG:${F[W]}[$MAJOR_TAG]${F[B]} Docker image to $REGISTRY!${NC}"
+      echo -e "${NC}${F[B]}Successfully Uploaded TAGOR_TAG:${F[W]}[$MAJOR_TAG]${F[B]} Docker image to ${F[C]}$REGISTRY${F[B]}!${NC}"
     fi
   fi
 }
