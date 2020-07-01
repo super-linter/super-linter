@@ -279,7 +279,7 @@ GetLinterVersions()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      echo -e "${NC}${F[Y]}WARN!${NC} Failed to get version info for:[$LINTER]"
+      echo -e "${NC}${F[Y]}WARN!${NC} Failed to get version info for:[$LINTER]${NC}"
       echo "---------------------------------------------"
     else
       ##########################
@@ -323,8 +323,8 @@ GetLinterRules()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to set file:[$FILE_NAME] as default!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$CP_CMD]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to set file:[$FILE_NAME] as default!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$CP_CMD]${NC}"
       exit 1
     fi
   else
@@ -374,8 +374,8 @@ GetStandardRules()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain list of ENV vars to load!"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GET_ENV_ARRAY[*]}]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain list of ENV vars to load!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GET_ENV_ARRAY[*]}]${NC}"
     exit 1
   fi
 
@@ -576,8 +576,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_SHA" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_SHA]!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_SHA]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_SHA]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_SHA]${NC}"
       exit 1
     else
       echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[$GITHUB_SHA]${NC}"
@@ -587,8 +587,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_WORKSPACE" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]${NC}"
       exit 1
     else
       echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[$GITHUB_WORKSPACE]${NC}"
@@ -598,11 +598,11 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_EVENT_PATH" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_EVENT_PATH]!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_EVENT_PATH]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_EVENT_PATH]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_EVENT_PATH]${NC}"
       exit 1
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[$GITHUB_EVENT_PATH]${F[B]}"
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[$GITHUB_EVENT_PATH]${F[B]}${NC}"
     fi
 
     ##################################################
@@ -618,8 +618,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_ORG" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_ORG]!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_ORG]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_ORG]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_ORG]${NC}"
       exit 1
     else
       echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[$GITHUB_ORG]${NC}"
@@ -634,8 +634,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_REPO" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPO]!"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_REPO]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPO]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_REPO]${NC}"
       exit 1
     else
       echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[$GITHUB_REPO]${NC}"
@@ -673,8 +673,8 @@ function ValidatePowershellModules()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed find module [PSScriptAnalyzer] for [$LINTER_NAME] in system!"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed find module [PSScriptAnalyzer] for [$LINTER_NAME] in system!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]${NC}"
     exit 1
   else
     # Success
@@ -711,7 +711,7 @@ Footer()
     ##################
     if [ "${!ERROR_COUNTER}" -ne 0 ]; then
       # Print the goods
-      echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in $LANGUAGE:[${!ERROR_COUNTER}]"
+      echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in $LANGUAGE:[${!ERROR_COUNTER}]${NC}"
     fi
   done
 
@@ -719,7 +719,7 @@ Footer()
   # Exit with 0 if errors disabled #
   ##################################
   if [ "$DISABLE_ERRORS" == "true" ]; then
-    echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[$DISABLE_ERRORS]"
+    echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[$DISABLE_ERRORS]${NC}"
     exit 0
   ###############################
   # Exit with 1 if errors found #

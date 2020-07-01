@@ -50,8 +50,8 @@ function LintCodebase()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [$LINTER_NAME] in system!"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [$LINTER_NAME] in system!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]${NC}"
     exit 1
   else
     # Success
@@ -187,8 +187,8 @@ function LintCodebase()
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
       else
@@ -240,8 +240,8 @@ function TestCodebase()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [$LINTER_NAME] in system!"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [$LINTER_NAME] in system!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]${NC}"
     exit 1
   else
     # Success
@@ -358,9 +358,9 @@ function TestCodebase()
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
         # Increment counter that check was ran
@@ -384,10 +384,10 @@ function TestCodebase()
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!"
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} This file should have failed test case!"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} This file should have failed test case!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
         # Increment counter that check was ran
@@ -410,7 +410,7 @@ function TestCodebase()
     #################################################
     # We failed to find files and no tests were ran #
     #################################################
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find any tests ran for the Linter:[$LINTER_NAME]"!
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find any tests ran for the Linter:[$LINTER_NAME]${NC}"!
     echo "Please validate logic or that tests exist!"
     exit 1
   fi
@@ -513,8 +513,8 @@ function LintAnsibleFiles()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find $LINTER_NAME in system!"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find $LINTER_NAME in system!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$VALIDATE_INSTALL_CMD]${NC}"
     exit 1
   else
     # Success
@@ -619,8 +619,8 @@ function LintAnsibleFiles()
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [$LINTER_NAME] linter!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
       else
@@ -638,7 +638,7 @@ function LintAnsibleFiles()
       ########################
       # No Ansible dir found #
       ########################
-      echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[$ANSIBLE_DIRECTORY]"
+      echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[$ANSIBLE_DIRECTORY]${NC}"
       echo "skipping ansible lint"
     fi
   fi
