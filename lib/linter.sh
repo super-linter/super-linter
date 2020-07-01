@@ -315,13 +315,13 @@ GetLinterRules()
     ########################################
     # Update the path to the file location #
     ########################################
-    ((LANGUAGE_LINTER_RULES))="$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME"
+    declare "$LANGUAGE_LINTER_RULES=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME"
   else
     ########################################################
     # No user default provided, using the template default #
     ########################################################
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/$FILE_NAME], using Default rules at:[$FILE_LOCATION]"
+      echo "  -> Codebase does NOT have file:[$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME], using Default rules at:[$LANGUAGE_LINTER_RULES]"
     fi
   fi
 }
