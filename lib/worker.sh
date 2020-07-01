@@ -38,7 +38,6 @@ function LintCodebase()
   #####################################
   # Validate we have linter installed #
   #####################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -123,8 +122,7 @@ function LintCodebase()
     #################################
     # Get list of all files to lint #
     #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE" || exit; find . -type f -regex "$FILE_EXTENSIONS" 2>&1))
+    mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE" -type f -regex "$FILE_EXTENSIONS" 2>&1)
 
     ###########################
     # Set IFS back to default #
@@ -246,6 +244,7 @@ function TestCodebase()
   LINTER_COMMAND="$3"         # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="$4"        # Pull the variable and remove from array path  (Example: *.json)
   INDVIDUAL_TEST_FOLDER="$5"  # Folder for specific tests
+  TESTS_RAN=0                 # Incremented when tests are ran, this will help find failed finds
 
   ################
   # print header #
@@ -261,7 +260,6 @@ function TestCodebase()
   #####################################
   # Validate we have linter installed #
   #####################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -288,32 +286,10 @@ function TestCodebase()
   ##########################
   LIST_FILES=()
 
-  ############################################
-  # Check if its ansible, as its the outlier #
-  ############################################
-  if [[ "$FILE_TYPE" == "ANSIBLE" ]]; then
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207,SC2086,SC2010
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; ls ansible/ | grep ".yml" 2>&1))
-  else
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    #################################
-    # Get list of all files to lint #
-    #################################
-    # shellcheck disable=SC2207,SC2086
-    LIST_FILES=($(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; find  "$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "*./ansible*" 2>&1))
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="$DEFAULT_IFS"
-  fi
+  #################################
+  # Get list of all files to lint #
+  #################################
+  mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/ghe-initialize/*" 2>&1)
 
   ##################
   # Lint the files #
@@ -384,7 +360,7 @@ function TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible" || exit; $LINTER_COMMAND "$FILE" 2>&1)
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit; $LINTER_COMMAND "$FILE" 2>&1)
     elif [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
       ################################
       # Lint the file with the rules #
@@ -419,11 +395,15 @@ function TestCodebase()
         echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+        # Increment counter that check was ran
+        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+        # Increment counter that check was ran
+        ((TESTS_RAN++))
       fi
     else
       #######################################
@@ -442,14 +422,30 @@ function TestCodebase()
         echo "ERROR: Linter CMD:[$LINTER_COMMAND $FILE]"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+        # Increment counter that check was ran
+        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
+        # Increment counter that check was ran
+        ((TESTS_RAN++))
       fi
     fi
   done
+
+  ##############################
+  # Validate we ran some tests #
+  ##############################
+  if [ "$TESTS_RAN" -eq 0 ]; then
+    #################################################
+    # We failed to find files and no tests were ran #
+    #################################################
+    echo "ERROR! Failed to find any tests ran for the Linter:[$LINTER_NAME]"!
+    echo "Please validate logic or that tests exist!"
+    exit 1
+  fi
 }
 ################################################################################
 #### Function RunTestCases #####################################################
@@ -492,7 +488,7 @@ function RunTestCases()
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
   TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "docker"
-  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" "ansible-lint" "ansible"
+  TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
   TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "cfn"
   TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
@@ -537,7 +533,6 @@ function LintAnsibleFiles()
   ###########################################
   # Validate we have ansible-lint installed #
   ###########################################
-  # shellcheck disable=SC2230
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -577,21 +572,10 @@ function LintAnsibleFiles()
   ######################################################
   if [ -d "$ANSIBLE_DIRECTORY" ]; then
 
-    ############################################################
-    # Check to see if we need to go through array or all files #
-    ############################################################
-    if [ "$VALIDATE_ALL_CODEBASE" == "false" ]; then
-      # We need to only check the ansible playbooks that have updates
-      #LIST_FILES=("${ANSIBLE_ARRAY[@]}")
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
-    else
-      #################################
-      # Get list of all files to lint #
-      #################################
-      # shellcheck disable=SC2164,SC2010,SC2207
-      LIST_FILES=($(cd "$ANSIBLE_DIRECTORY"; ls | grep ".yml" 2>&1))
-    fi
+    #################################
+    # Get list of all files to lint #
+    #################################
+    mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
 
     ###############################################################
     # Set the list to empty if only MD and TXT files were changed #

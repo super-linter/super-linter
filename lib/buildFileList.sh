@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 
 ################################################################################
 ################################################################################
@@ -56,8 +55,7 @@ function BuildFileList()
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  # shellcheck disable=SC2207
-  RAW_FILE_ARRAY=($(cd "$GITHUB_WORKSPACE" || exit; git diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1))
+  mapfile -t RAW_FILE_ARRAY < <(git -C "$GITHUB_WORKSPACE" diff --name-only "$DEFAULT_BRANCH..$GITHUB_SHA" --diff-filter=d 2>&1)
 
   #######################
   # Load the error code #
@@ -412,6 +410,8 @@ function BuildFileList()
       fi
     fi
   done
+
+  echo ${READ_ONLY_CHANGE_FLAG}  > /dev/null 2>&1 || true # Workaround SC2034
 
   #########################################
   # Need to switch back to branch of code #

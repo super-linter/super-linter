@@ -22,5 +22,5 @@ fi
 #########################
 export RUN_LOCAL=true
 
-# shellcheck disable=SC1091,SC1090
+# shellcheck source=/dev/null
 source "$PWD"/lib/linter.sh
