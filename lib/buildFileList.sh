@@ -438,5 +438,5 @@ function BuildFileList()
   ################
   echo ""
   echo "----------------------------------------------"
-  echo "Successfully gathered list of files..."
+  echo -e "${NC}${F[B]}Successfully gathered list of files...${NC}"
 }

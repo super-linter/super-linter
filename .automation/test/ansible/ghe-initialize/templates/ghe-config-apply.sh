@@ -166,7 +166,7 @@ RunConfigApply()
     exit 1
   else
     # Success
-    echo "Successfully ran $GHE_APPLY_COMMAND"
+    echo -e "${NC}${F[B]}Successfully ran $GHE_APPLY_COMMAND${NC}"
   fi
 }
 ################################################################################

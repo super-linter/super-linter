@@ -318,7 +318,7 @@ BuildImage()
     exit 1
   else
     # SUCCESS
-    echo "Successfully Built image!"
+    echo -e "${NC}${F[B]}Successfully Built image!${NC}"
   fi
 
   ########################################################
@@ -342,7 +342,7 @@ BuildImage()
       exit 1
     else
       # SUCCESS
-      echo "Successfully tagged image!"
+      echo -e "${NC}${F[B]}Successfully tagged image!${NC}"
     fi
   fi
 }

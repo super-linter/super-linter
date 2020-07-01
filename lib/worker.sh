@@ -56,7 +56,7 @@ function LintCodebase()
   else
     # Success
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo "Successfully found binary in system"
+      echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
   fi
@@ -195,7 +195,7 @@ function LintCodebase()
         ###########
         # Success #
         ###########
-        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+        echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
       fi
     done
   fi
@@ -245,7 +245,7 @@ function TestCodebase()
     exit 1
   else
     # Success
-    echo "Successfully found binary in system"
+    echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
     echo "Location:[$VALIDATE_INSTALL_CMD]"
   fi
 
@@ -369,7 +369,7 @@ function TestCodebase()
         ###########
         # Success #
         ###########
-        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+        echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
         # Increment counter that check was ran
         ((TESTS_RAN++))
       fi
@@ -396,7 +396,7 @@ function TestCodebase()
         ###########
         # Success #
         ###########
-        echo " - File:[$FILE_NAME] failed test case with [$LINTER_NAME] successfully"
+        echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} failed test case with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
         # Increment counter that check was ran
         ((TESTS_RAN++))
       fi
@@ -520,7 +520,7 @@ function LintAnsibleFiles()
     # Success
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
       # Success
-      echo "Successfully found binary in system"
+      echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
   fi
@@ -627,7 +627,7 @@ function LintAnsibleFiles()
         ###########
         # Success #
         ###########
-        echo " - File:[$FILE_NAME] was linted with [$LINTER_NAME] successfully"
+        echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
       fi
     done
   else # No ansible directory found in path
