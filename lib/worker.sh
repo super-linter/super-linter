@@ -61,43 +61,6 @@ function LintCodebase()
     fi
   fi
 
-  ###############################################################
-  # For POWERSHELL, ensure PSScriptAnalyzer module is available #
-  ###############################################################
-  if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
-    VALIDATE_PSSA_MODULE=$(pwsh -c "(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name" 2>&1)
-    # If module found, ensure Invoke-ScriptAnalyzer command is available
-    if [[ "$VALIDATE_PSSA_MODULE" == "PSScriptAnalyzer" ]]; then
-      VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
-    else
-      exit 1
-    fi
-    if [[ "$VALIDATE_PSSA_CMD" != "Invoke-ScriptAnalyzer" ]]; then
-      exit 1
-    fi
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      # Failed
-      echo "ERROR! Failed find module [PSScriptAnalyzer] for [$LINTER_NAME] in system!"
-      echo "ERROR:[PSSA_MODULE $VALIDATE_PSSA_MODULE] [PSSA_CMD $VALIDATE_PSSA_CMD]" 
-      exit 1
-    else
-      # Success
-      if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-        echo "Successfully found module [$VALIDATE_PSSA_MODULE] in system"
-        echo "Successfully found command [$VALIDATE_PSSA_CMD] in system"
-      fi
-    fi
-  fi
-
   ##########################
   # Initialize empty Array #
   ##########################
