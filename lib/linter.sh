@@ -38,8 +38,8 @@ CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"           # Path to th
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                # Name of the file
 RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"         # Path to the ruby lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                  # Name of the file
-COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME" # Path to the coffeescript lint rules
+COFFEESCRIPT_FILE_NAME='.coffee-lint.json'                                  # Name of the file
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEESCRIPT_FILE_NAME" # Path to the coffeescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
@@ -297,34 +297,25 @@ GetLinterRules()
   ################
   # Pull in vars #
   ################
-  FILE_NAME="$1"      # Name fo the linter file
-  FILE_LOCATION="$2"  # Location of the linter file
+  LANGUAGE_NAME="$1"  # Name of the language were looking for
+
+  #######################################################
+  # Need to create the variables for the real variables #
+  #######################################################
+  LANGUAGE_FILE_NAME="${LANGUAGE_NAME}_FILE_NAME"
+  LANGUAGE_LINTER_RULES="${LANGUAGE_NAME}_LINTER_RULES"
 
   #####################################
   # Validate we have the linter rules #
   #####################################
-  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" ]; then
+  if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME" ]; then
     echo "----------------------------------------------"
-    echo "User provided file:[$FILE_NAME], setting rules file..."
+    echo "User provided file:[$LANGUAGE_FILE_NAME], setting rules file..."
 
-    ####################################
-    # Copy users into default location #
-    ####################################
-    CP_CMD=$(cp "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$FILE_NAME" "$FILE_LOCATION" 2>&1)
-
-    ###################
-    # Load Error code #
-    ###################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$FILE_NAME] as default!"
-      echo "ERROR:[$CP_CMD]"
-      exit 1
-    fi
+    ########################################
+    # Update the path to the file location #
+    ########################################
+    ((LANGUAGE_LINTER_RULES))="$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$LANGUAGE_FILE_NAME"
   else
     ########################################################
     # No user default provided, using the template default #
@@ -788,33 +779,33 @@ GetValidationInfo
 # Get the linter rules #
 ########################
 # Get YML rules
-GetLinterRules "$YAML_FILE_NAME" "$YAML_LINTER_RULES"
+GetLinterRules "YAML"
 # Get Markdown rules
-GetLinterRules "$MD_FILE_NAME" "$MD_LINTER_RULES"
+GetLinterRules "MD"
 # Get Python rules
-GetLinterRules "$PYTHON_FILE_NAME" "$PYTHON_LINTER_RULES"
+GetLinterRules "PYTHON"
 # Get Ruby rules
-GetLinterRules "$RUBY_FILE_NAME" "$RUBY_LINTER_RULES"
+GetLinterRules "RUBY"
 # Get Coffeescript rules
-GetLinterRules "$COFFEE_FILE_NAME" "$COFFEESCRIPT_LINTER_RULES"
+GetLinterRules "COFFEESCRIPT"
 # Get Ansible rules
-GetLinterRules "$ANSIBLE_FILE_NAME" "$ANSIBLE_LINTER_RULES"
+GetLinterRules "ANSIBLE"
 # Get JavaScript rules
-GetLinterRules "$JAVASCRIPT_FILE_NAME" "$JAVASCRIPT_LINTER_RULES"
+GetLinterRules "JAVASCRIPT"
 # Get TypeScript rules
-GetLinterRules "$TYPESCRIPT_FILE_NAME" "$TYPESCRIPT_LINTER_RULES"
+GetLinterRules "TYPESCRIPT"
 # Get Golang rules
-GetLinterRules "$GO_FILE_NAME" "$GO_LINTER_RULES"
+GetLinterRules "GO"
 # Get Docker rules
-GetLinterRules "$DOCKER_FILE_NAME" "$DOCKER_LINTER_RULES"
+GetLinterRules "DOCKER"
 # Get Terraform rules
-GetLinterRules "$TERRAFORM_FILE_NAME" "$TERRAFORM_LINTER_RULES"
+GetLinterRules "TERRAFORM"
 # Get PowerShell rules
-GetLinterRules "$POWERSHELL_FILE_NAME" "$POWERSHELL_LINTER_RULES"
+GetLinterRules "POWERSHELL"
 # Get CSS rules
-GetLinterRules "$CSS_FILE_NAME" "$CSS_LINTER_RULES"
+GetLinterRules "CSS"
 # Get CFN rules
-GetLinterRules "$CFN_FILE_NAME" "$CFN_LINTER_RULES"
+GetLinterRules "CFN"
 
 #################################
 # Check if were in verbose mode #
@@ -1133,7 +1124,7 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   # For POWERSHELL, ensure PSScriptAnalyzer module is available #
   ###############################################################
   ValidatePowershellModules
-  
+
   #############################
   # Lint the powershell files #
   #############################
