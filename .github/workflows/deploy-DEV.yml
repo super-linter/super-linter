@@ -20,6 +20,7 @@ on:
   push:
     branches-ignore:
       - 'master'
+  pull_request: []
 
 ###############
 # Set the Job #
@@ -40,32 +41,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      #####################
-      # Run Deploy script #
-      #####################
-      - name: Deploy DEV image to DockerHub
-        env:
-          # Set the Env Vars
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_REPO: github/super-linter
-          DOCKERFILE_PATH: Dockerfile
-          REGISTRY: Docker
+      ###################################
+      # Build image locally for testing #
+      ###################################
+      - name: Build image
         shell: bash
-        run: .automation/upload-docker.sh
-
-      #######################
-      # Get the branch name #
-      #######################
-      - name: Extract branch name
-        shell: bash
-        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^[:alnum:]]//g')"
+        run: docker build --no-cache -t github/super-linter:${GITHUB_SHA} .
 
       ################################
       # Run Linter against code base #
       ################################
       - name: Run Test Cases
         shell: bash
-        run: |
-          docker pull github/super-linter:${BRANCH_NAME}
-          docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${BRANCH_NAME}
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

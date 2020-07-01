@@ -35,9 +35,9 @@ function LintCodebase()
   PRINT_ARRAY+=("----------------------------------------------")
   PRINT_ARRAY+=("----------------------------------------------")
 
-  #######################################
-  # Validate we have jsonlint installed #
-  #######################################
+  #####################################
+  # Validate we have linter installed #
+  #####################################
   VALIDATE_INSTALL_CMD=$(command -v "$LINTER_NAME" 2>&1)
 
   #######################
@@ -56,7 +56,7 @@ function LintCodebase()
   else
     # Success
     if [[ "$ACTIONS_RUNNER_DEBUG" == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
+      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system${NC}"
       echo "Location:[$VALIDATE_INSTALL_CMD]"
     fi
   fi
@@ -166,8 +166,8 @@ function LintCodebase()
         ################################
         # Lint the file with the rules #
         ################################
-        # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+        # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
       else
         ################################
         # Lint the file with the rules #
@@ -333,8 +333,8 @@ function TestCodebase()
       ################################
       # Lint the file with the rules #
       ################################
-      # Need to append "'" to make the pwsh call syntax correct, also exit with exit code from inner subshell
-      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; $LINTER_COMMAND "$FILE"; exit $? 2>&1)
+      # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
+      LINT_CMD=$(cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
     else
       ################################
       # Lint the file with the rules #
