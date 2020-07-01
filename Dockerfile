@@ -39,15 +39,19 @@ RUN apk add --no-cache \
 #########################################
 # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
 # Slightly modified to always retrieve latest stable Powershell version
-RUN mkdir -p /opt/microsoft/powershell/7 \
-    && curl -s https://api.github.com/repos/powershell/powershell/releases/latest \
+# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
+ARG PWSH_VERSION='latest'
+ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
+ARG PSSA_VERSION='latest'
+RUN mkdir -p ${PWSH_DIRECTORY} \
+    && curl -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
     | grep browser_download_url \
     | grep linux-alpine-x64 \
     | cut -d '"' -f 4 \
     | xargs -n 1 wget -O - \
-    | tar -xzC /opt/microsoft/powershell/7 \
-    && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
-    && pwsh -c 'install-module psscriptanalyzer -Scope AllUsers -force'
+    | tar -xzC ${PWSH_DIRECTORY} \
+    && ln -s ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh -f \
+    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
 
 #####################
 # Run Pip3 Installs #
