@@ -417,7 +417,7 @@ DetectOpenAPIFile()
   ###############################
   # Check the file for keywords #
   ###############################
-  grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "$GITHUB_WORKSPACE/$FILE" > /dev/null
+  grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "$FILE" > /dev/null
 
   #######################
   # Load the error code #
