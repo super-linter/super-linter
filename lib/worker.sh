@@ -69,6 +69,11 @@ function LintCodebase()
     # If module found, ensure Invoke-ScriptAnalyzer command is available
     if [[ "$VALIDATE_PSSA_MODULE" == "PSScriptAnalyzer" ]]; then
       VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
+    else
+      exit 1
+    fi
+    if [[ "$VALIDATE_PSSA_CMD" != "Invoke-ScriptAnalyzer" ]]; then
+      exit 1
     fi
 
     #######################
