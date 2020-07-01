@@ -60,8 +60,8 @@ ValidateInput()
   # Validate GITHUB_WORKSPACE #
   #############################
   if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
-    echo "ERROR:[$GITHUB_WORKSPACE]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
     exit 1
   else
     echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
@@ -71,8 +71,8 @@ ValidateInput()
   # Validate REGISTRY #
   #####################
   if [ -z "$REGISTRY" ]; then
-    echo "ERROR! Failed to get [REGISTRY]!"
-    echo "ERROR:[$REGISTRY]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [REGISTRY]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$REGISTRY]"
     exit 1
   else
     echo "Successfully found:[REGISTRY], value:[$REGISTRY]"
@@ -86,8 +86,8 @@ ValidateInput()
     # Validate GPR_USERNAME #
     #########################
     if [ -z "$GPR_USERNAME" ]; then
-      echo "ERROR! Failed to get [GPR_USERNAME]!"
-      echo "ERROR:[$GPR_USERNAME]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GPR_USERNAME]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GPR_USERNAME]"
       exit 1
     else
       echo "Successfully found:[GPR_USERNAME], value:[$GPR_USERNAME]"
@@ -97,8 +97,8 @@ ValidateInput()
     # Validate GPR_TOKEN #
     ######################
     if [ -z "$GPR_TOKEN" ]; then
-      echo "ERROR! Failed to get [GPR_TOKEN]!"
-      echo "ERROR:[$GPR_TOKEN]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GPR_TOKEN]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GPR_TOKEN]"
       exit 1
     else
       echo "Successfully found:[GPR_TOKEN], value:[********]"
@@ -111,8 +111,8 @@ ValidateInput()
     # Validate DOCKER_USERNAME #
     ############################
     if [ -z "$DOCKER_USERNAME" ]; then
-      echo "ERROR! Failed to get [DOCKER_USERNAME]!"
-      echo "ERROR:[$DOCKER_USERNAME]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_USERNAME]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_USERNAME]"
       exit 1
     else
       echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
@@ -122,8 +122,8 @@ ValidateInput()
     # Validate DOCKER_PASSWORD #
     ############################
     if [ -z "$DOCKER_PASSWORD" ]; then
-      echo "ERROR! Failed to get [DOCKER_PASSWORD]!"
-      echo "ERROR:[$DOCKER_PASSWORD]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_PASSWORD]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_PASSWORD]"
       exit 1
     else
       echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
@@ -132,7 +132,7 @@ ValidateInput()
   # We were not passed a registry to update #
   ###########################################
   else
-    echo "ERROR! Failed to find a valid registry!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find a valid registry!"
     echo "Registry:[$REGISTRY]"
     exit 1
   fi
@@ -142,8 +142,8 @@ ValidateInput()
   # Validate IMAGE_REPO #
   #######################
   if [ -z "$IMAGE_REPO" ]; then
-    echo "ERROR! Failed to get [IMAGE_REPO]!"
-    echo "ERROR:[$IMAGE_REPO]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_REPO]"
     exit 1
   else
     echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
@@ -177,8 +177,8 @@ ValidateInput()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to get branch name!"
-      echo "ERROR:[$BRANCH_NAME]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get branch name!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$BRANCH_NAME]"
       exit 1
     fi
 
@@ -224,8 +224,8 @@ ValidateInput()
   # Validate DOCKERFILE_PATH #
   ############################
   if [ -z "$DOCKERFILE_PATH" ]; then
-    echo "ERROR! Failed to get [DOCKERFILE_PATH]!"
-    echo "ERROR:[$DOCKERFILE_PATH]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKERFILE_PATH]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKERFILE_PATH]"
     exit 1
   else
     echo "Successfully found:[DOCKERFILE_PATH], value:[$DOCKERFILE_PATH]"
@@ -267,8 +267,8 @@ Authenticate()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to authenticate to $NAME!"
-    echo "ERROR:[$LOGIN_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to authenticate to $NAME!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LOGIN_CMD]"
     exit 1
   else
     # SUCCESS
@@ -293,7 +293,7 @@ BuildImage()
   ################################
   if [ ! -f "$DOCKERFILE_PATH" ]; then
     # No file found
-    echo "ERROR! failed to find Dockerfile at:[$DOCKERFILE_PATH]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} failed to find Dockerfile at:[$DOCKERFILE_PATH]"
     echo "Please make sure you give full path!"
     echo "Example:[/configs/Dockerfile] or [Dockerfile] if at root directory"
     exit 1
@@ -314,7 +314,7 @@ BuildImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! failed to [build] Dockerfile!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} failed to [build] Dockerfile!"
     exit 1
   else
     # SUCCESS
@@ -338,7 +338,7 @@ BuildImage()
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
       # ERROR
-      echo "ERROR! failed to [tag] Dockerfile!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} failed to [tag] Dockerfile!"
       exit 1
     else
       # SUCCESS
@@ -374,7 +374,7 @@ UploadImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! failed to [upload] Dockerfile!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} failed to [upload] Dockerfile!"
     exit 1
   else
     # SUCCESS
@@ -397,8 +397,8 @@ UploadImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to get information about built Image!"
-    echo "ERROR:[$GET_INFO_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get information about built Image!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GET_INFO_CMD]"
     exit 1
   else
     ################
@@ -440,7 +440,7 @@ UploadImage()
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
       # ERROR
-      echo "ERROR! failed to [upload] MAJOR_TAG:[$MAJOR_TAG] Dockerfile!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} failed to [upload] MAJOR_TAG:[$MAJOR_TAG] Dockerfile!"
       exit 1
     else
       # SUCCESS
@@ -495,7 +495,7 @@ else
   #########
   # ERROR #
   #########
-  echo "ERROR! Registry not set correctly!"
+  echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Registry not set correctly!"
   echo "Registry:[$REGISTRY]"
   exit 1
 fi

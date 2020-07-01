@@ -10,6 +10,8 @@
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
+source /action/lib/termColors.sh      # Source the function script(s)
+# shellcheck source=/dev/null
 source /action/lib/buildFileList.sh   # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/validation.sh      # Source the function script(s)
@@ -322,8 +324,8 @@ GetLinterRules()
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
-      echo "ERROR! Failed to set file:[$FILE_NAME] as default!"
-      echo "ERROR:[$CP_CMD]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to set file:[$FILE_NAME] as default!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$CP_CMD]"
       exit 1
     fi
   else
@@ -373,8 +375,8 @@ GetStandardRules()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to gain list of ENV vars to load!"
-    echo "ERROR:[${GET_ENV_ARRAY[*]}]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain list of ENV vars to load!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GET_ENV_ARRAY[*]}]"
     exit 1
   fi
 
@@ -575,8 +577,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_SHA" ]; then
-      echo "ERROR! Failed to get [GITHUB_SHA]!"
-      echo "ERROR:[$GITHUB_SHA]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_SHA]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_SHA]"
       exit 1
     else
       echo "Successfully found:[GITHUB_SHA], value:[$GITHUB_SHA]"
@@ -586,8 +588,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_WORKSPACE" ]; then
-      echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
-      echo "ERROR:[$GITHUB_WORKSPACE]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
       exit 1
     else
       echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
@@ -597,8 +599,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_EVENT_PATH" ]; then
-      echo "ERROR! Failed to get [GITHUB_EVENT_PATH]!"
-      echo "ERROR:[$GITHUB_EVENT_PATH]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_EVENT_PATH]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_EVENT_PATH]"
       exit 1
     else
       echo "Successfully found:[GITHUB_EVENT_PATH], value:[$GITHUB_EVENT_PATH]"
@@ -617,8 +619,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_ORG" ]; then
-      echo "ERROR! Failed to get [GITHUB_ORG]!"
-      echo "ERROR:[$GITHUB_ORG]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_ORG]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_ORG]"
       exit 1
     else
       echo "Successfully found:[GITHUB_ORG], value:[$GITHUB_ORG]"
@@ -633,8 +635,8 @@ GetGitHubVars()
     # Validate we have a value #
     ############################
     if [ -z "$GITHUB_REPO" ]; then
-      echo "ERROR! Failed to get [GITHUB_REPO]!"
-      echo "ERROR:[$GITHUB_REPO]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPO]!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_REPO]"
       exit 1
     else
       echo "Successfully found:[GITHUB_REPO], value:[$GITHUB_REPO]"
@@ -668,7 +670,7 @@ Footer()
     ##################
     if [ "${!ERROR_COUNTER}" -ne 0 ]; then
       # Print the goods
-      echo "ERRORS FOUND in $LANGUAGE:[${!ERROR_COUNTER}]"
+      echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in $LANGUAGE:[${!ERROR_COUNTER}]"
     fi
   done
 
@@ -676,7 +678,7 @@ Footer()
   # Exit with 0 if errors disabled #
   ##################################
   if [ "$DISABLE_ERRORS" == "true" ]; then
-    echo "WARN! Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[$DISABLE_ERRORS]"
+    echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[$DISABLE_ERRORS]"
     exit 0
   ###############################
   # Exit with 1 if errors found #
@@ -715,7 +717,7 @@ Footer()
     # Footer prints #
     #################
     echo ""
-    echo "All file(s) linted successfully with no errors detected"
+    echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
     echo "----------------------------------------------"
     echo ""
     # Successful exit

@@ -39,7 +39,7 @@ function BuildFileList()
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
     echo "Failed to switch to $DEFAULT_BRANCH branch to get files changed!"
-    echo "ERROR:[$SWITCH_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SWITCH_CMD]"
     exit 1
   fi
 
@@ -67,8 +67,8 @@ function BuildFileList()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
-    echo "ERROR! Failed to gain a list of all files changed!"
-    echo "ERROR:[${RAW_FILE_ARRAY[*]}]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain a list of all files changed!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${RAW_FILE_ARRAY[*]}]"
     exit 1
   fi
 
@@ -429,7 +429,7 @@ function BuildFileList()
   if [ $ERROR_CODE -ne 0 ]; then
     # Error
     echo "Failed to switch back to branch!"
-    echo "ERROR:[$SWITCH2_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SWITCH2_CMD]"
     exit 1
   fi
 

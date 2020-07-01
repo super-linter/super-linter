@@ -54,8 +54,8 @@ ValidateInput()
   # Validate GITHUB_WORKSPACE #
   ############################
   if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
-    echo "ERROR:[$GITHUB_WORKSPACE]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]"
     exit 1
   else
     echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
@@ -66,8 +66,8 @@ ValidateInput()
   #######################
   if [ -z "$IMAGE_REPO" ]; then
     # No repo was pulled
-    echo "ERROR! Failed to get [IMAGE_REPO]!"
-    echo "ERROR:[$IMAGE_REPO]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_REPO]"
     exit 1
   elif [[ "$IMAGE_REPO" == "github/super-linter" ]]; then
     # Found our main repo
@@ -82,8 +82,8 @@ ValidateInput()
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "$IMAGE_VERSION" ]; then
-    echo "ERROR! Failed to get [IMAGE_VERSION]!"
-    echo "ERROR:[$IMAGE_VERSION]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_VERSION]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_VERSION]"
     exit 1
   else
     echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
@@ -93,8 +93,8 @@ ValidateInput()
   # Validate DOCKER_USERNAME #
   ############################
   if [ -z "$DOCKER_USERNAME" ]; then
-    echo "ERROR! Failed to get [DOCKER_USERNAME]!"
-    echo "ERROR:[$DOCKER_USERNAME]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_USERNAME]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_USERNAME]"
     exit 1
   else
     echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
@@ -104,8 +104,8 @@ ValidateInput()
   # Validate DOCKER_PASSWORD #
   ############################
   if [ -z "$DOCKER_PASSWORD" ]; then
-    echo "ERROR! Failed to get [DOCKER_PASSWORD]!"
-    echo "ERROR:[$DOCKER_PASSWORD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_PASSWORD]!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_PASSWORD]"
     exit 1
   else
     echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
@@ -157,8 +157,8 @@ LoginToDocker()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to authenticate to DockerHub!"
-    echo "ERROR:[$LOGIN_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to authenticate to DockerHub!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LOGIN_CMD]"
     exit 1
   else
     # SUCCESS
@@ -197,8 +197,8 @@ RemoveImage()
     ##############################
     if [ $ERROR_CODE -ne 0 ]; then
       # ERROR
-      echo "ERROR! Failed to gain token from DockerHub!"
-      echo "ERROR:[$TOKEN]"
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$TOKEN]"
       exit 1
     else
       # SUCCESS
@@ -222,8 +222,8 @@ RemoveImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to remove tag from DockerHub!"
-    echo "ERROR:[$REMOVE_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to remove tag from DockerHub!"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$REMOVE_CMD]"
     exit 1
   else
     # SUCCESS
