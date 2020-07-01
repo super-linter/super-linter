@@ -125,7 +125,8 @@ jobs:
         uses: docker://github/super-linter:v3
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_ANSIBLE: false
+          DEFAULT_BRANCH: master
+
 ...
 ```
 
