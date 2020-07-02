@@ -313,7 +313,7 @@ GetLinterRules() {
     ########################################
     # Update the path to the file location #
     ########################################
-    declare "${LANGUAGE_LINTER_RULES}=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}"
+    declare -g "${LANGUAGE_LINTER_RULES}=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}"
   else
     ########################################################
     # No user default provided, using the template default #
