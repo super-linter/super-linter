@@ -1,0 +1,21 @@
+{
+  "name": "super-linter",
+  "dependencies": {
+    "@coffeelint/cli": "^3.2.7",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^3.4.0",
+    "babel-eslint": "^10.1.0",
+    "dockerfilelint": "^1.5.0",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.17.1",
+    "jsonlint": "^1.6.3",
+    "markdownlint-cli": "^0.23.1",
+    "prettier": "^2.0.5",
+    "prettyjson": "^1.2.1",
+    "standard": "^14.3.4",
+    "stylelint": "^13.6.1",
+    "stylelint-config-standard": "^20.0.0",
+    "typescript": "^3.9.5"
+  }
+}
