@@ -879,7 +879,7 @@ if [ "$VALIDATE_BASH" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck" ".*\.\(sh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\)\$" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##################
