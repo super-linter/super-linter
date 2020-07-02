@@ -89,7 +89,7 @@ HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path t
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
+  "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
   "spectral" "cfn-lint" "htmlhint")
 
@@ -1152,7 +1152,7 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   # Lint the docker files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  LintCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
 fi
 
 ###################
