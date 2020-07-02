@@ -140,7 +140,15 @@ function BuildFileList()
         ################################
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
-
+      ############################
+      # Check if file is ARM #
+      ############################
+      if DetectARMFile "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_ARM+=("$FILE")
+      fi
       #####################################
       # Check if the file is CFN template #
       #####################################

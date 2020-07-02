@@ -34,6 +34,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
+| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                  |
 | **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/) |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
@@ -168,6 +169,7 @@ and won't run anything unexpected.
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_POWERSHELL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_ARM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |

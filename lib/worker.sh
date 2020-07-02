@@ -159,15 +159,17 @@ function LintCodebase()
       ####################
       LINT_CMD=''
 
-      #######################################
-      # Corner case for Powershell subshell #
-      #######################################
-      if [[ "$FILE_TYPE" == "POWERSHELL" ]]; then
+      ####################################
+      # Corner case for pwsh subshell    #
+      #  - PowerShell (PSScriptAnalyzer) #
+      #  - ARM        (arm-ttk)          #
+      ####################################
+      if [[ "$FILE_TYPE" == "POWERSHELL" ]] || [[ "$FILE_TYPE" == "ARM" ]]; then
         ################################
         # Lint the file with the rules #
         ################################
         # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -NoProfile -NoLogo -Command "$LINTER_COMMAND $FILE; if (\$Error.Count) { exit 1 }"; exit $? 2>&1)
       else
         ################################
         # Lint the file with the rules #
@@ -459,7 +461,8 @@ function RunTestCases()
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
   TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "cfn"
-  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
+  TestCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
+  TestCodebase "ARM" "arm-ttk" "Import-Module $ARM_TTK_PSD1 ; \$config = \$(Import-PowerShellDataFile -Path $ARM_LINTER_RULES) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "arm"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "css"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
