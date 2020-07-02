@@ -1,3 +1,9 @@
+---
+###############################
+###############################
+## StaleBot for Super-Linter ##
+###############################
+###############################
 on:
   schedule:
     # every day at 0:00 UTC
@@ -5,10 +11,18 @@ on:
   issue_comment:
     types: [created, deleted, edited]
 
-name: "services-stale[bot]"
+###################
+# Name of the Job #
+###################
+name: "Stale[bot]"
 
+###############
+# Run the job #
+###############
 jobs:
-
+  #######################
+  # Mark an Issue Stale #
+  #######################
   markstale:
     runs-on: ubuntu-latest
     # only run on schedule
@@ -27,6 +41,9 @@ jobs:
           stale-pr-label: "O: stale 🤖"
           exempt-pr-label: "O: backlog 🤖"
 
+  ##################
+  # Mark not stale #
+  ##################
   marknotstale:
     runs-on: ubuntu-latest
     # do not run on schedule
