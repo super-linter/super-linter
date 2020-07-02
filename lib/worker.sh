@@ -167,7 +167,7 @@ function LintCodebase()
         # Lint the file with the rules #
         ################################
         # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE)"; exit $? 2>&1)
+        LINT_CMD=$(cd "$GITHUB_WORKSPACE" || exit; pwsh -c "($LINTER_COMMAND $FILE; exit $?)" 2>&1)
       else
         ################################
         # Lint the file with the rules #
