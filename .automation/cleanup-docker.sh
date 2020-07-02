@@ -16,20 +16,19 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
-DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
-IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
+DOCKER_USERNAME="${DOCKER_USERNAME}"   # Username to login to DockerHub
+DOCKER_PASSWORD="${DOCKER_PASSWORD}"   # Password to login to DockerHub
+IMAGE_REPO="${IMAGE_REPO}"             # Image repo to upload the image
+IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
+DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
 ################################################################################
 ################################################################################
 #### Function Header ###########################################################
-Header()
-{
+Header() {
   echo ""
   echo "-------------------------------------------------------"
   echo "----- GitHub Actions remove image from DockerHub ------"
@@ -38,8 +37,7 @@ Header()
 }
 ################################################################################
 #### Function ValidateInput ####################################################
-ValidateInput()
-{
+ValidateInput() {
   # Need to validate we have the basic variables
   ################
   # Print header #
@@ -69,7 +67,7 @@ ValidateInput()
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_REPO]${NC}"
     exit 1
-  elif [[ "$IMAGE_REPO" == "github/super-linter" ]]; then
+  elif [[ $IMAGE_REPO == "github/super-linter" ]]; then
     # Found our main repo
     echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
   else
@@ -114,7 +112,7 @@ ValidateInput()
   ##################################################
   # Check if we need to get the name of the branch #
   ##################################################
-  if [[ "$IMAGE_VERSION" != "latest" ]]; then
+  if [[ $IMAGE_VERSION != "latest" ]]; then
     ##################################
     # Remove non alpha-numeric chars #
     ##################################
@@ -131,8 +129,7 @@ ValidateInput()
 }
 ################################################################################
 #### Function LoginToDocker ####################################################
-LoginToDocker()
-{
+LoginToDocker() {
   ################
   # Print header #
   ################
@@ -167,8 +164,7 @@ LoginToDocker()
 }
 ################################################################################
 #### Function RemoveImage ######################################################
-RemoveImage()
-{
+RemoveImage() {
   ################
   # Print header #
   ################
@@ -187,23 +183,23 @@ RemoveImage()
     -d "{\"username\": \"$DOCKER_USERNAME\", \"password\": \"$DOCKER_PASSWORD\"}" \
     "https://hub.docker.com/v2/users/login/" | jq -r .token 2>&1)
 
-    #######################
-    # Load the ERROR_CODE #
-    #######################
-    ERROR_CODE=$?
+  #######################
+  # Load the ERROR_CODE #
+  #######################
+  ERROR_CODE=$?
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      # ERROR
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$TOKEN]${NC}"
-      exit 1
-    else
-      # SUCCESS
-      echo "Successfully gained auth token from DockerHub!"
-    fi
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # ERROR
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$TOKEN]${NC}"
+    exit 1
+  else
+    # SUCCESS
+    echo "Successfully gained auth token from DockerHub!"
+  fi
 
   #################################
   # Remove the tag from DockerHub #
@@ -232,8 +228,7 @@ RemoveImage()
 }
 ################################################################################
 #### Function Footer ###########################################################
-Footer()
-{
+Footer() {
   echo ""
   echo "-------------------------------------------------------"
   echo "The step has completed"
