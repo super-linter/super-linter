@@ -281,7 +281,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-        FILE_ARRAY_GO+=("$(dirname "${FILE}")" )
+      FILE_ARRAY_GO+=("$(dirname "${FILE}")" )
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
