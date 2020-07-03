@@ -28,20 +28,10 @@ ARG PSSA_VERSION='latest'
 # arm-ttk
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk.git'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
-# ARG ARM_TTK_SH="${ARM_TTK_DIRECTORY}/arm-ttk/Test-AzTemplate.sh"
 # clj-kondo
 ARG CLJ_KONDO_VERSION='2020.06.21'
 # Go Linter
 ARG GO_VERSION='v1.27.0'
-
-# PWSH_VERSION='latest'
-# PWSH_DIRECTORY='/opt/microsoft/powershell'
-# PSSA_VERSION='latest'
-# ARM_TTK_URI='https://github.com/Azure/arm-ttk.git'
-# ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
-# CLJ_KONDO_VERSION='2020.06.21'
-# GO_VERSION='v1.27.0'
-# ARM_TTK_PSD1="/opt/microsoft/arm-ttk/arm-ttk/arm-ttk.psd1"
 
 ####################
 # Run APK installs #
