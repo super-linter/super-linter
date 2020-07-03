@@ -334,7 +334,7 @@ function TestCodebase() {
         cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit
         $LINTER_COMMAND "$FILE" 2>&1
       )
-    elif [[ $FILE_TYPE == "POWERSHELL" ]]; then
+    elif [[ $FILE_TYPE == "POWERSHELL" ]] || [[ $FILE_TYPE == "ARM" ]]; then
       ################################
       # Lint the file with the rules #
       ################################
