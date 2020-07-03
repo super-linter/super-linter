@@ -415,8 +415,7 @@ function BuildFileList() {
 
   echo ${READ_ONLY_CHANGE_FLAG} > /dev/null 2>&1 || true # Workaround SC2034
 
-  FILE_ARRAY_GO=($(echo "${FILE_ARRAY_GO[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-
+  mapfile -t FILE_ARRAY_GO < <(printf '%s\n' "${FILE_ARRAY_GO[@]}" | sort -u)
 
   #########################################
   # Need to switch back to branch of code #
