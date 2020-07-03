@@ -269,7 +269,7 @@ GetLinterVersions()
     # Get the version #
     ###################
     if [[ "$LINTER" == "arm-ttk" ]]; then
-      mapfile -t GET_VERSION_CMD < <(cat $ARM_TTK_PSD1 | grep -i version | xargs 2>&1)
+      mapfile -t GET_VERSION_CMD < <(cat "$ARM_TTK_PSD1" | grep -i version | xargs 2>&1)
 
     elif [[ "$LINTER" == "protolint" ]]; then
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
