@@ -1,5 +1,5 @@
-# Json Test Cases
-This folder holds the test cases for **Json**.  
+# ARM Test Cases
+This folder holds the test cases for **Azure Resource Manager (ARM)**.  
 
 ## Additional Docs
 No Additional information is needed for this test case.
