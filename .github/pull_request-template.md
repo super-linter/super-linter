@@ -1,4 +1,4 @@
-<!-- Please ensure your PR title is breif and descriptive for a good changelog entry -->
+<!-- Please ensure your PR title is brief and descriptive for a good changelog entry -->
 <!-- Link to issue if there is one -->
 <!-- markdownlint-disable -->
 Fixes #
