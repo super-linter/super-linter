@@ -281,7 +281,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_GO+=("$FILE")
+        FILE_ARRAY_GO+=("$(dirname "${FILE}")" )
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -414,6 +414,9 @@ function BuildFileList() {
   done
 
   echo ${READ_ONLY_CHANGE_FLAG} > /dev/null 2>&1 || true # Workaround SC2034
+
+  FILE_ARRAY_GO=($(echo "${FILE_ARRAY_GO[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
 
   #########################################
   # Need to switch back to branch of code #

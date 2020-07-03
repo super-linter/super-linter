@@ -955,8 +955,12 @@ if [ "$VALIDATE_GO" == "true" ]; then
   #########################
   # Lint the golang files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
+    # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+    if [ "$VALIDATE_ALL_CODEBASE" == "true" ]; then
+        LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "$GITHUB_WORKSPACE/..."
+    else
+        LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
+    fi
 fi
 
 #####################
