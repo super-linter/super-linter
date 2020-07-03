@@ -269,7 +269,7 @@ GetLinterVersions()
     # Get the version #
     ###################
     if [[ "$LINTER" == "arm-ttk" ]]; then
-      mapfile -t GET_VERSION_CMD < <(cat "$ARM_TTK_PSD1" | grep -i version | xargs 2>&1)
+      mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "$ARM_TTK_PSD1" | xargs 2>&1)
 
     elif [[ "$LINTER" == "protolint" ]]; then
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
@@ -473,7 +473,7 @@ DetectARMFile()
   ###############################
   # Check the file for keywords #
   ###############################
-  grep -E 'schema.management.azure.com' "$GITHUB_WORKSPACE/$FILE" > /dev/null
+  grep -E 'schema.management.azure.com' "$FILE" > /dev/null
 
   #######################
   # Load the error code #
