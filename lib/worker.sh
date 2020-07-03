@@ -55,8 +55,7 @@ function LintCodebase() {
   else
     # Success
     if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system${NC}"
-      echo "Location:[$VALIDATE_INSTALL_CMD]"
+      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system location: ${F[W]}[$VALIDATE_INSTALL_CMD]${NC}"
     fi
   fi
 
@@ -250,8 +249,7 @@ function TestCodebase() {
     exit 1
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system location: ${F[W]}[$VALIDATE_INSTALL_CMD]${NC}"
   fi
 
   ##########################

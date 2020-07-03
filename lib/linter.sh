@@ -264,7 +264,6 @@ GetLinterVersions() {
   # Go through the array of linters and print version info #
   ##########################################################
   for LINTER in "${LINTER_ARRAY[@]}"; do
-    echo "[$LINTER]:"
     ###################
     # Get the version #
     ###################
@@ -287,12 +286,12 @@ GetLinterVersions() {
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      echo -e "${NC}${F[Y]}WARN!${NC} Failed to get version info for:[$LINTER]${NC}"
+      echo -e "${NC}[$LINTER]: ${F[Y]}WARN!${NC} Failed to get version info for:${NC}"
     else
       ##########################
       # Print the version info #
       ##########################
-      echo "[$LINTER]: ${GET_VERSION_CMD[*]}"
+      echo -e "${NC}${F[B]}Successfully found version for ${F[W]}[$LINTER]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
     fi
   done
   #########################
