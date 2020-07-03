@@ -341,7 +341,7 @@ function TestCodebase() {
       # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
       LINT_CMD=$(
         cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit
-        pwsh -c "($LINTER_COMMAND $FILE)"
+        pwsh -NoProfile -NoLogo -Command "$LINTER_COMMAND $FILE; if (\$Error.Count) { exit 1 }"
         exit $? 2>&1
       )
     else
