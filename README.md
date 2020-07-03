@@ -60,7 +60,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
 
 ## How to use
-<img height="512" src="https://github.com/github/super-linter/blob/quickstart/docs/how-to.gif?raw=true" alt="How to gif">
+More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) available
 
 To use this **GitHub** Action you will need to complete the following:
 1. Create a new file in your repository called `.github/workflows/linter.yml`
@@ -96,8 +96,10 @@ name: Lint Code Base
 #############################
 on:
   push:
-    branches-ignore:
-      - 'master'
+    branches-ignore: [master]
+    # Remove the line above to run when pushing to master
+  pull_request:
+    branches: [master]
 
 ###############
 # Set the Job #
@@ -126,7 +128,8 @@ jobs:
         uses: docker://github/super-linter:v3
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_ANSIBLE: false
+          DEFAULT_BRANCH: master
+
 ...
 ```
 

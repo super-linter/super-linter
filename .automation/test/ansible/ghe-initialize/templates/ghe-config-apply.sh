@@ -53,8 +53,8 @@ CheckGHEPid()
       # Check the shell for errors #
       ##############################
       if [ $ERROR_CODE -ne 0 ]; then
-        echo "ERROR! Failed to sleep!"
-        echo "ERROR:[$SLEEP_CMD]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SLEEP_CMD]${NC}"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -117,8 +117,8 @@ CheckGHEProcess()
       # Check the shell for errors #
       ##############################
       if [ $ERROR_CODE -ne 0 ]; then
-        echo "ERROR! Failed to sleep!"
-        echo "ERROR:[$SLEEP_CMD]"
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SLEEP_CMD]${NC}"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -161,12 +161,12 @@ RunConfigApply()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # Errors
-    echo "ERROR! Failed to run config apply command!"
-    echo "ERROR:[$APPLY_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to run config apply command!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$APPLY_CMD]${NC}"
     exit 1
   else
     # Success
-    echo "Successfully ran $GHE_APPLY_COMMAND"
+    echo -e "${NC}${F[B]}Successfully ran ${F[C]}$GHE_APPLY_COMMAND${NC}"
   fi
 }
 ################################################################################
