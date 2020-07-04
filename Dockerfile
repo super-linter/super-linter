@@ -118,7 +118,7 @@ RUN git clone "${ARM_TTK_URI}" "${ARM_TTK_DIRECTORY}" \
 ######################
 # Install shellcheck #
 ######################
-COPY --from=koalaman/shellcheck:stable /bin/shellcheck /usr/bin/
+COPY --from=koalaman/shellcheck:v0.7.1 /bin/shellcheck /usr/bin/
 
 #####################
 # Install Go Linter #
