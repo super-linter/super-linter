@@ -37,14 +37,26 @@ ARG RAKUBREW_HOME=/tmp/rakubrew
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    bash curl \
-    gcc go \
-    icu-libs jq libxml2-utils make musl-dev \
-    npm nodejs \
+    ansible-lint \
+    bash \
+    curl \
+    gcc \
+    go \
+    icu-libs \
+    jq \
+    libxml2-utils \
+    make \
+    musl-dev \
+    npm \
+    nodejs \
     openjdk8-jre \
-    perl php7 \
-    py3-setuptools ansible-lint \
-    ruby ruby-dev ruby-bundler ruby-rdoc
+    perl \
+    php7 \
+    py3-setuptools \
+    ruby \
+    ruby-dev \
+    ruby-bundler \
+    ruby-rdoc
 
 ########################################
 # Copy dependencies files to container #
