@@ -90,7 +90,8 @@ RUN npm config set package-lock false \
       @typescript-eslint/parser \
       eslint-plugin-jest \
       stylelint \
-      stylelint-config-standard
+      stylelint-config-standard \
+      htmlhint
 
 ####################################
 # Install dockerfilelint from repo #

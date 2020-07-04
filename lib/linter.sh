@@ -77,6 +77,9 @@ PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME" # Path to th
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
+# HTML Vars
+HTML_FILE_NAME='.htmlhintrc'                                          # Name of the file
+HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"           # Path to the CSS lint rules
 
 #######################################
 # Linter array for information prints #
@@ -85,7 +88,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint")
+  "spectral" "cfn-lint" "htmlhint")
 
 #############################
 # Language array for prints #
@@ -93,7 +96,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN' 'HTML')
 
 ###################
 # GitHub ENV Vars #
@@ -131,6 +134,7 @@ VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to vali
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
+VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
 
 ##############
 # Debug Vars #
@@ -189,6 +193,7 @@ FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
+FILE_ARRAY_HTML=()                # Array of files to check
 
 ############
 # Counters #
@@ -219,6 +224,7 @@ ERRORS_FOUND_CLOJURE=0             # Count of errors found
 ERRORS_FOUND_KOTLIN=0              # Count of errors found
 ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_OPENAPI=0             # Count of errors found
+ERRORS_FOUND_HTML=0                # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -727,7 +733,8 @@ Footer() {
     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] ||
     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
-    [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
+    [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
+    [ "$ERRORS_FOUND_HTML" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
@@ -795,6 +802,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "CSS"
 # Get CFN rules
 GetLinterRules "CFN"
+# Get HTML rules
+GetLinterRules "HTML"
 
 #################################
 # Check if were in verbose mode #
@@ -1150,6 +1159,20 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
   ##########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" "disabledfileext" "${FILE_ARRAY_OPENAPI[@]}"
+fi
+
+################
+# HTML LINTING #
+################
+if [ "$VALIDATE_HTML" == "true" ]; then
+  #################################
+  # Get HTML standard rules #
+  #################################
+  GetStandardRules "htmlhint"
+  #############################
+  # Lint the HTML files #
+  #############################
+  LintCodebase "HTML" "htmlhint" "htmlhint --config $HTML_LINTER_RULES" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
 fi
 
 ##########

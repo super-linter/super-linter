@@ -71,6 +71,7 @@ function GetValidationInfo() {
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
+  VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -100,7 +101,8 @@ function GetValidationInfo() {
     $VALIDATE_CLOJURE || -n \
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
-    $VALIDATE_KOTLIN ]]; then
+    $VALIDATE_KOTLIN || -n \
+    $VALIDATE_HTML ]]; then
     ANY_SET="true"
   fi
 
@@ -454,6 +456,20 @@ function GetValidationInfo() {
     VALIDATE_CLOJURE="true"
   fi
 
+  ####################################
+  # Validate if we should check HTML #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_HTML ]]; then
+      # HTML flag was not set - default to false
+      VALIDATE_HTML="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_HTML="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -581,6 +597,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [PROTOBUF] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PROTOBUF] files in code base...")
+  fi
+  if [[ $VALIDATE_HTML == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [HTML] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
   fi
 
   ##############################

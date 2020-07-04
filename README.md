@@ -41,6 +41,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
+| **HTMLHint**     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                      |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
@@ -175,6 +176,7 @@ and won't run anything unexpected.
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_HTML** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
