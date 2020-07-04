@@ -5,3 +5,32 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
+
+  # Maintain dependencies for js with npm
+  - package-ecosystem: "npm"
+    directory: "/dependencies"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+
+  # Maintain dependencies for ruby with bundler
+  - package-ecosystem: "bundler"
+    directory: "/dependencies"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Type: Maintenance"
+
+  # Maintain dependencies for docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+
+  # Maintain dependencies for python with pip
+  - package-ecosystem: "pip"
+    directory: "/dependencies"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
