@@ -34,6 +34,8 @@ ARG CLJ_KONDO_VERSION='2020.06.21'
 ARG GO_VERSION='v1.27.0'
 # Raku Linter
 ARG RAKU_VER="2020.06"
+ARG RAKU_INSTALL_PATH=/usr
+ARG RAKUBREW_HOME=/tmp/rakubrew
 
 ####################
 # Run APK installs #
@@ -190,18 +192,18 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ################
 
 # Environment
-ENV PATH="/root/raku-install/bin:/root/raku-install/share/perl6/site/bin:/root/.rakudobrew/bin:${PATH}" \
-    ENV="/root/.profile"
+ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
+
 
 # Basic setup, programs and init
-RUN git clone https://github.com/tadzik/rakudobrew ~/.rakudobrew \
-    && eval "$(~/.rakudobrew/bin/rakudobrew init Sh)"\
-    && rakudobrew build moar $RAKU_VER --configure-opts='--prefix=/root/raku-install' \
-    && rm -rf /root/.rakudobrew/versions/moar-$RAKU_VER \
-    && rakudobrew register moar-$RAKU_VER /root/raku-install \
-    && rakudobrew global moar-$RAKU_VER \
-    && rakudobrew build-zef \
-    && rm -rf /root/.rakudobrew
+RUN mkdir -p $RAKUBREW_HOME/bin \
+    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
+    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
+    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
+    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
+    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
+    && rakubrew build-zef \
+    && rm -rf $RAKUBREW_HOME
 
 ################################
 # Install editorconfig-checker #
