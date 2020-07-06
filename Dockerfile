@@ -18,6 +18,21 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
 
+################################
+# Set ARG values used in Build #
+################################
+# PowerShell & PSScriptAnalyzer
+ARG PWSH_VERSION='latest'
+ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
+ARG PSSA_VERSION='latest'
+# arm-ttk
+ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk.git'
+ARG ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
+# clj-kondo
+ARG CLJ_KONDO_VERSION='2020.06.21'
+# Go Linter
+ARG GO_VERSION='v1.27.0'
+
 ####################
 # Run APK installs #
 ####################
@@ -40,9 +55,6 @@ RUN apk add --no-cache \
 # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
 # Slightly modified to always retrieve latest stable Powershell version
 # If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
-ARG PSSA_VERSION='latest'
 RUN mkdir -p ${PWSH_DIRECTORY} \
     && curl -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
     | grep browser_download_url \
@@ -50,8 +62,18 @@ RUN mkdir -p ${PWSH_DIRECTORY} \
     | cut -d '"' -f 4 \
     | xargs -n 1 wget -O - \
     | tar -xzC ${PWSH_DIRECTORY} \
-    && ln -s ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh -f \
+    && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
     && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
+
+#############################################################
+# Install Azure Resource Manager Template Toolkit (arm-ttk) #
+#############################################################
+# Depends on PowerShell
+# Reference https://github.com/Azure/arm-ttk
+# Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk/arm-ttk.psd1"
+RUN git clone "${ARM_TTK_URI}" "${ARM_TTK_DIRECTORY}" \
+    && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
 
 #####################
 # Run Pip3 Installs #
@@ -121,7 +143,6 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 #####################
 # Install Go Linter #
 #####################
-ARG GO_VERSION='v1.27.0'
 RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
@@ -147,7 +168,6 @@ RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/downloa
 #####################
 # Install clj-kondo #
 #####################
-ARG CLJ_KONDO_VERSION='2020.06.21'
 RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KONDO_VERSION}/clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && unzip clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && rm clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
@@ -191,6 +211,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
+    VALIDATE_ARM=${VALIDATE_ARM} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \

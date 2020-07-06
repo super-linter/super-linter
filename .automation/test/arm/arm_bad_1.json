@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "",
+    "parameters": {
+        "Network.Config": {
+            "type": "object",
+            "metadata": {
+                "description": "Properties object for the Virtual Network"
+            }
+        }
+    },
+    "variables": {
+        "Network.Name": "[parameters('Network.Config').name]",
+        "Network.Location": "[parameters('Network.Config').location]",
+        "Network.Tags": "[parameters('Network.Config').tags]",
+        "Network.Properties.AddressSpace.AddressPrefixes": "[parameters('Network.Config').addressPrefixes]",
+        "Network.Properties.DhcpOptions.DnsServers": "[parameters('Network.Config').dnsServers]",
+        "copy": [
+            {
+                "name": "Network.Properties.Subnets",
+                "count": "[length(parameters('Network.Config').subnetConfig)]",
+                "input": {
+                    "name": "[concat(parameters('Network.Config').subnetConfig[copyIndex('Network.Properties.Subnets')].aksId,'-',parameters('Network.Config').locationId)]",
+                    "properties": "[parameters('Network.Config').subnetConfig[copyIndex('Network.Properties.Subnets')].properties]"
+                }
+            }
+        ],
+        "Test.Blank.Variable": []
+    },
+    "resources": [
+        {
+            "name": "[variables('Network.Name')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-12-01",
+            "tags": "[variables('Network.Tags')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": "[variables('Network.Properties.AddressSpace.AddressPrefixes')]"
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[variables('Network.Properties.DhcpOptions.DnsServers')]"
+                },
+                "subnets": "[variables('Network.Properties.Subnets')]"
+            }
+        }
+    ],
+    "outputs": {
+        "state": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Network/virtualNetworks',variables('Network.Name')), '2019-12-01', 'Full')]"
+        }
+    }
+}
