@@ -36,4 +36,5 @@ updates:
     directory: "/dependencies"
     schedule:
       interval: "daily"
+      time: "19:00"
     open-pull-requests-limit: 10
