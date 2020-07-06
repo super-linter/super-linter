@@ -455,7 +455,7 @@ function RunTestCases() {
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$" "markdown"
-  TestCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh|bash|dash|ksh\)\$" "shell"
+  TestCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell"
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$" "python"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
   TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "php"
