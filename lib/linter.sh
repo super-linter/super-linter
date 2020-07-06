@@ -268,12 +268,13 @@ GetLinterVersions() {
     # Get the version #
     ###################
     if [[ "$LINTER" == "arm-ttk" ]]; then
+      # Need specific command for ARM
       mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "$ARM_TTK_PSD1" | xargs 2>&1)
-
     elif [[ "$LINTER" == "protolint" ]]; then
+      # Need specific command for Protolint
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
-
     else
+      # Standard version command
       mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
     fi
 
@@ -294,6 +295,7 @@ GetLinterVersions() {
       echo -e "${NC}${F[B]}Successfully found version for ${F[W]}[$LINTER]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
     fi
   done
+
   #########################
   # Print version footers #
   #########################
@@ -448,13 +450,13 @@ DetectOpenAPIFile() {
   fi
 }
 ################################################################################
-#### Function DetectARMFile ################################################
+#### Function DetectARMFile ####################################################
 DetectARMFile()
 {
   ################
   # Pull in vars #
   ################
-  FILE="$1"
+  FILE="$1" # Name of the file/path we are validating
 
   ###############################
   # Check the file for keywords #
@@ -473,12 +475,12 @@ DetectARMFile()
     ########################
     # Found string in file #
     ########################
-	  return 0
+    return 0
   else
     ###################
     # No string match #
     ###################
-	  return 1
+    return 1
   fi
 }
 ################################################################################
