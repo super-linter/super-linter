@@ -310,9 +310,8 @@ ignore_templates:
 - [markdownlint inline comment syntax](https://github.com/DavidAnson/markdownlint#configuration)
 
 ### markdownlint Config file
-- `.github/linters/.markdown-lint.yml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.markdownlint.yml`
+- File should be located at: `.github/linters/.markdown-lint.yml`
 
 ### markdownlint disable single line
 ```markdown
