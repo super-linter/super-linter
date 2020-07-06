@@ -99,6 +99,7 @@ RUN npm config set package-lock false \
       stylelint \
       stylelint-config-standard \
       @stoplight/spectral \
+      htmlhint \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
