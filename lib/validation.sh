@@ -72,6 +72,7 @@ function GetValidationInfo() {
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
+  VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
   VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
@@ -104,6 +105,7 @@ function GetValidationInfo() {
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
+    $VALIDATE_EDITORCONFIG || -n \
     $VALIDATE_HTML ]]; then
     ANY_SET="true"
   fi
@@ -472,6 +474,20 @@ function GetValidationInfo() {
     VALIDATE_CLOJURE="true"
   fi
 
+  ############################################
+  # Validate if we should check editorconfig #
+  ############################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_EDITORCONFIG ]]; then
+      # EDITORCONFIG flag was not set - default to false
+      VALIDATE_EDITORCONFIG="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_EDITORCONFIG="true"
+  fi
+  
   ####################################
   # Validate if we should check HTML #
   ####################################
@@ -618,6 +634,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [PROTOBUF] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PROTOBUF] files in code base...")
+  fi
+  if [[ $VALIDATE_EDITORCONFIG == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [EDITORCONFIG] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [EDITORCONFIG] files in code base...")
   fi
   if [[ $VALIDATE_HTML == "true" ]]; then
     PRINT_ARRAY+=("- Validating [HTML] files in code base...")
