@@ -105,7 +105,7 @@ function GetValidationInfo() {
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
-    $VALIDATE_EDITORCONFIG ]]; then
+    $VALIDATE_EDITORCONFIG ]] || -n \
     $VALIDATE_HTML ]]; then
     ANY_SET="true"
   fi
