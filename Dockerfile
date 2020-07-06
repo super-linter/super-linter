@@ -174,8 +174,8 @@ ENV PATH="/root/raku-install/bin:/root/raku-install/share/perl6/site/bin:/root/.
 RUN git clone https://github.com/tadzik/rakudobrew ~/.rakudobrew \
     && eval "$(~/.rakudobrew/bin/rakudobrew init Sh)"\
     && rakudobrew build moar $RAKU_VER --configure-opts='--prefix=/root/raku-install' \
-	&& rm -rf /root/.rakudobrew/versions/moar-$RAKU_VER \
-	&& rakudobrew register moar-$RAKU_VER /root/raku-install \
+    && rm -rf /root/.rakudobrew/versions/moar-$RAKU_VER \
+    && rakudobrew register moar-$RAKU_VER /root/raku-install \
     && rakudobrew global moar-$RAKU_VER \
     && rakudobrew build-zef \
     && rm -rf /root/.rakudobrew
