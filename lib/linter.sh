@@ -139,6 +139,7 @@ DEFAULT_IFS="$IFS"                    # Get the Default IFS for updating
 ##############
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
+OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
 REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
 
 ##########################
@@ -577,7 +578,13 @@ LintAnsibleFiles()
         #######################################################
         if IsTAP ; then
           echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
+          ##########################################
+          # Report the detailed message if enabled #
+          ##########################################
+          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
+          if [ -n "${DETAILED_MSG}" ] ; then
+            printf "  ---\n  message: %s\n  ..." "$DETAILED_MSG" >> "${TMPFILE}"
+          fi
         fi
       else
         ###########
@@ -2034,7 +2041,13 @@ LintCodebase()
         #######################################################
         if IsTAP ; then
           echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          printf "  ---\n  message:[%s]\n  ..." "$LINT_CMD" >> "${TMPFILE}"
+          ##########################################
+          # Report the detailed message if enabled #
+          ##########################################
+          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
+          if [ -n "${DETAILED_MSG}" ] ; then
+            printf "  ---\n  message: %s\n  ..." "$DETAILED_MSG" >> "${TMPFILE}"
+          fi
         fi
 
       else
@@ -2430,6 +2443,19 @@ IsTAP()
     return 1
   fi
 }
+################################################################################
+#### Function TransformTAPDetails ##############################################
+TransformTAPDetails()
+{
+  DATA=$1
+  if [ -n "${DATA}" ] && [ "${OUTPUT_DETAILS}" == "detailed" ] ; then
+    #########################################################
+    # Transform new lines to \\n, remove colours and colons #
+    #########################################################
+    echo "${DATA}" | awk 'BEGIN{RS="\n";ORS="\\n"}1' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" | tr ':' ' '
+  fi
+}
+
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
