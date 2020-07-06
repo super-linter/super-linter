@@ -100,7 +100,8 @@ function GetValidationInfo() {
     $VALIDATE_CLOJURE || -n \
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
-    $VALIDATE_KOTLIN ]]; then
+    $VALIDATE_KOTLIN || -n \
+    $VALIDATE_DART ]]; then
     ANY_SET="true"
   fi
 
@@ -412,6 +413,20 @@ function GetValidationInfo() {
     VALIDATE_KOTLIN="true"
   fi
 
+  ####################################
+  # Validate if we should check DART #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_DART ]]; then
+      # ENV flag was not set - default to false
+      VALIDATE_DART="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_DART="true"
+  fi
+
   #######################################
   # Validate if we should check OPENAPI #
   #######################################
@@ -581,6 +596,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [PROTOBUF] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PROTOBUF] files in code base...")
+  fi
+  if [[ $VALIDATE_DART == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [DART] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [DART] files in code base...")
   fi
 
   ##############################

@@ -159,6 +159,14 @@ RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KON
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
+####################
+# Install dart-sdk #
+####################
+ARG DART_VERSION='2.8.4'
+RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip - \
+    && mv dart-sdk/bin/* /usr/bin \
+    && rm -r "dart-sdk"
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -190,6 +198,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_ENV=${VALIDATE_ENV} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_DART=${VALIDATE_DART} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \

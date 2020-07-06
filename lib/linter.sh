@@ -77,6 +77,9 @@ PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME" # Path to th
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
+# Dart Vars
+DART_FILE_NAME='.dart-lint.yml'
+DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"
 
 #######################################
 # Linter array for information prints #
@@ -85,7 +88,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint")
+  "spectral" "cfn-lint" "dart")
 
 #############################
 # Language array for prints #
@@ -93,7 +96,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN')
+  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN' 'DART')
 
 ###################
 # GitHub ENV Vars #
@@ -129,6 +132,7 @@ VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to vali
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
+VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
 
@@ -219,6 +223,7 @@ ERRORS_FOUND_CLOJURE=0             # Count of errors found
 ERRORS_FOUND_KOTLIN=0              # Count of errors found
 ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_OPENAPI=0             # Count of errors found
+ERRORS_FOUND_DART=0                # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -727,7 +732,8 @@ Footer() {
     [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] ||
     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
-    [ "$ERRORS_FOUND_KOTLIN" -ne 0 ]; then
+    [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
+    [ "$ERRORS_FOUND_DART" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
@@ -795,6 +801,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "CSS"
 # Get CFN rules
 GetLinterRules "CFN"
+# Get DART rules
+GetLinterRules "DART"
 
 #################################
 # Check if were in verbose mode #
@@ -1067,6 +1075,17 @@ if [ "$VALIDATE_KOTLIN" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+##################
+# DART LINTING #
+##################
+if [ "$VALIDATE_DART" == "true" ]; then
+  #######################
+  # Lint the Dart files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "DART" "dart" "dartanalyzer --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
 fi
 
 ##################

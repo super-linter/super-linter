@@ -38,6 +38,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
+| **Dart**         | [dartanalyzer](https://dart.dev/tools/dartanalyzer)                      |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
@@ -176,6 +177,7 @@ and won't run anything unexpected.
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_DART** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
