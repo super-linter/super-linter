@@ -22,26 +22,26 @@ source /action/lib/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                        # Default rules files location
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"               # Linter Path Directory
 # YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                             # Name of the file
-YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME" # Path to the yaml lint rules
+YAML_FILE_NAME='.yaml-lint.yml'                                         # Name of the file
+YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"             # Path to the yaml lint rules
 # MD Vars
-MD_FILE_NAME='.markdown-lint.yml'                       # Name of the file
-MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME" # Path to the markdown lint rules
+MD_FILE_NAME='.markdown-lint.yml'                                       # Name of the file
+MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"                 # Path to the markdown lint rules
 # Python Vars
-PYTHON_FILE_NAME='.python-lint'                                 # Name of the file
-PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME" # Path to the python lint rules
+PYTHON_FILE_NAME='.python-lint'                                         # Name of the file
+PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"         # Path to the python lint rules
 # Cloudformation Vars
-CFN_FILE_NAME='.cfnlintrc.yml'                            # Name of the file
-CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME" # Path to the python lint rules
+CFN_FILE_NAME='.cfnlintrc.yml'                                          # Name of the file
+CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"               # Path to the cloudformation lint rules
 # Ruby Vars
-RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"        # Name of the file
-RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME" # Path to the ruby lint rules
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                    # Name of the file
+RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"             # Path to the ruby lint rules
 # Coffee Vars
-COFFEESCRIPT_FILE_NAME='.coffee-lint.json'                                  # Name of the file
-COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEESCRIPT_FILE_NAME" # Path to the coffeescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                    # Name of the file
+COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"   # Path to the coffeescript lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
 JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
@@ -51,35 +51,41 @@ TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name o
 TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                             # Name of the file
-ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME" # Path to the Ansible lint rules
+ANSIBLE_FILE_NAME='.ansible-lint.yml'                                   # Name of the file
+ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"       # Path to the Ansible lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                            # Name of the file
-DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME" # Path to the Docker lint rules
+DOCKER_FILE_NAME='.dockerfilelintrc'                                    # Name of the file
+DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"         # Path to the Docker lint rules
 # Golang Vars
-GO_FILE_NAME='.golangci.yml'                            # Name of the file
-GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME" # Path to the Go lint rules
+GO_FILE_NAME='.golangci.yml'                                            # Name of the file
+GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"                 # Path to the Go lint rules
 # Terraform Vars
-TERRAFORM_FILE_NAME='.tflint.hcl'                                     # Name of the file
-TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME" # Path to the Terraform lint rules
+TERRAFORM_FILE_NAME='.tflint.hcl'                                       # Name of the file
+TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"   # Path to the Terraform lint rules
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                # Name of the file
 POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME" # Path to the Powershell lint rules
+# Azure Resource Manager Vars
+ARM_FILE_NAME='.arm-ttk.psd1'                                           # Name of the file
+ARM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ARM_FILE_NAME"               # Path to the ARM lint rules
 # CSS Vars
-CSS_FILE_NAME='.stylelintrc.json'                         # Name of the file
-CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME" # Path to the CSS lint rules
+CSS_FILE_NAME='.stylelintrc.json'                                       # Name of the file
+CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"               # Path to the CSS lint rules
 # OpenAPI Vars
-OPENAPI_FILE_NAME='.openapirc.yml'                                # Name of the file
-OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME" # Path to the OpenAPI lint rules
+OPENAPI_FILE_NAME='.openapirc.yml'                                      # Name of the file
+OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"       # Path to the OpenAPI lint rules
 # Protocol Buffers Vars
-PROTOBUF_FILE_NAME='.protolintrc.yml'                               # Name of the file
-PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME" # Path to the Protocol Buffers lint rules
+PROTOBUF_FILE_NAME='.protolintrc.yml'                                   # Name of the file
+PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME"     # Path to the Protocol Buffers lint rules
 # Clojure Vars
-CLOJURE_FILE_NAME='.clj-kondo/config.edn'
-CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'                               # Name of the file
+CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"       # Path to the Clojure lint rules
 # Dart Vars
-DART_FILE_NAME='.dart-lint.yml'
-DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"
+DART_FILE_NAME='.dart-lint.yml'                                         # Name of the file
+DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"             # Path to the DART lint rules
+# HTML Vars
+HTML_FILE_NAME='.htmlhintrc'                                            # Name of the file
+HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path to the CSS lint rules
 
 #######################################
 # Linter array for information prints #
@@ -87,8 +93,8 @@ DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "pwsh" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint" "dart")
+  "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
+  "spectral" "cfn-lint" "dart" "htmlhint")
 
 #############################
 # Language array for prints #
@@ -96,7 +102,8 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI' 'CFN' 'DART')
+  'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
+  'CFN' 'DART' 'HTML')
 
 ###################
 # GitHub ENV Vars #
@@ -130,11 +137,14 @@ VALIDATE_ENV="${VALIDATE_ENV}"                                 # Boolean to vali
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
+VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
+VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
+VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
 
 ##############
 # Debug Vars #
@@ -187,12 +197,15 @@ FILE_ARRAY_DOCKER=()              # Array of files to check
 FILE_ARRAY_GO=()                  # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
+FILE_ARRAY_ARM=()                 # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_ENV=()                 # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
+FILE_ARRAY_DART=()                # Array of files to check
+FILE_ARRAY_HTML=()                # Array of files to check
 
 ############
 # Counters #
@@ -217,6 +230,7 @@ ERRORS_FOUND_DOCKER=0              # Count of errors found
 ERRORS_FOUND_GO=0                  # Count of errors found
 ERRORS_FOUND_TERRAFORM=0           # Count of errors found
 ERRORS_FOUND_POWERSHELL=0          # Count of errors found
+ERRORS_FOUND_ARM=0                 # Count of errors found
 ERRORS_FOUND_CSS=0                 # Count of errors found
 ERRORS_FOUND_ENV=0                 # Count of errors found
 ERRORS_FOUND_CLOJURE=0             # Count of errors found
@@ -224,6 +238,7 @@ ERRORS_FOUND_KOTLIN=0              # Count of errors found
 ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_OPENAPI=0             # Count of errors found
 ERRORS_FOUND_DART=0                # Count of errors found
+ERRORS_FOUND_HTML=0                # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -258,19 +273,24 @@ GetLinterVersions() {
   echo ""
   echo "---------------------------------------------"
   echo "Linter Version Info:"
-  echo "---------------------------------------------"
-  echo ""
 
   ##########################################################
   # Go through the array of linters and print version info #
   ##########################################################
   for LINTER in "${LINTER_ARRAY[@]}"; do
-    echo "---------------------------------------------"
-    echo "[$LINTER]:"
     ###################
     # Get the version #
     ###################
-    mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
+    if [[ "$LINTER" == "arm-ttk" ]]; then
+      # Need specific command for ARM
+      mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "$ARM_TTK_PSD1" | xargs 2>&1)
+    elif [[ "$LINTER" == "protolint" ]]; then
+      # Need specific command for Protolint
+      mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
+    else
+      # Standard version command
+      mapfile -t GET_VERSION_CMD < <("$LINTER" --version 2>&1)
+    fi
 
     #######################
     # Load the error code #
@@ -281,16 +301,20 @@ GetLinterVersions() {
     # Check the shell for errors #
     ##############################
     if [ $ERROR_CODE -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      echo -e "${NC}${F[Y]}WARN!${NC} Failed to get version info for:[$LINTER]${NC}"
-      echo "---------------------------------------------"
+      echo -e "${NC}[$LINTER]: ${F[Y]}WARN!${NC} Failed to get version info for:${NC}"
     else
       ##########################
       # Print the version info #
       ##########################
-      echo "${GET_VERSION_CMD[*]}"
-      echo "---------------------------------------------"
+      echo -e "${NC}${F[B]}Successfully found version for ${F[W]}[$LINTER]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
     fi
   done
+
+  #########################
+  # Print version footers #
+  #########################
+  echo "---------------------------------------------"
+  echo ""
 }
 ################################################################################
 #### Function GetLinterRules ###################################################
@@ -418,6 +442,39 @@ DetectOpenAPIFile() {
   # Check the file for keywords #
   ###############################
   grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "$FILE" > /dev/null
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -eq 0 ]; then
+    ########################
+    # Found string in file #
+    ########################
+    return 0
+  else
+    ###################
+    # No string match #
+    ###################
+    return 1
+  fi
+}
+################################################################################
+#### Function DetectARMFile ####################################################
+DetectARMFile() {
+  ################
+  # Pull in vars #
+  ################
+  FILE="$1" # Name of the file/path we are validating
+
+  ###############################
+  # Check the file for keywords #
+  ###############################
+  grep -E 'schema.management.azure.com' "$FILE" > /dev/null
 
   #######################
   # Load the error code #
@@ -725,6 +782,7 @@ Footer() {
     [ "$ERRORS_FOUND_GO" -ne 0 ] ||
     [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] ||
     [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] ||
+    [ "$ERRORS_FOUND_ARM" -ne 0 ] ||
     [ "$ERRORS_FOUND_RUBY" -ne 0 ] ||
     [ "$ERRORS_FOUND_CSS" -ne 0 ] ||
     [ "$ERRORS_FOUND_CFN" -ne 0 ] ||
@@ -733,7 +791,8 @@ Footer() {
     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
-    [ "$ERRORS_FOUND_DART" -ne 0 ]; then
+    [ "$ERRORS_FOUND_DART" -ne 0 ] ||
+    [ "$ERRORS_FOUND_HTML" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
@@ -749,6 +808,7 @@ Footer() {
     exit 0
   fi
 }
+
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
@@ -797,12 +857,16 @@ GetLinterRules "DOCKER"
 GetLinterRules "TERRAFORM"
 # Get PowerShell rules
 GetLinterRules "POWERSHELL"
+# Get ARM rules
+GetLinterRules "ARM"
 # Get CSS rules
 GetLinterRules "CSS"
 # Get CFN rules
 GetLinterRules "CFN"
 # Get DART rules
 GetLinterRules "DART"
+# Get HTML rules
+GetLinterRules "HTML"
 
 #################################
 # Check if were in verbose mode #
@@ -1077,6 +1141,18 @@ if [ "$VALIDATE_KOTLIN" == "true" ]; then
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
 fi
 
+########################
+# EDITORCONFIG LINTING #
+########################
+echo ed: "$VALIDATE_EDITORCONFIG"
+if [ "$VALIDATE_EDITORCONFIG" == "true" ]; then
+  ####################################
+  # Lint the files with editorconfig #
+  ####################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
+fi
+
 ##################
 # DART LINTING #
 ##################
@@ -1140,6 +1216,17 @@ if [ "$VALIDATE_POWERSHELL" == "true" ]; then
   LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
+########################
+# ARM Template LINTING #
+########################
+if [ "$VALIDATE_ARM" == "true" ]; then
+  ###############################
+  # Lint the ARM Template files #
+  ###############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "ARM" "arm-ttk" "Import-Module $ARM_TTK_PSD1 ; \$config = \$(Import-PowerShellDataFile -Path $ARM_LINTER_RULES) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "${FILE_ARRAY_ARM[@]}"
+fi
+
 ###################
 # OPENAPI LINTING #
 ###################
@@ -1169,6 +1256,20 @@ if [ "$VALIDATE_OPENAPI" == "true" ]; then
   ##########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" "disabledfileext" "${FILE_ARRAY_OPENAPI[@]}"
+fi
+
+################
+# HTML LINTING #
+################
+if [ "$VALIDATE_HTML" == "true" ]; then
+  #################################
+  # Get HTML standard rules #
+  #################################
+  GetStandardRules "htmlhint"
+  #############################
+  # Lint the HTML files #
+  #############################
+  LintCodebase "HTML" "htmlhint" "htmlhint --config $HTML_LINTER_RULES" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
 fi
 
 ##########

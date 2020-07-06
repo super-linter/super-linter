@@ -65,12 +65,15 @@ function GetValidationInfo() {
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
   VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
+  VALIDATE_ARM=$(echo "$VALIDATE_ARM" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
   VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)}')
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
+  VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
+  VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -95,13 +98,19 @@ function GetValidationInfo() {
     $VALIDATE_GO || -n \
     $VALIDATE_TERRAFORM || -n \
     $VALIDATE_POWERSHELL || -n \
+    $VALIDATE_ARM || -n \
     $VALIDATE_CSS || -n \
     $VALIDATE_ENV || -n \
     $VALIDATE_CLOJURE || -n \
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
+<<<<<<< HEAD
     $VALIDATE_DART ]]; then
+=======
+    $VALIDATE_EDITORCONFIG || -n \
+    $VALIDATE_HTML ]]; then
+>>>>>>> master
     ANY_SET="true"
   fi
 
@@ -372,6 +381,20 @@ function GetValidationInfo() {
   fi
 
   ###################################
+  # Validate if we should check ARM #
+  ###################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_ARM" ]]; then
+      # ARM flag was not set - default to false
+      VALIDATE_ARM="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_ARM="true"
+  fi
+
+  ###################################
   # Validate if we should check CSS #
   ###################################
   if [[ $ANY_SET == "true" ]]; then
@@ -467,6 +490,34 @@ function GetValidationInfo() {
   else
     # No linter flags were set - default all to true
     VALIDATE_CLOJURE="true"
+  fi
+
+  ############################################
+  # Validate if we should check editorconfig #
+  ############################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_EDITORCONFIG ]]; then
+      # EDITORCONFIG flag was not set - default to false
+      VALIDATE_EDITORCONFIG="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_EDITORCONFIG="true"
+  fi
+  
+  ####################################
+  # Validate if we should check HTML #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_HTML ]]; then
+      # HTML flag was not set - default to false
+      VALIDATE_HTML="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_HTML="true"
   fi
 
   #######################################
@@ -567,6 +618,11 @@ function GetValidationInfo() {
   else
     PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
   fi
+  if [[ $VALIDATE_ARM == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [ARM] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [ARM] files in code base...")
+  fi
   if [[ $VALIDATE_CSS == "true" ]]; then
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
@@ -601,6 +657,15 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [DART] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [DART] files in code base...")
+  if [[ $VALIDATE_EDITORCONFIG == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [EDITORCONFIG] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [EDITORCONFIG] files in code base...")
+  fi
+  if [[ $VALIDATE_HTML == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [HTML] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
   fi
 
   ##############################

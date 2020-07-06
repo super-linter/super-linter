@@ -36,6 +36,8 @@ For some linters it is also possible to override rules on a case by case level w
 - [Kotlin](#kotlin)
 - [OpenAPI](#openapi)
 - [Protocol Buffers](#protocol-buffers)
+- [EDITORCONFIG-CHECKER](#editorconfig-checker)
+- [HTML](#html)
 
 <!-- toc -->
 
@@ -771,4 +773,51 @@ lint:
 ### clj-kondo disable entire file
 ```clojure
 {:output {:exclude-files ["path/to/file"]}}
+
+## EDITORCONFIG-CHECKER
+- [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
+
+--------------------------------------------------------------------------------
+
+### editorconfig-checker Config file
+- `.github/linters/.ecrc`
+- This linter will also use the [`.editorconfig`](https://editorconfig.org/) of your project
+
+### editorconfig-checker disable single line
+-
+```js
+<LINE> // editorconfig-checker-disable-line
 ```
+
+### editorconfig-checker disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### editorconfig-checker disable entire file
+-
+```js
+// editorconfig-checker-disable-file
+```
+- You can disable entire files with the `Exclude` property in `.ecrc`
+```json
+{
+  "Exclude": [
+    "path/to/file",
+    "^regular\\/expression\\.ext$"
+   ]
+}
+```
+
+## HTML
+- [htmlhint](https://htmlhint.com/)
+
+### htmlhint standard Config file
+- `.github/linters/.htmlhintrc`
+
+### htmlhint disable single line
+- There is currently **No** way to disable rules in a single line
+
+### htmlhint disable code block
+- There is currently **No** way to disable rules in a code block
+
+### htmlhint disable entire file
+- There is currently **No** way to disable rules in an entire file
