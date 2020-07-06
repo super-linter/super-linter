@@ -16,20 +16,19 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
-DOCKER_USERNAME="${DOCKER_USERNAME}"    # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"    # Password to login to DockerHub
-IMAGE_REPO="${IMAGE_REPO}"              # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"        # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"    # Path to the Dockerfile to be uploaded
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
+DOCKER_USERNAME="${DOCKER_USERNAME}"   # Username to login to DockerHub
+DOCKER_PASSWORD="${DOCKER_PASSWORD}"   # Password to login to DockerHub
+IMAGE_REPO="${IMAGE_REPO}"             # Image repo to upload the image
+IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
+DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
 ################################################################################
 ################################################################################
 #### Function Header ###########################################################
-Header()
-{
+Header() {
   echo ""
   echo "-------------------------------------------------------"
   echo "----- GitHub Actions remove image from DockerHub ------"
@@ -38,8 +37,7 @@ Header()
 }
 ################################################################################
 #### Function ValidateInput ####################################################
-ValidateInput()
-{
+ValidateInput() {
   # Need to validate we have the basic variables
   ################
   # Print header #
@@ -54,8 +52,8 @@ ValidateInput()
   # Validate GITHUB_WORKSPACE #
   ############################
   if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "ERROR! Failed to get [GITHUB_WORKSPACE]!"
-    echo "ERROR:[$GITHUB_WORKSPACE]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_WORKSPACE]${NC}"
     exit 1
   else
     echo "Successfully found:[GITHUB_WORKSPACE], value:[$GITHUB_WORKSPACE]"
@@ -66,15 +64,15 @@ ValidateInput()
   #######################
   if [ -z "$IMAGE_REPO" ]; then
     # No repo was pulled
-    echo "ERROR! Failed to get [IMAGE_REPO]!"
-    echo "ERROR:[$IMAGE_REPO]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_REPO]${NC}"
     exit 1
-  elif [[ "$IMAGE_REPO" == "github/super-linter" ]]; then
+  elif [[ $IMAGE_REPO == "github/super-linter" ]]; then
     # Found our main repo
     echo "Successfully found:[IMAGE_REPO], value:[$IMAGE_REPO]"
   else
     # This is a fork and we cant pull vars or any info
-    echo "WARN! No image to cleanup as this is a forked branch, and not being built with current automation!"
+    echo -e "${NC}${F[Y]}WARN!${NC} No image to cleanup as this is a forked branch, and not being built with current automation!${NC}"
     exit 0
   fi
 
@@ -82,8 +80,8 @@ ValidateInput()
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "$IMAGE_VERSION" ]; then
-    echo "ERROR! Failed to get [IMAGE_VERSION]!"
-    echo "ERROR:[$IMAGE_VERSION]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_VERSION]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$IMAGE_VERSION]${NC}"
     exit 1
   else
     echo "Successfully found:[IMAGE_VERSION], value:[$IMAGE_VERSION]"
@@ -93,8 +91,8 @@ ValidateInput()
   # Validate DOCKER_USERNAME #
   ############################
   if [ -z "$DOCKER_USERNAME" ]; then
-    echo "ERROR! Failed to get [DOCKER_USERNAME]!"
-    echo "ERROR:[$DOCKER_USERNAME]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_USERNAME]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_USERNAME]${NC}"
     exit 1
   else
     echo "Successfully found:[DOCKER_USERNAME], value:[$DOCKER_USERNAME]"
@@ -104,8 +102,8 @@ ValidateInput()
   # Validate DOCKER_PASSWORD #
   ############################
   if [ -z "$DOCKER_PASSWORD" ]; then
-    echo "ERROR! Failed to get [DOCKER_PASSWORD]!"
-    echo "ERROR:[$DOCKER_PASSWORD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_PASSWORD]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$DOCKER_PASSWORD]${NC}"
     exit 1
   else
     echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
@@ -114,7 +112,7 @@ ValidateInput()
   ##################################################
   # Check if we need to get the name of the branch #
   ##################################################
-  if [[ "$IMAGE_VERSION" != "latest" ]]; then
+  if [[ $IMAGE_VERSION != "latest" ]]; then
     ##################################
     # Remove non alpha-numeric chars #
     ##################################
@@ -131,8 +129,7 @@ ValidateInput()
 }
 ################################################################################
 #### Function LoginToDocker ####################################################
-LoginToDocker()
-{
+LoginToDocker() {
   ################
   # Print header #
   ################
@@ -157,8 +154,8 @@ LoginToDocker()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to authenticate to DockerHub!"
-    echo "ERROR:[$LOGIN_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to authenticate to DockerHub!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LOGIN_CMD]${NC}"
     exit 1
   else
     # SUCCESS
@@ -167,8 +164,7 @@ LoginToDocker()
 }
 ################################################################################
 #### Function RemoveImage ######################################################
-RemoveImage()
-{
+RemoveImage() {
   ################
   # Print header #
   ################
@@ -187,23 +183,23 @@ RemoveImage()
     -d "{\"username\": \"$DOCKER_USERNAME\", \"password\": \"$DOCKER_PASSWORD\"}" \
     "https://hub.docker.com/v2/users/login/" | jq -r .token 2>&1)
 
-    #######################
-    # Load the ERROR_CODE #
-    #######################
-    ERROR_CODE=$?
+  #######################
+  # Load the ERROR_CODE #
+  #######################
+  ERROR_CODE=$?
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
-      # ERROR
-      echo "ERROR! Failed to gain token from DockerHub!"
-      echo "ERROR:[$TOKEN]"
-      exit 1
-    else
-      # SUCCESS
-      echo "Successfully gained auth token from DockerHub!"
-    fi
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # ERROR
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$TOKEN]${NC}"
+    exit 1
+  else
+    # SUCCESS
+    echo "Successfully gained auth token from DockerHub!"
+  fi
 
   #################################
   # Remove the tag from DockerHub #
@@ -222,8 +218,8 @@ RemoveImage()
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     # ERROR
-    echo "ERROR! Failed to remove tag from DockerHub!"
-    echo "ERROR:[$REMOVE_CMD]"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to remove tag from DockerHub!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$REMOVE_CMD]${NC}"
     exit 1
   else
     # SUCCESS
@@ -232,8 +228,7 @@ RemoveImage()
 }
 ################################################################################
 #### Function Footer ###########################################################
-Footer()
-{
+Footer() {
   echo ""
   echo "-------------------------------------------------------"
   echo "The step has completed"

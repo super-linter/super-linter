@@ -1,0 +1,16 @@
+{
+   "Resources" : {
+      "myDNSRecord" : {
+         "Type" : "AWS::Route53::RecordSet",
+         "Properties" : {
+            "HostedZoneId" : "Z8VLZEXAMPLE",
+            "Name" : "test.example.com",
+            "ResourceRecords" : [
+               "192.0.2.99"
+            ],
+            "TTL" : 300,
+            "Type" : "A"
+         }
+      }
+   }
+}

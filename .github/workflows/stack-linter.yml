@@ -15,8 +15,8 @@
 #############################
 on:
   push:
-    branches-ignore:
-      - 'master'
+    branches: master
+  pull_request: []
 
 ###############
 # Set the Job #
@@ -35,7 +35,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.1
 
       ################################
       # Run Linter against code base #

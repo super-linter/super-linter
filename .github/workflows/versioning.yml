@@ -1,0 +1,44 @@
+---
+#########################
+#########################
+## Version GitHub Tags ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+##########################
+# Name of the action job #
+##########################
+name: Keep GitHub tag versions up-to-date
+
+#####################################################
+# Run the job when a release is published or edited #
+#####################################################
+on:
+  release:
+    types: [published, edited]
+
+#################
+# Start the job #
+#################
+jobs:
+  actions-tagger:
+    runs-on: windows-latest
+    steps:
+      #############################
+      # Check out the latest code #
+      #############################
+      - uses: actions/checkout@v2.3.1
+
+      ######################
+      # Run the tag action #
+      ######################
+      - uses: Actions-R-Us/actions-tagger@v2.0.1
+        with:
+          publish_latest_tag: true
+        env:
+          GITHUB_TOKEN: "${{secrets.GITHUB_TOKEN}}"

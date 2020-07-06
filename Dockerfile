@@ -18,6 +18,21 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>"
 
+################################
+# Set ARG values used in Build #
+################################
+# PowerShell & PSScriptAnalyzer
+ARG PWSH_VERSION='latest'
+ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
+ARG PSSA_VERSION='latest'
+# arm-ttk
+ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk.git'
+ARG ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
+# clj-kondo
+ARG CLJ_KONDO_VERSION='2020.06.21'
+# Go Linter
+ARG GO_VERSION='v1.27.0'
+
 ####################
 # Run APK installs #
 ####################
@@ -39,21 +54,32 @@ RUN apk add --no-cache \
 #########################################
 # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
 # Slightly modified to always retrieve latest stable Powershell version
-RUN mkdir -p /opt/microsoft/powershell/7 \
-    && curl -s https://api.github.com/repos/powershell/powershell/releases/latest \
+# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
+RUN mkdir -p ${PWSH_DIRECTORY} \
+    && curl -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
     | grep browser_download_url \
     | grep linux-alpine-x64 \
     | cut -d '"' -f 4 \
     | xargs -n 1 wget -O - \
-    | tar -xzC /opt/microsoft/powershell/7 \
-    && ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh \
-    && pwsh -c 'install-module psscriptanalyzer -force'
+    | tar -xzC ${PWSH_DIRECTORY} \
+    && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
+    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
+
+#############################################################
+# Install Azure Resource Manager Template Toolkit (arm-ttk) #
+#############################################################
+# Depends on PowerShell
+# Reference https://github.com/Azure/arm-ttk
+# Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk/arm-ttk.psd1"
+RUN git clone "${ARM_TTK_URI}" "${ARM_TTK_DIRECTORY}" \
+    && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
 
 #####################
 # Run Pip3 Installs #
 #####################
 RUN pip3 --no-cache-dir install --upgrade --no-cache-dir \
-    yamllint pylint yq
+    yamllint pylint yq cfn-lint shyaml
 
 ####################
 # Run NPM Installs #
@@ -73,6 +99,7 @@ RUN npm config set package-lock false \
       stylelint \
       stylelint-config-standard \
       @stoplight/spectral \
+      htmlhint \
       && npm --no-cache install \
       markdownlint-cli \
       jsonlint prettyjson \
@@ -86,7 +113,8 @@ RUN npm config set package-lock false \
       @typescript-eslint/parser \
       eslint-plugin-jest \
       stylelint \
-      stylelint-config-standard
+      stylelint-config-standard \
+      htmlhint
 
 ####################################
 # Install dockerfilelint from repo #
@@ -117,7 +145,6 @@ RUN wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/s
 #####################
 # Install Go Linter #
 #####################
-ARG GO_VERSION='v1.27.0'
 RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s "$GO_VERSION"
 
 ##################
@@ -125,6 +152,14 @@ RUN wget -O- -nvq https://raw.githubusercontent.com/golangci/golangci-lint/maste
 ##################
 RUN curl -Ls "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip \
     && mv "tflint" /usr/bin/
+
+######################
+# Install protolint #
+######################
+RUN curl -LsS "$(curl -Ls https://api.github.com/repos/yoheimuta/protolint/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" -o protolint.tar.gz \
+    && tar -xzf protolint.tar.gz \
+    && rm protolint.tar.gz \
+    && mv "protolint" /usr/bin/
 
 #########################
 # Install dotenv-linter #
@@ -135,7 +170,6 @@ RUN wget "https://github.com/dotenv-linter/dotenv-linter/releases/latest/downloa
 #####################
 # Install clj-kondo #
 #####################
-ARG CLJ_KONDO_VERSION='2020.06.12'
 RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KONDO_VERSION}/clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && unzip clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
     && rm clj-kondo-${CLJ_KONDO_VERSION}-linux-static-amd64.zip \
@@ -146,6 +180,12 @@ RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KON
 ##################
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
+
+################################
+# Install editorconfig-checker #
+################################
+RUN wget -qO- "https://github.com/editorconfig-checker/editorconfig-checker/releases/latest/download/ec-linux-amd64.tar.gz" | tar -xzf - \
+        && mv "bin/ec-linux-amd64" /usr/bin/editorconfig-checker
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
@@ -179,7 +219,10 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
+    VALIDATE_ARM=${VALIDATE_ARM} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
+    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
+    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \

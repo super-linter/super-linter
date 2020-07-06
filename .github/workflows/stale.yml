@@ -1,0 +1,61 @@
+---
+###############################
+###############################
+## StaleBot for Super-Linter ##
+###############################
+###############################
+on:
+  schedule:
+    # every day at 0:00 UTC
+    - cron: "0 0 * * *"
+  issue_comment:
+    types: [created, deleted, edited]
+
+###################
+# Name of the Job #
+###################
+name: "Stale[bot]"
+
+###############
+# Run the job #
+###############
+jobs:
+  #######################
+  # Mark an Issue Stale #
+  #######################
+  markstale:
+    runs-on: ubuntu-latest
+    # only run on schedule
+    if: "github.event_name == 'schedule'"
+    steps:
+      - name: Mark issue stale
+        uses: actions/stale@v3.0.7
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue."
+          stale-pr-message: "This pull request has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this pull request should stay open, please remove the `O: stale 🤖` label or comment on the pull request."
+          days-before-stale: 30
+          days-before-close: 14
+          stale-issue-label: "O: stale 🤖"
+          exempt-issue-label: "O: backlog 🤖"
+          stale-pr-label: "O: stale 🤖"
+          exempt-pr-label: "O: backlog 🤖"
+
+  ##################
+  # Mark not stale #
+  ##################
+  marknotstale:
+    runs-on: ubuntu-latest
+    # do not run on schedule
+    if: "github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot'"
+    steps:
+      - name: Mark issue not stale
+        uses: actions/github-script@v2
+        with:
+          script: |
+            github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'O: stale 🤖'
+            })

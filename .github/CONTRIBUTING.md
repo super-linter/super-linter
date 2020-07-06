@@ -31,8 +31,8 @@ Draft pull requests are also welcome to get feedback early on, or if there is so
 
 ## Releasing
 If you are the current maintainer of this action:
-1. Update `README.md` and the wiki to reflect new version number in the example workflow file sections
-2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) with a summarized changelog
+1. If a major version number change: Update `README.md` and the wiki to reflect new version number in the example workflow file sections
+2. Draft [Releases](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) are created automatically. They just need to be checked over for accuracy before making it official.
 3. Ensure you check the box for [publishing to the marketplace](https://help.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace#publishing-an-action)
 4. A GitHub Action will Publish the Docker image to GitHub Package Registry once a Release is created
 5. A GitHub Action will Publish the Docker image to Docker Hub once a Release is created

@@ -1,5 +1,5 @@
 # Super-Linter
-This repository is for the **GitHub Action** to run a **Super-Linter**.  
+This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
 The end goal of this tool:
@@ -7,7 +7,6 @@ The end goal of this tool:
 - Help establish coding best practices across multiple languages
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
-
 
 ## Table of Contents
 
@@ -35,16 +34,25 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
+| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                  |
+| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/) |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
+| **EDITORCONFIG**          | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
+| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
+| **HTMLHint**     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                      |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
+| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
+| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
 | **Perl**         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)          |
 | **PHP**          | [PHP](https://www.php.net/)                                              |
+| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
+| **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
 | **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
@@ -52,16 +60,17 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **TypeScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **XML**          | [LibXML](http://xmlsoft.org/)                                            |
 | **YAML**         | [YamlLint](https://github.com/adrienverge/yamllint)                      |
-| **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
-| **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
-| **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
-| **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
 
 ## How to use
+More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) available
+
 To use this **GitHub** Action you will need to complete the following:
-- Add the **GitHub** Action: **Super-Linter** to your current **GitHub** Actions workflow
-- Enjoy your more *stable*, and *cleaner* code base
-- Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
+1. Create a new file in your repository called `.github/workflows/linter.yml`
+2. Copy the example workflow from below into that new file, no extra configuration required
+3. Commit that file to a new branch
+4. Open up a pull request and observe the action working
+5. Enjoy your more *stable*, and *cleaner* code base
+6. Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
 
 ### Example connecting GitHub Action Workflow
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
@@ -89,8 +98,10 @@ name: Lint Code Base
 #############################
 on:
   push:
-    branches-ignore:
-      - 'master'
+    branches-ignore: [master]
+    # Remove the line above to run when pushing to master
+  pull_request:
+    branches: [master]
 
 ###############
 # Set the Job #
@@ -116,21 +127,23 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v2.2.0
+        uses: docker://github/super-linter:v3
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_ANSIBLE: false
+          DEFAULT_BRANCH: master
+
 ...
 ```
 
-**NOTE:** Using the line:`uses: docker://github/super-linter:v2.2.0` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**. Using the line: `uses: github/super-linter@v2.2.0` will build and compile the **GitHub Super-Linter** at build time. This can be far more costly in time...
+**NOTE:**  
+Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**.   Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. *This can be far more costly in time...*
 
 ## Environment variables
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.  
-If none of them are passed, then they all default to true.  
-However if any one of the variables are set, we default to leaving any unset variable to false.  
+*Note:* All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.
+If none of them are passed, then they all default to true.
+However if any one of the variables are set, we default to leaving any unset variable to false.
 This means that if you run the linter "out of the box", all languages will be checked.
 But if you wish to select specific linters, we give you full control to choose which linters are run,
 and won't run anything unexpected.
@@ -161,12 +174,17 @@ and won't run anything unexpected.
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_POWERSHELL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_ARM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_HTML** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_OPENAPI** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_CLOUDFORMATION** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_PROTOBUF** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_EDITORCONFIG** | `true` | Flag to enable or disable the linting process with the editorconfig. |
 | **ANSIBLE_DIRECTORY** | `/ansible` | Flag to set the root directory for Ansible file location(s). |
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
@@ -204,11 +222,17 @@ The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:
 - Due to being completely packaged at run time, you will not be able to update dependencies or change versions of the enclosed linters and binaries
-- Reading additional details from `package.json` are not read by the **GitHub Super-Linter**
+- Additional details from `package.json` are not read by the **GitHub Super-Linter**
 - Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 

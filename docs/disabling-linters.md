@@ -1,12 +1,22 @@
 # Disabling linters and Rules
-If you find you need to ignore certain **errors** and **warnings**, you will need to know the *format* to disable the **Super-Linter** rules.  
-Below are examples and documentation for each language and the various methods to disable.
+Linters can often require additional configuration to ensure they work with your codebase and your team's coding style, to avoid flagging false-positives. The **GitHub Super-Linter** has set up some default configurations for each linter which should work reasonably well with common code bases, but many of the linters can be configured to disable certain rules or configure the rules to ignore certain pieces of codes.
+
+To run with your own configuration for a linter, copy the relevant [`TEMPLATE` configuration file for the linter you are using from this repo](https://github.com/github/super-linter/tree/master/TEMPLATES) into the `.github/linters` folder in your own repository, and then edit it to modify, disable - or even add - rules and configuration to suit how you want your code checked.
+
+How the changes are made differ for each linter, and also how much the **Github Super-Linter** has decided to change the linter's defaults. So, for some linters (e.g. [pylint for python](https://github.com/github/super-linter/blob/master/TEMPLATES/.python-lint)), there may be a large configuration file. For others (e.g. [stylelint for CSS](https://github.com/github/super-linter/blob/master/TEMPLATES/.stylelintrc.json)) the default configuration file may initially be nearly empty. And for some (e.g. StandardJS) it may not be possible to change configuration at all so there is no Template file.
+
+Where a configuration file exists in your repo, it will be used in preference to the default one in the **GitHub Super-Linter** `TEMPLATES` directory (not in addition to it), and where one doesn't exist the `TEMPLATES` version will be used. So you should copy the complete configuration file you require to change from the `TEMPLATES` directory and not just the lines of config you want to change.
+
+It is possible to have custom configurations for some linters, and continue to use the default from `TEMPLATES` directory for others, so if you use `Python` and `JavaScript` and only need to tweak the `Python` rules, then you only need to have a custom configuration for *pylint* and continue to use the default `TEMPLATE` from the main repo for *ESLint*, for example.
+
+For some linters it is also possible to override rules on a case by case level with directives in your code. Where this is possible we try to note how to do this in the specific linter sections below, but the official linter documentation will likely give more detail on this.
 
 ## Table of Linters
 - [Ruby](#ruby)
 - [Shell](#shell)
 - [Ansible](#ansible)
 - [YAML](#yaml)
+- [AWS CloudFormation templates](#cfn)
 - [Python](#python3)
 - [JSON](#json)
 - [Markdown](#markdown)
@@ -21,10 +31,13 @@ Below are examples and documentation for each language and the various methods t
 - [Golang](#golang)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
-- [CSS](#stylelint)
+- [CSS](#css)
 - [ENV](#dotenv-linter)
 - [Kotlin](#kotlin)
 - [OpenAPI](#openapi)
+- [Protocol Buffers](#protocol-buffers)
+- [EDITORCONFIG-CHECKER](#editorconfig-checker)
+- [HTML](#html)
 
 <!-- toc -->
 
@@ -234,6 +247,42 @@ class Foo(object):
 # pylint: skip-file
 
 var = "terrible code down here..."
+```
+
+--------------------------------------------------------------------------------
+
+## AWS CloudFormation templates
+- [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)
+
+### cfn-lint Config file
+- `.github/linters/.cfnlintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.cfnlintrc.yml`
+
+### cfn-lint disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### cfn-lint disable code block
+You can disable both [template](https://github.com/aws-cloudformation/cfn-python-lint/#template-based-metadata) or [resource](https://github.com/aws-cloudformation/cfn-python-lint/#resource-based-metadata) via [metadata](https://github.com/aws-cloudformation/cfn-python-lint/#metadata):
+```yaml
+Resources:
+  myInstance:
+    Type: AWS::EC2::Instance
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+          - E3030
+    Properties:
+      InstanceType: nt.x4superlarge
+      ImageId: ami-abc1234
+```
+
+### cfn-lint disable entire file
+If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yml` to ignore certain files and locations
+```yaml
+ignore_templates:
+- codebuild.yaml
 ```
 
 --------------------------------------------------------------------------------
@@ -632,6 +681,53 @@ import package.b.*
 
 --------------------------------------------------------------------------------
 
+## Protocol Buffers
+
+- [protolint](https://github.com/yoheimuta/protolint)
+
+### protolint Config file
+
+- `.github/linters/.protolintrc.yml`
+- You can add, extend, and disable rules
+- Documentation at [Rules](https://github.com/yoheimuta/protolint#rules) and [Configuring](https://github.com/yoheimuta/protolint#configuring)
+
+### protolint disable single line
+
+```protobuf
+enum Foo {
+  // protolint:disable:next ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  firstValue = 0;
+  second_value = 1;  // protolint:disable:this ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  THIRD_VALUE = 2;
+}
+```
+
+### protolint disable code block
+
+```protobuf
+// protolint:disable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+enum Foo {
+  firstValue = 0;
+  second_value = 1;
+  THIRD_VALUE = 2;
+}
+// protolint:enable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+```
+
+### protolint disable entire file
+
+- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yml`
+
+```yaml
+# Lint directives.
+lint:
+  # Linter files to walk.
+  files:
+    # The specific files to exclude.
+    exclude:
+      - path/to/file
+```
+
 ## Clojure
 - [clj-kondo](https://github.com/borkdude/clj-kondo)
 - Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
@@ -648,4 +744,51 @@ import package.b.*
 ### clj-kondo disable entire file
 ```clojure
 {:output {:exclude-files ["path/to/file"]}}
+
+## EDITORCONFIG-CHECKER
+- [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
+
+--------------------------------------------------------------------------------
+
+### editorconfig-checker Config file
+- `.github/linters/.ecrc`
+- This linter will also use the [`.editorconfig`](https://editorconfig.org/) of your project
+
+### editorconfig-checker disable single line
+-
+```js
+<LINE> // editorconfig-checker-disable-line
 ```
+
+### editorconfig-checker disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### editorconfig-checker disable entire file
+-
+```js
+// editorconfig-checker-disable-file
+```
+- You can disable entire files with the `Exclude` property in `.ecrc`
+```json
+{
+  "Exclude": [
+    "path/to/file",
+    "^regular\\/expression\\.ext$"
+   ]
+}
+```
+
+## HTML
+- [htmlhint](https://htmlhint.com/)
+
+### htmlhint standard Config file
+- `.github/linters/.htmlhintrc`
+
+### htmlhint disable single line
+- There is currently **No** way to disable rules in a single line
+
+### htmlhint disable code block
+- There is currently **No** way to disable rules in a code block
+
+### htmlhint disable entire file
+- There is currently **No** way to disable rules in an entire file
