@@ -105,12 +105,9 @@ function GetValidationInfo() {
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
-<<<<<<< HEAD
-    $VALIDATE_DART ]]; then
-=======
+    $VALIDATE_DART || -n \
     $VALIDATE_EDITORCONFIG || -n \
     $VALIDATE_HTML ]]; then
->>>>>>> master
     ANY_SET="true"
   fi
 
