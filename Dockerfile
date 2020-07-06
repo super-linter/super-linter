@@ -26,8 +26,9 @@ ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
 ARG PSSA_VERSION='latest'
 # arm-ttk
-ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk.git'
-ARG ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
+ARG ARM_TTK_NAME='master.zip'
+ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
+ARG ARM_TTK_DIRECTORY='/opt/microsoft'
 # Raku Linter
 ARG RAKU_VER="2020.06"
 ARG RAKU_INSTALL_PATH=/usr
@@ -115,8 +116,10 @@ RUN mkdir -p ${PWSH_DIRECTORY} \
 # Depends on PowerShell
 # Reference https://github.com/Azure/arm-ttk
 # Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk/arm-ttk.psd1"
-RUN git clone "${ARM_TTK_URI}" "${ARM_TTK_DIRECTORY}" \
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
+RUN curl -sLO "${ARM_TTK_URI}" \
+    && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
+    && rm "${ARM_TTK_NAME}" \
     && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
 
 ######################
