@@ -37,6 +37,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [OpenAPI](#openapi)
 - [Protocol Buffers](#protocol-buffers)
 - [EDITORCONFIG-CHECKER](#editorconfig-checker)
+- [HTML](#html)
 
 <!-- toc -->
 
@@ -776,3 +777,18 @@ lint:
    ]
 }
 ```
+
+## HTML
+- [htmlhint](https://htmlhint.com/)
+
+### htmlhint standard Config file
+- `.github/linters/.htmlhintrc`
+
+### htmlhint disable single line
+- There is currently **No** way to disable rules in a single line
+
+### htmlhint disable code block
+- There is currently **No** way to disable rules in a code block
+
+### htmlhint disable entire file
+- There is currently **No** way to disable rules in an entire file

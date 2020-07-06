@@ -65,6 +65,7 @@ function GetValidationInfo() {
   VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
   VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
   VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
+  VALIDATE_ARM=$(echo "$VALIDATE_ARM" | awk '{print tolower($0)}')
   VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
   VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
   VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)}')
@@ -72,6 +73,7 @@ function GetValidationInfo() {
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
   VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
+  VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -96,6 +98,7 @@ function GetValidationInfo() {
     $VALIDATE_GO || -n \
     $VALIDATE_TERRAFORM || -n \
     $VALIDATE_POWERSHELL || -n \
+    $VALIDATE_ARM || -n \
     $VALIDATE_CSS || -n \
     $VALIDATE_ENV || -n \
     $VALIDATE_CLOJURE || -n \
@@ -103,6 +106,7 @@ function GetValidationInfo() {
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
     $VALIDATE_EDITORCONFIG ]]; then
+    $VALIDATE_HTML ]]; then
     ANY_SET="true"
   fi
 
@@ -373,6 +377,20 @@ function GetValidationInfo() {
   fi
 
   ###################################
+  # Validate if we should check ARM #
+  ###################################
+  if [[ "$ANY_SET" == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z "$VALIDATE_ARM" ]]; then
+      # ARM flag was not set - default to false
+      VALIDATE_ARM="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_ARM="true"
+  fi
+
+  ###################################
   # Validate if we should check CSS #
   ###################################
   if [[ $ANY_SET == "true" ]]; then
@@ -468,6 +486,20 @@ function GetValidationInfo() {
   else
     # No linter flags were set - default all to true
     VALIDATE_EDITORCONFIG="true"
+  fi
+  
+  ####################################
+  # Validate if we should check HTML #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_HTML ]]; then
+      # HTML flag was not set - default to false
+      VALIDATE_HTML="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_HTML="true"
   fi
 
   #######################################
@@ -568,6 +600,11 @@ function GetValidationInfo() {
   else
     PRINT_ARRAY+=("- Excluding [POWERSHELL] files in code base...")
   fi
+  if [[ $VALIDATE_ARM == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [ARM] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [ARM] files in code base...")
+  fi
   if [[ $VALIDATE_CSS == "true" ]]; then
     PRINT_ARRAY+=("- Validating [CSS] files in code base...")
   else
@@ -602,6 +639,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [EDITORCONFIG] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [EDITORCONFIG] files in code base...")
+  fi
+  if [[ $VALIDATE_HTML == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [HTML] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
   fi
 
   ##############################

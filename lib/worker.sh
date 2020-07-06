@@ -55,8 +55,7 @@ function LintCodebase() {
   else
     # Success
     if [[ $ACTIONS_RUNNER_DEBUG == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system${NC}"
-      echo "Location:[$VALIDATE_INSTALL_CMD]"
+      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system location: ${F[W]}[$VALIDATE_INSTALL_CMD]${NC}"
     fi
   fi
 
@@ -156,17 +155,19 @@ function LintCodebase() {
       ####################
       LINT_CMD=''
 
-      #######################################
-      # Corner case for Powershell subshell #
-      #######################################
-      if [[ $FILE_TYPE == "POWERSHELL" ]]; then
+      ####################################
+      # Corner case for pwsh subshell    #
+      #  - PowerShell (PSScriptAnalyzer) #
+      #  - ARM        (arm-ttk)          #
+      ####################################
+      if [[ $FILE_TYPE == "POWERSHELL" ]] || [[ $FILE_TYPE == "ARM" ]]; then
         ################################
         # Lint the file with the rules #
         ################################
         # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
         LINT_CMD=$(
           cd "$GITHUB_WORKSPACE" || exit
-          pwsh -c "($LINTER_COMMAND $FILE)"
+          pwsh -NoProfile -NoLogo -Command "$LINTER_COMMAND $FILE; if (\$Error.Count) { exit 1 }"
           exit $? 2>&1
         )
       else
@@ -248,8 +249,7 @@ function TestCodebase() {
     exit 1
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
-    echo "Location:[$VALIDATE_INSTALL_CMD]"
+    echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[$LINTER_NAME]${F[B]} in system location: ${F[W]}[$VALIDATE_INSTALL_CMD]${NC}"
   fi
 
   ##########################
@@ -334,14 +334,14 @@ function TestCodebase() {
         cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" || exit
         $LINTER_COMMAND "$FILE" 2>&1
       )
-    elif [[ $FILE_TYPE == "POWERSHELL" ]]; then
+    elif [[ $FILE_TYPE == "POWERSHELL" ]] || [[ $FILE_TYPE == "ARM" ]]; then
       ################################
       # Lint the file with the rules #
       ################################
       # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
       LINT_CMD=$(
         cd "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER" || exit
-        pwsh -c "($LINTER_COMMAND $FILE)"
+        pwsh -NoProfile -NoLogo -Command "$LINTER_COMMAND $FILE; if (\$Error.Count) { exit 1 }"
         exit $? 2>&1
       )
     else
@@ -470,13 +470,15 @@ function RunTestCases() {
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
   TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "cfn"
-  TestCodebase "POWERSHELL" "pwsh" "pwsh -c Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
+  TestCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings $POWERSHELL_LINTER_RULES -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
+  TestCodebase "ARM" "arm-ttk" "Import-Module $ARM_TTK_PSD1 ; \$config = \$(Import-PowerShellDataFile -Path $ARM_LINTER_RULES) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "arm"
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "css"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config $CLOJURE_LINTER_RULES --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$" "protobuf"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$" "openapi"
+  TestCodebase "HTML" "htmlhint" "htmlhint --config $HTML_LINTER_RULES" ".*\.\(html\)\$" "html"
 
   #################
   # Footer prints #

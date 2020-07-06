@@ -81,17 +81,17 @@ function BuildFileList() {
   echo "----------------------------------------------"
   echo "Files that have been modified in the commit(s):"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
-    ##############
-    # Print file #
-    ##############
-    echo "File:[$FILE]"
-
     ###########################
     # Get the files extension #
     ###########################
     # Extract just the file and extension, reverse it, cut off extension,
     # reverse it back, substitute to lowercase
     FILE_TYPE=$(basename "$FILE" | rev | cut -f1 -d'.' | rev | awk '{print tolower($0)}')
+
+    ##############
+    # Print file #
+    ##############
+    echo "File:[$FILE], File_type:[$FILE_TYPE]"
 
     #########
     # DEBUG #
@@ -142,7 +142,15 @@ function BuildFileList() {
         ################################
         FILE_ARRAY_OPENAPI+=("$FILE")
       fi
-
+      ############################
+      # Check if file is ARM #
+      ############################
+      if DetectARMFile "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_ARM+=("$FILE")
+      fi
       #####################################
       # Check if the file is CFN template #
       #####################################
@@ -345,7 +353,7 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "$FILE" == "dockerfile" ]; then
+    elif [ "$FILE" == "dockerfile" ] || [ "$FILE_TYPE" == "dockerfile" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -359,6 +367,15 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_CLOJURE+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "html" ]; then
+      ################################
+      # Append the file to the array #
+      ##############################p##
+      FILE_ARRAY_HTML+=("$FILE")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
