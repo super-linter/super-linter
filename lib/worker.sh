@@ -458,6 +458,7 @@ function RunTestCases() {
   TestCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\)\$" "shell"
   TestCodebase "PYTHON" "pylint" "pylint --rcfile $PYTHON_LINTER_RULES" ".*\.\(py\)\$" "python"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
+  TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "php"
   TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "ruby"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "golang"

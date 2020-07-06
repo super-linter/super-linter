@@ -32,7 +32,9 @@ RUN apk add --no-cache \
     php7 \
     ca-certificates less ncurses-terminfo-base \
     krb5-libs libgcc libintl libssl1.1 libstdc++ \
-    tzdata userspace-rcu zlib icu-libs lttng-ust
+    tzdata userspace-rcu zlib icu-libs lttng-ust \
+    libffi-dev openssl-dev
+
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -159,6 +161,27 @@ RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KON
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
+################
+# Install Raku #
+################
+ARG RAKU_VER="2020.06"
+
+# Environment
+ENV PATH="/root/raku-install/bin:/root/raku-install/share/perl6/site/bin:/root/.rakudobrew/bin:${PATH}" \
+    ENV="/root/.profile"
+
+# Basic setup, programs and init
+RUN git clone https://github.com/tadzik/rakudobrew ~/.rakudobrew \
+    && eval "$(~/.rakudobrew/bin/rakudobrew init Sh)"\
+    && rakudobrew build moar $RAKU_VER --configure-opts='--prefix=/root/raku-install' \
+	&& rm -rf /root/.rakudobrew/versions/moar-$RAKU_VER \
+	&& rakudobrew register moar-$RAKU_VER /root/raku-install \
+    && rakudobrew global moar-$RAKU_VER \
+    && rakudobrew build-zef \
+    && rm -rf /root/.rakudobrew
+
+
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -174,6 +197,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_BASH=${VALIDATE_BASH} \
     VALIDATE_PERL=${VALIDATE_PERL} \
+    VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_PHP=${VALIDATE_PHP} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \

@@ -52,6 +52,7 @@ function GetValidationInfo() {
   VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
   VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
+  VALIDATE_RAKU=$(echo "$VALIDATE_RAKU" | awk '{print tolower($0)}')
   VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
   VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
   VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
@@ -82,6 +83,7 @@ function GetValidationInfo() {
     $VALIDATE_MD || -n \
     $VALIDATE_BASH || -n \
     $VALIDATE_PERL || -n \
+    $VALIDATE_RAKU || -n \
     $VALIDATE_PHP || -n \
     $VALIDATE_PYTHON || -n \
     $VALIDATE_RUBY || -n \
@@ -186,6 +188,20 @@ function GetValidationInfo() {
   else
     # No linter flags were set - default all to true
     VALIDATE_PERL="true"
+  fi
+
+  ####################################
+  # Validate if we should check RAKU #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_RAKU ]]; then
+      # RAKU flag was not set - default to false
+      VALIDATE_RAKU="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_RAKU="true"
   fi
 
   ####################################
@@ -486,6 +502,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [PERL] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PERL] files in code base...")
+  fi
+  if [[ $VALIDATE_RAKU == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [RAKU] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [RAKU] files in code base...")
   fi
   if [[ $VALIDATE_PHP == "true" ]]; then
     PRINT_ARRAY+=("- Validating [PHP] files in code base...")

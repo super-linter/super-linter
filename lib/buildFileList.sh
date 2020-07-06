@@ -201,6 +201,20 @@ function BuildFileList() {
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
     ######################
+    # Get the RAKU files #
+    ######################
+    elif [ "$FILE_TYPE" == "raku" ] || [ "$FILE_TYPE" == "rakumod" ] \
+        || [ "$FILE_TYPE" == "rakutest" ] || [ "$FILE_TYPE" == "pm6" ] \
+        || [ "$FILE_TYPE" == "pl6" ] || [ "$FILE_TYPE" == "p6" ] ; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RAKU+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ######################
     # Get the PHP files #
     ######################
     elif [ "$FILE_TYPE" == "php" ]; then
