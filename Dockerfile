@@ -194,7 +194,7 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ARG GLIBC_VERSION='2.31-r0'
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
-RUN apk add glibc-${GLIBC_VERSION}.apk
+RUN apk --no-cache add glibc-${GLIBC_VERSION}.apk
 
 # stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
