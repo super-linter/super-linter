@@ -75,6 +75,12 @@ function GetValidationInfo() {
   VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
   VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
+  #############################
+  # Editorconfig special case #
+  #############################
+  LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"               # Linter Path Directory
+  EDITORCONFIG_FILE_NAME='.editorconfig'
+
   ################################################
   # Determine if any linters were explicitly set #
   ################################################
@@ -484,10 +490,13 @@ function GetValidationInfo() {
       VALIDATE_EDITORCONFIG="false"
     fi
   else
-    # No linter flags were set - default all to true
-    VALIDATE_EDITORCONFIG="true"
+    # No linter flags were set
+    # special case cehcking for .editorconfig
+    if [ -f "$GITHUB_WORKSPACE/$LINTER_RULES_PATH/$EDITORCONFIG_FILE_NAME" ]; then
+      VALIDATE_EDITORCONFIG="true"
+    fi
   fi
-  
+
   ####################################
   # Validate if we should check HTML #
   ####################################
