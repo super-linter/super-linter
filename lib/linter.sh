@@ -91,7 +91,7 @@ HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path t
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "rubocop" "coffeelint" "eslint" "standard"
+  "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
   "spectral" "cfn-lint" "dart" "htmlhint")
@@ -99,7 +99,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'PHP' 'RUBY' 'PYTHON'
+LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 'PYTHON'
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
@@ -120,6 +120,7 @@ VALIDATE_XML="${VALIDATE_XML}"                                 # Boolean to vali
 VALIDATE_MD="${VALIDATE_MD}"                                   # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
+VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
 VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
@@ -184,6 +185,7 @@ FILE_ARRAY_XML=()                 # Array of files to check
 FILE_ARRAY_MD=()                  # Array of files to check
 FILE_ARRAY_BASH=()                # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
+FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_PHP=()                 # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
 FILE_ARRAY_PYTHON=()              # Array of files to check
@@ -216,6 +218,7 @@ ERRORS_FOUND_XML=0                 # Count of errors found
 ERRORS_FOUND_MARKDOWN=0            # Count of errors found
 ERRORS_FOUND_BASH=0                # Count of errors found
 ERRORS_FOUND_PERL=0                # Count of errors found
+ERRORS_FOUND_RAKU=0                # Count of errors found
 ERRORS_FOUND_PHP=0                 # Count of errors found
 ERRORS_FOUND_RUBY=0                # Count of errors found
 ERRORS_FOUND_PYTHON=0              # Count of errors found
@@ -342,7 +345,7 @@ GetLinterRules() {
     ########################################
     # Update the path to the file location #
     ########################################
-    declare -g "${LANGUAGE_LINTER_RULES}=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}"
+    eval "${LANGUAGE_LINTER_RULES}=$GITHUB_WORKSPACE/$LINTER_RULES_PATH/${!LANGUAGE_FILE_NAME}"
   else
     ########################################################
     # No user default provided, using the template default #
@@ -603,6 +606,11 @@ GetGitHubVars() {
       GITHUB_WORKSPACE="$DEFAULT_WORKSPACE"
     fi
 
+    if [ ! -d "$GITHUB_WORKSPACE" ]; then
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Provided volume is not a directory!${NC}"
+      exit 1
+    fi
+
     echo "Linting all files in mapped directory:[$DEFAULT_WORKSPACE]"
 
     # No need to touch or set the GITHUB_SHA
@@ -770,6 +778,7 @@ Footer() {
     [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] ||
     [ "$ERRORS_FOUND_BASH" -ne 0 ] ||
     [ "$ERRORS_FOUND_PERL" -ne 0 ] ||
+    [ "$ERRORS_FOUND_RAKU" -ne 0 ] ||
     [ "$ERRORS_FOUND_PHP" -ne 0 ] ||
     [ "$ERRORS_FOUND_PYTHON" -ne 0 ] ||
     [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] ||
@@ -951,7 +960,7 @@ if [ "$VALIDATE_BASH" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##################
@@ -985,6 +994,21 @@ if [ "$VALIDATE_PERL" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+fi
+
+################
+# RAKU LINTING #
+################
+if [ "$VALIDATE_RAKU" == "true" ]; then
+  #######################
+  # Lint the raku files #
+  #######################
+    echo "$GITHUB_WORKSPACE/META6.json"
+    if [ -e "$GITHUB_WORKSPACE/META6.json" ]; then
+        cd "$GITHUB_WORKSPACE" &&  zef install --deps-only --/test .
+    fi
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "RAKU" "raku" "raku -I $GITHUB_WORKSPACE/lib -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "${FILE_ARRAY_RAKU[@]}"
 fi
 
 ################
