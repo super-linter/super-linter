@@ -81,7 +81,7 @@ PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME"     # Path t
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                               # Name of the file
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"       # Path to the Clojure lint rules
 # Dart Vars
-DART_FILE_NAME='.dart-lint.yml'                                         # Name of the file
+DART_FILE_NAME='analysis_options.yaml'                                  # Name of the file
 DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"             # Path to the DART lint rules
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                            # Name of the file

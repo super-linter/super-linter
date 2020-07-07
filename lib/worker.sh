@@ -478,7 +478,7 @@ function RunTestCases() {
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path $PROTOBUF_LINTER_RULES" ".*\.\(proto\)\$" "protobuf"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r $OPENAPI_LINTER_RULES" ".*\.\(ymlopenapi\|jsonopenapi\)\$" "openapi"
-  TestCodebase "DART" "dart" "dartanalyzer --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "dart"
+  TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "dart"
   TestCodebase "HTML" "htmlhint" "htmlhint --config $HTML_LINTER_RULES" ".*\.\(html\)\$" "html"
 
   #################

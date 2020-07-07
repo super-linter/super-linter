@@ -73,6 +73,7 @@ function GetValidationInfo() {
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
   VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
+  VALIDATE_DART=$(echo "$VALIDATE_DART" | awk '{print tolower($0)}')
   VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
