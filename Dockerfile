@@ -32,6 +32,10 @@ ARG ARM_TTK_DIRECTORY='/opt/microsoft/arm-ttk'
 ARG CLJ_KONDO_VERSION='2020.06.21'
 # Go Linter
 ARG GO_VERSION='v1.27.0'
+# Raku Linter
+ARG RAKU_VER="2020.06"
+ARG RAKU_INSTALL_PATH=/usr
+ARG RAKUBREW_HOME=/tmp/rakubrew
 
 ####################
 # Run APK installs #
@@ -47,7 +51,9 @@ RUN apk add --no-cache \
     php7 \
     ca-certificates less ncurses-terminfo-base \
     krb5-libs libgcc libintl libssl1.1 libstdc++ \
-    tzdata userspace-rcu zlib icu-libs lttng-ust
+    tzdata userspace-rcu zlib icu-libs lttng-ust \
+    libffi-dev openssl-dev
+
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -181,6 +187,24 @@ RUN curl -sLO https://github.com/borkdude/clj-kondo/releases/download/v${CLJ_KON
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
+################
+# Install Raku #
+################
+
+# Environment
+ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
+
+
+# Basic setup, programs and init
+RUN mkdir -p $RAKUBREW_HOME/bin \
+    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
+    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
+    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
+    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
+    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
+    && rakubrew build-zef \
+    && rm -rf $RAKUBREW_HOME
+
 ################################
 # Install editorconfig-checker #
 ################################
@@ -202,6 +226,7 @@ ENV GITHUB_SHA=${GITHUB_SHA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_BASH=${VALIDATE_BASH} \
     VALIDATE_PERL=${VALIDATE_PERL} \
+    VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_PHP=${VALIDATE_PHP} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \

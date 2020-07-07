@@ -21,6 +21,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [JSON](#json)
 - [Markdown](#markdown)
 - [Perl](#perl)
+- [Raku](#raku)
 - [PHP](#php)
 - [XML](#xml)
 - [Coffeescript](#coffeescript)
@@ -352,6 +353,24 @@ Here is more data
 ### Perl disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
 
+--------------------------------------------------------------------------------
+
+## Raku
+- [raku](https://raku.org)
+
+### Raku Config file
+- There is no top level *configuration file* available at this time
+
+### Raku disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Raku disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Raku disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
 ## PHP

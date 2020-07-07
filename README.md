@@ -54,6 +54,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **PowerShell**   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)       |
 | **Protocol Buffers** | [protolint](https://github.com/yoheimuta/protolint)                  |
 | **Python3**      | [pylint](https://www.pylint.org/)                                        |
+| **Raku**         | [raku](https://raku.org)                                                 |
 | **Ruby**         | [RuboCop](https://github.com/rubocop-hq/rubocop)                         |
 | **Shell**        | [Shellcheck](https://github.com/koalaman/shellcheck)                     |
 | **Terraform**    | [tflint](https://github.com/terraform-linters/tflint)                    |
@@ -159,6 +160,7 @@ and won't run anything unexpected.
 | **VALIDATE_MD** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_BASH** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PERL** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_RAKU** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PHP** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_PYTHON** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_RUBY** | `true` | Flag to enable or disable the linting process of the language. |
