@@ -161,11 +161,8 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ################
 # Install Raku #
 ################
-
 # Environment
 ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
-
-
 # Basic setup, programs and init
 RUN mkdir -p $RAKUBREW_HOME/bin \
     && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
