@@ -42,6 +42,7 @@ RUN apk add --no-cache \
     bash \
     curl \
     gcc \
+    git \
     go \
     icu-libs \
     jq \
