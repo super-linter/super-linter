@@ -654,6 +654,7 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [DART] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [DART] files in code base...")
+  fi
   if [[ $VALIDATE_EDITORCONFIG == "true" ]]; then
     PRINT_ARRAY+=("- Validating [EDITORCONFIG] files in code base...")
   else
