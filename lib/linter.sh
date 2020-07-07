@@ -597,6 +597,11 @@ GetGitHubVars() {
       GITHUB_WORKSPACE="$DEFAULT_WORKSPACE"
     fi
 
+    if [ ! -d "$GITHUB_WORKSPACE" ]; then
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Provided volume is not a directory!${NC}"
+      exit 1
+    fi
+
     echo "Linting all files in mapped directory:[$DEFAULT_WORKSPACE]"
 
     # No need to touch or set the GITHUB_SHA
