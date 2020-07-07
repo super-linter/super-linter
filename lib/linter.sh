@@ -1176,7 +1176,8 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   # Lint the docker files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
+  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $(dirname $DOCKER_LINTER_RULES)" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
 fi
 
 ###################
