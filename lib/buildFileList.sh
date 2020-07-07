@@ -273,7 +273,7 @@ function BuildFileList() {
     ############################
     # Get the JavaScript files #
     ############################
-    elif [ "$FILE_TYPE" == "js" ] || [ "$FILE_TYPE" == "jsx" ]; then
+    elif [ "$FILE_TYPE" == "js" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -284,9 +284,36 @@ function BuildFileList() {
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
     ############################
+    # Get the JSX files #
+    ############################
+    elif [ "$FILE_TYPE" == "jsx" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JSX+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ############################
+    # Get the TSX files #
+    ############################
+    elif [ "$FILE_TYPE" == "tsx" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_TSX+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ########################
+    # Get the Golang files #
+    ########################
+    ############################
     # Get the TypeScript files #
     ############################
-    elif [ "$FILE_TYPE" == "ts" ] || [ "$FILE_TYPE" == "tsx" ]; then
+    elif [ "$FILE_TYPE" == "ts" ]; then
       ################################
       # Append the file to the array #
       ################################

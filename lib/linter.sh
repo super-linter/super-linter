@@ -191,6 +191,8 @@ FILE_ARRAY_CFN=()                 # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
+FILE_ARRAY_JSX=()                 # Array of files to check
+FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_DOCKER=()              # Array of files to check
@@ -781,6 +783,8 @@ Footer() {
     [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_STANDARD" -ne 0 ] ||
+    [ "$ERRORS_FOUND_JSX" -ne 0 ] ||
+    [ "$ERRORS_FOUND_TSX" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_STANDARD" -ne 0 ] ||
     [ "$ERRORS_FOUND_DOCKER" -ne 0 ] ||
@@ -1080,7 +1084,7 @@ if [ "$VALIDATE_JAVASCRIPT_ES" == "true" ]; then
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\?\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
+  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
 fi
 
 ######################
@@ -1099,13 +1103,39 @@ if [ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]; then
 fi
 
 ######################
+# JSX LINTING        #
+######################
+if [ "$VALIDATE_JSX" == "true" ]; then
+  #############################
+  # Lint the JSX files        #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
+fi
+
+
+######################
+# TSX LINTING        #
+######################
+if [ "$VALIDATE_TSX" == "true" ]; then
+  #################################
+  # Get Typescript standard rules #
+  #################################
+  GetStandardRules "typescript"
+  #############################
+  # Lint the TSX files        #
+  #############################
+  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(tsx\)\$" "${FILE_ARRAY_TSX[@]}"
+fi
+
+######################
 # TYPESCRIPT LINTING #
 ######################
 if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
   #############################
   # Lint the Typescript files #
   #############################
-  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(tsx\?\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
+  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
 fi
 
 ######################
