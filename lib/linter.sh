@@ -226,6 +226,8 @@ ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
+ERRORS_FOUND_JSX=0                 # Count of errors found
+ERRORS_FOUND_TSX=0                 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0              # Count of errors found
@@ -1113,15 +1115,10 @@ if [ "$VALIDATE_JSX" == "true" ]; then
   LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
 fi
 
-
 ######################
 # TSX LINTING        #
 ######################
 if [ "$VALIDATE_TSX" == "true" ]; then
-  #################################
-  # Get Typescript standard rules #
-  #################################
-  GetStandardRules "typescript"
   #############################
   # Lint the TSX files        #
   #############################
