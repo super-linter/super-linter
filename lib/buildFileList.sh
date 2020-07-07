@@ -273,7 +273,7 @@ function BuildFileList() {
     ############################
     # Get the JavaScript files #
     ############################
-    elif [ "$FILE_TYPE" == "js" ]; then
+    elif [ "$FILE_TYPE" == "js" ] || [ "$FILE_TYPE" == "jsx" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -286,7 +286,7 @@ function BuildFileList() {
     ############################
     # Get the TypeScript files #
     ############################
-    elif [ "$FILE_TYPE" == "ts" ]; then
+    elif [ "$FILE_TYPE" == "ts" ] || [ "$FILE_TYPE" == "tsx" ]; then
       ################################
       # Append the file to the array #
       ################################

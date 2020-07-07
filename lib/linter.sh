@@ -97,7 +97,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 'PYTHON'
-  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
+  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX', 'TSX'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
   'CFN' 'HTML')
@@ -126,6 +126,8 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
+VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate jsx files
+VALIDATE_TSY="${VALIDATE_TSX}"                                 # Boolean to validate tsx files
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
@@ -1078,7 +1080,7 @@ if [ "$VALIDATE_JAVASCRIPT_ES" == "true" ]; then
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
+  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\?\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
 fi
 
 ######################
@@ -1103,7 +1105,7 @@ if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
   #############################
   # Lint the Typescript files #
   #############################
-  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
+  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(tsx\?\)\$" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
 fi
 
 ######################
