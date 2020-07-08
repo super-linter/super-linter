@@ -54,8 +54,7 @@ TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV st
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                                   # Name of the file
 ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"       # Path to the Ansible lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                                    # Name of the file
-DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"         # Path to the Docker lint rules
+DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION"                           # Path to the Docker lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                            # Name of the file
 GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"                 # Path to the Go lint rules
@@ -1177,7 +1176,7 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $(dirname $DOCKER_LINTER_RULES)" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
 fi
 
 ###################
