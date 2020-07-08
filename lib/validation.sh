@@ -530,8 +530,11 @@ function GetValidationInfo() {
       VALIDATE_EDITORCONFIG="false"
     fi
   else
-    # No linter flags were set - default all to true
-    VALIDATE_EDITORCONFIG="true"
+    # No linter flags were set
+    # special case checking for .editorconfig
+    if [ -f "$GITHUB_WORKSPACE/.editorconfig" ]; then
+      VALIDATE_EDITORCONFIG="true"
+    fi
   fi
 
   ####################################

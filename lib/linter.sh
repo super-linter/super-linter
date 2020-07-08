@@ -1187,7 +1187,6 @@ fi
 ########################
 # EDITORCONFIG LINTING #
 ########################
-echo ed: "$VALIDATE_EDITORCONFIG"
 if [ "$VALIDATE_EDITORCONFIG" == "true" ]; then
   ####################################
   # Lint the files with editorconfig #
