@@ -136,7 +136,7 @@ jobs:
 ...
 ```
 
-**NOTE:**  
+**NOTE:**
 Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**.   Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. *This can be far more costly in time...*
 
 ## Environment variables
@@ -170,6 +170,8 @@ and won't run anything unexpected.
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
 | **JAVASCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
+| **VALIDATE_JSX** | `true` | Flag to enable or disable the linting process for jsx files (Utilizing: eslint) |
+| **VALIDATE_TSX** | `true` | Flag to enable or disable the linting process for tsx files (Utilizing: eslint) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
 | **TYPESCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |

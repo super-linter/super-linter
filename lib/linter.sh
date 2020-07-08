@@ -97,7 +97,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 'PYTHON'
-  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
+  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX' 'TSX'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
   'CFN' 'HTML')
@@ -126,6 +126,8 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
+VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate jsx files
+VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate tsx files
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
@@ -189,6 +191,8 @@ FILE_ARRAY_CFN=()                 # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
+FILE_ARRAY_JSX=()                 # Array of files to check
+FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_DOCKER=()              # Array of files to check
@@ -222,6 +226,8 @@ ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
+ERRORS_FOUND_JSX=0                 # Count of errors found
+ERRORS_FOUND_TSX=0                 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0              # Count of errors found
@@ -779,6 +785,8 @@ Footer() {
     [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_STANDARD" -ne 0 ] ||
+    [ "$ERRORS_FOUND_JSX" -ne 0 ] ||
+    [ "$ERRORS_FOUND_TSX" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_STANDARD" -ne 0 ] ||
     [ "$ERRORS_FOUND_DOCKER" -ne 0 ] ||
@@ -1094,6 +1102,27 @@ if [ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]; then
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
+fi
+
+######################
+# JSX LINTING        #
+######################
+if [ "$VALIDATE_JSX" == "true" ]; then
+  #############################
+  # Lint the JSX files        #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
+fi
+
+######################
+# TSX LINTING        #
+######################
+if [ "$VALIDATE_TSX" == "true" ]; then
+  #############################
+  # Lint the TSX files        #
+  #############################
+  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(tsx\)\$" "${FILE_ARRAY_TSX[@]}"
 fi
 
 ######################
