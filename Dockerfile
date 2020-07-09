@@ -29,10 +29,6 @@ ARG PSSA_VERSION='latest'
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft'
-# Raku Linter
-ARG RAKU_VER="2020.01"
-ARG RAKU_INSTALL_PATH=/usr
-ARG RAKUBREW_HOME=/tmp/rakubrew
 
 ####################
 # Run APK installs #
@@ -59,6 +55,7 @@ RUN apk add --no-cache \
     ruby-dev \
     ruby-bundler \
     ruby-rdoc
+RUN apk add --no-cache rakudo --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 ########################################
 # Copy dependencies files to container #
@@ -162,7 +159,13 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ################
 # Install Raku #
 ################
-COPY --from=rakudo-star:2020.01 /usr/bin/raku /usr/bin/
+RUN ZEF_VERSION=$(curl -s https://api.github.com/repos/ugexe/zef/releases/latest| grep '"tag_name"' | cut -d \" -f 4) \
+    && curl -sSLO https://github.com/ugexe/zef/archive/${ZEF_VERSION}.tar.gz \
+    && tar xzf ${ZEF_VERSION}.tar.gz \
+    && cd zef-${ZEF_VERSION:1} \
+    && raku -Ilib bin/zef install --/test --/build . \
+    && rm -rf zef-${ZEF_VERSION:1}
+ENV PATH="/usr/share/perl6/site/bin:${PATH}"
 
 ################################
 # Install editorconfig-checker #
