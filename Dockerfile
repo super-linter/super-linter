@@ -30,7 +30,7 @@ ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft'
 # Raku Linter
-ARG RAKU_VER="2020.06"
+ARG RAKU_VER="2020.01"
 ARG RAKU_INSTALL_PATH=/usr
 ARG RAKUBREW_HOME=/tmp/rakubrew
 
@@ -162,17 +162,7 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ################
 # Install Raku #
 ################
-# Environment
-ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
-# Basic setup, programs and init
-RUN mkdir -p $RAKUBREW_HOME/bin \
-    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
-    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
-    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
-    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
-    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
-    && rakubrew build-zef \
-    && rm -rf $RAKUBREW_HOME
+COPY --from=rakudo-star:2020.01 /usr/bin/raku /usr/bin/
 
 ################################
 # Install editorconfig-checker #
