@@ -37,7 +37,7 @@ ARG RAKUBREW_HOME=/tmp/rakubrew
 ####################
 # Run APK installs #
 ####################
-RUN apk add --no-cache \
+RUN apk add --update --no-cache \
     ansible-lint \
     bash \
     curl \
@@ -50,7 +50,7 @@ RUN apk add --no-cache \
     make \
     musl-dev \
     npm \
-    nodejs \
+    nodejs-current \
     openjdk8-jre \
     perl \
     php7 \
