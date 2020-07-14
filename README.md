@@ -193,6 +193,10 @@ and won't run anything unexpected.
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
 | **DEFAULT_WORKSPACE** | `/tmp/lint` | The location containing files to lint if you are running locally. |
+| **OUTPUT_FORMAT**  | `none` | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap |
+| **OUTPUT_FOLDER**  | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist. |
+| **OUTPUT_DETAILS** | `simpler` |  What level of details to be reported. Supported formats: simpler or detailed. |
+
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.

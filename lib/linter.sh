@@ -174,6 +174,14 @@ echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true          # Workaround SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"        # Default Ansible Directory
 echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
 
+##############
+# Format     #
+##############
+OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
+OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
+OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
+REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+
 ##########################
 # Array of changed files #
 ##########################
@@ -745,6 +753,13 @@ Footer() {
   echo "----------------------------------------------"
   echo ""
 
+  ###################################
+  # Prints output report if enabled #
+  ###################################
+  if [ -z "${FORMAT_REPORT}" ] ; then
+    echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+  fi
+
   ##############################
   # Prints for errors if found #
   ##############################
@@ -827,6 +842,17 @@ Footer() {
 # Header #
 ##########
 Header
+
+##############################################################
+# check flag for validating the report folder does not exist #
+##############################################################
+if [ -n "${OUTPUT_FORMAT}" ]; then
+  if [ -d "${REPORT_OUTPUT_FOLDER}" ] ; then
+    echo "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
+    echo "Please remove the folder and try again."
+    exit 1
+  fi
+fi
 
 #######################
 # Get GitHub Env Vars #

@@ -62,3 +62,6 @@ typings/
 
 # clj-kondo cache
 .cache
+
+# default output report
+super-linter.report
