@@ -37,9 +37,9 @@ jobs:
           days-before-stale: 30
           days-before-close: 14
           stale-issue-label: "O: stale 🤖"
-          exempt-issue-label: "O: backlog 🤖"
+          exempt-issue-labels: "O: backlog 🤖"
           stale-pr-label: "O: stale 🤖"
-          exempt-pr-label: "O: backlog 🤖"
+          exempt-pr-labels: "O: backlog 🤖"
 
   ##################
   # Mark not stale #
