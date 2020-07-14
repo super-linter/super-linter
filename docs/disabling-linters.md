@@ -30,6 +30,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [Typescript Eslint](#typescript-eslint)
 - [Typescript Standard](#typescript-standard)
 - [Golang](#golang)
+- [Groovy](#groovy)
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
 - [CSS](#css)
@@ -560,6 +561,44 @@ alert('foo')
 
 ### golangci-lint disable entire file
 - There is currently **No** way to disable rules inline of the file(s)
+
+--------------------------------------------------------------------------------
+
+## Groovy
+- [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)
+
+### groovy-lint standard Config file
+- `.github/linters/.groovylintrc.json`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.groovylintrc.json`
+
+### groovy-lint disable single line
+```groovy
+def variable = 1; // groovylint-disable-line
+
+// groovylint-disable-next-line
+def variable = 1;
+
+/* groovylint-disable-next-line */
+def variable = 1;
+
+def variable = 1; /* groovylint-disable-line */
+```
+
+### groovy-lint disable code block
+```groovy
+/* groovylint-disable */
+
+def variable = 1;
+
+/* groovylint-enable */
+```
+
+### groovy-lint disable entire file
+- At the top line of the file add the line:
+```groovy
+/* groovylint-disable */
+```
 
 --------------------------------------------------------------------------------
 

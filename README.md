@@ -40,10 +40,11 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
-| **EDITORCONFIG**          | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
+| **EDITORCONFIG** | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
-| **HTMLHint**     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                      |
+| **Groovy**       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)           |
+| **HTML**         | [HTMLHint](https://github.com/htmlhint/HTMLHint)                         |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
@@ -177,6 +178,7 @@ and won't run anything unexpected.
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
 | **VALIDATE_DOCKER** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_GO** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_GROOVY** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_POWERSHELL** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ARM** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_TERRAFORM** | `true` | Flag to enable or disable the linting process of the language. |

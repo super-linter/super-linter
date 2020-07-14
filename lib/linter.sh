@@ -59,6 +59,9 @@ DOCKER_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DOCKER_FILE_NAME"         # Path t
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                            # Name of the file
 GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"                 # Path to the Go lint rules
+# Groovy Vars
+GROOVY_FILE_NAME='.groovylintrc.json'                                   # Name of the file
+GROOVY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GROOVY_FILE_NAME"         # Path to the Go lint rules
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                       # Name of the file
 TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"   # Path to the Terraform lint rules
@@ -91,7 +94,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint" "htmlhint")
+  "spectral" "cfn-lint" "htmlhint" "npm-groovy-lint")
 
 #############################
 # Language array for prints #
@@ -100,7 +103,7 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX' 'TSX'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
-  'CFN' 'HTML')
+  'CFN' 'HTML' 'GROOVY')
 
 ###################
 # GitHub ENV Vars #
@@ -144,6 +147,7 @@ VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to vali
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
 VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
+VALIDATE_GROOVY="${VALIDATE_GROOVY}"                           # Boolean to validate language
 
 ##############
 # Debug Vars #
@@ -207,6 +211,7 @@ FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_HTML=()                # Array of files to check
+FILE_ARRAY_GROOVY=()              # Array of files to check
 
 ############
 # Counters #
@@ -242,6 +247,7 @@ ERRORS_FOUND_KOTLIN=0              # Count of errors found
 ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_OPENAPI=0             # Count of errors found
 ERRORS_FOUND_HTML=0                # Count of errors found
+ERRORS_FOUND_GROOVY=0              # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -802,6 +808,7 @@ Footer() {
     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
+    [ "$ERRORS_FOUND_GROOVY" -ne 0 ] ||
     [ "$ERRORS_FOUND_HTML" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
@@ -861,6 +868,8 @@ GetLinterRules "JAVASCRIPT"
 GetLinterRules "TYPESCRIPT"
 # Get Golang rules
 GetLinterRules "GO"
+# Get Groovy rules
+GetLinterRules "GROOVY"
 # Get Docker rules
 GetLinterRules "DOCKER"
 # Get Terraform rules
@@ -1052,6 +1061,17 @@ if [ "$VALIDATE_GO" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
+fi
+
+##################
+# GROOVY LINTING #
+##################
+if [ "$VALIDATE_GROOVY" == "true" ]; then
+  #########################
+  # Lint the groovy files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES -f" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "${FILE_ARRAY_GROOVY[@]}"
 fi
 
 #####################

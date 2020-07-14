@@ -77,6 +77,7 @@ function GetValidationInfo() {
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
   VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
   VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
+  VALIDATE_GROOVY=$(echo "$VALIDATE_GROOVY" | awk '{print tolower($0)}')
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -100,6 +101,7 @@ function GetValidationInfo() {
     $VALIDATE_TYPESCRIPT_STANDARD || -n \
     $VALIDATE_DOCKER || -n \
     $VALIDATE_GO || -n \
+    $VALIDATE_GROOVY || -n \
     $VALIDATE_TERRAFORM || -n \
     $VALIDATE_POWERSHELL || -n \
     $VALIDATE_ARM || -n \
@@ -551,6 +553,20 @@ function GetValidationInfo() {
     VALIDATE_HTML="true"
   fi
 
+  ######################################
+  # Validate if we should check GROOVY #
+  ######################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_GROOVY ]]; then
+      # GROOVY flag was not set - default to false
+      VALIDATE_GROOVY="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_GROOVY="true"
+  fi
+
   #######################################
   # Print which linters we are enabling #
   #######################################
@@ -698,6 +714,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [HTML] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
+  fi
+  if [[ $VALIDATE_GROOVY == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [GROOVY] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [GROOVY] files in code base...")
   fi
 
   ##############################
