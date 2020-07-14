@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - coffeescript_bad_1.coffee
+  ---
+  message:   ✗ /tmp/lint/.automation/test/coffeescript/coffeescript_bad_1.coffee\n     ✗ #39  [stdin] 39 29  error  unmatched )\nmodule.exports = (robot) -> )\n                            ^. (coffeescript_error)\n\n✗ Lint! » 1 error and 0 warnings in 1 file\n
+  ...
+ok 2 - coffeescript_good_1.coffee

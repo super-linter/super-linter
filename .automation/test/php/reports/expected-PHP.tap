@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - php_bad_1.php
+  ---
+  message: PHP Parse error   syntax error, unexpected 'pe98y' (T_STRING) in /tmp/lint/.automation/test/php/php_bad_1.php on line 3\nErrors parsing /tmp/lint/.automation/test/php/php_bad_1.php\n
+  ...
+ok 2 - php_good_1.php
