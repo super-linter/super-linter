@@ -76,6 +76,7 @@ function GetValidationInfo() {
   VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
   VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
+  VALIDATE_DART=$(echo "$VALIDATE_DART" | awk '{print tolower($0)}')
   VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
 
   ################################################
@@ -109,6 +110,7 @@ function GetValidationInfo() {
     $VALIDATE_PROTOBUF || -n \
     $VALIDATE_OPENAPI || -n \
     $VALIDATE_KOTLIN || -n \
+    $VALIDATE_DART || -n \
     $VALIDATE_EDITORCONFIG || -n \
     $VALIDATE_HTML ]]; then
     ANY_SET="true"
@@ -478,6 +480,20 @@ function GetValidationInfo() {
     VALIDATE_KOTLIN="true"
   fi
 
+  ####################################
+  # Validate if we should check DART #
+  ####################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_DART ]]; then
+      # ENV flag was not set - default to false
+      VALIDATE_DART="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_DART="true"
+  fi
+
   #######################################
   # Validate if we should check OPENAPI #
   #######################################
@@ -688,6 +704,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [PROTOBUF] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [PROTOBUF] files in code base...")
+  fi
+  if [[ $VALIDATE_DART == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [DART] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [DART] files in code base...")
   fi
   if [[ $VALIDATE_EDITORCONFIG == "true" ]]; then
     PRINT_ARRAY+=("- Validating [EDITORCONFIG] files in code base...")

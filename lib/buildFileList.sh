@@ -385,6 +385,15 @@ function BuildFileList() {
     ############################
     # Get the Protocol Buffers files #
     ############################
+    elif [ "$FILE_TYPE" == "dart" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_DART+=("$FILE")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "$FILE_TYPE" == "proto" ]; then
       ################################
       # Append the file to the array #

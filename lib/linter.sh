@@ -80,6 +80,9 @@ PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME"     # Path t
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                               # Name of the file
 CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"       # Path to the Clojure lint rules
+# Dart Vars
+DART_FILE_NAME='analysis_options.yaml'                                  # Name of the file
+DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"             # Path to the DART lint rules
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                            # Name of the file
 HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path to the CSS lint rules
@@ -91,7 +94,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
   "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint" "htmlhint")
+  "spectral" "cfn-lint" "dart" "htmlhint")
 
 #############################
 # Language array for prints #
@@ -100,7 +103,7 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 
   'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX' 'TSX'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
-  'CFN' 'HTML')
+  'CFN' 'DART' 'HTML')
 
 ###################
 # GitHub ENV Vars #
@@ -140,6 +143,7 @@ VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to vali
 VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
+VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
@@ -214,6 +218,7 @@ FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
+FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_HTML=()                # Array of files to check
 
 ############
@@ -249,6 +254,7 @@ ERRORS_FOUND_CLOJURE=0             # Count of errors found
 ERRORS_FOUND_KOTLIN=0              # Count of errors found
 ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_OPENAPI=0             # Count of errors found
+ERRORS_FOUND_DART=0                # Count of errors found
 ERRORS_FOUND_HTML=0                # Count of errors found
 
 ################################################################################
@@ -817,6 +823,7 @@ Footer() {
     [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
     [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
     [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
+    [ "$ERRORS_FOUND_DART" -ne 0 ] ||
     [ "$ERRORS_FOUND_HTML" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
@@ -899,6 +906,8 @@ GetLinterRules "ARM"
 GetLinterRules "CSS"
 # Get CFN rules
 GetLinterRules "CFN"
+# Get DART rules
+GetLinterRules "DART"
 # Get HTML rules
 GetLinterRules "HTML"
 
@@ -1220,6 +1229,17 @@ if [ "$VALIDATE_EDITORCONFIG" == "true" ]; then
   ####################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
+fi
+
+##################
+# DART LINTING #
+##################
+if [ "$VALIDATE_DART" == "true" ]; then
+  #######################
+  # Lint the Dart files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "DART" "dart" "pub get || true && dartanalyzer --fatal-infos --fatal-warnings --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
 fi
 
 ##################

@@ -678,6 +678,35 @@ import package.b.*
 
 --------------------------------------------------------------------------------
 
+## Dart
+- [dartanalyzer](https://dart.dev/tools/dartanalyzer)
+
+### dartanalyzer standard Config file
+- `.github/linters/.dart-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.dart-lint.yml`
+
+### dartanalyzer disable single line
+```dart
+int x = ''; // ignore: invalid_assignment
+```
+
+### dartanalyzer disable code block
+- You can make [rule exceptions](https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis) for the entire file.
+```dart
+// ignore_for_file: unused_import, unused_local_variable
+```
+
+### dartanalyzer disable entire file
+- You can disable entire files with the `analyzer.exclude` property in `.dart-lint.yml`
+```dart
+analyzer:
+  exclude:
+    - file
+```
+
+--------------------------------------------------------------------------------
+
 ## OpenAPI
 - [spectral](https://github.com/stoplightio/spectral)
 
