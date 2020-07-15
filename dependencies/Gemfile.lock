@@ -27,11 +27,8 @@ GEM
       rexml
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-github (0.13.0)
-      rubocop (~> 0.70)
-      rubocop-performance (~> 1.5.0)
-    rubocop-performance (1.5.2)
-      rubocop (>= 0.71.0)
+    rubocop-github (0.14.0)
+      rubocop (~> 0.59)
     rubocop-rails (2.6.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
@@ -48,7 +45,7 @@ PLATFORMS
 
 DEPENDENCIES
   rubocop (~> 0.82.0)
-  rubocop-github (~> 0.13.0)
+  rubocop-github (~> 0.14.0)
   rubocop-rails (~> 2.5)
 
 BUNDLED WITH
