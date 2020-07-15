@@ -219,7 +219,7 @@ function LintCodebase() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
           ##########################################
           # Report the detailed message if enabled #
           ##########################################
@@ -238,7 +238,7 @@ function LintCodebase() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
     done
@@ -247,7 +247,7 @@ function LintCodebase() {
     # Generate report in TAP format #
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   fi
@@ -446,7 +446,7 @@ function TestCodebase() {
       # Store the linting as a temporary file in TAP format #
       #######################################################
       if IsTAP ; then
-        echo "ok ${TESTS_RAN} - ${FILE_NAME}" >> "${TMPFILE}"
+        OkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
       fi
     else
       #######################################
@@ -475,7 +475,7 @@ function TestCodebase() {
       # Store the linting as a temporary file in TAP format #
       #######################################################
       if IsTAP ; then
-        echo "not ok ${TESTS_RAN} - ${FILE_NAME}" >> "${TMPFILE}"
+        NotOkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
         ##########################################
         # Report the detailed message if enabled #
         ##########################################
@@ -491,7 +491,7 @@ function TestCodebase() {
   # Generate report in TAP format and validate with the expected TAP output #
   ###########################################################################
   if IsTAP && [ ${TESTS_RAN} -gt 0 ] ; then
-    printf "TAP version 13\n1..%s\n" "${TESTS_RAN}" > "${REPORT_OUTPUT_FILE}"
+    HeaderTap "${TESTS_RAN}" "${REPORT_OUTPUT_FILE}"
     cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
 
     ########################################################################
@@ -759,7 +759,7 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
           ##########################################
           # Report the detailed message if enabled #
           ##########################################
@@ -779,7 +779,7 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
     done
@@ -788,7 +788,7 @@ function LintAnsibleFiles() {
     # Generate report in TAP format #
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   else # No ansible directory found in path
@@ -823,4 +823,19 @@ function TransformTAPDetails() {
     #########################################################
     echo "${DATA}" | awk 'BEGIN{RS="\n";ORS="\\n"}1' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" | tr ':' ' '
   fi
+}
+################################################################################
+#### Function HeaderTap ########################################################
+function HeaderTap() {
+  printf "TAP version 13\n1..%s\n" "${1}" > "${2}"
+}
+################################################################################
+#### Function OkTap ############################################################
+function OkTap() {
+  echo "ok ${1} - ${2}" >> "${3}"
+}
+################################################################################
+#### Function NotOkTap #########################################################
+function NotOkTap() {
+  echo "not ok ${1} - ${2}" >> "${3}"
 }
