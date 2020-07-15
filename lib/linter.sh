@@ -1185,7 +1185,7 @@ if [ "$VALIDATE_DART" == "true" ]; then
   # Lint the Dart files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DART" "dart" "dartanalyzer --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
+  LintCodebase "DART" "dart" "pub get || true && dartanalyzer --fatal-infos --fatal-warnings --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
 fi
 
 ##################
