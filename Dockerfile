@@ -33,6 +33,11 @@ ARG ARM_TTK_DIRECTORY='/opt/microsoft'
 ARG RAKU_VER="2020.06"
 ARG RAKU_INSTALL_PATH=/usr
 ARG RAKUBREW_HOME=/tmp/rakubrew
+# Dart Linter
+## stable dart sdk: https://dart.dev/get-dart#release-channels
+ARG DART_VERSION='2.8.4'
+## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
+ARG GLIBC_VERSION='2.31-r0'
 
 ####################
 # Run APK installs #
@@ -162,14 +167,9 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ####################
 # Install dart-sdk #
 ####################
-# install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.31-r0'
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
 RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk
-
-# stable dart sdk: https://dart.dev/get-dart#release-channels
-ARG DART_VERSION='2.8.4'
 RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
