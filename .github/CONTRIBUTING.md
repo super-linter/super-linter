@@ -29,6 +29,15 @@ Draft pull requests are also welcome to get feedback early on, or if there is so
 - Create a branch with a name that identifies the user and nature of the changes (similar to `user/branch-purpose`)
 - Open a pull request
 
+### CI/CT/CD
+The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
+- When a branch is created and code is pushed, a **GitHub** Action is triggered for building the new **Docker** container with the new codebase
+- The **Docker** container is then ran against the *test cases* to validate all code sanity
+  - `.automation/test` contains all test cases for each language that should be validated
+- These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
+- When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
+  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
+
 ## Releasing
 If you are the current maintainer of this action:
 1. If a major version number change: Update `README.md` and the wiki to reflect new version number in the example workflow file sections
