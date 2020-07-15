@@ -16,8 +16,7 @@ The end goal of this tool:
 - [Environment variables](#environment-variables)
 - [Disable rules](#disabling-rules)
 - [Docker Hub](#docker-hub)
-- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
-  - [CI / CT/ CD](#cictcd)
+- [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
 - [Limitations](#limitations)
 - [Contributing](#how-to-contribute)
 
@@ -137,7 +136,7 @@ jobs:
 ...
 ```
 
-**NOTE:**  
+**NOTE:**
 Using the line:`uses: docker://github/super-linter:v3` will pull the image down from **DockerHub** and run the **GitHub Super-Linter**.   Using the line: `uses: github/super-linter@v3` will build and compile the **GitHub Super-Linter** at build time. *This can be far more costly in time...*
 
 ## Environment variables
@@ -171,6 +170,8 @@ and won't run anything unexpected.
 | **VALIDATE_JAVASCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
 | **JAVASCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
+| **VALIDATE_JSX** | `true` | Flag to enable or disable the linting process for jsx files (Utilizing: eslint) |
+| **VALIDATE_TSX** | `true` | Flag to enable or disable the linting process for tsx files (Utilizing: eslint) |
 | **VALIDATE_TYPESCRIPT_ES** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: eslint) |
 | **TYPESCRIPT_ES_CONFIG_FILE** | `.eslintrc.yml` | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)|
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true` | Flag to enable or disable the linting process of the language. (Utilizing: standard) |
@@ -193,6 +194,10 @@ and won't run anything unexpected.
 | **ACTIONS_RUNNER_DEBUG** | `false` | Flag to enable additional information about the linter, versions, and additional output. |
 | **DISABLE_ERRORS** | `false` | Flag to have the linter complete with exit code 0 even if errors were detected. |
 | **DEFAULT_WORKSPACE** | `/tmp/lint` | The location containing files to lint if you are running locally. |
+| **OUTPUT_FORMAT**  | `none` | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap |
+| **OUTPUT_FOLDER**  | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist. |
+| **OUTPUT_DETAILS** | `simpler` |  What level of details to be reported. Supported formats: simpler or detailed. |
+
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
@@ -205,19 +210,23 @@ If you need to disable certain *rules* and *functionality*, you can view [Disabl
 ## Docker Hub
 The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/github/super-linter`
 
-## Running Super-Linter locally (troubleshooting/debugging/enhancements)
+## Run Super-Linter outside GitHub Actions
+### Local (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
 
 Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
 
-### CI/CT/CD
-The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
-- When a branch is created and code is pushed, a **GitHub** Action is triggered for building the new **Docker** container with the new codebase
-- The **Docker** container is then ran against the *test cases* to validate all code sanity
-  - `.automation/test` contains all test cases for each language that should be validated
-- These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
-- When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
-  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
+### Azure
+Check out this [article](http://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
+
+### GitLab
+Check out this [snippet](https://gitlab.com/snippets/1988376)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:
@@ -227,12 +236,6 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
-
-### Visual Studio Code
-You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
-![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
-
-We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 

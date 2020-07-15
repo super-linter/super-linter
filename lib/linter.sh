@@ -92,7 +92,7 @@ HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path t
 #######################################
 LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
   "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "/dockerfilelint/bin/dockerfilelint" "golangci-lint" "tflint"
+  "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
   "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
   "spectral" "cfn-lint" "dart" "htmlhint")
 
@@ -100,7 +100,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 'PYTHON'
-  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES'
+  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX' 'TSX'
   'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
   'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
   'CFN' 'DART' 'HTML')
@@ -129,6 +129,8 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
+VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate jsx files
+VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate tsx files
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
@@ -176,6 +178,14 @@ echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true          # Workaround SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"        # Default Ansible Directory
 echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
 
+##############
+# Format     #
+##############
+OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
+OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
+OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
+REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+
 ##########################
 # Array of changed files #
 ##########################
@@ -193,6 +203,8 @@ FILE_ARRAY_CFN=()                 # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
+FILE_ARRAY_JSX=()                 # Array of files to check
+FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_DOCKER=()              # Array of files to check
@@ -227,6 +239,8 @@ ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
+ERRORS_FOUND_JSX=0                 # Count of errors found
+ERRORS_FOUND_TSX=0                 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
 ERRORS_FOUND_DOCKER=0              # Count of errors found
@@ -745,6 +759,13 @@ Footer() {
   echo "----------------------------------------------"
   echo ""
 
+  ###################################
+  # Prints output report if enabled #
+  ###################################
+  if [ -z "${FORMAT_REPORT}" ] ; then
+    echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+  fi
+
   ##############################
   # Prints for errors if found #
   ##############################
@@ -785,6 +806,8 @@ Footer() {
     [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_JAVASCRIPT_STANDARD" -ne 0 ] ||
+    [ "$ERRORS_FOUND_JSX" -ne 0 ] ||
+    [ "$ERRORS_FOUND_TSX" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_STANDARD" -ne 0 ] ||
     [ "$ERRORS_FOUND_DOCKER" -ne 0 ] ||
@@ -826,6 +849,17 @@ Footer() {
 # Header #
 ##########
 Header
+
+##############################################################
+# check flag for validating the report folder does not exist #
+##############################################################
+if [ -n "${OUTPUT_FORMAT}" ]; then
+  if [ -d "${REPORT_OUTPUT_FOLDER}" ] ; then
+    echo "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
+    echo "Please remove the folder and try again."
+    exit 1
+  fi
+fi
 
 #######################
 # Get GitHub Env Vars #
@@ -1106,6 +1140,27 @@ if [ "$VALIDATE_JAVASCRIPT_STANDARD" == "true" ]; then
 fi
 
 ######################
+# JSX LINTING        #
+######################
+if [ "$VALIDATE_JSX" == "true" ]; then
+  #############################
+  # Lint the JSX files        #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c $JAVASCRIPT_LINTER_RULES" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
+fi
+
+######################
+# TSX LINTING        #
+######################
+if [ "$VALIDATE_TSX" == "true" ]; then
+  #############################
+  # Lint the TSX files        #
+  #############################
+  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(tsx\)\$" "${FILE_ARRAY_TSX[@]}"
+fi
+
+######################
 # TYPESCRIPT LINTING #
 ######################
 if [ "$VALIDATE_TYPESCRIPT_ES" == "true" ]; then
@@ -1168,7 +1223,6 @@ fi
 ########################
 # EDITORCONFIG LINTING #
 ########################
-echo ed: "$VALIDATE_EDITORCONFIG"
 if [ "$VALIDATE_EDITORCONFIG" == "true" ]; then
   ####################################
   # Lint the files with editorconfig #
@@ -1196,7 +1250,8 @@ if [ "$VALIDATE_DOCKER" == "true" ]; then
   # Lint the docker files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
+  LintCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $(dirname $DOCKER_LINTER_RULES)" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
 fi
 
 ###################

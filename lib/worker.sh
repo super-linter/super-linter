@@ -124,6 +124,16 @@ function LintCodebase() {
       echo "$LINE"
     done
 
+    ########################################
+    # Prepare context if TAP format output #
+    ########################################
+    if IsTAP ; then
+      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
+      INDEX=0
+      mkdir -p "${REPORT_OUTPUT_FOLDER}"
+      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
+    fi
+
     ##################
     # Lint the files #
     ##################
@@ -142,7 +152,15 @@ function LintCodebase() {
       elif [[ $FILE == *"$TEST_CASE_FOLDER"* ]]; then
         # This is the test cases, we should always skip
         continue
+      elif [[ $FILE == *".git"* ]]; then
+        # This is likely the .git folder and shouldnt be parsed
+        continue
       fi
+
+      ##################################
+      # Increase the linted file index #
+      ##################################
+      (("INDEX++"))
 
       ##############
       # File print #
@@ -196,13 +214,42 @@ function LintCodebase() {
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if IsTAP ; then
+          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          ##########################################
+          # Report the detailed message if enabled #
+          ##########################################
+          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
+          if [ -n "${DETAILED_MSG}" ] ; then
+            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
+          fi
+        fi
       else
         ###########
         # Success #
         ###########
         echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if IsTAP ; then
+          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+        fi
       fi
     done
+
+    #################################
+    # Generate report in TAP format #
+    #################################
+    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+    fi
   fi
 }
 ################################################################################
@@ -467,7 +514,7 @@ function RunTestCases() {
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard $JAVASCRIPT_STANDARD_LINTER_RULES" ".*\.\(js\)\$" "javascript"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
-  TestCodebase "DOCKER" "/dockerfilelint/bin/dockerfilelint" "/dockerfilelint/bin/dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "docker"
+  TestCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "docker"
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c $ANSIBLE_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
   TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file $CFN_LINTER_RULES" ".*\.\(json\|yml\|yaml\)\$" "cfn"
@@ -590,6 +637,16 @@ function LintAnsibleFiles() {
       done
     fi
 
+    ########################################
+    # Prepare context if TAP output format #
+    ########################################
+    if IsTAP ; then
+      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
+      INDEX=0
+      mkdir -p "${REPORT_OUTPUT_FOLDER}"
+      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
+    fi
+
     ##################
     # Lint the files #
     ##################
@@ -602,6 +659,11 @@ function LintAnsibleFiles() {
         # This is a file we dont look at
         continue
       fi
+
+      ##################################
+      # Increase the linted file index #
+      ##################################
+      (("INDEX++"))
 
       ####################
       # Get the filename #
@@ -635,13 +697,43 @@ function LintAnsibleFiles() {
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$LINT_CMD]${NC}"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if IsTAP ; then
+          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          ##########################################
+          # Report the detailed message if enabled #
+          ##########################################
+          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
+          if [ -n "${DETAILED_MSG}" ] ; then
+            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
+          fi
+        fi
+
       else
         ###########
         # Success #
         ###########
         echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
+
+        #######################################################
+        # Store the linting as a temporary file in TAP format #
+        #######################################################
+        if IsTAP ; then
+          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+        fi
       fi
     done
+
+    #################################
+    # Generate report in TAP format #
+    #################################
+    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+    fi
   else # No ansible directory found in path
     ###############################
     # Check to see if debug is on #
@@ -653,5 +745,25 @@ function LintAnsibleFiles() {
       echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[$ANSIBLE_DIRECTORY]${NC}"
       echo "skipping ansible lint"
     fi
+  fi
+}
+################################################################################
+#### Function IsTap ############################################################
+function IsTAP() {
+  if [ "${OUTPUT_FORMAT}" == "tap" ] ; then
+    return 0
+  else
+    return 1
+  fi
+}
+################################################################################
+#### Function TransformTAPDetails ##############################################
+function TransformTAPDetails() {
+  DATA=$1
+  if [ -n "${DATA}" ] && [ "${OUTPUT_DETAILS}" == "detailed" ] ; then
+    #########################################################
+    # Transform new lines to \\n, remove colours and colons #
+    #########################################################
+    echo "${DATA}" | awk 'BEGIN{RS="\n";ORS="\\n"}1' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" | tr ':' ' '
   fi
 }

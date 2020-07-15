@@ -60,6 +60,8 @@ function GetValidationInfo() {
   VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
   VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
   VALIDATE_JAVASCRIPT_STANDARD=$(echo "$VALIDATE_JAVASCRIPT_STANDARD" | awk '{print tolower($0)}')
+  VALIDATE_JSX=$(echo "$VALIDATE_JSX" | awk '{print tolower($0)}')
+  VALIDATE_TSX=$(echo "$VALIDATE_TSX" | awk '{print tolower($0)}')
   VALIDATE_TYPESCRIPT_ES=$(echo "$VALIDATE_TYPESCRIPT_ES" | awk '{print tolower($0)}')
   VALIDATE_TYPESCRIPT_STANDARD=$(echo "$VALIDATE_TYPESCRIPT_STANDARD" | awk '{print tolower($0)}')
   VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
@@ -311,6 +313,34 @@ function GetValidationInfo() {
   fi
 
   #############################################
+  # Validate if we should check JSX           #
+  #############################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_JSX ]]; then
+      # JSX flag was not set - default to false
+      VALIDATE_JSX="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_JSX="true"
+  fi
+
+  #############################################
+  # Validate if we should check TSX           #
+  #############################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_TSX ]]; then
+      # TSX flag was not set - default to false
+      VALIDATE_TSX="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_TSX="true"
+  fi
+
+  #############################################
   # Validate if we should check TYPESCRIPT_ES #
   #############################################
   if [[ $ANY_SET == "true" ]]; then
@@ -516,10 +546,13 @@ function GetValidationInfo() {
       VALIDATE_EDITORCONFIG="false"
     fi
   else
-    # No linter flags were set - default all to true
-    VALIDATE_EDITORCONFIG="true"
+    # No linter flags were set
+    # special case checking for .editorconfig
+    if [ -f "$GITHUB_WORKSPACE/.editorconfig" ]; then
+      VALIDATE_EDITORCONFIG="true"
+    fi
   fi
-  
+
   ####################################
   # Validate if we should check HTML #
   ####################################
