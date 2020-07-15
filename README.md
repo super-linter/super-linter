@@ -16,8 +16,7 @@ The end goal of this tool:
 - [Environment variables](#environment-variables)
 - [Disable rules](#disabling-rules)
 - [Docker Hub](#docker-hub)
-- [Run Super-Linter locally](#running-super-linter-locally-troubleshootingdebuggingenhancements)
-  - [CI / CT/ CD](#cictcd)
+- [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
 - [Limitations](#limitations)
 - [Contributing](#how-to-contribute)
 
@@ -209,19 +208,23 @@ If you need to disable certain *rules* and *functionality*, you can view [Disabl
 ## Docker Hub
 The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/github/super-linter`
 
-## Running Super-Linter locally (troubleshooting/debugging/enhancements)
+## Run Super-Linter outside GitHub Actions
+### Local (troubleshooting/debugging/enhancements)
 If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
 
 Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
 
-### CI/CT/CD
-The **Super-Linter** has *CI/CT/CD* configured utilizing **GitHub** Actions.
-- When a branch is created and code is pushed, a **GitHub** Action is triggered for building the new **Docker** container with the new codebase
-- The **Docker** container is then ran against the *test cases* to validate all code sanity
-  - `.automation/test` contains all test cases for each language that should be validated
-- These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
-- When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
-  - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
+### Azure
+Check out this [article](http://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
+
+### GitLab
+Check out this [snippet](https://gitlab.com/snippets/1988376)
+
+### Visual Studio Code
+You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
+
+We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 ## Limitations
 Below are a list of the known limitations for the **GitHub Super-Linter**:
@@ -231,12 +234,6 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
-
-### Visual Studio Code
-You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
-![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
-
-We will also support [Github Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 --------------------------------------------------------------------------------
 
