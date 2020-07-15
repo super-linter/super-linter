@@ -220,13 +220,7 @@ function LintCodebase() {
         #######################################################
         if IsTAP ; then
           NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
-          ##########################################
-          # Report the detailed message if enabled #
-          ##########################################
-          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
-          if [ -n "${DETAILED_MSG}" ] ; then
-            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
-          fi
+          AddDetailedMessageIfEnabled "$LINT_CMD" "${TMPFILE}"
         fi
       else
         ###########
@@ -476,13 +470,7 @@ function TestCodebase() {
       #######################################################
       if IsTAP ; then
         NotOkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
-        ##########################################
-        # Report the detailed message if enabled #
-        ##########################################
-        DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
-        if [ -n "${DETAILED_MSG}" ] ; then
-          printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >> "${TMPFILE}"
-        fi
+        AddDetailedMessageIfEnabled "$LINT_CMD" "${TMPFILE}"
       fi
     fi
   done
@@ -760,13 +748,7 @@ function LintAnsibleFiles() {
         #######################################################
         if IsTAP ; then
           NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
-          ##########################################
-          # Report the detailed message if enabled #
-          ##########################################
-          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
-          if [ -n "${DETAILED_MSG}" ] ; then
-            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
-          fi
+          AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
 
       else
@@ -838,4 +820,12 @@ function OkTap() {
 #### Function NotOkTap #########################################################
 function NotOkTap() {
   echo "not ok ${1} - ${2}" >> "${3}"
+}
+################################################################################
+#### Function AddDetailedMessageIfEnabled ######################################
+function AddDetailedMessageIfEnabled() {
+  DETAILED_MSG=$(TransformTAPDetails "${1}")
+  if [ -n "${DETAILED_MSG}" ] ; then
+    printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${2}"
+  fi
 }
