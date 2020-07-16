@@ -438,7 +438,7 @@ UploadImage() {
       exit 1
     else
       # SUCCESS
-      echo -e "${NC}${F[B]}Successfully Uploaded TAGOR_TAG:${F[W]}[$MAJOR_TAG]${F[B]} Docker image to ${F[C]}$REGISTRY${F[B]}!${NC}"
+      echo -e "${NC}${F[B]}Successfully Uploaded TAG:${F[W]}[$MAJOR_TAG]${F[B]} of Docker image to ${F[C]}$REGISTRY${F[B]}!${NC}"
     fi
   fi
 }
