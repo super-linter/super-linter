@@ -42,7 +42,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 # Run APK installs #
 ####################
-RUN apk add --no-cache \
+RUN apk add --update --no-cache \
     ansible-lint \
     bash \
     curl \

@@ -1064,7 +1064,7 @@ if [ "$VALIDATE_RUBY" == "true" ]; then
   # Lint the ruby files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+  LintCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES --force-exclusion" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
 fi
 
 ########################
