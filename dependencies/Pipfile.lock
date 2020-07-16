@@ -262,11 +262,11 @@
         },
         "yamllint": {
             "hashes": [
-                "sha256:0fa69bf8a86182b7fe14918bdd3a30354c869966bbc7cbfff176af71bda9c806",
-                "sha256:59f3ff77f44e7f46be6aecdb985830f73a1c51e290b7082a7d38c2ae1940f4a9"
+                "sha256:8f92d0c1770369fea467d6c278a4556aca36f753c62b3bf95664e311227e7ebe",
+                "sha256:c104ff5c29511ea59236cb06a68e34a9663724a35f1fdee736657d90fcb56162"
             ],
             "index": "pypi",
-            "version": "==1.23.0"
+            "version": "==1.24.1"
         },
         "yq": {
             "hashes": [
