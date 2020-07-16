@@ -29,10 +29,6 @@ ARG PSSA_VERSION='latest'
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft'
-# Raku Linter
-ARG RAKU_VER="2020.06"
-ARG RAKU_INSTALL_PATH=/usr
-ARG RAKUBREW_HOME=/tmp/rakubrew
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -171,17 +167,9 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 ################
 # Install Raku #
 ################
-# Environment
-ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
 # Basic setup, programs and init
-RUN mkdir -p $RAKUBREW_HOME/bin \
-    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
-    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
-    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
-    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
-    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
-    && rakubrew build-zef \
-    && rm -rf $RAKUBREW_HOME
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && apk add --update --no-cache rakudo zef
 
 ################################
 # Install editorconfig-checker #
