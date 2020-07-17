@@ -4,6 +4,17 @@
 ###########################################
 ###########################################
 
+#########################################
+# Get dependency images as build stages #
+#########################################
+FROM borkdude/clj-kondo:2020.06.21 as clj-kondo
+FROM dotenvlinter/dotenv-linter:2.0.0 as dotenv-linter
+FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+FROM golangci/golangci-lint:v1.27.0 as golangci-lint
+FROM yoheimuta/protolint:v0.25.1 as protolint
+FROM koalaman/shellcheck:v0.7.1 as shellcheck
+FROM wata727/tflint:0.16.2 as tflint
+
 ##################
 # Get base image #
 ##################
@@ -120,32 +131,37 @@ RUN curl -sLO "${ARM_TTK_URI}" \
 ######################
 # Install shellcheck #
 ######################
-COPY --from=koalaman/shellcheck:v0.7.1 /bin/shellcheck /usr/bin/
+COPY --from=shellcheck /bin/shellcheck /usr/bin/
 
 #####################
 # Install Go Linter #
 #####################
-COPY --from=golangci/golangci-lint:v1.27.0 /usr/bin/golangci-lint /usr/bin/
+COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 ##################
 # Install TFLint #
 ##################
-COPY --from=wata727/tflint:0.16.2 /usr/local/bin/tflint /usr/bin/
+COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
 ######################
 # Install protolint #
 ######################
-COPY --from=yoheimuta/protolint:v0.25.1 /usr/local/bin/protolint /usr/bin/
+COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 
 #########################
 # Install dotenv-linter #
 #########################
-COPY --from=dotenvlinter/dotenv-linter:2.0.0 /dotenv-linter /usr/bin/
+COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=borkdude/clj-kondo:2020.06.21 /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+
+################################
+# Install editorconfig-checker #
+################################
+COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 
 ##################
 # Install ktlint #
@@ -170,11 +186,6 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 # Basic setup, programs and init
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
-
-################################
-# Install editorconfig-checker #
-################################
-COPY --from=mstruebing/editorconfig-checker:2.1.0 /usr/bin/ec /usr/bin/editorconfig-checker
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
