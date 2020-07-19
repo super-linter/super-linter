@@ -498,6 +498,7 @@ function RunTestCases() {
   # Test case languages #
   #######################
   # TestCodebase "Language" "Linter" "Linter-command" "Regex to find files" "Test Folder"
+  TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "editorconfig-checker"
   TestCodebase "YML" "yamllint" "yamllint -c $YAML_LINTER_RULES" ".*\.\(yml\|yaml\)\$" "yml"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
