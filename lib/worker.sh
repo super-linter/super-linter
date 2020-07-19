@@ -649,7 +649,7 @@ function LintAnsibleFiles() {
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY/*.yml" 2>&1)
+    mapfile -t LIST_FILES < <(ls "$ANSIBLE_DIRECTORY"/*.{yaml,yml} 2>&1)
 
     ###############################################################
     # Set the list to empty if only MD and TXT files were changed #

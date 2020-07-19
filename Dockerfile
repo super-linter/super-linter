@@ -29,10 +29,6 @@ ARG PSSA_VERSION='latest'
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft'
-# Raku Linter
-ARG RAKU_VER="2020.06"
-ARG RAKU_INSTALL_PATH=/usr
-ARG RAKUBREW_HOME=/tmp/rakubrew
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -42,7 +38,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 # Run APK installs #
 ####################
-RUN apk add --no-cache \
+RUN apk add --update --no-cache \
     ansible-lint \
     bash \
     curl \
@@ -88,17 +84,10 @@ RUN npm config set package-lock false \
 #############################
 ENV PATH="/node_modules/.bin:${PATH}"
 
-####################
-# Run GEM installs #
-####################
-RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
-
-# Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
-# We then need to promote the correct version, uninstall, and fix deps
-RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop | grep rubocop | awk "{print $2}" | cut -d"(" -f2 | cut -d"," -f1); \
-  gem install --default rubocop:0.74.0; \
-  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; \
-  gem install rubocop:0.74.0'
+##############################
+# Installs ruby dependencies #
+##############################
+RUN bundle install
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -178,17 +167,9 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 ################
 # Install Raku #
 ################
-# Environment
-ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
 # Basic setup, programs and init
-RUN mkdir -p $RAKUBREW_HOME/bin \
-    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
-    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
-    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
-    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
-    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
-    && rakubrew build-zef \
-    && rm -rf $RAKUBREW_HOME
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && apk add --update --no-cache rakudo zef
 
 ################################
 # Install editorconfig-checker #
