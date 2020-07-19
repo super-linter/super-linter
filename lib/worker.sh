@@ -504,6 +504,10 @@ function TestCodebase() {
     else
       echo -e "${NC}${F[Y]}WARN!${NC} No TAP expected file found at:[$EXPECTED_FILE]${NC}"
       echo "skipping report assertions"
+      #####################################
+      # Append the file type to the array #
+      #####################################
+      WARNING_ARRAY_TEST+=("${FILE_TYPE}")
     fi
   fi
 
