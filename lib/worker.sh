@@ -507,7 +507,7 @@ function RunTestCases() {
   TestCodebase "CSS" "stylelint" "stylelint --config $CSS_LINTER_RULES" ".*\.\(css\)\$" "css"
   TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --fatal-warnings --options $DART_LINTER_RULES" ".*\.\(dart\)\$" "dart"
   TestCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $DOCKER_LINTER_RULES" ".*\(Dockerfile\)\$" "docker"
-  TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "editorconfig-checker"
+  TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\.ext$" "editorconfig-checker"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c $GO_LINTER_RULES" ".*\.\(go\)\$" "golang"
   TestCodebase "HTML" "htmlhint" "htmlhint --config $HTML_LINTER_RULES" ".*\.\(html\)\$" "html"
