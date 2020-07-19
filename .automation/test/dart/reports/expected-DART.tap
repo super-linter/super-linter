@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - dart_bad_1.dart
+  ---
+  message: Analyzing /tmp/lint/.automation/test/dart/dart_bad_1.dart...\n  lint • Use `;` instead of `{}` for empty constructor bodies. • dart/dart_bad_1.dart 4 25 • empty_constructor_bodies\n1 lint found.\n
+  ...
+ok 2 - dart_good_1.dart
