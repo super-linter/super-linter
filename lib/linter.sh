@@ -111,43 +111,47 @@ LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 
 GITHUB_SHA="${GITHUB_SHA}"                                     # GitHub sha from the commit
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"                       # Github Event Path
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                         # Github Workspace
+GITHUB_TOKEN="${GITHUB_TOKEN}"                                 # GitHub Token passed from environment
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"                       # GitHub Org/Repo passed from system
+GITHUB_RUN_ID="${GITHUB_RUN_ID}"                               # GitHub RUn ID to point to logs
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                     # Default Git Branch to use (master by default)
+MULTI_STATUS="${MULTI_STATUS:-true}"                           # Multiple status are created for each check ran
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                       # Ansible Directory
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to validate all files
-VALIDATE_YAML="${VALIDATE_YAML}"                               # Boolean to validate language
-VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
-VALIDATE_XML="${VALIDATE_XML}"                                 # Boolean to validate language
-VALIDATE_MD="${VALIDATE_MD}"                                   # Boolean to validate language
-VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
-VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
-VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
-VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
-VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
-VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
-VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
-VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
+VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
+VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
+VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
+VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
+VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
+VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
+VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
+VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
+VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
+VALIDATE_ENV="${VALIDATE_ENV}"                                 # Boolean to validate language
+VALIDATE_GO="${VALIDATE_GO}"                                   # Boolean to validate language
+VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
-VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate jsx files
-VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate tsx files
+VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
+VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
+VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
+VALIDATE_MD="${VALIDATE_MD}"                                   # Boolean to validate language
+VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
+VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
+VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
+VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
+VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
+VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
+VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
+VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
+VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
-VALIDATE_GO="${VALIDATE_GO}"                                   # Boolean to validate language
-VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
-VALIDATE_ENV="${VALIDATE_ENV}"                                 # Boolean to validate language
-VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
-VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
-VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
-VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
-VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
-VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
+VALIDATE_XML="${VALIDATE_XML}"                                 # Boolean to validate language
+VALIDATE_YAML="${VALIDATE_YAML}"                               # Boolean to validate language
 TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
-VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
 
 ##############
 # Debug Vars #
@@ -191,73 +195,73 @@ REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_YML=()                 # Array of files to check
-FILE_ARRAY_JSON=()                # Array of files to check
-FILE_ARRAY_XML=()                 # Array of files to check
-FILE_ARRAY_MD=()                  # Array of files to check
+FILE_ARRAY_ARM=()                 # Array of files to check
 FILE_ARRAY_BASH=()                # Array of files to check
-FILE_ARRAY_PERL=()                # Array of files to check
-FILE_ARRAY_RAKU=()                # Array of files to check
-FILE_ARRAY_PHP=()                 # Array of files to check
-FILE_ARRAY_RUBY=()                # Array of files to check
-FILE_ARRAY_PYTHON=()              # Array of files to check
 FILE_ARRAY_CFN=()                 # Array of files to check
+FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
+FILE_ARRAY_CSS=()                 # Array of files to check
+FILE_ARRAY_DART=()                # Array of files to check
+FILE_ARRAY_DOCKER=()              # Array of files to check
+FILE_ARRAY_ENV=()                 # Array of files to check
+FILE_ARRAY_GO=()                  # Array of files to check
+FILE_ARRAY_HTML=()                # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
+FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
+FILE_ARRAY_KOTLIN=()              # Array of files to check
+FILE_ARRAY_MD=()                  # Array of files to check
+FILE_ARRAY_OPENAPI=()             # Array of files to check
+FILE_ARRAY_PERL=()                # Array of files to check
+FILE_ARRAY_PHP=()                 # Array of files to check
+FILE_ARRAY_POWERSHELL=()          # Array of files to check
+FILE_ARRAY_PROTOBUF=()            # Array of files to check
+FILE_ARRAY_PYTHON=()              # Array of files to check
+FILE_ARRAY_RAKU=()                # Array of files to check
+FILE_ARRAY_RUBY=()                # Array of files to check
+FILE_ARRAY_TERRAFORM=()           # Array of files to check
 FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
-FILE_ARRAY_DOCKER=()              # Array of files to check
-FILE_ARRAY_GO=()                  # Array of files to check
-FILE_ARRAY_TERRAFORM=()           # Array of files to check
-FILE_ARRAY_POWERSHELL=()          # Array of files to check
-FILE_ARRAY_ARM=()                 # Array of files to check
-FILE_ARRAY_CSS=()                 # Array of files to check
-FILE_ARRAY_ENV=()                 # Array of files to check
-FILE_ARRAY_CLOJURE=()             # Array of files to check
-FILE_ARRAY_KOTLIN=()              # Array of files to check
-FILE_ARRAY_PROTOBUF=()            # Array of files to check
-FILE_ARRAY_OPENAPI=()             # Array of files to check
-FILE_ARRAY_DART=()                # Array of files to check
-FILE_ARRAY_HTML=()                # Array of files to check
+FILE_ARRAY_XML=()                 # Array of files to check
+FILE_ARRAY_YML=()                 # Array of files to check
 
 ############
 # Counters #
 ############
-ERRORS_FOUND_YML=0                 # Count of errors found
-ERRORS_FOUND_JSON=0                # Count of errors found
-ERRORS_FOUND_XML=0                 # Count of errors found
-ERRORS_FOUND_MARKDOWN=0            # Count of errors found
-ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_PERL=0                # Count of errors found
-ERRORS_FOUND_RAKU=0                # Count of errors found
-ERRORS_FOUND_PHP=0                 # Count of errors found
-ERRORS_FOUND_RUBY=0                # Count of errors found
-ERRORS_FOUND_PYTHON=0              # Count of errors found
-ERRORS_FOUND_CFN=0                 # Count of errors found
-ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
+ERRORS_FOUND_ARM=0                 # Count of errors found
+ERRORS_FOUND_BASH=0                # Count of errors found
+ERRORS_FOUND_CFN=0                 # Count of errors found
+ERRORS_FOUND_CLOJURE=0             # Count of errors found
+ERRORS_FOUND_CSS=0                 # Count of errors found
+ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
+ERRORS_FOUND_DART=0                # Count of errors found
+ERRORS_FOUND_DOCKER=0              # Count of errors found
+ERRORS_FOUND_ENV=0                 # Count of errors found
+ERRORS_FOUND_GO=0                  # Count of errors found
+ERRORS_FOUND_HTML=0                # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
+ERRORS_FOUND_JSON=0                # Count of errors found
 ERRORS_FOUND_JSX=0                 # Count of errors found
+ERRORS_FOUND_KOTLIN=0              # Count of errors found
+ERRORS_FOUND_MARKDOWN=0            # Count of errors found
+ERRORS_FOUND_OPENAPI=0             # Count of errors found
+ERRORS_FOUND_PERL=0                # Count of errors found
+ERRORS_FOUND_PHP=0                 # Count of errors found
+ERRORS_FOUND_POWERSHELL=0          # Count of errors found
+ERRORS_FOUND_PROTOBUF=0            # Count of errors found
+ERRORS_FOUND_PYTHON=0              # Count of errors found
+ERRORS_FOUND_RAKU=0                # Count of errors found
+ERRORS_FOUND_RUBY=0                # Count of errors found
+ERRORS_FOUND_TERRAFORM=0           # Count of errors found
 ERRORS_FOUND_TSX=0                 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_DOCKER=0              # Count of errors found
-ERRORS_FOUND_GO=0                  # Count of errors found
-ERRORS_FOUND_TERRAFORM=0           # Count of errors found
-ERRORS_FOUND_POWERSHELL=0          # Count of errors found
-ERRORS_FOUND_ARM=0                 # Count of errors found
-ERRORS_FOUND_CSS=0                 # Count of errors found
-ERRORS_FOUND_ENV=0                 # Count of errors found
-ERRORS_FOUND_CLOJURE=0             # Count of errors found
-ERRORS_FOUND_KOTLIN=0              # Count of errors found
-ERRORS_FOUND_PROTOBUF=0            # Count of errors found
-ERRORS_FOUND_OPENAPI=0             # Count of errors found
-ERRORS_FOUND_DART=0                # Count of errors found
-ERRORS_FOUND_HTML=0                # Count of errors found
+ERRORS_FOUND_XML=0                 # Count of errors found
+ERRORS_FOUND_YML=0                 # Count of errors found
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -708,6 +712,49 @@ GetGitHubVars() {
       echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[$GITHUB_REPO]${NC}"
     fi
   fi
+
+  ############################
+  # Validate we have a value #
+  ############################
+  if [ -z "$GITHUB_TOKEN" ]; then
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_TOKEN]!${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_TOKEN]${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
+  else
+    echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_TOKEN]${NC}"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  MULTI_STATUS=$(echo "$MULTI_STATUS" | awk '{print tolower($0)}')
+
+  #######################################################################
+  # Check to see if the multi status is set, and we have a token to use #
+  #######################################################################
+  if [ "$MULTI_STATUS" == "true" ] && [ -n "$GITHUB_TOKEN" ]; then
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_REPOSITORY" ]; then
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPOSITORY]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_REPOSITORY]${NC}"
+      exit 1
+    else
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[$GITHUB_REPOSITORY]${NC}"
+    fi
+
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "$GITHUB_RUN_ID" ]; then
+      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_RUN_ID]!${NC}"
+      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_RUN_ID]${NC}"
+      exit 1
+    else
+      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[$GITHUB_RUN_ID]${NC}"
+    fi
+  fi
 }
 ################################################################################
 #### Function ValidatePowershellModules ########################################
@@ -751,6 +798,57 @@ function ValidatePowershellModules() {
   fi
 }
 ################################################################################
+#### Function CallStatusAPI ####################################################
+CallStatusAPI() {
+  ####################
+  # Pull in the vars #
+  ####################
+  LANGUAGE="$1"   # langauge that was validated
+  STATUS="$2"     # success | error
+  SUCCESS_MSG='No errors were found in the linting process'
+  FAIL_MSG='Errors were detected, please view logs'
+  MESSAGE=''  # Message to send to status API
+
+  ######################################
+  # Check the status to create message #
+  ######################################
+  if [ "$STATUS" == "success" ]; then
+    # Success
+    MESSAGE="$SUCCESS_MSG"
+  else
+    # Failure
+    MESSAGE="$FAIL_MSG"
+  fi
+
+  ##############################################
+  # Call the status API to create status check #
+  ##############################################
+  SEND_STATUS_CMD=$(curl -X -s -f POST \
+    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+    -H 'accept: application/vnd.github.v3+json' \
+    -H "authorization: Bearer $GITHUB_TOKEN" \
+    -H 'content-type: application/json' \
+    -d "{ \"state\": \"$STATUS\",
+      \"target_url\": \"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\",
+      \"description\": \"$MESSAGE\", \"context\": \"  --> Lint-Language/$LANGUAGE\"
+    }" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ "$ERROR_CODE" -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to call GitHub Status API!"
+    echo "ERROR:[$SEND_STATUS_CMD]"
+    # Not going to fail the script on this yet...
+  fi
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer() {
   echo ""
@@ -781,9 +879,23 @@ Footer() {
     # Print if not 0 #
     ##################
     if [ "${!ERROR_COUNTER}" -ne 0 ]; then
-      # Print the goods
+      # We found errors
+
+      ###################
+      # Print the goods #
+      ###################
       echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in $LANGUAGE:[${!ERROR_COUNTER}]${NC}"
-    fi
+
+      #########################################
+      # Create status API for Failed language #
+      #########################################
+      CallStatusAPI "$LANGUAGE" "error"
+    else
+      # No errors found
+      #########################################
+      # Create status API for Failed language #
+      #########################################
+      CallStatusAPI "$LANGUAGE" "success"
   done
 
   ################################
@@ -934,6 +1046,12 @@ fi
 # Check to see if this is a test case run #
 ###########################################
 if [[ $TEST_CASE_RUN != "false" ]]; then
+
+  #############################################
+  # Set the multi status to off for test runs #
+  #############################################
+  MULTI_STATUS='false'
+
   ###########################
   # Run only the test cases #
   ###########################

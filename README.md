@@ -73,6 +73,8 @@ To use this **GitHub** Action you will need to complete the following:
 5. Enjoy your more *stable*, and *cleaner* code base
 6. Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
 
+**NOTE:** You will need the *Environment* variable `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` set in your workflow file to be able to use the multiple status API returns. There is no need to set the **GitHub** Secret, it only needs to be passed.
+
 ### Example connecting GitHub Action Workflow
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
 
@@ -132,6 +134,7 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ...
 ```
@@ -197,7 +200,7 @@ and won't run anything unexpected.
 | **OUTPUT_FORMAT**  | `none` | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap |
 | **OUTPUT_FOLDER**  | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist. |
 | **OUTPUT_DETAILS** | `simpler` |  What level of details to be reported. Supported formats: simpler or detailed. |
-
+| **MULTI_STATUS**   | `true`    | A status API is made for each language that is linted to make visual parsing easier. |
 
 ### Template rules files
 You can use the **GitHub** **Super-Linter** *with* or *without* your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
