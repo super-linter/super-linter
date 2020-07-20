@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - kotlin_bad_1.kt
+  ---
+  message: /tmp/lint/.automation/test/kotlin/kotlin_bad_1.kt 1 1  File must end with a newline (\n)\n/tmp/lint/.automation/test/kotlin/kotlin_bad_1.kt 2 20  Unnecessary semicolon\n/tmp/lint/.automation/test/kotlin/kotlin_bad_1.kt 3 16  Redundant curly braces\n/tmp/lint/.automation/test/kotlin/kotlin_bad_1.kt 3 27  Unnecessary semicolon\n/tmp/lint/.automation/test/kotlin/kotlin_bad_1.kt 5 15  Unnecessary semicolon\n
+  ...
+ok 2 - kotlint_good_1.kt

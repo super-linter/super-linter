@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - xml_bad_1.xml
+  ---
+  message: /tmp/lint/.automation/test/xml/xml_bad_1.xml 7  parser error   EndTag  '</' not found\n\n^\n
+  ...
+ok 2 - xml_good_1.xml

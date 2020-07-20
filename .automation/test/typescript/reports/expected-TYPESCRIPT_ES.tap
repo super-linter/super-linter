@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - typescript_bad_1.ts
+  ---
+  message: \n/tmp/lint/.automation/test/typescript/typescript_bad_1.ts\n  5 39  error  Parsing error  Unterminated regular expression literal\n\n✖ 1 problem (1 error, 0 warnings)\n
+  ...
+ok 2 - typescript_good_1.ts

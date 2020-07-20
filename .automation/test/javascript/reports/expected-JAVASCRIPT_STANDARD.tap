@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - javascript_bad_1.js
+  ---
+  message: standard  Use JavaScript Standard Style (https //standardjs.com)\n  /tmp/lint/.automation/test/javascript/javascript_bad_1.js 4 40  Parsing error  Unterminated regular expression\n
+  ...
+ok 2 - javascript_good_1.js

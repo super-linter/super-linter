@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - ruby_bad_1.rb
+  ---
+  message: Inspecting 1 file\nC\n\nOffenses \n\nruby/ruby_bad_1.rb 1 1  C  Style/FrozenStringLiteralComment  Missing frozen string literal comment.\nruby/ruby_bad_1.rb 11 11  C  Style/StringLiterals  Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.\nFile.open('/tmp/urls.txt', " w" ) do | file|\n          ^^^^^^^^^^^^^^^\nruby/ruby_bad_1.rb 11 32  C  Layout/SpaceInsideParens  Space inside parentheses detected.\nFile.open('/tmp/urls.txt', " w" ) do | file|\n                               ^\nruby/ruby_bad_1.rb 11 39  C  Layout/SpaceAroundBlockParameters  Space before first block parameter detected.\nFile.open('/tmp/urls.txt', " w" ) do | file|\n                                      ^\nruby/ruby_bad_1.rb 12 24  C  Layout/SpaceAroundBlockParameters  Space after last block parameter detected.\n  Hook.active.map do |h |\n                       ^\nruby/ruby_bad_1.rb 13 13  C  Layout/SpaceInsideArrayLiteralBrackets  Do not use space inside array brackets.\n    urls = [ ARRAY_OF_URLS_CALLING_INSTANCE]\n            ^\n\n1 file inspected, 6 offenses detected\n
+  ...
+ok 2 - ruby_good_1.rb

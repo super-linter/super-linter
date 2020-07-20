@@ -177,6 +177,8 @@ TEST_CASE_FOLDER='.automation/test'                          # Folder for test c
 echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true          # Workaround SC2034
 DEFAULT_ANSIBLE_DIRECTORY="$GITHUB_WORKSPACE/ansible"        # Default Ansible Directory
 echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
+WARNING_ARRAY_TEST=()                                        # Array of warning linters that did not have an expected test result.
+echo "${WARNING_ARRAY_TEST[*]}" > /dev/null 2>&1 || true     # Workaround SC2034
 
 ##############
 # Format     #
@@ -782,6 +784,13 @@ Footer() {
       # Print the goods
       echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in $LANGUAGE:[${!ERROR_COUNTER}]${NC}"
     fi
+  done
+
+  ################################
+  # Prints for warnings if found #
+  ################################
+  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
+    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
   done
 
   ##################################

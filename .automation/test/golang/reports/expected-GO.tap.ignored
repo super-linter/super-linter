@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - golang_bad_01.go
+  ---
+  message: level=error msg="[linters context] typechecking error  golang/golang_bad_01.go 1 1  expected 'package', found 'if'"\nlevel=warning msg="[runner] Can't run linter goanalysis_metalinter  S1005  failed prerequisites  [(inspect@command-line-arguments, isgenerated@command-line-arguments)  analysis skipped  errors in package  [-  golang/golang_bad_01.go 1 1  expected 'package', found 'if']]"\nlevel=warning msg="[runner] Can't run linter unused  buildir  analysis skipped  errors in package  [-  golang/golang_bad_01.go 1 1  expected 'package', found 'if']"\nlevel=error msg="Running error  buildir  analysis skipped  errors in package  [-  golang/golang_bad_01.go 1 1  expected 'package', found 'if']"\n
+  ...
+ok 2 - golang_good_01.go

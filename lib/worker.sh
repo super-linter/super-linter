@@ -219,14 +219,8 @@ function LintCodebase() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          ##########################################
-          # Report the detailed message if enabled #
-          ##########################################
-          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
-          if [ -n "${DETAILED_MSG}" ] ; then
-            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
-          fi
+          NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+          AddDetailedMessageIfEnabled "$LINT_CMD" "${TMPFILE}"
         fi
       else
         ###########
@@ -238,7 +232,7 @@ function LintCodebase() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
     done
@@ -247,7 +241,7 @@ function LintCodebase() {
     # Generate report in TAP format #
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   fi
@@ -307,7 +301,16 @@ function TestCodebase() {
   #################################
   # Get list of all files to lint #
   #################################
-  mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/ghe-initialize/*" 2>&1)
+  mapfile -t LIST_FILES < <(find "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER" -type f -regex "$FILE_EXTENSIONS" ! -path "$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/ansible/ghe-initialize/*" | sort 2>&1)
+
+  ########################################
+  # Prepare context if TAP output format #
+  ########################################
+  if IsTAP ; then
+    TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
+    mkdir -p "${REPORT_OUTPUT_FOLDER}"
+    REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
+  fi
 
   ##################
   # Lint the files #
@@ -407,6 +410,11 @@ function TestCodebase() {
     ERROR_CODE=$?
 
     ########################################
+    # Increment counter that check was ran #
+    ########################################
+    (("TESTS_RAN++"))
+
+    ########################################
     # Check for if it was supposed to pass #
     ########################################
     if [[ $FILE_STATUS == "good" ]]; then
@@ -422,15 +430,17 @@ function TestCodebase() {
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
-        # Increment counter that check was ran
-        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} was linted with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
-        # Increment counter that check was ran
-        ((TESTS_RAN++))
+      fi
+      #######################################################
+      # Store the linting as a temporary file in TAP format #
+      #######################################################
+      if IsTAP ; then
+        OkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
       fi
     else
       #######################################
@@ -449,18 +459,57 @@ function TestCodebase() {
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[$LINTER_COMMAND $FILE]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_$FILE_TYPE++"))
-        # Increment counter that check was ran
-        ((TESTS_RAN++))
       else
         ###########
         # Success #
         ###########
         echo -e "${NC}${F[B]} - File:${F[W]}[$FILE_NAME]${F[B]} failed test case with ${F[W]}[$LINTER_NAME]${F[B]} successfully${NC}"
-        # Increment counter that check was ran
-        ((TESTS_RAN++))
+      fi
+      #######################################################
+      # Store the linting as a temporary file in TAP format #
+      #######################################################
+      if IsTAP ; then
+        NotOkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
+        AddDetailedMessageIfEnabled "$LINT_CMD" "${TMPFILE}"
       fi
     fi
   done
+
+  ###########################################################################
+  # Generate report in TAP format and validate with the expected TAP output #
+  ###########################################################################
+  if IsTAP && [ ${TESTS_RAN} -gt 0 ] ; then
+    HeaderTap "${TESTS_RAN}" "${REPORT_OUTPUT_FILE}"
+    cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+
+    ########################################################################
+    # If expected TAP report exists then compare with the generated report #
+    ########################################################################
+    EXPECTED_FILE="$GITHUB_WORKSPACE/$TEST_CASE_FOLDER/$INDVIDUAL_TEST_FOLDER/reports/expected-${FILE_TYPE}.tap"
+    if [ -e "$EXPECTED_FILE" ] ; then
+      TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
+      ## Ignore white spaces, case sensitive
+      if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" > "${TMPFILE}" 2>&1; then
+        #############################################
+        # We failed to compare the reporting output #
+        #############################################
+        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to assert TAP output:[$LINTER_NAME]${NC}"!
+        echo "Please validate the asserts!"
+        cat "${TMPFILE}"
+        exit 1
+      else
+        # Success
+        echo -e "${NC}${F[B]}Successfully validation in the expected TAP format for ${F[W]}[$LINTER_NAME]${NC}"
+      fi
+    else
+      echo -e "${NC}${F[Y]}WARN!${NC} No TAP expected file found at:[$EXPECTED_FILE]${NC}"
+      echo "skipping report assertions"
+      #####################################
+      # Append the file type to the array #
+      #####################################
+      WARNING_ARRAY_TEST+=("${FILE_TYPE}")
+    fi
+  fi
 
   ##############################
   # Validate we ran some tests #
@@ -703,14 +752,8 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "not ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
-          ##########################################
-          # Report the detailed message if enabled #
-          ##########################################
-          DETAILED_MSG=$(TransformTAPDetails "$LINT_CMD")
-          if [ -n "${DETAILED_MSG}" ] ; then
-            printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TMPFILE}"
-          fi
+          NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+          AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
 
       else
@@ -723,7 +766,7 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP ; then
-          echo "ok ${INDEX} - ${FILE}" >> "${TMPFILE}"
+          OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
     done
@@ -732,7 +775,7 @@ function LintAnsibleFiles() {
     # Generate report in TAP format #
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ] ; then
-      printf "TAP version 13\n1..%s\n" "${INDEX}" > "${REPORT_OUTPUT_FILE}"
+      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
   else # No ansible directory found in path
@@ -766,5 +809,66 @@ function TransformTAPDetails() {
     # Transform new lines to \\n, remove colours and colons #
     #########################################################
     echo "${DATA}" | awk 'BEGIN{RS="\n";ORS="\\n"}1' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" | tr ':' ' '
+  fi
+}
+################################################################################
+#### Function HeaderTap ########################################################
+function HeaderTap() {
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"        # File being validated
+  OUTPUT_FILE="$2"  # Output location
+
+  ###################
+  # Print the goods #
+  ###################
+  printf "TAP version 13\n1..%s\n" "${INDEX}" > "${OUTPUT_FILE}"
+}
+################################################################################
+#### Function OkTap ############################################################
+function OkTap() {
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"      # Location
+  FILE="$2"       # File being validated
+  TEMP_FILE="$3"  # Temp file location
+
+  ###################
+  # Print the goods #
+  ###################
+  echo "ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
+}
+################################################################################
+#### Function NotOkTap #########################################################
+function NotOkTap() {
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"      # Location
+  FILE="$2"       # File being validated
+  TEMP_FILE="$3"  # Temp file location
+
+  ###################
+  # Print the goods #
+  ###################
+  echo "not ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
+}
+################################################################################
+#### Function AddDetailedMessageIfEnabled ######################################
+function AddDetailedMessageIfEnabled() {
+  ################
+  # Pull in Vars #
+  ################
+  LINT_CMD="$1"   # Linter command
+  TEMP_FILE="$2"  # Temp file
+
+  ####################
+  # Check the return #
+  ####################
+  DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
+  if [ -n "${DETAILED_MSG}" ] ; then
+    printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TEMP_FILE}"
   fi
 }
