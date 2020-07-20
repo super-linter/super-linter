@@ -901,7 +901,7 @@ Footer() {
       ######################################
       # Check if we validated the langauge #
       ######################################
-      if [ "${!VALIDATE_LANGUAGE_ARRAY}" -gt 0 ]; then
+      if [ "${#!VALIDATE_LANGUAGE_ARRAY[@]}" -gt 0 ]; then
         CallStatusAPI "$LANGUAGE" "success"
       fi
     fi
