@@ -813,23 +813,61 @@ function TransformTAPDetails() {
 ################################################################################
 #### Function HeaderTap ########################################################
 function HeaderTap() {
-  printf "TAP version 13\n1..%s\n" "${1}" > "${2}"
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"        # File being validated
+  OUTPUT_FILE="$2"  # Output location
+
+  ###################
+  # Print the goods #
+  ###################
+  printf "TAP version 13\n1..%s\n" "${INDEX}" > "${OUTPUT_FILE}"
 }
 ################################################################################
 #### Function OkTap ############################################################
 function OkTap() {
-  echo "ok ${1} - ${2}" >> "${3}"
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"      # Location
+  FILE="$2"       # File being validated
+  TEMP_FILE="$3"  # Temp file location
+
+  ###################
+  # Print the goods #
+  ###################
+  echo "ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
 }
 ################################################################################
 #### Function NotOkTap #########################################################
 function NotOkTap() {
-  echo "not ok ${1} - ${2}" >> "${3}"
+  ################
+  # Pull in Vars #
+  ################
+  INDEX="$1"      # Location
+  FILE="$2"       # File being validated
+  TEMP_FILE="$3"  # Temp file location
+
+  ###################
+  # Print the goods #
+  ###################
+  echo "not ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
 }
 ################################################################################
 #### Function AddDetailedMessageIfEnabled ######################################
 function AddDetailedMessageIfEnabled() {
-  DETAILED_MSG=$(TransformTAPDetails "${1}")
+  ################
+  # Pull in Vars #
+  ################
+  LINT_CMD="$1"   # Linter command
+  TEMP_FILE="$2"  # Temp file
+
+  ####################
+  # Check the return #
+  ####################
+  DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
   if [ -n "${DETAILED_MSG}" ] ; then
-    printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${2}"
+    printf "  ---\n  message: %s\n  ...\n" "$DETAILED_MSG" >> "${TEMP_FILE}"
   fi
 }
