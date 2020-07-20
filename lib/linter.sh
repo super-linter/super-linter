@@ -896,6 +896,7 @@ Footer() {
       # Create status API for Failed language #
       #########################################
       CallStatusAPI "$LANGUAGE" "success"
+    fi
   done
 
   ################################
