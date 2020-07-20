@@ -31,7 +31,7 @@ GEM
       rubocop (<= 0.82.0)
       rubocop-performance (~> 1.0)
       rubocop-rails (~> 2.0)
-    rubocop-performance (1.7.0)
+    rubocop-performance (1.7.1)
       rubocop (>= 0.82.0)
     rubocop-rails (2.6.0)
       activesupport (>= 4.2.0)
@@ -50,7 +50,7 @@ PLATFORMS
 DEPENDENCIES
   rubocop (~> 0.82.0)
   rubocop-github (~> 0.16.0)
-  rubocop-performance (~> 1.7.0)
+  rubocop-performance (~> 1.7.1)
   rubocop-rails (~> 2.5)
 
 BUNDLED WITH
