@@ -830,7 +830,7 @@ CallStatusAPI() {
     -H 'content-type: application/json' \
     -d "{ \"state\": \"$STATUS\",
       \"target_url\": \"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\",
-      \"description\": \"$MESSAGE\", \"context\": \"  --> Lint-Language/$LANGUAGE\"
+      \"description\": \"$MESSAGE\", \"context\": \"--> Linted: $LANGUAGE\"
     }" 2>&1)
 
   #######################
@@ -892,10 +892,18 @@ Footer() {
       CallStatusAPI "$LANGUAGE" "error"
     else
       # No errors found
-      #########################################
-      # Create status API for Failed language #
-      #########################################
-      CallStatusAPI "$LANGUAGE" "success"
+
+      ###############################################
+      # Create Validate language var from Var input #
+      ###############################################
+      VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+
+      ######################################
+      # Check if we validated the langauge #
+      ######################################
+      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
+        CallStatusAPI "$LANGUAGE" "success"
+      fi
     fi
   done
 
