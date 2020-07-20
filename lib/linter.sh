@@ -896,12 +896,12 @@ Footer() {
       ###############################################
       # Create Validate language var from Var input #
       ###############################################
-      VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+      VALIDATE_LANGUAGE_ARRAY="FILE_ARRAY_${LANGUAGE}"
 
       ######################################
       # Check if we validated the langauge #
       ######################################
-      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
+      if [ "${!VALIDATE_LANGUAGE_ARRAY}" -gt 0 ]; then
         CallStatusAPI "$LANGUAGE" "success"
       fi
     fi
