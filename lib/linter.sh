@@ -99,11 +99,16 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('YML' 'JSON' 'XML' 'MARKDOWN' 'BASH' 'PERL' 'RAKU' 'PHP' 'RUBY' 'PYTHON'
-  'COFFEESCRIPT' 'ANSIBLE' 'JAVASCRIPT_STANDARD' 'JAVASCRIPT_ES' 'JSX' 'TSX'
-  'TYPESCRIPT_STANDARD' 'TYPESCRIPT_ES' 'DOCKER' 'GO' 'TERRAFORM'
-  'CSS' 'ENV' 'POWERSHELL' 'ARM' 'KOTLIN' 'PROTOBUF' 'CLOJURE' 'OPENAPI'
-  'CFN' 'DART' 'HTML')
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
+  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML'
+  'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'OPENAPI'
+  'MARKDOWN'  'PERL'  'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON' 'RAKU' 'RUBY'
+  'TERRAFORM' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML' )
+
+############################################
+# Array for all languages that were linted #
+############################################
+LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that were linted
 
 ###################
 # GitHub ENV Vars #
@@ -879,8 +884,7 @@ Footer() {
     # Print if not 0 #
     ##################
     if [ "${!ERROR_COUNTER}" -ne 0 ]; then
-      # We found errors
-
+      # We found errors in the language
       ###################
       # Print the goods #
       ###################
@@ -891,17 +895,11 @@ Footer() {
       #########################################
       CallStatusAPI "$LANGUAGE" "error"
     else
-      # No errors found
-
-      ###############################################
-      # Create Validate language var from Var input #
-      ###############################################
-      VALIDATE_LANGUAGE_ARRAY="FILE_ARRAY_${LANGUAGE}"
-
+      # No errors found when linting the language
       ######################################
       # Check if we validated the langauge #
       ######################################
-      if [ "${#!VALIDATE_LANGUAGE_ARRAY[@]}" -gt 0 ]; then
+      if [[ "${LINTED_LANGUAGES_ARRAY[@]}" =~ "${LANGUAGE}" ]]; then
         CallStatusAPI "$LANGUAGE" "success"
       fi
     fi
