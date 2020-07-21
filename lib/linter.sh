@@ -988,6 +988,7 @@ Footer() {
     [ "$ERRORS_FOUND_PYTHON" -ne 0 ] ||
     [ "$ERRORS_FOUND_RAKU" -ne 0 ] ||
     [ "$ERRORS_FOUND_RUBY" -ne 0 ] ||
+    [ "$ERRORS_FOUND_STATES" -ne 0 ] ||
     [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] ||
     [ "$ERRORS_FOUND_TSX" -ne 0 ] ||
     [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] ||

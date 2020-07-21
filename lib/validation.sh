@@ -95,7 +95,7 @@ function GetValidationInfo() {
     $VALIDATE_EDITORCONFIG || -n \
     $VALIDATE_ENV || -n \
     $VALIDATE_GO || -n \
-    $VALIDATE_HTML ]]; then || -n \
+    $VALIDATE_HTML || -n \
     $VALIDATE_JAVASCRIPT_ES || -n \
     $VALIDATE_JAVASCRIPT_STANDARD || -n \
     $VALIDATE_JSON || -n \
