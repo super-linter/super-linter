@@ -141,7 +141,8 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to vali
 VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # shellcheck disable=SC2153
+# shellcheck disable=SC2153
+VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
