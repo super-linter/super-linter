@@ -63,7 +63,7 @@ function GetValidationInfo() {
   VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
   VALIDATE_JSX=$(echo "$VALIDATE_JSX" | awk '{print tolower($0)}')
   VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
-  VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
+  VALIDATE_MARKDOWN=$(echo "$VALIDATE_MARKDOWN" | awk '{print tolower($0)}')
   VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
   VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
   VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
@@ -86,7 +86,7 @@ function GetValidationInfo() {
   if [[ -n $VALIDATE_YAML || -n \
     $VALIDATE_JSON || -n \
     $VALIDATE_XML || -n \
-    $VALIDATE_MD || -n \
+    $VALIDATE_MARKDOWN || -n \
     $VALIDATE_BASH || -n \
     $VALIDATE_PERL || -n \
     $VALIDATE_RAKU || -n \
@@ -163,13 +163,13 @@ function GetValidationInfo() {
   ########################################
   if [[ $ANY_SET == "true" ]]; then
     # Some linter flags were set - only run those set to true
-    if [[ -z $VALIDATE_MD ]]; then
+    if [[ -z $VALIDATE_MARKDOWN ]]; then
       # MD flag was not set - default to false
-      VALIDATE_MD="false"
+      VALIDATE_MARKDOWN="false"
     fi
   else
     # No linter flags were set - default all to true
-    VALIDATE_MD="true"
+    VALIDATE_MARKDOWN="true"
   fi
 
   ####################################
@@ -585,7 +585,7 @@ function GetValidationInfo() {
   else
     PRINT_ARRAY+=("- Excluding [XML] files in code base...")
   fi
-  if [[ $VALIDATE_MD == "true" ]]; then
+  if [[ $VALIDATE_MARKDOWN == "true" ]]; then
     PRINT_ARRAY+=("- Validating [MARKDOWN] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [MARKDOWN] files in code base...")

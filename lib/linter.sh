@@ -28,8 +28,8 @@ LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"               # Linter
 YAML_FILE_NAME='.yaml-lint.yml'                                         # Name of the file
 YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"             # Path to the yaml lint rules
 # MD Vars
-MD_FILE_NAME='.markdown-lint.yml'                                       # Name of the file
-MD_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MD_FILE_NAME"                 # Path to the markdown lint rules
+MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
+MARKDOWN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MARKDOWN_FILE_NAME"     # Path to the markdown lint rules
 # Python Vars
 PYTHON_FILE_NAME='.python-lint'                                         # Name of the file
 PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"         # Path to the python lint rules
@@ -102,7 +102,7 @@ LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML'
   'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'OPENAPI'
-  'MARKDOWN'  'PERL'  'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON' 'RAKU' 'RUBY'
+  'MARKDOWN' 'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON' 'RAKU' 'RUBY'
   'TERRAFORM' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML' )
 
 ############################################
@@ -126,7 +126,7 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
-VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
+VALIDATE_CFN="${VALIDATE_CLOUDFORMATION}"                      # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
@@ -141,7 +141,7 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to vali
 VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-VALIDATE_MD="${VALIDATE_MD}"                                   # Boolean to validate language
+VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
@@ -216,7 +216,7 @@ FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
-FILE_ARRAY_MD=()                  # Array of files to check
+FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
 FILE_ARRAY_PHP=()                 # Array of files to check
@@ -1012,7 +1012,7 @@ GetValidationInfo
 # Get YML rules
 GetLinterRules "YAML"
 # Get Markdown rules
-GetLinterRules "MD"
+GetLinterRules "MARKDOWN"
 # Get Python rules
 GetLinterRules "PYTHON"
 # Get Ruby rules
@@ -1117,12 +1117,12 @@ fi
 ####################
 # MARKDOWN LINTING #
 ####################
-if [ "$VALIDATE_MD" == "true" ]; then
+if [ "$VALIDATE_MARKDOWN" == "true" ]; then
   ###########################
   # Lint the Markdown Files #
   ###########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MD_LINTER_RULES" ".*\.\(md\)\$" "${FILE_ARRAY_MD[@]}"
+  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c $MARKDOWN_LINTER_RULES" ".*\.\(md\)\$" "${FILE_ARRAY_MARKDOWN[@]}"
 fi
 
 ################
@@ -1150,7 +1150,7 @@ fi
 ###############
 # CFN LINTING #
 ###############
-if [ "$VALIDATE_CLOUDFORMATION" == "true" ]; then
+if [ "$VALIDATE_CFN" == "true" ]; then
   #################################
   # Lint the CloudFormation files #
   #################################
