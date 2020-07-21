@@ -141,8 +141,7 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to vali
 VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-# shellcheck disable=SC2153
-VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # Boolean to validate language
+VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
@@ -598,7 +597,7 @@ GetGitHubVars() {
   ###############################
   # Convert string to lowercase #
   ###############################
-  TEST_CASE_RUN=$(echo "$TEST_CASE_RUN" | awk '{print tolower($0)}')
+  TEST_CASE_RUN="${TEST_CASE_RUN,,}"
 
   ##########################
   # Get the run local flag #
@@ -613,7 +612,7 @@ GetGitHubVars() {
   ###############################
   # Convert string to lowercase #
   ###############################
-  RUN_LOCAL=$(echo "$RUN_LOCAL" | awk '{print tolower($0)}')
+  RUN_LOCAL="${RUN_LOCAL,,}"
 
   #################################
   # Check if were running locally #
@@ -738,7 +737,7 @@ GetGitHubVars() {
   ###############################
   # Convert string to lowercase #
   ###############################
-  MULTI_STATUS=$(echo "$MULTI_STATUS" | awk '{print tolower($0)}')
+  MULTI_STATUS="${MULTI_STATUS,,}"
 
   #######################################################################
   # Check to see if the multi status is set, and we have a token to use #
