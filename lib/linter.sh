@@ -141,7 +141,7 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to vali
 VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # Boolean to validate language
+VALIDATE_MARKDOWN="${VALIDATE_MD}"                             # shellcheck disable=SC2153
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
@@ -874,7 +874,8 @@ Footer() {
   ####################################################
   # Need to clean up the lanuage array of duplicates #
   ####################################################
-  UNIQUE_LINTED_ARRAY=($(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+  mapfile -t UNIQUE_LINTED_ARRAY < <(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+  # UNIQUE_LINTED_ARRAY=($(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 
   ##############################
   # Prints for errors if found #
@@ -904,7 +905,7 @@ Footer() {
       ######################################
       # Check if we validated the langauge #
       ######################################
-      if [[ "${UNIQUE_LINTED_ARRAY[@]}" =~ "${LANGUAGE}" ]]; then
+      if [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
         CallStatusAPI "$LANGUAGE" "success"
       fi
     fi
