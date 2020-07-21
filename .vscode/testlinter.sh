@@ -12,9 +12,9 @@ CODE_PATH='/tmp/lint' # Path to code base
 ##################
 # Check the path #
 ##################
-if [ ! -L $CODE_PATH ]; then
+if [ ! -L ${CODE_PATH} ]; then
   # Create symbolic link
-  ln -s "$PWD"/.automation/test $CODE_PATH
+  ln -s "${PWD}"/.automation/test ${CODE_PATH}
 fi
 
 #########################
@@ -23,4 +23,4 @@ fi
 export RUN_LOCAL=true
 
 # shellcheck source=/dev/null
-source "$PWD"/lib/linter.sh
+source "${PWD}"/lib/linter.sh

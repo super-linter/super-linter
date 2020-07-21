@@ -126,7 +126,7 @@ ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 RUN curl -sLO "${ARM_TTK_URI}" \
     && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
     && rm "${ARM_TTK_NAME}" \
-    && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
+    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
 
 ######################
 # Install shellcheck #
