@@ -834,7 +834,7 @@ CallStatusAPI() {
   ##########################################################
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
-  if [ $MULTI_STATUS == "true" ]; then
+  if [ "$MULTI_STATUS" == "true" ]; then
     ##############################################
     # Call the status API to create status check #
     ##############################################
