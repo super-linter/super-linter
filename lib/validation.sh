@@ -84,36 +84,36 @@ function GetValidationInfo() {
   # Determine if any linters were explicitly set #
   ################################################
   ANY_SET="false"
-  if [[ -n $VALIDATE_ANSIBLE || -n \
-    $VALIDATE_ARM || -n \
-    $VALIDATE_BASH || -n \
-    $VALIDATE_CLOJURE || -n \
-    $VALIDATE_COFFEE || -n \
-    $VALIDATE_CSS || -n \
-    $VALIDATE_DART || -n \
-    $VALIDATE_DOCKER || -n \
-    $VALIDATE_EDITORCONFIG || -n \
-    $VALIDATE_ENV || -n \
-    $VALIDATE_GO || -n \
-    $VALIDATE_HTML || -n \
-    $VALIDATE_JAVASCRIPT_ES || -n \
-    $VALIDATE_JAVASCRIPT_STANDARD || -n \
-    $VALIDATE_JSON || -n \
-    $VALIDATE_KOTLIN || -n \
-    $VALIDATE_MARKDOWN || -n \
-    $VALIDATE_OPENAPI || -n \
-    $VALIDATE_PERL || -n \
-    $VALIDATE_PHP || -n \
-    $VALIDATE_POWERSHELL || -n \
-    $VALIDATE_PROTOBUF || -n \
-    $VALIDATE_PYTHON || -n \
-    $VALIDATE_RAKU || -n \
-    $VALIDATE_RUBY || -n \
-    $VALIDATE_TERRAFORM || -n \
-    $VALIDATE_TYPESCRIPT_ES || -n \
-    $VALIDATE_TYPESCRIPT_STANDARD || -n \
-    $VALIDATE_XML || -n \
-    $VALIDATE_YAML ]]; then
+  if [[ -n ${VALIDATE_ANSIBLE} || -n \
+    ${VALIDATE_ARM} || -n \
+    ${VALIDATE_BASH} || -n \
+    ${VALIDATE_CLOJURE} || -n \
+    ${VALIDATE_COFFEE} || -n \
+    ${VALIDATE_CSS} || -n \
+    ${VALIDATE_DART} || -n \
+    ${VALIDATE_DOCKER} || -n \
+    ${VALIDATE_EDITORCONFIG} || -n \
+    ${VALIDATE_ENV} || -n \
+    ${VALIDATE_GO} || -n \
+    ${VALIDATE_HTML} || -n \
+    ${VALIDATE_JAVASCRIPT_ES} || -n \
+    ${VALIDATE_JAVASCRIPT_STANDARD} || -n \
+    ${VALIDATE_JSON} || -n \
+    ${VALIDATE_KOTLIN} || -n \
+    ${VALIDATE_MARKDOWN} || -n \
+    ${VALIDATE_OPENAPI} || -n \
+    ${VALIDATE_PERL} || -n \
+    ${VALIDATE_PHP} || -n \
+    ${VALIDATE_POWERSHELL} || -n \
+    ${VALIDATE_PROTOBUF} || -n \
+    ${VALIDATE_PYTHON} || -n \
+    ${VALIDATE_RAKU} || -n \
+    ${VALIDATE_RUBY} || -n \
+    ${VALIDATE_TERRAFORM} || -n \
+    ${VALIDATE_TYPESCRIPT_ES} || -n \
+    ${VALIDATE_TYPESCRIPT_STANDARD} || -n \
+    ${VALIDATE_XML} || -n \
+    ${VALIDATE_YAML} ]]; then
     ANY_SET="true"
   fi
 

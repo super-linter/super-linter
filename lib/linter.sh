@@ -23,10 +23,10 @@ source /action/lib/worker.sh # Source the function script(s)
 ###########
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                                   # Name of the file
-ANSIBLE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ANSIBLE_FILE_NAME"       # Path to the Ansible lint rules
+ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"   # Path to the Ansible lint rules
 # Azure Resource Manager Vars
 ARM_FILE_NAME='.arm-ttk.psd1'                                           # Name of the file
-ARM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$ARM_FILE_NAME"               # Path to the ARM lint rules
+ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"           # Path to the ARM lint rules
 # Cloudformation Vars
 CFN_FILE_NAME='.cfnlintrc.yml'                                          # Name of the file
 CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"               # Path to the cloudformation lint rules
