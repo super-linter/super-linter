@@ -726,6 +726,11 @@ GetGitHubVars() {
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_TOKEN]!${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$GITHUB_TOKEN]${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
+
+    ################################################################################
+    # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
+    ################################################################################
+    MULTI_STATUS='false'
   else
     echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_TOKEN]${NC}"
   fi
