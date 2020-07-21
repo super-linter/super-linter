@@ -160,6 +160,15 @@ function BuildFileList() {
         ################################
         FILE_ARRAY_CFN+=("$FILE")
       fi
+      ############################################
+      # Check if the file is AWS States Language #
+      ############################################
+      if DetectAWSStatesFIle "$FILE"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_STATES+=("$FILE")
+      fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
