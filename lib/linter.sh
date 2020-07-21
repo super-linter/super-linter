@@ -29,19 +29,19 @@ ARM_FILE_NAME='.arm-ttk.psd1'                                           # Name o
 ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"           # Path to the ARM lint rules
 # Cloudformation Vars
 CFN_FILE_NAME='.cfnlintrc.yml'                                          # Name of the file
-CFN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CFN_FILE_NAME"               # Path to the cloudformation lint rules
+CFN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CFN_FILE_NAME}"               # Path to the cloudformation lint rules
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                               # Name of the file
-CLOJURE_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CLOJURE_FILE_NAME"       # Path to the Clojure lint rules
+CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"       # Path to the Clojure lint rules
 # Coffee Vars
-COFFEESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$COFFEE_FILE_NAME"   # Path to the coffeescript lint rules
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"   # Path to the coffeescript lint rules
 COFFEE_FILE_NAME='.coffee-lint.json'                                    # Name of the file
 # CSS Vars
 CSS_FILE_NAME='.stylelintrc.json'                                       # Name of the file
-CSS_LINTER_RULES="$DEFAULT_RULES_LOCATION/$CSS_FILE_NAME"               # Path to the CSS lint rules
+CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"               # Path to the CSS lint rules
 # Dart Vars
 DART_FILE_NAME='analysis_options.yaml'                                  # Name of the file
-DART_LINTER_RULES="$DEFAULT_RULES_LOCATION/$DART_FILE_NAME"             # Path to the DART lint rules
+DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"             # Path to the DART lint rules
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                        # Default rules files location
 # Docker Vars
@@ -49,44 +49,44 @@ DOCKER_FILE_NAME='.dockerfilelintrc'                                    # Name o
 DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"         # Path to the Docker lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                            # Name of the file
-GO_LINTER_RULES="$DEFAULT_RULES_LOCATION/$GO_FILE_NAME"                 # Path to the Go lint rules
+GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                 # Path to the Go lint rules
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                            # Name of the file
-HTML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$HTML_FILE_NAME"             # Path to the CSS lint rules
+HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"             # Path to the CSS lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
-JAVASCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$JAVASCRIPT_FILE_NAME" # Path to the Javascript lint rules
+JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # Default linter path
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"               # Linter Path Directory
 # MD Vars
 MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
-MARKDOWN_LINTER_RULES="$DEFAULT_RULES_LOCATION/$MARKDOWN_FILE_NAME"     # Path to the markdown lint rules
+MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"     # Path to the markdown lint rules
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                      # Name of the file
-OPENAPI_LINTER_RULES="$DEFAULT_RULES_LOCATION/$OPENAPI_FILE_NAME"       # Path to the OpenAPI lint rules
+OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"       # Path to the OpenAPI lint rules
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                # Name of the file
-POWERSHELL_LINTER_RULES="$DEFAULT_RULES_LOCATION/$POWERSHELL_FILE_NAME" # Path to the Powershell lint rules
+POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
 # Protocol Buffers Vars
 PROTOBUF_FILE_NAME='.protolintrc.yml'                                   # Name of the file
-PROTOBUF_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PROTOBUF_FILE_NAME"     # Path to the Protocol Buffers lint rules
+PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"     # Path to the Protocol Buffers lint rules
 # Python Vars
 PYTHON_FILE_NAME='.python-lint'                                         # Name of the file
-PYTHON_LINTER_RULES="$DEFAULT_RULES_LOCATION/$PYTHON_FILE_NAME"         # Path to the python lint rules
+PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"         # Path to the python lint rules
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                    # Name of the file
-RUBY_LINTER_RULES="$DEFAULT_RULES_LOCATION/$RUBY_FILE_NAME"             # Path to the ruby lint rules
+RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"             # Path to the ruby lint rules
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                       # Name of the file
-TERRAFORM_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TERRAFORM_FILE_NAME"   # Path to the Terraform lint rules
+TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"   # Path to the Terraform lint rules
 # Typescript Vars
 TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
-TYPESCRIPT_LINTER_RULES="$DEFAULT_RULES_LOCATION/$TYPESCRIPT_FILE_NAME" # Path to the Typescript lint rules
+TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
 # YAML Vars
 YAML_FILE_NAME='.yaml-lint.yml'                                         # Name of the file
-YAML_LINTER_RULES="$DEFAULT_RULES_LOCATION/$YAML_FILE_NAME"             # Path to the yaml lint rules
+YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"             # Path to the yaml lint rules
 
 
 #######################################
@@ -586,13 +586,13 @@ DetectAWSStatesFIle() {
   ################
   # Pull in Vars #
   ################
-  FILE="$1" # File that we need to validate
+  FILE="${1}" # File that we need to validate
 
   # https://states-language.net/spec.html#example
   ###############################
   # check if file has resources #
   ###############################
-  if grep '"Resource": *"arn"*' "$FILE"; then
+  if grep '"Resource": *"arn"*' "${FILE}"; then
     # Found it
     return 0
   fi
@@ -963,39 +963,39 @@ Footer() {
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif  [ "$ERRORS_FOUND_ANSIBLE" -ne 0 ] ||
-    [ "$ERRORS_FOUND_ARM" -ne 0 ] ||
-    [ "$ERRORS_FOUND_BASH" -ne 0 ] ||
-    [ "$ERRORS_FOUND_CFN" -ne 0 ] ||
-    [ "$ERRORS_FOUND_CLOJURE" -ne 0 ] ||
-    [ "$ERRORS_FOUND_COFFEESCRIPT" -ne 0 ] ||
-    [ "$ERRORS_FOUND_CSS" -ne 0 ] ||
-    [ "$ERRORS_FOUND_DART" -ne 0 ] ||
-    [ "$ERRORS_FOUND_DOCKER" -ne 0 ] ||
-    [ "$ERRORS_FOUND_ENV" -ne 0 ] ||
-    [ "$ERRORS_FOUND_GO" -ne 0 ] ||
-    [ "$ERRORS_FOUND_HTML" -ne 0 ] ||
-    [ "$ERRORS_FOUND_JAVASCRIPT_ES" -ne 0 ] ||
-    [ "$ERRORS_FOUND_JAVASCRIPT_STANDARD" -ne 0 ] ||
-    [ "$ERRORS_FOUND_JSON" -ne 0 ] ||
-    [ "$ERRORS_FOUND_JSX" -ne 0 ] ||
-    [ "$ERRORS_FOUND_KOTLIN" -ne 0 ] ||
-    [ "$ERRORS_FOUND_MARKDOWN" -ne 0 ] ||
-    [ "$ERRORS_FOUND_OPENAPI" -ne 0 ] ||
-    [ "$ERRORS_FOUND_PERL" -ne 0 ] ||
-    [ "$ERRORS_FOUND_PHP" -ne 0 ] ||
-    [ "$ERRORS_FOUND_POWERSHELL" -ne 0 ] ||
-    [ "$ERRORS_FOUND_PROTOBUF" -ne 0 ] ||
-    [ "$ERRORS_FOUND_PYTHON" -ne 0 ] ||
-    [ "$ERRORS_FOUND_RAKU" -ne 0 ] ||
-    [ "$ERRORS_FOUND_RUBY" -ne 0 ] ||
-    [ "$ERRORS_FOUND_STATES" -ne 0 ] ||
-    [ "$ERRORS_FOUND_TERRAFORM" -ne 0 ] ||
-    [ "$ERRORS_FOUND_TSX" -ne 0 ] ||
-    [ "$ERRORS_FOUND_TYPESCRIPT_ES" -ne 0 ] ||
-    [ "$ERRORS_FOUND_TYPESCRIPT_STANDARD" -ne 0 ] ||
-    [ "$ERRORS_FOUND_XML" -ne 0 ] ||
-    [ "$ERRORS_FOUND_YML" -ne 0 ]; then
+  elif  [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_HTML}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_JAVASCRIPT_ES}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_JAVASCRIPT_STANDARD}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_JSX}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_STATES}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_TSX}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_TYPESCRIPT_ES}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_TYPESCRIPT_STANDARD}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_YML}" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
@@ -1531,7 +1531,7 @@ fi
 ######################
 # AWS STATES LINTING #
 ######################
-if [ "$VALIDATE_STATES" == "true" ]; then
+if [ "${VALIDATE_STATES}" == "true" ]; then
   #########################
   # Lint the STATES files #
   #########################

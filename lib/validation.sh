@@ -260,9 +260,9 @@ function GetValidationInfo() {
   ##########################################
   # Validate if we should check AWS States #
   ##########################################
-  if [[ $ANY_SET == "true" ]]; then
+  if [[ ${ANY_SET} == "true" ]]; then
     # Some linter flags were set - only run those set to true
-    if [[ -z $VALIDATE_STATES ]]; then
+    if [[ -z ${VALIDATE_STATES} ]]; then
       # STATES flag was not set - default to false
       VALIDATE_STATES="false"
     fi
@@ -735,7 +735,7 @@ function GetValidationInfo() {
   else
     PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
   fi
-  if [[ $VALIDATE_STATES == "true" ]]; then
+  if [[ ${VALIDATE_STATES} == "true" ]]; then
     PRINT_ARRAY+=("- Validating [AWS STATES] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [AWS STATES] files in code base...")
