@@ -34,11 +34,6 @@ function LintCodebase() {
   PRINT_ARRAY+=("----------------------------------------------")
   PRINT_ARRAY+=("----------------------------------------------")
 
-  #################################
-  # Add the language to the array #
-  #################################
-  LINTED_LANGUAGES_ARRAY+=("$FILE_TYPE")
-
   #####################################
   # Validate we have linter installed #
   #####################################
@@ -172,6 +167,11 @@ function LintCodebase() {
       ##############
       echo "---------------------------"
       echo "File:[$FILE]"
+
+      #################################
+      # Add the language to the array #
+      #################################
+      LINTED_LANGUAGES_ARRAY+=("$FILE_TYPE")
 
       ####################
       # Set the base Var #

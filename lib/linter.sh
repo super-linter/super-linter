@@ -871,6 +871,11 @@ Footer() {
     echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
   fi
 
+  ####################################################
+  # Need to clean up the lanuage array of duplicates #
+  ####################################################
+  UNIQUE_LINTED_ARRAY=($(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
   ##############################
   # Prints for errors if found #
   ##############################
@@ -899,7 +904,7 @@ Footer() {
       ######################################
       # Check if we validated the langauge #
       ######################################
-      if [[ "${LINTED_LANGUAGES_ARRAY[@]}" =~ "${LANGUAGE}" ]]; then
+      if [[ "${UNIQUE_LINTED_ARRAY[@]}" =~ "${LANGUAGE}" ]]; then
         CallStatusAPI "$LANGUAGE" "success"
       fi
     fi
