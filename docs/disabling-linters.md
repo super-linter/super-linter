@@ -962,7 +962,7 @@ lint:
 -
 ```js
 <LINE> // editorconfig-checker-disable-line
-````
+```
 
 ### editorconfig-checker disable code block
 
@@ -1003,3 +1003,4 @@ lint:
 ### htmlhint disable entire file
 
 - There is currently **No** way to disable rules in an entire file
+````
