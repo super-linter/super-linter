@@ -228,7 +228,7 @@ If you need to disable certain _rules_ and _functionality_, you can view [Disabl
 
 ## Docker Hub
 
-The **Docker** container that is built from this repository is located at `https://hub.docker.com/r/github/super-linter`
+The **Docker** container that is built from this repository is located at [github/super-linter](https://hub.docker.com/r/github/super-linter)
 
 ## Run Super-Linter outside GitHub Actions
 
