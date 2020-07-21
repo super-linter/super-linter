@@ -21,8 +21,7 @@ updates:
     directory: "/dependencies"
     schedule:
       interval: "daily"
-    labels:
-      - "Type: Maintenance"
+    open-pull-requests-limit: 10
 
   # Maintain dependencies for docker
   - package-ecosystem: "docker"
@@ -37,3 +36,4 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
+

@@ -24,7 +24,7 @@ function GetValidationInfo() {
     ###############################
     # Convert string to lowercase #
     ###############################
-    VALIDATE_ALL_CODEBASE=$(echo "$VALIDATE_ALL_CODEBASE" | awk '{print tolower($0)}')
+    VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE,,}"
     ######################################
     # Validate we should check all files #
     ######################################
@@ -46,38 +46,38 @@ function GetValidationInfo() {
   ################################
   # Convert strings to lowercase #
   ################################
-  VALIDATE_YAML=$(echo "$VALIDATE_YAML" | awk '{print tolower($0)}')
-  VALIDATE_JSON=$(echo "$VALIDATE_JSON" | awk '{print tolower($0)}')
-  VALIDATE_XML=$(echo "$VALIDATE_XML" | awk '{print tolower($0)}')
-  VALIDATE_MD=$(echo "$VALIDATE_MD" | awk '{print tolower($0)}')
-  VALIDATE_BASH=$(echo "$VALIDATE_BASH" | awk '{print tolower($0)}')
-  VALIDATE_PERL=$(echo "$VALIDATE_PERL" | awk '{print tolower($0)}')
-  VALIDATE_RAKU=$(echo "$VALIDATE_RAKU" | awk '{print tolower($0)}')
-  VALIDATE_PHP=$(echo "$VALIDATE_PHP" | awk '{print tolower($0)}')
-  VALIDATE_PYTHON=$(echo "$VALIDATE_PYTHON" | awk '{print tolower($0)}')
-  VALIDATE_RUBY=$(echo "$VALIDATE_RUBY" | awk '{print tolower($0)}')
-  VALIDATE_COFFEE=$(echo "$VALIDATE_COFFEE" | awk '{print tolower($0)}')
-  VALIDATE_ANSIBLE=$(echo "$VALIDATE_ANSIBLE" | awk '{print tolower($0)}')
-  VALIDATE_JAVASCRIPT_ES=$(echo "$VALIDATE_JAVASCRIPT_ES" | awk '{print tolower($0)}')
-  VALIDATE_JAVASCRIPT_STANDARD=$(echo "$VALIDATE_JAVASCRIPT_STANDARD" | awk '{print tolower($0)}')
-  VALIDATE_JSX=$(echo "$VALIDATE_JSX" | awk '{print tolower($0)}')
-  VALIDATE_TSX=$(echo "$VALIDATE_TSX" | awk '{print tolower($0)}')
-  VALIDATE_TYPESCRIPT_ES=$(echo "$VALIDATE_TYPESCRIPT_ES" | awk '{print tolower($0)}')
-  VALIDATE_TYPESCRIPT_STANDARD=$(echo "$VALIDATE_TYPESCRIPT_STANDARD" | awk '{print tolower($0)}')
-  VALIDATE_DOCKER=$(echo "$VALIDATE_DOCKER" | awk '{print tolower($0)}')
-  VALIDATE_GO=$(echo "$VALIDATE_GO" | awk '{print tolower($0)}')
-  VALIDATE_TERRAFORM=$(echo "$VALIDATE_TERRAFORM" | awk '{print tolower($0)}')
-  VALIDATE_POWERSHELL=$(echo "$VALIDATE_POWERSHELL" | awk '{print tolower($0)}')
-  VALIDATE_ARM=$(echo "$VALIDATE_ARM" | awk '{print tolower($0)}')
-  VALIDATE_CSS=$(echo "$VALIDATE_CSS" | awk '{print tolower($0)}')
-  VALIDATE_ENV=$(echo "$VALIDATE_ENV" | awk '{print tolower($0)}')
-  VALIDATE_CLOJURE=$(echo "$VALIDATE_CLOJURE" | awk '{print tolower($0)}')
-  VALIDATE_KOTLIN=$(echo "$VALIDATE_KOTLIN" | awk '{print tolower($0)}')
-  VALIDATE_PROTOBUF=$(echo "$VALIDATE_PROTOBUF" | awk '{print tolower($0)}')
-  VALIDATE_OPENAPI=$(echo "$VALIDATE_OPENAPI" | awk '{print tolower($0)}')
-  VALIDATE_EDITORCONFIG=$(echo "$VALIDATE_EDITORCONFIG" | awk '{print tolower($0)}')
-  VALIDATE_DART=$(echo "$VALIDATE_DART" | awk '{print tolower($0)}')
-  VALIDATE_HTML=$(echo "$VALIDATE_HTML" | awk '{print tolower($0)}')
+  VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE,,}"
+  VALIDATE_ARM="${VALIDATE_ARM,,}"
+  VALIDATE_BASH="${VALIDATE_BASH,,}"
+  VALIDATE_CLOJURE="${VALIDATE_CLOJURE,,}"
+  VALIDATE_COFFEE="${VALIDATE_COFFEE,,}"
+  VALIDATE_CSS="${VALIDATE_CSS,,}"
+  VALIDATE_DART="${VALIDATE_DART,,}"
+  VALIDATE_DOCKER="${VALIDATE_DOCKER,,}"
+  VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG,,}"
+  VALIDATE_ENV="${VALIDATE_ENV,,}"
+  VALIDATE_GO="${VALIDATE_GO,,}"
+  VALIDATE_HTML="${VALIDATE_HTML,,}"
+  VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES,,}"
+  VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD,,}"
+  VALIDATE_JSON="${VALIDATE_JSON,,}"
+  VALIDATE_JSX="${VALIDATE_JSX,,}"
+  VALIDATE_KOTLIN="${VALIDATE_KOTLIN,,}"
+  VALIDATE_MARKDOWN="${VALIDATE_MARKDOWN,,}"
+  VALIDATE_OPENAPI="${VALIDATE_OPENAPI,,}"
+  VALIDATE_PERL="${VALIDATE_PERL,,}"
+  VALIDATE_PHP="${VALIDATE_PHP,,}"
+  VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL,,}"
+  VALIDATE_PROTOBUF="${VALIDATE_PROTOBUF,,}"
+  VALIDATE_PYTHON="${VALIDATE_PYTHON,,}"
+  VALIDATE_RAKU="${VALIDATE_RAKU,,}"
+  VALIDATE_RUBY="${VALIDATE_RUBY,,}"
+  VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM,,}"
+  VALIDATE_TSX="${VALIDATE_TSX,,}"
+  VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES,,}"
+  VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD,,}"
+  VALIDATE_YAML="${VALIDATE_YAML,,}"
+  VALIDATE_XML="${VALIDATE_XML,,}"
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -86,7 +86,7 @@ function GetValidationInfo() {
   if [[ -n $VALIDATE_YAML || -n \
     $VALIDATE_JSON || -n \
     $VALIDATE_XML || -n \
-    $VALIDATE_MD || -n \
+    $VALIDATE_MARKDOWN || -n \
     $VALIDATE_BASH || -n \
     $VALIDATE_PERL || -n \
     $VALIDATE_RAKU || -n \
@@ -163,13 +163,13 @@ function GetValidationInfo() {
   ########################################
   if [[ $ANY_SET == "true" ]]; then
     # Some linter flags were set - only run those set to true
-    if [[ -z $VALIDATE_MD ]]; then
+    if [[ -z $VALIDATE_MARKDOWN ]]; then
       # MD flag was not set - default to false
-      VALIDATE_MD="false"
+      VALIDATE_MARKDOWN="false"
     fi
   else
     # No linter flags were set - default all to true
-    VALIDATE_MD="true"
+    VALIDATE_MARKDOWN="true"
   fi
 
   ####################################
@@ -585,7 +585,7 @@ function GetValidationInfo() {
   else
     PRINT_ARRAY+=("- Excluding [XML] files in code base...")
   fi
-  if [[ $VALIDATE_MD == "true" ]]; then
+  if [[ $VALIDATE_MARKDOWN == "true" ]]; then
     PRINT_ARRAY+=("- Validating [MARKDOWN] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [MARKDOWN] files in code base...")
@@ -752,7 +752,7 @@ function GetValidationInfo() {
   ###############################
   # Convert string to lowercase #
   ###############################
-  DISABLE_ERRORS=$(echo "$DISABLE_ERRORS" | awk '{print tolower($0)}')
+  DISABLE_ERRORS="${DISABLE_ERRORS,,}"
 
   ############################
   # Set to false if not true #
@@ -774,7 +774,7 @@ function GetValidationInfo() {
   ###############################
   # Convert string to lowercase #
   ###############################
-  ACTIONS_RUNNER_DEBUG=$(echo "$ACTIONS_RUNNER_DEBUG" | awk '{print tolower($0)}')
+  ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG,,}"
 
   ############################
   # Set to true if not false #
