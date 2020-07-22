@@ -755,7 +755,7 @@ GetGitHubVars() {
   ############################
   # Validate we have a value #
   ############################
-  if [ -z "${GITHUB_TOKEN}" ]; then
+  if [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_TOKEN]!${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_TOKEN}]${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
