@@ -84,9 +84,10 @@ function BuildFileList() {
     ###########################
     # Get the files extension #
     ###########################
-    # Extract just the file and extension, reverse it, cut off extension,
-    # reverse it back, substitute to lowercase
-    FILE_TYPE=$(basename "${FILE}" | rev | cut -f1 -d'.' | rev | awk '{print tolower($0)}')
+    # Extract just the file extension
+    FILE_TYPE=${FILE##*.}
+    # To lowercase
+    FILE_TYPE=${FILE_TYPE,,}
 
     ##############
     # Print file #
