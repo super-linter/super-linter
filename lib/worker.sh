@@ -216,8 +216,8 @@ function LintCodebase() {
         # Error #
         #########
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}Command run:${NC}[\$${LINT_CMD}]${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
 
@@ -432,7 +432,6 @@ function TestCodebase() {
         # Error #
         #########
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}Command run:${NC}[\$${LINT_CMD}]${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
