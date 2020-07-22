@@ -33,19 +33,21 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | *Language*       | *Linter*                                                                 |
 | ---              | ---                                                                      |
 | **Ansible**      | [ansible-lint](https://github.com/ansible/ansible-lint)                  |
-| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                  |
+| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)              |
 | **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/) |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
 | **Clojure**      | [clj-kondo](https://github.com/borkdude/clj-kondo)                       |
 | **CoffeeScript** | [coffeelint](https://coffeelint.github.io/)                              |
-| **Dart**         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                      |
+| **Dart**         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)        |
 | **Dockerfile**   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)     |
 | **EDITORCONFIG**          | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
 | **ENV**          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)          |
 | **Golang**       | [golangci-lint](https://github.com/golangci/golangci-lint)               |
-| **HTMLHint**     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                      |
+| **HTMLHint**     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                         |
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
+| **CSS**          | [stylelint](https://stylelint.io/)                                       |
+| **Java**         | [Spotless](https://github.com/diffplug/spotless)                         |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
@@ -183,6 +185,7 @@ and won't run anything unexpected.
 | **VALIDATE_CSS** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_ENV** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_CLOJURE** | `true` | Flag to enable or disable the linting process of the language. |
+| **VALIDATE_JAVA** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_HTML** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_KOTLIN** | `true` | Flag to enable or disable the linting process of the language. |
 | **VALIDATE_DART** | `true` | Flag to enable or disable the linting process of the language. |
