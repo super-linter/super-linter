@@ -1,0 +1,22 @@
+TAP version 13
+1..8
+not ok 1 - cloudformation_bad_1.json
+  ---
+  message: E3001 Invalid or unsupported Type AWS  Route53  HostedZonee for resource DNS in us-east-1\n/tmp/lint/.automation/test/cloudformation/cloudformation_bad_1.json 6 10\n
+  ...
+not ok 2 - cloudformation_bad_2.yaml
+  ---
+  message: E3001 Invalid or unsupported Type AWS  Route53  HostedZonee for resource DNS in us-east-1\n/tmp/lint/.automation/test/cloudformation/cloudformation_bad_2.yaml 5 5\n
+  ...
+not ok 3 - cloudformation_bad_3.json
+  ---
+  message: E3002 Invalid Property Resources/myDNSRecord/Properties/Ttl\n/tmp/lint/.automation/test/cloudformation/cloudformation_bad_3.json 11 13\n
+  ...
+not ok 4 - cloudformation_bad_4.yaml
+  ---
+  message: E3002 Invalid Property Resources/myDNSRecord/Properties/Ttl\n/tmp/lint/.automation/test/cloudformation/cloudformation_bad_4.yaml 9 7\n
+  ...
+ok 5 - cloudformation_good_1.json
+ok 6 - cloudformation_good_2.yaml
+ok 7 - cloudformation_good_3.json
+ok 8 - cloudformation_good_4.yaml

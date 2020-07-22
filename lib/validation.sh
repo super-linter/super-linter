@@ -50,6 +50,7 @@ function GetValidationInfo() {
   VALIDATE_ARM="${VALIDATE_ARM,,}"
   VALIDATE_BASH="${VALIDATE_BASH,,}"
   VALIDATE_CLOJURE="${VALIDATE_CLOJURE,,}"
+  VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION,,}"
   VALIDATE_COFFEE="${VALIDATE_COFFEE,,}"
   VALIDATE_CSS="${VALIDATE_CSS,,}"
   VALIDATE_DART="${VALIDATE_DART,,}"
@@ -88,6 +89,7 @@ function GetValidationInfo() {
     ${VALIDATE_ARM} || -n \
     ${VALIDATE_BASH} || -n \
     ${VALIDATE_CLOJURE} || -n \
+    ${VALIDATE_CLOUDFORMATION} || -n \
     ${VALIDATE_COFFEE} || -n \
     ${VALIDATE_CSS} || -n \
     ${VALIDATE_DART} || -n \
@@ -551,6 +553,20 @@ function GetValidationInfo() {
     VALIDATE_CLOJURE="true"
   fi
 
+  ##############################################
+  # Validate if we should check CloudFormation #
+  ##############################################
+  if [[ ${ANY_SET} == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z ${VALIDATE_CLOUDFORMATION} ]]; then
+      # Cloud Formation flag was not set - default to false
+      VALIDATE_CLOUDFORMATION="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_CLOUDFORMATION="true"
+  fi
+
   ############################################
   # Validate if we should check editorconfig #
   ############################################
@@ -699,6 +715,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [CLOJURE] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [CLOJURE] files in code base...")
+  fi
+  if [[ ${VALIDATE_CLOUDFORMATION} == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [CLOUDFORMATION] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [CLOUDFORMATION] files in code base...")
   fi
   if [[ ${VALIDATE_ENV} == "true" ]]; then
     PRINT_ARRAY+=("- Validating [ENV] files in code base...")

@@ -22,71 +22,71 @@ source /action/lib/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                                      # Default rules files location
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                                       # Name of the file
-ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"       # Path to the Ansible lint rules
+ANSIBLE_FILE_NAME='.ansible-lint.yml'                                                 # Name of the file
+ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"                 # Path to the Ansible lint rules
 # Azure Resource Manager Vars
-ARM_FILE_NAME='.arm-ttk.psd1'                                               # Name of the file
-ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"               # Path to the ARM lint rules
+ARM_FILE_NAME='.arm-ttk.psd1'                                                         # Name of the file
+ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"                         # Path to the ARM lint rules
 # Cloudformation Vars
-CFN_FILE_NAME='.cfnlintrc.yml'                                              # Name of the file
-CFN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CFN_FILE_NAME}"               # Path to the cloudformation lint rules
+CLOUDFORMATION_FILE_NAME='.cfnlintrc.yml'                                             # Name of the file
+CLOUDFORMATION_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOUDFORMATION_FILE_NAME}"   # Path to the cloudformation lint rules
 # Clojure Vars
-CLOJURE_FILE_NAME='.clj-kondo/config.edn'                                   # Name of the file
-CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"       # Path to the Clojure lint rules
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'                                             # Name of the file
+CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"                 # Path to the Clojure lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                        # Name of the file
-COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"   # Path to the coffeescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                                  # Name of the file
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"             # Path to the coffeescript lint rules
 # CSS Vars
-CSS_FILE_NAME='.stylelintrc.json'                                           # Name of the file
-CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"               # Path to the CSS lint rules
+CSS_FILE_NAME='.stylelintrc.json'                                                     # Name of the file
+CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"                         # Path to the CSS lint rules
 # Dart Vars
-DART_FILE_NAME='analysis_options.yaml'                                      # Name of the file
-DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"             # Path to the DART lint rules
+DART_FILE_NAME='analysis_options.yaml'                                                # Name of the file
+DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"                       # Path to the DART lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                                        # Name of the file
-DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"         # Path to the Docker lint rules
+DOCKER_FILE_NAME='.dockerfilelintrc'                                                  # Name of the file
+DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"                   # Path to the Docker lint rules
 # Golang Vars
-GO_FILE_NAME='.golangci.yml'                                                # Name of the file
-GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                 # Path to the Go lint rules
+GO_FILE_NAME='.golangci.yml'                                                          # Name of the file
+GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                           # Path to the Go lint rules
 # HTML Vars
-HTML_FILE_NAME='.htmlhintrc'                                                # Name of the file
-HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"             # Path to the CSS lint rules
+HTML_FILE_NAME='.htmlhintrc'                                                          # Name of the file
+HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"                       # Path to the CSS lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
-JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
-JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"                    # Name of the file
+JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}"           # Path to the Javascript lint rules
+JAVASCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # Default linter path
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                   # Linter Path Directory
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                             # Linter Path Directory
 # MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                     # Name of the file
-MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"     # Path to the markdown lint rules
+MARKDOWN_FILE_NAME='.markdown-lint.yml'                                               # Name of the file
+MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"               # Path to the markdown lint rules
 # OpenAPI Vars
-OPENAPI_FILE_NAME='.openapirc.yml'                                          # Name of the file
-OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"       # Path to the OpenAPI lint rules
+OPENAPI_FILE_NAME='.openapirc.yml'                                                    # Name of the file
+OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"                 # Path to the OpenAPI lint rules
 # Powershell Vars
-POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                    # Name of the file
-POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                              # Name of the file
+POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}"           # Path to the Powershell lint rules
 # Protocol Buffers Vars
-PROTOBUF_FILE_NAME='.protolintrc.yml'                                       # Name of the file
-PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"     # Path to the Protocol Buffers lint rules
+PROTOBUF_FILE_NAME='.protolintrc.yml'                                                 # Name of the file
+PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"               # Path to the Protocol Buffers lint rules
 # Python Vars
-PYTHON_FILE_NAME='.python-lint'                                             # Name of the file
-PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"         # Path to the python lint rules
+PYTHON_FILE_NAME='.python-lint'                                                       # Name of the file
+PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"                   # Path to the python lint rules
 # Ruby Vars
-RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                        # Name of the file
-RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"             # Path to the ruby lint rules
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                                  # Name of the file
+RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"                       # Path to the ruby lint rules
 # Terraform Vars
-TERRAFORM_FILE_NAME='.tflint.hcl'                                           # Name of the file
-TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"   # Path to the Terraform lint rules
+TERRAFORM_FILE_NAME='.tflint.hcl'                                                     # Name of the file
+TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"             # Path to the Terraform lint rules
 # Typescript Vars
-TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
-TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
-TYPESCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"                    # Name of the file
+TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}"           # Path to the Typescript lint rules
+TYPESCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                                             # Name of the file
-YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"             # Path to the yaml lint rules
+YAML_FILE_NAME='.yaml-lint.yml'                                                       # Name of the file
+YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                       # Path to the yaml lint rules
 
 #######################################
 # Linter array for information prints #
@@ -100,7 +100,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML' 'JAVASCRIPT_ES'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
@@ -130,7 +130,7 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
-VALIDATE_CFN="${VALIDATE_CLOUDFORMATION}"                      # Boolean to validate language
+VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
@@ -205,7 +205,7 @@ REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the 
 ##########################
 FILE_ARRAY_ARM=()                 # Array of files to check
 FILE_ARRAY_BASH=()                # Array of files to check
-FILE_ARRAY_CFN=()                 # Array of files to check
+FILE_ARRAY_CLOUDFORMATION=()                 # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
@@ -242,7 +242,7 @@ FILE_ARRAY_YML=()                 # Array of files to check
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
 ERRORS_FOUND_ARM=0                 # Count of errors found
 ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_CFN=0                 # Count of errors found
+ERRORS_FOUND_CLOUDFORMATION=0                 # Count of errors found
 ERRORS_FOUND_CLOJURE=0             # Count of errors found
 ERRORS_FOUND_CSS=0                 # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
@@ -574,9 +574,9 @@ DetectCloudFormationFile() {
     return 0
   fi
 
-  ##########################################
-  # No identifiers of a CFN template found #
-  ##########################################
+  #####################################################
+  # No identifiers of a CLOUDFORMATION template found #
+  #####################################################
   return 1
 }
 ################################################################################
@@ -965,7 +965,7 @@ Footer() {
   elif  [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
     [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
     [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CLOUDFORMATION}" -ne 0 ] ||
     [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
     [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
     [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
@@ -1074,8 +1074,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "ARM"
 # Get CSS rules
 GetLinterRules "CSS"
-# Get CFN rules
-GetLinterRules "CFN"
+# Get CLOUDFORMATION rules
+GetLinterRules "CLOUDFORMATION"
 # Get DART rules
 GetLinterRules "DART"
 # Get HTML rules
@@ -1184,15 +1184,15 @@ if [ "${VALIDATE_PYTHON}" == "true" ]; then
   LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
-###############
-# CFN LINTING #
-###############
-if [ "${VALIDATE_CFN}" == "true" ]; then
+##########################
+# CLOUDFORMATION LINTING #
+##########################
+if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
   #################################
   # Lint the CloudFormation files #
   #################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file ${CFN_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CFN[@]}"
+  LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CLOUDFORMATION[@]}"
 fi
 
 ################

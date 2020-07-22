@@ -99,9 +99,9 @@ function BuildFileList() {
     #########
     #echo "FILE_TYPE:[${FILE_TYPE}]"
 
-    #####################
-    # Get the CFN files #
-    #####################
+    ################################
+    # Get the CLOUDFORMATION files #
+    ################################
     if [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       ################################
       # Append the file to the array #
@@ -119,7 +119,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_CFN+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
 
         ##########################################################
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
@@ -159,7 +159,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_CFN+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
       ############################################
       # Check if the file is AWS States Language #
