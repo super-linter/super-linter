@@ -890,12 +890,12 @@ CallStatusAPI() {
   fi
 }
 ################################################################################
-#### Function Footer ###########################################################
-Footer() {
+#### Function Reports ##########################################################
+Reports() {
   echo ""
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo "The script has completed"
+  echo "Generated reports:"
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
@@ -906,6 +906,25 @@ Footer() {
   if [ -z "${FORMAT_REPORT}" ] ; then
     echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
   fi
+
+  ################################
+  # Prints for warnings if found #
+  ################################
+  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
+    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
+  done
+
+}
+################################################################################
+#### Function Footer ###########################################################
+Footer() {
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "The script has completed"
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
 
   ####################################################
   # Need to clean up the lanuage array of duplicates #
@@ -946,45 +965,38 @@ Footer() {
     fi
   done
 
-  ################################
-  # Prints for warnings if found #
-  ################################
-  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
-    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
-  done
-
   ##################################
   # Exit with 0 if errors disabled #
   ##################################
   if [ "${DISABLE_ERRORS}" == "true" ]; then
     echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]${NC}"
     exit 0
+  fi
+
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif
-    # Loop through all languages
-    for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-      # build the variable
-      ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
-      # Check if error was found
-      if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
-        # Failed exit
-        echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
-        exit 1
-      fi
-    done
-  else
-    #################
-    # Footer prints #
-    #################
-    echo ""
-    echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
-    echo "----------------------------------------------"
-    echo ""
-    # Successful exit
-    exit 0
-  fi
+  # Loop through all languages
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    # build the variable
+    ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
+    # Check if error was found
+    if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
+      # Failed exit
+      echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
+      exit 1
+    fi
+  done
+
+  ########################
+  # Footer prints Exit 0 #
+  ########################
+  echo ""
+  echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
+  echo "----------------------------------------------"
+  echo ""
+  # Successful exit
+  exit 0
 }
 
 ################################################################################
@@ -1512,6 +1524,11 @@ if [ "${VALIDATE_STATES}" == "true" ]; then
   #########################
   LintCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "${FILE_ARRAY_STATES[@]}"
 fi
+
+###########
+# Reports #
+###########
+Reports
 
 ##########
 # Footer #
