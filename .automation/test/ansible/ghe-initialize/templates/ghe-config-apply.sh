@@ -26,23 +26,23 @@ CheckGHEPid()
   ##################################
   # Check to prevent infinite loop #
   ##################################
-  if [ $PID_CHECK -gt $PID_CHECK_LIMIT ]; then
+  if [ ${PID_CHECK} -gt ${PID_CHECK_LIMIT} ]; then
     # Over the limit, move on
-    echo "We have checked the pid $PID_CHECK times, moving on..."
+    echo "We have checked the pid ${PID_CHECK} times, moving on..."
   else
     ################################################
     # Check to see if the PID is alive and running #
     ################################################
-    if [ ! -f "$GHE_CONFIG_PID" ]; then
+    if [ ! -f "${GHE_CONFIG_PID}" ]; then
       # File not found
-      echo "We're good to move forward, no .pid file found at:[$GHE_CONFIG_PID]"
+      echo "We're good to move forward, no .pid file found at:[${GHE_CONFIG_PID}]"
     else
       # Found the pid running, need to sleep
-      echo "Current PID found, sleeping $SLEEP_SECONDS seconds before next check..."
+      echo "Current PID found, sleeping ${SLEEP_SECONDS} seconds before next check..."
       ################
       # Sleep it off #
       ################
-      SLEEP_CMD=$(sleep $SLEEP_SECONDS 2>&1)
+      SLEEP_CMD=$(sleep ${SLEEP_SECONDS} 2>&1)
 
       #######################
       # Load the error code #
@@ -52,9 +52,9 @@ CheckGHEPid()
       ##############################
       # Check the shell for errors #
       ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
+      if [ ${ERROR_CODE} -ne 0 ]; then
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SLEEP_CMD]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${SLEEP_CMD}]${NC}"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -80,14 +80,14 @@ CheckGHEProcess()
   ##################################
   # Check to prevent infinite loop #
   ##################################
-  if [ $PROCESS_CHECK -gt $PROCESS_CHECK_LIMIT ]; then
+  if [ ${PROCESS_CHECK} -gt ${PROCESS_CHECK_LIMIT} ]; then
     # Over the limit, move on
-    echo "We have checked the process $PROCESS_CHECK times, moving on..."
+    echo "We have checked the process ${PROCESS_CHECK} times, moving on..."
   else
     ####################################################
     # Check to see if the process is alive and running #
     ####################################################
-    CHECK_PROCESS_CMD=$(pgrep -f "$GHE_APPLY_COMMAND" 2>&1)
+    CHECK_PROCESS_CMD=$(pgrep -f "${GHE_APPLY_COMMAND}" 2>&1)
 
     #######################
     # Load the error code #
@@ -97,16 +97,16 @@ CheckGHEProcess()
     ##############################
     # Check the shell for errors #
     ##############################
-    if [ $ERROR_CODE -ne 0 ]; then
+    if [ ${ERROR_CODE} -ne 0 ]; then
       # No process running on the system
-      echo "Were good to move forward, no process like:[$GHE_APPLY_COMMAND] running currently on the system"
+      echo "Were good to move forward, no process like:[${GHE_APPLY_COMMAND}] running currently on the system"
     else
       # Found the process running, need to sleep
-      echo "Current process alive:[$CHECK_PROCESS_CMD], sleeping $SLEEP_SECONDS seconds before next check..."
+      echo "Current process alive:[${CHECK_PROCESS_CMD}], sleeping ${SLEEP_SECONDS} seconds before next check..."
       ################
       # Sleep it off #
       ################
-      SLEEP_CMD=$(sleep $SLEEP_SECONDS 2>&1)
+      SLEEP_CMD=$(sleep ${SLEEP_SECONDS} 2>&1)
 
       #######################
       # Load the error code #
@@ -116,9 +116,9 @@ CheckGHEProcess()
       ##############################
       # Check the shell for errors #
       ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
+      if [ ${ERROR_CODE} -ne 0 ]; then
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$SLEEP_CMD]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${SLEEP_CMD}]${NC}"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -144,7 +144,7 @@ RunConfigApply()
   ##########
   # Header #
   ##########
-  echo "Running $GHE_APPLY_COMMAND to the server..."
+  echo "Running ${GHE_APPLY_COMMAND} to the server..."
 
   ##############################################
   # Run the command to apply changes to server #
@@ -159,14 +159,14 @@ RunConfigApply()
   ##############################
   # Check the shell for errors #
   ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
+  if [ ${ERROR_CODE} -ne 0 ]; then
     # Errors
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to run config apply command!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[$APPLY_CMD]${NC}"
+    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${APPLY_CMD}]${NC}"
     exit 1
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully ran ${F[C]}$GHE_APPLY_COMMAND${NC}"
+    echo -e "${NC}${F[B]}Successfully ran ${F[C]}${GHE_APPLY_COMMAND}${NC}"
   fi
 }
 ################################################################################

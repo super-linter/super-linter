@@ -4,6 +4,17 @@
 ###########################################
 ###########################################
 
+#########################################
+# Get dependency images as build stages #
+#########################################
+FROM borkdude/clj-kondo:2020.06.21 as clj-kondo
+FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
+FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+FROM golangci/golangci-lint:v1.29.0 as golangci-lint
+FROM yoheimuta/protolint:v0.25.1 as protolint
+FROM koalaman/shellcheck:v0.7.1 as shellcheck
+FROM wata727/tflint:0.18.0 as tflint
+
 ##################
 # Get base image #
 ##################
@@ -29,10 +40,11 @@ ARG PSSA_VERSION='latest'
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/opt/microsoft'
-# Raku Linter
-ARG RAKU_VER="2020.06"
-ARG RAKU_INSTALL_PATH=/usr
-ARG RAKUBREW_HOME=/tmp/rakubrew
+# Dart Linter
+## stable dart sdk: https://dart.dev/get-dart#release-channels
+ARG DART_VERSION='2.8.4'
+## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
+ARG GLIBC_VERSION='2.31-r0'
 
 ####################
 # Run APK installs #
@@ -83,17 +95,10 @@ RUN npm config set package-lock false \
 #############################
 ENV PATH="/node_modules/.bin:${PATH}"
 
-####################
-# Run GEM installs #
-####################
-RUN gem install rubocop:0.74.0 rubocop-rails rubocop-github:0.13.0
-
-# Need to fix the version as it installs 'rubocop:0.85.1' as a dep, and forces the default
-# We then need to promote the correct version, uninstall, and fix deps
-RUN sh -c 'INCORRECT_VERSION=$(gem list rhc -e rubocop | grep rubocop | awk "{print $2}" | cut -d"(" -f2 | cut -d"," -f1); \
-  gem install --default rubocop:0.74.0; \
-  yes | gem uninstall rubocop:$INCORRECT_VERSION -a -x -I; \
-  gem install rubocop:0.74.0'
+##############################
+# Installs ruby dependencies #
+##############################
+RUN bundle install
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -121,37 +126,42 @@ ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 RUN curl -sLO "${ARM_TTK_URI}" \
     && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
     && rm "${ARM_TTK_NAME}" \
-    && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
+    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
 
 ######################
 # Install shellcheck #
 ######################
-COPY --from=koalaman/shellcheck:v0.7.1 /bin/shellcheck /usr/bin/
+COPY --from=shellcheck /bin/shellcheck /usr/bin/
 
 #####################
 # Install Go Linter #
 #####################
-COPY --from=golangci/golangci-lint:v1.27.0 /usr/bin/golangci-lint /usr/bin/
+COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 ##################
 # Install TFLint #
 ##################
-COPY --from=wata727/tflint:0.16.2 /usr/local/bin/tflint /usr/bin/
+COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
 ######################
 # Install protolint #
 ######################
-COPY --from=yoheimuta/protolint:v0.25.1 /usr/local/bin/protolint /usr/bin/
+COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 
 #########################
 # Install dotenv-linter #
 #########################
-COPY --from=dotenvlinter/dotenv-linter:2.0.0 /dotenv-linter /usr/bin/
+COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=borkdude/clj-kondo:2020.06.21 /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+
+################################
+# Install editorconfig-checker #
+################################
+COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 
 ##################
 # Install ktlint #
@@ -159,68 +169,73 @@ COPY --from=borkdude/clj-kondo:2020.06.21 /usr/local/bin/clj-kondo /usr/bin/
 RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
+####################
+# Install dart-sdk #
+####################
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
+RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk
+RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+    && chmod +x dart-sdk/bin/dart* \
+    && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
+    && rm -r dart-sdk/
+
 ################
 # Install Raku #
 ################
-# Environment
-ENV PATH="$RAKU_INSTALL_PATH/share/perl6/site/bin:${PATH}"
 # Basic setup, programs and init
-RUN mkdir -p $RAKUBREW_HOME/bin \
-    && curl -sSLo $RAKUBREW_HOME/bin/rakubrew https://rakubrew.org/perl/rakubrew \
-    && chmod 755 $RAKUBREW_HOME/bin/rakubrew \
-    && eval "$($RAKUBREW_HOME/bin/rakubrew init Sh)"\
-    && rakubrew build moar $RAKU_VER --configure-opts='--prefix=$RAKU_INSTALL_PATH' \
-    && rm -rf $RAKUBREW_HOME/versions/moar-$RAKU_VER \
-    && rakubrew build-zef \
-    && rm -rf $RAKUBREW_HOME
-
-################################
-# Install editorconfig-checker #
-################################
-COPY --from=mstruebing/editorconfig-checker:2.1.0 /usr/bin/ec /usr/bin/editorconfig-checker
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && apk add --update --no-cache rakudo zef
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
-ENV GITHUB_SHA=${GITHUB_SHA} \
-    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
-    GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
-    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
-    VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
-    LINTER_RULES_PATH=${LINTER_RULES_PATH} \
-    VALIDATE_YAML=${VALIDATE_YAML} \
-    VALIDATE_JSON=${VALIDATE_JSON} \
-    VALIDATE_XML=${VALIDATE_XML} \
-    VALIDATE_MD=${VALIDATE_MD} \
-    VALIDATE_BASH=${VALIDATE_BASH} \
-    VALIDATE_PERL=${VALIDATE_PERL} \
-    VALIDATE_RAKU=${VALIDATE_RAKU} \
-    VALIDATE_PHP=${VALIDATE_PHP} \
-    VALIDATE_PYTHON=${VALIDATE_PYTHON} \
-    VALIDATE_RUBY=${VALIDATE_RUBY} \
-    VALIDATE_COFFEE=${VALIDATE_COFFEE} \
-    VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
-    VALIDATE_DOCKER=${VALIDATE_DOCKER} \
-    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
-    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
-    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
-    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
-    VALIDATE_GO=${VALIDATE_GO} \
-    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
-    VALIDATE_CSS=${VALIDATE_CSS} \
-    VALIDATE_ENV=${VALIDATE_ENV} \
-    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
-    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
-    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
-    VALIDATE_ARM=${VALIDATE_ARM} \
-    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
-    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
-    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
+ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
+    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
+    DISABLE_ERRORS=${DISABLE_ERRORS} \
+    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
+    GITHUB_SHA=${GITHUB_SHA} \
+    GITHUB_TOKEN=${GITHUB_TOKEN} \
+    GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+    LINTER_RULES_PATH=${LINTER_RULES_PATH} \
+    OUTPUT_DETAILS=${OUTPUT_DETAILS} \
+    OUTPUT_FOLDER=${OUTPUT_FOLDER} \
+    OUTPUT_FORMAT=${OUTPUT_FORMAT} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
-    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
-    DISABLE_ERRORS=${DISABLE_ERRORS}
+    VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
+    VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
+    VALIDATE_ARM=${VALIDATE_ARM} \
+    VALIDATE_BASH=${VALIDATE_BASH} \
+    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
+    VALIDATE_COFFEE=${VALIDATE_COFFEE} \
+    VALIDATE_CSS=${VALIDATE_CSS} \
+    VALIDATE_DART=${VALIDATE_DART} \
+    VALIDATE_DOCKER=${VALIDATE_DOCKER} \
+    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
+    VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_GO=${VALIDATE_GO} \
+    VALIDATE_HTML=${VALIDATE_HTML} \
+    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
+    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
+    VALIDATE_JSON=${VALIDATE_JSON} \
+    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_MD=${VALIDATE_MD} \
+    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
+    VALIDATE_PERL=${VALIDATE_PERL} \
+    VALIDATE_PHP=${VALIDATE_PHP} \
+    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
+    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
+    VALIDATE_PYTHON=${VALIDATE_PYTHON} \
+    VALIDATE_RAKU=${VALIDATE_RAKU} \
+    VALIDATE_RUBY=${VALIDATE_RUBY} \
+    VALIDATE_STATES=${VALIDATE_STATES} \
+    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
+    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
+    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
+    VALIDATE_XML=${VALIDATE_XML} \
+    VALIDATE_YAML=${VALIDATE_YAML}
 
 #############################
 # Copy scripts to container #

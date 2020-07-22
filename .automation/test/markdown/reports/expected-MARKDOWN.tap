@@ -1,0 +1,8 @@
+TAP version 13
+1..3
+ok 1 - README.md
+not ok 2 - markdown_bad_1.md
+  ---
+  message: /tmp/lint/.automation/test/markdown/markdown_bad_1.md 1 MD041/first-line-heading/first-line-h1 First line in file should be a top level heading [Context  "## Bad Markdown"]\n/tmp/lint/.automation/test/markdown/markdown_bad_1.md 5 MD001/heading-increment/header-increment Heading levels should only increment by one level at a time [Expected  h3; Actual  h6]\n/tmp/lint/.automation/test/markdown/markdown_bad_1.md 11 1 MD007/ul-indent Unordered list indentation [Expected  4; Actual  6]\n/tmp/lint/.automation/test/markdown/markdown_bad_1.md 13 MD040/fenced-code-language Fenced code blocks should have a language specified [Context  "```"]\n/tmp/lint/.automation/test/markdown/markdown_bad_1.md 20 16 MD034/no-bare-urls Bare URL used [Context  "https //github.com"]\n
+  ...
+ok 3 - markdown_good_1.md

@@ -1,0 +1,47 @@
+---
+#######################################
+#######################################
+## Dependabot automerge dependencies ##
+#######################################
+#######################################
+
+#
+# Documentation:
+# https://medium.com/@toufik.airane/automerge-github-dependabot-alerts-with-github-actions-7cd6f5763750
+#
+
+######################
+# name of the action #
+######################
+name: automerge on pull request
+
+###############
+# When to run #
+###############
+on: [pull_request]
+
+#################
+# Start the job #
+#################
+jobs:
+  automerge:
+    name: automerge dependabot
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: merge
+        uses: actions/github-script@v2
+        with:
+          script: |
+            github.pullRequests.createReview({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.pull_request.number,
+              event: 'APPROVE'
+            })
+            github.pullRequests.merge({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.pull_request.number
+            })
+          github-token: ${{github.token}}

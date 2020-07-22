@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - css_bad_01.css
+  ---
+  message: \ncss/css_bad_01.css\n 2 1   ✖  Expected empty line before comment   comment-empty-line-before\n 3 1   ✖  Expected empty line before comment   comment-empty-line-before\n 5 5   ✖  Expected indentation of 2 spaces     indentation              \n 5 33  ✖  Expected "#FFFFFF" to be "#ffffff"   color-hex-case           \n 5 33  ✖  Expected "#FFFFFF" to be "#FFF"      color-hex-length         \n 6 5   ✖  Expected indentation of 2 spaces     indentation              \n 7 5   ✖  Expected indentation of 2 spaces     indentation              \n 8 5   ✖  Expected indentation of 2 spaces     indentation              \n 8 12  ✖  Expected "#AAAAAA" to be "#aaaaaa"   color-hex-case           \n 8 12  ✖  Expected "#AAAAAA" to be "#AAA"      color-hex-length\n
+  ...
+ok 2 - css_good_01.css

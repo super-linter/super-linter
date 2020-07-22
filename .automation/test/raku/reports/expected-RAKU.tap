@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - raku_bad_1.raku
+  ---
+  message: ===SORRY!=== Error while compiling /tmp/lint/.automation/test/raku/raku_bad_1.raku\nVariable '$foo' is not declared. Did you mean '@foo'?\nat /tmp/lint/.automation/test/raku/raku_bad_1.raku 4\n------> <BOL>⏏$foo[1] = 42\n
+  ...
+ok 2 - raku_good_1.raku

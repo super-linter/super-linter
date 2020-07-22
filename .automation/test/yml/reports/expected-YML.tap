@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - yml_bad_1.yml
+  ---
+  message: /tmp/lint/.automation/test/yml/yml_bad_1.yml\n  10 1      warning  missing document start "---"  (document-start)\n  11 16     error    syntax error  mapping values are not allowed here (syntax)\n
+  ...
+ok 2 - yml_good_1.yml

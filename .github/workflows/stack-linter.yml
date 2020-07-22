@@ -15,8 +15,9 @@
 #############################
 on:
   push:
-    branches: master
-  pull_request: []
+    branches: [master]
+  pull_request:
+    branches-ignore: []
 
 ###############
 # Set the Job #
@@ -44,3 +45,4 @@ jobs:
         uses: docker://github/super-linter:latest
         env:
           VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
