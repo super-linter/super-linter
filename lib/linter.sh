@@ -239,39 +239,72 @@ FILE_ARRAY_YML=()                 # Array of files to check
 ############
 # Counters #
 ############
-ERRORS_FOUND_ANSIBLE=0             # Count of errors found
-ERRORS_FOUND_ARM=0                 # Count of errors found
-ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_CLOUDFORMATION=0      # Count of errors found
-ERRORS_FOUND_CLOJURE=0             # Count of errors found
-ERRORS_FOUND_CSS=0                 # Count of errors found
-ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
-ERRORS_FOUND_DART=0                # Count of errors found
-ERRORS_FOUND_DOCKER=0              # Count of errors found
-ERRORS_FOUND_ENV=0                 # Count of errors found
-ERRORS_FOUND_GO=0                  # Count of errors found
-ERRORS_FOUND_HTML=0                # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_JSON=0                # Count of errors found
-ERRORS_FOUND_JSX=0                 # Count of errors found
-ERRORS_FOUND_KOTLIN=0              # Count of errors found
-ERRORS_FOUND_MARKDOWN=0            # Count of errors found
-ERRORS_FOUND_OPENAPI=0             # Count of errors found
-ERRORS_FOUND_PERL=0                # Count of errors found
-ERRORS_FOUND_PHP=0                 # Count of errors found
-ERRORS_FOUND_POWERSHELL=0          # Count of errors found
-ERRORS_FOUND_PROTOBUF=0            # Count of errors found
-ERRORS_FOUND_PYTHON=0              # Count of errors found
-ERRORS_FOUND_RAKU=0                # Count of errors found
-ERRORS_FOUND_RUBY=0                # Count of errors found
-ERRORS_FOUND_STATES=0              # Count of errors found
-ERRORS_FOUND_TERRAFORM=0           # Count of errors found
-ERRORS_FOUND_TSX=0                 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_XML=0                 # Count of errors found
-ERRORS_FOUND_YML=0                 # Count of errors found
+ERRORS_FOUND_ANSIBLE=0                  # Count of errors found
+export ERRORS_FOUND_ANSIBLE             # Workaround SC2034
+ERRORS_FOUND_ARM=0                      # Count of errors found
+export ERRORS_FOUND_ARM                 # Workaround SC2034
+ERRORS_FOUND_BASH=0                     # Count of errors found
+export ERRORS_FOUND_BASH                # Workaround SC2034
+ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
+export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
+ERRORS_FOUND_CLOJURE=0                  # Count of errors found
+export ERRORS_FOUND_CLOJURE             # Workaround SC2034
+ERRORS_FOUND_CSS=0                      # Count of errors found
+export ERRORS_FOUND_CSS                 # Workaround SC2034
+ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
+export ERRORS_FOUND_COFFEESCRIPT        # Workaround SC2034
+ERRORS_FOUND_DART=0                     # Count of errors found
+export ERRORS_FOUND_DART                # Workaround SC2034
+ERRORS_FOUND_DOCKER=0                   # Count of errors found
+export ERRORS_FOUND_DOCKER              # Workaround SC2034
+ERRORS_FOUND_ENV=0                      # Count of errors found
+export ERRORS_FOUND_ENV                 # Workaround SC2034
+ERRORS_FOUND_GO=0                       # Count of errors found
+export ERRORS_FOUND_GO                  # Workaround SC2034
+ERRORS_FOUND_HTML=0                     # Count of errors found
+export ERRORS_FOUND_HTML                # Workaround SC2034
+ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
+export ERRORS_FOUND_JAVASCRIPT_STANDARD # Workaround SC2034
+ERRORS_FOUND_JAVASCRIPT_ES=0            # Count of errors found
+export ERRORS_FOUND_JAVASCRIPT_ES       # Workaround SC2034
+ERRORS_FOUND_JSON=0                     # Count of errors found
+export ERRORS_FOUND_JSON                # Workaround SC2034
+ERRORS_FOUND_JSX=0                      # Count of errors found
+export ERRORS_FOUND_JSX                 # Workaround SC2034
+ERRORS_FOUND_KOTLIN=0                   # Count of errors found
+export ERRORS_FOUND_KOTLIN              # Workaround SC2034
+ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
+export ERRORS_FOUND_MARKDOWN            # Workaround SC2034
+ERRORS_FOUND_OPENAPI=0                  # Count of errors found
+export ERRORS_FOUND_OPENAPI             # Workaround SC2034
+ERRORS_FOUND_PERL=0                     # Count of errors found
+export ERRORS_FOUND_PERL                # Workaround SC2034
+ERRORS_FOUND_PHP=0                      # Count of errors found
+export ERRORS_FOUND_PHP                 # Workaround SC2034
+ERRORS_FOUND_POWERSHELL=0               # Count of errors found
+export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
+ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
+export ERRORS_FOUND_PROTOBUF            # Workaround SC2034
+ERRORS_FOUND_PYTHON=0                   # Count of errors found
+export ERRORS_FOUND_PYTHON              # Workaround SC2034
+ERRORS_FOUND_RAKU=0                     # Count of errors found
+export ERRORS_FOUND_RAKU                # Workaround SC2034
+ERRORS_FOUND_RUBY=0                     # Count of errors found
+export ERRORS_FOUND_RUBY                # Workaround SC2034
+ERRORS_FOUND_STATES=0                   # Count of errors found
+export ERRORS_FOUND_STATES              # Workaround SC2034
+ERRORS_FOUND_TERRAFORM=0                # Count of errors found
+export ERRORS_FOUND_TERRAFORM           # Workaround SC2034
+ERRORS_FOUND_TSX=0                      # Count of errors found
+export ERRORS_FOUND_TSX                 # Workaround SC2034
+ERRORS_FOUND_TYPESCRIPT_STANDARD=0      # Count of errors found
+export ERRORS_FOUND_TYPESCRIPT_STANDARD # Workaround SC2034
+ERRORS_FOUND_TYPESCRIPT_ES=0            # Count of errors found
+export ERRORS_FOUND_TYPESCRIPT_ES       # Workaround SC2034
+ERRORS_FOUND_XML=0                      # Count of errors found
+export ERRORS_FOUND_XML                 # Workaround SC2034
+ERRORS_FOUND_YML=0                      # Count of errors found
+export ERRORS_FOUND_YML                 # Workaround SC2034
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
