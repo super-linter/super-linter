@@ -217,6 +217,7 @@ function LintCodebase() {
         #########
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
+        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
 
@@ -460,6 +461,7 @@ function TestCodebase() {
         #########
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} This file should have failed test case!${NC}"
+        echo -e "${NC}${B[R]}${F[W]}Command run:${NC}[\$${LINT_CMD}]${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
         echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
@@ -577,11 +579,11 @@ function RunTestCases() {
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "protobuf"
   TestCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "python"
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
-  TestCodebase "RUBY" "rubocop" "rubocop -c $RUBY_LINTER_RULES" ".*\.\(rb\)\$" "ruby"
+  TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
-  TestCodebase "TERRAFORM" "tflint" "tflint -c $TERRAFORM_LINTER_RULES" ".*\.\(tf\)\$" "terraform"
-  TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c $TYPESCRIPT_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
-  TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin $TYPESCRIPT_STANDARD_LINTER_RULES" ".*\.\(ts\)\$" "typescript"
+  TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
+  TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
+  TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
   TestCodebase "YML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "yml"
 

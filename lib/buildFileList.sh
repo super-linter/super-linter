@@ -86,7 +86,7 @@ function BuildFileList() {
     ###########################
     # Extract just the file and extension, reverse it, cut off extension,
     # reverse it back, substitute to lowercase
-    FILE_TYPE=$(basename "${FILE}" | rev | cut -f1 -d'.' | rev | awk '{print tolower(${0})}')
+    FILE_TYPE=$(basename "${FILE}" | rev | cut -f1 -d'.' | rev | awk '{print tolower($0)}')
 
     ##############
     # Print file #
@@ -163,11 +163,11 @@ function BuildFileList() {
       ############################################
       # Check if the file is AWS States Language #
       ############################################
-      if DetectAWSStatesFIle "$FILE"; then
+      if DetectAWSStatesFIle "${FILE}"; then
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_STATES+=("$FILE")
+        FILE_ARRAY_STATES+=("${FILE}")
       fi
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
