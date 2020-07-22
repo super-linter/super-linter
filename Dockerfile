@@ -8,12 +8,12 @@
 # Get dependency images as build stages #
 #########################################
 FROM borkdude/clj-kondo:2020.06.21 as clj-kondo
-FROM dotenvlinter/dotenv-linter:2.0.0 as dotenv-linter
+FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.27.0 as golangci-lint
+FROM golangci/golangci-lint:v1.29.0 as golangci-lint
 FROM yoheimuta/protolint:v0.25.1 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.16.2 as tflint
+FROM wata727/tflint:0.18.0 as tflint
 
 ##################
 # Get base image #
@@ -126,7 +126,7 @@ ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 RUN curl -sLO "${ARM_TTK_URI}" \
     && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
     && rm "${ARM_TTK_NAME}" \
-    && ln -sTf "$ARM_TTK_PSD1" /usr/bin/arm-ttk
+    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
 
 ######################
 # Install shellcheck #
