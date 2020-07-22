@@ -30,7 +30,7 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     steps:
       - name: merge
-        uses: actions/github-script@0.2.0
+        uses: actions/github-script@v2
         with:
           script: |
             github.pullRequests.createReview({
