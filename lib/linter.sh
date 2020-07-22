@@ -22,88 +22,90 @@ source /action/lib/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                        # Default rules files location
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"               # Linter Path Directory
-# YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                                         # Name of the file
-YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"             # Path to the yaml lint rules
-# MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
-MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"     # Path to the markdown lint rules
-# Python Vars
-PYTHON_FILE_NAME='.python-lint'                                         # Name of the file
-PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"         # Path to the python lint rules
-# Cloudformation Vars
-CFN_FILE_NAME='.cfnlintrc.yml'                                          # Name of the file
-CFN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CFN_FILE_NAME}"               # Path to the cloudformation lint rules
-# Ruby Vars
-RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                    # Name of the file
-RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"             # Path to the ruby lint rules
-# Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                    # Name of the file
-COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"   # Path to the coffeescript lint rules
-# Javascript Vars
-JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
-JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
-JAVASCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
-# Typescript Vars
-TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"      # Name of the file
-TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
-TYPESCRIPT_STANDARD_LINTER_RULES=''                                     # ENV string to pass when running js standard
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                                   # Name of the file
+ANSIBLE_FILE_NAME='.ansible-lint.yml'                                       # Name of the file
 ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"       # Path to the Ansible lint rules
+# Azure Resource Manager Vars
+ARM_FILE_NAME='.arm-ttk.psd1'                                               # Name of the file
+ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"               # Path to the ARM lint rules
+# Cloudformation Vars
+CFN_FILE_NAME='.cfnlintrc.yml'                                              # Name of the file
+CFN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CFN_FILE_NAME}"               # Path to the cloudformation lint rules
+# Clojure Vars
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'                                   # Name of the file
+CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"       # Path to the Clojure lint rules
+# Coffee Vars
+COFFEE_FILE_NAME='.coffee-lint.json'                                        # Name of the file
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"   # Path to the coffeescript lint rules
+# CSS Vars
+CSS_FILE_NAME='.stylelintrc.json'                                           # Name of the file
+CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"               # Path to the CSS lint rules
+# Dart Vars
+DART_FILE_NAME='analysis_options.yaml'                                      # Name of the file
+DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"             # Path to the DART lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                                    # Name of the file
+DOCKER_FILE_NAME='.dockerfilelintrc'                                        # Name of the file
 DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"         # Path to the Docker lint rules
 # Golang Vars
-GO_FILE_NAME='.golangci.yml'                                            # Name of the file
+GO_FILE_NAME='.golangci.yml'                                                # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                 # Path to the Go lint rules
-# Terraform Vars
-TERRAFORM_FILE_NAME='.tflint.hcl'                                       # Name of the file
-TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"   # Path to the Terraform lint rules
-# Powershell Vars
-POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                # Name of the file
-POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
-# Azure Resource Manager Vars
-ARM_FILE_NAME='.arm-ttk.psd1'                                           # Name of the file
-ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"               # Path to the ARM lint rules
-# CSS Vars
-CSS_FILE_NAME='.stylelintrc.json'                                       # Name of the file
-CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"               # Path to the CSS lint rules
-# OpenAPI Vars
-OPENAPI_FILE_NAME='.openapirc.yml'                                      # Name of the file
-OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"       # Path to the OpenAPI lint rules
-# Protocol Buffers Vars
-PROTOBUF_FILE_NAME='.protolintrc.yml'                                   # Name of the file
-PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"     # Path to the Protocol Buffers lint rules
-# Clojure Vars
-CLOJURE_FILE_NAME='.clj-kondo/config.edn'                               # Name of the file
-CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"       # Path to the Clojure lint rules
-# Dart Vars
-DART_FILE_NAME='analysis_options.yaml'                                  # Name of the file
-DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"             # Path to the DART lint rules
 # HTML Vars
-HTML_FILE_NAME='.htmlhintrc'                                            # Name of the file
+HTML_FILE_NAME='.htmlhintrc'                                                # Name of the file
 HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"             # Path to the CSS lint rules
+# Javascript Vars
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
+JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
+JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+# Default linter path
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                   # Linter Path Directory
+# MD Vars
+MARKDOWN_FILE_NAME='.markdown-lint.yml'                                     # Name of the file
+MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"     # Path to the markdown lint rules
+# OpenAPI Vars
+OPENAPI_FILE_NAME='.openapirc.yml'                                          # Name of the file
+OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"       # Path to the OpenAPI lint rules
+# Powershell Vars
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                    # Name of the file
+POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
+# Protocol Buffers Vars
+PROTOBUF_FILE_NAME='.protolintrc.yml'                                       # Name of the file
+PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"     # Path to the Protocol Buffers lint rules
+# Python Vars
+PYTHON_FILE_NAME='.python-lint'                                             # Name of the file
+PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"         # Path to the python lint rules
+# Ruby Vars
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                        # Name of the file
+RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"             # Path to the ruby lint rules
+# Terraform Vars
+TERRAFORM_FILE_NAME='.tflint.hcl'                                           # Name of the file
+TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"   # Path to the Terraform lint rules
+# Typescript Vars
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
+TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
+TYPESCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+# YAML Vars
+YAML_FILE_NAME='.yaml-lint.yml'                                             # Name of the file
+YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"             # Path to the yaml lint rules
 
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint" "dart" "htmlhint")
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
+  'coffeelint' 'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'golangci-lint'
+  'htmlhint' 'jsonlint' 'ktlint' 'markdownlint' 'perl' 'protolint' 'pwsh'
+  'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint'
+  'tflint' 'xmllint' 'yamllint')
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
-  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML'
-  'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'OPENAPI'
-  'MARKDOWN' 'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON' 'RAKU' 'RUBY'
-  'TERRAFORM' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML' )
+  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML' 'JAVASCRIPT_ES'
+  'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
+  'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
+  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TSX' 'TYPESCRIPT_ES'
+  'TYPESCRIPT_STANDARD' 'XML' 'YML')
 
 ############################################
 # Array for all languages that were linted #
@@ -113,15 +115,17 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-GITHUB_SHA="${GITHUB_SHA}"                                     # GitHub sha from the commit
+ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                       # Ansible Directory
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                     # Default Git Branch to use (master by default)
+DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
 GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"                       # Github Event Path
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                         # Github Workspace
-GITHUB_TOKEN="${GITHUB_TOKEN}"                                 # GitHub Token passed from environment
 GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"                       # GitHub Org/Repo passed from system
 GITHUB_RUN_ID="${GITHUB_RUN_ID}"                               # GitHub RUn ID to point to logs
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                     # Default Git Branch to use (master by default)
+GITHUB_SHA="${GITHUB_SHA}"                                     # GitHub sha from the commit
+GITHUB_TOKEN="${GITHUB_TOKEN}"                                 # GitHub Token passed from environment
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                         # Github Workspace
 MULTI_STATUS="${MULTI_STATUS:-true}"                           # Multiple status are created for each check ran
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                       # Ansible Directory
+TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to validate all files
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
@@ -149,14 +153,13 @@ VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to vali
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
 VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
+VALIDATE_STATES="${VALIDATE_STATES}"                           # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
 VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
 VALIDATE_XML="${VALIDATE_XML}"                                 # Boolean to validate language
 VALIDATE_YAML="${VALIDATE_YAML}"                               # Boolean to validate language
-TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
-DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
 
 ##############
 # Debug Vars #
@@ -167,10 +170,10 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if running locally
-DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                  # Default value for validate all files
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}"   # Default workspace if running locally
+DEFAULT_RUN_LOCAL='false'                             # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'                         # Flag to tell code to run only test cases
 DEFAULT_IFS="${IFS}"                                  # Get the Default IFS for updating
 
 ###############################################################
@@ -184,7 +187,7 @@ READ_ONLY_CHANGE_FLAG=0                                      # Flag set to 1 if 
 echo "${READ_ONLY_CHANGE_FLAG}" > /dev/null 2>&1 || true     # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test'                          # Folder for test cases we should always ignore
 echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true          # Workaround SC2034
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"        # Default Ansible Directory
+DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"      # Default Ansible Directory
 echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
 WARNING_ARRAY_TEST=()                                        # Array of warning linters that did not have an expected test result.
 echo "${WARNING_ARRAY_TEST[*]}" > /dev/null 2>&1 || true     # Workaround SC2034
@@ -195,7 +198,7 @@ echo "${WARNING_ARRAY_TEST[*]}" > /dev/null 2>&1 || true     # Workaround SC2034
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
-REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
 
 ##########################
 # Array of changed files #
@@ -225,6 +228,7 @@ FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_PYTHON=()              # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
+FILE_ARRAY_STATES=()              # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check
 FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
@@ -261,6 +265,7 @@ ERRORS_FOUND_PROTOBUF=0            # Count of errors found
 ERRORS_FOUND_PYTHON=0              # Count of errors found
 ERRORS_FOUND_RAKU=0                # Count of errors found
 ERRORS_FOUND_RUBY=0                # Count of errors found
+ERRORS_FOUND_STATES=0              # Count of errors found
 ERRORS_FOUND_TERRAFORM=0           # Count of errors found
 ERRORS_FOUND_TSX=0                 # Count of errors found
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
@@ -306,9 +311,9 @@ GetLinterVersions() {
   # Go through the array of linters and print version info #
   ##########################################################
   for LINTER in "${LINTER_ARRAY[@]}"; do
-    ###################
-    # Get the version #
-    ###################
+    ####################
+    # Get the versions #
+    ####################
     if [[ "${LINTER}" == "arm-ttk" ]]; then
       # Need specific command for ARM
       mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
@@ -574,7 +579,28 @@ DetectCloudFormationFile() {
   ##########################################
   return 1
 }
+################################################################################
+#### Function DetectAWSStatesFIle ##############################################
+DetectAWSStatesFIle() {
+  ################
+  # Pull in Vars #
+  ################
+  FILE="${1}" # File that we need to validate
 
+  # https://states-language.net/spec.html#example
+  ###############################
+  # check if file has resources #
+  ###############################
+  if grep '"Resource": *"arn"*' "${FILE}"; then
+    # Found it
+    return 0
+  fi
+
+  #################################################
+  # No identifiers of a AWS States Language found #
+  #################################################
+  return 1
+}
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars() {
@@ -936,38 +962,39 @@ Footer() {
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif [ "${ERRORS_FOUND_YML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
+  elif  [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
     [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
     [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_HTML}" -ne 0 ] ||
     [ "${ERRORS_FOUND_JAVASCRIPT_ES}" -ne 0 ] ||
     [ "${ERRORS_FOUND_JAVASCRIPT_STANDARD}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
     [ "${ERRORS_FOUND_JSX}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_STATES}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
     [ "${ERRORS_FOUND_TSX}" -ne 0 ] ||
     [ "${ERRORS_FOUND_TYPESCRIPT_ES}" -ne 0 ] ||
     [ "${ERRORS_FOUND_TYPESCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_HTML}" -ne 0 ]; then
+    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
+    [ "${ERRORS_FOUND_YML}" -ne 0 ]; then
     # Failed exit
     echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
     exit 1
@@ -1498,6 +1525,16 @@ if [ "${VALIDATE_HTML}" == "true" ]; then
   # Lint the HTML files #
   #############################
   LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
+fi
+
+######################
+# AWS STATES LINTING #
+######################
+if [ "${VALIDATE_STATES}" == "true" ]; then
+  #########################
+  # Lint the STATES files #
+  #########################
+  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "${FILE_ARRAY_STATES[@]}"
 fi
 
 ##########

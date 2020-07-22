@@ -5,7 +5,6 @@
     "@stoplight/spectral": "^5.4.0",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
-    "@typescript-eslint/eslint-plugin": "^3.7.0",
     "babel-eslint": "^10.1.0",
     "dockerfilelint": "^1.5.0",
     "eslint": "^7.5.0",
@@ -19,6 +18,7 @@
     "standard": "^14.3.4",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "asl-validator": "^1.7.0"
   }
 }

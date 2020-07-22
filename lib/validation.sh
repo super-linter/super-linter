@@ -72,6 +72,7 @@ function GetValidationInfo() {
   VALIDATE_PYTHON="${VALIDATE_PYTHON,,}"
   VALIDATE_RAKU="${VALIDATE_RAKU,,}"
   VALIDATE_RUBY="${VALIDATE_RUBY,,}"
+  VALIDATE_STATES="${VALIDATE_STATES,,}"
   VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM,,}"
   VALIDATE_TSX="${VALIDATE_TSX,,}"
   VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES,,}"
@@ -83,36 +84,36 @@ function GetValidationInfo() {
   # Determine if any linters were explicitly set #
   ################################################
   ANY_SET="false"
-  if [[ -n ${VALIDATE_YAML} || -n \
-    ${VALIDATE_JSON} || -n \
-    ${VALIDATE_XML} || -n \
-    ${VALIDATE_MARKDOWN} || -n \
+  if [[ -n ${VALIDATE_ANSIBLE} || -n \
+    ${VALIDATE_ARM} || -n \
     ${VALIDATE_BASH} || -n \
-    ${VALIDATE_PERL} || -n \
-    ${VALIDATE_RAKU} || -n \
-    ${VALIDATE_PHP} || -n \
-    ${VALIDATE_PYTHON} || -n \
-    ${VALIDATE_RUBY} || -n \
+    ${VALIDATE_CLOJURE} || -n \
     ${VALIDATE_COFFEE} || -n \
-    ${VALIDATE_ANSIBLE} || -n \
+    ${VALIDATE_CSS} || -n \
+    ${VALIDATE_DART} || -n \
+    ${VALIDATE_DOCKER} || -n \
+    ${VALIDATE_EDITORCONFIG} || -n \
+    ${VALIDATE_ENV} || -n \
+    ${VALIDATE_GO} || -n \
+    ${VALIDATE_HTML} || -n \
     ${VALIDATE_JAVASCRIPT_ES} || -n \
     ${VALIDATE_JAVASCRIPT_STANDARD} || -n \
+    ${VALIDATE_JSON} || -n \
+    ${VALIDATE_KOTLIN} || -n \
+    ${VALIDATE_MARKDOWN} || -n \
+    ${VALIDATE_OPENAPI} || -n \
+    ${VALIDATE_PERL} || -n \
+    ${VALIDATE_PHP} || -n \
+    ${VALIDATE_POWERSHELL} || -n \
+    ${VALIDATE_PROTOBUF} || -n \
+    ${VALIDATE_PYTHON} || -n \
+    ${VALIDATE_RAKU} || -n \
+    ${VALIDATE_RUBY} || -n \
+    ${VALIDATE_TERRAFORM} || -n \
     ${VALIDATE_TYPESCRIPT_ES} || -n \
     ${VALIDATE_TYPESCRIPT_STANDARD} || -n \
-    ${VALIDATE_DOCKER} || -n \
-    ${VALIDATE_GO} || -n \
-    ${VALIDATE_TERRAFORM} || -n \
-    ${VALIDATE_POWERSHELL} || -n \
-    ${VALIDATE_ARM} || -n \
-    ${VALIDATE_CSS} || -n \
-    ${VALIDATE_ENV} || -n \
-    ${VALIDATE_CLOJURE} || -n \
-    ${VALIDATE_PROTOBUF} || -n \
-    ${VALIDATE_OPENAPI} || -n \
-    ${VALIDATE_KOTLIN} || -n \
-    ${VALIDATE_DART} || -n \
-    ${VALIDATE_EDITORCONFIG} || -n \
-    ${VALIDATE_HTML} ]]; then
+    ${VALIDATE_XML} || -n \
+    ${VALIDATE_YAML} ]]; then
     ANY_SET="true"
   fi
 
@@ -254,6 +255,20 @@ function GetValidationInfo() {
   else
     # No linter flags were set - default all to true
     VALIDATE_RUBY="true"
+  fi
+
+  ##########################################
+  # Validate if we should check AWS States #
+  ##########################################
+  if [[ ${ANY_SET} == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z ${VALIDATE_STATES} ]]; then
+      # STATES flag was not set - default to false
+      VALIDATE_STATES="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_STATES="true"
   fi
 
   ######################################
@@ -719,6 +734,11 @@ function GetValidationInfo() {
     PRINT_ARRAY+=("- Validating [HTML] files in code base...")
   else
     PRINT_ARRAY+=("- Excluding [HTML] files in code base...")
+  fi
+  if [[ ${VALIDATE_STATES} == "true" ]]; then
+    PRINT_ARRAY+=("- Validating [AWS STATES] files in code base...")
+  else
+    PRINT_ARRAY+=("- Excluding [AWS STATES] files in code base...")
   fi
 
   ##############################
