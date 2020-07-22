@@ -10,6 +10,7 @@ yamllint = "*"
 pylint = "*"
 yq = "*"
 cfn-lint = "*"
+terrascan = "*"
 
 [requires]
 python_version = "3.8"
