@@ -46,40 +46,13 @@ function GetValidationInfo() {
   ################################
   # Convert strings to lowercase #
   ################################
-  VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE,,}"
-  VALIDATE_ARM="${VALIDATE_ARM,,}"
-  VALIDATE_BASH="${VALIDATE_BASH,,}"
-  VALIDATE_CLOJURE="${VALIDATE_CLOJURE,,}"
-  VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION,,}"
-  VALIDATE_COFFEE="${VALIDATE_COFFEE,,}"
-  VALIDATE_CSS="${VALIDATE_CSS,,}"
-  VALIDATE_DART="${VALIDATE_DART,,}"
-  VALIDATE_DOCKER="${VALIDATE_DOCKER,,}"
-  VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG,,}"
-  VALIDATE_ENV="${VALIDATE_ENV,,}"
-  VALIDATE_GO="${VALIDATE_GO,,}"
-  VALIDATE_HTML="${VALIDATE_HTML,,}"
-  VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES,,}"
-  VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD,,}"
-  VALIDATE_JSON="${VALIDATE_JSON,,}"
-  VALIDATE_JSX="${VALIDATE_JSX,,}"
-  VALIDATE_KOTLIN="${VALIDATE_KOTLIN,,}"
-  VALIDATE_MARKDOWN="${VALIDATE_MARKDOWN,,}"
-  VALIDATE_OPENAPI="${VALIDATE_OPENAPI,,}"
-  VALIDATE_PERL="${VALIDATE_PERL,,}"
-  VALIDATE_PHP="${VALIDATE_PHP,,}"
-  VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL,,}"
-  VALIDATE_PROTOBUF="${VALIDATE_PROTOBUF,,}"
-  VALIDATE_PYTHON="${VALIDATE_PYTHON,,}"
-  VALIDATE_RAKU="${VALIDATE_RAKU,,}"
-  VALIDATE_RUBY="${VALIDATE_RUBY,,}"
-  VALIDATE_STATES="${VALIDATE_STATES,,}"
-  VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM,,}"
-  VALIDATE_TSX="${VALIDATE_TSX,,}"
-  VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES,,}"
-  VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD,,}"
-  VALIDATE_YAML="${VALIDATE_YAML,,}"
-  VALIDATE_XML="${VALIDATE_XML,,}"
+  # Loop through all languages
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    # build the variable
+    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+    # Set the value of the var to lowercase
+    eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
+  done
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -90,7 +63,7 @@ function GetValidationInfo() {
     # build the variable
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     # Check to see if the variable was set
-    if [ -n ${!VALIDATE_LANGUAGE} ]; then
+    if [ -n "${!VALIDATE_LANGUAGE}" ]; then
       # It was set, need to set flag
       ANY_SET="true"
     fi
@@ -107,7 +80,7 @@ function GetValidationInfo() {
     # Check if ANY_SET was set
     if [[ ${ANY_SET} == "true" ]]; then
       # Check to see if the variable was set
-      if [ -z ${!VALIDATE_LANGUAGE} ]; then
+      if [ -z "${!VALIDATE_LANGUAGE}" ]; then
         # Flag was not set, default to false
         eval "${VALIDATE_LANGUAGE}='false'"
       fi
