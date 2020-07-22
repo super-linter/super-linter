@@ -78,8 +78,10 @@ POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}"     
 PROTOBUF_FILE_NAME='.protolintrc.yml'                                                 # Name of the file
 PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"               # Path to the Protocol Buffers lint rules
 # Python Vars
-PYTHON_FILE_NAME='.python-lint'                                                       # Name of the file
-PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"                   # Path to the python lint rules
+PYTHON_PYLINT_FILE_NAME="${PYTHON_PYLINT_CONFIG_FILE:-.python-lint}"               # Name of the file
+PYTHON_PYLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_PYLINT_FILE_NAME}"  # Path to the python lint rules
+PYTHON_FLAKE8_FILE_NAME="${PYTHON_FLAKE8_CONFIG_FILE:-.flake8}"                    # Name of the file
+PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}"  # Path to the python lint rules
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                                  # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"                       # Path to the ruby lint rules
@@ -97,22 +99,20 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                 
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
-  'coffeelint' 'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'golangci-lint'
-  'htmlhint' 'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl'
-  'protolint' 'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral'
-  'standard' 'stylelint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
-
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo' 'coffeelint'
+  'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'htmlhint'
+  'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint' 'pwsh'
+  'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'terrascan'
+  'tflint' 'xmllint' 'yamllint')
 
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
-  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
-  'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI'
-  'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
-  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
+  'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
+  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP'  'POWERSHELL'
+  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES'  'TERRAFORM'
+  'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML')
 
 ############################################
 # Array for all languages that were linted #
@@ -160,7 +160,8 @@ VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to vali
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
-VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
+VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-}"                  # Boolean to validate language
+VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"             # Boolean to validate language
 VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                           # Boolean to validate language
@@ -238,7 +239,8 @@ FILE_ARRAY_PERL=()                # Array of files to check
 FILE_ARRAY_PHP=()                 # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
-FILE_ARRAY_PYTHON=()              # Array of files to check
+FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
+FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
@@ -302,8 +304,10 @@ ERRORS_FOUND_POWERSHELL=0               # Count of errors found
 export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
 ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
 export ERRORS_FOUND_PROTOBUF            # Workaround SC2034
-ERRORS_FOUND_PYTHON=0                   # Count of errors found
-export ERRORS_FOUND_PYTHON              # Workaround SC2034
+ERRORS_FOUND_PYTHON_PYLINT=0            # Count of errors found
+export ERRORS_FOUND_PYTHON_PYLINT       # Workaround SC2034
+ERRORS_FOUND_PYTHON_FLAKE8=0            # Count of errors found
+export ERRORS_FOUND_PYTHON_FLAKE8       # Workaround SC2034
 ERRORS_FOUND_RAKU=0                     # Count of errors found
 export ERRORS_FOUND_RAKU                # Workaround SC2034
 ERRORS_FOUND_RUBY=0                     # Count of errors found
@@ -1511,12 +1515,23 @@ fi
 ##################
 # PYTHON LINTING #
 ##################
-if [ "${VALIDATE_PYTHON}" == "true" ]; then
+if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
   #########################
   # Lint the python files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
+  LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
+fi
+
+##################
+# PYTHON LINTING #
+##################
+if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
+  #########################
+  # Lint the python files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PYTHON" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
 fi
 
 ################
