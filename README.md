@@ -66,7 +66,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **PHP**                          | [PHP](https://www.php.net/)                                                          |
 | **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                   |
 | **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                  |
-| **Python3**                      | [pylint](https://www.pylint.org/)                                                    |
+| **Python3**                      | [pylint](https://www.pylint.org/)   [flake8](https://flake8.pycqa.org/en/latest/)    |
 | **Raku**                         | [raku](https://raku.org)                                                             |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                     |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                 |
@@ -208,7 +208,8 @@ and won't run anything unexpected.
 | **VALIDATE_PERL**                | `true`                | Flag to enable or disable the linting process of the Perl language.                                                                                                              |
 | **VALIDATE_PHP**                 | `true`                | Flag to enable or disable the linting process of the PHP language.                                                                                                               |
 | **VALIDATE_PROTOBUF**            | `true`                | Flag to enable or disable the linting process of the Protobuf language.                                                                                                          |
-| **VALIDATE_PYTHON**              | `true`                | Flag to enable or disable the linting process of the Python language.                                                                                                            |
+| **VALIDATE_PYTHON_PYLINT**       | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint)                                                                                        |
+| **VALIDATE_PYTHON_FLAKE8**       | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: flake8)                                                                                        |
 | **VALIDATE_POWERSHELL**          | `true`                | Flag to enable or disable the linting process of the Powershell language.                                                                                                        |
 | **VALIDATE_RAKU**                | `true`                | Flag to enable or disable the linting process of the Raku language.                                                                                                              |
 | **VALIDATE_RUBY**                | `true`                | Flag to enable or disable the linting process of the Ruby language.                                                                                                              |
