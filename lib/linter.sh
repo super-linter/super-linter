@@ -205,7 +205,7 @@ REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the 
 ##########################
 FILE_ARRAY_ARM=()                 # Array of files to check
 FILE_ARRAY_BASH=()                # Array of files to check
-FILE_ARRAY_CLOUDFORMATION=()                 # Array of files to check
+FILE_ARRAY_CLOUDFORMATION=()      # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
@@ -242,7 +242,7 @@ FILE_ARRAY_YML=()                 # Array of files to check
 ERRORS_FOUND_ANSIBLE=0             # Count of errors found
 ERRORS_FOUND_ARM=0                 # Count of errors found
 ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_CLOUDFORMATION=0                 # Count of errors found
+ERRORS_FOUND_CLOUDFORMATION=0      # Count of errors found
 ERRORS_FOUND_CLOJURE=0             # Count of errors found
 ERRORS_FOUND_CSS=0                 # Count of errors found
 ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
@@ -962,42 +962,18 @@ Footer() {
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif  [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CLOUDFORMATION}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_HTML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_STATES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_YML}" -ne 0 ]; then
-    # Failed exit
-    echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
-    exit 1
+  elif
+    # Loop through all languages
+    for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+      # build the variable
+      ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
+      # Check if error was found
+      if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
+        # Failed exit
+        echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
+        exit 1
+      fi
+    done
   else
     #################
     # Footer prints #
