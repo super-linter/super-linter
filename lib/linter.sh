@@ -312,9 +312,9 @@ GetLinterVersions() {
   # Go through the array of linters and print version info #
   ##########################################################
   for LINTER in "${LINTER_ARRAY[@]}"; do
-    ###################
-    # Get the version #
-    ###################
+    ####################
+    # Get the versions #
+    ####################
     if [[ "${LINTER}" == "arm-ttk" ]]; then
       # Need specific command for ARM
       mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
