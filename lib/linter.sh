@@ -954,14 +954,12 @@ Footer() {
       # Create status API for Failed language #
       #########################################
       CallStatusAPI "${LANGUAGE}" "error"
-    else
+    ######################################
+    # Check if we validated the langauge #
+    ######################################
+    elif [ "${!ERROR_COUNTER}" -eq 0 ] && [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
       # No errors found when linting the language
-      ######################################
-      # Check if we validated the langauge #
-      ######################################
-      if [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
-        CallStatusAPI "${LANGUAGE}" "success"
-      fi
+      CallStatusAPI "${LANGUAGE}" "success"
     fi
   done
 
