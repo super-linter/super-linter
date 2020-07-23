@@ -98,7 +98,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
   'coffeelint' 'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'golangci-lint'
   'htmlhint' 'jsonlint' 'ktlint' 'markdownlint' 'npm-groovy-lint' 'perl'
   'protolint' 'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral'
-  'standard' 'stylelint' 'tflint' 'xmllint' 'yamllint')
+  'standard' 'stylelint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 
 #############################
@@ -108,7 +108,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
-  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TSX' 'TYPESCRIPT_ES'
+  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'XML' 'YML')
 
 ############################################
@@ -161,6 +161,7 @@ VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to vali
 VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                           # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
+VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}" # Boolean to validate language
 VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate language
 VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
@@ -304,6 +305,8 @@ ERRORS_FOUND_STATES=0                   # Count of errors found
 export ERRORS_FOUND_STATES              # Workaround SC2034
 ERRORS_FOUND_TERRAFORM=0                # Count of errors found
 export ERRORS_FOUND_TERRAFORM           # Workaround SC2034
+ERRORS_FOUND_TERRAFORM_TERRASCAN=0      # Count of errors found
+export ERRORS_FOUND_TERRAFORM_TERRASCAN # Workaround SC2034
 ERRORS_FOUND_TSX=0                      # Count of errors found
 export ERRORS_FOUND_TSX                 # Workaround SC2034
 ERRORS_FOUND_TYPESCRIPT_STANDARD=0      # Count of errors found
@@ -1561,6 +1564,17 @@ if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
   ############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
+fi
+
+#####################
+# TERRAFORM TERRASCAN LINTING #
+#####################
+if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
+  ############################
+  # Lint the Terraform files #
+  ############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -l" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
 fi
 
 ######################
