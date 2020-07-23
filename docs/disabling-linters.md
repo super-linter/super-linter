@@ -35,6 +35,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [Dockerfile](#dockerfile)
 - [Terraform](#terraform)
 - [CSS](#css)
+- [DART](#dart)
 - [ENV](#dotenv-linter)
 - [Kotlin](#kotlin)
 - [OpenAPI](#openapi)
@@ -826,7 +827,7 @@ import package.b.*
 
 - `.github/linters/.dart-lint.yml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.dart-lint.yml`
+- File should be located at: `.github/linters/anaylsis_options.yaml`
 
 ### dartanalyzer disable single line
 
@@ -844,7 +845,7 @@ int x = ''; // ignore: invalid_assignment
 
 ### dartanalyzer disable entire file
 
-- You can disable entire files with the `analyzer.exclude` property in `.dart-lint.yml`
+- You can disable entire files with the `analyzer.exclude` property in `anaylsis_options.yaml`
 
 ```dart
 analyzer:
