@@ -954,8 +954,6 @@ lint:
 ## EDITORCONFIG-CHECKER
 - [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
----
-
 ### editorconfig-checker Config file
 - `.github/linters/.ecrc`
 - This linter will also use the [`.editorconfig`](https://editorconfig.org/) of your project
