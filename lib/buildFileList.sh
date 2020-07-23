@@ -439,7 +439,7 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ]; then
+    elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] || [ "$FILE_TYPE" == "gradle" ]; then
       ################################
       # Append the file to the array #
       ################################
