@@ -18,7 +18,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [Shell](#shell)
 - [Ansible](#ansible)
 - [YAML](#yaml)
-- [AWS CloudFormation templates](#cfn)
+- [AWS CloudFormation templates](#aws-cloud-formation)
 - [Python](#python3)
 - [JSON](#json)
 - [Markdown](#markdown)
