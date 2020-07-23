@@ -50,7 +50,7 @@ RUN apk add --update --no-cache \
     ansible-lint \
     bash \
     curl \
-    gcc libstdc++6\
+    gcc \
     git git-lfs\
     go \
     icu-libs \
@@ -92,6 +92,15 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install Raku and libstdc++ #
+##############################
+# Basic setup, programs and init
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && apk add --update --no-cache \
+    rakudo zef \
+    libstdc++
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -163,13 +172,6 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
-
-################
-# Install Raku #
-################
-# Basic setup, programs and init
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && apk add --update --no-cache rakudo zef
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
