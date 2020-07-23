@@ -138,10 +138,11 @@ function LintCodebase() {
     # Lint the files #
     ##################
     for FILE in "${LIST_FILES[@]}"; do
-      #####################
-      # Get the file name #
-      #####################
+      ###################################
+      # Get the file name and directory #
+      ###################################
       FILE_NAME=$(basename "${FILE}" 2>&1)
+      DIR_NAME=$(dirname "${FILE}" 2>&1)
 
       #####################################################
       # Make sure we dont lint node modules or test cases #
@@ -192,6 +193,17 @@ function LintCodebase() {
           cd "${GITHUB_WORKSPACE}" || exit
           pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} ${FILE}; if (\${Error}.Count) { exit 1 }"
           exit $? 2>&1
+        )
+      ###############################################################################
+      # Corner case for groovy as we have to pass it as path and file in ant format #
+      ###############################################################################
+      elif [[ ${FILE_TYPE} == "GROOVY" ]]; then
+        #######################################
+        # Lint the file with the updated path #
+        #######################################
+        LINT_CMD=$(
+          cd "${GITHUB_WORKSPACE}" || exit
+          ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
         )
       else
         ################################
@@ -326,6 +338,7 @@ function TestCodebase() {
     # Get the file name #
     #####################
     FILE_NAME=$(basename "${FILE}" 2>&1)
+    DIR_NAME=$(dirname "${FILE}" 2>&1)
 
     ############################
     # Get the file pass status #
@@ -399,6 +412,17 @@ function TestCodebase() {
         cd "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}" || exit
         pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} ${FILE}; if (\${Error}.Count) { exit 1 }"
         exit $? 2>&1
+      )
+    ###############################################################################
+    # Corner case for groovy as we have to pass it as path and file in ant format #
+    ###############################################################################
+    elif [[ ${FILE_TYPE} == "GROOVY" ]]; then
+      #######################################
+      # Lint the file with the updated path #
+      #######################################
+      LINT_CMD=$(
+        cd "${GITHUB_WORKSPACE}" || exit
+        ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
       )
     else
       ################################
@@ -566,6 +590,7 @@ function RunTestCases() {
   TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\.ext$" "editorconfig-checker"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "golang"
+  TestCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "groovy"
   TestCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "html"
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"

@@ -61,7 +61,7 @@ RUN apk add --update --no-cache \
     libxml2-utils \
     make \
     musl-dev \
-    npm nodejs \
+    npm nodejs-current \
     openjdk8-jre \
     perl \
     php7 \

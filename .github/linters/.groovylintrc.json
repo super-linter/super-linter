@@ -1,0 +1,65 @@
+{
+    "extends": "recommended",
+    "rules": {
+        "CatchException": {
+            "enabled": false
+        },
+        "CatchThrowable": {
+            "enabled": false
+        },
+        "ClassJavadoc": {
+            "enabled": false
+        },
+        "ClosureAsLastMethodParameter": {
+            "enabled": false
+        },
+        "DuplicateNumberLiteral": {
+            "enabled": false
+        },
+        "DuplicateStringLiteral": {
+            "enabled": false
+        },
+        "FieldTypeRequired": {
+            "enabled": false
+        },
+        "JavaIoPackageAccess": {
+            "enabled": false
+        },
+        "MethodParameterTypeRequired": {
+            "enabled": false
+        },
+        "MethodSize": {
+            "enabled": false
+        },
+        "NoDef": {
+            "enabled": false
+        },
+        "PrintStackTrace": {
+            "enabled": false
+        },
+        "PropertyName": {
+            "enabled": false
+        },
+        "SpaceAroundMapEntryColon": {
+            "enabled": false
+        },
+        "SystemExit": {
+            "enabled": false
+        },
+        "UnnecessaryGetter": {
+            "enabled": false
+        },
+        "UnnecessaryObjectReferences": {
+            "enabled": false
+        },
+        "UnnecessarySetter": {
+            "enabled": false
+        },
+        "VariableName": {
+            "enabled": false
+        },
+        "VariableTypeRequired": {
+            "enabled": false
+        }
+    }
+}

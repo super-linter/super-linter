@@ -50,6 +50,9 @@ DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"             
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                                          # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                           # Path to the Go lint rules
+# Groovy Vars
+GROOVY_FILE_NAME='.groovylintrc.json'                                                 # Name of the file
+GROOVY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GROOVY_FILE_NAME}"                   # Path to the Groovy lint rules
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                                          # Name of the file
 HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"                       # Path to the CSS lint rules
@@ -93,15 +96,16 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                 
 #######################################
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
   'coffeelint' 'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'golangci-lint'
-  'htmlhint' 'jsonlint' 'ktlint' 'markdownlint' 'perl' 'protolint' 'pwsh'
-  'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint'
-  'tflint' 'xmllint' 'yamllint')
+  'htmlhint' 'jsonlint' 'ktlint' 'markdownlint' 'npm-groovy-lint' 'perl'
+  'protolint' 'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral'
+  'standard' 'stylelint' 'tflint' 'xmllint' 'yamllint')
+
 
 #############################
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
-  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML' 'JAVASCRIPT_ES'
+  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TSX' 'TYPESCRIPT_ES'
@@ -111,6 +115,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
 # Array for all languages that were linted #
 ############################################
 LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that were linted
+
 
 ###################
 # GitHub ENV Vars #
@@ -139,6 +144,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to vali
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
 VALIDATE_ENV="${VALIDATE_ENV}"                                 # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                                   # Boolean to validate language
+VALIDATE_GROOVY="${VALIDATE_GROOVY}"                           # Boolean to validate language
 VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
@@ -213,6 +219,7 @@ FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_DOCKER=()              # Array of files to check
 FILE_ARRAY_ENV=()                 # Array of files to check
 FILE_ARRAY_GO=()                  # Array of files to check
+FILE_ARRAY_GROOVY=()              # Array of files to check
 FILE_ARRAY_HTML=()                # Array of files to check
 FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
@@ -261,6 +268,8 @@ ERRORS_FOUND_ENV=0                      # Count of errors found
 export ERRORS_FOUND_ENV                 # Workaround SC2034
 ERRORS_FOUND_GO=0                       # Count of errors found
 export ERRORS_FOUND_GO                  # Workaround SC2034
+ERRORS_FOUND_GROOVY=0                   # Count of errors found
+export ERRORS_FOUND_GROOVY              # Workaround SC2034
 ERRORS_FOUND_HTML=0                     # Count of errors found
 export ERRORS_FOUND_HTML                # Workaround SC2034
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
@@ -761,7 +770,7 @@ GetGitHubVars() {
   ############################
   # Validate we have a value #
   ############################
-  if [ -z "${GITHUB_TOKEN}" ]; then
+  if [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_TOKEN]!${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_TOKEN}]${NC}"
     echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
@@ -1046,40 +1055,42 @@ GetValidationInfo
 ########################
 # Get the linter rules #
 ########################
-# Get YML rules
-GetLinterRules "YAML"
+# Get Ansible rules
+GetLinterRules "ANSIBLE"
+# Get ARM rules
+GetLinterRules "ARM"
+# Get CLOUDFORMATION rules
+GetLinterRules "CLOUDFORMATION"
+# Get Coffeescript rules
+GetLinterRules "COFFEESCRIPT"
+# Get CSS rules
+GetLinterRules "CSS"
+# Get DART rules
+GetLinterRules "DART"
+# Get Docker rules
+GetLinterRules "DOCKER"
+# Get Golang rules
+GetLinterRules "GO"
+# Get Groovy rules
+GetLinterRules "GROOVY"
+# Get HTML rules
+GetLinterRules "HTML"
+# Get JavaScript rules
+GetLinterRules "JAVASCRIPT"
 # Get Markdown rules
 GetLinterRules "MARKDOWN"
+# Get PowerShell rules
+GetLinterRules "POWERSHELL"
 # Get Python rules
 GetLinterRules "PYTHON"
 # Get Ruby rules
 GetLinterRules "RUBY"
-# Get Coffeescript rules
-GetLinterRules "COFFEESCRIPT"
-# Get Ansible rules
-GetLinterRules "ANSIBLE"
-# Get JavaScript rules
-GetLinterRules "JAVASCRIPT"
-# Get TypeScript rules
-GetLinterRules "TYPESCRIPT"
-# Get Golang rules
-GetLinterRules "GO"
-# Get Docker rules
-GetLinterRules "DOCKER"
 # Get Terraform rules
 GetLinterRules "TERRAFORM"
-# Get PowerShell rules
-GetLinterRules "POWERSHELL"
-# Get ARM rules
-GetLinterRules "ARM"
-# Get CSS rules
-GetLinterRules "CSS"
-# Get CLOUDFORMATION rules
-GetLinterRules "CLOUDFORMATION"
-# Get DART rules
-GetLinterRules "DART"
-# Get HTML rules
-GetLinterRules "HTML"
+# Get TypeScript rules
+GetLinterRules "TYPESCRIPT"
+# Get YML rules
+GetLinterRules "YAML"
 
 #################################
 # Check if were in verbose mode #
@@ -1118,48 +1129,48 @@ if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
   BuildFileList
 fi
 
-###############
-# YML LINTING #
-###############
-if [ "${VALIDATE_YAML}" == "true" ]; then
-  ######################
-  # Lint the Yml Files #
-  ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "YML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "${FILE_ARRAY_YML[@]}"
+###################
+# ANSIBLE LINTING #
+###################
+if [ "${VALIDATE_ANSIBLE}" == "true" ]; then
+  ##########################
+  # Lint the Ansible files #
+  ##########################
+  # Due to the nature of how we want to validate Ansible, we cannot use the
+  # standard loop, since it looks for an ansible folder, excludes certain
+  # files, and looks for additional changes, it should be an outlier
+  LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
 fi
 
-################
-# JSON LINTING #
-################
-if [ "${VALIDATE_JSON}" == "true" ]; then
-  #######################
-  # Lint the json files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "${FILE_ARRAY_JSON[@]}"
-fi
+########################
+# ARM Template LINTING #
+########################
+if [ "${VALIDATE_ARM}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an ARM file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
 
-###############
-# XML LINTING #
-###############
-if [ "${VALIDATE_XML}" == "true" ]; then
-  ######################
-  # Lint the XML Files #
-  ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "${FILE_ARRAY_XML[@]}"
-fi
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectARMFile "${FILE}"; then
+        FILE_ARRAY_ARM+=("${FILE}")
+      fi
+    done
 
-####################
-# MARKDOWN LINTING #
-####################
-if [ "${VALIDATE_MARKDOWN}" == "true" ]; then
-  ###########################
-  # Lint the Markdown Files #
-  ###########################
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
+  ###############################
+  # Lint the ARM Template files #
+  ###############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "${FILE_ARRAY_MARKDOWN[@]}"
+  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "disabledfileext" "${FILE_ARRAY_ARM[@]}"
 fi
 
 ################
@@ -1171,17 +1182,6 @@ if [ "${VALIDATE_BASH}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
-fi
-
-##################
-# PYTHON LINTING #
-##################
-if [ "${VALIDATE_PYTHON}" == "true" ]; then
-  #########################
-  # Lint the python files #
-  #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
 ##########################
@@ -1215,52 +1215,18 @@ if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
   LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" "disabledfileext" "${FILE_ARRAY_CLOUDFORMATION[@]}"
 fi
 
-################
-# PERL LINTING #
-################
-if [ "${VALIDATE_PERL}" == "true" ]; then
-  #######################
-  # Lint the perl files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
-fi
-
-################
-# RAKU LINTING #
-################
-if [ "${VALIDATE_RAKU}" == "true" ]; then
-  #######################
-  # Lint the raku files #
-  #######################
-    echo "${GITHUB_WORKSPACE}/META6.json"
-    if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
-        cd "${GITHUB_WORKSPACE}" &&  zef install --deps-only --/test .
-    fi
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "RAKU" "raku" "raku -I ${GITHUB_WORKSPACE}/lib -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "${FILE_ARRAY_RAKU[@]}"
-fi
-
-################
-# PHP LINTING #
-################
-if [ "${VALIDATE_PHP}" == "true" ]; then
-  #######################
-  # Lint the PHP files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
-fi
-
-################
-# RUBY LINTING #
-################
-if [ "${VALIDATE_RUBY}" == "true" ]; then
-  #######################
-  # Lint the ruby files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+###################
+# CLOJURE LINTING #
+###################
+if [ "${VALIDATE_CLOJURE}" == "true" ]; then
+  #################################
+  # Get Clojure standard rules #
+  #################################
+  GetStandardRules "clj-kondo"
+  #########################
+  # Lint the Clojure files #
+  #########################
+  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "${FILE_ARRAY_CLOJURE[@]}"
 fi
 
 ########################
@@ -1274,6 +1240,65 @@ if [ "${VALIDATE_COFFEE}" == "true" ]; then
   LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
 fi
 
+###############
+# CSS LINTING #
+###############
+if [ "${VALIDATE_CSS}" == "true" ]; then
+  #################################
+  # Get CSS standard rules #
+  #################################
+  GetStandardRules "stylelint"
+  #############################
+  # Lint the CSS files #
+  #############################
+  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
+fi
+
+################
+# DART LINTING #
+################
+if [ "${VALIDATE_DART}" == "true" ]; then
+  #######################
+  # Lint the Dart files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
+fi
+
+##################
+# DOCKER LINTING #
+##################
+if [ "${VALIDATE_DOCKER}" == "true" ]; then
+  #########################
+  # Lint the docker files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
+  LintCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKER_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+fi
+
+########################
+# EDITORCONFIG LINTING #
+########################
+if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
+  ####################################
+  # Lint the files with editorconfig #
+  ####################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
+fi
+
+###############
+# ENV LINTING #
+###############
+if [ "${VALIDATE_ENV}" == "true" ]; then
+  #######################
+  # Lint the env files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILE_ARRAY_ENV[@]}"
+fi
+
 ##################
 # GOLANG LINTING #
 ##################
@@ -1285,28 +1310,29 @@ if [ "${VALIDATE_GO}" == "true" ]; then
   LintCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "${FILE_ARRAY_GO[@]}"
 fi
 
-#####################
-# TERRAFORM LINTING #
-#####################
-if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
-  ############################
-  # Lint the Terraform files #
-  ############################
+##################
+# GROOVY LINTING #
+##################
+if [ "$VALIDATE_GROOVY" == "true" ]; then
+  #########################
+  # Lint the groovy files #
+  #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
+  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "${FILE_ARRAY_GROOVY[@]}"
 fi
 
-###################
-# ANSIBLE LINTING #
-###################
-if [ "${VALIDATE_ANSIBLE}" == "true" ]; then
-  ##########################
-  # Lint the Ansible files #
-  ##########################
-  # Due to the nature of how we want to validate Ansible, we cannot use the
-  # standard loop, since it looks for an ansible folder, excludes certain
-  # files, and looks for additional changes, it should be an outlier
-  LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
+################
+# HTML LINTING #
+################
+if [ "${VALIDATE_HTML}" == "true" ]; then
+  ###########################
+  # Get HTML standard rules #
+  ###########################
+  GetStandardRules "htmlhint"
+  #######################
+  # Lint the HTML files #
+  #######################
+  LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
 fi
 
 ######################
@@ -1335,6 +1361,17 @@ if [ "${VALIDATE_JAVASCRIPT_STANDARD}" == "true" ]; then
   LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
 fi
 
+################
+# JSON LINTING #
+################
+if [ "${VALIDATE_JSON}" == "true" ]; then
+  #######################
+  # Lint the json files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "${FILE_ARRAY_JSON[@]}"
+fi
+
 ######################
 # JSX LINTING        #
 ######################
@@ -1344,6 +1381,186 @@ if [ "${VALIDATE_JSX}" == "true" ]; then
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
+fi
+
+##################
+# KOTLIN LINTING #
+##################
+if [ "${VALIDATE_KOTLIN}" == "true" ]; then
+  #######################
+  # Lint the Kotlin files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+####################
+# MARKDOWN LINTING #
+####################
+if [ "${VALIDATE_MARKDOWN}" == "true" ]; then
+  ###########################
+  # Lint the Markdown Files #
+  ###########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "${FILE_ARRAY_MARKDOWN[@]}"
+fi
+
+###################
+# OPENAPI LINTING #
+###################
+if [ "${VALIDATE_OPENAPI}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectOpenAPIFile "${FILE}"; then
+        FILE_ARRAY_OPENAPI+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
+  ##########################
+  # Lint the OpenAPI files #
+  ##########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" "disabledfileext" "${FILE_ARRAY_OPENAPI[@]}"
+fi
+
+################
+# PERL LINTING #
+################
+if [ "${VALIDATE_PERL}" == "true" ]; then
+  #######################
+  # Lint the perl files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+fi
+
+################
+# PHP LINTING #
+################
+if [ "${VALIDATE_PHP}" == "true" ]; then
+  #######################
+  # Lint the PHP files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
+fi
+
+######################
+# POWERSHELL LINTING #
+######################
+if [ "${VALIDATE_POWERSHELL}" == "true" ]; then
+  ###############################################################
+  # For POWERSHELL, ensure PSScriptAnalyzer module is available #
+  ###############################################################
+  ValidatePowershellModules
+
+  #############################
+  # Lint the powershell files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
+fi
+
+####################
+# PROTOBUF LINTING #
+####################
+if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
+  #######################
+  # Lint the Protocol Buffers files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "${FILE_ARRAY_PROTOBUF[@]}"
+fi
+
+##################
+# PYTHON LINTING #
+##################
+if [ "${VALIDATE_PYTHON}" == "true" ]; then
+  #########################
+  # Lint the python files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
+fi
+
+################
+# RAKU LINTING #
+################
+if [ "${VALIDATE_RAKU}" == "true" ]; then
+  #######################
+  # Lint the raku files #
+  #######################
+    echo "${GITHUB_WORKSPACE}/META6.json"
+    if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
+        cd "${GITHUB_WORKSPACE}" &&  zef install --deps-only --/test .
+    fi
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "RAKU" "raku" "raku -I ${GITHUB_WORKSPACE}/lib -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "${FILE_ARRAY_RAKU[@]}"
+fi
+
+################
+# RUBY LINTING #
+################
+if [ "${VALIDATE_RUBY}" == "true" ]; then
+  #######################
+  # Lint the ruby files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+fi
+
+######################
+# AWS STATES LINTING #
+######################
+if [ "${VALIDATE_STATES}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an aws states file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectAWSStatesFIle "${FILE}"; then
+        FILE_ARRAY_STATES+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
+  #########################
+  # Lint the STATES files #
+  #########################
+  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "disabledfileext" "${FILE_ARRAY_STATES[@]}"
+fi
+
+#####################
+# TERRAFORM LINTING #
+#####################
+if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
+  ############################
+  # Lint the Terraform files #
+  ############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
 fi
 
 ######################
@@ -1381,220 +1598,25 @@ if [ "${VALIDATE_TYPESCRIPT_STANDARD}" == "true" ]; then
 fi
 
 ###############
-# CSS LINTING #
+# XML LINTING #
 ###############
-if [ "${VALIDATE_CSS}" == "true" ]; then
-  #################################
-  # Get CSS standard rules #
-  #################################
-  GetStandardRules "stylelint"
-  #############################
-  # Lint the CSS files #
-  #############################
-  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
+if [ "${VALIDATE_XML}" == "true" ]; then
+  ######################
+  # Lint the XML Files #
+  ######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "${FILE_ARRAY_XML[@]}"
 fi
 
 ###############
-# ENV LINTING #
+# YML LINTING #
 ###############
-if [ "${VALIDATE_ENV}" == "true" ]; then
-  #######################
-  # Lint the env files #
-  #######################
+if [ "${VALIDATE_YAML}" == "true" ]; then
+  ######################
+  # Lint the Yml Files #
+  ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILE_ARRAY_ENV[@]}"
-fi
-
-##################
-# KOTLIN LINTING #
-##################
-if [ "${VALIDATE_KOTLIN}" == "true" ]; then
-  #######################
-  # Lint the Kotlin files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
-fi
-
-########################
-# EDITORCONFIG LINTING #
-########################
-if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
-  ####################################
-  # Lint the files with editorconfig #
-  ####################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
-fi
-
-##################
-# DART LINTING #
-##################
-if [ "${VALIDATE_DART}" == "true" ]; then
-  #######################
-  # Lint the Dart files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
-fi
-
-##################
-# DOCKER LINTING #
-##################
-if [ "${VALIDATE_DOCKER}" == "true" ]; then
-  #########################
-  # Lint the docker files #
-  #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKER_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
-fi
-
-###################
-# CLOJURE LINTING #
-###################
-if [ "${VALIDATE_CLOJURE}" == "true" ]; then
-  #################################
-  # Get Clojure standard rules #
-  #################################
-  GetStandardRules "clj-kondo"
-  #########################
-  # Lint the Clojure files #
-  #########################
-  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "${FILE_ARRAY_CLOJURE[@]}"
-fi
-
-##################
-# PROTOBUF LINTING #
-##################
-if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
-  #######################
-  # Lint the Protocol Buffers files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "${FILE_ARRAY_PROTOBUF[@]}"
-fi
-
-######################
-# POWERSHELL LINTING #
-######################
-if [ "${VALIDATE_POWERSHELL}" == "true" ]; then
-  ###############################################################
-  # For POWERSHELL, ensure PSScriptAnalyzer module is available #
-  ###############################################################
-  ValidatePowershellModules
-
-  #############################
-  # Lint the powershell files #
-  #############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILE_ARRAY_POWERSHELL[@]}"
-fi
-
-########################
-# ARM Template LINTING #
-########################
-if [ "${VALIDATE_ARM}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every json file is an ARM file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectARMFile "${FILE}"; then
-        FILE_ARRAY_ARM+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
-  ###############################
-  # Lint the ARM Template files #
-  ###############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "disabledfileext" "${FILE_ARRAY_ARM[@]}"
-fi
-
-###################
-# OPENAPI LINTING #
-###################
-if [ "${VALIDATE_OPENAPI}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectOpenAPIFile "${FILE}"; then
-        FILE_ARRAY_OPENAPI+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
-  ##########################
-  # Lint the OpenAPI files #
-  ##########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" "disabledfileext" "${FILE_ARRAY_OPENAPI[@]}"
-fi
-
-################
-# HTML LINTING #
-################
-if [ "${VALIDATE_HTML}" == "true" ]; then
-  #################################
-  # Get HTML standard rules #
-  #################################
-  GetStandardRules "htmlhint"
-  #############################
-  # Lint the HTML files #
-  #############################
-  LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
-fi
-
-######################
-# AWS STATES LINTING #
-######################
-if [ "${VALIDATE_STATES}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every json file is an aws states file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectAWSStatesFIle "${FILE}"; then
-        FILE_ARRAY_STATES+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
-  #########################
-  # Lint the STATES files #
-  #########################
-  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "disabledfileext" "${FILE_ARRAY_STATES[@]}"
+  LintCodebase "YML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "${FILE_ARRAY_YML[@]}"
 fi
 
 ###########

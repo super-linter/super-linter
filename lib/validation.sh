@@ -46,6 +46,7 @@ function GetValidationInfo() {
   ################################
   # Convert strings to lowercase #
   ################################
+
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
@@ -53,6 +54,7 @@ function GetValidationInfo() {
     # Set the value of the var to lowercase
     eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
   done
+
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -89,6 +91,20 @@ function GetValidationInfo() {
       eval "${VALIDATE_LANGUAGE}='true'"
     fi
   done
+
+  ######################################
+  # Validate if we should check GROOVY #
+  ######################################
+  if [[ $ANY_SET == "true" ]]; then
+    # Some linter flags were set - only run those set to true
+    if [[ -z $VALIDATE_GROOVY ]]; then
+      # GROOVY flag was not set - default to false
+      VALIDATE_GROOVY="false"
+    fi
+  else
+    # No linter flags were set - default all to true
+    VALIDATE_GROOVY="true"
+  fi
 
   #######################################
   # Print which linters we are enabling #

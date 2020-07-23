@@ -54,6 +54,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                      |
 | **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                           |
+| **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                       |
 | **HTMLHint**                     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                     |
 | **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                 |
 | **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                        |
@@ -193,6 +194,7 @@ and won't run anything unexpected.
 | **VALIDATE_EDITORCONFIG**        | `true`                | Flag to enable or disable the linting process with the editorconfig.                                                                                                             |
 | **VALIDATE_ENV**                 | `true`                | Flag to enable or disable the linting process of the ENV language.                                                                                                               |
 | **VALIDATE_GO**                  | `true`                | Flag to enable or disable the linting process of the Golang language.                                                                                                            |
+| **VALIDATE_GROOVY**              | `true`                | Flag to enable or disable the linting process of the language.                                                                                                                   |
 | **VALIDATE_HTML**                | `true`                | Flag to enable or disable the linting process of the HTML language.                                                                                                              |
 | **VALIDATE_JAVASCRIPT_ES**       | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: eslint)                                                                                    |
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: standard)                                                                                  |
