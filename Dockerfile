@@ -50,7 +50,7 @@ RUN apk add --update --no-cache \
     ansible-lint \
     bash \
     curl \
-    gcc \
+    gcc libstdc++\
     git git-lfs\
     go \
     icu-libs \
