@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.29.0 as golangci-lint
 FROM yoheimuta/protolint:v0.25.1 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
+FROM mcr.microsoft.com/powershell:latest as powershell
 
 ##################
 # Get base image #
@@ -32,10 +33,6 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 ################################
 # Set ARG values used in Build #
 ################################
-# PowerShell & PSScriptAnalyzer
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
-ARG PSSA_VERSION='latest'
 # arm-ttk
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
@@ -99,18 +96,8 @@ RUN bundle install
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
-# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
-# Slightly modified to always retrieve latest stable Powershell version
-# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
-RUN mkdir -p ${PWSH_DIRECTORY} \
-    && curl -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
-    | grep browser_download_url \
-    | grep linux-alpine-x64 \
-    | cut -d '"' -f 4 \
-    | xargs -n 1 wget -O - \
-    | tar -xzC ${PWSH_DIRECTORY} \
-    && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
-    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
+COPY --from=powershell /usr/bin/pwsh /usr/bin/
+CMD /usr/bin/pwsh -c 'Install-Module -Name PSScriptAnalyzer -Scope AllUsers -Force'
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
@@ -120,6 +107,7 @@ RUN mkdir -p ${PWSH_DIRECTORY} \
 # Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 RUN curl -sLO "${ARM_TTK_URI}" \
+    && mkdir -p "${ARM_TTK_DIRECTORY}" \
     && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
     && rm "${ARM_TTK_NAME}" \
     && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
