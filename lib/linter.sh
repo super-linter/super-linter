@@ -1522,7 +1522,7 @@ if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
   # Lint the python files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
+  LintCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
 fi
 
 ##################
@@ -1533,7 +1533,7 @@ if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
   # Lint the python files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
+  LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
 fi
 
 ################
