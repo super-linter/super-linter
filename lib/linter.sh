@@ -1188,11 +1188,31 @@ fi
 # CFN LINTING #
 ###############
 if [ "${VALIDATE_CFN}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every yml/json file is an CFN file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectCloudFormationFile "${FILE}"; then
+        FILE_ARRAY_CFN+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   #################################
   # Lint the CloudFormation files #
   #################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file ${CFN_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CFN[@]}"
+  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file ${CFN_LINTER_RULES}" "disabledfileext" "${FILE_ARRAY_CFN[@]}"
 fi
 
 ################
@@ -1475,11 +1495,31 @@ fi
 # ARM Template LINTING #
 ########################
 if [ "${VALIDATE_ARM}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an ARM file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectARMFile "${FILE}"; then
+        FILE_ARRAY_ARM+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   ###############################
   # Lint the ARM Template files #
   ###############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "${FILE_ARRAY_ARM[@]}"
+  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "disabledfileext" "${FILE_ARRAY_ARM[@]}"
 fi
 
 ###################
@@ -1531,10 +1571,30 @@ fi
 # AWS STATES LINTING #
 ######################
 if [ "${VALIDATE_STATES}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an aws states file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectAWSStatesFIle "${FILE}"; then
+        FILE_ARRAY_STATES+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   #########################
   # Lint the STATES files #
   #########################
-  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "${FILE_ARRAY_STATES[@]}"
+  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "disabledfileext" "${FILE_ARRAY_STATES[@]}"
 fi
 
 ##########
