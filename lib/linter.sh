@@ -22,74 +22,74 @@ source /action/lib/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                                      # Default rules files location
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                                       # Name of the file
-ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"       # Path to the Ansible lint rules
+ANSIBLE_FILE_NAME='.ansible-lint.yml'                                                 # Name of the file
+ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}"                 # Path to the Ansible lint rules
 # Azure Resource Manager Vars
-ARM_FILE_NAME='.arm-ttk.psd1'                                               # Name of the file
-ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"               # Path to the ARM lint rules
+ARM_FILE_NAME='.arm-ttk.psd1'                                                         # Name of the file
+ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}"                         # Path to the ARM lint rules
 # Cloudformation Vars
-CFN_FILE_NAME='.cfnlintrc.yml'                                              # Name of the file
-CFN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CFN_FILE_NAME}"               # Path to the cloudformation lint rules
+CLOUDFORMATION_FILE_NAME='.cfnlintrc.yml'                                             # Name of the file
+CLOUDFORMATION_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOUDFORMATION_FILE_NAME}"   # Path to the cloudformation lint rules
 # Clojure Vars
-CLOJURE_FILE_NAME='.clj-kondo/config.edn'                                   # Name of the file
-CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"       # Path to the Clojure lint rules
+CLOJURE_FILE_NAME='.clj-kondo/config.edn'                                             # Name of the file
+CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}"                 # Path to the Clojure lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                        # Name of the file
-COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"   # Path to the coffeescript lint rules
+COFFEE_FILE_NAME='.coffee-lint.json'                                                  # Name of the file
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}"             # Path to the coffeescript lint rules
 # CSS Vars
-CSS_FILE_NAME='.stylelintrc.json'                                           # Name of the file
-CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"               # Path to the CSS lint rules
+CSS_FILE_NAME='.stylelintrc.json'                                                     # Name of the file
+CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}"                         # Path to the CSS lint rules
 # Dart Vars
-DART_FILE_NAME='analysis_options.yaml'                                      # Name of the file
-DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"             # Path to the DART lint rules
+DART_FILE_NAME='analysis_options.yaml'                                                # Name of the file
+DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}"                       # Path to the DART lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                                        # Name of the file
-DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"         # Path to the Docker lint rules
+DOCKER_FILE_NAME='.dockerfilelintrc'                                                  # Name of the file
+DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}"                   # Path to the Docker lint rules
 # Golang Vars
-GO_FILE_NAME='.golangci.yml'                                                # Name of the file
-GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                 # Path to the Go lint rules
+GO_FILE_NAME='.golangci.yml'                                                          # Name of the file
+GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}"                           # Path to the Go lint rules
 # Groovy Vars
-GROOVY_FILE_NAME='.groovylintrc.json'                                       # Name of the file
-GROOVY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GROOVY_FILE_NAME}"         # Path to the Groovy lint rules
+GROOVY_FILE_NAME='.groovylintrc.json'                                                 # Name of the file
+GROOVY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GROOVY_FILE_NAME}"                   # Path to the Groovy lint rules
 # HTML Vars
-HTML_FILE_NAME='.htmlhintrc'                                                # Name of the file
-HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"             # Path to the CSS lint rules
+HTML_FILE_NAME='.htmlhintrc'                                                          # Name of the file
+HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}"                       # Path to the CSS lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
-JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
-JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"                    # Name of the file
+JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}"           # Path to the Javascript lint rules
+JAVASCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # Default linter path
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                   # Linter Path Directory
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                             # Linter Path Directory
 # MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                     # Name of the file
-MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"     # Path to the markdown lint rules
+MARKDOWN_FILE_NAME='.markdown-lint.yml'                                               # Name of the file
+MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"               # Path to the markdown lint rules
 # OpenAPI Vars
-OPENAPI_FILE_NAME='.openapirc.yml'                                          # Name of the file
-OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"       # Path to the OpenAPI lint rules
+OPENAPI_FILE_NAME='.openapirc.yml'                                                    # Name of the file
+OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"                 # Path to the OpenAPI lint rules
 # Powershell Vars
-POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                    # Name of the file
-POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
+POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                              # Name of the file
+POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}"           # Path to the Powershell lint rules
 # Protocol Buffers Vars
-PROTOBUF_FILE_NAME='.protolintrc.yml'                                       # Name of the file
-PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"     # Path to the Protocol Buffers lint rules
+PROTOBUF_FILE_NAME='.protolintrc.yml'                                                 # Name of the file
+PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}"               # Path to the Protocol Buffers lint rules
 # Python Vars
-PYTHON_FILE_NAME='.python-lint'                                             # Name of the file
-PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"         # Path to the python lint rules
+PYTHON_FILE_NAME='.python-lint'                                                       # Name of the file
+PYTHON_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FILE_NAME}"                   # Path to the python lint rules
 # Ruby Vars
-RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                        # Name of the file
-RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"             # Path to the ruby lint rules
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"                                  # Name of the file
+RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}"                       # Path to the ruby lint rules
 # Terraform Vars
-TERRAFORM_FILE_NAME='.tflint.hcl'                                           # Name of the file
-TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"   # Path to the Terraform lint rules
+TERRAFORM_FILE_NAME='.tflint.hcl'                                                     # Name of the file
+TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}"             # Path to the Terraform lint rules
 # Typescript Vars
-TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
-TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
-TYPESCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"                    # Name of the file
+TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}"           # Path to the Typescript lint rules
+TYPESCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                                             # Name of the file
-YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"             # Path to the yaml lint rules
+YAML_FILE_NAME='.yaml-lint.yml'                                                       # Name of the file
+YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                       # Path to the yaml lint rules
 
 #######################################
 # Linter array for information prints #
@@ -104,7 +104,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
@@ -135,7 +135,7 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to vali
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
 VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
-VALIDATE_CFN="${VALIDATE_CLOUDFORMATION}"                      # Boolean to validate language
+VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"           # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
@@ -211,7 +211,7 @@ REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the 
 ##########################
 FILE_ARRAY_ARM=()                 # Array of files to check
 FILE_ARRAY_BASH=()                # Array of files to check
-FILE_ARRAY_CFN=()                 # Array of files to check
+FILE_ARRAY_CLOUDFORMATION=()      # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
@@ -246,40 +246,74 @@ FILE_ARRAY_YML=()                 # Array of files to check
 ############
 # Counters #
 ############
-ERRORS_FOUND_ANSIBLE=0             # Count of errors found
-ERRORS_FOUND_ARM=0                 # Count of errors found
-ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_CFN=0                 # Count of errors found
-ERRORS_FOUND_CLOJURE=0             # Count of errors found
-ERRORS_FOUND_CSS=0                 # Count of errors found
-ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
-ERRORS_FOUND_DART=0                # Count of errors found
-ERRORS_FOUND_DOCKER=0              # Count of errors found
-ERRORS_FOUND_ENV=0                 # Count of errors found
-ERRORS_FOUND_GO=0                  # Count of errors found
-ERRORS_FOUND_GROOVY=0              # Count of errors found
-ERRORS_FOUND_HTML=0                # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_JSON=0                # Count of errors found
-ERRORS_FOUND_JSX=0                 # Count of errors found
-ERRORS_FOUND_KOTLIN=0              # Count of errors found
-ERRORS_FOUND_MARKDOWN=0            # Count of errors found
-ERRORS_FOUND_OPENAPI=0             # Count of errors found
-ERRORS_FOUND_PERL=0                # Count of errors found
-ERRORS_FOUND_PHP=0                 # Count of errors found
-ERRORS_FOUND_POWERSHELL=0          # Count of errors found
-ERRORS_FOUND_PROTOBUF=0            # Count of errors found
-ERRORS_FOUND_PYTHON=0              # Count of errors found
-ERRORS_FOUND_RAKU=0                # Count of errors found
-ERRORS_FOUND_RUBY=0                # Count of errors found
-ERRORS_FOUND_STATES=0              # Count of errors found
-ERRORS_FOUND_TERRAFORM=0           # Count of errors found
-ERRORS_FOUND_TSX=0                 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_XML=0                 # Count of errors found
-ERRORS_FOUND_YML=0                 # Count of errors found
+ERRORS_FOUND_ANSIBLE=0                  # Count of errors found
+export ERRORS_FOUND_ANSIBLE             # Workaround SC2034
+ERRORS_FOUND_ARM=0                      # Count of errors found
+export ERRORS_FOUND_ARM                 # Workaround SC2034
+ERRORS_FOUND_BASH=0                     # Count of errors found
+export ERRORS_FOUND_BASH                # Workaround SC2034
+ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
+export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
+ERRORS_FOUND_CLOJURE=0                  # Count of errors found
+export ERRORS_FOUND_CLOJURE             # Workaround SC2034
+ERRORS_FOUND_CSS=0                      # Count of errors found
+export ERRORS_FOUND_CSS                 # Workaround SC2034
+ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
+export ERRORS_FOUND_COFFEESCRIPT        # Workaround SC2034
+ERRORS_FOUND_DART=0                     # Count of errors found
+export ERRORS_FOUND_DART                # Workaround SC2034
+ERRORS_FOUND_DOCKER=0                   # Count of errors found
+export ERRORS_FOUND_DOCKER              # Workaround SC2034
+ERRORS_FOUND_ENV=0                      # Count of errors found
+export ERRORS_FOUND_ENV                 # Workaround SC2034
+ERRORS_FOUND_GO=0                       # Count of errors found
+export ERRORS_FOUND_GO                  # Workaround SC2034
+ERRORS_FOUND_GROOVY=0                   # Count of errors found
+export ERRORS_FOUND_GROOVY              # Workaround SC2034
+ERRORS_FOUND_HTML=0                     # Count of errors found
+export ERRORS_FOUND_HTML                # Workaround SC2034
+ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
+export ERRORS_FOUND_JAVASCRIPT_STANDARD # Workaround SC2034
+ERRORS_FOUND_JAVASCRIPT_ES=0            # Count of errors found
+export ERRORS_FOUND_JAVASCRIPT_ES       # Workaround SC2034
+ERRORS_FOUND_JSON=0                     # Count of errors found
+export ERRORS_FOUND_JSON                # Workaround SC2034
+ERRORS_FOUND_JSX=0                      # Count of errors found
+export ERRORS_FOUND_JSX                 # Workaround SC2034
+ERRORS_FOUND_KOTLIN=0                   # Count of errors found
+export ERRORS_FOUND_KOTLIN              # Workaround SC2034
+ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
+export ERRORS_FOUND_MARKDOWN            # Workaround SC2034
+ERRORS_FOUND_OPENAPI=0                  # Count of errors found
+export ERRORS_FOUND_OPENAPI             # Workaround SC2034
+ERRORS_FOUND_PERL=0                     # Count of errors found
+export ERRORS_FOUND_PERL                # Workaround SC2034
+ERRORS_FOUND_PHP=0                      # Count of errors found
+export ERRORS_FOUND_PHP                 # Workaround SC2034
+ERRORS_FOUND_POWERSHELL=0               # Count of errors found
+export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
+ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
+export ERRORS_FOUND_PROTOBUF            # Workaround SC2034
+ERRORS_FOUND_PYTHON=0                   # Count of errors found
+export ERRORS_FOUND_PYTHON              # Workaround SC2034
+ERRORS_FOUND_RAKU=0                     # Count of errors found
+export ERRORS_FOUND_RAKU                # Workaround SC2034
+ERRORS_FOUND_RUBY=0                     # Count of errors found
+export ERRORS_FOUND_RUBY                # Workaround SC2034
+ERRORS_FOUND_STATES=0                   # Count of errors found
+export ERRORS_FOUND_STATES              # Workaround SC2034
+ERRORS_FOUND_TERRAFORM=0                # Count of errors found
+export ERRORS_FOUND_TERRAFORM           # Workaround SC2034
+ERRORS_FOUND_TSX=0                      # Count of errors found
+export ERRORS_FOUND_TSX                 # Workaround SC2034
+ERRORS_FOUND_TYPESCRIPT_STANDARD=0      # Count of errors found
+export ERRORS_FOUND_TYPESCRIPT_STANDARD # Workaround SC2034
+ERRORS_FOUND_TYPESCRIPT_ES=0            # Count of errors found
+export ERRORS_FOUND_TYPESCRIPT_ES       # Workaround SC2034
+ERRORS_FOUND_XML=0                      # Count of errors found
+export ERRORS_FOUND_XML                 # Workaround SC2034
+ERRORS_FOUND_YML=0                      # Count of errors found
+export ERRORS_FOUND_YML                 # Workaround SC2034
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -582,9 +616,9 @@ DetectCloudFormationFile() {
     return 0
   fi
 
-  ##########################################
-  # No identifiers of a CFN template found #
-  ##########################################
+  #####################################################
+  # No identifiers of a CLOUDFORMATION template found #
+  #####################################################
   return 1
 }
 ################################################################################
@@ -898,12 +932,12 @@ CallStatusAPI() {
   fi
 }
 ################################################################################
-#### Function Footer ###########################################################
-Footer() {
+#### Function Reports ##########################################################
+Reports() {
   echo ""
   echo "----------------------------------------------"
   echo "----------------------------------------------"
-  echo "The script has completed"
+  echo "Generated reports:"
   echo "----------------------------------------------"
   echo "----------------------------------------------"
   echo ""
@@ -914,6 +948,25 @@ Footer() {
   if [ -z "${FORMAT_REPORT}" ] ; then
     echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
   fi
+
+  ################################
+  # Prints for warnings if found #
+  ################################
+  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
+    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
+  done
+
+}
+################################################################################
+#### Function Footer ###########################################################
+Footer() {
+  echo ""
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo "The script has completed"
+  echo "----------------------------------------------"
+  echo "----------------------------------------------"
+  echo ""
 
   ####################################################
   # Need to clean up the lanuage array of duplicates #
@@ -943,22 +996,13 @@ Footer() {
       # Create status API for Failed language #
       #########################################
       CallStatusAPI "${LANGUAGE}" "error"
-    else
+    ######################################
+    # Check if we validated the langauge #
+    ######################################
+    elif [ "${!ERROR_COUNTER}" -eq 0 ] && [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
       # No errors found when linting the language
-      ######################################
-      # Check if we validated the langauge #
-      ######################################
-      if [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
-        CallStatusAPI "${LANGUAGE}" "success"
-      fi
+      CallStatusAPI "${LANGUAGE}" "success"
     fi
-  done
-
-  ################################
-  # Prints for warnings if found #
-  ################################
-  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
-    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
   done
 
   ##################################
@@ -967,57 +1011,32 @@ Footer() {
   if [ "${DISABLE_ERRORS}" == "true" ]; then
     echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]${NC}"
     exit 0
+  fi
+
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif  [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
-    [ "$ERRORS_FOUND_GROOVY" -ne 0 ] ||
-    [ "${ERRORS_FOUND_HTML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_STATES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_YML}" -ne 0 ]; then
-    # Failed exit
-    echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
-    exit 1
-  else
-    #################
-    # Footer prints #
-    #################
-    echo ""
-    echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
-    echo "----------------------------------------------"
-    echo ""
-    # Successful exit
-    exit 0
-  fi
+  # Loop through all languages
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    # build the variable
+    ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
+    # Check if error was found
+    if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
+      # Failed exit
+      echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
+      exit 1
+    fi
+  done
+
+  ########################
+  # Footer prints Exit 0 #
+  ########################
+  echo ""
+  echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
+  echo "----------------------------------------------"
+  echo ""
+  # Successful exit
+  exit 0
 }
 
 ################################################################################
@@ -1085,8 +1104,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "ARM"
 # Get CSS rules
 GetLinterRules "CSS"
-# Get CFN rules
-GetLinterRules "CFN"
+# Get CLOUDFORMATION rules
+GetLinterRules "CLOUDFORMATION"
 # Get DART rules
 GetLinterRules "DART"
 # Get HTML rules
@@ -1195,15 +1214,35 @@ if [ "${VALIDATE_PYTHON}" == "true" ]; then
   LintCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON[@]}"
 fi
 
-###############
-# CFN LINTING #
-###############
-if [ "${VALIDATE_CFN}" == "true" ]; then
+##########################
+# CLOUDFORMATION LINTING #
+##########################
+if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every yml/json file is an CLOUDFORMATION file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectCloudFormationFile "${FILE}"; then
+        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   #################################
   # Lint the CloudFormation files #
   #################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "CFN" "cfn-lint" "cfn-lint --config-file ${CFN_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "${FILE_ARRAY_CFN[@]}"
+  LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" "disabledfileext" "${FILE_ARRAY_CLOUDFORMATION[@]}"
 fi
 
 ################
@@ -1437,7 +1476,7 @@ if [ "${VALIDATE_DART}" == "true" ]; then
   # Lint the Dart files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DART" "dart" "pub get || true && dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
+  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILE_ARRAY_DART[@]}"
 fi
 
 ##################
@@ -1497,11 +1536,31 @@ fi
 # ARM Template LINTING #
 ########################
 if [ "${VALIDATE_ARM}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an ARM file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectARMFile "${FILE}"; then
+        FILE_ARRAY_ARM+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   ###############################
   # Lint the ARM Template files #
   ###############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "${FILE_ARRAY_ARM[@]}"
+  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "disabledfileext" "${FILE_ARRAY_ARM[@]}"
 fi
 
 ###################
@@ -1553,11 +1612,36 @@ fi
 # AWS STATES LINTING #
 ######################
 if [ "${VALIDATE_STATES}" == "true" ]; then
+  # If we are validating all codebase we need to build file list because not every json file is an aws states file
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    ###############################################################################
+    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    ###############################################################################
+    IFS=$'\n'
+
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    for FILE in "${LIST_FILES[@]}"; do
+      if DetectAWSStatesFIle "${FILE}"; then
+        FILE_ARRAY_STATES+=("${FILE}")
+      fi
+    done
+
+    ###########################
+    # Set IFS back to default #
+    ###########################
+    IFS="${DEFAULT_IFS}"
+  fi
+
   #########################
   # Lint the STATES files #
   #########################
-  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "${FILE_ARRAY_STATES[@]}"
+  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "disabledfileext" "${FILE_ARRAY_STATES[@]}"
 fi
+
+###########
+# Reports #
+###########
+Reports
 
 ##########
 # Footer #

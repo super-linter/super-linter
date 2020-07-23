@@ -84,9 +84,10 @@ function BuildFileList() {
     ###########################
     # Get the files extension #
     ###########################
-    # Extract just the file and extension, reverse it, cut off extension,
-    # reverse it back, substitute to lowercase
-    FILE_TYPE=$(basename "${FILE}" | rev | cut -f1 -d'.' | rev | awk '{print tolower($0)}')
+    # Extract just the file extension
+    FILE_TYPE=${FILE##*.}
+    # To lowercase
+    FILE_TYPE=${FILE_TYPE,,}
 
     ##############
     # Print file #
@@ -98,9 +99,9 @@ function BuildFileList() {
     #########
     #echo "FILE_TYPE:[${FILE_TYPE}]"
 
-    #####################
-    # Get the CFN files #
-    #####################
+    ################################
+    # Get the CLOUDFORMATION files #
+    ################################
     if [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       ################################
       # Append the file to the array #
@@ -118,7 +119,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_CFN+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
 
         ##########################################################
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
@@ -158,7 +159,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_CFN+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
       ############################################
       # Check if the file is AWS States Language #
