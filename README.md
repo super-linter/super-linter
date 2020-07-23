@@ -54,7 +54,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker) |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                      |
 | **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                           |
-| **Groovy**       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)           |
+| **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                       |
 | **HTMLHint**                     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                     |
 | **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                 |
 | **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                        |
