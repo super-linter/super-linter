@@ -954,7 +954,7 @@ lint:
 ## EDITORCONFIG-CHECKER
 - [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
---------------------------------------------------------------------------------
+---
 
 ### editorconfig-checker Config file
 - `.github/linters/.ecrc`
