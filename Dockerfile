@@ -259,7 +259,6 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_XML=${VALIDATE_XML} \
     VALIDATE_YAML=${VALIDATE_YAML}
 
-
 #############################
 # Copy scripts to container #
 #############################
