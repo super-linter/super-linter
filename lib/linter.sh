@@ -584,34 +584,15 @@ DetectCloudFormationFile() {
   #######################################
   # Check if file has AWS Template info #
   #######################################
-  if grep 'AWSTemplateFormatVersion' "${FILE}" > /dev/null; then
+  if grep -q 'AWSTemplateFormatVersion' "${FILE}" > /dev/null; then
     # Found it
     return 0
   fi
 
-  ###################################################
-  # Check if file has AWSTemplateFormatVersion info #
-  ###################################################
-  if shyaml --quiet get-type AWSTemplateFormatVersion > /dev/null < "${FILE}"; then
-    # Found it
-    return 0
-  fi
-
-  ###############################
-  # check if file has resources #
-  ###############################
-  if jq -e 'has("Resources")' > /dev/null 2>&1 < "${FILE}"; then
-    # Check if AWS Alexa or custom
-    if jq ".Resources[].Type" 2> /dev/null | grep -q -E "(AWS|Alexa|Custom)" < "${FILE}"; then
-      # Found it
-      return 0
-    fi
-  fi
-
-  ################################
-  # See if it contains resources #
-  ################################
-  if shyaml values-0 Resources 2> /dev/null | grep -q -E "Type: (AWS|Alexa|Custom)" < "${FILE}"; then
+  #####################################
+  # See if it contains AWS References #
+  #####################################
+  if grep -q -E '(AWS|Alexa|Custom)::' "${FILE}" > /dev/null; then
     # Found it
     return 0
   fi

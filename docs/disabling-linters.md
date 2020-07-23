@@ -41,6 +41,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [Kotlin](#kotlin)
 - [OpenAPI](#openapi)
 - [Protocol Buffers](#protocol-buffers)
+- [Clojure](#clojure)
 - [EDITORCONFIG-CHECKER](#editorconfig-checker)
 - [HTML](#html)
 
@@ -986,13 +987,12 @@ lint:
 
 ### clj-kondo disable entire file
 
-````clojure
+```clojure
 {:output {:exclude-files ["path/to/file"]}}
+```
 
 ## EDITORCONFIG-CHECKER
 - [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
-
---------------------------------------------------------------------------------
 
 ### editorconfig-checker Config file
 - `.github/linters/.ecrc`
@@ -1043,4 +1043,3 @@ lint:
 ### htmlhint disable entire file
 
 - There is currently **No** way to disable rules in an entire file
-````
