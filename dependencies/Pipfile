@@ -10,7 +10,6 @@ yamllint = "*"
 pylint = "*"
 yq = "*"
 cfn-lint = "*"
-shyaml = "*"
 
 [requires]
 python_version = "3.8"
