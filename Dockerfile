@@ -67,9 +67,17 @@ RUN apk add --update --no-cache \
     openjdk8-jre \
     perl \
     php7 \
+    php7-phar \
+    php7-json \
+    php7-mbstring \
+    php7-tokenizer \
+    php7-ctype \
+    php7-curl \
+    php7-dom \
     py3-setuptools \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc
+    ruby ruby-dev ruby-bundler ruby-rdoc \
+    gnupg
 
 ########################################
 # Copy dependencies files to container #
@@ -204,6 +212,17 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
 
 RUN luarocks install luacheck
 
+#############################
+# Install Phive and PHPStan #
+#############################
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && yes | phive install -g phpstan
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -244,6 +263,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PERL=${VALIDATE_PERL} \
     VALIDATE_PHP=${VALIDATE_PHP} \
+    VALIDATE_PHP_PHPSTAN=${VALIDATE_PHP_PHPSTAN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \

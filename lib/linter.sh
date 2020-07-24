@@ -71,6 +71,12 @@ MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"         
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                                    # Name of the file
 OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"                 # Path to the OpenAPI lint rules
+# PHP Vars
+PHPSTAN_FILE_NAME='phpstan.neon'                                                      # Name of the file
+PHPSTAN_LINTER_RULES="${GITHUB_WORKSPACE}/${PHPSTAN_FILE_NAME}"                       # Path to the PHPStan lint rules in the repository
+if [ ! -f "$PHPSTAN_LINTER_RULES" ]; then
+    PHPSTAN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHPSTAN_FILE_NAME}"             # Path to the PHPStan lint rules
+fi
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                              # Name of the file
 POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}"           # Path to the Powershell lint rules
@@ -110,7 +116,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo' 'c
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
   'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
-  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP'  'POWERSHELL'
+  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP' 'PHP_PHPSTAN' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES'  'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML')
 
@@ -159,6 +165,7 @@ VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                   # Boolean
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                                 # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                                       # Boolean to validate language
 VALIDATE_PHP="${VALIDATE_PHP}"                                         # Boolean to validate language
+VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                         # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                           # Boolean to validate language
 VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}"   # Boolean to validate language
 VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                     # Boolean to validate language
@@ -237,6 +244,7 @@ FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
 FILE_ARRAY_PHP=()                 # Array of files to check
+FILE_ARRAY_PHP_PHPSTAN=()         # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
@@ -300,6 +308,8 @@ ERRORS_FOUND_PERL=0                     # Count of errors found
 export ERRORS_FOUND_PERL                # Workaround SC2034
 ERRORS_FOUND_PHP=0                      # Count of errors found
 export ERRORS_FOUND_PHP                 # Workaround SC2034
+ERRORS_FOUND_PHP_PHPSTAN=0              # Count of errors found
+export ERRORS_FOUND_PHP_PHPSTAN         # Workaround SC2034
 ERRORS_FOUND_POWERSHELL=0               # Count of errors found
 export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
 ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
@@ -1485,6 +1495,17 @@ if [ "${VALIDATE_PHP}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
+fi
+
+###################
+# PHPStan LINTING #
+###################
+if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
+  #######################
+  # Lint the PHP files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
 fi
 
 ######################
