@@ -1375,13 +1375,13 @@ if [ "${VALIDATE_JSON}" == "true" ]; then
   LintCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "${FILE_ARRAY_JSON[@]}"
 fi
 
-######################
-# JSX LINTING        #
-######################
+###############
+# JSX LINTING #
+###############
 if [ "${VALIDATE_JSX}" == "true" ]; then
-  #############################
-  # Lint the JSX files        #
-  #############################
+  ######################
+  # Lint the JSX files #
+  ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
 fi
@@ -1566,9 +1566,9 @@ if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
   LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
 fi
 
-#####################
+###############################
 # TERRAFORM TERRASCAN LINTING #
-#####################
+###############################
 if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
   ############################
   # Lint the Terraform files #
@@ -1577,13 +1577,13 @@ if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
   LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
 fi
 
-######################
-# TSX LINTING        #
-######################
+###############
+# TSX LINTING #
+###############
 if [ "${VALIDATE_TSX}" == "true" ]; then
-  #############################
-  # Lint the TSX files        #
-  #############################
+  ######################
+  # Lint the TSX files #
+  ######################
   LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(tsx\)\$" "${FILE_ARRAY_TSX[@]}"
 fi
 
