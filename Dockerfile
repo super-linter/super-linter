@@ -187,6 +187,17 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
 
+######################
+# Install CheckStyle #
+######################
+
+RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
+    | grep browser_download_url \
+    | grep ".jar" \
+    | cut -d '"' -f 4) \
+    && curl -sSL $CHECKSTYLE_LATEST \
+    --output /usr/bin/checkstyle.jar
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
