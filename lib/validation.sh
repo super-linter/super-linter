@@ -89,6 +89,8 @@ function GetValidationInfo() {
     else
       # No linter flags were set - default all to true
       eval "${VALIDATE_LANGUAGE}='true'"
+      # Default Terrascan to false
+      VALIDATE_TERRAFORM_TERRASCAN="false"
     fi
   done
 
