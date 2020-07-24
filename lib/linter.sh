@@ -109,7 +109,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'XML' 'YML')
+  'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
 # Array for all languages that were linted #
@@ -242,7 +242,7 @@ FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_XML=()                 # Array of files to check
-FILE_ARRAY_YML=()                 # Array of files to check
+FILE_ARRAY_YAML=()                # Array of files to check
 
 ############
 # Counters #
@@ -315,8 +315,8 @@ ERRORS_FOUND_TYPESCRIPT_ES=0            # Count of errors found
 export ERRORS_FOUND_TYPESCRIPT_ES       # Workaround SC2034
 ERRORS_FOUND_XML=0                      # Count of errors found
 export ERRORS_FOUND_XML                 # Workaround SC2034
-ERRORS_FOUND_YML=0                      # Count of errors found
-export ERRORS_FOUND_YML                 # Workaround SC2034
+ERRORS_FOUND_YAML=0                     # Count of errors found
+export ERRORS_FOUND_YAML                # Workaround SC2034
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1092,7 +1092,7 @@ GetLinterRules "RUBY"
 GetLinterRules "TERRAFORM"
 # Get TypeScript rules
 GetLinterRules "TYPESCRIPT"
-# Get YML rules
+# Get YAML rules
 GetLinterRules "YAML"
 
 #################################
@@ -1623,14 +1623,14 @@ if [ "${VALIDATE_XML}" == "true" ]; then
 fi
 
 ###############
-# YML LINTING #
+# YAML LINTING #
 ###############
 if [ "${VALIDATE_YAML}" == "true" ]; then
   ######################
   # Lint the Yml Files #
   ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "YML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "${FILE_ARRAY_YML[@]}"
+  LintCodebase "YAML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "${FILE_ARRAY_YAML[@]}"
 fi
 
 ###########
