@@ -89,24 +89,8 @@ function GetValidationInfo() {
     else
       # No linter flags were set - default all to true
       eval "${VALIDATE_LANGUAGE}='true'"
-      # Default Terrascan to false
-      export VALIDATE_TERRAFORM_TERRASCAN="false"
     fi
   done
-
-  ######################################
-  # Validate if we should check GROOVY #
-  ######################################
-  if [[ $ANY_SET == "true" ]]; then
-    # Some linter flags were set - only run those set to true
-    if [[ -z $VALIDATE_GROOVY ]]; then
-      # GROOVY flag was not set - default to false
-      VALIDATE_GROOVY="false"
-    fi
-  else
-    # No linter flags were set - default all to true
-    VALIDATE_GROOVY="true"
-  fi
 
   #######################################
   # Print which linters we are enabling #
