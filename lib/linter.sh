@@ -88,7 +88,7 @@ TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"              
 TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}"           # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # YAML Vars
-YAML_FILE_NAME='.yaml-lint.yml'                                                       # Name of the file
+YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"                                  # Name of the file
 YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                       # Path to the yaml lint rules
 
 #######################################
