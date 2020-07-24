@@ -106,7 +106,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/reposi
 # Install Powershell + PSScriptAnalyzer #
 #########################################
 COPY --from=powershell /usr/bin/pwsh /usr/bin/
-CMD /usr/bin/pwsh -c 'Install-Module -Name PSScriptAnalyzer -Scope AllUsers -Force'
+RUN /usr/bin/pwsh -c 'Install-Module -Name PSScriptAnalyzer -Scope AllUsers -Force'
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
