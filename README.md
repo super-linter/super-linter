@@ -69,7 +69,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Raku**                         | [raku](https://raku.org)                                                             |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                     |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                 |
-| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint)                                |
+| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint)    [terrascan](https://github.com/accurics/terrascan)                                |
 | **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                 |
 | **XML**                          | [LibXML](http://xmlsoft.org/)                                                        |
 | **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                  |
@@ -212,6 +212,7 @@ and won't run anything unexpected.
 | **VALIDATE_RUBY**                | `true`                | Flag to enable or disable the linting process of the Ruby language.                                                                                                              |
 | **VALIDATE_STATES**              | `true`                | Flag to enable or disable the linting process for AWS States Language.                                                                                                           |
 | **VALIDATE_TERRAFORM**           | `true`                | Flag to enable or disable the linting process of the Terraform language.                                                                                                         |
+| **VALIDATE_TERRAFORM_TERRASCAN** | `false`               | Flag to enable or disable the linting process of the Terraform language for security related issues.                                                                                                         |
 | **VALIDATE_TSX**                 | `true`                | Flag to enable or disable the linting process for tsx files (Utilizing: eslint)                                                                                                  |
 | **VALIDATE_TYPESCRIPT_ES**       | `true`                | Flag to enable or disable the linting process of the Typescript language. (Utilizing: eslint)                                                                                    |
 | **VALIDATE_TYPESCRIPT_STANDARD** | `true`                | Flag to enable or disable the linting process of the Typescript language. (Utilizing: standard)                                                                                  |
