@@ -1574,7 +1574,7 @@ if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
   # Lint the Terraform files #
   ############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -l" ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM[@]}"
+  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
 fi
 
 ######################
