@@ -62,6 +62,9 @@ JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}"     
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                                   # ENV string to pass when running js standard
 # Default linter path
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"                             # Linter Path Directory
+# Lua Vars
+LUA_FILE_NAME='.luacheckrc'                                                           # Name of the file
+LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}"                         # Path to the Lua lint rules
 # MD Vars
 MARKDOWN_FILE_NAME='.markdown-lint.yml'                                               # Name of the file
 MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"               # Path to the markdown lint rules
@@ -96,7 +99,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}"                 
 #######################################
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
   'coffeelint' 'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'golangci-lint'
-  'htmlhint' 'jsonlint' 'ktlint' 'markdownlint' 'npm-groovy-lint' 'perl'
+  'htmlhint' 'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl'
   'protolint' 'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral'
   'standard' 'stylelint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
 
@@ -106,7 +109,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
-  'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
+  'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI'
   'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'XML' 'YML')
@@ -151,6 +154,7 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to vali
 VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
+VALIDATE_LUA="${VALIDATE_LUA}"                                 # Boolean to validate language
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
@@ -227,6 +231,7 @@ FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
+FILE_ARRAY_LUA=()                 # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
@@ -283,6 +288,8 @@ ERRORS_FOUND_JSX=0                      # Count of errors found
 export ERRORS_FOUND_JSX                 # Workaround SC2034
 ERRORS_FOUND_KOTLIN=0                   # Count of errors found
 export ERRORS_FOUND_KOTLIN              # Workaround SC2034
+ERRORS_FOUND_LUA=0                      # Count of errors found
+export ERRORS_FOUND_LUA=0               # Workaround SC2034
 ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
 export ERRORS_FOUND_MARKDOWN            # Workaround SC2034
 ERRORS_FOUND_OPENAPI=0                  # Count of errors found
@@ -1080,6 +1087,8 @@ GetLinterRules "GROOVY"
 GetLinterRules "HTML"
 # Get JavaScript rules
 GetLinterRules "JAVASCRIPT"
+# Get LUA rules
+GetLinterRules "LUA"
 # Get Markdown rules
 GetLinterRules "MARKDOWN"
 # Get PowerShell rules
@@ -1395,6 +1404,17 @@ if [ "${VALIDATE_KOTLIN}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+###############
+# LUA LINTING #
+###############
+if [ "${VALIDATE_LUA}" == "true" ]; then
+  ######################
+  # Lint the Lua files #
+  ######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "LUA" "lua" "luacheck --config ${LUA_LINTER_RULES}" ".*\.\(lua\)\$" "${FILE_ARRAY_LUA[@]}"
 fi
 
 ####################

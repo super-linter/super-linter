@@ -59,6 +59,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                 |
 | **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                        |
 | **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                        |
+| **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                     |
 | **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)             |
 | **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                  |
 | **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)                      |
@@ -201,6 +202,7 @@ and won't run anything unexpected.
 | **VALIDATE_JSON**                | `true`                | Flag to enable or disable the linting process of the JSON language.                                                                                                              |
 | **VALIDATE_JSX**                 | `true`                | Flag to enable or disable the linting process for jsx files (Utilizing: eslint)                                                                                                  |
 | **VALIDATE_KOTLIN**              | `true`                | Flag to enable or disable the linting process of the Kotlin language.                                                                                                            |
+| **VALIDATE_LUA**                 | `true`                | Flag to enable or disable the linting process of the language.                                                                                                                   |
 | **VALIDATE_MD**                  | `true`                | Flag to enable or disable the linting process of the Markdown language.                                                                                                          |
 | **VALIDATE_OPENAPI**             | `true`                | Flag to enable or disable the linting process of the OpenAPI language.                                                                                                           |
 | **VALIDATE_PERL**                | `true`                | Flag to enable or disable the linting process of the Perl language.                                                                                                              |

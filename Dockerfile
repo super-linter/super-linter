@@ -52,12 +52,14 @@ ARG GLIBC_VERSION='2.31-r0'
 RUN apk add --update --no-cache \
     ansible-lint \
     bash \
+    coreutils \
     curl \
     gcc \
     git git-lfs\
     go \
     icu-libs \
     jq \
+    libc-dev \
     libxml2-utils \
     make \
     musl-dev \
@@ -66,6 +68,7 @@ RUN apk add --update --no-cache \
     perl \
     php7 \
     py3-setuptools \
+    readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc
 
 ########################################
@@ -183,6 +186,24 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
 
+####################
+# Install luacheck #
+####################
+RUN wget https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+    && cd lua-5.3.5 \
+    && make linux \
+    && make install \
+    && cd .. && rm -r lua-5.3.5/
+
+RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+    && cd luarocks-3.3.1-super-linter \
+    && ./configure --with-lua-include=/usr/local/include \
+    && make \
+    && make -b install \
+    && cd .. && rm -r luarocks-3.3.1-super-linter/
+
+RUN luarocks install luacheck
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -218,6 +239,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_LUA=${VALIDATE_LUA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PERL=${VALIDATE_PERL} \

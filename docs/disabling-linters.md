@@ -44,6 +44,7 @@ For some linters it is also possible to override rules on a case by case level w
 - [Clojure](#clojure)
 - [EDITORCONFIG-CHECKER](#editorconfig-checker)
 - [HTML](#html)
+- [LUA](#lua)
 
 <!-- toc -->
 
@@ -857,6 +858,46 @@ import package.b.*
 
 - There is currently **No** way to disable rules inline of the file(s)
 
+---
+
+## Lua
+- [luarocks](https://github.com/luarocks/luacheck)
+
+### luacheck standard Config file
+- `.github/linters/.luacheckrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.luacheckrc`
+- See [luacheck](https://luacheck.readthedocs.io/en/stable/config.html) docs for additional
+  behaviors
+
+### luacheck disable single line
+```lua
+-- luacheck: globals g1 g2, ignore foo
+local foo = g1(g2) -- No warnings emitted.
+```
+
+### luacheck disable code block
+```lua
+-- The following unused function is not reported.
+local function f() -- luacheck: ignore
+   -- luacheck: globals g3
+   g3() -- No warning.
+end
+```
+
+### luacheck include/exclude files (via .luacheckrc)
+```lua
+include_files = {"src", "spec/*.lua", "scripts/*.lua", "*.rockspec", "*.luacheckrc"}
+exclude_files = {"src/luacheck/vendor"}
+```
+
+### luacheck push/pop
+```lua
+-- luacheck: push ignore foo
+foo() -- No warning.
+-- luacheck: pop
+foo() -- Warning is emitted.
+```
 ---
 
 ## Dart
