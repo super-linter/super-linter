@@ -68,6 +68,12 @@ MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}"         
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                                    # Name of the file
 OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"                 # Path to the OpenAPI lint rules
+# PHPCS Vars
+PHP_PHPCS_FILE_NAME='phpcs.xml'                                                       # Name of the file
+PHP_PHPCS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHP_PHPCS_FILE_NAME}"             # Path to the PHP CodeSniffer lint rules
+# Psalm Vars
+PHP_PSALM_FILE_NAME='psalm.xml'                                                       # Name of the file
+PHP_PSALM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHP_PSALM_FILE_NAME}"             # Path to the Psalm lint rules
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                              # Name of the file
 POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}"           # Path to the Powershell lint rules
@@ -1474,7 +1480,7 @@ if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
   # Lint the PHP files using PHP CodeSniffer #
   ############################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP_PHPCS" "phpcs" "phpcs" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPCS[@]}"
+  LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPCS[@]}"
 fi
 
 if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
@@ -1482,7 +1488,7 @@ if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
   # Lint the PHP files using Psalm #
   ##################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP_PSALM" "psalm" "psalm" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PSALM[@]}"
+  LintCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PSALM[@]}"
 fi
 
 ######################
