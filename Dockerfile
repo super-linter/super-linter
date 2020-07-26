@@ -65,8 +65,18 @@ RUN apk add --update --no-cache \
     openjdk8-jre \
     perl \
     php7 \
+    php7-phar \
+    php7-json \
+    php7-simplexml \
+    php7-xmlwriter \
+    php7-mbstring \
+    php7-tokenizer \
+    php7-ctype \
+    php7-curl \
+    php7-dom \
     py3-setuptools \
-    ruby ruby-dev ruby-bundler ruby-rdoc
+    ruby ruby-dev ruby-bundler ruby-rdoc \
+    gnupg
 
 ########################################
 # Copy dependencies files to container #
@@ -95,6 +105,19 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install Phive dependencies #
+##############################
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc \
+    && phive install --trust-gpg-keys 31C7E470E2138192,8A03EA3B385DBAA1
+# Trusted GPG keys for PHP linters:   phpcs,           psalm
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #

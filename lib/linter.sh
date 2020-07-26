@@ -107,7 +107,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo'
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES'
   'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'MARKDOWN' 'OPENAPI'
-  'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
+  'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'XML' 'YML')
 
@@ -154,7 +154,9 @@ VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to vali
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                           # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
-VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
+VALIDATE_PHP_BUILTIN="${VALIDATE_PHP_BUILTIN}"                 # Boolean to validate language
+VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                     # Boolean to validate language
+VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                     # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
 VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
 VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
@@ -230,7 +232,9 @@ FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
-FILE_ARRAY_PHP=()                 # Array of files to check
+FILE_ARRAY_PHP_BUILTIN=()         # Array of files to check
+FILE_ARRAY_PHP_PHPCS=()           # Array of files to check
+FILE_ARRAY_PHP_PSALM=()           # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_PYTHON=()              # Array of files to check
@@ -289,8 +293,12 @@ ERRORS_FOUND_OPENAPI=0                  # Count of errors found
 export ERRORS_FOUND_OPENAPI             # Workaround SC2034
 ERRORS_FOUND_PERL=0                     # Count of errors found
 export ERRORS_FOUND_PERL                # Workaround SC2034
-ERRORS_FOUND_PHP=0                      # Count of errors found
-export ERRORS_FOUND_PHP                 # Workaround SC2034
+ERRORS_FOUND_PHP_BUILTIN=0              # Count of errors found
+export ERRORS_FOUND_PHP_BUILTIN         # Workaround SC2034
+ERRORS_FOUND_PHP_PHPCS=0                # Count of errors found
+export ERRORS_FOUND_PHP_PHPCS           # Workaround SC2034
+ERRORS_FOUND_PHP_PSALM=0                # Count of errors found
+export ERRORS_FOUND_PHP_PSALM           # Workaround SC2034
 ERRORS_FOUND_POWERSHELL=0               # Count of errors found
 export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
 ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
@@ -1453,12 +1461,28 @@ fi
 ################
 # PHP LINTING #
 ################
-if [ "${VALIDATE_PHP}" == "true" ]; then
-  #######################
-  # Lint the PHP files #
-  #######################
+if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
+  ################################################
+  # Lint the PHP files using built-in PHP linter #
+  ################################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
+  LintCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_BUILTIN[@]}"
+fi
+
+if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
+  ############################################
+  # Lint the PHP files using PHP CodeSniffer #
+  ############################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP_PHPCS" "phpcs" "phpcs" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPCS[@]}"
+fi
+
+if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
+  ##################################
+  # Lint the PHP files using Psalm #
+  ##################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP_PSALM" "psalm" "psalm" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PSALM[@]}"
 fi
 
 ######################
