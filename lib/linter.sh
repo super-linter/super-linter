@@ -10,7 +10,7 @@
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
-source /action/lib/termColors.sh # Source the function script(s)
+source /action/lib/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/buildFileList.sh # Source the function script(s)
 # shellcheck source=/dev/null
@@ -1029,6 +1029,19 @@ Footer() {
   # Successful exit
   exit 0
 }
+
+
+################################################################################
+#### Function Cleanup ##########################################################
+cleanup() {
+    local -ri EXIT_CODE=$?
+
+    sudo sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/super-linter.log" || true
+
+    exit ${EXIT_CODE}
+    trap - 0 1 2 3 6 14 15
+}
+trap 'cleanup' 0 1 2 3 6 14 15
 
 ################################################################################
 ############################### MAIN ###########################################
