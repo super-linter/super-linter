@@ -386,12 +386,12 @@ GetLinterVersions() {
     # Check the shell for errors #
     ##############################
     if [ ${ERROR_CODE} -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      echo -e "${NC}[${LINTER}]: ${F[Y]}WARN!${NC} Failed to get version info for:${NC}"
+      warn "[${LINTER}]: Failed to get version info for:${NC}"
     else
       ##########################
       # Print the version info #
       ##########################
-      echo -e "${NC}${F[B]}Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
+      notice "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
     fi
   done
 
@@ -474,9 +474,8 @@ GetStandardRules() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain list of ENV vars to load!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GET_ENV_ARRAY[*]}]${NC}"
-    exit 1
+    error "Failed to gain list of ENV vars to load!${NC}"
+    fatal "[${GET_ENV_ARRAY[*]}]${NC}"
   fi
 
   ##########################
@@ -691,8 +690,7 @@ GetGitHubVars() {
     fi
 
     if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Provided volume is not a directory!${NC}"
-      exit 1
+      fatal "Provided volume is not a directory!${NC}"
     fi
 
     echo "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
@@ -711,33 +709,30 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_SHA}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_SHA]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_SHA}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_SHA]!${NC}"
+      fatal "[${GITHUB_SHA}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]${NC}"
     fi
 
     ############################
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_WORKSPACE}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_WORKSPACE]!${NC}"
+      fatal "[${GITHUB_WORKSPACE}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
     fi
 
     ############################
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_EVENT_PATH]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_EVENT_PATH}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_EVENT_PATH]!${NC}"
+      fatal "[${GITHUB_EVENT_PATH}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}${NC}"
     fi
 
     ##################################################
@@ -753,11 +748,10 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_ORG}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_ORG]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_ORG}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_ORG]!${NC}"
+      fatal "[${GITHUB_ORG}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]${NC}"
     fi
 
     #######################
@@ -769,11 +763,10 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_REPO}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPO]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_REPO}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_REPO]!${NC}"
+      fatal "[${GITHUB_REPO}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]${NC}"
     fi
   fi
 
@@ -781,16 +774,16 @@ GetGitHubVars() {
   # Validate we have a value #
   ############################
   if [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_TOKEN]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_TOKEN}]${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
+    error "Failed to get [GITHUB_TOKEN]!${NC}"
+    error "[${GITHUB_TOKEN}]${NC}"
+    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
 
     ################################################################################
     # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
     ################################################################################
     MULTI_STATUS='false'
   else
-    echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_TOKEN]${NC}"
+    notice "Successfully found:${F[W]}[GITHUB_TOKEN]${NC}"
   fi
 
   ###############################
@@ -806,22 +799,20 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_REPOSITORY}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_REPOSITORY]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_REPOSITORY}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_REPOSITORY]!${NC}"
+      fatal "[${GITHUB_REPOSITORY}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]${NC}"
     fi
 
     ############################
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_RUN_ID}" ]; then
-      echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_RUN_ID]!${NC}"
-      echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_RUN_ID}]${NC}"
-      exit 1
+      error "Failed to get [GITHUB_RUN_ID]!${NC}"
+      fatal "[${GITHUB_RUN_ID}]${NC}"
     else
-      echo -e "${NC}${F[B]}Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]${NC}"
+      notice "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]${NC}"
     fi
   fi
 }
@@ -833,16 +824,14 @@ function ValidatePowershellModules() {
   if [[ ${VALIDATE_PSSA_MODULE} == "PSScriptAnalyzer" ]]; then
     VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
   else
-    # Failed to find module
-    exit 1
+    fatal "Failed to find module."
   fi
 
   #########################################
   # validate we found the script analyzer #
   #########################################
   if [[ ${VALIDATE_PSSA_CMD} != "Invoke-ScriptAnalyzer" ]]; then
-    # Failed to find module
-    exit 1
+    fatal "Failed to find module."
   fi
 
   #######################
@@ -855,14 +844,13 @@ function ValidatePowershellModules() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]${NC}"
-    exit 1
+    error "Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!${NC}"
+    fatal "[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]${NC}"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system${NC}"
-      echo -e "${NC}${F[B]}Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system${NC}"
+      notice "Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system${NC}"
+      notice "Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system${NC}"
     fi
   fi
 }
@@ -944,7 +932,7 @@ Reports() {
   # Prints for warnings if found #
   ################################
   for TEST in "${WARNING_ARRAY_TEST[@]}"; do
-    echo -e "${NC}${F[Y]}WARN!${NC} Expected file to compare with was not found for ${TEST}${NC}"
+    warn "Expected file to compare with was not found for ${TEST}${NC}"
   done
 
 }
@@ -981,7 +969,7 @@ Footer() {
       ###################
       # Print the goods #
       ###################
-      echo -e "${NC}${B[R]}${F[W]}ERRORS FOUND${NC} in ${LANGUAGE}:[${!ERROR_COUNTER}]${NC}"
+      error "ERRORS FOUND${NC} in ${LANGUAGE}:[${!ERROR_COUNTER}]${NC}"
 
       #########################################
       # Create status API for Failed language #
@@ -1000,7 +988,7 @@ Footer() {
   # Exit with 0 if errors disabled #
   ##################################
   if [ "${DISABLE_ERRORS}" == "true" ]; then
-    echo -e "${NC}${F[Y]}WARN!${NC} Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]${NC}"
+    warn "Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]${NC}"
     exit 0
   fi
 
@@ -1014,8 +1002,7 @@ Footer() {
     # Check if error was found
     if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
       # Failed exit
-      echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
-      exit 1
+      fatal "Exiting with errors found!${NC}"
     fi
   done
 
@@ -1023,7 +1010,7 @@ Footer() {
   # Footer prints Exit 0 #
   ########################
   echo ""
-  echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
+  notice "All file(s) linted successfully with no errors detected${NC}"
   echo "----------------------------------------------"
   echo ""
   # Successful exit
@@ -1057,9 +1044,8 @@ Header
 ##############################################################
 if [ -n "${OUTPUT_FORMAT}" ]; then
   if [ -d "${REPORT_OUTPUT_FOLDER}" ] ; then
-    echo "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
-    echo "Please remove the folder and try again."
-    exit 1
+    error "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
+    fatal "Please remove the folder and try again."
   fi
 fi
 

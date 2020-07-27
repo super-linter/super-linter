@@ -49,13 +49,12 @@ function LintCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [${LINTER_NAME}] in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find [${LINTER_NAME}] in system!${NC}"
+    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
+      notice "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
     fi
   fi
 
@@ -226,9 +225,9 @@ function LintCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!${NC}"
+        error "[${LINT_CMD}]${NC}"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
 
@@ -243,7 +242,7 @@ function LintCodebase() {
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
@@ -302,12 +301,11 @@ function TestCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [${LINTER_NAME}] in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find [${LINTER_NAME}] in system!${NC}"
+    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
+    notice "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
   fi
 
   ##########################
@@ -454,16 +452,16 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!${NC}"
+        error "[${LINT_CMD}]${NC}"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
@@ -482,18 +480,18 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} This file should have failed test case!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}Command run:${NC}[\$${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!${NC}"
+        error "This file should have failed test case!${NC}"
+        error "Command run:${NC}[\$${LINT_CMD}]${NC}"
+        error "[${LINT_CMD}]${NC}"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
@@ -523,16 +521,16 @@ function TestCodebase() {
         #############################################
         # We failed to compare the reporting output #
         #############################################
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to assert TAP output:[${LINTER_NAME}]${NC}"!
+        error "Failed to assert TAP output:[${LINTER_NAME}]${NC}"!
         echo "Please validate the asserts!"
         cat "${TMPFILE}"
         exit 1
       else
         # Success
-        echo -e "${NC}${F[B]}Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]${NC}"
+        notice "Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]${NC}"
       fi
     else
-      echo -e "${NC}${F[Y]}WARN!${NC} No TAP expected file found at:[${EXPECTED_FILE}]${NC}"
+      warn "No TAP expected file found at:[${EXPECTED_FILE}]${NC}"
       echo "skipping report assertions"
       #####################################
       # Append the file type to the array #
@@ -548,9 +546,8 @@ function TestCodebase() {
     #################################################
     # We failed to find files and no tests were ran #
     #################################################
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find any tests ran for the Linter:[${LINTER_NAME}]${NC}"!
-    echo "Please validate logic or that tests exist!"
-    exit 1
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]${NC}"!
+    fatal "Please validate logic or that tests exist!"
   fi
 }
 ################################################################################
@@ -658,14 +655,13 @@ function LintAnsibleFiles() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find ${LINTER_NAME} in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find ${LINTER_NAME} in system!${NC}"
+    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
       # Success
-      echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
+      notice "Successfully found binary in system${NC}"
       echo "Location:[${VALIDATE_INSTALL_CMD}]"
     fi
   fi
@@ -777,8 +773,8 @@ function LintAnsibleFiles() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!${NC}"
+        error "[${LINT_CMD}]${NC}"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
 
@@ -794,7 +790,7 @@ function LintAnsibleFiles() {
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
@@ -820,7 +816,7 @@ function LintAnsibleFiles() {
       ########################
       # No Ansible dir found #
       ########################
-      echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]${NC}"
+      warn "No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]${NC}"
       echo "skipping ansible lint"
     fi
   fi

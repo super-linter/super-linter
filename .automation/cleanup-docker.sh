@@ -52,9 +52,8 @@ ValidateInput() {
   # Validate GITHUB_WORKSPACE #
   ############################
   if [ -z "${GITHUB_WORKSPACE}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_WORKSPACE}]${NC}"
-    exit 1
+    error "Failed to get [GITHUB_WORKSPACE]!${NC}"
+    fatal "[${GITHUB_WORKSPACE}]${NC}"
   else
     echo "Successfully found:[GITHUB_WORKSPACE], value:[${GITHUB_WORKSPACE}]"
   fi
@@ -64,15 +63,14 @@ ValidateInput() {
   #######################
   if [ -z "${IMAGE_REPO}" ]; then
     # No repo was pulled
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${IMAGE_REPO}]${NC}"
-    exit 1
+    error "Failed to get [IMAGE_REPO]!${NC}"
+    fatal "[${IMAGE_REPO}]${NC}"
   elif [[ ${IMAGE_REPO} == "github/super-linter" ]]; then
     # Found our main repo
     echo "Successfully found:[IMAGE_REPO], value:[${IMAGE_REPO}]"
   else
     # This is a fork and we cant pull vars or any info
-    echo -e "${NC}${F[Y]}WARN!${NC} No image to cleanup as this is a forked branch, and not being built with current automation!${NC}"
+    warn "No image to cleanup as this is a forked branch, and not being built with current automation!${NC}"
     exit 0
   fi
 
@@ -80,9 +78,8 @@ ValidateInput() {
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "${IMAGE_VERSION}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_VERSION]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${IMAGE_VERSION}]${NC}"
-    exit 1
+    error "Failed to get [IMAGE_VERSION]!${NC}"
+    fatal "[${IMAGE_VERSION}]${NC}"
   else
     echo "Successfully found:[IMAGE_VERSION], value:[${IMAGE_VERSION}]"
   fi
@@ -91,9 +88,8 @@ ValidateInput() {
   # Validate DOCKER_USERNAME #
   ############################
   if [ -z "${DOCKER_USERNAME}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_USERNAME]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${DOCKER_USERNAME}]${NC}"
-    exit 1
+    error "Failed to get [DOCKER_USERNAME]!${NC}"
+    fatal "[${DOCKER_USERNAME}]${NC}"
   else
     echo "Successfully found:[DOCKER_USERNAME], value:[${DOCKER_USERNAME}]"
   fi
@@ -102,9 +98,8 @@ ValidateInput() {
   # Validate DOCKER_PASSWORD #
   ############################
   if [ -z "${DOCKER_PASSWORD}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_PASSWORD]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${DOCKER_PASSWORD}]${NC}"
-    exit 1
+    error "Failed to get [DOCKER_PASSWORD]!${NC}"
+    fatal "[${DOCKER_PASSWORD}]${NC}"
   else
     echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
   fi
@@ -121,10 +116,9 @@ ValidateInput() {
     #############################################
     # Image is 'latest' and we will not destroy #
     #############################################
-    echo "Image Tag is set to:[latest]..."
-    echo "We will never destroy latest..."
-    echo "Bye!"
-    exit 1
+    error "Image Tag is set to:[latest]..."
+    error "We will never destroy latest..."
+    fatal "Bye!"
   fi
 }
 ################################################################################
@@ -154,9 +148,8 @@ LoginToDocker() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to authenticate to DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LOGIN_CMD}]${NC}"
-    exit 1
+    error "Failed to authenticate to DockerHub!${NC}"
+    fatal "[${LOGIN_CMD}]${NC}"
   else
     # SUCCESS
     echo "Successfully authenticated to DockerHub!"
@@ -193,9 +186,8 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${TOKEN}]${NC}"
-    exit 1
+    error "Failed to gain token from DockerHub!${NC}"
+    fatal "[${TOKEN}]${NC}"
   else
     # SUCCESS
     echo "Successfully gained auth token from DockerHub!"
@@ -218,9 +210,8 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to remove tag from DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${REMOVE_CMD}]${NC}"
-    exit 1
+    error "Failed to remove tag from DockerHub!${NC}"
+    fatal "[${REMOVE_CMD}]${NC}"
   else
     # SUCCESS
     echo "Successfully [removed] Docker image tag:[${IMAGE_VERSION}] from DockerHub!"
