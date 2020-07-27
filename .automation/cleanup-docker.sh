@@ -52,8 +52,8 @@ ValidateInput() {
   # Validate GITHUB_WORKSPACE #
   ############################
   if [ -z "${GITHUB_WORKSPACE}" ]; then
-    error "Failed to get [GITHUB_WORKSPACE]!${NC}"
-    fatal "[${GITHUB_WORKSPACE}]${NC}"
+    error "Failed to get [GITHUB_WORKSPACE]!"
+    fatal "[${GITHUB_WORKSPACE}]"
   else
     echo "Successfully found:[GITHUB_WORKSPACE], value:[${GITHUB_WORKSPACE}]"
   fi
@@ -63,8 +63,8 @@ ValidateInput() {
   #######################
   if [ -z "${IMAGE_REPO}" ]; then
     # No repo was pulled
-    error "Failed to get [IMAGE_REPO]!${NC}"
-    fatal "[${IMAGE_REPO}]${NC}"
+    error "Failed to get [IMAGE_REPO]!"
+    fatal "[${IMAGE_REPO}]"
   elif [[ ${IMAGE_REPO} == "github/super-linter" ]]; then
     # Found our main repo
     echo "Successfully found:[IMAGE_REPO], value:[${IMAGE_REPO}]"
@@ -78,8 +78,8 @@ ValidateInput() {
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "${IMAGE_VERSION}" ]; then
-    error "Failed to get [IMAGE_VERSION]!${NC}"
-    fatal "[${IMAGE_VERSION}]${NC}"
+    error "Failed to get [IMAGE_VERSION]!"
+    fatal "[${IMAGE_VERSION}]"
   else
     echo "Successfully found:[IMAGE_VERSION], value:[${IMAGE_VERSION}]"
   fi
@@ -88,8 +88,8 @@ ValidateInput() {
   # Validate DOCKER_USERNAME #
   ############################
   if [ -z "${DOCKER_USERNAME}" ]; then
-    error "Failed to get [DOCKER_USERNAME]!${NC}"
-    fatal "[${DOCKER_USERNAME}]${NC}"
+    error "Failed to get [DOCKER_USERNAME]!"
+    fatal "[${DOCKER_USERNAME}]"
   else
     echo "Successfully found:[DOCKER_USERNAME], value:[${DOCKER_USERNAME}]"
   fi
@@ -98,8 +98,8 @@ ValidateInput() {
   # Validate DOCKER_PASSWORD #
   ############################
   if [ -z "${DOCKER_PASSWORD}" ]; then
-    error "Failed to get [DOCKER_PASSWORD]!${NC}"
-    fatal "[${DOCKER_PASSWORD}]${NC}"
+    error "Failed to get [DOCKER_PASSWORD]!"
+    fatal "[${DOCKER_PASSWORD}]"
   else
     echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
   fi
@@ -148,8 +148,8 @@ LoginToDocker() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to authenticate to DockerHub!${NC}"
-    fatal "[${LOGIN_CMD}]${NC}"
+    error "Failed to authenticate to DockerHub!"
+    fatal "[${LOGIN_CMD}]"
   else
     # SUCCESS
     echo "Successfully authenticated to DockerHub!"
@@ -186,8 +186,8 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to gain token from DockerHub!${NC}"
-    fatal "[${TOKEN}]${NC}"
+    error "Failed to gain token from DockerHub!"
+    fatal "[${TOKEN}]"
   else
     # SUCCESS
     echo "Successfully gained auth token from DockerHub!"
@@ -210,8 +210,8 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to remove tag from DockerHub!${NC}"
-    fatal "[${REMOVE_CMD}]${NC}"
+    error "Failed to remove tag from DockerHub!"
+    fatal "[${REMOVE_CMD}]"
   else
     # SUCCESS
     echo "Successfully [removed] Docker image tag:[${IMAGE_VERSION}] from DockerHub!"

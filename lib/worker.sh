@@ -49,8 +49,8 @@ function LintCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    error "Failed to find [${LINTER_NAME}] in system!${NC}"
-    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
+    error "Failed to find [${LINTER_NAME}] in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
@@ -225,9 +225,9 @@ function LintCodebase() {
         #########
         # Error #
         #########
-        error "Found errors in [${LINTER_NAME}] linter!${NC}"
-        error "[${LINT_CMD}]${NC}"
-        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
 
@@ -301,8 +301,8 @@ function TestCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    error "Failed to find [${LINTER_NAME}] in system!${NC}"
-    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
+    error "Failed to find [${LINTER_NAME}] in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
     notice "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
@@ -452,9 +452,9 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        error "Found errors in [${LINTER_NAME}] linter!${NC}"
-        error "[${LINT_CMD}]${NC}"
-        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
@@ -480,11 +480,11 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        error "Found errors in [${LINTER_NAME}] linter!${NC}"
-        error "This file should have failed test case!${NC}"
-        error "Command run:${NC}[\$${LINT_CMD}]${NC}"
-        error "[${LINT_CMD}]${NC}"
-        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "This file should have failed test case!"
+        error "Command run:${NC}[\$${LINT_CMD}]"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
@@ -655,8 +655,8 @@ function LintAnsibleFiles() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    error "Failed to find ${LINTER_NAME} in system!${NC}"
-    fatal "[${VALIDATE_INSTALL_CMD}]${NC}"
+    error "Failed to find ${LINTER_NAME} in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
@@ -773,8 +773,8 @@ function LintAnsibleFiles() {
         #########
         # Error #
         #########
-        error "Found errors in [${LINTER_NAME}] linter!${NC}"
-        error "[${LINT_CMD}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
 

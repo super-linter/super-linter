@@ -53,8 +53,8 @@ CheckGHEPid()
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to sleep!${NC}"
-        error "[${SLEEP_CMD}]${NC}"
+        error "Failed to sleep!"
+        error "[${SLEEP_CMD}]"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -117,8 +117,8 @@ CheckGHEProcess()
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to sleep!${NC}"
-        error "[${SLEEP_CMD}]${NC}"
+        error "Failed to sleep!"
+        error "[${SLEEP_CMD}]"
         echo "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
@@ -161,8 +161,8 @@ RunConfigApply()
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Errors
-    error "Failed to run config apply command!${NC}"
-    fatal "[${APPLY_CMD}]${NC}"
+    error "Failed to run config apply command!"
+    fatal "[${APPLY_CMD}]"
   else
     # Success
     notice "Successfully ran ${F[C]}${GHE_APPLY_COMMAND}${NC}"

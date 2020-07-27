@@ -474,8 +474,8 @@ GetStandardRules() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to gain list of ENV vars to load!${NC}"
-    fatal "[${GET_ENV_ARRAY[*]}]${NC}"
+    error "Failed to gain list of ENV vars to load!"
+    fatal "[${GET_ENV_ARRAY[*]}]"
   fi
 
   ##########################
@@ -690,7 +690,7 @@ GetGitHubVars() {
     fi
 
     if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-      fatal "Provided volume is not a directory!${NC}"
+      fatal "Provided volume is not a directory!"
     fi
 
     echo "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
@@ -709,8 +709,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_SHA}" ]; then
-      error "Failed to get [GITHUB_SHA]!${NC}"
-      fatal "[${GITHUB_SHA}]${NC}"
+      error "Failed to get [GITHUB_SHA]!"
+      fatal "[${GITHUB_SHA}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]${NC}"
     fi
@@ -719,8 +719,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
-      error "Failed to get [GITHUB_WORKSPACE]!${NC}"
-      fatal "[${GITHUB_WORKSPACE}]${NC}"
+      error "Failed to get [GITHUB_WORKSPACE]!"
+      fatal "[${GITHUB_WORKSPACE}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
     fi
@@ -729,8 +729,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
-      error "Failed to get [GITHUB_EVENT_PATH]!${NC}"
-      fatal "[${GITHUB_EVENT_PATH}]${NC}"
+      error "Failed to get [GITHUB_EVENT_PATH]!"
+      fatal "[${GITHUB_EVENT_PATH}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}${NC}"
     fi
@@ -748,8 +748,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_ORG}" ]; then
-      error "Failed to get [GITHUB_ORG]!${NC}"
-      fatal "[${GITHUB_ORG}]${NC}"
+      error "Failed to get [GITHUB_ORG]!"
+      fatal "[${GITHUB_ORG}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]${NC}"
     fi
@@ -763,8 +763,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_REPO}" ]; then
-      error "Failed to get [GITHUB_REPO]!${NC}"
-      fatal "[${GITHUB_REPO}]${NC}"
+      error "Failed to get [GITHUB_REPO]!"
+      fatal "[${GITHUB_REPO}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]${NC}"
     fi
@@ -774,9 +774,9 @@ GetGitHubVars() {
   # Validate we have a value #
   ############################
   if [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
-    error "Failed to get [GITHUB_TOKEN]!${NC}"
-    error "[${GITHUB_TOKEN}]${NC}"
-    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!${NC}"
+    error "Failed to get [GITHUB_TOKEN]!"
+    error "[${GITHUB_TOKEN}]"
+    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
 
     ################################################################################
     # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
@@ -799,8 +799,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_REPOSITORY}" ]; then
-      error "Failed to get [GITHUB_REPOSITORY]!${NC}"
-      fatal "[${GITHUB_REPOSITORY}]${NC}"
+      error "Failed to get [GITHUB_REPOSITORY]!"
+      fatal "[${GITHUB_REPOSITORY}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]${NC}"
     fi
@@ -809,8 +809,8 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_RUN_ID}" ]; then
-      error "Failed to get [GITHUB_RUN_ID]!${NC}"
-      fatal "[${GITHUB_RUN_ID}]${NC}"
+      error "Failed to get [GITHUB_RUN_ID]!"
+      fatal "[${GITHUB_RUN_ID}]"
     else
       notice "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]${NC}"
     fi
@@ -844,8 +844,8 @@ function ValidatePowershellModules() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    error "Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!${NC}"
-    fatal "[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]${NC}"
+    error "Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!"
+    fatal "[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]"
   else
     # Success
     if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
@@ -969,7 +969,7 @@ Footer() {
       ###################
       # Print the goods #
       ###################
-      error "ERRORS FOUND${NC} in ${LANGUAGE}:[${!ERROR_COUNTER}]${NC}"
+      error "ERRORS FOUND${NC} in ${LANGUAGE}:[${!ERROR_COUNTER}]"
 
       #########################################
       # Create status API for Failed language #
@@ -1002,7 +1002,7 @@ Footer() {
     # Check if error was found
     if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
       # Failed exit
-      fatal "Exiting with errors found!${NC}"
+      fatal "Exiting with errors found!"
     fi
   done
 

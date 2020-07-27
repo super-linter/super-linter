@@ -58,8 +58,8 @@ ValidateInput() {
   # Validate GITHUB_WORKSPACE #
   #############################
   if [ -z "${GITHUB_WORKSPACE}" ]; then
-    error "Failed to get [GITHUB_WORKSPACE]!${NC}"
-    fatal "[${GITHUB_WORKSPACE}]${NC}"
+    error "Failed to get [GITHUB_WORKSPACE]!"
+    fatal "[${GITHUB_WORKSPACE}]"
   else
     notice "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
   fi
@@ -68,8 +68,8 @@ ValidateInput() {
   # Validate REGISTRY #
   #####################
   if [ -z "${REGISTRY}" ]; then
-    error "Failed to get [REGISTRY]!${NC}"
-    fatal "[${REGISTRY}]${NC}"
+    error "Failed to get [REGISTRY]!"
+    fatal "[${REGISTRY}]"
   else
     notice "Successfully found:${F[W]}[REGISTRY]${F[B]}, value:${F[W]}[${REGISTRY}]${NC}"
   fi
@@ -82,8 +82,8 @@ ValidateInput() {
     # Validate GPR_USERNAME #
     #########################
     if [ -z "${GPR_USERNAME}" ]; then
-      error "Failed to get [GPR_USERNAME]!${NC}"
-      fatal "[${GPR_USERNAME}]${NC}"
+      error "Failed to get [GPR_USERNAME]!"
+      fatal "[${GPR_USERNAME}]"
     else
       notice "Successfully found:${F[W]}[GPR_USERNAME]${F[B]}, value:${F[W]}[${GPR_USERNAME}]${NC}"
     fi
@@ -92,8 +92,8 @@ ValidateInput() {
     # Validate GPR_TOKEN #
     ######################
     if [ -z "${GPR_TOKEN}" ]; then
-      error "Failed to get [GPR_TOKEN]!${NC}"
-      fatal "[${GPR_TOKEN}]${NC}"
+      error "Failed to get [GPR_TOKEN]!"
+      fatal "[${GPR_TOKEN}]"
     else
       notice "Successfully found:${F[W]}[GPR_TOKEN]${F[B]}, value:${F[W]}[********]${NC}"
     fi
@@ -105,8 +105,8 @@ ValidateInput() {
     # Validate DOCKER_USERNAME #
     ############################
     if [ -z "${DOCKER_USERNAME}" ]; then
-      error "Failed to get [DOCKER_USERNAME]!${NC}"
-      fatal "[${DOCKER_USERNAME}]${NC}"
+      error "Failed to get [DOCKER_USERNAME]!"
+      fatal "[${DOCKER_USERNAME}]"
     else
       notice "Successfully found:${F[W]}[DOCKER_USERNAME]${F[B]}, value:${F[W]}[${DOCKER_USERNAME}]${NC}"
     fi
@@ -115,8 +115,8 @@ ValidateInput() {
     # Validate DOCKER_PASSWORD #
     ############################
     if [ -z "${DOCKER_PASSWORD}" ]; then
-      error "Failed to get [DOCKER_PASSWORD]!${NC}"
-      fatal "[${DOCKER_PASSWORD}]${NC}"
+      error "Failed to get [DOCKER_PASSWORD]!"
+      fatal "[${DOCKER_PASSWORD}]"
     else
       notice "Successfully found:${F[W]}[DOCKER_PASSWORD]${F[B]}, value:${F[B]}[********]${NC}"
     fi
@@ -124,7 +124,7 @@ ValidateInput() {
   # We were not passed a registry to update #
   ###########################################
   else
-    error "Failed to find a valid registry!${NC}"
+    error "Failed to find a valid registry!"
     fatal "Registry:[${REGISTRY}]"
   fi
 
@@ -132,8 +132,8 @@ ValidateInput() {
   # Validate IMAGE_REPO #
   #######################
   if [ -z "${IMAGE_REPO}" ]; then
-    error "Failed to get [IMAGE_REPO]!${NC}"
-    fatal "[${IMAGE_REPO}]${NC}"
+    error "Failed to get [IMAGE_REPO]!"
+    fatal "[${IMAGE_REPO}]"
   else
     notice "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]${NC}"
     ###############################################
@@ -166,8 +166,8 @@ ValidateInput() {
     # Check the shell for errors #
     ##############################
     if [ ${ERROR_CODE} -ne 0 ]; then
-      error "Failed to get branch name!${NC}"
-      fatal "[${BRANCH_NAME}]${NC}"
+      error "Failed to get branch name!"
+      fatal "[${BRANCH_NAME}]"
     fi
 
     ##################################
@@ -212,8 +212,8 @@ ValidateInput() {
   # Validate DOCKERFILE_PATH #
   ############################
   if [ -z "${DOCKERFILE_PATH}" ]; then
-    error "Failed to get [DOCKERFILE_PATH]!${NC}"
-    fatal "[${DOCKERFILE_PATH}]${NC}"
+    error "Failed to get [DOCKERFILE_PATH]!"
+    fatal "[${DOCKERFILE_PATH}]"
   else
     notice "Successfully found:${F[W]}[DOCKERFILE_PATH]${F[B]}, value:${F[W]}[${DOCKERFILE_PATH}]${NC}"
   fi
@@ -253,8 +253,8 @@ Authenticate() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to authenticate to ${NAME}!${NC}"
-    fatal "[${LOGIN_CMD}]${NC}"
+    error "Failed to authenticate to ${NAME}!"
+    fatal "[${LOGIN_CMD}]"
 fatal  else
     # SUCCESS
     notice "Successfully authenticated to ${F[C]}${NAME}${F[B]}!${NC}"
@@ -277,7 +277,7 @@ BuildImage() {
   ################################
   if [ ! -f "${DOCKERFILE_PATH}" ]; then
     # No file found
-    error "failed to find Dockerfile at:[${DOCKERFILE_PATH}]${NC}"
+    error "failed to find Dockerfile at:[${DOCKERFILE_PATH}]"
     error "Please make sure you give full path!"
     fatal "Example:[/configs/Dockerfile] or [Dockerfile] if at root directory"
   fi
@@ -297,7 +297,7 @@ BuildImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    fatal "failed to [build] Dockerfile!${NC}"
+    fatal "failed to [build] Dockerfile!"
   else
     # SUCCESS
     notice "Successfully Built image!${NC}"
@@ -320,7 +320,7 @@ BuildImage() {
     ##############################
     if [ ${ERROR_CODE} -ne 0 ]; then
       # ERROR
-      fatal "failed to [tag] Dockerfile!${NC}"
+      fatal "failed to [tag] Dockerfile!"
     else
       # SUCCESS
       notice "Successfully tagged image!${NC}"
@@ -354,7 +354,7 @@ UploadImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    fatal "failed to [upload] Dockerfile!${NC}"
+    fatal "failed to [upload] Dockerfile!"
   else
     # SUCCESS
     notice "Successfully Uploaded Docker image:${F[W]}[${IMAGE_VERSION}]${F[B]} to ${F[C]}${REGISTRY}${F[B]}!${NC}"
@@ -376,8 +376,8 @@ UploadImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    error "Failed to get information about built Image!${NC}"
-    fatal "[${GET_INFO_CMD}]${NC}"
+    error "Failed to get information about built Image!"
+    fatal "[${GET_INFO_CMD}]"
   else
     ################
     # Get the data #
@@ -418,7 +418,7 @@ UploadImage() {
     ##############################
     if [ ${ERROR_CODE} -ne 0 ]; then
       # ERROR
-      fatal "failed to [upload] MAJOR_TAG:[${MAJOR_TAG}] Dockerfile!${NC}"
+      fatal "failed to [upload] MAJOR_TAG:[${MAJOR_TAG}] Dockerfile!"
     else
       # SUCCESS
       notice "Successfully Uploaded TAG:${F[W]}[${MAJOR_TAG}]${F[B]} of Docker image to ${F[C]}${REGISTRY}${F[B]}!${NC}"
@@ -471,7 +471,7 @@ else
   #########
   # ERROR #
   #########
-  error "Registry not set correctly!${NC}"
+  error "Registry not set correctly!"
   fatal "Registry:[${REGISTRY}]"
 fi
 
