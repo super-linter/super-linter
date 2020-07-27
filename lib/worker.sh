@@ -595,6 +595,7 @@ function RunTestCases() {
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
+  TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "markdown"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
   TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "php"
