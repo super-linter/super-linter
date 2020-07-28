@@ -263,7 +263,8 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_PYTHON+=("${FILE}")
+      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
+      FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################

@@ -46,7 +46,6 @@ function GetValidationInfo() {
   ################################
   # Convert strings to lowercase #
   ################################
-
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
@@ -54,7 +53,6 @@ function GetValidationInfo() {
     # Set the value of the var to lowercase
     eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
   done
-
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -70,7 +68,6 @@ function GetValidationInfo() {
       ANY_SET="true"
     fi
   done
-
 
   ###################################################
   # Validate if we should check individual lanuages #
