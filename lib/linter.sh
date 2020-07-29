@@ -75,7 +75,7 @@ OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}"           
 PHPSTAN_FILE_NAME='phpstan.neon'                                                      # Name of the file
 PHPSTAN_LINTER_RULES="${GITHUB_WORKSPACE}/${PHPSTAN_FILE_NAME}"                       # Path to the PHPStan lint rules in the repository
 if [ ! -f "$PHPSTAN_LINTER_RULES" ]; then
-    PHPSTAN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHPSTAN_FILE_NAME}"             # Path to the PHPStan lint rules
+  PHPSTAN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHPSTAN_FILE_NAME}"               # Path to the PHPStan lint rules
 fi
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                              # Name of the file
@@ -124,7 +124,6 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
 # Array for all languages that were linted #
 ############################################
 LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that were linted
-
 
 ###################
 # GitHub ENV Vars #
@@ -990,7 +989,7 @@ Footer() {
     ##################
     # Print if not 0 #
     ##################
-    if [ "${!ERROR_COUNTER}" -ne 0 ]; then
+    if [[ "${!ERROR_COUNTER}" -ne 0 ]]; then
       # We found errors in the language
       ###################
       # Print the goods #
@@ -1004,7 +1003,7 @@ Footer() {
     ######################################
     # Check if we validated the langauge #
     ######################################
-    elif [ "${!ERROR_COUNTER}" -eq 0 ] && [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
+    elif [[ "${!ERROR_COUNTER}" -eq 0 ]] && [[ "${UNIQUE_LINTED_ARRAY[*]}" =~ ${LANGUAGE} ]]; then
       # No errors found when linting the language
       CallStatusAPI "${LANGUAGE}" "success"
     fi
@@ -1026,7 +1025,7 @@ Footer() {
     # build the variable
     ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
     # Check if error was found
-    if [ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]; then
+    if [[ "${!ERRORS_FOUND_LANGUAGE}" -ne 0 ]]; then
       # Failed exit
       echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
       exit 1

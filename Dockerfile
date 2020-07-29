@@ -59,21 +59,14 @@ RUN apk add --update --no-cache \
     go \
     icu-libs \
     jq \
-    libc-dev \
-    libxml2-utils \
+    libc-dev libxml2-utils \
     make \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
     perl \
-    php7 \
-    php7-phar \
-    php7-json \
-    php7-mbstring \
-    php7-tokenizer \
-    php7-ctype \
-    php7-curl \
-    php7-dom \
+    php7 php7-phar php7-json php7-mbstring \
+    php7-tokenizer php7-ctype php7-curl php7-dom \
     py3-setuptools \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
