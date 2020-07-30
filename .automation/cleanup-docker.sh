@@ -13,6 +13,12 @@
 # - System with Docker installed
 # - Global variables met
 
+#########################
+# Source Function Files #
+#########################
+# shellcheck source=/dev/null
+source /action/lib/log.sh # Source the function script(s)
+
 ###########
 # Globals #
 ###########
@@ -29,11 +35,9 @@ DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
 ################################################################################
 #### Function Header ###########################################################
 Header() {
-  echo ""
-  echo "-------------------------------------------------------"
-  echo "----- GitHub Actions remove image from DockerHub ------"
-  echo "-------------------------------------------------------"
-  echo ""
+  info "-------------------------------------------------------"
+  info "----- GitHub Actions remove image from DockerHub ------"
+  info "-------------------------------------------------------"
 }
 ################################################################################
 #### Function ValidateInput ####################################################
@@ -42,21 +46,18 @@ ValidateInput() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Gathering variables..."
-  echo "----------------------------------------------"
-  echo ""
+  info "----------------------------------------------"
+  info "Gathering variables..."
+  info "----------------------------------------------"
 
   ############################
   # Validate GITHUB_WORKSPACE #
   ############################
   if [ -z "${GITHUB_WORKSPACE}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [GITHUB_WORKSPACE]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${GITHUB_WORKSPACE}]${NC}"
-    exit 1
+    error "Failed to get [GITHUB_WORKSPACE]!"
+    fatal "[${GITHUB_WORKSPACE}]"
   else
-    echo "Successfully found:[GITHUB_WORKSPACE], value:[${GITHUB_WORKSPACE}]"
+    info "Successfully found:[GITHUB_WORKSPACE], value:[${GITHUB_WORKSPACE}]"
   fi
 
   #######################
@@ -64,15 +65,14 @@ ValidateInput() {
   #######################
   if [ -z "${IMAGE_REPO}" ]; then
     # No repo was pulled
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_REPO]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${IMAGE_REPO}]${NC}"
-    exit 1
+    error "Failed to get [IMAGE_REPO]!"
+    fatal "[${IMAGE_REPO}]"
   elif [[ ${IMAGE_REPO} == "github/super-linter" ]]; then
     # Found our main repo
-    echo "Successfully found:[IMAGE_REPO], value:[${IMAGE_REPO}]"
+    info "Successfully found:[IMAGE_REPO], value:[${IMAGE_REPO}]"
   else
     # This is a fork and we cant pull vars or any info
-    echo -e "${NC}${F[Y]}WARN!${NC} No image to cleanup as this is a forked branch, and not being built with current automation!${NC}"
+    warn "No image to cleanup as this is a forked branch, and not being built with current automation!"
     exit 0
   fi
 
@@ -80,33 +80,30 @@ ValidateInput() {
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "${IMAGE_VERSION}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [IMAGE_VERSION]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${IMAGE_VERSION}]${NC}"
-    exit 1
+    error "Failed to get [IMAGE_VERSION]!"
+    fatal "[${IMAGE_VERSION}]"
   else
-    echo "Successfully found:[IMAGE_VERSION], value:[${IMAGE_VERSION}]"
+    info "Successfully found:[IMAGE_VERSION], value:[${IMAGE_VERSION}]"
   fi
 
   ############################
   # Validate DOCKER_USERNAME #
   ############################
   if [ -z "${DOCKER_USERNAME}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_USERNAME]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${DOCKER_USERNAME}]${NC}"
-    exit 1
+    error "Failed to get [DOCKER_USERNAME]!"
+    fatal "[${DOCKER_USERNAME}]"
   else
-    echo "Successfully found:[DOCKER_USERNAME], value:[${DOCKER_USERNAME}]"
+    info "Successfully found:[DOCKER_USERNAME], value:[${DOCKER_USERNAME}]"
   fi
 
   ############################
   # Validate DOCKER_PASSWORD #
   ############################
   if [ -z "${DOCKER_PASSWORD}" ]; then
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to get [DOCKER_PASSWORD]!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${DOCKER_PASSWORD}]${NC}"
-    exit 1
+    error "Failed to get [DOCKER_PASSWORD]!"
+    fatal "[${DOCKER_PASSWORD}]"
   else
-    echo "Successfully found:[DOCKER_PASSWORD], value:[********]"
+    info "Successfully found:[DOCKER_PASSWORD], value:[********]"
   fi
 
   ##################################################
@@ -121,10 +118,9 @@ ValidateInput() {
     #############################################
     # Image is 'latest' and we will not destroy #
     #############################################
-    echo "Image Tag is set to:[latest]..."
-    echo "We will never destroy latest..."
-    echo "Bye!"
-    exit 1
+    error "Image Tag is set to:[latest]..."
+    error "We will never destroy latest..."
+    fatal "Bye!"
   fi
 }
 ################################################################################
@@ -133,11 +129,9 @@ LoginToDocker() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Login to DockerHub..."
-  echo "----------------------------------------------"
-  echo ""
+  info "----------------------------------------------"
+  info "Login to DockerHub..."
+  info "----------------------------------------------"
 
   ######################
   # Login to DockerHub #
@@ -154,12 +148,11 @@ LoginToDocker() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to authenticate to DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LOGIN_CMD}]${NC}"
-    exit 1
+    error "Failed to authenticate to DockerHub!"
+    fatal "[${LOGIN_CMD}]"
   else
     # SUCCESS
-    echo "Successfully authenticated to DockerHub!"
+    info "Successfully authenticated to DockerHub!"
   fi
 }
 ################################################################################
@@ -168,11 +161,9 @@ RemoveImage() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Removing the DockerFile image:[${IMAGE_REPO}:${IMAGE_VERSION}]"
-  echo "----------------------------------------------"
-  echo ""
+  info "----------------------------------------------"
+  info "Removing the DockerFile image:[${IMAGE_REPO}:${IMAGE_VERSION}]"
+  info "----------------------------------------------"
 
   #####################################
   # Create Token to auth to DockerHub #
@@ -193,12 +184,11 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to gain token from DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${TOKEN}]${NC}"
-    exit 1
+    error "Failed to gain token from DockerHub!"
+    fatal "[${TOKEN}]"
   else
     # SUCCESS
-    echo "Successfully gained auth token from DockerHub!"
+    info "Successfully gained auth token from DockerHub!"
   fi
 
   #################################
@@ -218,22 +208,19 @@ RemoveImage() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # ERROR
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to remove tag from DockerHub!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${REMOVE_CMD}]${NC}"
-    exit 1
+    error "Failed to remove tag from DockerHub!"
+    fatal "[${REMOVE_CMD}]"
   else
     # SUCCESS
-    echo "Successfully [removed] Docker image tag:[${IMAGE_VERSION}] from DockerHub!"
+    info "Successfully [removed] Docker image tag:[${IMAGE_VERSION}] from DockerHub!"
   fi
 }
 ################################################################################
 #### Function Footer ###########################################################
 Footer() {
-  echo ""
-  echo "-------------------------------------------------------"
-  echo "The step has completed"
-  echo "-------------------------------------------------------"
-  echo ""
+  info "-------------------------------------------------------"
+  info "The step has completed"
+  info "-------------------------------------------------------"
 }
 ################################################################################
 ################################## MAIN ########################################
