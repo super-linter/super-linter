@@ -17,7 +17,7 @@
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
-source /action/lib/log.sh # Source the function script(s)
+source ../lib/log.sh # Source the function script(s)
 
 ###########
 # Globals #
