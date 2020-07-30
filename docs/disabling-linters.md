@@ -14,39 +14,861 @@ For some linters it is also possible to override rules on a case by case level w
 
 ## Table of Linters
 
-- [Ruby](#ruby)
-- [Shell](#shell)
-- [Ansible](#ansible)
-- [YAML](#yaml)
-- [AWS CloudFormation templates](#aws-cloud-formation)
-- [Python](#python3)
-- [JSON](#json)
-- [Markdown](#markdown)
-- [Perl](#perl)
-- [Raku](#raku)
-- [PHP](#php)
-- [XML](#xml)
-- [Coffeescript](#coffeescript)
-- [Javascript Eslint](#javascript-eslint)
-- [Javascript Standard](#javascript-standard)
-- [Typescript Eslint](#typescript-eslint)
-- [Typescript Standard](#typescript-standard)
-- [Golang](#golang)
-- [Groovy](#groovy)
-- [Dockerfile](#dockerfile)
-- [Terraform](#terraform)
-- [CSS](#css)
-- [DART](#dart)
-- [ENV](#dotenv-linter)
-- [Kotlin](#kotlin)
-- [OpenAPI](#openapi)
-- [Protocol Buffers](#protocol-buffers)
-- [Clojure](#clojure)
-- [EDITORCONFIG-CHECKER](#editorconfig-checker)
-- [HTML](#html)
-- [LUA](#lua)
+- [Disabling linters and Rules](#disabling-linters-and-rules)
+  - [Table of Linters](#table-of-linters)
+  - [Ansible](#ansible)
+  - [AWS CloudFormation templates](#aws-cloudformation-templates)
+  - [Clojure](#clojure)
+  - [Coffeescript](#coffeescript)
+  - [CSS](#css)
+  - [Dart](#dart)
+  - [Dockerfile](#dockerfile)
+  - [EDITORCONFIG-CHECKER](#editorconfig-checker)
+  - [ENV](#env)
+  - [Golang](#golang)
+  - [Groovy](#groovy)
+  - [HTML](#html)
+  - [Javascript eslint](#javascript-eslint)
+  - [Javascript standard](#javascript-standard)
+  - [JSON](#json)
+  - [Kotlin](#kotlin)
+  - [Lua](#lua)
+  - [Markdown](#markdown)
+  - [OpenAPI](#openapi)
+  - [Perl](#perl)
+  - [PHP](#php)
+  - [Protocol Buffers](#protocol-buffers)
+  - [Python3 pylint](#python3-pylint)
+  - [Python3 flake8](#python3-flake8)
+  - [Raku](#raku)
+  - [Ruby](#ruby)
+  - [Shell](#shell)
+  - [Terraform](#terraform)
+  - [Typescript eslint](#typescript-eslint)
+  - [Typescript standard](#typescript-standard)
+  - [XML](#xml)
+  - [YAML](#yaml)
 
 <!-- toc -->
+
+---
+
+## Ansible
+
+- [ansible-lint](https://github.com/ansible/ansible-lint)
+
+### Ansible-lint Config file
+
+- `.github/linters/.ansible-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.ansible-lint.yml`
+
+### Ansible-lint disable single line
+
+```yml
+- name: this would typically fire GitHasVersionRule 401 and BecomeUserWithoutBecomeRule 501
+  become_user: alice # noqa 401 501
+  git: src=/path/to/git/repo dest=checkout
+```
+
+### Ansible-lint disable code block
+
+```yml
+- name: this would typically fire GitHasVersionRule 401
+  git: src=/path/to/git/repo dest=checkout
+  tags:
+    - skip_ansible_lint
+```
+
+### Ansible-lint disable entire file
+
+```yml
+- name: this would typically fire GitHasVersionRule 401
+  git: src=/path/to/git/repo dest=checkout
+  tags:
+    - skip_ansible_lint
+```
+
+---
+
+## AWS CloudFormation templates
+
+- [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)
+
+### cfn-lint Config file
+
+- `.github/linters/.cfnlintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.cfnlintrc.yml`
+
+### cfn-lint disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### cfn-lint disable code block
+
+You can disable both [template](https://github.com/aws-cloudformation/cfn-python-lint/#template-based-metadata) or [resource](https://github.com/aws-cloudformation/cfn-python-lint/#resource-based-metadata) via [metadata](https://github.com/aws-cloudformation/cfn-python-lint/#metadata):
+
+```yaml
+Resources:
+  myInstance:
+    Type: AWS::EC2::Instance
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - E3030
+    Properties:
+      InstanceType: nt.x4superlarge
+      ImageId: ami-abc1234
+```
+
+### cfn-lint disable entire file
+
+If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yml` to ignore certain files and locations
+
+```yaml
+ignore_templates:
+  - codebuild.yaml
+```
+
+---
+
+## Clojure
+
+- [clj-kondo](https://github.com/borkdude/clj-kondo)
+- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
+
+### clj-kondo standard Config file
+
+- `.github/linters/.clj-kondo/config.edn`
+
+### clj-kondo disable single line
+
+- There is currently **No** way to disable rules in a single line
+
+### clj-kondo disable code block
+
+- There is currently **No** way to disable rules in a code block
+
+### clj-kondo disable entire file
+
+```clojure
+{:output {:exclude-files ["path/to/file"]}}
+```
+
+---
+
+## Coffeescript
+
+- [coffeelint](https://coffeelint.github.io/)
+
+### coffeelint Config file
+
+- `.github/linters/.coffee-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.coffee.yml`
+
+### coffeelint disable single line
+
+```Coffeescript
+# coffeelint: disable=max_line_length
+foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+# coffeelint: enable=max_line_length
+```
+
+### coffeelint disable code block
+
+```Coffeescript
+# coffeelint: disable
+foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+bar = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+baz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
+# coffeelint: enable
+```
+
+### coffeelint disable entire file
+
+- You can encapsulate the entire file with the _code block format_ to disable an entire file from being parsed
+
+---
+
+## CSS
+
+- [stylelint](https://stylelint.io/)
+
+### stylelint standard Config file
+
+- `.github/linters/.stylelintrc.json`
+
+### stylelint disable single line
+
+```css
+#id {
+  /* stylelint-disable-next-line declaration-no-important */
+  color: pink !important;
+}
+```
+
+### stylelint disable code block
+
+```css
+/* stylelint-disable */
+a {
+}
+/* stylelint-enable */
+```
+
+### stylelint disable entire file
+
+- You can disable entire files with the `ignoreFiles` property in `.stylelintrc.json`
+
+```json
+{
+  "ignoreFiles": [
+    "styles/ignored/wildcards/*.css",
+    "styles/ignored/specific-file.css"
+  ]
+}
+```
+
+---
+
+## Dart
+
+- [dartanalyzer](https://dart.dev/tools/dartanalyzer)
+
+### dartanalyzer standard Config file
+
+- `.github/linters/.dart-lint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/anaylsis_options.yaml`
+
+### dartanalyzer disable single line
+
+```dart
+int x = ''; // ignore: invalid_assignment
+```
+
+### dartanalyzer disable code block
+
+- You can make [rule exceptions](https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis) for the entire file.
+
+```dart
+// ignore_for_file: unused_import, unused_local_variable
+```
+
+### dartanalyzer disable entire file
+
+- You can disable entire files with the `analyzer.exclude` property in `anaylsis_options.yaml`
+
+```dart
+analyzer:
+  exclude:
+    - file
+```
+
+---
+
+## Dockerfile
+
+- [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
+
+### Dockerfilelint standard Config file
+
+- `.github/linters/.dockerfilelintrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.dockerfilelintrc`
+
+### Dockerfilelint disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Dockerfilelint disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Dockerfilelint disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## EDITORCONFIG-CHECKER
+- [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
+
+### editorconfig-checker Config file
+- `.github/linters/.ecrc`
+- This linter will also use the [`.editorconfig`](https://editorconfig.org/) of your project
+
+### editorconfig-checker disable single line
+
+```js
+<LINE> // editorconfig-checker-disable-line
+```
+
+### editorconfig-checker disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### editorconfig-checker disable entire file
+
+```js
+// editorconfig-checker-disable-file
+```
+
+- You can disable entire files with the `Exclude` property in `.ecrc`
+
+```json
+{
+  "Exclude": ["path/to/file", "^regular\\/expression\\.ext$"]
+}
+```
+
+---
+
+## ENV
+
+- [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
+
+### dotenv-linter Config file
+
+- There is no top level _configuration file_ available at this time
+
+### dotenv-linter disable single line
+
+```env
+# Comment line will be ignored
+```
+
+### dotenv-linter disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### dotenv-linter disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Golang
+
+- [golangci-lint](https://github.com/golangci/golangci-lint)
+
+### golangci-lint standard Config file
+
+- `.github/linters/.golangci.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.golangci.yml`
+
+### golangci-lint disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### golangci-lint disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### golangci-lint disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Groovy
+- [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)
+
+### groovy-lint standard Config file
+- `.github/linters/.groovylintrc.json`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.groovylintrc.json`
+
+### groovy-lint disable single line
+```groovy
+def variable = 1; // groovylint-disable-line
+
+// groovylint-disable-next-line
+def variable = 1;
+
+/* groovylint-disable-next-line */
+def variable = 1;
+
+def variable = 1; /* groovylint-disable-line */
+```
+
+### groovy-lint disable code block
+```groovy
+/* groovylint-disable */
+
+def variable = 1;
+
+/* groovylint-enable */
+```
+
+### groovy-lint disable entire file
+- At the top line of the file add the line:
+```groovy
+/* groovylint-disable */
+```
+
+---
+
+## HTML
+
+- [htmlhint](https://htmlhint.com/)
+
+### htmlhint standard Config file
+
+- `.github/linters/.htmlhintrc`
+
+### htmlhint disable single line
+
+- There is currently **No** way to disable rules in a single line
+
+### htmlhint disable code block
+
+- There is currently **No** way to disable rules in a code block
+
+### htmlhint disable entire file
+
+- There is currently **No** way to disable rules in an entire file
+
+---
+
+## Javascript eslint
+
+- [eslint](https://eslint.org/)
+
+### Javascript eslint Config file
+
+- `.github/linters/.eslintrc.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.eslintrc.yml`
+
+### Javascript eslint disable single line
+
+```javascript
+var thing = new Thing(); // eslint-disable-line no-use-before-define
+thing.sayHello();
+
+function Thing() {
+  this.sayHello = function () {
+    console.log("hello");
+  };
+}
+```
+
+### Javascript eslint disable code block
+
+```javascript
+/*eslint-disable */
+
+//suppress all warnings between comments
+alert("foo");
+
+/*eslint-enable */
+```
+
+### Javascript eslint disable entire file
+
+- Place at the top of the file:
+
+```javascript
+/* eslint-disable */
+```
+
+---
+
+## Javascript standard
+
+- [standard js](https://standardjs.com/)
+
+### Javascript standard Config file
+
+- There is no top level _configuration file_ available at this time
+
+### Javascript standard disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Javascript standard disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Javascript standard disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## JSON
+
+- [jsonlint](https://github.com/zaach/jsonlint)
+
+### JsonLint Config file
+
+- There is no top level _configuration file_ available at this time
+
+### JsonLint disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### JsonLint disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### JsonLint disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Kotlin
+
+- [ktlint](https://github.com/pinterest/ktlint)
+
+### ktlint Config file
+
+- There is no top level _configuration file_ available at this time
+
+### ktlint disable single line
+
+```kotlin
+import package.* // ktlint-disable no-wildcard-imports
+```
+
+### ktlint disable code block
+
+```kotlin
+/* ktlint-disable no-wildcard-imports */
+import package.a.*
+import package.b.*
+/* ktlint-enable no-wildcard-imports */
+```
+
+### ktlint disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Lua
+
+- [luarocks](https://github.com/luarocks/luacheck)
+
+### luacheck standard Config file
+- `.github/linters/.luacheckrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.luacheckrc`
+- See [luacheck](https://luacheck.readthedocs.io/en/stable/config.html) docs for additional
+  behaviors
+
+### luacheck disable single line
+```lua
+-- luacheck: globals g1 g2, ignore foo
+local foo = g1(g2) -- No warnings emitted.
+```
+
+### luacheck disable code block
+```lua
+-- The following unused function is not reported.
+local function f() -- luacheck: ignore
+   -- luacheck: globals g3
+   g3() -- No warning.
+end
+```
+
+### luacheck include/exclude files (via .luacheckrc)
+```lua
+include_files = {"src", "spec/*.lua", "scripts/*.lua", "*.rockspec", "*.luacheckrc"}
+exclude_files = {"src/luacheck/vendor"}
+```
+
+### luacheck push/pop
+```lua
+-- luacheck: push ignore foo
+foo() -- No warning.
+-- luacheck: pop
+foo() -- Warning is emitted.
+```
+
+---
+
+## Markdown
+
+- [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli#readme)
+- [markdownlint rule documentation](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
+- [markdownlint inline comment syntax](https://github.com/DavidAnson/markdownlint#configuration)
+
+### markdownlint Config file
+
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.markdown-lint.yml`
+
+### markdownlint disable single line
+
+```markdown
+## Here is some document
+
+Here is some random data
+
+<!-- markdownlint-disable -->
+
+any violation you want
+
+<!-- markdownlint-restore -->
+
+Here is more data
+
+```
+
+### markdownlint disable code block
+
+```markdown
+## Here is some document
+
+Here is some random data
+
+<!-- markdownlint-disable -->
+
+any violations you want
+
+<!-- markdownlint-restore -->
+
+Here is more data
+```
+
+### markdownlint disable entire file
+
+- You can encapsulate the entire file with the _code block format_ to disable an entire file from being parsed
+
+---
+
+## OpenAPI
+
+- [spectral](https://github.com/stoplightio/spectral)
+
+### OpenAPI Config file
+
+- `.github/linters/.openapirc.yml`
+- You can add, extend, and disable rules
+- Documentation at [Spectral Custom Rulesets](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/4-custom-rulesets.md)
+- File should be located at: `.github/linters/.openapirc.yml`
+
+### OpenAPI disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### OpenAPI disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### OpenAPI disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+- However, you can make [rule exceptions](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/6-exceptions.md?srn=gh/stoplightio/spectral/docs/guides/6-exceptions.md) in the config for individual file(s).
+
+---
+
+## Perl
+
+- [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)
+
+### Perl Config file
+
+- There is no top level _configuration file_ available at this time
+
+### Perl disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Perl disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Perl disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## PHP
+
+- [PHP](https://www.php.net/)
+
+### PHP Config file
+
+- There is no top level _configuration file_ available at this time
+
+### PHP disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### PHP disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Protocol Buffers
+
+- [protolint](https://github.com/yoheimuta/protolint)
+
+### protolint Config file
+
+- `.github/linters/.protolintrc.yml`
+- You can add, extend, and disable rules
+- Documentation at [Rules](https://github.com/yoheimuta/protolint#rules) and [Configuring](https://github.com/yoheimuta/protolint#configuring)
+
+### protolint disable single line
+
+```protobuf
+enum Foo {
+  // protolint:disable:next ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  firstValue = 0;
+  second_value = 1;  // protolint:disable:this ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+  THIRD_VALUE = 2;
+}
+```
+
+### protolint disable code block
+
+```protobuf
+// protolint:disable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+enum Foo {
+  firstValue = 0;
+  second_value = 1;
+  THIRD_VALUE = 2;
+}
+// protolint:enable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+```
+
+### protolint disable entire file
+
+- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yml`
+
+```yaml
+# Lint directives.
+lint:
+  # Linter files to walk.
+  files:
+    # The specific files to exclude.
+    exclude:
+      - path/to/file
+```
+
+---
+
+## Python3 pylint
+
+- [pylint](https://www.pylint.org/)
+
+### Pylint Config file
+
+- `.github/linters/.python-lint`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.python-lint`
+
+### Pylint disable single line
+
+```python
+global VAR # pylint: disable=global-statement
+```
+
+### Pylint disable code block
+
+```python
+"""pylint option block-disable"""
+
+__revision__ = None
+
+class Foo(object):
+    """block-disable test"""
+
+    def __init__(self):
+        pass
+
+    def meth1(self, arg):
+        """this issues a message"""
+        print(self)
+
+    def meth2(self, arg):
+        """and this one not"""
+        # pylint: disable=unused-argument
+        print(self\
+              + "foo")
+
+    def meth3(self):
+        """test one line disabling"""
+        # no error
+        print(self.baz) # pylint: disable=no-member
+        # error
+        print(self.baz)
+```
+
+### Pylint disable entire file
+
+```python
+#!/bin/python3
+# pylint: skip-file
+
+var = "terrible code down here..."
+```
+
+---
+
+## Python3 flake8
+
+- [flake8](https://flake8.pycqa.org/en/latest/)
+
+### flake8 Config file
+
+- `.github/linters/.flake8`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.flake8`
+
+### flake8 disable single line
+
+```python
+example = lambda: 'example'  # noqa: E731
+```
+
+### flake8 disable entire file
+
+```python
+#!/bin/python3
+# flake8: noqa
+
+var = "terrible code down here..."
+```
+
+---
+
+## Raku
+
+- [raku](https://raku.org)
+
+### Raku Config file
+
+- There is no top level _configuration file_ available at this time
+
+### Raku disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Raku disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Raku disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
 
 ---
 
@@ -141,452 +963,25 @@ moreThings()
 
 ---
 
-## Ansible
+## Terraform
 
-- [ansible-lint](https://github.com/ansible/ansible-lint)
+- [tflint](https://github.com/terraform-linters/tflint)
 
-### Ansible-lint Config file
+### tflint standard Config file
 
-- `.github/linters/.ansible-lint.yml`
+- `.github/linters/.tflint.hcl`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.ansible-lint.yml`
+- File should be located at: `.github/linters/.tflint.hcl`
 
-### Ansible-lint disable single line
-
-```yml
-- name: this would typically fire GitHasVersionRule 401 and BecomeUserWithoutBecomeRule 501
-  become_user: alice # noqa 401 501
-  git: src=/path/to/git/repo dest=checkout
-```
-
-### Ansible-lint disable code block
-
-```yml
-- name: this would typically fire GitHasVersionRule 401
-  git: src=/path/to/git/repo dest=checkout
-  tags:
-    - skip_ansible_lint
-```
-
-### Ansible-lint disable entire file
-
-```yml
-- name: this would typically fire GitHasVersionRule 401
-  git: src=/path/to/git/repo dest=checkout
-  tags:
-    - skip_ansible_lint
-```
-
----
-
-## YAML
-
-- [YamlLint](https://github.com/adrienverge/yamllint)
-
-### Yamllint Config file
-
-- `.github/linters/.yaml-lint.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.yaml-lint.yml`
-
-### Yamllint disable single line
-
-```yml
-This line is waaaaaaaaaay too long # yamllint disable-line
-```
-
-### Yamllint disable code block
-
-```yml
-# yamllint disable rule:colons
-- Key: value
-  dolor: sit,
-  foo: bar
-# yamllint enable
-```
-
-### Yamllint disable entire file
-
-If you need to ignore an entire file, you can update the `.github/linters/.yaml-lint.yml` to ignore certain files and locations
-
-```yml
-# For all rules
-ignore: |
-  *.dont-lint-me.yaml
-  /bin/
-  !/bin/*.lint-me-anyway.yaml
-
-rules:
-  key-duplicates:
-    ignore: |
-      generated
-      *.template.yaml
-  trailing-spaces:
-    ignore: |
-      *.ignore-trailing-spaces.yaml
-      /ascii-art/*
-```
-
----
-
-## Python3
-
-- [pylint](https://www.pylint.org/)
-
-### Pylint Config file
-
-- `.github/linters/.python-lint`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.python-lint`
-
-### Pylint disable single line
-
-```python
-global VAR # pylint: disable=global-statement
-```
-
-### Pylint disable code block
-
-```python
-"""pylint option block-disable"""
-
-__revision__ = None
-
-class Foo(object):
-    """block-disable test"""
-
-    def __init__(self):
-        pass
-
-    def meth1(self, arg):
-        """this issues a message"""
-        print(self)
-
-    def meth2(self, arg):
-        """and this one not"""
-        # pylint: disable=unused-argument
-        print(self\
-              + "foo")
-
-    def meth3(self):
-        """test one line disabling"""
-        # no error
-        print(self.baz) # pylint: disable=no-member
-        # error
-        print(self.baz)
-```
-
-### Pylint disable entire file
-
-```python
-#!/bin/python3
-# pylint: skip-file
-
-var = "terrible code down here..."
-```
-
----
-
-## AWS CloudFormation templates
-
-- [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)
-
-### cfn-lint Config file
-
-- `.github/linters/.cfnlintrc.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.cfnlintrc.yml`
-
-### cfn-lint disable single line
+### tflint disable single line
 
 - There is currently **No** way to disable rules inline of the file(s)
 
-### cfn-lint disable code block
-
-You can disable both [template](https://github.com/aws-cloudformation/cfn-python-lint/#template-based-metadata) or [resource](https://github.com/aws-cloudformation/cfn-python-lint/#resource-based-metadata) via [metadata](https://github.com/aws-cloudformation/cfn-python-lint/#metadata):
-
-```yaml
-Resources:
-  myInstance:
-    Type: AWS::EC2::Instance
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - E3030
-    Properties:
-      InstanceType: nt.x4superlarge
-      ImageId: ami-abc1234
-```
-
-### cfn-lint disable entire file
-
-If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yml` to ignore certain files and locations
-
-```yaml
-ignore_templates:
-  - codebuild.yaml
-```
-
----
-
-## JSON
-
-- [jsonlint](https://github.com/zaach/jsonlint)
-
-### JsonLint Config file
-
-- There is no top level _configuration file_ available at this time
-
-### JsonLint disable single line
+### tflint disable code block
 
 - There is currently **No** way to disable rules inline of the file(s)
 
-### JsonLint disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### JsonLint disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## Markdown
-
-- [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli#readme)
-- [markdownlint rule documentation](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
-- [markdownlint inline comment syntax](https://github.com/DavidAnson/markdownlint#configuration)
-
-### markdownlint Config file
-
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.markdown-lint.yml`
-
-### markdownlint disable single line
-
-```markdown
-## Here is some document
-
-Here is some random data
-
-<!-- markdownlint-disable -->
-
-any violation you want
-
-<!-- markdownlint-restore -->
-
-Here is more data
-```
-
-### markdownlint disable code block
-
-```markdown
-## Here is some document
-
-Here is some random data
-
-<!-- markdownlint-disable -->
-
-any violations you want
-
-<!-- markdownlint-restore -->
-
-Here is more data
-```
-
-### markdownlint disable entire file
-
-- You can encapsulate the entire file with the _code block format_ to disable an entire file from being parsed
-
----
-
-## Perl
-
-- [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)
-
-### Perl Config file
-
-- There is no top level _configuration file_ available at this time
-
-### Perl disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Perl disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Perl disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## Raku
-
-- [raku](https://raku.org)
-
-### Raku Config file
-
-- There is no top level _configuration file_ available at this time
-
-### Raku disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Raku disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Raku disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
----
-
-## PHP
-
-- [PHP](https://www.php.net/)
-
-### PHP Config file
-
-- There is no top level _configuration file_ available at this time
-
-### PHP disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### PHP disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### PHP disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## XML
-
-- [XML](http://xmlsoft.org/)
-
-### LibXML Config file
-
-- There is no top level _configuration file_ available at this time
-
-### LibXML disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### LibXML disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### LibXML disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## Coffeescript
-
-- [coffeelint](https://coffeelint.github.io/)
-
-### coffeelint Config file
-
-- `.github/linters/.coffee-lint.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.coffee.yml`
-
-### coffeelint disable single line
-
-```Coffeescript
-# coffeelint: disable=max_line_length
-foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
-# coffeelint: enable=max_line_length
-```
-
-### coffeelint disable code block
-
-```Coffeescript
-# coffeelint: disable
-foo = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
-bar = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
-baz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
-taz = "some/huge/line/string/with/embed/#{values}.that/surpasses/the/max/column/width"
-# coffeelint: enable
-```
-
-### coffeelint disable entire file
-
-- You can encapsulate the entire file with the _code block format_ to disable an entire file from being parsed
-
----
-
-## Javascript eslint
-
-- [eslint](https://eslint.org/)
-
-### Javascript eslint Config file
-
-- `.github/linters/.eslintrc.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.eslintrc.yml`
-
-### Javascript eslint disable single line
-
-```javascript
-var thing = new Thing(); // eslint-disable-line no-use-before-define
-thing.sayHello();
-
-function Thing() {
-  this.sayHello = function () {
-    console.log("hello");
-  };
-}
-```
-
-### Javascript eslint disable code block
-
-```javascript
-/*eslint-disable */
-
-//suppress all warnings between comments
-alert("foo");
-
-/*eslint-enable */
-```
-
-### Javascript eslint disable entire file
-
-- Place at the top of the file:
-
-```javascript
-/* eslint-disable */
-```
-
----
-
-## Javascript standard
-
-- [standard js](https://standardjs.com/)
-
-### Javascript standard Config file
-
-- There is no top level _configuration file_ available at this time
-
-### Javascript standard disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Javascript standard disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Javascript standard disable entire file
+### tflint disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 
@@ -656,431 +1051,72 @@ alert("foo");
 
 ---
 
-## Golang
+## XML
 
-- [golangci-lint](https://github.com/golangci/golangci-lint)
+- [XML](http://xmlsoft.org/)
 
-### golangci-lint standard Config file
-
-- `.github/linters/.golangci.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.golangci.yml`
-
-### golangci-lint disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### golangci-lint disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### golangci-lint disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## Groovy
-- [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)
-
-### groovy-lint standard Config file
-- `.github/linters/.groovylintrc.json`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.groovylintrc.json`
-
-### groovy-lint disable single line
-```groovy
-def variable = 1; // groovylint-disable-line
-
-// groovylint-disable-next-line
-def variable = 1;
-
-/* groovylint-disable-next-line */
-def variable = 1;
-
-def variable = 1; /* groovylint-disable-line */
-```
-
-### groovy-lint disable code block
-```groovy
-/* groovylint-disable */
-
-def variable = 1;
-
-/* groovylint-enable */
-```
-
-### groovy-lint disable entire file
-- At the top line of the file add the line:
-```groovy
-/* groovylint-disable */
-```
-
----
-
-## Dockerfile
-
-- [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)
-
-### Dockerfilelint standard Config file
-
-- `.github/linters/.dockerfilelintrc`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.dockerfilelintrc`
-
-### Dockerfilelint disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Dockerfilelint disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### Dockerfilelint disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## Terraform
-
-- [tflint](https://github.com/terraform-linters/tflint)
-
-### tflint standard Config file
-
-- `.github/linters/.tflint.hcl`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.tflint.hcl`
-
-### tflint disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### tflint disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### tflint disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-
----
-
-## CSS
-
-- [stylelint](https://stylelint.io/)
-
-### stylelint standard Config file
-
-- `.github/linters/.stylelintrc.json`
-
-### stylelint disable single line
-
-```css
-#id {
-  /* stylelint-disable-next-line declaration-no-important */
-  color: pink !important;
-}
-```
-
-### stylelint disable code block
-
-```css
-/* stylelint-disable */
-a {
-}
-/* stylelint-enable */
-```
-
-### stylelint disable entire file
-
-- You can disable entire files with the `ignoreFiles` property in `.stylelintrc.json`
-
-```json
-{
-  "ignoreFiles": [
-    "styles/ignored/wildcards/*.css",
-    "styles/ignored/specific-file.css"
-  ]
-}
-```
-
----
-
-## ENV
-
-- [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
-
-### dotenv-linter Config file
+### LibXML Config file
 
 - There is no top level _configuration file_ available at this time
 
-### dotenv-linter disable single line
-
-```env
-# Comment line will be ignored
-```
-
-### dotenv-linter disable code block
+### LibXML disable single line
 
 - There is currently **No** way to disable rules inline of the file(s)
 
-### dotenv-linter disable entire file
+### LibXML disable code block
 
 - There is currently **No** way to disable rules inline of the file(s)
 
----
-
-## Kotlin
-
-- [ktlint](https://github.com/pinterest/ktlint)
-
-### ktlint Config file
-
-- There is no top level _configuration file_ available at this time
-
-### ktlint disable single line
-
-```kotlin
-import package.* // ktlint-disable no-wildcard-imports
-```
-
-### ktlint disable code block
-
-```kotlin
-/* ktlint-disable no-wildcard-imports */
-import package.a.*
-import package.b.*
-/* ktlint-enable no-wildcard-imports */
-```
-
-### ktlint disable entire file
+### LibXML disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 
 ---
 
-## Lua
-- [luarocks](https://github.com/luarocks/luacheck)
+## YAML
 
-### luacheck standard Config file
-- `.github/linters/.luacheckrc`
+- [YamlLint](https://github.com/adrienverge/yamllint)
+
+### Yamllint Config file
+
+- `.github/linters/.yaml-lint.yml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.luacheckrc`
-- See [luacheck](https://luacheck.readthedocs.io/en/stable/config.html) docs for additional
-  behaviors
+- File should be located at: `.github/linters/.yaml-lint.yml`
 
-### luacheck disable single line
-```lua
--- luacheck: globals g1 g2, ignore foo
-local foo = g1(g2) -- No warnings emitted.
+### Yamllint disable single line
+
+```yml
+This line is waaaaaaaaaay too long # yamllint disable-line
 ```
 
-### luacheck disable code block
-```lua
--- The following unused function is not reported.
-local function f() -- luacheck: ignore
-   -- luacheck: globals g3
-   g3() -- No warning.
-end
+### Yamllint disable code block
+
+```yml
+# yamllint disable rule:colons
+- Key: value
+  dolor: sit,
+  foo: bar
+# yamllint enable
 ```
 
-### luacheck include/exclude files (via .luacheckrc)
-```lua
-include_files = {"src", "spec/*.lua", "scripts/*.lua", "*.rockspec", "*.luacheckrc"}
-exclude_files = {"src/luacheck/vendor"}
+### Yamllint disable entire file
+
+If you need to ignore an entire file, you can update the `.github/linters/.yaml-lint.yml` to ignore certain files and locations
+
+```yml
+# For all rules
+ignore: |
+  *.dont-lint-me.yaml
+  /bin/
+  !/bin/*.lint-me-anyway.yaml
+
+rules:
+  key-duplicates:
+    ignore: |
+      generated
+      *.template.yaml
+  trailing-spaces:
+    ignore: |
+      *.ignore-trailing-spaces.yaml
+      /ascii-art/*
 ```
-
-### luacheck push/pop
-```lua
--- luacheck: push ignore foo
-foo() -- No warning.
--- luacheck: pop
-foo() -- Warning is emitted.
-```
----
-
-## Dart
-
-- [dartanalyzer](https://dart.dev/tools/dartanalyzer)
-
-### dartanalyzer standard Config file
-
-- `.github/linters/.dart-lint.yml`
-- You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/anaylsis_options.yaml`
-
-### dartanalyzer disable single line
-
-```dart
-int x = ''; // ignore: invalid_assignment
-```
-
-### dartanalyzer disable code block
-
-- You can make [rule exceptions](https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis) for the entire file.
-
-```dart
-// ignore_for_file: unused_import, unused_local_variable
-```
-
-### dartanalyzer disable entire file
-
-- You can disable entire files with the `analyzer.exclude` property in `anaylsis_options.yaml`
-
-```dart
-analyzer:
-  exclude:
-    - file
-```
-
----
-
-## OpenAPI
-
-- [spectral](https://github.com/stoplightio/spectral)
-
-### OpenAPI Config file
-
-- `.github/linters/.openapirc.yml`
-- You can add, extend, and disable rules
-- Documentation at [Spectral Custom Rulesets](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/4-custom-rulesets.md)
-- File should be located at: `.github/linters/.openapirc.yml`
-
-### OpenAPI disable single line
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### OpenAPI disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### OpenAPI disable entire file
-
-- There is currently **No** way to disable rules inline of the file(s)
-- However, you can make [rule exceptions](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/6-exceptions.md?srn=gh/stoplightio/spectral/docs/guides/6-exceptions.md) in the config for individual file(s).
-
----
-
-## Protocol Buffers
-
-- [protolint](https://github.com/yoheimuta/protolint)
-
-### protolint Config file
-
-- `.github/linters/.protolintrc.yml`
-- You can add, extend, and disable rules
-- Documentation at [Rules](https://github.com/yoheimuta/protolint#rules) and [Configuring](https://github.com/yoheimuta/protolint#configuring)
-
-### protolint disable single line
-
-```protobuf
-enum Foo {
-  // protolint:disable:next ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
-  firstValue = 0;
-  second_value = 1;  // protolint:disable:this ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
-  THIRD_VALUE = 2;
-}
-```
-
-### protolint disable code block
-
-```protobuf
-// protolint:disable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
-enum Foo {
-  firstValue = 0;
-  second_value = 1;
-  THIRD_VALUE = 2;
-}
-// protolint:enable ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
-```
-
-### protolint disable entire file
-
-- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yml`
-
-```yaml
-# Lint directives.
-lint:
-  # Linter files to walk.
-  files:
-    # The specific files to exclude.
-    exclude:
-      - path/to/file
-```
-
-## Clojure
-
-- [clj-kondo](https://github.com/borkdude/clj-kondo)
-- Since clj-kondo approaches static analysis in a very Clojure way, it is advised to read the [configuration docs](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md)
-
-### clj-kondo standard Config file
-
-- `.github/linters/.clj-kondo/config.edn`
-
-### clj-kondo disable single line
-
-- There is currently **No** way to disable rules in a single line
-
-### clj-kondo disable code block
-
-- There is currently **No** way to disable rules in a code block
-
-### clj-kondo disable entire file
-
-```clojure
-{:output {:exclude-files ["path/to/file"]}}
-```
-
-## EDITORCONFIG-CHECKER
-- [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
-
-### editorconfig-checker Config file
-- `.github/linters/.ecrc`
-- This linter will also use the [`.editorconfig`](https://editorconfig.org/) of your project
-
-### editorconfig-checker disable single line
--
-```js
-<LINE> // editorconfig-checker-disable-line
-```
-
-### editorconfig-checker disable code block
-
-- There is currently **No** way to disable rules inline of the file(s)
-
-### editorconfig-checker disable entire file
-
--
-
-```js
-// editorconfig-checker-disable-file
-```
-
-- You can disable entire files with the `Exclude` property in `.ecrc`
-
-```json
-{
-  "Exclude": ["path/to/file", "^regular\\/expression\\.ext$"]
-}
-```
-
-## HTML
-
-- [htmlhint](https://htmlhint.com/)
-
-### htmlhint standard Config file
-
-- `.github/linters/.htmlhintrc`
-
-### htmlhint disable single line
-
-- There is currently **No** way to disable rules in a single line
-
-### htmlhint disable code block
-
-- There is currently **No** way to disable rules in a code block
-
-### htmlhint disable entire file
-
-- There is currently **No** way to disable rules in an entire file

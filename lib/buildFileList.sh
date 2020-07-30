@@ -238,6 +238,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PHP+=("${FILE}")
+      FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
@@ -261,7 +262,8 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_PYTHON+=("${FILE}")
+      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
+      FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################

@@ -66,7 +66,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **PHP**                          | [PHP](https://www.php.net/)                                                          |
 | **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                   |
 | **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                  |
-| **Python3**                      | [pylint](https://www.pylint.org/)                                                    |
+| **Python3**                      | [pylint](https://www.pylint.org/)   [flake8](https://flake8.pycqa.org/en/latest/)    |
 | **Raku**                         | [raku](https://raku.org)                                                             |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                     |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                 |
@@ -180,6 +180,8 @@ and won't run anything unexpected.
 | **OUTPUT_FORMAT**                | `none`                | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap                              |
 | **OUTPUT_FOLDER**                | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                           |
 | **OUTPUT_DETAILS**               | `simpler`             | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                    |
+| **PYTHON_PYLINT_CONFIG_FILE**    | `.python-lint`        | Filename for [pylint configuration](http://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)               |
+| **PYTHON_FLAKE8_CONFIG_FILE**    | `.flake8`             | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                       |
 | **RUBY_CONFIG_FILE**             | `.ruby-lint.yml`      | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                 |
 | **TYPESCRIPT_ES_CONFIG_FILE**    | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
 | **VALIDATE_ALL_CODEBASE**        | `true`                | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
@@ -207,8 +209,11 @@ and won't run anything unexpected.
 | **VALIDATE_OPENAPI**             | `true`                | Flag to enable or disable the linting process of the OpenAPI language.                                                                                                           |
 | **VALIDATE_PERL**                | `true`                | Flag to enable or disable the linting process of the Perl language.                                                                                                              |
 | **VALIDATE_PHP**                 | `true`                | Flag to enable or disable the linting process of the PHP language.                                                                                                               |
+| **VALIDATE_PHP_PHPSTAN**         | `true`                | Flag to enable or disable the linting process of the PHP language (Utilizing: PHPStan).                                                                                          |
 | **VALIDATE_PROTOBUF**            | `true`                | Flag to enable or disable the linting process of the Protobuf language.                                                                                                          |
-| **VALIDATE_PYTHON**              | `true`                | Flag to enable or disable the linting process of the Python language.                                                                                                            |
+| **VALIDATE_PYTHON**              | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint) (keep for backward compatibility)                                                      |
+| **VALIDATE_PYTHON_PYLINT**       | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint)                                                                                        |
+| **VALIDATE_PYTHON_FLAKE8**       | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: flake8)                                                                                        |
 | **VALIDATE_POWERSHELL**          | `true`                | Flag to enable or disable the linting process of the Powershell language.                                                                                                        |
 | **VALIDATE_RAKU**                | `true`                | Flag to enable or disable the linting process of the Raku language.                                                                                                              |
 | **VALIDATE_RUBY**                | `true`                | Flag to enable or disable the linting process of the Ruby language.                                                                                                              |

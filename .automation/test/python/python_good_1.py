@@ -3,9 +3,9 @@ from os import getenv, path
 from pprint import pprint
 import sys
 
-import click # pylint: disable=import-error
-from dotenv import load_dotenv # pylint: disable=import-error
-import requests # pylint: disable=import-error
+import click  # pylint: disable=import-error
+from dotenv import load_dotenv  # pylint: disable=import-error
+import requests  # pylint: disable=import-error
 
 env = load_dotenv()
 api_url = getenv('API_URL', default='https://api.github.com/graphql')
@@ -13,8 +13,8 @@ github_token = getenv("GITHUB_TOKEN", default=None)
 
 if github_token is None:
     sys.exit("GitHub Token is not set." +
-        "Please set the GITHUB_TOKEN env variable in your system or " +
-        "the .env file of your project.")
+             "Please set the GITHUB_TOKEN env variable in your system or " +
+             "the .env file of your project.")
 
 client_id = getenv('CLIENT_ID', default='copy_labels.py')
 headers = {
@@ -22,6 +22,7 @@ headers = {
     'Accept': 'application/vnd.github.bane-preview+json',
     'Content-Type': 'application/json'
 }
+
 
 def create_label(repo_id, label):
     """
@@ -52,6 +53,7 @@ def create_label(repo_id, label):
 
     return response
 
+
 def get_labels(owner, repo):
     """
     Gets a list of labels from the supplied repo.
@@ -62,7 +64,7 @@ def get_labels(owner, repo):
     :return: A tuple with the GitHub id for the repository and a list of labels defined in the repository
     """
 
-    query_variables = { "owner": owner, "name": repo, }
+    query_variables = {"owner": owner, "name": repo, }
 
     with open(path.join(path.dirname(__file__), 'queries/get_repo_data.gql'), 'r') as query_file:
         query = "".join(query_file.readlines())
@@ -82,6 +84,7 @@ def get_labels(owner, repo):
         raise Exception(
             '[ERROR] getting issue labels. Status Code: {status_code} - Message: {result}'.format(
                 status_code=status_code, result=result["message"]))
+
 
 def delete_label(label_id):
     """
@@ -105,6 +108,7 @@ def delete_label(label_id):
     result = requests.post(api_url, data=json.dumps(payload), headers=headers).json()
 
     return result
+
 
 @click.command()
 @click.option('--dry', is_flag=True)
@@ -149,7 +153,8 @@ def copy_labels(source_repo, target_repo, dry):
 
     print('Done')
 
+
 if __name__ == "__main__":
     # Pylint doesn't know that @click.command takes care of injecting the
     # function parameters. Disabling Pylint error.
-    copy_labels() # pylint: disable=no-value-for-parameter
+    copy_labels()  # pylint: disable=no-value-for-parameter
