@@ -1,6 +1,6 @@
-# Yml Test Cases
+# Yaml Test Cases
 
-This folder holds the test cases for **Yml**.
+This folder holds the test cases for **Yaml**.
 
 ## Additional Docs
 
