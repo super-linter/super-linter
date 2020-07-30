@@ -69,7 +69,6 @@ function BuildFileList() {
   ################################################
   # Iterate through the array of all files found #
   ################################################
-  echo
   info "----------------------------------------------"
   info "Files that have been modified in the commit(s):"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
@@ -527,7 +526,6 @@ function BuildFileList() {
   ################
   # Footer print #
   ################
-  echo
   info "----------------------------------------------"
   info "Successfully gathered list of files..."
 }

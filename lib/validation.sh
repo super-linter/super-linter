@@ -13,7 +13,6 @@ function GetValidationInfo() {
   ############################################
   # Print headers for user provided env vars #
   ############################################
-  echo
   info "--------------------------------------------"
   info "Gathering user validation information..."
 
