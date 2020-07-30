@@ -503,7 +503,7 @@ function BuildFileList() {
     fi
   done
 
-  echo ${READ_ONLY_CHANGE_FLAG} > /dev/null 2>&1 || true # Workaround SC2034
+  export READ_ONLY_CHANGE_FLAG # Workaround SC2034
 
   #########################################
   # Need to switch back to branch of code #

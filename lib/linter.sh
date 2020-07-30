@@ -209,18 +209,18 @@ DEFAULT_IFS="${IFS}"                                  # Get the Default IFS for 
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
-DEFAULT_DISABLE_ERRORS='false'                               # Default to enabling errors
-echo "${DEFAULT_DISABLE_ERRORS}" > /dev/null 2>&1 || true    # Workaround SC2034
-RAW_FILE_ARRAY=()                                            # Array of all files that were changed
-echo "${RAW_FILE_ARRAY[*]}" > /dev/null 2>&1 || true         # Workaround SC2034
-READ_ONLY_CHANGE_FLAG=0                                      # Flag set to 1 if files changed are not txt or md
-echo "${READ_ONLY_CHANGE_FLAG}" > /dev/null 2>&1 || true     # Workaround SC2034
-TEST_CASE_FOLDER='.automation/test'                          # Folder for test cases we should always ignore
-echo "${TEST_CASE_FOLDER}" > /dev/null 2>&1 || true          # Workaround SC2034
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"      # Default Ansible Directory
-echo "${DEFAULT_ANSIBLE_DIRECTORY}" > /dev/null 2>&1 || true # Workaround SC2034
-WARNING_ARRAY_TEST=()                                        # Array of warning linters that did not have an expected test result.
-echo "${WARNING_ARRAY_TEST[*]}" > /dev/null 2>&1 || true     # Workaround SC2034
+DEFAULT_DISABLE_ERRORS='false'                            # Default to enabling errors
+export DEFAULT_DISABLE_ERRORS                             # Workaround SC2034
+RAW_FILE_ARRAY=()                                         # Array of all files that were changed
+export RAW_FILE_ARRAY                                     # Workaround SC2034
+READ_ONLY_CHANGE_FLAG=0                                   # Flag set to 1 if files changed are not txt or md
+export READ_ONLY_CHANGE_FLAG                              # Workaround SC2034
+TEST_CASE_FOLDER='.automation/test'                       # Folder for test cases we should always ignore
+export TEST_CASE_FOLDER                                   # Workaround SC2034
+DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"   # Default Ansible Directory
+export DEFAULT_ANSIBLE_DIRECTORY                          # Workaround SC2034
+WARNING_ARRAY_TEST=()                                     # Array of warning linters that did not have an expected test result.
+export WARNING_ARRAY_TEST                                 # Workaround SC2034
 
 ##############
 # Format     #
