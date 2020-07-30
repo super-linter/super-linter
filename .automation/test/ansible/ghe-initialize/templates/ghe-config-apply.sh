@@ -28,17 +28,17 @@ CheckGHEPid()
   ##################################
   if [ ${PID_CHECK} -gt ${PID_CHECK_LIMIT} ]; then
     # Over the limit, move on
-    echo "We have checked the pid ${PID_CHECK} times, moving on..."
+    info "We have checked the pid ${PID_CHECK} times, moving on..."
   else
     ################################################
     # Check to see if the PID is alive and running #
     ################################################
     if [ ! -f "${GHE_CONFIG_PID}" ]; then
       # File not found
-      echo "We're good to move forward, no .pid file found at:[${GHE_CONFIG_PID}]"
+      info "We're good to move forward, no .pid file found at:[${GHE_CONFIG_PID}]"
     else
       # Found the pid running, need to sleep
-      echo "Current PID found, sleeping ${SLEEP_SECONDS} seconds before next check..."
+      info "Current PID found, sleeping ${SLEEP_SECONDS} seconds before next check..."
       ################
       # Sleep it off #
       ################
@@ -53,9 +53,9 @@ CheckGHEPid()
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${SLEEP_CMD}]${NC}"
-        echo "Will try to call apply as last effort..."
+        error "Failed to sleep!"
+        error "[${SLEEP_CMD}]"
+        info "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
         ####################################
@@ -82,7 +82,7 @@ CheckGHEProcess()
   ##################################
   if [ ${PROCESS_CHECK} -gt ${PROCESS_CHECK_LIMIT} ]; then
     # Over the limit, move on
-    echo "We have checked the process ${PROCESS_CHECK} times, moving on..."
+    info "We have checked the process ${PROCESS_CHECK} times, moving on..."
   else
     ####################################################
     # Check to see if the process is alive and running #
@@ -99,10 +99,10 @@ CheckGHEProcess()
     ##############################
     if [ ${ERROR_CODE} -ne 0 ]; then
       # No process running on the system
-      echo "Were good to move forward, no process like:[${GHE_APPLY_COMMAND}] running currently on the system"
+      info "Were good to move forward, no process like:[${GHE_APPLY_COMMAND}] running currently on the system"
     else
       # Found the process running, need to sleep
-      echo "Current process alive:[${CHECK_PROCESS_CMD}], sleeping ${SLEEP_SECONDS} seconds before next check..."
+      info "Current process alive:[${CHECK_PROCESS_CMD}], sleeping ${SLEEP_SECONDS} seconds before next check..."
       ################
       # Sleep it off #
       ################
@@ -117,9 +117,9 @@ CheckGHEProcess()
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to sleep!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${SLEEP_CMD}]${NC}"
-        echo "Will try to call apply as last effort..."
+        error "Failed to sleep!"
+        error "[${SLEEP_CMD}]"
+        info "Will try to call apply as last effort..."
         ####################################
         # Call config apply as last effort #
         ####################################
@@ -144,7 +144,7 @@ RunConfigApply()
   ##########
   # Header #
   ##########
-  echo "Running ${GHE_APPLY_COMMAND} to the server..."
+  info "Running ${GHE_APPLY_COMMAND} to the server..."
 
   ##############################################
   # Run the command to apply changes to server #
@@ -161,12 +161,11 @@ RunConfigApply()
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Errors
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to run config apply command!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${APPLY_CMD}]${NC}"
-    exit 1
+    error "Failed to run config apply command!"
+    fatal "[${APPLY_CMD}]"
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully ran ${F[C]}${GHE_APPLY_COMMAND}${NC}"
+    info "Successfully ran ${F[C]}${GHE_APPLY_COMMAND}"
   fi
 }
 ################################################################################
