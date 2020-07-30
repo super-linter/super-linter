@@ -1037,7 +1037,7 @@ Footer() {
 cleanup() {
     local -ri EXIT_CODE=$?
 
-    sudo sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/${LOG_FILE}" || true
+    sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/${LOG_FILE}" || true
 
     exit ${EXIT_CODE}
     trap - 0 1 2 3 6 14 15
