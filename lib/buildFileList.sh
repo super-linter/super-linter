@@ -16,11 +16,8 @@ function BuildFileList() {
   ################
   # print header #
   ################
-  if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-    echo ""
-    echo "----------------------------------------------"
-    echo "Pulling in code history and branches..."
-  fi
+  debug "----------------------------------------------"
+  debug "Pulling in code history and branches..."
 
   #################################################################################
   # Switch codebase back to the default branch to get a list of all files changed #
@@ -40,18 +37,15 @@ function BuildFileList() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Error
-    echo "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
+    info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
     fatal "[${SWITCH_CMD}]"
   fi
 
   ################
   # print header #
   ################
-  if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-    echo ""
-    echo "----------------------------------------------"
-    echo "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}..${GITHUB_SHA}' --diff-filter=d]"
-  fi
+  debug "----------------------------------------------"
+  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}..${GITHUB_SHA}' --diff-filter=d]"
 
   #################################################
   # Get the Array of files changed in the commits #
@@ -75,9 +69,9 @@ function BuildFileList() {
   ################################################
   # Iterate through the array of all files found #
   ################################################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Files that have been modified in the commit(s):"
+  echo
+  info "----------------------------------------------"
+  info "Files that have been modified in the commit(s):"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     ###########################
     # Get the files extension #
@@ -90,12 +84,12 @@ function BuildFileList() {
     ##############
     # Print file #
     ##############
-    echo "File:[${FILE}], File_type:[${FILE_TYPE}]"
+    info "File:[${FILE}], File_type:[${FILE_TYPE}]"
 
     #########
     # DEBUG #
     #########
-    #echo "FILE_TYPE:[${FILE_TYPE}]"
+    debug "FILE_TYPE:[${FILE_TYPE}]"
 
     ################################
     # Get the CLOUDFORMATION files #
@@ -472,8 +466,8 @@ function BuildFileList() {
         #######################
         # It is a bash script #
         #######################
-        warn "Found bash script without extension:[.sh]${NC}"
-        echo "Please update file with proper extensions."
+        warn "Found bash script without extension:[.sh]"
+        info "Please update file with proper extensions."
         ################################
         # Append the file to the array #
         ################################
@@ -486,8 +480,8 @@ function BuildFileList() {
         #######################
         # It is a Ruby script #
         #######################
-        warn "Found ruby script without extension:[.rb]${NC}"
-        echo "Please update file with proper extensions."
+        warn "Found ruby script without extension:[.rb]"
+        info "Please update file with proper extensions."
         ################################
         # Append the file to the array #
         ################################
@@ -500,7 +494,7 @@ function BuildFileList() {
         ############################
         # Extension was not found! #
         ############################
-        warn "Failed to get filetype for:[${FILE}]!${NC}"
+        warn "Failed to get filetype for:[${FILE}]!"
         ##########################################################
         # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
         ##########################################################
@@ -533,7 +527,7 @@ function BuildFileList() {
   ################
   # Footer print #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  notice "Successfully gathered list of files...${NC}"
+  echo
+  info "----------------------------------------------"
+  info "Successfully gathered list of files..."
 }

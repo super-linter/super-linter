@@ -137,6 +137,8 @@ GITHUB_RUN_ID="${GITHUB_RUN_ID}"                                       # GitHub 
 GITHUB_SHA="${GITHUB_SHA}"                                             # GitHub sha from the commit
 GITHUB_TOKEN="${GITHUB_TOKEN}"                                         # GitHub Token passed from environment
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                 # Github Workspace
+LOG_FILE="${LOG_FILE:-super-linter.log}"                               # Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                      # Default log level (VERBOSE, DEBUG, TRACE)
 MULTI_STATUS="${MULTI_STATUS:-true}"                                   # Multiple status are created for each check ran
 TEST_CASE_RUN="${TEST_CASE_RUN}"                                       # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                       # Boolean to validate all files
@@ -184,6 +186,16 @@ VALIDATE_YAML="${VALIDATE_YAML}"                                       # Boolean
 ##############
 RUN_LOCAL="${RUN_LOCAL}"                              # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
+
+############
+# Log Vars #
+############
+LOG_TRACE=$(if [[ ${LOG_LEVEL} == "TRACE" ]]; then echo "true";fi)                                      # Boolean to see trace logs
+export LOG_TRACE
+LOG_DEBUG=$(if [[ ${LOG_LEVEL} == "DEBUG" || ${ACTIONS_RUNNER_DEBUG} == true ]]; then echo "true";fi)   # Boolean to see debug logs
+export LOG_DEBUG
+LOG_VERBOSE=$(if [[ ${LOG_LEVEL} == "VERBOSE" ]]; then echo "true";fi)                                  # Boolean to see verbose logs (info function)
+export LOG_VERBOSE
 
 ################
 # Default Vars #
@@ -352,15 +364,15 @@ Header() {
   ##########
   # Prints #
   ##########
-  echo ""
-  echo "---------------------------------------------"
-  echo "--- GitHub Actions Multi Language Linter ----"
-  echo "---------------------------------------------"
-  echo ""
-  echo "---------------------------------------------"
-  echo "The Super-Linter source code can be found at:"
-  echo " - https://github.com/github/super-linter"
-  echo "---------------------------------------------"
+  echo
+  info "---------------------------------------------"
+  info "--- GitHub Actions Multi Language Linter ----"
+  info "---------------------------------------------"
+  echo
+  info "---------------------------------------------"
+  info "The Super-Linter source code can be found at:"
+  info " - https://github.com/github/super-linter"
+  info "---------------------------------------------"
 }
 ################################################################################
 #### Function GetLinterVersions ################################################
@@ -368,9 +380,8 @@ GetLinterVersions() {
   #########################
   # Print version headers #
   #########################
-  echo ""
-  echo "---------------------------------------------"
-  echo "Linter Version Info:"
+  debug "---------------------------------------------"
+  debug "Linter Version Info:"
 
   ##########################################################
   # Go through the array of linters and print version info #
@@ -399,20 +410,19 @@ GetLinterVersions() {
     # Check the shell for errors #
     ##############################
     if [ ${ERROR_CODE} -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      warn "[${LINTER}]: Failed to get version info for:${NC}"
+      warn "[${LINTER}]: Failed to get version info for:"
     else
       ##########################
       # Print the version info #
       ##########################
-      notice "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}${NC}"
+      debug "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}"
     fi
   done
 
   #########################
   # Print version footers #
   #########################
-  echo "---------------------------------------------"
-  echo ""
+  debug "---------------------------------------------"
 }
 ################################################################################
 #### Function GetLinterRules ###################################################
@@ -434,8 +444,8 @@ GetLinterRules() {
   # Validate we have the linter rules #
   #####################################
   if [ -f "${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}" ]; then
-    echo "----------------------------------------------"
-    echo "User provided file:[${!LANGUAGE_FILE_NAME}], setting rules file..."
+    info "----------------------------------------------"
+    info "User provided file:[${!LANGUAGE_FILE_NAME}], setting rules file..."
 
     ########################################
     # Update the path to the file location #
@@ -445,9 +455,7 @@ GetLinterRules() {
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      echo "  -> Codebase does NOT have file:[${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
-    fi
+    debug "  -> Codebase does NOT have file:[${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
   fi
 }
 ################################################################################
@@ -514,7 +522,7 @@ GetStandardRules() {
     # Get the env to add to string #
     ################################
     ENV="$(echo "${ENV}" | cut -d'"' -f2)"
-    # echo "ENV:[${ENV}]"
+    debug "ENV:[${ENV}]"
     ENV_STRING+="--env ${ENV} "
   done
 
@@ -652,8 +660,8 @@ GetGitHubVars() {
   ##########
   # Prints #
   ##########
-  echo "--------------------------------------------"
-  echo "Gathering GitHub information..."
+  info "--------------------------------------------"
+  info "Gathering GitHub information..."
 
   ###############################
   # Get the Run test cases flag #
@@ -692,8 +700,8 @@ GetGitHubVars() {
     ##########################################
     # We are running locally for a debug run #
     ##########################################
-    echo "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
-    echo "bypassing GitHub Actions variables..."
+    info "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
+    info "bypassing GitHub Actions variables..."
 
     ############################
     # Set the GITHUB_WORKSPACE #
@@ -706,7 +714,7 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
-    echo "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
+    info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
 
     # No need to touch or set the GITHUB_SHA
     # No need to touch or set the GITHUB_EVENT_PATH
@@ -725,7 +733,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_SHA]!"
       fatal "[${GITHUB_SHA}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
     fi
 
     ############################
@@ -735,7 +743,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_WORKSPACE]!"
       fatal "[${GITHUB_WORKSPACE}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
     fi
 
     ############################
@@ -745,7 +753,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_EVENT_PATH]!"
       fatal "[${GITHUB_EVENT_PATH}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}${NC}"
+      info "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}"
     fi
 
     ##################################################
@@ -764,7 +772,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_ORG]!"
       fatal "[${GITHUB_ORG}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]"
     fi
 
     #######################
@@ -779,7 +787,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_REPO]!"
       fatal "[${GITHUB_REPO}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]"
     fi
   fi
 
@@ -796,7 +804,7 @@ GetGitHubVars() {
     ################################################################################
     MULTI_STATUS='false'
   else
-    notice "Successfully found:${F[W]}[GITHUB_TOKEN]${NC}"
+    info "Successfully found:${F[W]}[GITHUB_TOKEN]"
   fi
 
   ###############################
@@ -815,7 +823,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
     fi
 
     ############################
@@ -825,7 +833,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
     else
-      notice "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]${NC}"
+      info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
     fi
   fi
 }
@@ -861,10 +869,8 @@ function ValidatePowershellModules() {
     fatal "[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]"
   else
     # Success
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      notice "Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system${NC}"
-      notice "Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system${NC}"
-    fi
+    debug "Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system"
+    debug "Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system"
   fi
 }
 ################################################################################
@@ -917,8 +923,8 @@ CallStatusAPI() {
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
       # ERROR
-      echo "ERROR! Failed to call GitHub Status API!"
-      echo "ERROR:[${SEND_STATUS_CMD}]"
+      info "ERROR! Failed to call GitHub Status API!"
+      info "ERROR:[${SEND_STATUS_CMD}]"
       # Not going to fail the script on this yet...
     fi
   fi
@@ -926,39 +932,39 @@ CallStatusAPI() {
 ################################################################################
 #### Function Reports ##########################################################
 Reports() {
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Generated reports:"
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  info "Generated reports:"
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  echo
 
   ###################################
   # Prints output report if enabled #
   ###################################
   if [ -z "${FORMAT_REPORT}" ] ; then
-    echo "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+    info "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
   fi
 
   ################################
   # Prints for warnings if found #
   ################################
   for TEST in "${WARNING_ARRAY_TEST[@]}"; do
-    warn "Expected file to compare with was not found for ${TEST}${NC}"
+    warn "Expected file to compare with was not found for ${TEST}"
   done
 
 }
 ################################################################################
 #### Function Footer ###########################################################
 Footer() {
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "The script has completed"
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  info "The script has completed"
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  echo
 
   ####################################################
   # Need to clean up the lanuage array of duplicates #
@@ -1001,7 +1007,7 @@ Footer() {
   # Exit with 0 if errors disabled #
   ##################################
   if [ "${DISABLE_ERRORS}" == "true" ]; then
-    warn "Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]${NC}"
+    warn "Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]"
     exit 0
   fi
 
@@ -1022,10 +1028,10 @@ Footer() {
   ########################
   # Footer prints Exit 0 #
   ########################
-  echo ""
-  notice "All file(s) linted successfully with no errors detected${NC}"
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  notice "All file(s) linted successfully with no errors detected"
+  info "----------------------------------------------"
+  echo
   # Successful exit
   exit 0
 }
@@ -1036,7 +1042,7 @@ Footer() {
 cleanup() {
     local -ri EXIT_CODE=$?
 
-    sudo sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/super-linter.log" || true
+    sudo sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/${LOG_FILE}" || true
 
     exit ${EXIT_CODE}
     trap - 0 1 2 3 6 14 15
@@ -1118,15 +1124,10 @@ GetLinterRules "TYPESCRIPT"
 # Get YAML rules
 GetLinterRules "YAML"
 
-#################################
-# Check if were in verbose mode #
-#################################
-if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-  ##################################
-  # Get and print all version info #
-  ##################################
-  GetLinterVersions
-fi
+##################################
+# Get and print all version info #
+##################################
+GetLinterVersions
 
 ###########################################
 # Check to see if this is a test case run #
@@ -1562,7 +1563,7 @@ if [ "${VALIDATE_RAKU}" == "true" ]; then
   #######################
   # Lint the raku files #
   #######################
-    echo "${GITHUB_WORKSPACE}/META6.json"
+    info "${GITHUB_WORKSPACE}/META6.json"
     if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
         cd "${GITHUB_WORKSPACE}" &&  zef install --deps-only --/test .
     fi

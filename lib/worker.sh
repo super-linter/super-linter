@@ -53,9 +53,7 @@ function LintCodebase() {
     fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      notice "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
-    fi
+    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -74,7 +72,7 @@ function LintCodebase() {
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
     SKIP_FLAG=1
-    # echo " - No files found in changeset to lint for language:[${FILE_TYPE}]"
+    debug " - No files found in changeset to lint for language:[${FILE_TYPE}]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
@@ -120,7 +118,7 @@ function LintCodebase() {
       #########################
       # Print the header info #
       #########################
-      echo "${LINE}"
+      info "${LINE}"
     done
 
     ########################################
@@ -165,8 +163,8 @@ function LintCodebase() {
       ##############
       # File print #
       ##############
-      echo "---------------------------"
-      echo "File:[${FILE}]"
+      info "---------------------------"
+      info "File:[${FILE}]"
 
       #################################
       # Add the language to the array #
@@ -242,7 +240,7 @@ function LintCodebase() {
         ###########
         # Success #
         ###########
-        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
@@ -278,13 +276,13 @@ function TestCodebase() {
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Testing Codebase [${FILE_TYPE}] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  info "Testing Codebase [${FILE_TYPE}] files..."
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  echo
 
   #####################################
   # Validate we have linter installed #
@@ -305,7 +303,7 @@ function TestCodebase() {
     fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    notice "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
+    info "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -356,8 +354,8 @@ function TestCodebase() {
     ##############
     # File print #
     ##############
-    echo "---------------------------"
-    echo "File:[${FILE}]"
+    info "---------------------------"
+    info "File:[${FILE}]"
 
     ########################
     # Set the lint command #
@@ -461,7 +459,7 @@ function TestCodebase() {
         ###########
         # Success #
         ###########
-        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
@@ -491,7 +489,7 @@ function TestCodebase() {
         ###########
         # Success #
         ###########
-        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
@@ -521,17 +519,17 @@ function TestCodebase() {
         #############################################
         # We failed to compare the reporting output #
         #############################################
-        error "Failed to assert TAP output:[${LINTER_NAME}]${NC}"!
-        echo "Please validate the asserts!"
+        error "Failed to assert TAP output:[${LINTER_NAME}]"!
+        info "Please validate the asserts!"
         cat "${TMPFILE}"
         exit 1
       else
         # Success
-        notice "Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]${NC}"
+        info "Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]"
       fi
     else
-      warn "No TAP expected file found at:[${EXPECTED_FILE}]${NC}"
-      echo "skipping report assertions"
+      warn "No TAP expected file found at:[${EXPECTED_FILE}]"
+      info "skipping report assertions"
       #####################################
       # Append the file type to the array #
       #####################################
@@ -546,7 +544,7 @@ function TestCodebase() {
     #################################################
     # We failed to find files and no tests were ran #
     #################################################
-    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]${NC}"!
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
     fatal "Please validate logic or that tests exist!"
   fi
 }
@@ -564,11 +562,11 @@ function RunTestCases() {
   #################
   # Header prints #
   #################
-  echo ""
-  echo "----------------------------------------------"
-  echo "-------------- TEST CASE RUN -----------------"
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "-------------- TEST CASE RUN -----------------"
+  info "----------------------------------------------"
+  echo
 
   #######################
   # Test case languages #
@@ -661,11 +659,8 @@ function LintAnsibleFiles() {
     fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      # Success
-      notice "Successfully found binary in system${NC}"
-      echo "Location:[${VALIDATE_INSTALL_CMD}]"
-    fi
+    debug "Successfully found binary in system"
+    debug "Location:[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -700,7 +695,7 @@ function LintAnsibleFiles() {
       ###################################
       # Send message that were skipping #
       ###################################
-      #echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      debug "- Skipping Ansible lint run as file(s) that were modified were read only..."
       ############################
       # Create flag to skip loop #
       ############################
@@ -715,7 +710,7 @@ function LintAnsibleFiles() {
         #########################
         # Print the header line #
         #########################
-        echo "${LINE}"
+        info "${LINE}"
       done
     fi
 
@@ -755,8 +750,8 @@ function LintAnsibleFiles() {
       ##############
       # File print #
       ##############
-      echo "---------------------------"
-      echo "File:[${FILE}]"
+      info "---------------------------"
+      info "File:[${FILE}]"
 
       ################################
       # Lint the file with the rules #
@@ -792,7 +787,7 @@ function LintAnsibleFiles() {
         ###########
         # Success #
         ###########
-        notice " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
@@ -810,17 +805,12 @@ function LintAnsibleFiles() {
       HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
-  else # No ansible directory found in path
-    ###############################
-    # Check to see if debug is on #
-    ###############################
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      ########################
-      # No Ansible dir found #
-      ########################
-      warn "No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]${NC}"
-      echo "skipping ansible lint"
-    fi
+  else
+    ########################
+    # No Ansible dir found #
+    ########################
+    warn "No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]"
+    debug "skipping ansible lint"
   fi
 }
 ################################################################################

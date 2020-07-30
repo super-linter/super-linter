@@ -35,11 +35,11 @@ UPDATE_MAJOR_TAG=0                     # Flag to deploy the major tag version as
 ################################################################################
 #### Function Header ###########################################################
 Header() {
-  echo ""
-  echo "-------------------------------------------------------"
-  echo "---- GitHub Actions Upload image to [${REGISTRY}] ----"
-  echo "-------------------------------------------------------"
-  echo ""
+  echo
+  info "-------------------------------------------------------"
+  info "---- GitHub Actions Upload image to [${REGISTRY}] ----"
+  info "-------------------------------------------------------"
+  echo
 }
 ################################################################################
 #### Function ValidateInput ####################################################
@@ -48,11 +48,11 @@ ValidateInput() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Gathering variables..."
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "Gathering variables..."
+  info "----------------------------------------------"
+  echo
 
   #############################
   # Validate GITHUB_WORKSPACE #
@@ -61,7 +61,7 @@ ValidateInput() {
     error "Failed to get [GITHUB_WORKSPACE]!"
     fatal "[${GITHUB_WORKSPACE}]"
   else
-    notice "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]${NC}"
+    info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
   fi
 
   #####################
@@ -71,7 +71,7 @@ ValidateInput() {
     error "Failed to get [REGISTRY]!"
     fatal "[${REGISTRY}]"
   else
-    notice "Successfully found:${F[W]}[REGISTRY]${F[B]}, value:${F[W]}[${REGISTRY}]${NC}"
+    info "Successfully found:${F[W]}[REGISTRY]${F[B]}, value:${F[W]}[${REGISTRY}]"
   fi
 
   #####################################################
@@ -85,7 +85,7 @@ ValidateInput() {
       error "Failed to get [GPR_USERNAME]!"
       fatal "[${GPR_USERNAME}]"
     else
-      notice "Successfully found:${F[W]}[GPR_USERNAME]${F[B]}, value:${F[W]}[${GPR_USERNAME}]${NC}"
+      info "Successfully found:${F[W]}[GPR_USERNAME]${F[B]}, value:${F[W]}[${GPR_USERNAME}]"
     fi
 
     ######################
@@ -95,7 +95,7 @@ ValidateInput() {
       error "Failed to get [GPR_TOKEN]!"
       fatal "[${GPR_TOKEN}]"
     else
-      notice "Successfully found:${F[W]}[GPR_TOKEN]${F[B]}, value:${F[W]}[********]${NC}"
+      info "Successfully found:${F[W]}[GPR_TOKEN]${F[B]}, value:${F[W]}[********]"
     fi
   ########################################
   # See if we need values for Ducker hub #
@@ -108,7 +108,7 @@ ValidateInput() {
       error "Failed to get [DOCKER_USERNAME]!"
       fatal "[${DOCKER_USERNAME}]"
     else
-      notice "Successfully found:${F[W]}[DOCKER_USERNAME]${F[B]}, value:${F[W]}[${DOCKER_USERNAME}]${NC}"
+      info "Successfully found:${F[W]}[DOCKER_USERNAME]${F[B]}, value:${F[W]}[${DOCKER_USERNAME}]"
     fi
 
     ############################
@@ -118,7 +118,7 @@ ValidateInput() {
       error "Failed to get [DOCKER_PASSWORD]!"
       fatal "[${DOCKER_PASSWORD}]"
     else
-      notice "Successfully found:${F[W]}[DOCKER_PASSWORD]${F[B]}, value:${F[B]}[********]${NC}"
+      info "Successfully found:${F[W]}[DOCKER_PASSWORD]${F[B]}, value:${F[B]}[********]"
     fi
   ###########################################
   # We were not passed a registry to update #
@@ -135,14 +135,14 @@ ValidateInput() {
     error "Failed to get [IMAGE_REPO]!"
     fatal "[${IMAGE_REPO}]"
   else
-    notice "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]${NC}"
+    info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
     ###############################################
     # Need to see if GPR registry and update name #
     ###############################################
     if [[ ${REGISTRY} == "GPR" ]]; then
       NAME="docker.pkg.github.com/${IMAGE_REPO}/super-linter"
       IMAGE_REPO="${NAME}"
-      echo "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GPR"
+      info "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GPR"
     fi
   fi
 
@@ -150,8 +150,8 @@ ValidateInput() {
   # Validate IMAGE_VERSION #
   ##########################
   if [ -z "${IMAGE_VERSION}" ]; then
-    warn "Failed to get [IMAGE_VERSION]!${NC}"
-    echo "Pulling from Branch Name..."
+    warn "Failed to get [IMAGE_VERSION]!"
+    info "Pulling from Branch Name..."
     ##############################
     # Get the name of the branch #
     ##############################
@@ -179,9 +179,9 @@ ValidateInput() {
     # Set the IMAGE_VERSION to the BRANCH_NAME #
     ############################################
     IMAGE_VERSION="${BRANCH_NAME}"
-    echo "Tag:[${IMAGE_VERSION}]"
+    info "Tag:[${IMAGE_VERSION}]"
   else
-    notice "Successfully found:${F[W]}[IMAGE_VERSION]${F[B]}, value:${F[W]}[${IMAGE_VERSION}]${NC}"
+    info "Successfully found:${F[W]}[IMAGE_VERSION]${F[B]}, value:${F[W]}[${IMAGE_VERSION}]"
   fi
 
   ##################################
@@ -205,7 +205,7 @@ ValidateInput() {
     ###################################
     UPDATE_MAJOR_TAG=1
 
-    echo "- Also deploying a major tag of:[${MAJOR_TAG}]"
+    info "- Also deploying a major tag of:[${MAJOR_TAG}]"
   fi
 
   ############################
@@ -215,7 +215,7 @@ ValidateInput() {
     error "Failed to get [DOCKERFILE_PATH]!"
     fatal "[${DOCKERFILE_PATH}]"
   else
-    notice "Successfully found:${F[W]}[DOCKERFILE_PATH]${F[B]}, value:${F[W]}[${DOCKERFILE_PATH}]${NC}"
+    info "Successfully found:${F[W]}[DOCKERFILE_PATH]${F[B]}, value:${F[W]}[${DOCKERFILE_PATH}]"
   fi
 }
 ################################################################################
@@ -232,11 +232,11 @@ Authenticate() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Login to ${NAME}..."
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "Login to ${NAME}..."
+  info "----------------------------------------------"
+  echo
 
   ###################
   # Auth to service #
@@ -257,7 +257,7 @@ Authenticate() {
     fatal "[${LOGIN_CMD}]"
 fatal  else
     # SUCCESS
-    notice "Successfully authenticated to ${F[C]}${NAME}${F[B]}!${NC}"
+    info "Successfully authenticated to ${F[C]}${NAME}${F[B]}!"
   fi
 }
 ################################################################################
@@ -266,11 +266,11 @@ BuildImage() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Building the DockerFile image..."
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "Building the DockerFile image..."
+  info "----------------------------------------------"
+  echo
 
   ################################
   # Validate the DOCKERFILE_PATH #
@@ -300,7 +300,7 @@ BuildImage() {
     fatal "failed to [build] Dockerfile!"
   else
     # SUCCESS
-    notice "Successfully Built image!${NC}"
+    info "Successfully Built image!"
   fi
 
   ########################################################
@@ -323,7 +323,7 @@ BuildImage() {
       fatal "failed to [tag] Dockerfile!"
     else
       # SUCCESS
-      notice "Successfully tagged image!${NC}"
+      info "Successfully tagged image!"
     fi
   fi
 }
@@ -333,11 +333,11 @@ UploadImage() {
   ################
   # Print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "Uploading the DockerFile image to ${REGISTRY}..."
-  echo "----------------------------------------------"
-  echo ""
+  echo
+  info "----------------------------------------------"
+  info "Uploading the DockerFile image to ${REGISTRY}..."
+  info "----------------------------------------------"
+  echo
 
   ############################################
   # Upload the docker image that was created #
@@ -357,7 +357,7 @@ UploadImage() {
     fatal "failed to [upload] Dockerfile!"
   else
     # SUCCESS
-    notice "Successfully Uploaded Docker image:${F[W]}[${IMAGE_VERSION}]${F[B]} to ${F[C]}${REGISTRY}${F[B]}!${NC}"
+    info "Successfully Uploaded Docker image:${F[W]}[${IMAGE_VERSION}]${F[B]} to ${F[C]}${REGISTRY}${F[B]}!"
   fi
 
   #########################
@@ -390,13 +390,13 @@ UploadImage() {
     ###################
     # Print the goods #
     ###################
-    echo "----------------------------------------------"
-    echo "Docker Image Details:"
-    echo "Repository:[${REPO}]"
-    echo "Tag:[${TAG}]"
-    echo "Image_ID:[${IMAGE_ID}]"
-    echo "Size:[${SIZE}]"
-    echo "----------------------------------------------"
+    info "----------------------------------------------"
+    info "Docker Image Details:"
+    info "Repository:[${REPO}]"
+    info "Tag:[${TAG}]"
+    info "Image_ID:[${IMAGE_ID}]"
+    info "Size:[${SIZE}]"
+    info "----------------------------------------------"
   fi
 
   ###############################################################
@@ -421,18 +421,18 @@ UploadImage() {
       fatal "failed to [upload] MAJOR_TAG:[${MAJOR_TAG}] Dockerfile!"
     else
       # SUCCESS
-      notice "Successfully Uploaded TAG:${F[W]}[${MAJOR_TAG}]${F[B]} of Docker image to ${F[C]}${REGISTRY}${F[B]}!${NC}"
+      info "Successfully Uploaded TAG:${F[W]}[${MAJOR_TAG}]${F[B]} of Docker image to ${F[C]}${REGISTRY}${F[B]}!"
     fi
   fi
 }
 ################################################################################
 #### Function Footer ###########################################################
 Footer() {
-  echo ""
-  echo "-------------------------------------------------------"
-  echo "The step has completed"
-  echo "-------------------------------------------------------"
-  echo ""
+  echo
+  info "-------------------------------------------------------"
+  info "The step has completed"
+  info "-------------------------------------------------------"
+  echo
 }
 ################################################################################
 ################################## MAIN ########################################
