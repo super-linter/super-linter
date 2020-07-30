@@ -255,7 +255,7 @@ Authenticate() {
     # ERROR
     error "Failed to authenticate to ${NAME}!"
     fatal "[${LOGIN_CMD}]"
-fatal  else
+  else
     # SUCCESS
     info "Successfully authenticated to ${F[C]}${NAME}${F[B]}!"
   fi
