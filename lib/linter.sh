@@ -23,6 +23,7 @@ source /action/lib/worker.sh # Source the function script(s)
 ###########
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation' # Default rules files location
+GITHUB_API_URL='https://api.github.com'          # GitHub API root url
 # Ansible Vars
 ANSIBLE_FILE_NAME='.ansible-lint.yml'                                 # Name of the file
 ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}" # Path to the Ansible lint rules
