@@ -7,11 +7,11 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.06.21 as clj-kondo
+FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
 FROM golangci/golangci-lint:v1.29.0 as golangci-lint
-FROM yoheimuta/protolint:v0.25.1 as protolint
+FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 
@@ -52,29 +52,23 @@ ARG GLIBC_VERSION='2.31-r0'
 RUN apk add --update --no-cache \
     ansible-lint \
     bash \
+    coreutils \
     curl \
     gcc \
     git git-lfs\
     go \
     icu-libs \
     jq \
-    libxml2-utils \
+    libc-dev libxml2-utils \
     make \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
     perl \
-    php7 \
-    php7-phar \
-    php7-json \
-    php7-simplexml \
-    php7-xmlwriter \
-    php7-mbstring \
-    php7-tokenizer \
-    php7-ctype \
-    php7-curl \
-    php7-dom \
+    php7 php7-phar php7-json php7-mbstring \
+    php7-tokenizer php7-ctype php7-curl php7-dom \
     py3-setuptools \
+    readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     gnupg
 
@@ -206,6 +200,35 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
 
+####################
+# Install luacheck #
+####################
+RUN wget https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+    && cd lua-5.3.5 \
+    && make linux \
+    && make install \
+    && cd .. && rm -r lua-5.3.5/
+
+RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+    && cd luarocks-3.3.1-super-linter \
+    && ./configure --with-lua-include=/usr/local/include \
+    && make \
+    && make -b install \
+    && cd .. && rm -r luarocks-3.3.1-super-linter/
+
+RUN luarocks install luacheck
+
+#############################
+# Install Phive and PHPStan #
+#############################
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && yes | phive install -g phpstan
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -218,6 +241,8 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     GITHUB_TOKEN=${GITHUB_TOKEN} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
     LINTER_RULES_PATH=${LINTER_RULES_PATH} \
+    LOG_FILE=${LOG_FILE} \
+    LOG_LEVEL=${LOG_LEVEL} \
     OUTPUT_DETAILS=${OUTPUT_DETAILS} \
     OUTPUT_FOLDER=${OUTPUT_FOLDER} \
     OUTPUT_FORMAT=${OUTPUT_FORMAT} \
@@ -241,13 +266,17 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_LUA=${VALIDATE_LUA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
     VALIDATE_PERL=${VALIDATE_PERL} \
     VALIDATE_PHP=${VALIDATE_PHP} \
+    VALIDATE_PHP_PHPSTAN=${VALIDATE_PHP_PHPSTAN} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
+    VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
+    VALIDATE_PYTHON_FLAKE8=${VALIDATE_PYTHON_FLAKE8} \
     VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_STATES=${VALIDATE_STATES} \

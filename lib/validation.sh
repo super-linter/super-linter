@@ -13,9 +13,8 @@ function GetValidationInfo() {
   ############################################
   # Print headers for user provided env vars #
   ############################################
-  echo ""
-  echo "--------------------------------------------"
-  echo "Gathering user validation information..."
+  info "--------------------------------------------"
+  info "Gathering user validation information..."
 
   ###########################################
   # Skip validation if were running locally #
@@ -31,10 +30,10 @@ function GetValidationInfo() {
     if [[ ${VALIDATE_ALL_CODEBASE} != "false" ]]; then
       # Set to true
       VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-      echo "- Validating ALL files in code base..."
+      info "- Validating ALL files in code base..."
     else
       # Its false
-      echo "- Only validating [new], or [edited] files in code base..."
+      info "- Only validating [new], or [edited] files in code base..."
     fi
   fi
 
@@ -46,7 +45,6 @@ function GetValidationInfo() {
   ################################
   # Convert strings to lowercase #
   ################################
-
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
@@ -54,7 +52,6 @@ function GetValidationInfo() {
     # Set the value of the var to lowercase
     eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
   done
-
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -70,7 +67,6 @@ function GetValidationInfo() {
       ANY_SET="true"
     fi
   done
-
 
   ###################################################
   # Validate if we should check individual lanuages #
@@ -170,23 +166,19 @@ function GetValidationInfo() {
     ACTIONS_RUNNER_DEBUG="true"
   fi
 
-  ###################
-  # Debug on runner #
-  ###################
-  if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-    ###########################
-    # Print the validate info #
-    ###########################
-    for LINE in "${PRINT_ARRAY[@]}"; do
-      echo "${LINE}"
-    done
+  ###########################
+  # Print the validate info #
+  ###########################
+  for LINE in "${PRINT_ARRAY[@]}"; do
+    debug "${LINE}"
+  done
 
-    echo "--- DEBUG INFO ---"
-    echo "---------------------------------------------"
-    RUNNER=$(whoami)
-    echo "Runner:[${RUNNER}]"
-    echo "ENV:"
-    printenv
-    echo "---------------------------------------------"
-  fi
+  debug "--- DEBUG INFO ---"
+  debug "---------------------------------------------"
+  RUNNER=$(whoami)
+  debug "Runner:[${RUNNER}]"
+  PRINTENV=$(printenv)
+  debug "ENV:"
+  debug "${PRINTENV}"
+  debug "---------------------------------------------"
 }
