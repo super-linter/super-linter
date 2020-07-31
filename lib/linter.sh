@@ -268,7 +268,6 @@ FILE_ARRAY_LUA=()                 # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
-FILE_ARRAY_PHP=()                 # Array of files to check
 FILE_ARRAY_PHP_BUILTIN=()         # Array of files to check
 FILE_ARRAY_PHP_PHPCS=()           # Array of files to check
 FILE_ARRAY_PHP_PSALM=()           # Array of files to check
