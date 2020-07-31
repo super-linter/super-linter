@@ -230,7 +230,9 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_PHP+=("${FILE}")
+      FILE_ARRAY_PHP_BUILTIN+=("${FILE}")
+      FILE_ARRAY_PHP_PHPCS+=("${FILE}")
+      FILE_ARRAY_PHP_PSALM+=("${FILE}")
       FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
       ##########################################################
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
