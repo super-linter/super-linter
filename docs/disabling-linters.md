@@ -243,7 +243,7 @@ a {
 
 - `.github/linters/.dart-lint.yml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/anaylsis_options.yaml`
+- File should be located at: `.github/linters/analysis_options.yaml`
 
 ### dartanalyzer disable single line
 
@@ -261,7 +261,7 @@ int x = ''; // ignore: invalid_assignment
 
 ### dartanalyzer disable entire file
 
-- You can disable entire files with the `analyzer.exclude` property in `anaylsis_options.yaml`
+- You can disable entire files with the `analyzer.exclude` property in `analysis_options.yaml`
 
 ```dart
 analyzer:
