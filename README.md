@@ -58,7 +58,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **JavaScript**   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)     |
 | **JSON**         | [jsonlint](https://github.com/zaach/jsonlint)                            |
 | **CSS**          | [stylelint](https://stylelint.io/)                                       |
-| **Java**         | [Spotless](https://github.com/diffplug/spotless)                         |
+| **Java**         | [checkstyle](https://checkstyle.org)                         |
 | **Kotlin**       | [ktlint](https://github.com/pinterest/ktlint)                            |
 | **Markdown**     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme) |
 | **OpenAPI**      | [spectral](https://github.com/stoplightio/spectral)                      |
