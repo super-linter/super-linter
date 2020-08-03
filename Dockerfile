@@ -65,7 +65,7 @@ RUN apk add --update --no-cache \
     npm nodejs-current \
     openjdk8-jre \
     perl \
-    php7 php7-phar php7-json php7-mbstring \
+    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom \
     py3-setuptools \
     readline-dev \
