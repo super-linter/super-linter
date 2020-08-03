@@ -66,7 +66,7 @@ RUN apk add --update --no-cache \
     openjdk8-jre \
     perl \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
-    php7-tokenizer php7-ctype php7-curl php7-dom \
+    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
