@@ -1120,7 +1120,9 @@ GetLinterRules "CSS"
 # Get DART rules
 GetLinterRules "DART"
 # Get Docker rules
-GetLinterRules "DOCKER"
+GetLinterRules "DOCKERFILE"
+# Get Docker rules
+GetLinterRules "DOCKERFILE_HADOLINT"
 # Get Golang rules
 GetLinterRules "GO"
 # Get Groovy rules
