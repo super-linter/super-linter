@@ -363,7 +363,7 @@ function TestCodebase() {
     #######################################
     # Check if docker and get folder name #
     #######################################
-    if [[ ${FILE_TYPE} == "DOCKER" ]]; then
+    if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
       if [[ ${FILE} == *"good"* ]]; then
         #############
         # Good file #
