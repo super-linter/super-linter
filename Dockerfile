@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.30.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
+FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 
 ##################
 # Get base image #
@@ -175,6 +176,11 @@ COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
 # Install editorconfig-checker #
 ################################
 COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
+
+###############################
+# Install hadolint dockerfile #
+###############################
+COPY --from=dockerfile-lint /bin/habolint /usr/bin/hadolint
 
 ##################
 # Install ktlint #
