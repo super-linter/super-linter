@@ -65,8 +65,8 @@ RUN apk add --update --no-cache \
     npm nodejs-current \
     openjdk8-jre \
     perl \
-    php7 php7-phar php7-json php7-mbstring \
-    php7-tokenizer php7-ctype php7-curl php7-dom \
+    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
+    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -99,6 +99,19 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install Phive dependencies #
+##############################
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc \
+    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1
+# Trusted GPG keys for PHP linters:   phpcs,           phpstan,         psalm
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -204,17 +217,6 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
     && cd .. && rm -r luarocks-3.3.1-super-linter/
 
 RUN luarocks install luacheck
-
-#############################
-# Install Phive and PHPStan #
-#############################
-RUN wget -O phive.phar https://phar.io/releases/phive.phar \
-    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
-    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
-    && gpg --verify phive.phar.asc phive.phar \
-    && chmod +x phive.phar \
-    && mv phive.phar /usr/local/bin/phive \
-    && yes | phive install -g phpstan
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #

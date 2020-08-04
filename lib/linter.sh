@@ -72,11 +72,23 @@ MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}" # Path t
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                    # Name of the file
 OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}" # Path to the OpenAPI lint rules
-# PHP Vars
-PHPSTAN_FILE_NAME='phpstan.neon'                                # Name of the file
-PHPSTAN_LINTER_RULES="${GITHUB_WORKSPACE}/${PHPSTAN_FILE_NAME}" # Path to the PHPStan lint rules in the repository
-if [ ! -f "$PHPSTAN_LINTER_RULES" ]; then
-  PHPSTAN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHPSTAN_FILE_NAME}" # Path to the PHPStan lint rules
+# PHPCS Vars
+PHP_PHPCS_FILE_NAME='phpcs.xml'                                     # Name of the file
+PHP_PHPCS_LINTER_RULES="${GITHUB_WORKSPACE}/${PHP_PHPCS_FILE_NAME}" # Path to the PHP CodeSniffer lint rules in the repository
+if [ ! -f "$PHP_PHPCS_LINTER_RULES" ]; then
+  PHP_PHPCS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHP_PHPCS_FILE_NAME}" # Path to the PHP CodeSniffer lint rules
+fi
+# PHPStan Vars
+PHP_PHPSTAN_FILE_NAME='phpstan.neon'                                    # Name of the file
+PHP_PHPSTAN_LINTER_RULES="${GITHUB_WORKSPACE}/${PHP_PHPSTAN_FILE_NAME}" # Path to the PHPStan lint rules in the repository
+if [ ! -f "$PHP_PHPSTAN_LINTER_RULES" ]; then
+  PHP_PHPSTAN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHP_PHPSTAN_FILE_NAME}" # Path to the PHPStan lint rules
+fi
+# Psalm Vars
+PHP_PSALM_FILE_NAME='psalm.xml'                                     # Name of the file
+PHP_PSALM_LINTER_RULES="${GITHUB_WORKSPACE}/${PHP_PSALM_FILE_NAME}" # Path to the Psalm lint rules in the repository
+if [ ! -f "$PHP_PSALM_LINTER_RULES" ]; then
+  PHP_PSALM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PHP_PSALM_FILE_NAME}" # Path to the Psalm lint rules
 fi
 # Powershell Vars
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                    # Name of the file
@@ -117,9 +129,10 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo' 'c
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
   'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
-  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP' 'PHP_PHPSTAN' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'TERRAFORM'
-  'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
+  'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8'
+  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
+  'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
 # Array for all languages that were linted #
@@ -166,8 +179,10 @@ VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean t
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                 # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                               # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                                     # Boolean to validate language
-VALIDATE_PHP="${VALIDATE_PHP}"                                       # Boolean to validate language
+VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-VALIDATE_PHP_BUILTIN}"         # Boolean to validate language
+VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                           # Boolean to validate language
 VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                       # Boolean to validate language
+VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                         # Boolean to validate language
 VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}" # Boolean to validate language
 VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                   # Boolean to validate language
@@ -259,8 +274,10 @@ FILE_ARRAY_LUA=()                 # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
 FILE_ARRAY_PERL=()                # Array of files to check
-FILE_ARRAY_PHP=()                 # Array of files to check
+FILE_ARRAY_PHP_BUILTIN=()         # Array of files to check
+FILE_ARRAY_PHP_PHPCS=()           # Array of files to check
 FILE_ARRAY_PHP_PHPSTAN=()         # Array of files to check
+FILE_ARRAY_PHP_PSALM=()           # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
@@ -322,10 +339,14 @@ ERRORS_FOUND_OPENAPI=0                  # Count of errors found
 export ERRORS_FOUND_OPENAPI             # Workaround SC2034
 ERRORS_FOUND_PERL=0                     # Count of errors found
 export ERRORS_FOUND_PERL                # Workaround SC2034
-ERRORS_FOUND_PHP=0                      # Count of errors found
-export ERRORS_FOUND_PHP                 # Workaround SC2034
+ERRORS_FOUND_PHP_BUILTIN=0              # Count of errors found
+export ERRORS_FOUND_PHP_BUILTIN         # Workaround SC2034
+ERRORS_FOUND_PHP_PHPCS=0                # Count of errors found
+export ERRORS_FOUND_PHP_PHPCS           # Workaround SC2034
 ERRORS_FOUND_PHP_PHPSTAN=0              # Count of errors found
 export ERRORS_FOUND_PHP_PHPSTAN         # Workaround SC2034
+ERRORS_FOUND_PHP_PSALM=0                # Count of errors found
+export ERRORS_FOUND_PHP_PSALM           # Workaround SC2034
 ERRORS_FOUND_POWERSHELL=0               # Count of errors found
 export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
 ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
@@ -1484,23 +1505,36 @@ fi
 ################
 # PHP LINTING #
 ################
-if [ "${VALIDATE_PHP}" == "true" ]; then
-  #######################
-  # Lint the PHP files #
-  #######################
+if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
+  ################################################
+  # Lint the PHP files using built-in PHP linter #
+  ################################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP[@]}"
+  LintCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_BUILTIN[@]}"
 fi
 
-###################
-# PHPStan LINTING #
-###################
+if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
+  ############################################
+  # Lint the PHP files using PHP CodeSniffer #
+  ############################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPCS[@]}"
+fi
+
 if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
   #######################
-  # Lint the PHP files #
+  # Lint the PHP files using PHPStan #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
+  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
+fi
+
+if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
+  ##################################
+  # Lint the PHP files using Psalm #
+  ##################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PSALM[@]}"
 fi
 
 ######################

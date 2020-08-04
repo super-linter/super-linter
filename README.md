@@ -41,39 +41,39 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
-| _Language_                       | _Linter_                                                                                                 |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                  |
-| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                              |
-| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                       |
-| **CSS**                          | [stylelint](https://stylelint.io/)                                                                       |
-| **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                       |
-| **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                              |
-| **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                        |
-| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)                                     |
-| **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                     |
-| **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                          |
-| **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                               |
-| **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                                           |
-| **HTMLHint**                     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                                         |
-| **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                     |
-| **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                                            |
-| **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                            |
-| **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                                         |
-| **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)                                 |
-| **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                                      |
-| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)                                          |
-| **PHP**                          | [PHP](https://www.php.net/)                                                                              |
-| **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                                       |
-| **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                                      |
-| **Python3**                      | [pylint](https://www.pylint.org/) [flake8](https://flake8.pycqa.org/en/latest/)                          |
-| **Raku**                         | [raku](https://raku.org)                                                                                 |
-| **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                         |
-| **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                                     |
-| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) [terrascan](https://github.com/accurics/terrascan) |
-| **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                     |
-| **XML**                          | [LibXML](http://xmlsoft.org/)                                                                            |
-| **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                      |
+| _Language_                       | _Linter_                                                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                  |
+| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                              |
+| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                       |
+| **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                       |
+| **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                       |
+| **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                              |
+| **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                        |
+| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git)                                                                                                     |
+| **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                     |
+| **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                          |
+| **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                                                                                               |
+| **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                                                                                                           |
+| **HTMLHint**                     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                                                                                                         |
+| **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
+| **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                                                                                                            |
+| **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                                                                                            |
+| **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                                                                                                         |
+| **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)                                                                                                 |
+| **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                                                                                                      |
+| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)                                                                                                          |
+| **PHP**                          | [PHP built-in linter](https://www.php.net/) [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) [PHPStan](https://phpstan.org/n) [Psalm](https://psalm.dev/) |
+| **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                                                                                                       |
+| **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                                                                                                      |
+| **Python3**                      | [pylint](https://www.pylint.org/) [flake8](https://flake8.pycqa.org/en/latest/)                                                                                          |
+| **Raku**                         | [raku](https://raku.org)                                                                                                                                                 |
+| **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                         |
+| **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                                                                                                     |
+| **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) [terrascan](https://github.com/accurics/terrascan)                                                                 |
+| **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
+| **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                            |
+| **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                      |
 
 ## How to use
 
@@ -210,8 +210,11 @@ and won't run anything unexpected.
 | **VALIDATE_MD**                  | `true`                | Flag to enable or disable the linting process of the Markdown language.                                                                                                          |
 | **VALIDATE_OPENAPI**             | `true`                | Flag to enable or disable the linting process of the OpenAPI language.                                                                                                           |
 | **VALIDATE_PERL**                | `true`                | Flag to enable or disable the linting process of the Perl language.                                                                                                              |
-| **VALIDATE_PHP**                 | `true`                | Flag to enable or disable the linting process of the PHP language.                                                                                                               |
-| **VALIDATE_PHP_PHPSTAN**         | `true`                | Flag to enable or disable the linting process of the PHP language (Utilizing: PHPStan).                                                                                          |
+| **VALIDATE_PHP**                 | `true`                | Flag to enable or disable the linting process of the PHP language. (Utilizing: PHP built-in linter) (keep for backward compatibility)                                            |
+| **VALIDATE_PHP_BUILTIN**         | `true`                | Flag to enable or disable the linting process of the PHP language. (Utilizing: PHP built-in linter)                                                                              |
+| **VALIDATE_PHP_PHPCS**           | `true`                | Flag to enable or disable the linting process of the PHP language. (Utilizing: PHP CodeSniffer)                                                                                  |
+| **VALIDATE_PHP_PHPSTAN**         | `true`                | Flag to enable or disable the linting process of the PHP language. (Utilizing: PHPStan)                                                                                          |
+| **VALIDATE_PHP_PSALM**           | `true`                | Flag to enable or disable the linting process of the PHP language. (Utilizing: PSalm)                                                                                            |
 | **VALIDATE_PROTOBUF**            | `true`                | Flag to enable or disable the linting process of the Protobuf language.                                                                                                          |
 | **VALIDATE_PYTHON**              | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint) (keep for backward compatibility)                                                      |
 | **VALIDATE_PYTHON_PYLINT**       | `true`                | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint)                                                                                        |

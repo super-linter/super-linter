@@ -1,0 +1,12 @@
+TAP version 13
+1..4
+not ok 1 - php_bad_1.php
+  ---
+  message: \nFILE  /tmp/lint/.automation/test/php/php_bad_1.php\n----------------------------------------------------------------------\nFOUND 7 ERRORS AFFECTING 1 LINE\n----------------------------------------------------------------------\n 3 | ERROR | [x] Expected at least 1 space before "-"; 0 found\n 3 | ERROR | [x] Expected at least 1 space after "-"; 0 found\n 3 | ERROR | [x] Expected at least 1 space before "="; 0 found\n 3 | ERROR | [x] Expected at least 1 space after "="; 0 found\n 3 | ERROR | [x] Expected at least 1 space before "-"; 0 found\n 3 | ERROR | [x] Expected at least 1 space before "-"; 0 found\n 3 | ERROR | [x] Expected at least 1 space after "-"; 0 found\n----------------------------------------------------------------------\nPHPCBF CAN FIX THE 7 MARKED SNIFF VIOLATIONS AUTOMATICALLY\n----------------------------------------------------------------------\n\n
+  ...
+not ok 2 - php_bad_2.php
+  ---
+  message: \nFILE  /tmp/lint/.automation/test/php/php_bad_2.php\n----------------------------------------------------------------------\nFOUND 4 ERRORS AND 1 WARNING AFFECTING 4 LINES\n----------------------------------------------------------------------\n  1 | WARNING | [ ] A file should declare new symbols (classes,\n    |         |     functions, constants, etc.) and cause no other\n    |         |     side effects, or it should execute logic with\n    |         |     side effects, but should not do both. The first\n    |         |     symbol is defined on line 6 and the first side\n    |         |     effect is on line 10.\n  6 | ERROR   | [x] Opening brace should be on a new line\n 14 | ERROR   | [x] Space before opening parenthesis of function call\n    |         |     prohibited\n 15 | ERROR   | [x] Newline required after opening brace\n 15 | ERROR   | [x] Closing brace must be on a line by itself\n----------------------------------------------------------------------\nPHPCBF CAN FIX THE 4 MARKED SNIFF VIOLATIONS AUTOMATICALLY\n----------------------------------------------------------------------\n\n
+  ...
+ok 3 - php_good_1.php
+ok 4 - php_good_2.php
