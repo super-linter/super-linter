@@ -363,7 +363,7 @@ function TestCodebase() {
     #######################################
     # Check if docker and get folder name #
     #######################################
-    if [[ ${FILE_TYPE} == "DOCKER" ]]; then
+    if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
       if [[ ${FILE} == *"good"* ]]; then
         #############
         # Good file #
@@ -576,7 +576,8 @@ function RunTestCases() {
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
   TestCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\)\$" "css"
   TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "dart"
-  TestCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c ${DOCKER_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
+  TestCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c ${DOCKERFILE_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
+  TestCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
   TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\.ext$" "editorconfig-checker"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "golang"
