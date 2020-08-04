@@ -14,12 +14,6 @@
 # - System with Docker installed
 # - Global variables met
 
-#########################
-# Source Function Files #
-#########################
-# shellcheck source=/dev/null
-source ../lib/log.sh # Source the function script(s)
-
 ###########
 # Globals #
 ###########
@@ -34,6 +28,12 @@ IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
 MAJOR_TAG=''                           # Major tag version if we need to update it
 UPDATE_MAJOR_TAG=0                     # Flag to deploy the major tag version as well
+
+#########################
+# Source Function Files #
+#########################
+# shellcheck source=/dev/null
+source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################

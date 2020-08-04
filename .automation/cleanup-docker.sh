@@ -13,12 +13,6 @@
 # - System with Docker installed
 # - Global variables met
 
-#########################
-# Source Function Files #
-#########################
-# shellcheck source=/dev/null
-source ../lib/log.sh # Source the function script(s)
-
 ###########
 # Globals #
 ###########
@@ -28,6 +22,12 @@ DOCKER_PASSWORD="${DOCKER_PASSWORD}"   # Password to login to DockerHub
 IMAGE_REPO="${IMAGE_REPO}"             # Image repo to upload the image
 IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
+
+#########################
+# Source Function Files #
+#########################
+# shellcheck source=/dev/null
+source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
