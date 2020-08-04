@@ -1,6 +1,6 @@
 # AWS States language Test Cases
 
-This folder holds the test cases for **Terraform**.
+This folder holds the test cases for **AWS States Language**.
 
 ## Additional Docs
 

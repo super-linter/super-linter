@@ -7,11 +7,11 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.06.21 as clj-kondo
+FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.29.0 as golangci-lint
-FROM yoheimuta/protolint:v0.25.1 as protolint
+FROM golangci/golangci-lint:v1.30.0 as golangci-lint
+FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 
@@ -52,25 +52,25 @@ ARG GLIBC_VERSION='2.31-r0'
 RUN apk add --update --no-cache \
     ansible-lint \
     bash \
+    coreutils \
     curl \
     gcc \
-    git \
+    git git-lfs\
     go \
     icu-libs \
     jq \
-    libxml2-utils \
+    libc-dev libxml2-utils \
     make \
     musl-dev \
-    npm \
-    nodejs \
+    npm nodejs-current \
     openjdk8-jre \
     perl \
-    php7 \
+    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
+    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
-    ruby \
-    ruby-dev \
-    ruby-bundler \
-    ruby-rdoc
+    readline-dev \
+    ruby ruby-dev ruby-bundler ruby-rdoc \
+    gnupg
 
 ########################################
 # Copy dependencies files to container #
@@ -99,6 +99,19 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install Phive dependencies #
+##############################
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc \
+    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1
+# Trusted GPG keys for PHP linters:   phpcs,           phpstan,         psalm
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
@@ -174,7 +187,7 @@ RUN curl -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktli
 ####################
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
-RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk
+RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
 RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
@@ -198,54 +211,82 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
     && curl -sSL $CHECKSTYLE_LATEST \
     --output /usr/bin/checkstyle.jar
 
+####################
+# Install luacheck #
+####################
+RUN wget https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+    && cd lua-5.3.5 \
+    && make linux \
+    && make install \
+    && cd .. && rm -r lua-5.3.5/
+
+RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+    && cd luarocks-3.3.1-super-linter \
+    && ./configure --with-lua-include=/usr/local/include \
+    && make \
+    && make -b install \
+    && cd .. && rm -r luarocks-3.3.1-super-linter/
+
+RUN luarocks install luacheck
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
-ENV GITHUB_SHA=${GITHUB_SHA} \
-    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
-    GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
-    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
-    VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
-    LINTER_RULES_PATH=${LINTER_RULES_PATH} \
-    VALIDATE_YAML=${VALIDATE_YAML} \
-    VALIDATE_JSON=${VALIDATE_JSON} \
-    VALIDATE_XML=${VALIDATE_XML} \
-    VALIDATE_MD=${VALIDATE_MD} \
-    VALIDATE_BASH=${VALIDATE_BASH} \
-    VALIDATE_PERL=${VALIDATE_PERL} \
-    VALIDATE_RAKU=${VALIDATE_RAKU} \
-    VALIDATE_PHP=${VALIDATE_PHP} \
-    VALIDATE_PYTHON=${VALIDATE_PYTHON} \
-    VALIDATE_RUBY=${VALIDATE_RUBY} \
-    VALIDATE_COFFEE=${VALIDATE_COFFEE} \
-    VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
-    VALIDATE_DOCKER=${VALIDATE_DOCKER} \
-    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
-    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
-    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
-    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
-    VALIDATE_GO=${VALIDATE_GO} \
-    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
-    VALIDATE_CSS=${VALIDATE_CSS} \
-    VALIDATE_ENV=${VALIDATE_ENV} \
-    VALIDATE_HTML=${VALIDATE_HTML} \
-    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
-    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
-    VALIDATE_DART=${VALIDATE_DART} \
-    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
-    VALIDATE_JAVA=${VALIDATE_JAVA} \
-    VALIDATE_ARM=${VALIDATE_ARM} \
-    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
-    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
-    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
+ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
+    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
+    DISABLE_ERRORS=${DISABLE_ERRORS} \
+    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
+    GITHUB_SHA=${GITHUB_SHA} \
+    GITHUB_TOKEN=${GITHUB_TOKEN} \
+    GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
+    LINTER_RULES_PATH=${LINTER_RULES_PATH} \
+    LOG_FILE=${LOG_FILE} \
+    LOG_LEVEL=${LOG_LEVEL} \
+    OUTPUT_DETAILS=${OUTPUT_DETAILS} \
+    OUTPUT_FOLDER=${OUTPUT_FOLDER} \
+    OUTPUT_FORMAT=${OUTPUT_FORMAT} \
     RUN_LOCAL=${RUN_LOCAL} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
-    ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
-    DISABLE_ERRORS=${DISABLE_ERRORS} \
-    OUTPUT_FORMAT=${OUTPUT_FORMAT} \
-    OUTPUT_FOLDER=${OUTPUT_FOLDER} \
-    OUTPUT_DETAILS=${OUTPUT_DETAILS}
+    VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
+    VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
+    VALIDATE_ARM=${VALIDATE_ARM} \
+    VALIDATE_BASH=${VALIDATE_BASH} \
+    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
+    VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
+    VALIDATE_COFFEE=${VALIDATE_COFFEE} \
+    VALIDATE_CSS=${VALIDATE_CSS} \
+    VALIDATE_DART=${VALIDATE_DART} \
+    VALIDATE_DOCKER=${VALIDATE_DOCKER} \
+    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
+    VALIDATE_ENV=${VALIDATE_ENV} \
+    VALIDATE_GO=${VALIDATE_GO} \
+    VALIDATE_HTML=${VALIDATE_HTML} \
+    VALIDATE_JAVA=${VALIDATE_JAVA} \
+    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
+    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
+    VALIDATE_JSON=${VALIDATE_JSON} \
+    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_LUA=${VALIDATE_LUA} \
+    VALIDATE_MD=${VALIDATE_MD} \
+    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
+    VALIDATE_PERL=${VALIDATE_PERL} \
+    VALIDATE_PHP=${VALIDATE_PHP} \
+    VALIDATE_PHP_PHPSTAN=${VALIDATE_PHP_PHPSTAN} \
+    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
+    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
+    VALIDATE_PYTHON=${VALIDATE_PYTHON} \
+    VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
+    VALIDATE_PYTHON_FLAKE8=${VALIDATE_PYTHON_FLAKE8} \
+    VALIDATE_RAKU=${VALIDATE_RAKU} \
+    VALIDATE_RUBY=${VALIDATE_RUBY} \
+    VALIDATE_STATES=${VALIDATE_STATES} \
+    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
+    VALIDATE_TERRAFORM_TERRASCAN=${VALIDATE_TERRAFORM_TERRASCAN} \
+    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
+    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
+    VALIDATE_XML=${VALIDATE_XML} \
+    VALIDATE_YAML=${VALIDATE_YAML}
 
 #############################
 # Copy scripts to container #

@@ -17,7 +17,7 @@ function LintCodebase() {
   LINTER_NAME="${1}" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
   LINTER_COMMAND="${1}" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="${1}" && shift # Pull the variable and remove from array path  (Example: *.json)
-  FILE_ARRAY=("$@")             # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
+  FILE_ARRAY=("$@")               # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
   ######################
   # Create Print Array #
@@ -49,14 +49,11 @@ function LintCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [${LINTER_NAME}] in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find [${LINTER_NAME}] in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
-    fi
+    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -75,7 +72,7 @@ function LintCodebase() {
   if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
     # No files found in commit and user has asked to not validate code base
     SKIP_FLAG=1
-    # echo " - No files found in changeset to lint for language:[${FILE_TYPE}]"
+    debug " - No files found in changeset to lint for language:[${FILE_TYPE}]"
   elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
@@ -121,13 +118,13 @@ function LintCodebase() {
       #########################
       # Print the header info #
       #########################
-      echo "${LINE}"
+      info "${LINE}"
     done
 
     ########################################
     # Prepare context if TAP format output #
     ########################################
-    if IsTAP ; then
+    if IsTAP; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
       INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
@@ -138,10 +135,11 @@ function LintCodebase() {
     # Lint the files #
     ##################
     for FILE in "${LIST_FILES[@]}"; do
-      #####################
-      # Get the file name #
-      #####################
+      ###################################
+      # Get the file name and directory #
+      ###################################
       FILE_NAME=$(basename "${FILE}" 2>&1)
+      DIR_NAME=$(dirname "${FILE}" 2>&1)
 
       #####################################################
       # Make sure we dont lint node modules or test cases #
@@ -165,8 +163,8 @@ function LintCodebase() {
       ##############
       # File print #
       ##############
-      echo "---------------------------"
-      echo "File:[${FILE}]"
+      info "---------------------------"
+      info "File:[${FILE}]"
 
       #################################
       # Add the language to the array #
@@ -193,6 +191,17 @@ function LintCodebase() {
           pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} ${FILE}; if (\${Error}.Count) { exit 1 }"
           exit $? 2>&1
         )
+      ###############################################################################
+      # Corner case for groovy as we have to pass it as path and file in ant format #
+      ###############################################################################
+      elif [[ ${FILE_TYPE} == "GROOVY" ]]; then
+        #######################################
+        # Lint the file with the updated path #
+        #######################################
+        LINT_CMD=$(
+          cd "${GITHUB_WORKSPACE}" || exit
+          ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
@@ -202,7 +211,6 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       fi
-
       #######################
       # Load the error code #
       #######################
@@ -215,15 +223,16 @@ function LintCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if IsTAP ; then
+        if IsTAP; then
           NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
@@ -231,12 +240,12 @@ function LintCodebase() {
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if IsTAP ; then
+        if IsTAP; then
           OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
@@ -245,7 +254,7 @@ function LintCodebase() {
     #################################
     # Generate report in TAP format #
     #################################
-    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+    if IsTAP && [ ${INDEX} -gt 0 ]; then
       HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
@@ -262,18 +271,16 @@ function TestCodebase() {
   LINTER_COMMAND="${3}"        # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="${4}"       # Pull the variable and remove from array path  (Example: *.json)
   INDVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
-  TESTS_RAN=0                # Incremented when tests are ran, this will help find failed finds
+  TESTS_RAN=0                  # Incremented when tests are ran, this will help find failed finds
 
   ################
   # print header #
   ################
-  echo ""
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo "Testing Codebase [${FILE_TYPE}] files..."
-  echo "----------------------------------------------"
-  echo "----------------------------------------------"
-  echo ""
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  info "Testing Codebase [${FILE_TYPE}] files..."
+  info "----------------------------------------------"
+  info "----------------------------------------------"
 
   #####################################
   # Validate we have linter installed #
@@ -290,12 +297,11 @@ function TestCodebase() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find [${LINTER_NAME}] in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find [${LINTER_NAME}] in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    echo -e "${NC}${F[B]}Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]${NC}"
+    info "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -311,7 +317,7 @@ function TestCodebase() {
   ########################################
   # Prepare context if TAP output format #
   ########################################
-  if IsTAP ; then
+  if IsTAP; then
     TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
     mkdir -p "${REPORT_OUTPUT_FOLDER}"
     REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
@@ -325,6 +331,7 @@ function TestCodebase() {
     # Get the file name #
     #####################
     FILE_NAME=$(basename "${FILE}" 2>&1)
+    DIR_NAME=$(dirname "${FILE}" 2>&1)
 
     ############################
     # Get the file pass status #
@@ -345,8 +352,8 @@ function TestCodebase() {
     ##############
     # File print #
     ##############
-    echo "---------------------------"
-    echo "File:[${FILE}]"
+    info "---------------------------"
+    info "File:[${FILE}]"
 
     ########################
     # Set the lint command #
@@ -399,6 +406,17 @@ function TestCodebase() {
         pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} ${FILE}; if (\${Error}.Count) { exit 1 }"
         exit $? 2>&1
       )
+    ###############################################################################
+    # Corner case for groovy as we have to pass it as path and file in ant format #
+    ###############################################################################
+    elif [[ ${FILE_TYPE} == "GROOVY" ]]; then
+      #######################################
+      # Lint the file with the updated path #
+      #######################################
+      LINT_CMD=$(
+        cd "${GITHUB_WORKSPACE}" || exit
+        ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
+      )
     else
       ################################
       # Lint the file with the rules #
@@ -430,21 +448,21 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
       #######################################################
-      if IsTAP ; then
+      if IsTAP; then
         OkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
       fi
     else
@@ -458,22 +476,23 @@ function TestCodebase() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} This file should have failed test case!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC} Linter CMD:[${LINTER_COMMAND} ${FILE}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "This file should have failed test case!"
+        error "Command run:${NC}[\$${LINT_CMD}]"
+        error "[${LINT_CMD}]"
+        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
         # Increment the error count
         (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
       fi
       #######################################################
       # Store the linting as a temporary file in TAP format #
       #######################################################
-      if IsTAP ; then
+      if IsTAP; then
         NotOkTap "${TESTS_RAN}" "${FILE_NAME}" "${TMPFILE}"
         AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
       fi
@@ -483,7 +502,7 @@ function TestCodebase() {
   ###########################################################################
   # Generate report in TAP format and validate with the expected TAP output #
   ###########################################################################
-  if IsTAP && [ ${TESTS_RAN} -gt 0 ] ; then
+  if IsTAP && [ ${TESTS_RAN} -gt 0 ]; then
     HeaderTap "${TESTS_RAN}" "${REPORT_OUTPUT_FILE}"
     cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
 
@@ -491,24 +510,24 @@ function TestCodebase() {
     # If expected TAP report exists then compare with the generated report #
     ########################################################################
     EXPECTED_FILE="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}/reports/expected-${FILE_TYPE}.tap"
-    if [ -e "${EXPECTED_FILE}" ] ; then
+    if [ -e "${EXPECTED_FILE}" ]; then
       TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
       ## Ignore white spaces, case sensitive
       if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" > "${TMPFILE}" 2>&1; then
         #############################################
         # We failed to compare the reporting output #
         #############################################
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to assert TAP output:[${LINTER_NAME}]${NC}"!
-        echo "Please validate the asserts!"
+        error "Failed to assert TAP output:[${LINTER_NAME}]"!
+        info "Please validate the asserts!"
         cat "${TMPFILE}"
         exit 1
       else
         # Success
-        echo -e "${NC}${F[B]}Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]${NC}"
+        info "Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]"
       fi
     else
-      echo -e "${NC}${F[Y]}WARN!${NC} No TAP expected file found at:[${EXPECTED_FILE}]${NC}"
-      echo "skipping report assertions"
+      warn "No TAP expected file found at:[${EXPECTED_FILE}]"
+      info "skipping report assertions"
       #####################################
       # Append the file type to the array #
       #####################################
@@ -523,9 +542,8 @@ function TestCodebase() {
     #################################################
     # We failed to find files and no tests were ran #
     #################################################
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find any tests ran for the Linter:[${LINTER_NAME}]${NC}"!
-    echo "Please validate logic or that tests exist!"
-    exit 1
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
+    fatal "Please validate logic or that tests exist!"
   fi
 }
 ################################################################################
@@ -542,11 +560,9 @@ function RunTestCases() {
   #################
   # Header prints #
   #################
-  echo ""
-  echo "----------------------------------------------"
-  echo "-------------- TEST CASE RUN -----------------"
-  echo "----------------------------------------------"
-  echo ""
+  info "----------------------------------------------"
+  info "-------------- TEST CASE RUN -----------------"
+  info "----------------------------------------------"
 
   #######################
   # Test case languages #
@@ -555,7 +571,7 @@ function RunTestCases() {
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c ${ANSIBLE_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "arm"
   TestCodebase "BASH" "shellcheck" "shellcheck --color" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell"
-  TestCodebase "CFN" "cfn-lint" "cfn-lint --config-file ${CFN_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cfn"
+  TestCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cloudformation"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
   TestCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\)\$" "css"
@@ -564,25 +580,33 @@ function RunTestCases() {
   TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\.ext$" "editorconfig-checker"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "golang"
+  TestCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "groovy"
   TestCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "html"
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
+  TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "markdown"
   TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
-  TestCodebase "PHP" "php" "php -l" ".*\.\(php\)\$" "php"
+  TestCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "php"
+  TestCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "php"
+  TestCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "php"
+  TestCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" ".*\.\(php\)\$" "php"
   TestCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" ".*\.\(ymlopenapi\|jsonopenapi\)\$" "openapi"
   TestCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "protobuf"
-  TestCodebase "PYTHON" "pylint" "pylint --rcfile ${PYTHON_LINTER_RULES}" ".*\.\(py\)\$" "python"
+  TestCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "python"
+  TestCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config ${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "python"
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
+  TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
+  TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "terraform_terrascan"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
-  TestCodebase "YML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "yml"
+  TestCodebase "YAML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "yaml"
 
   #################
   # Footer prints #
@@ -629,16 +653,12 @@ function LintAnsibleFiles() {
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Failed
-    echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Failed to find ${LINTER_NAME} in system!${NC}"
-    echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${VALIDATE_INSTALL_CMD}]${NC}"
-    exit 1
+    error "Failed to find ${LINTER_NAME} in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
   else
     # Success
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      # Success
-      echo -e "${NC}${F[B]}Successfully found binary in system${NC}"
-      echo "Location:[${VALIDATE_INSTALL_CMD}]"
-    fi
+    debug "Successfully found binary in system"
+    debug "Location:[${VALIDATE_INSTALL_CMD}]"
   fi
 
   ##########################
@@ -673,7 +693,7 @@ function LintAnsibleFiles() {
       ###################################
       # Send message that were skipping #
       ###################################
-      #echo "- Skipping Ansible lint run as file(s) that were modified were read only..."
+      debug "- Skipping Ansible lint run as file(s) that were modified were read only..."
       ############################
       # Create flag to skip loop #
       ############################
@@ -688,14 +708,14 @@ function LintAnsibleFiles() {
         #########################
         # Print the header line #
         #########################
-        echo "${LINE}"
+        info "${LINE}"
       done
     fi
 
     ########################################
     # Prepare context if TAP output format #
     ########################################
-    if IsTAP ; then
+    if IsTAP; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
       INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
@@ -728,8 +748,8 @@ function LintAnsibleFiles() {
       ##############
       # File print #
       ##############
-      echo "---------------------------"
-      echo "File:[${FILE}]"
+      info "---------------------------"
+      info "File:[${FILE}]"
 
       ################################
       # Lint the file with the rules #
@@ -748,15 +768,15 @@ function LintAnsibleFiles() {
         #########
         # Error #
         #########
-        echo -e "${NC}${B[R]}${F[W]}ERROR!${NC} Found errors in [${LINTER_NAME}] linter!${NC}"
-        echo -e "${NC}${B[R]}${F[W]}ERROR:${NC}[${LINT_CMD}]${NC}"
+        error "Found errors in [${LINTER_NAME}] linter!"
+        error "[${LINT_CMD}]"
         # Increment error count
         ((ERRORS_FOUND_ANSIBLE++))
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if IsTAP ; then
+        if IsTAP; then
           NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
@@ -765,12 +785,12 @@ function LintAnsibleFiles() {
         ###########
         # Success #
         ###########
-        echo -e "${NC}${F[B]} - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully${NC}"
+        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
         #######################################################
-        if IsTAP ; then
+        if IsTAP; then
           OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
         fi
       fi
@@ -779,27 +799,22 @@ function LintAnsibleFiles() {
     #################################
     # Generate report in TAP format #
     #################################
-    if IsTAP && [ ${INDEX} -gt 0 ] ; then
+    if IsTAP && [ ${INDEX} -gt 0 ]; then
       HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
       cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
     fi
-  else # No ansible directory found in path
-    ###############################
-    # Check to see if debug is on #
-    ###############################
-    if [[ ${ACTIONS_RUNNER_DEBUG} == "true" ]]; then
-      ########################
-      # No Ansible dir found #
-      ########################
-      echo -e "${NC}${F[Y]}WARN!${NC} No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]${NC}"
-      echo "skipping ansible lint"
-    fi
+  else
+    ########################
+    # No Ansible dir found #
+    ########################
+    warn "No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]"
+    debug "skipping ansible lint"
   fi
 }
 ################################################################################
 #### Function IsTap ############################################################
 function IsTAP() {
-  if [ "${OUTPUT_FORMAT}" == "tap" ] ; then
+  if [ "${OUTPUT_FORMAT}" == "tap" ]; then
     return 0
   else
     return 1
@@ -809,7 +824,7 @@ function IsTAP() {
 #### Function TransformTAPDetails ##############################################
 function TransformTAPDetails() {
   DATA=${1}
-  if [ -n "${DATA}" ] && [ "${OUTPUT_DETAILS}" == "detailed" ] ; then
+  if [ -n "${DATA}" ] && [ "${OUTPUT_DETAILS}" == "detailed" ]; then
     #########################################################
     # Transform new lines to \\n, remove colours and colons #
     #########################################################
@@ -822,8 +837,8 @@ function HeaderTap() {
   ################
   # Pull in Vars #
   ################
-  INDEX="${1}"        # File being validated
-  OUTPUT_FILE="${2}"  # Output location
+  INDEX="${1}"       # File being validated
+  OUTPUT_FILE="${2}" # Output location
 
   ###################
   # Print the goods #
@@ -836,9 +851,9 @@ function OkTap() {
   ################
   # Pull in Vars #
   ################
-  INDEX="${1}"      # Location
-  FILE="${2}"       # File being validated
-  TEMP_FILE="${3}"  # Temp file location
+  INDEX="${1}"     # Location
+  FILE="${2}"      # File being validated
+  TEMP_FILE="${3}" # Temp file location
 
   ###################
   # Print the goods #
@@ -851,9 +866,9 @@ function NotOkTap() {
   ################
   # Pull in Vars #
   ################
-  INDEX="${1}"      # Location
-  FILE="${2}"       # File being validated
-  TEMP_FILE="${3}"  # Temp file location
+  INDEX="${1}"     # Location
+  FILE="${2}"      # File being validated
+  TEMP_FILE="${3}" # Temp file location
 
   ###################
   # Print the goods #
@@ -866,14 +881,14 @@ function AddDetailedMessageIfEnabled() {
   ################
   # Pull in Vars #
   ################
-  LINT_CMD="${1}"   # Linter command
-  TEMP_FILE="${2}"  # Temp file
+  LINT_CMD="${1}"  # Linter command
+  TEMP_FILE="${2}" # Temp file
 
   ####################
   # Check the return #
   ####################
   DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
-  if [ -n "${DETAILED_MSG}" ] ; then
+  if [ -n "${DETAILED_MSG}" ]; then
     printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >> "${TEMP_FILE}"
   fi
 }

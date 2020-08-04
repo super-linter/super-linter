@@ -1,6 +1,6 @@
-# Yml Test Cases
+# AWS States language Test Cases
 
-This folder holds the test cases for **Yml**.
+This folder holds the test cases for **Terraform terrascan**.
 
 ## Additional Docs
 

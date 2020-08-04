@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<ruleset name="super-linter">
+    <description>The default coding standard for usage with GitHub Super-Linter. It just includes PSR12.</description>
+    <rule ref="PSR12" />
+</ruleset>
