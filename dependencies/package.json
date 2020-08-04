@@ -18,7 +18,7 @@
     "standard": "^14.3.4",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
-    "npm-groovy-lint": "^5.8.0",
+    "npm-groovy-lint": "^6.1.0",
     "typescript": "^3.9.7",
     "asl-validator": "^1.7.0"
 
