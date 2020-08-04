@@ -265,7 +265,6 @@ FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_DOCKERFILE=()          # Array of files to check
-FILE_ARRAY_DOCKERFILE_HADOLINT=() # Array of files to check
 FILE_ARRAY_ENV=()                 # Array of files to check
 FILE_ARRAY_GO=()                  # Array of files to check
 FILE_ARRAY_GROOVY=()              # Array of files to check
@@ -1327,7 +1326,7 @@ if [ "${VALIDATE_DOCKER}" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKERFILE[@]}"
 fi
 
 ###########################
@@ -1338,7 +1337,7 @@ if [ "${VALIDATE_DOCKER_HADOLINT}" == "true" ]; then
   # Lint the docker files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKERFILE[@]}"
 fi
 
 ########################
