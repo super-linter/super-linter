@@ -1526,7 +1526,7 @@ if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
   # Lint the PHP files using PHPStan #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
+  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
 fi
 
 if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
