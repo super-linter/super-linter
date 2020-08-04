@@ -180,7 +180,7 @@ COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 ###############################
 # Install hadolint dockerfile #
 ###############################
-COPY --from=dockerfile-lint /bin/habolint /usr/bin/hadolint
+COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 
 ##################
 # Install ktlint #
@@ -253,6 +253,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_DART=${VALIDATE_DART} \
     VALIDATE_DOCKER=${VALIDATE_DOCKER} \
+    VALIDATE_DOCKER_HADOLINT=${VALIDATE_DOCKER_HADOLINT} \
     VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
     VALIDATE_ENV=${VALIDATE_ENV} \
     VALIDATE_GO=${VALIDATE_GO} \
