@@ -1,7 +1,7 @@
 /* This is a simple Java program.
    FileName : "HelloWorld.java". */
 
-package com.superlinter.JavaGood
+package com.superlinter.JavaGood;
 
 public class JavaGood {
     // Prints "Hello, World" to the terminal window.
