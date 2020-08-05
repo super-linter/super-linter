@@ -23,6 +23,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [CSS](#css)
   - [Dart](#dart)
   - [Dockerfile](#dockerfile)
+  - [Dockerfile](#dockerfile-hadolint)
   - [EDITORCONFIG-CHECKER](#editorconfig-checker)
   - [ENV](#env)
   - [Golang](#golang)
@@ -290,6 +291,30 @@ analyzer:
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### Dockerfilelint disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Dockerfile-Hadolint
+
+- [hadolint](https://github.com/hadolint/hadolint)
+
+### Hadolint standard Config file
+
+- `.github/linters/.hadolint.yml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.hadolint.yml`
+
+### Hadolint disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Hadolint disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Hadolint disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 

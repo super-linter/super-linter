@@ -46,8 +46,11 @@ CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS 
 DART_FILE_NAME='analysis_options.yaml'                          # Name of the file
 DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}" # Path to the DART lint rules
 # Docker Vars
-DOCKER_FILE_NAME='.dockerfilelintrc'                                # Name of the file
-DOCKER_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKER_FILE_NAME}" # Path to the Docker lint rules
+DOCKERFILE_NAME='.dockerfilelintrc'                                    # Name of the file
+DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_NAME}" # Path to the Docker lint rules
+# Dockerfile Hadolint
+DOCKERFILE_HADOLINT_NAME='.hadolint.yml'                                                 # Name of the file
+DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_NAME}" # Path to the Docker lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}" # Path to the Go lint rules
@@ -119,7 +122,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
-  'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'htmlhint'
+  'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'hadolint' 'htmlhint'
   'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint' 'pwsh'
   'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'terrascan'
   'tflint' 'xmllint' 'yamllint')
@@ -128,7 +131,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' '
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
-  'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
+  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
   'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
   'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
@@ -165,6 +168,7 @@ VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean t
 VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
 VALIDATE_DOCKER="${VALIDATE_DOCKER}"                                 # Boolean to validate language
+VALIDATE_DOCKER_HADOLINT="${VALIDATE_DOCKER_HADOLINT}"               # Boolean to validate language
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"                     # Boolean to validate files with editorconfig
 VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
@@ -180,7 +184,7 @@ VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean t
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                 # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                               # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                                     # Boolean to validate language
-VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-VALIDATE_PHP_BUILTIN}"         # Boolean to validate language
+VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"         # Boolean to validate language
 VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                           # Boolean to validate language
 VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                       # Boolean to validate language
 VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean to validate language
@@ -261,7 +265,7 @@ FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_DART=()                # Array of files to check
-FILE_ARRAY_DOCKER=()              # Array of files to check
+FILE_ARRAY_DOCKERFILE=()          # Array of files to check
 FILE_ARRAY_ENV=()                 # Array of files to check
 FILE_ARRAY_GO=()                  # Array of files to check
 FILE_ARRAY_GROOVY=()              # Array of files to check
@@ -313,8 +317,10 @@ ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
 export ERRORS_FOUND_COFFEESCRIPT        # Workaround SC2034
 ERRORS_FOUND_DART=0                     # Count of errors found
 export ERRORS_FOUND_DART                # Workaround SC2034
-ERRORS_FOUND_DOCKER=0                   # Count of errors found
-export ERRORS_FOUND_DOCKER              # Workaround SC2034
+ERRORS_FOUND_DOCKERFILE=0               # Count of errors found
+export ERRORS_FOUND_DOCKERFILE          # Workaround SC2034
+ERRORS_FOUND_DOCKERFILE_HADOLINT=0      # Count of errors found
+export ERRORS_FOUND_DOCKERFILE_HADOLINT # Workaround SC2034
 ERRORS_FOUND_ENV=0                      # Count of errors found
 export ERRORS_FOUND_ENV                 # Workaround SC2034
 ERRORS_FOUND_GO=0                       # Count of errors found
@@ -1115,7 +1121,6 @@ cleanup() {
 
   exit ${EXIT_CODE}
   trap - 0 1 2 3 6 14 15
->>>>>>> master
 }
 trap 'cleanup' 0 1 2 3 6 14 15
 
@@ -1166,7 +1171,9 @@ GetLinterRules "CSS"
 # Get DART rules
 GetLinterRules "DART"
 # Get Docker rules
-GetLinterRules "DOCKER"
+GetLinterRules "DOCKERFILE"
+# Get Docker rules
+GetLinterRules "DOCKERFILE_HADOLINT"
 # Get Golang rules
 GetLinterRules "GO"
 # Get Groovy rules
@@ -1371,7 +1378,18 @@ if [ "${VALIDATE_DOCKER}" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKER" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKER_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKER[@]}"
+  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKERFILE[@]}"
+fi
+
+###########################
+# DOCKER LINTING HADOLINT #
+###########################
+if [ "${VALIDATE_DOCKER_HADOLINT}" == "true" ]; then
+  #########################
+  # Lint the docker files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILE_ARRAY_DOCKERFILE[@]}"
 fi
 
 ########################
