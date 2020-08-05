@@ -215,7 +215,7 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
     | grep ".jar" \
     | cut -d '"' -f 4) \
     && curl -sSL $CHECKSTYLE_LATEST \
-    --output /usr/bin/checkstyle.jar
+    --output /usr/bin/checkstyle
 
 ####################
 # Install luacheck #

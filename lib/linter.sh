@@ -1415,7 +1415,7 @@ if [ "$VALIDATE_JAVA" == "true" ]; then
   # Lint the JAVA files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checksytle.jar -c ${JAVA_LINTER_RULES}" ".*\.\(java\)\$" "${FILE_ARRAY_JAVA[@]}"
+  LintCodebase "JAVA" "checkstyle" "java -jar checksytle -c ${JAVA_LINTER_RULES}" ".*\.\(java\)\$" "${FILE_ARRAY_JAVA[@]}"
 fi
 
 ######################
