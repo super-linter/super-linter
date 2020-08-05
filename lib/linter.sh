@@ -1136,7 +1136,7 @@ GetLinterRules "GROOVY"
 # Get HTML rules
 GetLinterRules "HTML"
 # get Java rules
-etLinterRules "JAVA"
+GetLinterRules "JAVA"
 # Get JavaScript rules
 GetLinterRules "JAVASCRIPT"
 # Get LUA rules
