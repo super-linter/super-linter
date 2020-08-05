@@ -118,38 +118,21 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #######################################
 # Linter array for information prints #
 #######################################
-<<<<<<< HEAD
-LINTER_ARRAY=("jsonlint" "yamllint" "xmllint" "markdownlint" "shellcheck"
-  "pylint" "perl" "raku" "rubocop" "coffeelint" "eslint" "standard"
-  "ansible-lint" "dockerfilelint" "golangci-lint" "tflint"
-  "stylelint" "dotenv-linter" "pwsh" "arm-ttk" "ktlint" "protolint" "clj-kondo"
-  "spectral" "cfn-lint" "dart" "htmlhint" "checkstyle")
-=======
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'clj-kondo' 'coffeelint'
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
   'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'htmlhint'
   'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint' 'pwsh'
   'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'terrascan'
   'tflint' 'xmllint' 'yamllint')
->>>>>>> master
 
 #############################
 # Language array for prints #
 #############################
-<<<<<<< HEAD
-
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CFN' 'CLOJURE' 'COFFEESCRIPT'
-  'CSS' 'DART' 'DOCKER' 'ENV' 'GO' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'OPENAPI'
-  'MARKDOWN' 'PERL' 'PHP' 'POWERSHELL' 'PROTOBUF' 'PYTHON' 'RAKU' 'RUBY'
-  'TERRAFORM' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YML' )
-=======
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
-  'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
+  'DART' 'DOCKER' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
   'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
   'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8'
   'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
   'TYPESCRIPT_STANDARD' 'XML' 'YAML')
->>>>>>> master
 
 ############################################
 # Array for all languages that were linted #
@@ -159,53 +142,6 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-<<<<<<< HEAD
-GITHUB_SHA="${GITHUB_SHA}"                                     # GitHub sha from the commit
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"                       # Github Event Path
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                         # Github Workspace
-GITHUB_TOKEN="${GITHUB_TOKEN}"                                 # GitHub Token passed from environment
-GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"                       # GitHub Org/Repo passed from system
-GITHUB_RUN_ID="${GITHUB_RUN_ID}"                               # GitHub RUn ID to point to logs
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                     # Default Git Branch to use (master by default)
-MULTI_STATUS="${MULTI_STATUS:-true}"                           # Multiple status are created for each check ran
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                       # Ansible Directory
-VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"               # Boolean to validate all files
-VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                         # Boolean to validate language
-VALIDATE_ARM="${VALIDATE_ARM}"                                 # Boolean to validate language
-VALIDATE_BASH="${VALIDATE_BASH}"                               # Boolean to validate language
-VALIDATE_CFN="${VALIDATE_CLOUDFORMATION}"                      # Boolean to validate language
-VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                         # Boolean to validate language
-VALIDATE_COFFEE="${VALIDATE_COFFEE}"                           # Boolean to validate language
-VALIDATE_CSS="${VALIDATE_CSS}"                                 # Boolean to validate language
-VALIDATE_DART="${VALIDATE_DART}"                               # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"                           # Boolean to validate language
-VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"               # Boolean to validate files with editorconfig
-VALIDATE_ENV="${VALIDATE_ENV}"                                 # Boolean to validate language
-VALIDATE_GO="${VALIDATE_GO}"                                   # Boolean to validate language
-VALIDATE_HTML="${VALIDATE_HTML}"                               # Boolean to validate language
-VALIDATE_JAVA="${VALIDATE_JAVA}"                               # Boolean to validate language
-VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"             # Boolean to validate language
-VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}" # Boolean to validate language
-VALIDATE_JSON="${VALIDATE_JSON}"                               # Boolean to validate language
-VALIDATE_JSX="${VALIDATE_JSX}"                                 # Boolean to validate language
-VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                           # Boolean to validate language
-VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                           # Boolean to validate language
-VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                         # Boolean to validate language
-VALIDATE_PERL="${VALIDATE_PERL}"                               # Boolean to validate language
-VALIDATE_PHP="${VALIDATE_PHP}"                                 # Boolean to validate language
-VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                   # Boolean to validate language
-VALIDATE_PYTHON="${VALIDATE_PYTHON}"                           # Boolean to validate language
-VALIDATE_RAKU="${VALIDATE_RAKU}"                               # Boolean to validate language
-VALIDATE_RUBY="${VALIDATE_RUBY}"                               # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                     # Boolean to validate language
-VALIDATE_TSX="${VALIDATE_TSX}"                                 # Boolean to validate language
-VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"             # Boolean to validate language
-VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}" # Boolean to validate language
-VALIDATE_XML="${VALIDATE_XML}"                                 # Boolean to validate language
-VALIDATE_YAML="${VALIDATE_YAML}"                               # Boolean to validate language
-TEST_CASE_RUN="${TEST_CASE_RUN}"                               # Boolean to validate only test cases
-DISABLE_ERRORS="${DISABLE_ERRORS}"                             # Boolean to enable warning-only output without throwing errors
-=======
 ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                             # Ansible Directory
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                           # Default Git Branch to use (master by default)
 DISABLE_ERRORS="${DISABLE_ERRORS}"                                   # Boolean to enable warning-only output without throwing errors
@@ -234,6 +170,7 @@ VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean t
 VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
 VALIDATE_GROOVY="${VALIDATE_GROOVY}"                                 # Boolean to validate language
 VALIDATE_HTML="${VALIDATE_HTML}"                                     # Boolean to validate language
+VALIDATE_JAVA="${VALIDATE_JAVA}"                                     # Boolean to validate language
 VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"                   # Boolean to validate language
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"       # Boolean to validate language
 VALIDATE_JSON="${VALIDATE_JSON}"                                     # Boolean to validate language
@@ -260,7 +197,6 @@ VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"                   # Boolean t
 VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"       # Boolean to validate language
 VALIDATE_XML="${VALIDATE_XML}"                                       # Boolean to validate language
 VALIDATE_YAML="${VALIDATE_YAML}"                                     # Boolean to validate language
->>>>>>> master
 
 ##############
 # Debug Vars #
@@ -361,41 +297,6 @@ FILE_ARRAY_YAML=()                # Array of files to check
 ############
 # Counters #
 ############
-<<<<<<< HEAD
-ERRORS_FOUND_ANSIBLE=0             # Count of errors found
-ERRORS_FOUND_ARM=0                 # Count of errors found
-ERRORS_FOUND_BASH=0                # Count of errors found
-ERRORS_FOUND_CFN=0                 # Count of errors found
-ERRORS_FOUND_CLOJURE=0             # Count of errors found
-ERRORS_FOUND_CSS=0                 # Count of errors found
-ERRORS_FOUND_COFFEESCRIPT=0        # Count of errors found
-ERRORS_FOUND_DART=0                # Count of errors found
-ERRORS_FOUND_DOCKER=0              # Count of errors found
-ERRORS_FOUND_ENV=0                 # Count of errors found
-ERRORS_FOUND_GO=0                  # Count of errors found
-ERRORS_FOUND_HTML=0                # Count of errors found
-ERRORS_FOUND_JAVA=0                # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_JAVASCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_JSON=0                # Count of errors found
-ERRORS_FOUND_JSX=0                 # Count of errors found
-ERRORS_FOUND_KOTLIN=0              # Count of errors found
-ERRORS_FOUND_MARKDOWN=0            # Count of errors found
-ERRORS_FOUND_OPENAPI=0             # Count of errors found
-ERRORS_FOUND_PERL=0                # Count of errors found
-ERRORS_FOUND_PHP=0                 # Count of errors found
-ERRORS_FOUND_POWERSHELL=0          # Count of errors found
-ERRORS_FOUND_PROTOBUF=0            # Count of errors found
-ERRORS_FOUND_PYTHON=0              # Count of errors found
-ERRORS_FOUND_RAKU=0                # Count of errors found
-ERRORS_FOUND_RUBY=0                # Count of errors found
-ERRORS_FOUND_TERRAFORM=0           # Count of errors found
-ERRORS_FOUND_TSX=0                 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_STANDARD=0 # Count of errors found
-ERRORS_FOUND_TYPESCRIPT_ES=0       # Count of errors found
-ERRORS_FOUND_XML=0                 # Count of errors found
-ERRORS_FOUND_YML=0                 # Count of errors found
-=======
 ERRORS_FOUND_ANSIBLE=0                  # Count of errors found
 export ERRORS_FOUND_ANSIBLE             # Workaround SC2034
 ERRORS_FOUND_ARM=0                      # Count of errors found
@@ -422,6 +323,8 @@ ERRORS_FOUND_GROOVY=0                   # Count of errors found
 export ERRORS_FOUND_GROOVY              # Workaround SC2034
 ERRORS_FOUND_HTML=0                     # Count of errors found
 export ERRORS_FOUND_HTML                # Workaround SC2034
+ERRORS_FOUND_JAVA=0
+export ERRORS_FOUND_JAVA
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
 export ERRORS_FOUND_JAVASCRIPT_STANDARD # Workaround SC2034
 ERRORS_FOUND_JAVASCRIPT_ES=0            # Count of errors found
@@ -476,7 +379,6 @@ ERRORS_FOUND_XML=0                      # Count of errors found
 export ERRORS_FOUND_XML                 # Workaround SC2034
 ERRORS_FOUND_YAML=0                     # Count of errors found
 export ERRORS_FOUND_YAML                # Workaround SC2034
->>>>>>> master
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1136,8 +1038,6 @@ Footer() {
   ###############################
   # Exit with 1 if errors found #
   ###############################
-<<<<<<< HEAD
-
   elif [ "${ERRORS_FOUND_YML}" -ne 0 ] ||
     [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
     [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
@@ -1186,7 +1086,6 @@ Footer() {
     # Successful exit
     exit 0
   fi
-=======
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
