@@ -29,7 +29,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
+      - name: Wait for CI/CT/CD to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Deploy Docker Image - DEV 
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: merge
+        if: steps.wait-for-build.outputs.conclusion == 'success'
         uses: actions/github-script@v2
         with:
           script: |

@@ -2,3 +2,8 @@
 # These owners will be the default owners for everything in the repo #
 ######################################################################
 *       @admiralawkbar @jwiebalk @zkoppert @IAmHughes @nemchik @Hanse00
+
+####################################################
+# Adding dependabot for auto merge on dependancies #
+####################################################
+*       @dependabot[bot]
