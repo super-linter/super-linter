@@ -60,6 +60,9 @@ GROOVY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GROOVY_FILE_NAME}" # Path to th
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                    # Name of the file
 HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}" # Path to the CSS lint rules
+# Java Vars
+JAVA_FILE_NAME="sun_checks.xml"                                 # Name of the Java config file
+JAVA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVA_FILE_NAME}" # Path to the Java lint rules
 # Javascript Vars
 JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
 JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
@@ -1132,6 +1135,8 @@ GetLinterRules "GO"
 GetLinterRules "GROOVY"
 # Get HTML rules
 GetLinterRules "HTML"
+# get Java rules
+etLinterRules "JAVA"
 # Get JavaScript rules
 GetLinterRules "JAVASCRIPT"
 # Get LUA rules
@@ -1402,6 +1407,17 @@ if [ "${VALIDATE_HTML}" == "true" ]; then
   LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "${FILE_ARRAY_HTML[@]}"
 fi
 
+################
+# JAVA LINTING #
+################
+if [ "$VALIDATE_JAVA" == "true" ]; then
+  #######################
+  # Lint the JAVA files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checksytle.jar -c ${JAVA_LINTER_RULES}" ".*\.\(java\)\$" "${FILE_ARRAY_JAVA[@]}"
+fi
+
 ######################
 # JAVASCRIPT LINTING #
 ######################
@@ -1448,17 +1464,6 @@ if [ "${VALIDATE_JSX}" == "true" ]; then
   ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(jsx\)\$" "${FILE_ARRAY_JSX[@]}"
-fi
-
-################
-# JAVA LINTING #
-################
-if [ "$VALIDATE_JAVA" == "true" ]; then
-  #######################
-  # Lint the JAVA files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checksytle.jar -c sun_checks.xml" ".*\.\(java\)\$" "${FILE_ARRAY_JAVA[@]}"
 fi
 
 ##################
