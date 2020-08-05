@@ -50,7 +50,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                       |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                              |
 | **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                        |
-| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) https://github.com/hadolint/hadolint                                                                |
+| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) https://github.com/hadolint/hadolint)                                                                |
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                     |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                          |
 | **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                                                                                               |

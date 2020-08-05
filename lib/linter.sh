@@ -1044,54 +1044,6 @@ Footer() {
   ###############################
   # Exit with 1 if errors found #
   ###############################
-  elif [ "${ERRORS_FOUND_YML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_XML}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_MARKDOWN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_BASH}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PERL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RAKU}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PHP}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PYTHON}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_COFFEESCRIPT}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ANSIBLE}" -ne 0 ] ||
-    [ "$ERRORS_FOUND_JAVA" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JAVASCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_JSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TSX}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_ES}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TYPESCRIPT_STANDARD}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DOCKER}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_GO}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_TERRAFORM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_POWERSHELL}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ARM}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_RUBY}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CSS}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CFN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_ENV}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_OPENAPI}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_PROTOBUF}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_CLOJURE}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_KOTLIN}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_DART}" -ne 0 ] ||
-    [ "${ERRORS_FOUND_HTML}" -ne 0 ]; then
-
-    # Failed exit
-    echo -e "${NC}${F[R]}Exiting with errors found!${NC}"
-    exit 1
-  else
-    #################
-    # Footer prints #
-    #################
-    echo ""
-    echo -e "${NC}${F[G]}All file(s) linted successfully with no errors detected${NC}"
-    echo "----------------------------------------------"
-    echo ""
-    # Successful exit
-    exit 0
-  fi
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
