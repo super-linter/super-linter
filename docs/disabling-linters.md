@@ -45,6 +45,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Raku](#raku)
   - [Ruby](#ruby)
   - [Shell](#shell)
+  - [SQL](#sql)
   - [Terraform](#terraform)
   - [Typescript eslint](#typescript-eslint)
   - [Typescript standard](#typescript-standard)
@@ -1007,6 +1008,28 @@ echo "More garbage code"
 echo "stuff"
 moreThings()
 ```
+
+---
+
+## SQL
+
+- [SQL](https://www.npmjs.com/package/sql-lint)
+
+### SQL Config file
+
+- There is no top level _configuration file_ available at this time
+
+### SQL disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### SQL disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### SQL disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
 
 ---
 

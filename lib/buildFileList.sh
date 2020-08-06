@@ -457,6 +457,15 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    elif [ "${FILE_TYPE}" == "sql" ]; then
+      ################################
+      # Append the file to the array #
+      ##############################p##
+      FILE_ARRAY_SQL+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] || [ "$FILE_TYPE" == "gradle" ]; then
       ################################
       # Append the file to the array #
