@@ -243,9 +243,9 @@ a {
 
 ### dartanalyzer standard Config file
 
-- `.github/linters/.dart-lint.yml`
+- `.github/linters/analysis_options.yml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/analysis_options.yaml`
+- File should be located at: `.github/linters/analysis_options.yml`
 
 ### dartanalyzer disable single line
 
@@ -263,7 +263,7 @@ int x = ''; // ignore: invalid_assignment
 
 ### dartanalyzer disable entire file
 
-- You can disable entire files with the `analyzer.exclude` property in `analysis_options.yaml`
+- You can disable entire files with the `analyzer.exclude` property in `analysis_options.yml`
 
 ```dart
 analyzer:
