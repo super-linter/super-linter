@@ -28,7 +28,7 @@ CleanTestFiles() {
   ##################
   # Find the files #
   ##################
-  FIND_CMD=($(cd "${GITHUB_WORKSPACE}" ; find . -type f -name "*_bad_*" 2>&1))
+  mapfile -t FIND_CMD < <(cd "${GITHUB_WORKSPACE}" || exit 1 ; find "${GITHUB_WORKSPACE}" -type f -name "*_bad_*" 2>&1)
 
   #######################
   # Load the error code #
@@ -85,7 +85,7 @@ CleanTestDockerFiles() {
   ##################
   # Find the files #
   ##################
-  FIND_CMD=($(cd "${GITHUB_WORKSPACE}" ; find . -type f -name "*Dockerfile" 2>&1))
+  mapfile -t FIND_CMD < <(cd "${GITHUB_WORKSPACE}" || exit 1 ; find "${GITHUB_WORKSPACE}" -type f -name "*Dockerfile" 2>&1)
 
   #######################
   # Load the error code #
