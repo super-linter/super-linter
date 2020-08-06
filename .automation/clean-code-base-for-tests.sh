@@ -8,6 +8,7 @@
 # Globals #
 ###########
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
+GITHUB_SHA="${GITHUB_SHA}"              # Sha used to create this branch
 TEST_FOLDER='.automation/test'          # Folder where test are stored
 CLEAN_FOLDER='.automation/automation'   # Folder to rename to prevent skip
 
@@ -142,6 +143,31 @@ CleanTestDockerFiles() {
   done
 }
 ################################################################################
+#### Function CleanSHAFolder ###################################################
+CleanSHAFolder() {
+  info "-------------------------------------------------------"
+  info "Cleaning folder named:[${GITHUB_SHA}] if it exists"
+
+  ##################
+  # Find the files #
+  ##################
+  REMOVE_CMD=$(cd "${GITHUB_WORKSPACE}" || exit 1; rm -rf "${GITHUB_SHA}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    # Error
+    error "ERROR! Failed to remove folder:[${GITHUB_SHA}]!"
+    fatal "ERROR:[${REMOVE_CMD}]"
+  fi
+}
+################################################################################
 #### Function RenameTestFolder #################################################
 RenameTestFolder() {
   info "-------------------------------------------------------"
@@ -183,6 +209,11 @@ CleanTestFiles
 # Clean the test docker files #
 ###############################
 CleanTestDockerFiles
+
+###############################
+# Remove sha folder if exists #
+###############################
+CleanSHAFolder
 
 ##################
 # Re Name folder #
