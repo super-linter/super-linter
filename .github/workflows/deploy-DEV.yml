@@ -69,4 +69,4 @@ jobs:
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

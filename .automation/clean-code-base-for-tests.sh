@@ -7,9 +7,9 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
-TEST_FOLDER='.automation/test'
-CLEAN_FOLDER='.automation/automation'
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
+TEST_FOLDER='.automation/test'          # Folder where test are stored
+CLEAN_FOLDER='.automation/automation'   # Folder to rename to prevent skip
 
 ############################
 # Source additonal scripts #
