@@ -25,13 +25,13 @@ source /action/lib/worker.sh # Source the function script(s)
 DEFAULT_RULES_LOCATION='/action/lib/.automation' # Default rules files location
 GITHUB_API_URL='https://api.github.com'          # GitHub API root url
 # Ansible Vars
-ANSIBLE_FILE_NAME='.ansible-lint.yml'                                 # Name of the file
+ANSIBLE_FILE_NAME='.ansible-lint.yaml'                                 # Name of the file
 ANSIBLE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ANSIBLE_FILE_NAME}" # Path to the Ansible lint rules
 # Azure Resource Manager Vars
 ARM_FILE_NAME='.arm-ttk.psd1'                                 # Name of the file
 ARM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${ARM_FILE_NAME}" # Path to the ARM lint rules
 # Cloudformation Vars
-CLOUDFORMATION_FILE_NAME='.cfnlintrc.yml'                                           # Name of the file
+CLOUDFORMATION_FILE_NAME='.cfnlintrc.yaml'                                           # Name of the file
 CLOUDFORMATION_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOUDFORMATION_FILE_NAME}" # Path to the cloudformation lint rules
 # Clojure Vars
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                             # Name of the file
@@ -43,16 +43,16 @@ COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}" # Path
 CSS_FILE_NAME='.stylelintrc.json'                             # Name of the file
 CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS lint rules
 # Dart Vars
-DART_FILE_NAME='analysis_options.yaml'                          # Name of the file
+DART_FILE_NAME='analysis_options.yaml'                           # Name of the file
 DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}" # Path to the DART lint rules
 # Docker Vars
 DOCKERFILE_NAME='.dockerfilelintrc'                                    # Name of the file
 DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_NAME}" # Path to the Docker lint rules
 # Dockerfile Hadolint
-DOCKERFILE_HADOLINT_NAME='.hadolint.yml'                                                 # Name of the file
+DOCKERFILE_HADOLINT_NAME='.hadolint.yaml'                                                 # Name of the file
 DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_NAME}" # Path to the Docker lint rules
 # Golang Vars
-GO_FILE_NAME='.golangci.yml'                                # Name of the file
+GO_FILE_NAME='.golangci.yaml'                                # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}" # Path to the Go lint rules
 # Groovy Vars
 GROOVY_FILE_NAME='.groovylintrc.json'                               # Name of the file
@@ -64,7 +64,7 @@ HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}" # Path to the CS
 JAVA_FILE_NAME="sun_checks.xml"                                 # Name of the Java config file
 JAVA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVA_FILE_NAME}" # Path to the Java lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
+JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yaml}"          # Name of the file
 JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
 # Default linter path
@@ -73,10 +73,10 @@ LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Director
 LUA_FILE_NAME='.luacheckrc'                                   # Name of the file
 LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}" # Path to the Lua lint rules
 # MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
+MARKDOWN_FILE_NAME='.markdown-lint.yaml'                                 # Name of the file
 MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}" # Path to the markdown lint rules
 # OpenAPI Vars
-OPENAPI_FILE_NAME='.openapirc.yml'                                    # Name of the file
+OPENAPI_FILE_NAME='.openapirc.yaml'                                    # Name of the file
 OPENAPI_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${OPENAPI_FILE_NAME}" # Path to the OpenAPI lint rules
 # PHPCS Vars
 PHP_PHPCS_FILE_NAME='phpcs.xml'                                     # Name of the file
@@ -100,7 +100,7 @@ fi
 POWERSHELL_FILE_NAME='.powershell-psscriptanalyzer.psd1'                    # Name of the file
 POWERSHELL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${POWERSHELL_FILE_NAME}" # Path to the Powershell lint rules
 # Protocol Buffers Vars
-PROTOBUF_FILE_NAME='.protolintrc.yml'                                   # Name of the file
+PROTOBUF_FILE_NAME='.protolintrc.yaml'                                   # Name of the file
 PROTOBUF_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PROTOBUF_FILE_NAME}" # Path to the Protocol Buffers lint rules
 # Python Vars
 PYTHON_PYLINT_FILE_NAME="${PYTHON_PYLINT_CONFIG_FILE:-.python-lint}"              # Name of the file
@@ -108,17 +108,17 @@ PYTHON_PYLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_PYLINT_FILE_NAME}
 PYTHON_FLAKE8_FILE_NAME="${PYTHON_FLAKE8_CONFIG_FILE:-.flake8}"                   # Name of the file
 PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}" # Path to the python lint rules
 # Ruby Vars
-RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
+RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yaml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                         # Name of the file
 TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}" # Path to the Terraform lint rules
 # Typescript Vars
-TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
+TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yaml}"          # Name of the file
 TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
 # YAML Vars
-YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"            # Name of the file
+YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yaml}"            # Name of the file
 YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the yaml lint rules
 
 #######################################
@@ -1789,9 +1789,9 @@ if [ "${VALIDATE_XML}" == "true" ]; then
   LintCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "${FILE_ARRAY_XML[@]}"
 fi
 
-###############
+################
 # YAML LINTING #
-###############
+################
 if [ "${VALIDATE_YAML}" == "true" ]; then
   ######################
   # Lint the Yml Files #
