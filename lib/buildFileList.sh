@@ -275,6 +275,18 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    ######################
+    # Get the Java files #
+    ######################
+    elif [ "${FILE_TYPE}" == "java" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JAVA+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ############################
     # Get the JavaScript files #
     ############################

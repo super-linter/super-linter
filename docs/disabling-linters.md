@@ -29,6 +29,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Golang](#golang)
   - [Groovy](#groovy)
   - [HTML](#html)
+  - [Java](#java)
   - [Javascript eslint](#javascript-eslint)
   - [Javascript standard](#javascript-standard)
   - [JSON](#json)
@@ -458,6 +459,27 @@ def variable = 1;
 ### htmlhint disable entire file
 
 - There is currently **No** way to disable rules in an entire file
+
+---
+
+## Java
+
+- [checkstyle](https://github.com/checkstyle/checkstyle)
+
+### Java Config file
+
+- `.github/linters/sun_checks.xml`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/sun_checks.xml`
+
+### Java disable single line
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Java disable code block
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Java disable entire file
+- There is currently **No** way to disable rules inline of the file(s)
 
 ---
 

@@ -50,12 +50,13 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                       |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                              |
 | **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                        |
-| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) https://github.com/hadolint/hadolint                                                                |
+| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) [hadolint](https://github.com/hadolint/hadolint)                                                    |
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                     |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                          |
 | **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                                                                                               |
 | **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                                                                                                           |
 | **HTMLHint**                     | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                                                                                                         |
+| **Java**                         | [checkstyle](https://checkstyle.org)                                                                                                                                     |
 | **JavaScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
 | **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                                                                                                            |
 | **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                                                                                            |
@@ -202,6 +203,7 @@ and won't run anything unexpected.
 | **VALIDATE_GO**                  | `true`                | Flag to enable or disable the linting process of the Golang language.                                                                                                            |
 | **VALIDATE_GROOVY**              | `true`                | Flag to enable or disable the linting process of the language.                                                                                                                   |
 | **VALIDATE_HTML**                | `true`                | Flag to enable or disable the linting process of the HTML language.                                                                                                              |
+| **VALIDATE_JAVA**                | `true`                | Flag to enable or disable the linting process of the language.                                                                                                                   |
 | **VALIDATE_JAVASCRIPT_ES**       | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: eslint)                                                                                    |
 | **VALIDATE_JAVASCRIPT_STANDARD** | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: standard)                                                                                  |
 | **VALIDATE_JSON**                | `true`                | Flag to enable or disable the linting process of the JSON language.                                                                                                              |
@@ -232,6 +234,7 @@ and won't run anything unexpected.
 | **VALIDATE_XML**                 | `true`                | Flag to enable or disable the linting process of the XML language.                                                                                                               |
 | **VALIDATE_YAML**                | `true`                | Flag to enable or disable the linting process of the YAML language.                                                                                                              |
 | **YAML_CONFIG_FILE**             | `.yaml-lint.yml`      | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                      |
+
 
 ### Template rules files
 

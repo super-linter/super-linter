@@ -206,6 +206,17 @@ RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/${D
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
 
+######################
+# Install CheckStyle #
+######################
+
+RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
+    | grep browser_download_url \
+    | grep ".jar" \
+    | cut -d '"' -f 4) \
+    && curl -sSL $CHECKSTYLE_LATEST \
+    --output /usr/bin/checkstyle
+
 ####################
 # Install luacheck #
 ####################
@@ -258,6 +269,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_ENV=${VALIDATE_ENV} \
     VALIDATE_GO=${VALIDATE_GO} \
     VALIDATE_HTML=${VALIDATE_HTML} \
+    VALIDATE_JAVA=${VALIDATE_JAVA} \
     VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
