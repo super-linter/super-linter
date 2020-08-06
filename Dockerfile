@@ -15,6 +15,7 @@ FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM flycheck/emacs-cask:26.3 as emacs
 
 ##################
 # Get base image #
@@ -234,6 +235,12 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
     && cd .. && rm -r luarocks-3.3.1-super-linter/
 
 RUN luarocks install luacheck
+
+#################
+# Install emacs #
+#################
+COPY --from=emacs /root/.cask/bin/cask /usr/bin/
+COPY --from=emacs /opt/emacs/bin/emacs /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #

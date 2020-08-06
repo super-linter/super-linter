@@ -125,7 +125,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 # Linter array for information prints #
 #######################################
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
-  'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'hadolint' 'htmlhint'
+  'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'emacs' 'flake8' 'golangci-lint' 'hadolint' 'htmlhint'
   'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint' 'pwsh'
   'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'terrascan'
   'tflint' 'xmllint' 'yamllint')
@@ -134,7 +134,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' '
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
-  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
+  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'ELISP' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'TERRAFORM'
@@ -174,6 +174,7 @@ VALIDATE_DOCKER="${VALIDATE_DOCKER}"                                 # Boolean t
 VALIDATE_DOCKER_HADOLINT="${VALIDATE_DOCKER_HADOLINT}"               # Boolean to validate language
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"                     # Boolean to validate files with editorconfig
 VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean to validate language
+VALIDATE_ELISP="${VALIDATE_ELISP}"                                   # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
 VALIDATE_GROOVY="${VALIDATE_GROOVY}"                                 # Boolean to validate language
 VALIDATE_HTML="${VALIDATE_HTML}"                                     # Boolean to validate language
@@ -270,6 +271,7 @@ FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_DOCKERFILE=()          # Array of files to check
 FILE_ARRAY_ENV=()                 # Array of files to check
+FILE_ARRAY_ELISP=()               # Array of files to check
 FILE_ARRAY_GO=()                  # Array of files to check
 FILE_ARRAY_GROOVY=()              # Array of files to check
 FILE_ARRAY_HTML=()                # Array of files to check
@@ -328,6 +330,8 @@ ERRORS_FOUND_EDITORCONFIG=0             # Count of errors found
 export ERRORS_FOUND_EDITORCONFIG        # Workaround SC2034
 ERRORS_FOUND_ENV=0                      # Count of errors found
 export ERRORS_FOUND_ENV                 # Workaround SC2034
+ERRORS_FOUND_ELISP=0                    # Count of errors found
+export ERRORS_FOUND_ELISP               # Workaround SC2034
 ERRORS_FOUND_GO=0                       # Count of errors found
 export ERRORS_FOUND_GO                  # Workaround SC2034
 ERRORS_FOUND_GROOVY=0                   # Count of errors found
@@ -1412,6 +1416,17 @@ if [ "${VALIDATE_ENV}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILE_ARRAY_ENV[@]}"
+fi
+
+#################
+# ELISP LINTING #
+#################
+if [ "${VALIDATE_ELISP}" == "true" ]; then
+  #############################
+  # Lint the emacs-lisp files #
+  #############################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "ELISP" "emacs" "cask install || true && cask emacs -Q --batch -L . --eval '(setq byte-compile-error-on-warn t)' -f batch-byte-compile *.el " ".*\.\(el\).*\$" "${FILE_ARRAY_ELISP[@]}"
 fi
 
 ##################

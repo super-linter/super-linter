@@ -391,6 +391,15 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    elif [ "${FILE_TYPE}" == "el" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_ELISP+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "${FILE_TYPE}" == "kt" ] || [ "${FILE_TYPE}" == "kts" ]; then
       ################################
       # Append the file to the array #
