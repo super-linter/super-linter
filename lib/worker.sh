@@ -732,7 +732,7 @@ function LintAnsibleFiles() {
       ########################################
       # Make sure we dont lint certain files #
       ########################################
-      if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]]; then
+      if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]] || [[ ${FILE} == *"vault.yaml"* ]] || [[ ${FILE} == *"galaxy.yaml"* ]]; then
         # This is a file we dont look at
         continue
       fi
