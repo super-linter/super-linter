@@ -1143,6 +1143,12 @@ GetLinterRules "JAVASCRIPT"
 GetLinterRules "LUA"
 # Get Markdown rules
 GetLinterRules "MARKDOWN"
+# Get PHPCS rules
+GetLinterRules "PHP_PHPCS"
+# Get PHP_PHPSTAN rules
+GetLinterRules "PHP_PHPSTAN"
+# Get PHP_PSALM rules
+GetLinterRules "PHP_PSALM"
 # Get PowerShell rules
 GetLinterRules "POWERSHELL"
 # Get Python pylint rules
