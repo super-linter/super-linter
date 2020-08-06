@@ -9,7 +9,11 @@
 ###########
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
 TEST_FOLDER='.automation/test'
-CLEAN_FOLDER'.automation/automation'
+CLEAN_FOLDER='.automation/automation'
+
+############################
+# Source additonal scripts #
+############################
 # shellcheck source=/dev/null
 source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
 
