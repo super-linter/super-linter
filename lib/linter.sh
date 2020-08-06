@@ -134,11 +134,11 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' '
 # Language array for prints #
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
-  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'ENV' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD'
-  'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
-  'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8'
-  'RAKU' 'RUBY' 'STATES' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES'
-  'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
+  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
+  'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
+  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'TERRAFORM'
+  'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
 # Array for all languages that were linted #
@@ -324,6 +324,8 @@ ERRORS_FOUND_DOCKERFILE=0               # Count of errors found
 export ERRORS_FOUND_DOCKERFILE          # Workaround SC2034
 ERRORS_FOUND_DOCKERFILE_HADOLINT=0      # Count of errors found
 export ERRORS_FOUND_DOCKERFILE_HADOLINT # Workaround SC2034
+ERRORS_FOUND_EDITORCONFIG=0             # Count of errors found
+export ERRORS_FOUND_EDITORCONFIG        # Workaround SC2034
 ERRORS_FOUND_ENV=0                      # Count of errors found
 export ERRORS_FOUND_ENV                 # Workaround SC2034
 ERRORS_FOUND_GO=0                       # Count of errors found
