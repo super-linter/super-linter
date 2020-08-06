@@ -9,6 +9,9 @@
 ###########
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
 
+# shellcheck source=/dev/null
+source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
+
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
 ################################################################################
