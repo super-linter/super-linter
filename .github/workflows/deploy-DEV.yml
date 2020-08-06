@@ -50,9 +50,23 @@ jobs:
         shell: bash
         run: docker build --no-cache -t github/super-linter:${GITHUB_SHA} .
 
-      ################################
-      # Run Linter against code base #
-      ################################
+      #####################################
+      # Run Linter against Test code base #
+      #####################################
       - name: Run Test Cases
         shell: bash
         run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+
+      #########################################
+      # Clean code base to run agaisnt it all #
+      #########################################
+      - name: Clean Test code base for additional testing
+        shell: bash
+        run: .automation/clean-code-base-for-tests.sh
+
+      ############################################
+      # Run Linter against ALL cleaned code base #
+      ############################################
+      - name: Run against all code base
+        shell: bash
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
