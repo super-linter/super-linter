@@ -1,7 +1,3 @@
-package com.superlinter.JavaGood;
-/* This is a simple Java program.
-   FileName : "HelloWorld.java" */
-
 /**
  * Represents a good Java file.
 */
