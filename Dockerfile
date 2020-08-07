@@ -66,7 +66,7 @@ RUN apk add --update --no-cache \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
-    perl \
+    perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
@@ -101,6 +101,11 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Installs Perl dependencies #
+##############################
+RUN curl -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
 
 ##############################
 # Install Phive dependencies #

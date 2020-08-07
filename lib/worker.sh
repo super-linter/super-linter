@@ -85,7 +85,7 @@ function LintCodebase() {
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex "${FILE_EXTENSIONS}" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" 2>&1)
 
     ###########################
     # Set IFS back to default #
@@ -312,7 +312,7 @@ function TestCodebase() {
   #################################
   # Get list of all files to lint #
   #################################
-  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}" -type f -regex "${FILE_EXTENSIONS}" ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
+  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
 
   ########################################
   # Prepare context if TAP output format #
@@ -590,7 +590,7 @@ function RunTestCases() {
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "markdown"
-  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
+  TestCodebase "PERL" "perl" "perlcritic" ".*\.\(pl\|pm\|t\)\$" "perl"
   TestCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "php"
   TestCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "php"
   TestCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "php"
@@ -606,7 +606,7 @@ function RunTestCases() {
   TestCodebase "SQL" "sql-lint" "sql-lint" ".*\.\(sql\)\$" "sql"
   TestCodebase "Swift" "swiftlint" "LD_LIBRARY_PATH=/usr/lib/swift/linux swiftlint" ".*\.\(swift\)\$" "swift"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
-  TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "terraform_terrascan"
+  TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f" ".*\.\(tf\)\$" "terraform_terrascan"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"

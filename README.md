@@ -63,7 +63,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                                                                                                         |
 | **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)                                                                                                 |
 | **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                                                                                                      |
-| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)                                                                                                          |
+| **Perl**                         | [perlcritic](https://metacpan.org/pod/Perl::Critic)                                                                                                                      |
 | **PHP**                          | [PHP built-in linter](https://www.php.net/) [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) [PHPStan](https://phpstan.org/n) [Psalm](https://psalm.dev/) |
 | **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                                                                                                       |
 | **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                                                                                                      |
@@ -71,7 +71,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Raku**                         | [raku](https://raku.org)                                                                                                                                                 |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                         |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                                                                                                     |
-| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                     |
+| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                      |
 | **Swift**                        | [swiftlint](https://github.com/realm/SwiftLint)
 | **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) [terrascan](https://github.com/accurics/terrascan)                                                                 |
 | **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
@@ -182,6 +182,7 @@ and won't run anything unexpected.
 | **LOG_FILE**                     | `super-linter.log`    | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                 |
 | **LOG_LEVEL**                    | `VERBOSE`             | How much output the script will generate to the console. One of `VERBOSE`, `DEBUG` or `TRACE`.                                                                                   |
 | **MULTI_STATUS**                 | `true`                | A status API is made for each language that is linted to make visual parsing easier.                                                                                             |
+| **MARKDOWN_CONFIG_FILE**         | `.markdown-lint.yml`  | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)       |
 | **OUTPUT_FORMAT**                | `none`                | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap                              |
 | **OUTPUT_FOLDER**                | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                           |
 | **OUTPUT_DETAILS**               | `simpler`             | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                    |

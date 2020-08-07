@@ -73,7 +73,7 @@ LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Director
 LUA_FILE_NAME='.luacheckrc'                                   # Name of the file
 LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}" # Path to the Lua lint rules
 # MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
+MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"        # Name of the file
 MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}" # Path to the markdown lint rules
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                    # Name of the file
@@ -1265,7 +1265,7 @@ if [ "${VALIDATE_ARM}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectARMFile "${FILE}"; then
         FILE_ARRAY_ARM+=("${FILE}")
@@ -1307,7 +1307,7 @@ if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectCloudFormationFile "${FILE}"; then
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
@@ -1561,7 +1561,7 @@ if [ "${VALIDATE_OPENAPI}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectOpenAPIFile "${FILE}"; then
         FILE_ARRAY_OPENAPI+=("${FILE}")
@@ -1589,7 +1589,7 @@ if [ "${VALIDATE_PERL}" == "true" ]; then
   # Lint the perl files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+  LintCodebase "PERL" "perl" "perlcritic" ".*\.\(pl\|pm\|t\)\$" "${FILE_ARRAY_PERL[@]}"
 fi
 
 ################
@@ -1713,7 +1713,7 @@ if [ "${VALIDATE_STATES}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectAWSStatesFIle "${FILE}"; then
         FILE_ARRAY_STATES+=("${FILE}")
