@@ -1,7 +1,7 @@
 TAP version 13
 1..2
-not ok 1 - kotlin_bad_1.kt
+not ok 1 - swift_bad_1.swift
   ---
   message: /tmp/lint/.automation/test/swift/swift_bad_1.swift:2:9: warning: Colon Violation: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals. (colon) (\n)\n/tmp/lint/.automation/test/swift/swift_bad_1.swift:3:1: warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
   ...
-ok 2 - kotlint_good_1.kt
+ok 2 - swift_good_1.swift
