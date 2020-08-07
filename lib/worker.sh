@@ -590,7 +590,7 @@ function RunTestCases() {
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
   TestCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "markdown"
-  TestCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "perl"
+  TestCodebase "PERL" "perl" "perlcritic" ".*\.\(pl\|pm\|t\)\$" "perl"
   TestCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "php"
   TestCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "php"
   TestCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "php"

@@ -721,7 +721,7 @@ Here is more data
 
 ## Perl
 
-- [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)
+- `.github/linters/.perlcriticrc`
 
 ### Perl Config file
 

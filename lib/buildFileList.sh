@@ -200,7 +200,8 @@ function BuildFileList() {
     ######################
     # Get the PERL files #
     ######################
-    elif [ "${FILE_TYPE}" == "pl" ]; then
+    elif [ "${FILE_TYPE}" == "pl" ] || [ "${FILE_TYPE}" == "pm" ] || 
+      [ "${FILE_TYPE}" == "t" ]; then
       ################################
       # Append the file to the array #
       ################################
