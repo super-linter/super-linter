@@ -235,6 +235,12 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
 
 RUN luarocks install luacheck
 
+#####################
+# Install swiftlint #
+#####################
+RUN curl -sSLO https://github.com/realm/SwiftLint/latest/download/swiftlint && chmod a+x swiftlint \
+    && mv "swiftlint" /usr/bin/
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -292,6 +298,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_STATES=${VALIDATE_STATES} \
     VALIDATE_SQL=${VALIDATE_SQL} \
+    VALIDATE_SWIFT=${VALIDATE_SWIFT} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
     VALIDATE_TERRAFORM_TERRASCAN=${VALIDATE_TERRAFORM_TERRASCAN} \
     VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \

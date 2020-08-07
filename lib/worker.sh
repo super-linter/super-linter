@@ -37,7 +37,7 @@ function LintCodebase() {
   #####################################
   # Validate we have linter installed #
   #####################################
-  VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1)
+  VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1 || (command version "${LINTER_NAME}" 2>&1) )
 
   #######################
   # Load the error code #
@@ -604,6 +604,7 @@ function RunTestCases() {
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint" ".*\.\(sql\)\$" "sql"
+  TestCodebase "Swift" "swiftlint" "swiftlint" ".*\.\(swift\)\$" "swift"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
   TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "terraform_terrascan"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"

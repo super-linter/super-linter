@@ -127,7 +127,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
   'dart' 'dockerfilelint' 'dotenv-linter' 'eslint' 'flake8' 'golangci-lint' 'hadolint' 'htmlhint'
   'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint' 'pwsh'
-  'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint' 'terrascan'
+  'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint' 'swiftlint' 'terrascan'
   'tflint' 'xmllint' 'yamllint')
 
 #############################
@@ -137,7 +137,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'SQL' 'SWIFT' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -197,7 +197,8 @@ VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                   # Boolean t
 VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
-VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
+VALIDATE_SQL="${VALIDATE_SQL}"
+VALIDATE_SWIFT="${VALIDATE_SWIFT}"                                         # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
 VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
 VALIDATE_TSX="${VALIDATE_TSX}"                                       # Boolean to validate language
@@ -296,6 +297,7 @@ FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
 FILE_ARRAY_SQL=()                 # Array of files to check
+FILE_ARRAY_SWIFT=()               # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check
 FILE_ARRAY_TSX=()                 # Array of files to check
 FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
@@ -380,6 +382,8 @@ ERRORS_FOUND_STATES=0                   # Count of errors found
 export ERRORS_FOUND_STATES              # Workaround SC2034
 ERRORS_FOUND_SQL=0                      # Count of errors found
 export ERRORS_FOUND_SQL                 # Workaround SC2034
+ERRORS_FOUND_SWIFT=0                    # Count of errors found
+export ERRORS_FOUND_SWIFT               # Workaround SC2034
 ERRORS_FOUND_TERRAFORM=0                # Count of errors found
 export ERRORS_FOUND_TERRAFORM           # Workaround SC2034
 ERRORS_FOUND_TERRAFORM_TERRASCAN=0      # Count of errors found
@@ -1737,6 +1741,17 @@ if [ "${VALIDATE_SQL}" == "true" ]; then
   ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "SQL" "sql-lint" "sql-lint" ".*\.\(sql\)\$" "${FILE_ARRAY_SQL[@]}"
+fi
+
+##################
+# SWIFT LINTING #
+##################
+if [ "${VALIDATE_SWIFT}" == "true" ]; then
+  ########################
+  # Lint the Swift files #
+  ########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SWIFT" "swiftlint" "swiftlint" ".*\.\(swift\)\$" "${FILE_ARRAY_SWIFT[@]}"
 fi
 
 #####################
