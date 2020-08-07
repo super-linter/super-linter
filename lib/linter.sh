@@ -73,7 +73,7 @@ LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Director
 LUA_FILE_NAME='.luacheckrc'                                   # Name of the file
 LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}" # Path to the Lua lint rules
 # MD Vars
-MARKDOWN_FILE_NAME='.markdown-lint.yml'                                 # Name of the file
+MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"        # Name of the file
 MARKDOWN_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${MARKDOWN_FILE_NAME}" # Path to the markdown lint rules
 # OpenAPI Vars
 OPENAPI_FILE_NAME='.openapirc.yml'                                    # Name of the file
