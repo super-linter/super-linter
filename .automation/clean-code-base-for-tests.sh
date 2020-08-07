@@ -151,7 +151,7 @@ CleanSHAFolder() {
   ##################
   # Find the files #
   ##################
-  REMOVE_CMD=$(cd "${GITHUB_WORKSPACE}" || exit 1; rm -rf "${GITHUB_SHA}" 2>&1)
+  REMOVE_CMD=$(cd "${GITHUB_WORKSPACE}" || exit 1; sudo rm -rf "${GITHUB_SHA}" 2>&1)
 
   #######################
   # Load the error code #
