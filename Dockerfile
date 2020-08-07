@@ -15,6 +15,7 @@ FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM norionomura/swiftlint:latest as swiftlint
 
 ##################
 # Get base image #
@@ -238,8 +239,7 @@ RUN luarocks install luacheck
 #####################
 # Install swiftlint #
 #####################
-RUN curl -sSLO https://github.com/realm/SwiftLint/latest/download/swiftlint && chmod a+x swiftlint \
-    && mv "swiftlint" /usr/bin/
+COPY --from=swiftlint /bin/swiftlint /usr/bin/
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
