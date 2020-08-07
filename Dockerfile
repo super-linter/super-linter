@@ -16,24 +16,12 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM norionomura/swiftlint:latest as swiftlint
-FROM swift:latest as builder
+
 
 ##################
 # Get base image #
 ##################
 FROM python:alpine
-
-#######################
-# Install Swift Image #
-#######################
-WORKDIR /root
-COPY . .
-RUN swift build -c release
-
-FROM swift:slim
-WORKDIR /root
-COPY --from=builder /root .
-CMD [".build/x86_64-unknown-linux/release/docker-test"]
 
 #########################################
 # Label the instance and set maintainer #
@@ -253,6 +241,13 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
     && cd .. && rm -r luarocks-3.3.1-super-linter/
 
 RUN luarocks install luacheck
+
+#######################
+# Install Swift Image #
+#######################
+
+FROM swift:5.2
+RUN swift -version
 
 #####################
 # Install swiftlint #
