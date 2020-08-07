@@ -64,6 +64,7 @@ RUN apk add --update --no-cache \
     libc-dev libxml2-utils \
     make \
     musl-dev \
+    libicu-dev \
     npm nodejs-current \
     openjdk8-jre \
     perl \
