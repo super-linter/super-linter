@@ -72,7 +72,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                         |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                                                                                                     |
 | **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                     |
-| **Swift**                        | [swiftlint](https://github.com/realm/SwiftLint) 
+| **Swift**                        | [swiftlint](https://github.com/realm/SwiftLint)
 | **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) [terrascan](https://github.com/accurics/terrascan)                                                                 |
 | **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
 | **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                            |
