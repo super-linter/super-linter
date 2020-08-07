@@ -239,7 +239,7 @@ RUN luarocks install luacheck
 #####################
 # Install swiftlint #
 #####################
-COPY --from=swiftlint /bin/swiftlint /usr/bin/
+COPY --from=swiftlint /usr/bin/swiftlint /usr/bin/swiftlint
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
