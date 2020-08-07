@@ -1751,7 +1751,7 @@ if [ "${VALIDATE_SWIFT}" == "true" ]; then
   # Lint the Swift files #
   ########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SWIFT" "swiftlint" "swiftlint" ".*\.\(swift\)\$" "${FILE_ARRAY_SWIFT[@]}"
+  LintCodebase "SWIFT" "swiftlint" "LD_LIBRARY_PATH=/usr/lib/swift/linux swiftlint" ".*\.\(swift\)\$" "${FILE_ARRAY_SWIFT[@]}"
 fi
 
 #####################
