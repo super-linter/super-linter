@@ -2,6 +2,6 @@ TAP version 13
 1..2
 not ok 1 - perl_bad_1.pl
   ---
-  message: Global symbol "$here" requires explicit package name (did you forget to declare "my $here"?) at /tmp/lint/.automation/test/perl/perl_bad_1.pl line 37.\n/tmp/lint/.automation/test/perl/perl_bad_1.pl had compilation errors.\n
+  message: Code before strictures are enabled at line 14, column 1.  See page 429 of PBP.  (Severity  5)
   ...
 ok 2 - perl_good_1.pl
