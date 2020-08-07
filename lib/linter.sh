@@ -1261,7 +1261,7 @@ if [ "${VALIDATE_ARM}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectARMFile "${FILE}"; then
         FILE_ARRAY_ARM+=("${FILE}")
@@ -1303,7 +1303,7 @@ if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectCloudFormationFile "${FILE}"; then
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
@@ -1557,7 +1557,7 @@ if [ "${VALIDATE_OPENAPI}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectOpenAPIFile "${FILE}"; then
         FILE_ARRAY_OPENAPI+=("${FILE}")
@@ -1709,7 +1709,7 @@ if [ "${VALIDATE_STATES}" == "true" ]; then
     ###############################################################################
     IFS=$'\n'
 
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -type f -regex ".*\.\(json\)\$" 2>&1)
+    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
     for FILE in "${LIST_FILES[@]}"; do
       if DetectAWSStatesFIle "${FILE}"; then
         FILE_ARRAY_STATES+=("${FILE}")
