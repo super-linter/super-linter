@@ -16,11 +16,24 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM norionomura/swiftlint:latest as swiftlint
+FROM swift:latest as builder
 
 ##################
 # Get base image #
 ##################
 FROM python:alpine
+
+#######################
+# Install Swift Image #
+#######################
+WORKDIR /root
+COPY . .
+RUN swift build -c release
+
+FROM swift:slim
+WORKDIR /root
+COPY --from=builder /root .
+CMD [".build/x86_64-unknown-linux/release/docker-test"]
 
 #########################################
 # Label the instance and set maintainer #
