@@ -1585,7 +1585,7 @@ if [ "${VALIDATE_PERL}" == "true" ]; then
   # Lint the perl files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PERL" "perl" "perl -Mstrict -cw" ".*\.\(pl\)\$" "${FILE_ARRAY_PERL[@]}"
+  LintCodebase "PERL" "perl" "perlcritic" ".*\.\(pl\|pm\|t\)\$" "${FILE_ARRAY_PERL[@]}"
 fi
 
 ################

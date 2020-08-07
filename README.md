@@ -63,7 +63,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                                                                                                         |
 | **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)                                                                                                 |
 | **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                                                                                                      |
-| **Perl**                         | [perl](https://pkgs.alpinelinux.org/package/edge/main/x86/perl)                                                                                                          |
+| **Perl**                         | [perlcritic](https://metacpan.org/pod/Perl::Critic)                                                                                                                      |
 | **PHP**                          | [PHP built-in linter](https://www.php.net/) [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) [PHPStan](https://phpstan.org/n) [Psalm](https://psalm.dev/) |
 | **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                                                                                                       |
 | **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                                                                                                      |
@@ -71,7 +71,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Raku**                         | [raku](https://raku.org)                                                                                                                                                 |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                         |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck)                                                                                                                     |
-| **SQL**                        | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                     |
+| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                      |
 | **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) [terrascan](https://github.com/accurics/terrascan)                                                                 |
 | **TypeScript**                   | [eslint](https://eslint.org/) [standard js](https://standardjs.com/)                                                                                                     |
 | **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                            |
