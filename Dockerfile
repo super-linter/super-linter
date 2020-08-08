@@ -245,7 +245,6 @@ RUN luarocks install luacheck
 #######################
 # Install Swift Image #
 #######################
-
 FROM swift:5.2
 RUN swift -version
 

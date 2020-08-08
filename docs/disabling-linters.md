@@ -46,6 +46,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Ruby](#ruby)
   - [Shell](#shell)
   - [SQL](#sql)
+  - [Swift](#swift)
   - [Terraform](#terraform)
   - [Typescript eslint](#typescript-eslint)
   - [Typescript standard](#typescript-standard)
@@ -1030,6 +1031,47 @@ moreThings()
 ### SQL disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Swift
+
+- [swiftlint](https://github.com/realm/SwiftLint)
+
+### swiftlint Config file
+
+- There is no top level _configuration file_ available at this time.
+
+### swiftlint disable single line
+
+```swift
+// swiftlint:disable:next force_cast
+let noWarning = NSNumber() as! Int
+let hasWarning = NSNumber() as! Int
+let noWarning2 = NSNumber() as! Int // swiftlint:disable:this force_cast
+let noWarning3 = NSNumber() as! Int
+// swiftlint:disable:previous force_cast
+```
+
+### swiftlint disable code block
+
+```swift
+// swiftlint:disable all
+let noWarning :String = ""
+let i = ""
+// swiftlint:enable all
+```
+
+### swiftlint disable entire file
+
+```swift
+// swiftlint:disable all
+import Foundation
+
+let noWarning :String = ""
+let i = "also no warning"
+let noWarning2 = NSNumber() as! Int
+```
 
 ---
 
