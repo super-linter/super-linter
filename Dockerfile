@@ -62,7 +62,7 @@ RUN apk add --update --no-cache \
     icu-libs \
     jq \
     libc-dev libxml2-utils \
-    ibressl-dev \
+    libressl-dev \
     make \
     musl-dev \
     npm nodejs-current \
