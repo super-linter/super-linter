@@ -28,11 +28,11 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Deploy Docker Image - DEV
+    name: Deploy Docker Image PR - DEV
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    if: github.event.pull_request.head.repo.full_name != github.repository
     ##################
     # Load all steps #
     ##################
@@ -41,7 +41,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.2
+        uses: actions/checkout@v2.3.1
 
       ###################################
       # Build image locally for testing #
