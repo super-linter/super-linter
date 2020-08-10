@@ -53,6 +53,7 @@ ARG GLIBC_VERSION='2.31-r0'
 # Run APK installs #
 ####################
 RUN apk add --update --no-cache \
+    ansible-lint \
     bash \
     coreutils \
     curl \
@@ -216,7 +217,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/reposi
 ######################
 # Install CheckStyle #
 ######################
-
 RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
     | grep browser_download_url \
     | grep ".jar" \
@@ -242,11 +242,6 @@ RUN wget https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O
 
 RUN luarocks install luacheck
 
-#######################
-# Install Swift Image #
-#######################
-FROM swift:5.2
-RUN swift -version
 
 #####################
 # Install swiftlint #
