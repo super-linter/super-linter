@@ -16,7 +16,6 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM norionomura/swiftlint:latest as swiftlint
-FROM norionomura/swift:525
 
 ##################
 # Get base image #
