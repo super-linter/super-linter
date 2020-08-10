@@ -1,0 +1,72 @@
+---
+#########################
+#########################
+## Deploy Docker Image ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches-ignore: [master]
+  pull_request:
+    branches-ignore: []
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Deploy Docker Image PR - DEV
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    # Prevent duplicate run from happening when a forked push is committed
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2.3.1
+
+      ###################################
+      # Build image locally for testing #
+      ###################################
+      - name: Build image
+        shell: bash
+        run: docker build --no-cache -t github/super-linter:${GITHUB_SHA} .
+
+      #####################################
+      # Run Linter against Test code base #
+      #####################################
+      - name: Run Test Cases
+        shell: bash
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+
+      #########################################
+      # Clean code base to run agaisnt it all #
+      #########################################
+      - name: Clean Test code base for additional testing
+        shell: bash
+        run: .automation/clean-code-base-for-tests.sh
+
+      ############################################
+      # Run Linter against ALL cleaned code base #
+      ############################################
+      - name: Run against all code base
+        shell: bash
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
