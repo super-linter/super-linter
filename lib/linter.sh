@@ -110,6 +110,9 @@ PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
+# SQL Vars
+SQL_FILE_NAME=".sql-config.json"                              # Name of the file
+SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
 # Terraform Vars
 TERRAFORM_FILE_NAME='.tflint.hcl'                                         # Name of the file
 TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}" # Path to the Terraform lint rules
@@ -1198,6 +1201,8 @@ GetLinterRules "PYTHON_PYLINT"
 GetLinterRules "PYTHON_FLAKE8"
 # Get Ruby rules
 GetLinterRules "RUBY"
+# Get SQL rules
+GetLinterRules "SQL"
 # Get Terraform rules
 GetLinterRules "TERRAFORM"
 # Get TypeScript rules
@@ -1736,7 +1741,7 @@ if [ "${VALIDATE_SQL}" == "true" ]; then
   # Lint the SQL files #
   ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SQL" "sql-lint" "sql-lint" ".*\.\(sql\)\$" "${FILE_ARRAY_SQL[@]}"
+  LintCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "${FILE_ARRAY_SQL[@]}"
 fi
 
 #####################
