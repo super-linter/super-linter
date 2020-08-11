@@ -45,12 +45,12 @@ function BuildFileList() {
   # print header #
   ################
   debug "----------------------------------------------"
-  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}..${GITHUB_SHA}' --diff-filter=d]"
+  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
 
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}..${GITHUB_SHA}" --diff-filter=d 2>&1)
+  mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
 
   #######################
   # Load the error code #
