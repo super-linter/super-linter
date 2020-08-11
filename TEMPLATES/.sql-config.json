@@ -1,0 +1,4 @@
+{
+    "driver": "mysql",
+    "host": "localhost"
+}

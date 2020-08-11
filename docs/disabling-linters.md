@@ -1017,7 +1017,9 @@ moreThings()
 
 ### SQL Config file
 
-- There is no top level _configuration file_ available at this time
+- `.github/linters/.sql-config.json`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.sql-json`
 
 ### SQL disable single line
 
