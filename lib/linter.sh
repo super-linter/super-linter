@@ -1741,7 +1741,7 @@ if [ "${VALIDATE_SQL}" == "true" ]; then
   # Lint the SQL files #
   ######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SQL" "sql-lint" "sql-lint -c ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "${FILE_ARRAY_SQL[@]}"
+  LintCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "${FILE_ARRAY_SQL[@]}"
 fi
 
 #####################
