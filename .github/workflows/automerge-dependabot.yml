@@ -34,11 +34,11 @@ jobs:
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Deploy Docker Image - DEV 
+          checkName: Deploy Docker Image - DEV
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: merge
-        if: steps.wait-for-build.outputs.conclusion == 'success'
+        if: steps.wait-for-build.outputs.conclusion == 'success' || steps.wait-for-build.outputs.conclusion == 'skipped'
         uses: actions/github-script@v2
         with:
           script: |
