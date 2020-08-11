@@ -27,6 +27,8 @@ jobs:
     name: Deploy Docker Image - Release
     # Set the agent to run on
     runs-on: ubuntu-latest
+    # Only run on main repo
+    if: github.repository == 'github/super-linter'
     ##################
     # Load all steps #
     ##################
