@@ -110,7 +110,7 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 # Install Phive dependencies #
 ##############################
 RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-    && wget--tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
     && gpg --verify phive.phar.asc phive.phar \
     && chmod +x phive.phar \
