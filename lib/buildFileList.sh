@@ -434,7 +434,7 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "${FILE_TYPE}" == "dockerfile" ] || [ "${BASE_FILE}" == *"dockerfile."* ]; then
+    elif [ "${FILE_TYPE}" == "dockerfile" ] || [[ "${BASE_FILE}" == *"dockerfile."* ]]; then
       ################################
       # Append the file to the array #
       ################################
