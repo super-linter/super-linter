@@ -45,12 +45,12 @@ CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS 
 # Dart Vars
 DART_FILE_NAME='analysis_options.yml'                           # Name of the file
 DART_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DART_FILE_NAME}" # Path to the DART lint rules
-# Docker Vars
-DOCKERFILE_NAME='.dockerfilelintrc'                                    # Name of the file
-DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_NAME}" # Path to the Docker lint rules
-# Dockerfile Hadolint
-DOCKERFILE_HADOLINT_NAME='.hadolint.yml'                                                 # Name of the file
-DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_NAME}" # Path to the Docker lint rules
+# Dockerfile Vars
+DOCKERFILE_FILE_NAME='.dockerfilelintrc'                                    # Name of the file
+DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_FILE_NAME}" # Path to the Docker lint rules
+# Dockerfile Hadolint Vars
+DOCKERFILE_HADOLINT_FILE_NAME='.hadolint.yml'                                                 # Name of the file
+DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_FILE_NAME}" # Path to the Docker lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}" # Path to the Go lint rules
