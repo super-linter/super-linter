@@ -200,7 +200,7 @@ function BuildFileList() {
     ######################
     # Get the PERL files #
     ######################
-    elif [ "${FILE_TYPE}" == "pl" ] || [ "${FILE_TYPE}" == "pm" ] || 
+    elif [ "${FILE_TYPE}" == "pl" ] || [ "${FILE_TYPE}" == "pm" ] ||
       [ "${FILE_TYPE}" == "t" ]; then
       ################################
       # Append the file to the array #
@@ -374,7 +374,8 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_POWERSHELL+=("${FILE}")
-    elif [ "${FILE_TYPE}" == "css" ]; then
+    elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
+      [ "${FILE_TYPE}" == "sass" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -440,7 +441,8 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] || [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then
+    elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
+      [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -467,7 +469,8 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] || [ "$FILE_TYPE" == "gradle" ]; then
+    elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
+      [ "$FILE_TYPE" == "gradle" ]; then
       ################################
       # Append the file to the array #
       ################################
