@@ -57,6 +57,8 @@ function GetValidationInfo() {
   # Determine if any linters were explicitly set #
   ################################################
   ANY_SET="false"
+  ANY_TRUE="false"
+  ANY_FALSE="false"
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
@@ -65,12 +67,21 @@ function GetValidationInfo() {
     if [ -n "${!VALIDATE_LANGUAGE}" ]; then
       # It was set, need to set flag
       ANY_SET="true"
+      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
+        ANY_TRUE="true"
+      elif [ "${!VALIDATE_LANGUAGE}" == "false" ]; then
+        ANY_FALSE="true"
+      fi
     fi
   done
 
-  ###################################################
-  # Validate if we should check individual lanuages #
-  ###################################################
+  if [ $ANY_TRUE == "true" ] && [ $ANY_FALSE == "true" ]; then
+    fatal "Behavior not supported, please either only include (VALIDATE=true) or exclude (VALIDATE=false) linters, but not both"
+  fi
+
+  #########################################################
+  # Validate if we should check/omit individual languages #
+  #########################################################
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
@@ -79,8 +90,10 @@ function GetValidationInfo() {
     if [[ ${ANY_SET} == "true" ]]; then
       # Check to see if the variable was set
       if [ -z "${!VALIDATE_LANGUAGE}" ]; then
-        # Flag was not set, default to false
-        eval "${VALIDATE_LANGUAGE}='false'"
+        # Flag was not set, default to:
+        # if ANY_TRUE then set to false
+        # if ANY_FALSE then set to true
+        eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
       fi
     else
       # No linter flags were set - default all to true

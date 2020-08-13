@@ -78,7 +78,7 @@ function LintCodebase() {
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
   else
     ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
+    # Set the file separator to newline to allow for grabbing objects with spaces #
     ###############################################################################
     IFS=$'\n'
 
@@ -141,9 +141,9 @@ function LintCodebase() {
       FILE_NAME=$(basename "${FILE}" 2>&1)
       DIR_NAME=$(dirname "${FILE}" 2>&1)
 
-      #####################################################
-      # Make sure we dont lint node modules or test cases #
-      #####################################################
+      ######################################################
+      # Make sure we don't lint node modules or test cases #
+      ######################################################
       if [[ ${FILE} == *"node_modules"* ]]; then
         # This is a node modules file
         continue
@@ -151,7 +151,7 @@ function LintCodebase() {
         # This is the test cases, we should always skip
         continue
       elif [[ ${FILE} == *".git"* ]]; then
-        # This is likely the .git folder and shouldnt be parsed
+        # This is likely the .git folder and shouldn't be parsed
         continue
       fi
 
@@ -270,7 +270,7 @@ function TestCodebase() {
   LINTER_NAME="${2}"           # Pull the variable and remove from array path  (Example: jsonlint)
   LINTER_COMMAND="${3}"        # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILE_EXTENSIONS="${4}"       # Pull the variable and remove from array path  (Example: *.json)
-  INDVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
+  INDIVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
   TESTS_RAN=0                  # Incremented when tests are ran, this will help find failed finds
 
   ################
@@ -312,7 +312,7 @@ function TestCodebase() {
   #################################
   # Get list of all files to lint #
   #################################
-  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
+  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
 
   ########################################
   # Prepare context if TAP output format #
@@ -381,11 +381,11 @@ function TestCodebase() {
     # Check for ansible #
     #####################
     if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-      ########################################
-      # Make sure we dont lint certain files #
-      ########################################
+      #########################################
+      # Make sure we don't lint certain files #
+      #########################################
       if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]]; then
-        # This is a file we dont look at
+        # This is a file we don't look at
         continue
       fi
 
@@ -393,7 +393,7 @@ function TestCodebase() {
       # Lint the file with the rules #
       ################################
       LINT_CMD=$(
-        cd "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}" || exit
+        cd "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}" || exit
         ${LINTER_COMMAND} "${FILE}" 2>&1
       )
     elif [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
@@ -509,7 +509,7 @@ function TestCodebase() {
     ########################################################################
     # If expected TAP report exists then compare with the generated report #
     ########################################################################
-    EXPECTED_FILE="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDVIDUAL_TEST_FOLDER}/reports/expected-${FILE_TYPE}.tap"
+    EXPECTED_FILE="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}/reports/expected-${FILE_TYPE}.tap"
     if [ -e "${EXPECTED_FILE}" ]; then
       TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
       ## Ignore white spaces, case sensitive

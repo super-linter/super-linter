@@ -162,12 +162,14 @@ Using the line:`uses: docker://github/super-linter:v3` will pull the image down 
 
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-_Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a specific way.
-If none of them are passed, then they all default to true.
-However if any one of the variables are set, we default to leaving any unset variable to false.
+_Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
+- If none of them are passed, then they all default to true.
+- If any one of the variables are set to true, we default to leaving any unset variable to false (only validate those languages).
+- If any one of the variables are set to false, we default to leaving any unset variable to true (only exclude those languages).
+- If there are `VALIDATE_[LANGUAGE]` variables set to both true and false. It will fail.
+
 This means that if you run the linter "out of the box", all languages will be checked.
-But if you wish to select specific linters, we give you full control to choose which linters are run,
-and won't run anything unexpected.
+But if you wish to select or exclude specific linters, we give you full control to choose which linters are run, and won't run anything unexpected.
 
 | **ENV VAR**                      | **Default Value**     | **Notes**                                                                                                                                                                        |
 | -------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
