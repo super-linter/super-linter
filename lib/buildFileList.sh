@@ -79,11 +79,13 @@ function BuildFileList() {
     FILE_TYPE=${FILE##*.}
     # To lowercase
     FILE_TYPE=${FILE_TYPE,,}
+    # get the baseFile for additonal logic
+    BASE_FILE=$(basename "${FILE,,}")
 
     ##############
     # Print file #
     ##############
-    info "File:[${FILE}], File_type:[${FILE_TYPE}]"
+    info "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
 
     #########
     # DEBUG #
@@ -432,7 +434,7 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    elif [ "${FILE}" == "dockerfile" ] || [ "${FILE_TYPE}" == "dockerfile" ]; then
+    elif [ "${FILE_TYPE}" == "dockerfile" ] || [[ "${BASE_FILE}" == *"dockerfile."* ]]; then
       ################################
       # Append the file to the array #
       ################################
