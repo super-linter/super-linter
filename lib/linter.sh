@@ -1364,7 +1364,7 @@ if [ "${VALIDATE_CSS}" == "true" ]; then
   #############################
   # Lint the CSS files #
   #############################
-  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\)\$" "${FILE_ARRAY_CSS[@]}"
+  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\|scss\|sass\)\$" "${FILE_ARRAY_CSS[@]}"
 fi
 
 ################
