@@ -173,8 +173,8 @@ VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean t
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"                                 # Boolean to validate language
-VALIDATE_DOCKER_HADOLINT="${VALIDATE_DOCKER_HADOLINT}"               # Boolean to validate language
+VALIDATE_DOCKERFILE="${VALIDATE_DOCKERFILE}"                                 # Boolean to validate language
+VALIDATE_DOCKERFILE_HADOLINT="${VALIDATE_DOCKERFILE_HADOLINT}"               # Boolean to validate language
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"                     # Boolean to validate files with editorconfig
 VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
@@ -1381,7 +1381,7 @@ fi
 ##################
 # DOCKER LINTING #
 ##################
-if [ "${VALIDATE_DOCKER}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
@@ -1393,7 +1393,7 @@ fi
 ###########################
 # DOCKER LINTING HADOLINT #
 ###########################
-if [ "${VALIDATE_DOCKER_HADOLINT}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
