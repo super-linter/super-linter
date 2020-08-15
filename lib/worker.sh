@@ -37,8 +37,12 @@ function LintCodebase() {
   #####################################
   # Validate we have linter installed #
   #####################################
-  VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1)
-
+  # Edgecase for Lintr as it is a Package for R
+  if [[ ${LINTER_NAME} == *"lintr"* ]]; then
+    VALIDATE_INSTALL_CMD=$(command -v "R" 2>&1)
+  else
+    VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1)
+  fi
   #######################
   # Load the error code #
   #######################
@@ -201,6 +205,17 @@ function LintCodebase() {
         LINT_CMD=$(
           cd "${GITHUB_WORKSPACE}" || exit
           ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
+        )
+      ###############################################################################
+      # Corner case for R as we have to pass it to R                                #
+      ###############################################################################
+      elif [[ ${FILE_TYPE} == "R" ]]; then
+        #######################################
+        # Lint the file with the updated path #
+        #######################################
+        LINT_CMD=$(
+          cd "${GITHUB_WORKSPACE}" || exit
+          ${LINTER_COMMAND}"${DIR_NAME}/$FILE_NAME")' 2>&1 #'
         )
       else
         ################################

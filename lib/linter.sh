@@ -107,6 +107,9 @@ PYTHON_PYLINT_FILE_NAME="${PYTHON_PYLINT_CONFIG_FILE:-.python-lint}"            
 PYTHON_PYLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_PYLINT_FILE_NAME}" # Path to the python lint rules
 PYTHON_FLAKE8_FILE_NAME="${PYTHON_FLAKE8_CONFIG_FILE:-.flake8}"                   # Name of the file
 PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}" # Path to the python lint rules
+# R Vars
+R_FILE_NAME='.lintr'
+R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
@@ -130,7 +133,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
   'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
-  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
+  'pwsh' 'pylint' 'lintr' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
   'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 #############################
@@ -140,7 +143,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -197,6 +200,7 @@ VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean t
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                         # Boolean to validate language
 VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}" # Boolean to validate language
 VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                   # Boolean to validate language
+VALIDATE_R="${VALIDATE_R}"                                           # Boolean to validate language
 VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
@@ -295,6 +299,7 @@ FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
 FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
 FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
+FILE_ARRAY_R=()                # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
@@ -375,6 +380,8 @@ ERRORS_FOUND_PYTHON_PYLINT=0            # Count of errors found
 export ERRORS_FOUND_PYTHON_PYLINT       # Workaround SC2034
 ERRORS_FOUND_PYTHON_FLAKE8=0            # Count of errors found
 export ERRORS_FOUND_PYTHON_FLAKE8       # Workaround SC2034
+ERRORS_FOUND_R=0                        # Count of errors found
+export ERRORS_FOUND_R                   # Workaround SC2034
 ERRORS_FOUND_RAKU=0                     # Count of errors found
 export ERRORS_FOUND_RAKU                # Workaround SC2034
 ERRORS_FOUND_RUBY=0                     # Count of errors found
@@ -442,6 +449,11 @@ GetLinterVersions() {
     elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]]; then
       # Need specific command for Protolint and editorconfig-checker
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
+    elif [[ ${LINTER} == "lintr" ]]; then 
+      # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
+      mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
+                  lintr_ver <- packageVersion('lintr'); \
+                  glue::glue('lintr { lintr_ver } on { r_ver }')") 
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
@@ -1199,6 +1211,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "PYTHON_PYLINT"
 # Get Python flake8 rules
 GetLinterRules "PYTHON_FLAKE8"
+# Get R rules
+GetLinterRules "R"
 # Get Ruby rules
 GetLinterRules "RUBY"
 # Get SQL rules
@@ -1675,6 +1689,17 @@ if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
+fi
+
+################
+# R LINTING #
+################
+if [ "${VALIDATE_R}" == "true" ]; then
+  #######################
+  # Lint the R files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase  "R" "lintr" "R --slave -e 'lintr::lint(" ".*\.\(r\|R\|Rmd\|rmd\)\$" "${FILE_ARRAY_R[@]}"
 fi
 
 ################
