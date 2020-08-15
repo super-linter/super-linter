@@ -72,7 +72,9 @@ RUN apk add --update --no-cache \
     py3-setuptools \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
-    gnupg
+    gnupg \
+    R \
+    libc-dev libxml2-dev 
 
 ########################################
 # Copy dependencies files to container #
