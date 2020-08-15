@@ -215,7 +215,7 @@ function LintCodebase() {
         #######################################
         LINT_CMD=$(
           cd "${GITHUB_WORKSPACE}" || exit
-          ${LINTER_COMMAND}"${DIR_NAME}/$FILE_NAME")' 2>&1 #'
+          R --slave -e "lintr::lint('${DIR_NAME}/$FILE_NAME')" 2>&1 
         )
       else
         ################################
