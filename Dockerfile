@@ -15,6 +15,7 @@ FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM assignuser/lintr-lib:latest as lintr-lib
 
 ##################
 # Get base image #
@@ -240,6 +241,12 @@ RUN wget --tries=5 https://github.com/cvega/luarocks/archive/v3.3.1-super-linter
 
 RUN luarocks install luacheck
 
+#################
+# Install lintr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -294,6 +301,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
     VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
     VALIDATE_PYTHON_FLAKE8=${VALIDATE_PYTHON_FLAKE8} \
+    VALIDATE_R=${VALIDATE_R} \
     VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_STATES=${VALIDATE_STATES} \
