@@ -1,8 +1,1 @@
-# see https://github.com/jimhester/lintr#project-configuration for details
-# on how to configure lintr. 
-# Defaults mostly adhere to: https://style.tidyverse.org/
-#
-# 'object_usage_linter' runs code with eval() and is deactivated by default
-# for security reasons.
-
 linters: with_defaults(object_usage_linter = NULL)
