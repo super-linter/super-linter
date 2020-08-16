@@ -355,10 +355,10 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    ########################
-    # Get the Golang files #
-    ########################
-    elif [ "${FILE_TYPE}" == "R" ]; then
+    ####################
+    # Get the R files  #
+    ####################
+    elif [ "${FILE_TYPE}" == "r" ]; then
       ################################
       # Append the file to the array #
       ################################
