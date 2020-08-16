@@ -916,7 +916,7 @@ var = "terrible code down here..."
 
 ### lintr disable code block
 
-```r 
+```r
  # nolint start
  hotGarbage = 1++1/3+2
     #a very long comment line
@@ -926,7 +926,7 @@ var = "terrible code down here..."
 
 Add files to exclude into the config file as  a list of filenames to exclude from linting. You can use a named item to exclude only certain lines from a file.
 
-```r 
+```r
 exclusions: list("inst/doc/creating_linters.R" = 1, "inst/example/bad.R", "tests/testthat/exclusions-test")
 ```
 ---
