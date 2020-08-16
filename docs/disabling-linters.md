@@ -910,7 +910,7 @@ var = "terrible code down here..."
 
 ### lintr disable single line
 
-```r 
+```r
 1++1/3+2 # nolint
 ```
 

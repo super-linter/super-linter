@@ -300,7 +300,12 @@ function TestCodebase() {
   #####################################
   # Validate we have linter installed #
   #####################################
-  VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1)
+  # Edgecase for Lintr as it is a Package for R
+  if [[ ${LINTER_NAME} == *"lintr"* ]]; then
+    VALIDATE_INSTALL_CMD=$(command -v "R" 2>&1)
+  else
+    VALIDATE_INSTALL_CMD=$(command -v "${LINTER_NAME}" 2>&1)
+  fi
 
   #######################
   # Load the error code #
@@ -432,6 +437,17 @@ function TestCodebase() {
         cd "${GITHUB_WORKSPACE}" || exit
         ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
       )
+    ###############################################################################
+    # Corner case for R as we have to pass it to R                                #
+    ###############################################################################
+    elif [[ ${FILE_TYPE} == "R" ]]; then
+      #######################################
+      # Lint the file with the updated path #
+      #######################################
+      LINT_CMD=$(
+        cd "${GITHUB_WORKSPACE}" || exit
+        R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1 
+      )    
     else
       ################################
       # Lint the file with the rules #
@@ -615,6 +631,8 @@ function RunTestCases() {
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "protobuf"
   TestCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "python"
   TestCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config ${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "python"
+  # TestCodebase "Language" "Linter" "Linter-command" "Regex to find files" "Test Folder"
+  TestCodebase "R" "lintr" "raku -c" ".*\.\(r\|R\|Rmd\|rmd\)\$" "r"
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
