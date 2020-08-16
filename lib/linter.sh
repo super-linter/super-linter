@@ -108,8 +108,8 @@ PYTHON_PYLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_PYLINT_FILE_NAME}
 PYTHON_FLAKE8_FILE_NAME="${PYTHON_FLAKE8_CONFIG_FILE:-.flake8}"                   # Name of the file
 PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}" # Path to the python lint rules
 # R Vars
-R_FILE_NAME='.lintr'
-R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"
+R_FILE_NAME='.lintr'                                                              # Name of the file
+R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"                         # Path to the R lint rules
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
