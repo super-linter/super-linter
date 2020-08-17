@@ -37,8 +37,16 @@ jobs:
           checkName: Deploy Docker Image - DEV
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Wait for CI/CT/CD to succeed pt2
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-ci
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Stack linter
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: merge
-        if: steps.wait-for-build.outputs.conclusion == 'success' || steps.wait-for-build.outputs.conclusion == 'skipped'
+        if: steps.wait-for-build.outputs.conclusion == 'success' || steps.wait-for-build.outputs.conclusion == 'skipped' && steps.wait-for-ci.outputs.conclusion == 'success'
         uses: actions/github-script@v2
         with:
           script: |
