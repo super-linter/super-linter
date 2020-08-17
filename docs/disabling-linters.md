@@ -905,7 +905,7 @@ var = "terrible code down here..."
 
 - `.github/linters/.lintr`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.lintr`
+- You can use either one `.lintr` file in the root of your repository and/or additonal `.lintr` files in subdirectories. When linting a file lintr will look for config files from the file location upwards and will use the closest one.  
 - **Note:** The defaults adhere to the [tidyverse styleguide](https://style.tidyverse.org/)
 
 ### lintr disable single line
@@ -924,7 +924,7 @@ var = "terrible code down here..."
 ```
 ### lintr disable entire file
 
-Add files to exclude into the config file as  a list of filenames to exclude from linting. You can use a named item to exclude only certain lines from a file.
+Add files to exclude into the config file as  a list of filenames to exclude from linting. You can use a named item to exclude only certain lines from a file. Use paths relative to the location of the `.lintr` file.
 
 ```r
 exclusions: list("inst/doc/creating_linters.R" = 1, "inst/example/bad.R", "tests/testthat/exclusions-test")

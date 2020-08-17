@@ -358,7 +358,7 @@ function BuildFileList() {
     ####################
     # Get the R files  #
     ####################
-    elif [ "${FILE_TYPE}" == "r" ]; then
+    elif [ "${FILE_TYPE}" == "r" ] || [ "${FILE_TYPE}" == "rmd" ]; then
       ################################
       # Append the file to the array #
       ################################
