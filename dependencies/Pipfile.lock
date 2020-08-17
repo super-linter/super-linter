@@ -39,33 +39,33 @@
         },
         "aws-sam-translator": {
             "hashes": [
-                "sha256:33c5e9a04584a88b2dc730991f7aea52acc4a077a194444e16728dd2be997dc0",
-                "sha256:5b31769d271fa6c7e87cde076ce819f9f9c7da324b3880f2cd0f5f5aa837e520",
-                "sha256:f2d0585fc7dd071f136b543e9a614945cb80bbd3113a25f260797c126456dd25"
+                "sha256:1a3fd8e48a745967e8457b9cefdc3ad0f139ac4a25af4db9c13a9e1c19ea6910",
+                "sha256:3a200e6475f11726732b9b9c070ca4d58d2fe5ecc40e8fb629b09a053fba5640",
+                "sha256:de2f1b4efd83347639eb19fea37989e9da9a3c59da277320cf1e58a2f0ff6dd0"
             ],
-            "version": "==1.25.0"
+            "version": "==1.26.0"
         },
         "boto3": {
             "hashes": [
-                "sha256:726937b33b5bf6036a3889ea6ecad632439d1a53c3dd4497c1c426d348e2dae3",
-                "sha256:781f5d1bbec6c2fe902e8855c1c8a576845eaa06630e817b0e422afa4788620e"
+                "sha256:640a8372ce0edfbb84a8f63584a0b64c78d61a751a27c2a47f92d2ebaf021ce4",
+                "sha256:a6c9a3d3abbad2ff2e5751af599492a9271633a7c9fef343482524464c53e451"
             ],
-            "version": "==1.14.34"
+            "version": "==1.14.43"
         },
         "botocore": {
             "hashes": [
-                "sha256:8170f6a236cdfd053275be7b2f1531c90c517d903d38b21d064dc6ba23f20870",
-                "sha256:ff39ec54893397df3c14dd516aedeaff12bb7c363051d8b9bd5fc86bc3e68231"
+                "sha256:3fb144d2b5d705127f394f7483737ece6fa79577ca7c493e4f42047ac8636200",
+                "sha256:f8801ce7f7603922ccab1c86c448e802f94183e31d99457e85fb9985a20d3abc"
             ],
-            "version": "==1.17.34"
+            "version": "==1.17.43"
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:85df66deca0319003b4af3efbd4689e5004608b4e9ee7cc54c7a27e5c0ca1685",
-                "sha256:f7c63a4bf6c32c56cbe1af023ff93eb88a4bad784368dcb25724941981e92f16"
+                "sha256:42023d89520e3a29891ec2eb4c326eef9d1f7516fe9abee8b6c97ce064187b45",
+                "sha256:8439925531fdd4c94e5b50974d067857b3af50b04b61254d3eae9b1e0ce20007"
             ],
             "index": "pypi",
-            "version": "==0.34.1"
+            "version": "==0.35.0"
         },
         "decorator": {
             "hashes": [
