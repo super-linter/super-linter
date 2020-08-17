@@ -1695,8 +1695,17 @@ fi
 # R LINTING #
 ################
 if [ "${VALIDATE_R}" == "true" ]; then
+  ##########################
+  # Check for local config #
+  ##########################
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ]; then 
+    info " "
+    info "No .lintr configuration file found, using defaults."
+    cp $R_LINTER_RULES $GITHUB_WORKSPACE
+  fi
+
   #######################
-  # Lint the R files #
+  # Lint the R files    #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase  "R" "lintr" "${R_LINTER_RULES}" ".*\.\(r\|R\|Rmd\|rmd\)\$" "${FILE_ARRAY_R[@]}"
