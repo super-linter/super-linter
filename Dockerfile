@@ -61,6 +61,7 @@ RUN apk add --update --no-cache \
     go \
     icu-libs \
     jq \
+    libc-dev libxml2-dev \
     libc-dev libxml2-utils \
     make \
     musl-dev \
@@ -70,11 +71,12 @@ RUN apk add --update --no-cache \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
+    R \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
-    gnupg \
-    R \
-    libc-dev libxml2-dev 
+    gnupg 
+    
+    
 
 ########################################
 # Copy dependencies files to container #
