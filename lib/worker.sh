@@ -214,7 +214,7 @@ function LintCodebase() {
         # Lint the file with the updated path #
         #######################################
         LINT_CMD=$(
-          cd "${GITHUB_WORKSPACE}/${DIR_NAME}" || exit
+          cd "${DIR_NAME}" || exit
           R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1 
         )
       else
