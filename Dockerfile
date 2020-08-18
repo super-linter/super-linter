@@ -253,7 +253,7 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 # Install chktex #
 ##################
 RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O chktex.zip -q \
-    && unzip chktex.zip \
+    && unzip -q chktex.zip -d chktex \
     && cd chktex \
     && ./configure && make \
     && mv chktex /usr/bin \
