@@ -61,8 +61,7 @@ RUN apk add --update --no-cache \
     go \
     icu-libs \
     jq \
-    libc-dev libxml2-dev \
-    libc-dev libxml2-utils \
+    libc-dev libxml2-dev libxml2-utils \
     make \
     musl-dev \
     npm nodejs-current \
@@ -75,8 +74,6 @@ RUN apk add --update --no-cache \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     gnupg 
-    
-    
 
 ########################################
 # Copy dependencies files to container #
