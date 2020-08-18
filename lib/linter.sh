@@ -1034,7 +1034,7 @@ Reports() {
     #############################################
     info "Contents of report folder:"
     OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
-    info "$REPORT_OUTPUT_FOLDER"
+    info "$OUTPUT_CONTENTS_CMD"
   fi
 
   ################################
