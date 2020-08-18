@@ -355,6 +355,21 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    ####################
+    # Get the R files  #
+    ####################
+    elif [ "${FILE_TYPE}" == "r" ] || [ "${FILE_TYPE}" == "rmd" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_R+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    ###########################
+    # Get the Terraform files #
+    ###########################
     ###########################
     # Get the Terraform files #
     ###########################

@@ -42,6 +42,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Protocol Buffers](#protocol-buffers)
   - [Python3 pylint](#python3-pylint)
   - [Python3 flake8](#python3-flake8)
+  - [R](#r)
   - [Raku](#raku)
   - [Ruby](#ruby)
   - [Shell](#shell)
@@ -896,7 +897,40 @@ var = "terrible code down here..."
 ```
 
 ---
+## R
 
+- [lintr](https://github.com/jimhester/lintr)
+
+### lintr Config file
+
+- `.github/linters/.lintr`
+- You can pass multiple rules and overwrite default rules
+- You can use either one `.lintr` file in the root of your repository and/or additonal `.lintr` files in subdirectories. When linting a file lintr will look for config files from the file location upwards and will use the closest one.
+- Absolute paths for exclusions will not work due to the code being linted within the docker environment. Use paths relative to the `.lintr` file in which youare adding them.  
+- **Note:** The defaults adhere to the [tidyverse styleguide](https://style.tidyverse.org/)
+
+### lintr disable single line
+
+```r
+1++1/3+2 # nolint
+```
+
+### lintr disable code block
+
+```r
+ # nolint start
+ hotGarbage = 1++1/3+2
+    #a very long comment line
+ # nolint end
+```
+### lintr disable entire file
+
+Add files to exclude into the config file as  a list of filenames to exclude from linting. You can use a named item to exclude only certain lines from a file. Use paths relative to the location of the `.lintr` file.
+
+```r
+exclusions: list("inst/doc/creating_linters.R" = 1, "inst/example/bad.R", "tests/testthat/exclusions-test")
+```
+---
 ## Raku
 
 - [raku](https://raku.org)
