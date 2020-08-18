@@ -260,7 +260,7 @@ export WARNING_ARRAY_TEST                               # Workaround SC2034
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
-REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
+REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"  # Location for the report folder
 
 ##########################
 # Array of changed files #
@@ -795,6 +795,11 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
+    ################################
+    # Set the report output folder #
+    ################################
+    REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+
     info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
 
     # No need to touch or set the GITHUB_SHA
@@ -1024,6 +1029,12 @@ Reports() {
   ###################################
   if [ -z "${FORMAT_REPORT}" ]; then
     info "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+    #############################################
+    # Print info on reports that were generated #
+    #############################################
+    info "Contents of report folder:"
+    OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
+    info "$OUTPUT_CONTENTS_CMD"
   fi
 
   ################################
