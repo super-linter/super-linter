@@ -1707,7 +1707,6 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ######################
   # Lint the R files   #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase  "R" "lintr" "lintr::lint(File)" ".*\.\(r\|R\|Rmd\|rmd\)\$" "${FILE_ARRAY_R[@]}"
 fi
 
