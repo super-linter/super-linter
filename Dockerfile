@@ -73,8 +73,8 @@ RUN apk add --update --no-cache \
     py3-setuptools \
     R \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc \
-    zip 
+    ruby ruby-dev ruby-bundler ruby-rdoc 
+    
 
 ########################################
 # Copy dependencies files to container #
@@ -252,8 +252,7 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 ##################
 # Install chktex #
 ##################
-RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O chktex.zip -q \
-    && unzip -q chktex.zip -d chktex \
+RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O - -q | unzip -q -\
     && cd chktex \
     && ./configure && make \
     && mv chktex /usr/bin \
