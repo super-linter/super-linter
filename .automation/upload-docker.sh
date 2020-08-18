@@ -459,7 +459,7 @@ if [[ ${REGISTRY} == "Docker" ]]; then
 ####################################
 elif [[ ${REGISTRY} == "GPR" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
-  Authenticate "${GPR_USERNAME}" "${GPR_TOKEN}" "https://docker.pkg.github.com" "GitHub Package Registry"
+  Authenticate "${GPR_USERNAME}" "${GPR_TOKEN}" "https://containers.pkg.github.com" "GitHub Package Registry"
 
 else
   #########
