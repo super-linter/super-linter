@@ -327,9 +327,6 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    ########################
-    # Get the Golang files #
-    ########################
     ############################
     # Get the TypeScript files #
     ############################
@@ -355,6 +352,18 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
+    #######################
+    # Get the LaTeX files #
+    #######################
+    elif [ "${FILE_TYPE}" == "tex" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_LATEX+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     ####################
     # Get the R files  #
     ####################
@@ -367,9 +376,6 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    ###########################
-    # Get the Terraform files #
-    ###########################
     ###########################
     # Get the Terraform files #
     ###########################
@@ -428,9 +434,9 @@ function BuildFileList() {
       # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
-    ############################
+    ##################################
     # Get the Protocol Buffers files #
-    ############################
+    ##################################
     elif [ "${FILE_TYPE}" == "dart" ]; then
       ################################
       # Append the file to the array #

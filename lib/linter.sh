@@ -69,6 +69,9 @@ JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Pa
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
 # Default linter path
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
+# LaTeX Vars
+LATEX_FILE_NAME='chktexrc'                                   # Name of the file
+LATEX_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LATEX_FILE_NAME}" # Path to the Lua lint rules
 # Lua Vars
 LUA_FILE_NAME='.luacheckrc'                                   # Name of the file
 LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}" # Path to the Lua lint rules
@@ -130,7 +133,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
   'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
@@ -141,7 +144,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' '
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
+  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
@@ -189,11 +192,12 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"       # Boolean t
 VALIDATE_JSON="${VALIDATE_JSON}"                                     # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                       # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                                 # Boolean to validate language
+VALIDATE_LATEX  ="${VALIDATE_LATEX}"                                 # Boolean to validate language
 VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean to validate language
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                 # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                               # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                                     # Boolean to validate language
-VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"         # Boolean to validate language
+VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"        # Boolean to validate language
 VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                           # Boolean to validate language
 VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                       # Boolean to validate language
 VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean to validate language
@@ -287,6 +291,7 @@ FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
+FILE_ARRAY_LATEX=()               # Array of files to check
 FILE_ARRAY_LUA=()                 # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
@@ -356,6 +361,8 @@ ERRORS_FOUND_JSX=0                      # Count of errors found
 export ERRORS_FOUND_JSX                 # Workaround SC2034
 ERRORS_FOUND_KOTLIN=0                   # Count of errors found
 export ERRORS_FOUND_KOTLIN              # Workaround SC2034
+ERRORS_FOUND_LATEX=0                    # Count of errors found
+export ERRORS_FOUND_LATEX=0             # Workaround SC2034
 ERRORS_FOUND_LUA=0                      # Count of errors found
 export ERRORS_FOUND_LUA=0               # Workaround SC2034
 ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
@@ -1195,6 +1202,8 @@ GetLinterRules "HTML"
 GetLinterRules "JAVA"
 # Get JavaScript rules
 GetLinterRules "JAVASCRIPT"
+# Get LATEX rules
+GetLinterRules "LATEX"
 # Get LUA rules
 GetLinterRules "LUA"
 # Get Markdown rules
@@ -1541,6 +1550,17 @@ if [ "${VALIDATE_KOTLIN}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+#################
+# LATEX LINTING #
+#################
+if [ "${VALIDATE_LATEX}" == "true" ]; then
+  ########################
+  # Lint the LATEX files #
+  ########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "LATEX" "chktex" "chktex -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "${FILE_ARRAY_LATEX[@]}"
 fi
 
 ###############

@@ -59,6 +59,7 @@ RUN apk add --update --no-cache \
     gcc \
     git git-lfs\
     go \
+    gnupg \
     icu-libs \
     jq \
     libc-dev libxml2-dev libxml2-utils \
@@ -73,7 +74,7 @@ RUN apk add --update --no-cache \
     R \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
-    gnupg 
+    zip 
 
 ########################################
 # Copy dependencies files to container #
@@ -248,6 +249,16 @@ RUN luarocks install luacheck
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+##################
+# Install chktex #
+##################
+RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O chktex.zip -q \
+    && unzip chktex.zip \
+    && cd chktex \
+    && ./configure && make \
+    && mv chktex /usr/bin \
+    && cd .. && rm -rf chktex*
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -288,6 +299,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_LATEX=${VALIDATE_LATEX} \
     VALIDATE_LUA=${VALIDATE_LUA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \

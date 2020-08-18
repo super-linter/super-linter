@@ -34,6 +34,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Javascript standard](#javascript-standard)
   - [JSON](#json)
   - [Kotlin](#kotlin)
+  - [LaTeX](#latex)
   - [Lua](#lua)
   - [Markdown](#markdown)
   - [OpenAPI](#openapi)
@@ -599,6 +600,48 @@ import package.b.*
 ### ktlint disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## LaTeX
+
+- [ChkTex](https://www.nongnu.org/chktex/)
+
+### ChkTex Config file
+
+- `.github/linters/chktexrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.luacheckrc`
+- See [ChkTex](https://ctan.kako-dev.de/systems/doc/chktex/ChkTeX.pdf) docs for additional
+  behaviors
+
+### ChkTex disable single line
+
+Disable warnings on each line:
+
+```latex
+$[0,\infty)$  % chktex 8 chktex 9
+```
+### ChkTex disable code block
+
+Use the `ignore`-environment to ignore all warnings within it.
+Make sure that "ignore" is contained in your chektexrc files "VerbEnvir" setting.
+
+```latex
+\newenvironment{ignore}{}{}
+
+\begin{ignore}
+$[0,\infty)$
+\end{ignore}
+```
+
+### ChkTex disable entire file
+
+Disable warning for the rest of the file:
+
+```latex
+% chktex-file 18
+```
 
 ---
 
