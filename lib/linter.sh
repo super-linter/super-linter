@@ -456,11 +456,11 @@ GetLinterVersions() {
     elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]]; then
       # Need specific command for Protolint and editorconfig-checker
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
-    elif [[ ${LINTER} == "lintr" ]]; then 
+    elif [[ ${LINTER} == "lintr" ]]; then
       # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
       mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
                   lintr_ver <- packageVersion('lintr'); \
-                  glue::glue('lintr { lintr_ver } on { r_ver }')") 
+                  glue::glue('lintr { lintr_ver } on { r_ver }')")
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
@@ -1004,7 +1004,7 @@ CallStatusAPI() {
   ##########################################################
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
-  if [ "${MULTI_STATUS}" == "true" ]; then
+  if [ "${MULTI_STATUS}" == "true" ] && [ -n ${GITHUB_TOKEN} ] && [ -n ${GITHUB_REPOSITORY} ]; then
     ##############################################
     # Call the status API to create status check #
     ##############################################
@@ -1729,7 +1729,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ]; then 
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ]; then
     info " "
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
