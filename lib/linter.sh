@@ -1560,7 +1560,7 @@ if [ "${VALIDATE_LATEX}" == "true" ]; then
   # Lint the LATEX files #
   ########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "LATEX" "chktex" "chktex -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "${FILE_ARRAY_LATEX[@]}"
+  LintCodebase "LATEX" "chktex" "chktex -g -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "${FILE_ARRAY_LATEX[@]}"
 fi
 
 ###############
