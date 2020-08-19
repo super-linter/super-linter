@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.18.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/lintr-lib:latest as lintr-lib
-
+FROM assignuser/chktex-alpine:latest as chktex
 ##################
 # Get base image #
 ##################
@@ -252,13 +252,8 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 ##################
 # Install chktex #
 ##################
-RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O chktex.zip -q \
-    && unzip -q chktex.zip \
-    && cd chktex \
-    && ./configure && make \
-    && mv chktex /usr/bin \
-    && cd .. && rm -rf chktex* \
-    && touch /usr/local/share/.chktexrc
+COPY --from=chktex /usr/bin/chktex /usr/bin/
+RUN cd ~ && touch .chktexrc
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #

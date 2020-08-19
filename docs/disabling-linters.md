@@ -609,9 +609,9 @@ import package.b.*
 
 ### ChkTex Config file
 
-- `.github/linters/chktexrc`
+- `.github/linters/.chktexrc`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/chktexrc`
+- File should be located at: `.github/linters/.chktexrc`
 - See [ChkTex](https://ctan.kako-dev.de/systems/doc/chktex/ChkTeX.pdf) docs for additional
   behaviors
 
