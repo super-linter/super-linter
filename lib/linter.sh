@@ -1004,7 +1004,7 @@ CallStatusAPI() {
   ##########################################################
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -n ${GITHUB_TOKEN} ] && [ -n ${GITHUB_REPOSITORY} ]; then
+  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
     ##############################################
     # Call the status API to create status check #
     ##############################################
