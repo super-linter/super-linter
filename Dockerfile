@@ -257,7 +257,8 @@ RUN wget --tries=5 http://mirrors.ctan.org/support/chktex.zip -O chktex.zip -q \
     && cd chktex \
     && ./configure && make \
     && mv chktex /usr/bin \
-    && cd .. && rm -rf chktex*
+    && cd .. && rm -rf chktex* \
+    && touch /usr/local/share/.chktexrc
 
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
