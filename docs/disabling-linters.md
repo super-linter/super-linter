@@ -611,7 +611,7 @@ import package.b.*
 
 - `.github/linters/chktexrc`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.luacheckrc`
+- File should be located at: `.github/linters/chktexrc`
 - See [ChkTex](https://ctan.kako-dev.de/systems/doc/chktex/ChkTeX.pdf) docs for additional
   behaviors
 
