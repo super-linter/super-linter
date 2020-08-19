@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.19.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/lintr-lib:latest as lintr-lib
-
+FROM assignuser/chktex-alpine:latest as chktex
 ##################
 # Get base image #
 ##################
@@ -59,6 +59,7 @@ RUN apk add --update --no-cache \
     gcc \
     git git-lfs\
     go \
+    gnupg \
     icu-libs \
     jq \
     libc-dev libxml2-dev libxml2-utils \
@@ -72,8 +73,8 @@ RUN apk add --update --no-cache \
     py3-setuptools \
     R \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc \
-    gnupg 
+    ruby ruby-dev ruby-bundler ruby-rdoc 
+    
 
 ########################################
 # Copy dependencies files to container #
@@ -248,6 +249,12 @@ RUN luarocks install luacheck
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+##################
+# Install chktex #
+##################
+COPY --from=chktex /usr/bin/chktex /usr/bin/
+RUN cd ~ && touch .chktexrc
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -288,6 +295,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
+    VALIDATE_LATEX=${VALIDATE_LATEX} \
     VALIDATE_LUA=${VALIDATE_LUA} \
     VALIDATE_MD=${VALIDATE_MD} \
     VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
