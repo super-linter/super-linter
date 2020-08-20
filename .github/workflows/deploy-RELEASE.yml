@@ -57,7 +57,7 @@ jobs:
       #############################
       # Run Deploy script for GPR #
       #############################
-      - name: Deploy Release image to GitHub Package Registry
+      - name: Deploy Release image to GitHub Container Registry
         env:
           # Set the Env Vars
           GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
