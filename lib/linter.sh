@@ -69,6 +69,9 @@ JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Pa
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
 # Default linter path
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
+# LaTeX Vars
+LATEX_FILE_NAME='.chktexrc'                                   # Name of the file
+LATEX_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LATEX_FILE_NAME}" # Path to the Latex lint rules                              # env var to supress warning from chktex
 # Lua Vars
 LUA_FILE_NAME='.luacheckrc'                                   # Name of the file
 LUA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${LUA_FILE_NAME}" # Path to the Lua lint rules
@@ -130,7 +133,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' 'clj-kondo' 'coffeelint'
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
   'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
@@ -141,9 +144,9 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'cfn-lint' 'checkstyle' '
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LUA' 'MARKDOWN'
+  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -176,8 +179,8 @@ VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean t
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
-VALIDATE_DOCKER="${VALIDATE_DOCKER}"                                 # Boolean to validate language
-VALIDATE_DOCKER_HADOLINT="${VALIDATE_DOCKER_HADOLINT}"               # Boolean to validate language
+VALIDATE_DOCKERFILE="${VALIDATE_DOCKERFILE}"                         # Boolean to validate language
+VALIDATE_DOCKERFILE_HADOLINT="${VALIDATE_DOCKERFILE_HADOLINT}"       # Boolean to validate language
 VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"                     # Boolean to validate files with editorconfig
 VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean to validate language
 VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
@@ -189,17 +192,19 @@ VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"       # Boolean t
 VALIDATE_JSON="${VALIDATE_JSON}"                                     # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                       # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                                 # Boolean to validate language
+VALIDATE_LATEX="${VALIDATE_LATEX}"                                   # Boolean to validate language
 VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean to validate language
 VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                 # Boolean to validate language
 VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                               # Boolean to validate language
 VALIDATE_PERL="${VALIDATE_PERL}"                                     # Boolean to validate language
-VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"         # Boolean to validate language
+VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"        # Boolean to validate language
 VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                           # Boolean to validate language
 VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                       # Boolean to validate language
 VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean to validate language
 VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                         # Boolean to validate language
-VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}" # Boolean to validate language
 VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                   # Boolean to validate language
+VALIDATE_PYTHON_BLACK="${VALIDATE_PYTHON_BLACK}"                     # Boolean to validate language
+VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}" # Boolean to validate language
 VALIDATE_R="${VALIDATE_R}"                                           # Boolean to validate language
 VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
@@ -264,7 +269,7 @@ export WARNING_ARRAY_TEST                               # Workaround SC2034
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                             # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"        # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                  # What level of details. (simpler or detailed). Default simpler
-REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
+REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"  # Location for the report folder
 
 ##########################
 # Array of changed files #
@@ -287,6 +292,7 @@ FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
 FILE_ARRAY_KOTLIN=()              # Array of files to check
+FILE_ARRAY_LATEX=()               # Array of files to check
 FILE_ARRAY_LUA=()                 # Array of files to check
 FILE_ARRAY_MARKDOWN=()            # Array of files to check
 FILE_ARRAY_OPENAPI=()             # Array of files to check
@@ -297,6 +303,7 @@ FILE_ARRAY_PHP_PHPSTAN=()         # Array of files to check
 FILE_ARRAY_PHP_PSALM=()           # Array of files to check
 FILE_ARRAY_POWERSHELL=()          # Array of files to check
 FILE_ARRAY_PROTOBUF=()            # Array of files to check
+FILE_ARRAY_PYTHON_BLACK=()        # Array of files to check
 FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
 FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
 FILE_ARRAY_R=()                   # Array of files to check
@@ -344,8 +351,8 @@ ERRORS_FOUND_GROOVY=0                   # Count of errors found
 export ERRORS_FOUND_GROOVY              # Workaround SC2034
 ERRORS_FOUND_HTML=0                     # Count of errors found
 export ERRORS_FOUND_HTML                # Workaround SC2034
-ERRORS_FOUND_JAVA=0
-export ERRORS_FOUND_JAVA
+ERRORS_FOUND_JAVA=0                     # Count of errors found
+export ERRORS_FOUND_JAVA                # Workaround SC2034
 ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
 export ERRORS_FOUND_JAVASCRIPT_STANDARD # Workaround SC2034
 ERRORS_FOUND_JAVASCRIPT_ES=0            # Count of errors found
@@ -356,6 +363,8 @@ ERRORS_FOUND_JSX=0                      # Count of errors found
 export ERRORS_FOUND_JSX                 # Workaround SC2034
 ERRORS_FOUND_KOTLIN=0                   # Count of errors found
 export ERRORS_FOUND_KOTLIN              # Workaround SC2034
+ERRORS_FOUND_LATEX=0                    # Count of errors found
+export ERRORS_FOUND_LATEX=0             # Workaround SC2034
 ERRORS_FOUND_LUA=0                      # Count of errors found
 export ERRORS_FOUND_LUA=0               # Workaround SC2034
 ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
@@ -376,6 +385,8 @@ ERRORS_FOUND_POWERSHELL=0               # Count of errors found
 export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
 ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
 export ERRORS_FOUND_PROTOBUF            # Workaround SC2034
+ERRORS_FOUND_PYTHON_BLACK=0             # Count of errors found
+export ERRORS_FOUND_PYTHON_BLACK        # Workaround SC2034
 ERRORS_FOUND_PYTHON_PYLINT=0            # Count of errors found
 export ERRORS_FOUND_PYTHON_PYLINT       # Workaround SC2034
 ERRORS_FOUND_PYTHON_FLAKE8=0            # Count of errors found
@@ -449,11 +460,11 @@ GetLinterVersions() {
     elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]]; then
       # Need specific command for Protolint and editorconfig-checker
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
-    elif [[ ${LINTER} == "lintr" ]]; then 
+    elif [[ ${LINTER} == "lintr" ]]; then
       # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
       mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
                   lintr_ver <- packageVersion('lintr'); \
-                  glue::glue('lintr { lintr_ver } on { r_ver }')") 
+                  glue::glue('lintr { lintr_ver } on { r_ver }')")
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
@@ -807,6 +818,11 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
+    ################################
+    # Set the report output folder #
+    ################################
+    REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
+
     info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
 
     # No need to touch or set the GITHUB_SHA
@@ -992,7 +1008,7 @@ CallStatusAPI() {
   ##########################################################
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
-  if [ "${MULTI_STATUS}" == "true" ]; then
+  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
     ##############################################
     # Call the status API to create status check #
     ##############################################
@@ -1036,6 +1052,12 @@ Reports() {
   ###################################
   if [ -z "${FORMAT_REPORT}" ]; then
     info "Reports generated in folder ${REPORT_OUTPUT_FOLDER}"
+    #############################################
+    # Print info on reports that were generated #
+    #############################################
+    info "Contents of report folder:"
+    OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
+    info "$OUTPUT_CONTENTS_CMD"
   fi
 
   ################################
@@ -1195,6 +1217,8 @@ GetLinterRules "HTML"
 GetLinterRules "JAVA"
 # Get JavaScript rules
 GetLinterRules "JAVASCRIPT"
+# Get LATEX rules
+GetLinterRules "LATEX"
 # Get LUA rules
 GetLinterRules "LUA"
 # Get Markdown rules
@@ -1395,7 +1419,7 @@ fi
 ##################
 # DOCKER LINTING #
 ##################
-if [ "${VALIDATE_DOCKER}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
@@ -1407,7 +1431,7 @@ fi
 ###########################
 # DOCKER LINTING HADOLINT #
 ###########################
-if [ "${VALIDATE_DOCKER_HADOLINT}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
@@ -1543,6 +1567,17 @@ if [ "${VALIDATE_KOTLIN}" == "true" ]; then
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILE_ARRAY_KOTLIN[@]}"
 fi
 
+#################
+# LATEX LINTING #
+#################
+if [ "${VALIDATE_LATEX}" == "true" ]; then
+  ########################
+  # Lint the LATEX files #
+  ########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "${FILE_ARRAY_LATEX[@]}"
+fi
+
 ###############
 # LUA LINTING #
 ###############
@@ -1669,9 +1704,20 @@ if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
   LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "${FILE_ARRAY_PROTOBUF[@]}"
 fi
 
-##################
-# PYTHON LINTING #
-##################
+########################
+# PYTHON BLACK LINTING #
+########################
+if [ "${VALIDATE_PYTHON_BLACK}" == "true" ]; then
+  #########################
+  # Lint the python files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "PYTHON_BLACK" "black" "black --diff --check" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_BLACK[@]}"
+fi
+
+#########################
+# PYTHON PYLINT LINTING #
+#########################
 if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
   #########################
   # Lint the python files #
@@ -1680,9 +1726,9 @@ if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
   LintCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
 fi
 
-##################
-# PYTHON LINTING #
-##################
+#########################
+# PYTHON FLAKE8 LINTING #
+#########################
 if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
   #########################
   # Lint the python files #
@@ -1691,14 +1737,14 @@ if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
   LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
 fi
 
-################
+#############
 # R LINTING #
-################
+#############
 if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ]; then 
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ]; then
     info " "
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"

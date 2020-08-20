@@ -34,14 +34,16 @@ For some linters it is also possible to override rules on a case by case level w
   - [Javascript standard](#javascript-standard)
   - [JSON](#json)
   - [Kotlin](#kotlin)
+  - [LaTeX](#latex)
   - [Lua](#lua)
   - [Markdown](#markdown)
   - [OpenAPI](#openapi)
   - [Perl](#perl)
   - [PHP](#php)
   - [Protocol Buffers](#protocol-buffers)
-  - [Python3 pylint](#python3-pylint)
+  - [Python3 black](#python3-black)
   - [Python3 flake8](#python3-flake8)
+  - [Python3 pylint](#python3-pylint)
   - [R](#r)
   - [Raku](#raku)
   - [Ruby](#ruby)
@@ -602,6 +604,48 @@ import package.b.*
 
 ---
 
+## LaTeX
+
+- [ChkTex](https://www.nongnu.org/chktex/)
+
+### ChkTex Config file
+
+- `.github/linters/.chktexrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.chktexrc`
+- See [ChkTex](https://ctan.kako-dev.de/systems/doc/chktex/ChkTeX.pdf) docs for additional
+  behaviors
+
+### ChkTex disable single line
+
+Disable warnings on each line:
+
+```latex
+$[0,\infty)$  % chktex 8 chktex 9
+```
+### ChkTex disable code block
+
+Use the `ignore`-environment to ignore all warnings within it.
+Make sure that "ignore" is contained in your chektexrc files "VerbEnvir" setting.
+
+```latex
+\newenvironment{ignore}{}{}
+
+\begin{ignore}
+$[0,\infty)$
+\end{ignore}
+```
+
+### ChkTex disable entire file
+
+Disable warning for the rest of the file:
+
+```latex
+% chktex-file 18
+```
+
+---
+
 ## Lua
 
 - [luarocks](https://github.com/luarocks/luacheck)
@@ -897,6 +941,29 @@ var = "terrible code down here..."
 ```
 
 ---
+
+## Python3 black
+
+- `https://black.readthedocs.io/en/stable/installation_and_usage.html#`
+
+### Black Config file
+
+- There is no top level _configuration file_ available at this time
+
+### Black disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Black disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Black disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
 ## R
 
 - [lintr](https://github.com/jimhester/lintr)
