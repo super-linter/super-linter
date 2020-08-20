@@ -148,13 +148,16 @@ ValidateInput() {
     fatal "[${IMAGE_REPO}]"
   else
     info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
+    # Set the docker Image repo
     DOCKER_IMAGE_REPO="${IMAGE_REPO}"
     ###############################################
     # Need to see if GCR registry and update name #
     ###############################################
     if [[ ${REGISTRY} == "GCR" ]]; then
       NAME="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
+      # Set the default image repo
       IMAGE_REPO="${NAME}"
+      # Set the GCR image repo
       GCR_IMAGE_REPO="${IMAGE_REPO}"
       info "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GCR"
     fi
@@ -469,10 +472,14 @@ FindBuiltImage() {
   # Check the local system to see if an image has already been built
   # if so, we only need to update tags and push
   # Set FOUND_IMAGE=1 when found
-  FOUND_DOCKER_RELASE=0
-  FOUND_DOCKER_MAJOR=0
-  FOUND_GCR_RELASE=0
-  FOUND_GCR_MAJOR=0
+
+  ##############
+  # Local vars #
+  ##############
+  FOUND_DOCKER_RELASE=0 # Flag if docker relase image is found
+  FOUND_DOCKER_MAJOR=0  # Flag if docker major image is found
+  FOUND_GCR_RELASE=0    # Flag if GCR releasae image is found
+  FOUND_GCR_MAJOR=0     # Flag if GCR major image is found
 
   #######################################
   # Look for Release image in DockerHub #
@@ -489,6 +496,7 @@ FindBuiltImage() {
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     info "Found Docker image:[$DOCKER_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
+    # Increment flag
     FOUND_DOCKER_RELASE=1
   else
     info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
@@ -509,6 +517,7 @@ FindBuiltImage() {
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     info "Found Docker image:[$DOCKER_IMAGE_REPO:$MAJOR_TAG] already built on instance"
+    # Increment flag
     FOUND_DOCKER_MAJOR=1
   else
     info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
@@ -529,6 +538,7 @@ FindBuiltImage() {
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     info "Found Docker image:[$GCR_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
+    # Increment flag
     FOUND_GCR_RELASE=1
   else
     info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
@@ -549,6 +559,7 @@ FindBuiltImage() {
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
     info "Found Docker image:[$GCR_IMAGE_REPO:$MAJOR_TAG] already built on instance"
+    # Increment flag
     FOUND_GCR_MAJOR=1
   else
     info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
@@ -614,12 +625,12 @@ if [[ ${REGISTRY} == "Docker" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
   Authenticate "${DOCKER_USERNAME}" "${DOCKER_PASSWORD}" "" "Dockerhub"
 
-####################################
-# Login to GitHub Package Registry #
-####################################
+######################################
+# Login to GitHub Container Registry #
+######################################
 elif [[ ${REGISTRY} == "GCR" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
-  Authenticate "${GCR_USERNAME}" "${GCR_TOKEN}" "https://${GCR_URL}" "GitHub Package Registry"
+  Authenticate "${GCR_USERNAME}" "${GCR_TOKEN}" "https://${GCR_URL}" "GitHub Container Registry"
 
 else
   #########

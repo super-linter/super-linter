@@ -65,6 +65,6 @@ jobs:
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: ${{ github.event.release.tag_name }}
           DOCKERFILE_PATH: Dockerfile
-          REGISTRY: GPR
+          REGISTRY: GCR
         shell: bash
         run: .automation/upload-docker.sh
