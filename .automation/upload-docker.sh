@@ -34,10 +34,9 @@ DOCKER_IMAGE_REPO=''                      # Docker tag for the image when create
 GCR_IMAGE_REPO=''                         # Docker tag for the image when created
 FOUND_IMAGE=0                             # Flag for if the image has already been built
 
-##############################
-# Get the org and repo names #
-##############################
-ORG_NAME=$(echo "${GITHUB_REPOSITORY}" |cut -f1 -d'/')  # Github Organization Name
+#####################
+# Get the repo name #
+#####################
 REPO_NAME=$(echo "${GITHUB_REPOSITORY}" |cut -f2 -d'/') # GitHub Repository name
 
 #########################
@@ -478,7 +477,7 @@ FindBuiltImage() {
   #######################################
   # Look for Release image in DockerHub #
   #######################################
-  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep ${IMAGE_VERSION} 2>&1)
+  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
 
   #######################
   # Load the error code #
@@ -498,7 +497,7 @@ FindBuiltImage() {
   #####################################
   # Look for Major image in DockerHub #
   #####################################
-  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep ${MAJOR_TAG} 2>&1)
+  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
 
   #######################
   # Load the error code #
@@ -518,7 +517,7 @@ FindBuiltImage() {
   ####################################
   # Look for Release image in GitHub #
   ####################################
-  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep ${IMAGE_VERSION} 2>&1)
+  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
 
   #######################
   # Load the error code #
@@ -538,7 +537,7 @@ FindBuiltImage() {
   ##################################
   # Look for Major image in GitHub #
   ##################################
-  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep ${MAJOR_TAG} 2>&1)
+  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
 
   #######################
   # Load the error code #

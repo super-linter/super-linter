@@ -1744,7 +1744,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && [ "${FILE_ARRAY_R[@]}" -ne 0 ]; then
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && [ ${#FILE_ARRAY_R[@]} -ne 0 ]; then
     info " "
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
