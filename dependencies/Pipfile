@@ -6,12 +6,16 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-yamllint = "*"
-pylint = "*"
-yq = "*"
+black = "*"
 cfn-lint = "*"
-terrascan = "*"
 flake8 = "*"
+pylint = "*"
+terrascan = "*"
+yamllint = "*"
+yq = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

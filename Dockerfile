@@ -73,8 +73,8 @@ RUN apk add --update --no-cache \
     py3-setuptools \
     R \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc 
-    
+    ruby ruby-dev ruby-bundler ruby-rdoc
+
 
 ########################################
 # Copy dependencies files to container #
@@ -308,8 +308,9 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
     VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
     VALIDATE_PYTHON=${VALIDATE_PYTHON} \
-    VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
+    VALIDATE_PYTHON_BLACK=${VALIDATE_PYTHON_BLACK} \
     VALIDATE_PYTHON_FLAKE8=${VALIDATE_PYTHON_FLAKE8} \
+    VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
     VALIDATE_R=${VALIDATE_R} \
     VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
