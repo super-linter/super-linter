@@ -17,6 +17,7 @@ FROM wata727/tflint:0.19.0 as tflint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/lintr-lib:latest as lintr-lib
 FROM assignuser/chktex-alpine:latest as chktex
+
 ##################
 # Get base image #
 ##################
@@ -74,7 +75,6 @@ RUN apk add --update --no-cache \
     R \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc
-
 
 ########################################
 # Copy dependencies files to container #
