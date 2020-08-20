@@ -57,7 +57,7 @@ jobs:
       #############################
       # Run Deploy script for GPR #
       #############################
-      - name: Deploy Release image to GitHub Package Registry
+      - name: Deploy Release image to GitHub Container Registry
         env:
           # Set the Env Vars
           GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
@@ -65,6 +65,6 @@ jobs:
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: ${{ github.event.release.tag_name }}
           DOCKERFILE_PATH: Dockerfile
-          REGISTRY: GPR
+          REGISTRY: GCR
         shell: bash
         run: .automation/upload-docker.sh

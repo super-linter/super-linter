@@ -17,17 +17,27 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
-DOCKER_USERNAME="${DOCKER_USERNAME}"   # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"   # Password to login to DockerHub
-GPR_USERNAME="${GPR_USERNAME}"         # Username to login to GitHub package registry
-GPR_TOKEN="${GPR_TOKEN}"               # Password to login to GitHub package registry
-REGISTRY="${REGISTRY}"                 # What registry to upload | <GPR> or <Docker>
-IMAGE_REPO="${IMAGE_REPO}"             # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"       # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"   # Path to the Dockerfile to be uploaded
-MAJOR_TAG=''                           # Major tag version if we need to update it
-UPDATE_MAJOR_TAG=0                     # Flag to deploy the major tag version as well
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"    # GitHub Workspace
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"  # GitHub Org/Repo passed from system
+DOCKER_USERNAME="${DOCKER_USERNAME}"      # Username to login to DockerHub
+DOCKER_PASSWORD="${DOCKER_PASSWORD}"      # Password to login to DockerHub
+GCR_USERNAME="${GCR_USERNAME}"            # Username to login to GitHub package registry
+GCR_TOKEN="${GCR_TOKEN}"                  # Password to login to GitHub package registry
+REGISTRY="${REGISTRY}"                    # What registry to upload | <GCR> or <Docker>
+IMAGE_REPO="${IMAGE_REPO}"                # Image repo to upload the image
+IMAGE_VERSION="${IMAGE_VERSION}"          # Version to tag the image
+DOCKERFILE_PATH="${DOCKERFILE_PATH}"      # Path to the Dockerfile to be uploaded
+MAJOR_TAG=''                              # Major tag version if we need to update it
+UPDATE_MAJOR_TAG=0                        # Flag to deploy the major tag version as well
+GCR_URL='containers.pkg.github.com'       # URL to Github Container Registry
+DOCKER_IMAGE_REPO=''                      # Docker tag for the image when created
+GCR_IMAGE_REPO=''                         # Docker tag for the image when created
+FOUND_IMAGE=0                             # Flag for if the image has already been built
+
+#####################
+# Get the repo name #
+#####################
+REPO_NAME=$(echo "${GITHUB_REPOSITORY}" |cut -f2 -d'/') # GitHub Repository name
 
 #########################
 # Source Function Files #
@@ -79,25 +89,25 @@ ValidateInput() {
   #####################################################
   # See if we need values for GitHub package Registry #
   #####################################################
-  if [[ ${REGISTRY} == "GPR" ]]; then
+  if [[ ${REGISTRY} == "GCR" ]]; then
     #########################
-    # Validate GPR_USERNAME #
+    # Validate GCR_USERNAME #
     #########################
-    if [ -z "${GPR_USERNAME}" ]; then
-      error "Failed to get [GPR_USERNAME]!"
-      fatal "[${GPR_USERNAME}]"
+    if [ -z "${GCR_USERNAME}" ]; then
+      error "Failed to get [GCR_USERNAME]!"
+      fatal "[${GCR_USERNAME}]"
     else
-      info "Successfully found:${F[W]}[GPR_USERNAME]${F[B]}, value:${F[W]}[${GPR_USERNAME}]"
+      info "Successfully found:${F[W]}[GCR_USERNAME]${F[B]}, value:${F[W]}[${GCR_USERNAME}]"
     fi
 
     ######################
-    # Validate GPR_TOKEN #
+    # Validate GCR_TOKEN #
     ######################
-    if [ -z "${GPR_TOKEN}" ]; then
-      error "Failed to get [GPR_TOKEN]!"
-      fatal "[${GPR_TOKEN}]"
+    if [ -z "${GCR_TOKEN}" ]; then
+      error "Failed to get [GCR_TOKEN]!"
+      fatal "[${GCR_TOKEN}]"
     else
-      info "Successfully found:${F[W]}[GPR_TOKEN]${F[B]}, value:${F[W]}[********]"
+      info "Successfully found:${F[W]}[GCR_TOKEN]${F[B]}, value:${F[W]}[********]"
     fi
   ########################################
   # See if we need values for Ducker hub #
@@ -138,13 +148,18 @@ ValidateInput() {
     fatal "[${IMAGE_REPO}]"
   else
     info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
+    # Set the docker Image repo
+    DOCKER_IMAGE_REPO="${IMAGE_REPO}"
     ###############################################
-    # Need to see if GPR registry and update name #
+    # Need to see if GCR registry and update name #
     ###############################################
-    if [[ ${REGISTRY} == "GPR" ]]; then
-      NAME="containers.pkg.github.com/${IMAGE_REPO}/super-linter"
+    if [[ ${REGISTRY} == "GCR" ]]; then
+      NAME="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
+      # Set the default image repo
       IMAGE_REPO="${NAME}"
-      info "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GPR"
+      # Set the GCR image repo
+      GCR_IMAGE_REPO="${IMAGE_REPO}"
+      info "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GCR"
     fi
   fi
 
@@ -326,6 +341,36 @@ BuildImage() {
   fi
 }
 ################################################################################
+#### Function TagBuiltImage ####################################################
+TagBuiltImage() {
+  ####################
+  # Pull in the vars #
+  ####################
+  ORIGINAL_TAG="$1"
+  NEW_TAG="$2"
+
+  #################
+  # Tag the image #
+  #################
+  info "Re-Tagging image from:[${ORIGINAL_TAG}] to:[${NEW_TAG}]"
+  docker image tag "${ORIGINAL_TAG}" "${NEW_TAG}"
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    info "Successfully tag of image:[${NEW_TAG}]"
+  else
+    fatal "Failed to tag image:[${NEW_TAG}]"
+  fi
+
+}
+################################################################################
 #### Function UploadImage ######################################################
 UploadImage() {
   ################
@@ -422,6 +467,125 @@ UploadImage() {
   fi
 }
 ################################################################################
+#### Function FindBuiltImage ###################################################
+FindBuiltImage() {
+  # Check the local system to see if an image has already been built
+  # if so, we only need to update tags and push
+  # Set FOUND_IMAGE=1 when found
+
+  ##############
+  # Local vars #
+  ##############
+  FOUND_DOCKER_RELASE=0 # Flag if docker relase image is found
+  FOUND_DOCKER_MAJOR=0  # Flag if docker major image is found
+  FOUND_GCR_RELASE=0    # Flag if GCR releasae image is found
+  FOUND_GCR_MAJOR=0     # Flag if GCR major image is found
+
+  #######################################
+  # Look for Release image in DockerHub #
+  #######################################
+  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    info "Found Docker image:[$DOCKER_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
+    # Increment flag
+    FOUND_DOCKER_RELASE=1
+  else
+    info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
+  fi
+
+  #####################################
+  # Look for Major image in DockerHub #
+  #####################################
+  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    info "Found Docker image:[$DOCKER_IMAGE_REPO:$MAJOR_TAG] already built on instance"
+    # Increment flag
+    FOUND_DOCKER_MAJOR=1
+  else
+    info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
+  fi
+
+  ####################################
+  # Look for Release image in GitHub #
+  ####################################
+  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    info "Found Docker image:[$GCR_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
+    # Increment flag
+    FOUND_GCR_RELASE=1
+  else
+    info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
+  fi
+
+  ##################################
+  # Look for Major image in GitHub #
+  ##################################
+  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    info "Found Docker image:[$GCR_IMAGE_REPO:$MAJOR_TAG] already built on instance"
+    # Increment flag
+    FOUND_GCR_MAJOR=1
+  else
+    info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
+  fi
+
+  ####################################
+  # Need to see if GCR registry push #
+  ####################################
+  if [[ ${REGISTRY} == "GCR" ]]; then
+    if [ ${FOUND_DOCKER_MAJOR} -eq 1 ] && [ ${FOUND_DOCKER_RELASE} -eq 1 ]; then
+      # We have already created the images for dockerhub, need to re-tag and push
+      # Tag the image: TagBuiltImage "OldTag" "NewTag"
+      TagBuiltImage "${DOCKER_IMAGE_REPO}:${IMAGE_VERSION}" "$GCR_IMAGE_REPO:${IMAGE_VERSION}"
+      TagBuiltImage "${DOCKER_IMAGE_REPO}:${MAJOR_TAG}" "${GCR_IMAGE_REPO}:${MAJOR_TAG}"
+      FOUND_IMAGE=1
+    fi
+  elif [[ ${REGISTRY} == "Docker" ]]; then
+    if [ ${FOUND_GCR_MAJOR} -eq 1 ] && [ ${FOUND_GCR_RELASE} -eq 1 ]; then
+      # We have already created the images for GCR, need to re-tag and push
+      TagBuiltImage "$GCR_IMAGE_REPO:${IMAGE_VERSION}" "${DOCKER_IMAGE_REPO}:${IMAGE_VERSION}"
+      TagBuiltImage "${GCR_IMAGE_REPO}:${MAJOR_TAG}""${DOCKER_IMAGE_REPO}:${MAJOR_TAG}"
+      FOUND_IMAGE=1
+    fi
+  fi
+}
+################################################################################
 #### Function Footer ###########################################################
 Footer() {
   info "-------------------------------------------------------"
@@ -442,10 +606,17 @@ Header
 ##################
 ValidateInput
 
+###############################
+# Find Image if already built #
+###############################
+FindBuiltImage
+
 ###################
 # Build the image #
 ###################
-BuildImage
+if [ "$FOUND_IMAGE" -ne 0 ]; then
+  BuildImage
+fi
 
 ######################
 # Login to DockerHub #
@@ -454,12 +625,12 @@ if [[ ${REGISTRY} == "Docker" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
   Authenticate "${DOCKER_USERNAME}" "${DOCKER_PASSWORD}" "" "Dockerhub"
 
-####################################
-# Login to GitHub Package Registry #
-####################################
-elif [[ ${REGISTRY} == "GPR" ]]; then
+######################################
+# Login to GitHub Container Registry #
+######################################
+elif [[ ${REGISTRY} == "GCR" ]]; then
   # Authenticate "Username" "Password" "Url" "Name"
-  Authenticate "${GPR_USERNAME}" "${GPR_TOKEN}" "https://containers.pkg.github.com" "GitHub Package Registry"
+  Authenticate "${GCR_USERNAME}" "${GCR_TOKEN}" "https://${GCR_URL}" "GitHub Container Registry"
 
 else
   #########
