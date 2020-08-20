@@ -41,8 +41,9 @@ For some linters it is also possible to override rules on a case by case level w
   - [Perl](#perl)
   - [PHP](#php)
   - [Protocol Buffers](#protocol-buffers)
-  - [Python3 pylint](#python3-pylint)
+  - [Python3 black](#python3-black)
   - [Python3 flake8](#python3-flake8)
+  - [Python3 pylint](#python3-pylint)
   - [R](#r)
   - [Raku](#raku)
   - [Ruby](#ruby)
@@ -940,6 +941,29 @@ var = "terrible code down here..."
 ```
 
 ---
+
+## Python3 black
+
+- `https://black.readthedocs.io/en/stable/installation_and_usage.html#`
+
+### Black Config file
+
+- There is no top level _configuration file_ available at this time
+
+### Black disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Black disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Black disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
 ## R
 
 - [lintr](https://github.com/jimhester/lintr)
