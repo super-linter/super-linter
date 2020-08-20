@@ -57,6 +57,7 @@ def create_label(repo_id, label):
 
     return response
 
+
 def get_labels(owner, repo):
     """
     Gets a list of labels from the supplied repo.
@@ -95,6 +96,7 @@ def get_labels(owner, repo):
             )
         )
 
+
 def delete_label(label_id):
     """
     Delete the specified label
@@ -116,6 +118,7 @@ def delete_label(label_id):
     result = requests.post(api_url, data=json.dumps(payload), headers=headers).json()
 
     return result
+
 
 @click.command()
 @click.option("--dry", is_flag=True)
@@ -184,6 +187,7 @@ def copy_labels(source_repo, target_repo, dry):
         sys.exit(error)
 
     print("Done")
+
 
 if __name__ == "__main__":
     # Pylint doesn't know that @click.command takes care of injecting the
