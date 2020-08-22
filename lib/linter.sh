@@ -1447,7 +1447,7 @@ if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
   # Lint the files with editorconfig #
   ####################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\(editorconfig\)\$" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ###############
