@@ -1108,7 +1108,8 @@ Footer() {
     ######################################
     # Check if we validated the langauge #
     ######################################
-  elif [[ ${!ERROR_COUNTER} -eq 0 ]] && [[ " ${UNIQUE_LINTED_ARRAY[*]} " =~ " ${LANGUAGE} " ]]; then
+  elif [[ ${!ERROR_COUNTER} -eq 0 ]]; then
+    if CheckInArray "${LANGUAGE}"; then
       # No errors found when linting the language
       CallStatusAPI "${LANGUAGE}" "success"
     fi
@@ -1144,7 +1145,31 @@ Footer() {
   # Successful exit
   exit 0
 }
+################################################################################
+#### Function CheckInArray #####################################################
+CheckInArray() {
+  ###############
+  # Pull in Var #
+  ###############
+  NEEDLE="$1" # Language we need to match
 
+  ######################################
+  # Check if Language was in the array #
+  ######################################
+  for LANG in "${UNIQUE_LINTED_ARRAY[@]}"; do
+    if [[ "${LANG}" == "${NEEDLE}" ]]; then
+      ############
+      # Found it #
+      ############
+      return 0
+    fi
+  done
+
+  ###################
+  # Did not find it #
+  ###################
+  return 1
+}
 ################################################################################
 #### Function Cleanup ##########################################################
 cleanup() {
