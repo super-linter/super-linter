@@ -501,10 +501,6 @@ FindBuiltImage() {
   ##############
   # Local vars #
   ##############
-  FOUND_DOCKER_RELASE=0 # Flag if docker relase image is found
-  FOUND_DOCKER_MAJOR=0  # Flag if docker major image is found
-  FOUND_GCR_RELASE=0    # Flag if GCR releasae image is found
-  FOUND_GCR_MAJOR=0     # Flag if GCR major image is found
   CHECK_IMAGE_REPO=''   # Repo to look for
 
   ####################################
@@ -535,6 +531,7 @@ FindBuiltImage() {
     FOUND_RELASE=1
   else
     info "Failed to find locally created Docker image:[${CHECK_IMAGE_REPO}]"
+    info "${FIND_VERSION_CMD}"
   fi
 
   #####################################
@@ -556,6 +553,7 @@ FindBuiltImage() {
     FOUND_MAJOR=1
   else
     info "Failed to find locally created Docker image:[${FIND_MAJOR_CMD}]"
+    info "${FIND_MAJOR_CMD}"
   fi
 
   ###############################
