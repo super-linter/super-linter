@@ -465,6 +465,9 @@ GetLinterVersions() {
       mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
                   lintr_ver <- packageVersion('lintr'); \
                   glue::glue('lintr { lintr_ver } on { r_ver }')")
+    elif [[ ${LINTER} == "lua" ]]; then
+      # Semi standardversion command
+      mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
@@ -1066,7 +1069,6 @@ Reports() {
   for TEST in "${WARNING_ARRAY_TEST[@]}"; do
     warn "Expected file to compare with was not found for ${TEST}"
   done
-
 }
 ################################################################################
 #### Function Footer ###########################################################
@@ -1108,10 +1110,12 @@ Footer() {
     ######################################
     # Check if we validated the langauge #
     ######################################
-    elif [[ ${!ERROR_COUNTER} -eq 0 ]] && [[ ${UNIQUE_LINTED_ARRAY[*]} =~ ${LANGUAGE} ]]; then
+  elif [[ ${!ERROR_COUNTER} -eq 0 ]]; then
+    if CheckInArray "${LANGUAGE}"; then
       # No errors found when linting the language
       CallStatusAPI "${LANGUAGE}" "success"
     fi
+  fi
   done
 
   ##################################
@@ -1144,7 +1148,31 @@ Footer() {
   # Successful exit
   exit 0
 }
+################################################################################
+#### Function CheckInArray #####################################################
+CheckInArray() {
+  ###############
+  # Pull in Var #
+  ###############
+  NEEDLE="$1" # Language we need to match
 
+  ######################################
+  # Check if Language was in the array #
+  ######################################
+  for LANG in "${UNIQUE_LINTED_ARRAY[@]}"; do
+    if [[ "${LANG}" == "${NEEDLE}" ]]; then
+      ############
+      # Found it #
+      ############
+      return 0
+    fi
+  done
+
+  ###################
+  # Did not find it #
+  ###################
+  return 1
+}
 ################################################################################
 #### Function Cleanup ##########################################################
 cleanup() {
@@ -1156,7 +1184,6 @@ cleanup() {
   trap - 0 1 2 3 6 14 15
 }
 trap 'cleanup' 0 1 2 3 6 14 15
-
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
