@@ -47,7 +47,7 @@ jobs:
 
       - name: merge
         if: steps.wait-for-build.outputs.conclusion == 'success' || steps.wait-for-build.outputs.conclusion == 'skipped' && steps.wait-for-ci.outputs.conclusion == 'success'
-        uses: actions/github-script@v2
+        uses: actions/github-script@v3
         with:
           script: |
             github.pulls.createReview({
