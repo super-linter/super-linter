@@ -465,6 +465,9 @@ GetLinterVersions() {
       mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
                   lintr_ver <- packageVersion('lintr'); \
                   glue::glue('lintr { lintr_ver } on { r_ver }')")
+    elif [[ ${LINTER} == "lua" ]]; then
+      # Semi standardversion command
+      mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
