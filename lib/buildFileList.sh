@@ -190,15 +190,22 @@ function BuildFileList() {
     ######################
     # Get the BASH files #
     ######################
-    elif [ "${FILE_TYPE}" == "sh" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
-      FILE_ARRAY_BASH+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
+  elif [ "${FILE_TYPE}" == "sh" ] || [ "${FILE_TYPE}" == "bash" ] ||
+      [ "${FILE_TYPE}" == "dash" ] || [ "${FILE_TYPE}" == "ksh" ]; then
+      # Need to check if its a zsh file as we cannot parse it
+      if CheckZsh "${FILE}"; then
+        warn "Found [zsh] script"
+        info "ShellCheck does NOT currently support zsh, skipping file"
+      else
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_BASH+=("${FILE}")
+        ##########################################################
+        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+        ##########################################################
+        READ_ONLY_CHANGE_FLAG=1
+      fi
     ######################
     # Get the PERL files #
     ######################
@@ -506,49 +513,7 @@ function BuildFileList() {
       ##############################################
       # Use file to see if we can parse what it is #
       ##############################################
-      GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
-
-      #################
-      # Check if bash #
-      #################
-      if [[ ${GET_FILE_TYPE_CMD} == *"Bourne-Again shell script"* ]]; then
-        #######################
-        # It is a bash script #
-        #######################
-        warn "Found bash script without extension:[.sh]"
-        info "Please update file with proper extensions."
-        ################################
-        # Append the file to the array #
-        ################################
-        FILE_ARRAY_BASH+=("${FILE}")
-        ##########################################################
-        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-        ##########################################################
-        READ_ONLY_CHANGE_FLAG=1
-      elif [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
-        #######################
-        # It is a Ruby script #
-        #######################
-        warn "Found ruby script without extension:[.rb]"
-        info "Please update file with proper extensions."
-        ################################
-        # Append the file to the array #
-        ################################
-        FILE_ARRAY_RUBY+=("${FILE}")
-        ##########################################################
-        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-        ##########################################################
-        READ_ONLY_CHANGE_FLAG=1
-      else
-        ############################
-        # Extension was not found! #
-        ############################
-        warn "Failed to get filetype for:[${FILE}]!"
-        ##########################################################
-        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-        ##########################################################
-        READ_ONLY_CHANGE_FLAG=1
-      fi
+      CheckFileType "${FILE}"
     fi
   done
 
@@ -578,4 +543,101 @@ function BuildFileList() {
   ################
   info "----------------------------------------------"
   info "Successfully gathered list of files..."
+}
+################################################################################
+#### Function CheckFileType ####################################################
+function CheckFileType() {
+  # Need to run the file through the 'file' exec to help determine
+  # The type of file being parsed
+
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  ##################
+  # Check the file #
+  ##################
+  GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
+
+  #################
+  # Check if bash #
+  #################
+  if [[ ${GET_FILE_TYPE_CMD} == *"Bourne-Again shell script"* ]]; then
+    #######################
+    # It is a bash script #
+    #######################
+    warn "Found bash script without extension:[.sh]"
+    info "Please update file with proper extensions."
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_BASH+=("${FILE}")
+    ##########################################################
+    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+    ##########################################################
+    READ_ONLY_CHANGE_FLAG=1
+  elif [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
+    #######################
+    # It is a Ruby script #
+    #######################
+    warn "Found ruby script without extension:[.rb]"
+    info "Please update file with proper extensions."
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_RUBY+=("${FILE}")
+    ##########################################################
+    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+    ##########################################################
+    READ_ONLY_CHANGE_FLAG=1
+  elif [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
+    ######################
+    # It is a ZSH script #
+    ######################
+    warn "Found [zsh] script"
+    info "ShellCheck does NOT currently support zsh, skipping file"
+  else
+    ############################
+    # Extension was not found! #
+    ############################
+    warn "Failed to get filetype for:[${FILE}]!"
+    ##########################################################
+    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+    ##########################################################
+    READ_ONLY_CHANGE_FLAG=1
+  fi
+}
+################################################################################
+#### Function CheckZsh #########################################################
+function CheckZsh() {
+  # Spagetti code to make sure were properly excluding zsh
+  # until we get a proper linter
+
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  ##################
+  # Check the file #
+  ##################
+  GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
+
+  if [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
+    ######################
+    # It is a ZSH script #
+    ######################
+    warn "Found [zsh] script"
+    info "ShellCheck does NOT currently support zsh, skipping file"
+    ###################################################
+    # We found zsh file and need to return with a hit #
+    ###################################################
+    return 0
+  else
+    ##################
+    # Not a zsh file #
+    ##################
+    return 1
+  fi
 }
