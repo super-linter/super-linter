@@ -514,6 +514,7 @@ function BuildFileList() {
       # Use file to see if we can parse what it is #
       ##############################################
       CheckFileType "${FILE}"
+    fi
   done
 
   export READ_ONLY_CHANGE_FLAG # Workaround SC2034
@@ -639,5 +640,4 @@ function CheckZsh() {
     ##################
     return 1
   fi
-
 }
