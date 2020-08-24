@@ -33,6 +33,7 @@ GCR_URL='containers.pkg.github.com'       # URL to Github Container Registry
 DOCKER_IMAGE_REPO=''                      # Docker tag for the image when created
 GCR_IMAGE_REPO=''                         # Docker tag for the image when created
 FOUND_IMAGE=0                             # Flag for if the image has already been built
+CONTAINER_URL=''                          # Final URL to upload
 
 #####################
 # Get the repo name #
@@ -148,18 +149,16 @@ ValidateInput() {
     fatal "[${IMAGE_REPO}]"
   else
     info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
-    # Set the docker Image repo
+    # Set the docker Image repo and GCR image repo
     DOCKER_IMAGE_REPO="${IMAGE_REPO}"
-    ###############################################
-    # Need to see if GCR registry and update name #
-    ###############################################
-    if [[ ${REGISTRY} == "GCR" ]]; then
-      NAME="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
-      # Set the default image repo
-      IMAGE_REPO="${NAME}"
-      # Set the GCR image repo
-      GCR_IMAGE_REPO="${IMAGE_REPO}"
-      info "Updated [IMAGE_REPO] to:[${IMAGE_REPO}] for GCR"
+    GCR_IMAGE_REPO="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
+    #########################
+    # Set the container URL #
+    #########################
+    if [[ ${REGISTRY} == "Docker" ]]; then
+      CONTAINER_URL="${DOCKER_IMAGE_REPO}"
+    elif [[ ${REGISTRY} == "GCR" ]]; then
+      CONTAINER_URL="${GCR_IMAGE_REPO}"
     fi
   fi
 
@@ -282,7 +281,7 @@ BuildImage() {
   # Print header #
   ################
   info "----------------------------------------------"
-  info "Building the DockerFile image..."
+  info "Building the Dockerfile image..."
   info "----------------------------------------------"
 
   ################################
@@ -298,7 +297,7 @@ BuildImage() {
   ###################
   # Build the image #
   ###################
-  docker build --no-cache -t "${IMAGE_REPO}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
+  docker build --no-cache -t "${CONTAINER_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
 
   #######################
   # Load the error code #
@@ -321,7 +320,7 @@ BuildImage() {
   ########################################################
   if [ ${UPDATE_MAJOR_TAG} -eq 1 ]; then
     # Tag the image with the major tag as well
-    docker build -t "${IMAGE_REPO}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+    docker build -t "${CONTAINER_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
 
     #######################
     # Load the error code #
@@ -339,21 +338,25 @@ BuildImage() {
       info "Successfully tagged image!"
     fi
   fi
-}
-################################################################################
-#### Function TagBuiltImage ####################################################
-TagBuiltImage() {
-  ####################
-  # Pull in the vars #
-  ####################
-  ORIGINAL_TAG="$1"
-  NEW_TAG="$2"
 
-  #################
-  # Tag the image #
-  #################
-  info "Re-Tagging image from:[${ORIGINAL_TAG}] to:[${NEW_TAG}]"
-  docker image tag "${ORIGINAL_TAG}" "${NEW_TAG}"
+  #########################
+  # Set var to be updated #
+  #########################
+  ADDITONAL_URL=''
+
+  ####################################
+  # Set the additional container URL #
+  ####################################
+  if [[ ${REGISTRY} == "Docker" ]]; then
+    ADDITONAL_URL="${GCR_IMAGE_REPO}"
+  elif [[ ${REGISTRY} == "GCR" ]]; then
+    ADDITONAL_URL="${DOCKER_IMAGE_REPO}"
+  fi
+
+  ###################
+  # Build the image #
+  ###################
+  docker build -t "${ADDITONAL_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
 
   #######################
   # Load the error code #
@@ -363,12 +366,34 @@ TagBuiltImage() {
   ##############################
   # Check the shell for errors #
   ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    info "Successfully tag of image:[${NEW_TAG}]"
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # ERROR
+    fatal "failed to [tag] Version:[${IMAGE_VERSION}] Additonal location Dockerfile!"
   else
-    fatal "Failed to tag image:[${NEW_TAG}]"
+    # SUCCESS
+    info "Successfull [tag] Version:[${IMAGE_VERSION}] of additonal image!"
   fi
 
+  ###################
+  # Build the image #
+  ###################
+  docker build -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # ERROR
+    fatal "failed to [tag] Version:[${MAJOR_TAG}]Additonal location Dockerfile!"
+  else
+    # SUCCESS
+    info "Successfull [tag] Version:[${MAJOR_TAG}] of additonal image!"
+  fi
 }
 ################################################################################
 #### Function UploadImage ######################################################
@@ -383,7 +408,7 @@ UploadImage() {
   ############################################
   # Upload the docker image that was created #
   ############################################
-  docker push "${IMAGE_REPO}:${IMAGE_VERSION}" 2>&1
+  docker push "${CONTAINER_URL}:${IMAGE_VERSION}" 2>&1
 
   #######################
   # Load the error code #
@@ -405,7 +430,7 @@ UploadImage() {
   # Get Image information #
   #########################
   IFS=$'\n' # Set the delimit to newline
-  GET_INFO_CMD=$(docker images | grep "${IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
+  GET_INFO_CMD=$(docker images | grep "${CONTAINER_URL}" | grep "${IMAGE_VERSION}" 2>&1)
 
   #######################
   # Load the error code #
@@ -447,7 +472,7 @@ UploadImage() {
     ############################################
     # Upload the docker image that was created #
     ############################################
-    docker push "${IMAGE_REPO}:${MAJOR_TAG}" 2>&1
+    docker push "${CONTAINER_URL}:${MAJOR_TAG}" 2>&1
 
     #######################
     # Load the error code #
@@ -476,15 +501,21 @@ FindBuiltImage() {
   ##############
   # Local vars #
   ##############
-  FOUND_DOCKER_RELASE=0 # Flag if docker relase image is found
-  FOUND_DOCKER_MAJOR=0  # Flag if docker major image is found
-  FOUND_GCR_RELASE=0    # Flag if GCR releasae image is found
-  FOUND_GCR_MAJOR=0     # Flag if GCR major image is found
+  CHECK_IMAGE_REPO=''   # Repo to look for
+
+  ####################################
+  # Set the additional container URL #
+  ####################################
+  if [[ ${REGISTRY} == "GCR" ]]; then
+    CHECK_IMAGE_REPO="${GCR_IMAGE_REPO}"
+  elif [[ ${REGISTRY} == "Docker" ]]; then
+    CHECK_IMAGE_REPO="${DOCKER_IMAGE_REPO}"
+  fi
 
   #######################################
   # Look for Release image in DockerHub #
   #######################################
-  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
+  FIND_VERSION_CMD=$(docker images | grep "${CHECK_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
 
   #######################
   # Load the error code #
@@ -495,17 +526,18 @@ FindBuiltImage() {
   # Check the shell for errors #
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
-    info "Found Docker image:[$DOCKER_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
+    info "Found ${REGISTRY} image:[${CHECK_IMAGE_REPO}:${IMAGE_VERSION}] already built on instance"
     # Increment flag
-    FOUND_DOCKER_RELASE=1
+    FOUND_RELASE=1
   else
-    info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
+    info "Failed to find locally created Docker image:[${CHECK_IMAGE_REPO}]"
+    info "${FIND_VERSION_CMD}"
   fi
 
   #####################################
   # Look for Major image in DockerHub #
   #####################################
-  DOCKERHUB_FIND_CMD=$(docker images | grep "${DOCKER_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
+  FIND_MAJOR_CMD=$(docker images | grep "${CHECK_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
 
   #######################
   # Load the error code #
@@ -516,73 +548,19 @@ FindBuiltImage() {
   # Check the shell for errors #
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
-    info "Found Docker image:[$DOCKER_IMAGE_REPO:$MAJOR_TAG] already built on instance"
+    info "Found ${REGISTRY} image:[${CHECK_IMAGE_REPO}:${MAJOR_TAG}] already built on instance"
     # Increment flag
-    FOUND_DOCKER_MAJOR=1
+    FOUND_MAJOR=1
   else
-    info "Failed to find locally created Docker image:[$DOCKERHUB_FIND_CMD]"
+    info "Failed to find locally created Docker image:[${FIND_MAJOR_CMD}]"
+    info "${FIND_MAJOR_CMD}"
   fi
 
-  ####################################
-  # Look for Release image in GitHub #
-  ####################################
-  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${IMAGE_VERSION}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    info "Found Docker image:[$GCR_IMAGE_REPO:$IMAGE_VERSION] already built on instance"
-    # Increment flag
-    FOUND_GCR_RELASE=1
-  else
-    info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
-  fi
-
-  ##################################
-  # Look for Major image in GitHub #
-  ##################################
-  GCR_FIND_CMD=$(docker images | grep "${GCR_IMAGE_REPO}" | grep "${MAJOR_TAG}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    info "Found Docker image:[$GCR_IMAGE_REPO:$MAJOR_TAG] already built on instance"
-    # Increment flag
-    FOUND_GCR_MAJOR=1
-  else
-    info "Failed to find locally created Docker image:[$GCR_FIND_CMD]"
-  fi
-
-  ####################################
-  # Need to see if GCR registry push #
-  ####################################
-  if [[ ${REGISTRY} == "GCR" ]]; then
-    if [ ${FOUND_DOCKER_MAJOR} -eq 1 ] && [ ${FOUND_DOCKER_RELASE} -eq 1 ]; then
-      # We have already created the images for dockerhub, need to re-tag and push
-      # Tag the image: TagBuiltImage "OldTag" "NewTag"
-      TagBuiltImage "${DOCKER_IMAGE_REPO}:${IMAGE_VERSION}" "$GCR_IMAGE_REPO:${IMAGE_VERSION}"
-      TagBuiltImage "${DOCKER_IMAGE_REPO}:${MAJOR_TAG}" "${GCR_IMAGE_REPO}:${MAJOR_TAG}"
-      FOUND_IMAGE=1
-    fi
-  elif [[ ${REGISTRY} == "Docker" ]]; then
-    if [ ${FOUND_GCR_MAJOR} -eq 1 ] && [ ${FOUND_GCR_RELASE} -eq 1 ]; then
-      # We have already created the images for GCR, need to re-tag and push
-      TagBuiltImage "$GCR_IMAGE_REPO:${IMAGE_VERSION}" "${DOCKER_IMAGE_REPO}:${IMAGE_VERSION}"
-      TagBuiltImage "${GCR_IMAGE_REPO}:${MAJOR_TAG}""${DOCKER_IMAGE_REPO}:${MAJOR_TAG}"
-      FOUND_IMAGE=1
-    fi
+  ###############################
+  # Check if we found the image #
+  ###############################
+  if [ ${FOUND_MAJOR} -eq 1 ] && [ ${FOUND_RELASE} -eq 1 ]; then
+    FOUND_IMAGE=1
   fi
 }
 ################################################################################
