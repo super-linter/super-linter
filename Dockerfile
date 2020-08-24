@@ -171,6 +171,7 @@ COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 # Install Terrascan #
 ##################
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
+RUN terrascan init
 
 
 ######################
