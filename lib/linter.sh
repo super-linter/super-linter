@@ -1108,7 +1108,7 @@ Footer() {
     ######################################
     # Check if we validated the langauge #
     ######################################
-    elif [[ ${!ERROR_COUNTER} -eq 0 ]] && [[ ${UNIQUE_LINTED_ARRAY[*]} =~ ${LANGUAGE} ]]; then
+  elif [[ ${!ERROR_COUNTER} -eq 0 ]] && [[ " ${UNIQUE_LINTED_ARRAY[*]} " =~ " ${LANGUAGE} " ]]; then
       # No errors found when linting the language
       CallStatusAPI "${LANGUAGE}" "success"
     fi
