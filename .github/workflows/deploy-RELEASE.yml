@@ -60,8 +60,8 @@ jobs:
       - name: Deploy Release image to GitHub Container Registry
         env:
           # Set the Env Vars
-          GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
-          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+          GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
+          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: ${{ github.event.release.tag_name }}
           DOCKERFILE_PATH: Dockerfile

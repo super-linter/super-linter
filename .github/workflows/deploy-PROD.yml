@@ -54,14 +54,14 @@ jobs:
         shell: bash
         run: .automation/upload-docker.sh
 
-      ####################
-      # Run Deploy script #
-      #####################
-      - name: Deploy latest image to GitHub Container Registry
+      #############################
+      # Run Deploy script for GPR #
+      #############################
+      - name: Deploy Latest image to GitHub Container Registry
         env:
           # Set the Env Vars
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
+          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
           IMAGE_REPO: github/super-linter
           IMAGE_VERSION: latest
           DOCKERFILE_PATH: Dockerfile
