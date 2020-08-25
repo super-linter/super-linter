@@ -177,6 +177,7 @@ VALIDATE_BASH="${VALIDATE_BASH}"                                     # Boolean t
 VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"                 # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
+VALIDATE_CSHARP="${VALIDATE_CSHARP}"                                 # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
 VALIDATE_DOCKERFILE="${VALIDATE_DOCKERFILE}"                         # Boolean to validate language
@@ -1416,6 +1417,17 @@ if [ "${VALIDATE_COFFEE}" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
+fi
+
+##################
+# CSHARP LINTING #
+##################
+if [ "${VALIDATE_CSHARP}" == "true" ]; then
+  #########################
+  # Lint the C# files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --check --files .*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###############
