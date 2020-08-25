@@ -229,7 +229,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/reposi
 ######################
 # Install CheckStyle #
 ######################
-
 RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
     | grep browser_download_url \
     | grep ".jar" \
@@ -294,6 +293,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
+    VALIDATE_CSHARP=${VALIDATE_CSHARP} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_DART=${VALIDATE_DART} \
     VALIDATE_DOCKERFILE=${VALIDATE_DOCKERFILE} \
