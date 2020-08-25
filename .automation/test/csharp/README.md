@@ -1,6 +1,6 @@
-# CSS Test Cases
+# CSharp Test Cases
 
-This folder holds the test cases for **CSS**.
+This folder holds the test cases for **CSharp**.
 
 ## Additional Docs
 
