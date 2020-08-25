@@ -617,7 +617,7 @@ function RunTestCases() {
   TestCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cloudformation"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
-  TestCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --include" ".*\.\(cs\) --check\$" "csharp"
+  TestCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --include" ".*\.\(cs\)\$ --check" "csharp"
   TestCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\|scss\|sass\)\$" "css"
   TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "dart"
   TestCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c ${DOCKERFILE_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
