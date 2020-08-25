@@ -40,7 +40,7 @@ CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}" # Path to 
 COFFEE_FILE_NAME='.coffee-lint.json'                                      # Name of the file
 COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}" # Path to the coffeescript lint rules
 # CSS Vars
-CSS_FILE_NAME='.stylelintrc.json'                             # Name of the file
+CSS_FILE_NAME="${CSS_FILE_NAME:-.stylelintrc.json}"           # Name of the file
 CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS lint rules
 # Dart Vars
 DART_FILE_NAME='analysis_options.yml'                           # Name of the file
