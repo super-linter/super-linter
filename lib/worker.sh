@@ -157,6 +157,12 @@ function LintCodebase() {
       elif [[ ${FILE} == *".git"* ]]; then
         # This is likely the .git folder and shouldn't be parsed
         continue
+      elif [[ ${FILE} == *".venv"* ]]; then
+        # This is likely the python virtual environment folder and shouldn't be parsed
+        continue
+      elif [[ ${FILE} == *".rbenv"* ]]; then
+        # This is likely the ruby environment folder and shouldn't be parsed
+        continue
       fi
 
       ##################################
