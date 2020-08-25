@@ -17,7 +17,7 @@
     "jsonlint": "^1.6.3",
     "markdownlint-cli": "^0.23.2",
     "npm-groovy-lint": "^7.4.1",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.0",
     "prettyjson": "^1.2.1",
     "sql-lint": "0.0.15",
     "standard": "^14.3.4",
