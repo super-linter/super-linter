@@ -280,6 +280,7 @@ FILE_ARRAY_BASH=()                # Array of files to check
 FILE_ARRAY_CLOUDFORMATION=()      # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
+FILE_ARRAY_CSHARP=()              # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_DOCKERFILE=()          # Array of files to check

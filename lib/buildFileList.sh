@@ -404,6 +404,11 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_POWERSHELL+=("${FILE}")
+    elif [ "${FILE_TYPE}" == "cs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_CSHARP+=("${FILE}")
     elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
       [ "${FILE_TYPE}" == "sass" ]; then
       ################################
