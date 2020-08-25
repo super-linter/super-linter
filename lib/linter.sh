@@ -333,6 +333,8 @@ ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
 export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
 ERRORS_FOUND_CLOJURE=0                  # Count of errors found
 export ERRORS_FOUND_CLOJURE             # Workaround SC2034
+ERRORS_FOUND_CSHARP=0                   # Count of errors found
+export ERRORS_FOUND_CSHARP              # Workaround SC2034
 ERRORS_FOUND_CSS=0                      # Count of errors found
 export ERRORS_FOUND_CSS                 # Workaround SC2034
 ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
@@ -1428,7 +1430,7 @@ if [ "${VALIDATE_CSHARP}" == "true" ]; then
   # Lint the C# files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --check --files .*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
+  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --check --include .*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###############
