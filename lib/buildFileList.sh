@@ -404,11 +404,19 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_POWERSHELL+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "${FILE_TYPE}" == "cs" ]; then
       ################################
       # Append the file to the array #
       ################################
       FILE_ARRAY_CSHARP+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
     elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
       [ "${FILE_TYPE}" == "sass" ]; then
       ################################
