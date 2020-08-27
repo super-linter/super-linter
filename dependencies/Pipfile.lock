@@ -307,14 +307,6 @@
             ],
             "version": "==1.15.0"
         },
-        "terrascan": {
-            "hashes": [
-                "sha256:2003638e2e38feba9215df3add2ee99565731b86dbd5c43fd8982b1a4ddac927",
-                "sha256:b44d8c7eac96aa8094865061783ab0e8e849690b8187b75778caf5dd34002d18"
-            ],
-            "index": "pypi",
-            "version": "==0.2.3"
-        },
         "toml": {
             "hashes": [
                 "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f",

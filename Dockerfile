@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.30.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.19.1 as tflint
+FROM accurics/terrascan:latest as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/lintr-lib:v0.1.0 as lintr-lib
 FROM assignuser/chktex-alpine:v0.1.0 as chktex
@@ -165,6 +166,13 @@ COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 # Install TFLint #
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+
+##################
+# Install Terrascan #
+##################
+COPY --from=terrascan /go/bin/terrascan /usr/bin/
+RUN terrascan init
+
 
 ######################
 # Install protolint #

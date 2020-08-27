@@ -1,9 +1,8 @@
-resource "aws_instance" "bad" {
-  ami                         = "ami-0ff8a91507f77f867"
-  instance_type               = "t2.small"
-  associate_public_ip_address = true
+resource "aws_instance" "instanceWithNoVpc" {
+  ami           = "some-id"
+  instance_type = "t2.micro"
 
-  ebs_block_device {
-    encrypted = true
+  tags = {
+    Name = "HelloWorld"
   }
 }
