@@ -37,8 +37,8 @@ CLOUDFORMATION_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOUDFORMATION_FILE_NAM
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                             # Name of the file
 CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}" # Path to the Clojure lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                      # Name of the file
-COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}" # Path to the coffeescript lint rules
+COFFEESCRIPT_FILE_NAME='.coffee-lint.json'                                      # Name of the file
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEESCRIPT_FILE_NAME}" # Path to the coffeescript lint rules
 # CSS Vars
 CSS_FILE_NAME="${CSS_FILE_NAME:-.stylelintrc.json}"           # Name of the file
 CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS lint rules
