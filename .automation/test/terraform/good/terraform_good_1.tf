@@ -3,6 +3,8 @@ resource "aws_instance" "good" {
   instance_type               = "t2.small"
   associate_public_ip_address = false
 
+  vpc_security_group_ids = ["sg-12345678901234567"]
+
   ebs_block_device {
     encrypted = true
   }
