@@ -10,7 +10,6 @@ black = "*"
 cfn-lint = "*"
 flake8 = "*"
 pylint = "*"
-terrascan = "*"
 yamllint = "*"
 yq = "*"
 
