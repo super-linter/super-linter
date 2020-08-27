@@ -1082,7 +1082,7 @@ Footer() {
   ####################################################
   # Need to clean up the lanuage array of duplicates #
   ####################################################
-  mapfile -t UNIQUE_LINTED_ARRAY < <(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+  UNIQUE_LINTED_ARRAY=($(for LANG in "${LINTED_LANGUAGES_ARRAY[@]}"; do echo "${LANG}"; done | sort -u))
 
   ##############################
   # Prints for errors if found #
