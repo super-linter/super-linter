@@ -1771,8 +1771,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && [ ${#FILE_ARRAY_R[@]} -ne 0 ]; then
-    info " "
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && (( ${#FILE_ARRAY_R[@]} )); then
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
   fi
@@ -1790,7 +1789,6 @@ if [ "${VALIDATE_RAKU}" == "true" ]; then
   #######################
   # Lint the raku files #
   #######################
-  info "${GITHUB_WORKSPACE}/META6.json"
   if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
     cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
