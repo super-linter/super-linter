@@ -247,14 +247,22 @@ function LintCodebase() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        #########
-        # Error #
-        #########
-        error "Found errors in [${LINTER_NAME}] linter!"
-        error "[${LINT_CMD}]"
-        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
-        # Increment the error count
-        (("ERRORS_FOUND_${FILE_TYPE}++"))
+        if [[ ${FILE_TYPE} == "BASH-EXEC" ]];
+          ########
+          # WARN #
+          ########
+          warn "Warnings found in [${LINTER_NAME}] linter!"
+          warn "${LINT_CMD}"
+        else
+          #########
+          # Error #
+          #########
+          error "Found errors in [${LINTER_NAME}] linter!"
+          error "[${LINT_CMD}]"
+          error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
+          # Increment the error count
+          (("ERRORS_FOUND_${FILE_TYPE}++"))
+        fi
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
