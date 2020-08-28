@@ -229,6 +229,14 @@ function LintCodebase() {
           R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
         )
         #LINTER_COMMAND="lintr::lint('${FILE}')"
+      #########################################################
+      # Corner case for C# as it writes to tty and not stdout #
+      #########################################################
+      elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+        LINT_CMD=$(
+          cd "${GITHUB_WORKSPACE}" || exit
+          ${LINTER_CMD} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+        )
       else
         ################################
         # Lint the file with the rules #
@@ -467,6 +475,14 @@ function TestCodebase() {
       LINT_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit
         R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
+      )
+    #########################################################
+    # Corner case for C# as it writes to tty and not stdout #
+    #########################################################
+    elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+      LINT_CMD=$(
+        cd "${GITHUB_WORKSPACE}" || exit
+        ${LINTER_CMD} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
       )
     else
       ################################
