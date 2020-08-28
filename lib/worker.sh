@@ -233,6 +233,7 @@ function LintCodebase() {
       # Corner case for C# as it writes to tty and not stdout #
       #########################################################
       elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+        info "got into the csharp loop"
         LINT_CMD=$(
           cd "${GITHUB_WORKSPACE}" || exit
           ${LINTER_COMMAND} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
@@ -480,6 +481,7 @@ function TestCodebase() {
     # Corner case for C# as it writes to tty and not stdout #
     #########################################################
     elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+      info "got into the csharp loop"
       LINT_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit
         ${LINTER_COMMAND} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
@@ -642,7 +644,7 @@ function RunTestCases() {
   TestCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cloudformation"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
-  TestCodebase "CSHARP" "dotnet-format" "dotnet-format --check --folder --include" ".*\.\(cs\)\$" "csharp"
+  TestCodebase "CSHARP" "dotnet-format" "dotnet-format --check --folder --exclude / --include" ".*\.\(cs\)\$" "csharp"
   TestCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\|scss\|sass\)\$" "css"
   TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "dart"
   TestCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c ${DOCKERFILE_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
