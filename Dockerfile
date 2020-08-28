@@ -111,7 +111,7 @@ RUN bundle install
 ###################################
 # Install DotNet and Dependancies #
 ###################################
-RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+RUN wget --tries=5 --waitretry=2 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
     && /usr/share/dotnet/dotnet tool install -g dotnet-format
@@ -126,8 +126,8 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 ##############################
 # Install Phive dependencies #
 ##############################
-RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-    && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+RUN wget --tries=5 --waitretry=2 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget --tries=5 --waitretry=2 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
     && gpg --verify phive.phar.asc phive.phar \
     && chmod +x phive.phar \
@@ -220,10 +220,10 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 ####################
 # Install dart-sdk #
 ####################
-RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-RUN wget --tries=5 https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
+RUN wget --tries=5 --waitretry=2 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+RUN wget --tries=5 --waitretry=2 https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
 RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
-RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+RUN wget --tries=5 --waitretry=2 https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
@@ -254,13 +254,13 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
 ####################
 # Install luacheck #
 ####################
-RUN wget --tries=5 https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+RUN wget --tries=5 --waitretry=2 https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
     && cd lua-5.3.5 \
     && make linux \
     && make install \
     && cd .. && rm -r lua-5.3.5/
 
-RUN wget --tries=5 https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+RUN wget --tries=5 --waitretry=2 https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
     && cd luarocks-3.3.1-super-linter \
     && ./configure --with-lua-include=/usr/local/include \
     && make \
