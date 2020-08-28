@@ -216,6 +216,12 @@ RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/r
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
 
+################################
+# Create and install Bash-Exec #
+################################
+RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
+    && chmod +x /usr/bin/bash-exec
+
 ################
 # Install Raku #
 ################
@@ -291,6 +297,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
     VALIDATE_ARM=${VALIDATE_ARM} \
     VALIDATE_BASH=${VALIDATE_BASH} \
+    VALIDATE_BASH_EXEC=${VALIDATE_BASH_EXEC} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
