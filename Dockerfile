@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.30.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.19.1 as tflint
+FROM accurics/terrascan:latest as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/lintr-lib:v0.1.0 as lintr-lib
 FROM assignuser/chktex-alpine:v0.1.0 as chktex
@@ -57,6 +58,7 @@ RUN apk add --update --no-cache \
     bash \
     coreutils \
     curl \
+    file \
     gcc \
     git git-lfs\
     go \
@@ -177,6 +179,13 @@ COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
+##################
+# Install Terrascan #
+##################
+COPY --from=terrascan /go/bin/terrascan /usr/bin/
+RUN terrascan init
+
+
 ######################
 # Install protolint #
 ######################
@@ -218,6 +227,12 @@ RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/r
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
+
+################################
+# Create and install Bash-Exec #
+################################
+RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
+    && chmod +x /usr/bin/bash-exec
 
 #################################################
 # Install Raku and additional Edge dependencies #
@@ -293,6 +308,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
     VALIDATE_ARM=${VALIDATE_ARM} \
     VALIDATE_BASH=${VALIDATE_BASH} \
+    VALIDATE_BASH_EXEC=${VALIDATE_BASH_EXEC} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \

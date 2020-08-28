@@ -37,8 +37,8 @@ CLOUDFORMATION_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOUDFORMATION_FILE_NAM
 CLOJURE_FILE_NAME='.clj-kondo/config.edn'                             # Name of the file
 CLOJURE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CLOJURE_FILE_NAME}" # Path to the Clojure lint rules
 # Coffee Vars
-COFFEE_FILE_NAME='.coffee-lint.json'                                      # Name of the file
-COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEE_FILE_NAME}" # Path to the coffeescript lint rules
+COFFEESCRIPT_FILE_NAME='.coffee-lint.json'                                      # Name of the file
+COFFEESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${COFFEESCRIPT_FILE_NAME}" # Path to the coffeescript lint rules
 # CSS Vars
 CSS_FILE_NAME="${CSS_FILE_NAME:-.stylelintrc.json}"           # Name of the file
 CSS_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${CSS_FILE_NAME}" # Path to the CSS lint rules
@@ -133,7 +133,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
   'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
@@ -142,7 +142,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'black' 'cfn-lint' 'check
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
@@ -174,6 +174,7 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                     # Boolean t
 VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                               # Boolean to validate language
 VALIDATE_ARM="${VALIDATE_ARM}"                                       # Boolean to validate language
 VALIDATE_BASH="${VALIDATE_BASH}"                                     # Boolean to validate language
+VALIDATE_BASH_EXEC="${VALIDATE_BASH_EXEC}"                           # Boolean to validate language
 VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"                 # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
@@ -329,6 +330,8 @@ ERRORS_FOUND_ARM=0                      # Count of errors found
 export ERRORS_FOUND_ARM                 # Workaround SC2034
 ERRORS_FOUND_BASH=0                     # Count of errors found
 export ERRORS_FOUND_BASH                # Workaround SC2034
+ERRORS_FOUND_BASH_EXEC=0                # Count of errors found
+export ERRORS_FOUND_BASH_EXEC           # Workaround SC2034
 ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
 export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
 ERRORS_FOUND_CLOJURE=0                  # Count of errors found
@@ -1086,7 +1089,7 @@ Footer() {
   ####################################################
   # Need to clean up the lanuage array of duplicates #
   ####################################################
-  mapfile -t UNIQUE_LINTED_ARRAY < <(echo "${LINTED_LANGUAGES_ARRAY[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+  mapfile -t UNIQUE_LINTED_ARRAY < <(for LANG in "${LINTED_LANGUAGES_ARRAY[@]}"; do echo "${LANG}"; done | sort -u)
 
   ##############################
   # Prints for errors if found #
@@ -1364,6 +1367,17 @@ if [ "${VALIDATE_BASH}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+fi
+
+#####################
+# BASH_EXEC LINTING #
+#####################
+if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
+  #######################
+  # Lint the bash files #
+  #######################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##########################
@@ -1786,8 +1800,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && [ ${#FILE_ARRAY_R[@]} -ne 0 ]; then
-    info " "
+  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && (( ${#FILE_ARRAY_R[@]} )); then
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
   fi
@@ -1805,7 +1818,6 @@ if [ "${VALIDATE_RAKU}" == "true" ]; then
   #######################
   # Lint the raku files #
   #######################
-  info "${GITHUB_WORKSPACE}/META6.json"
   if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
     cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
@@ -1884,7 +1896,7 @@ if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
   # Lint the Terraform files #
   ############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan -f " ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
+  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " ".*\.\(tf\)\$" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
 fi
 
 ###############

@@ -70,7 +70,8 @@ function BuildFileList() {
   # Iterate through the array of all files found #
   ################################################
   info "----------------------------------------------"
-  info "Files that have been modified in the commit(s):"
+  info "------ Files modified in the commit(s): ------"
+  info "----------------------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     ###########################
     # Get the files extension #
