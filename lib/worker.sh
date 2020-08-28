@@ -247,14 +247,22 @@ function LintCodebase() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        #########
-        # Error #
-        #########
-        error "Found errors in [${LINTER_NAME}] linter!"
-        error "[${LINT_CMD}]"
-        error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
-        # Increment the error count
-        (("ERRORS_FOUND_${FILE_TYPE}++"))
+        if [[ ${FILE_TYPE} == "BASH_EXEC" ]]; then
+          ########
+          # WARN #
+          ########
+          warn "Warnings found in [${LINTER_NAME}] linter!"
+          warn "${LINT_CMD}"
+        else
+          #########
+          # Error #
+          #########
+          error "Found errors in [${LINTER_NAME}] linter!"
+          error "[${LINT_CMD}]"
+          error "Linter CMD:[${LINTER_COMMAND} ${FILE}]"
+          # Increment the error count
+          (("ERRORS_FOUND_${FILE_TYPE}++"))
+        fi
 
         #######################################################
         # Store the linting as a temporary file in TAP format #
@@ -614,6 +622,7 @@ function RunTestCases() {
   TestCodebase "ANSIBLE" "ansible-lint" "ansible-lint -v -c ${ANSIBLE_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "ansible"
   TestCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" ".*\.\(json\)\$" "arm"
   TestCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell"
+  TestCodebase "BASH_EXEC" "bash-exec" "bash-exec" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell"
   TestCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cloudformation"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
