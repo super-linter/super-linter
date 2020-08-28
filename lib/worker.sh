@@ -482,7 +482,7 @@ function TestCodebase() {
     elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
       LINT_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit
-        ${LINTER_CMD} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+        ${LINTER_COMMAND} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
       )
     else
       ################################
