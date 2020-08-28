@@ -1430,7 +1430,7 @@ if [ "${VALIDATE_CSHARP}" == "true" ]; then
   # Lint the C# files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --include" "**.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
+  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --include" ".*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###############
