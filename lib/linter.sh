@@ -467,7 +467,7 @@ GetLinterVersions() {
     if [[ ${LINTER} == "arm-ttk" ]]; then
       # Need specific command for ARM
       mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
-    elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]]; then
+    elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]] || [[ ${LINTER} == "bash-exec" ]]; then
       # Need specific command for Protolint and editorconfig-checker
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
     elif [[ ${LINTER} == "lintr" ]]; then
@@ -478,6 +478,8 @@ GetLinterVersions() {
     elif [[ ${LINTER} == "lua" ]]; then
       # Semi standardversion command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
+    elif [[ ${LINTER} == "terrascan" ]]; then
+      mapfile -t GET_VERSION_CMD < <("${LINTER}" version 2>&1)
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
