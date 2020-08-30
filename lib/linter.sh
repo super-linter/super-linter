@@ -1070,9 +1070,13 @@ Reports() {
     #############################################
     # Print info on reports that were generated #
     #############################################
-    info "Contents of report folder:"
-    OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
-    info "$OUTPUT_CONTENTS_CMD"
+    if [ -d "${REPORT_OUTPUT_FOLDER}" ]; then
+      info "Contents of report folder:"
+      OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
+      info "$OUTPUT_CONTENTS_CMD"
+    else
+      warn "Report output folder (${REPORT_OUTPUT_FOLDER}) does NOT exist."
+    fi
   fi
 
   ################################
