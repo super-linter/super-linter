@@ -1852,8 +1852,17 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
   ####################################
   # Lint the files with shfmt #
   ####################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
+  if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
+    # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  else
+    ###############################
+    # No .editorconfig file found #
+    ###############################
+    warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
+    debug "skipping shfmt"
+  fi
 fi
 
 ######################
