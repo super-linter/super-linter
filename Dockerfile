@@ -286,10 +286,11 @@ RUN cd ~ && touch .chktexrc
 #################
 ENV GO111MODULE=on
 
-ENV GOROOT=/usr/lib/go
-ENV GOPATH=/go
-ENV PATH="$PATH":"$GOROOT"/bin
-ENV PATH="$PATH":"$GOPATH"/bin
+ENV GOROOT=/usr/lib/go \
+    GOPATH=/go \
+    PATH="$PATH":"$GOROOT"/bin \
+    PATH="$PATH":"$GOPATH"/bin
+
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 RUN go get mvdan.cc/sh/v3/cmd/shfmt
 
