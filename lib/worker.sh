@@ -165,12 +165,12 @@ function LintCodebase() {
         continue
       elif [[ ${FILE_TYPE} == "BASH" ]] && CheckZsh "${FILE}"; then
         # ZSH file and we need to skip
-        warn "Found [zsh] script"
+        warn "Found [zsh] script: ${FILE}"
         info "ShellCheck does NOT currently support zsh, skipping file"
         continue
       elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && CheckZsh "${FILE}"; then
         # ZSH file and we need to skip
-        warn "Found [zsh] script"
+        warn "Found [zsh] script: ${FILE}"
         info "shfmt does NOT currently support zsh, skipping file"
         continue
       fi

@@ -100,7 +100,7 @@ function BuildFileList() {
       [ "${FILE_TYPE}" == "dash" ] || [ "${FILE_TYPE}" == "ksh" ]; then
       # Need to check if its a zsh file as we cannot parse it
       if CheckZsh "${FILE}"; then
-        warn "Found [zsh] script"
+        warn "Found [zsh] script: ${FILE}"
         info "ShellCheck does NOT currently support zsh, skipping file"
       else
         ################################
