@@ -1079,6 +1079,7 @@ AllCops:
 ## Shell
 
 - [Shellcheck](https://github.com/koalaman/shellcheck)
+- [shfmt](https://github.com/mvdan/sh)
 
 ### Shellcheck Config file
 
@@ -1109,6 +1110,10 @@ echo "More garbage code"
 echo "stuff"
 moreThings()
 ```
+
+### shfmt Config file
+
+shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/sh#shfmt), if available.
 
 ---
 

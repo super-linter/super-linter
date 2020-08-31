@@ -165,8 +165,11 @@ function LintCodebase() {
         continue
       elif [[ ${FILE_TYPE} == "BASH" ]] && CheckZsh "${FILE}"; then
         # ZSH file and we need to skip
-        warn "Found [zsh] script"
-        info "ShellCheck does NOT currently support zsh, skipping file"
+        warn "$LINTER_NAME does NOT currently support zsh, skipping file"
+        continue
+      elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && CheckZsh "${FILE}"; then
+        # ZSH file and we need to skip
+        warn "$LINTER_NAME does NOT currently support zsh, skipping file"
         continue
       fi
 
@@ -679,6 +682,7 @@ function RunTestCases() {
   TestCodebase "R" "lintr" "lintr::lint()" ".*\.\(r\|rmd\)\$" "r"
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
+  TestCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell_shfmt"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"

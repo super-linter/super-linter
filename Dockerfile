@@ -281,6 +281,18 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
 
+#################
+# Install shfmt #
+#################
+ENV GO111MODULE=on \
+    GOROOT=/usr/lib/go \
+    GOPATH=/go
+
+ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
+
+RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+RUN go get mvdan.cc/sh/v3/cmd/shfmt
+
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -345,6 +357,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_R=${VALIDATE_R} \
     VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
+    VALIDATE_SHELL_SHFMT=${VALIDATE_SHELL_SHFMT} \
     VALIDATE_STATES=${VALIDATE_STATES} \
     VALIDATE_SQL=${VALIDATE_SQL} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
