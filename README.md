@@ -46,6 +46,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                        |
 | **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                    |
 | **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                             |
+| **C#**                           | [dotnet-format](https://github.com/dotnet/format)                                                                                                                              |
 | **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                             |
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                             |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                    |
@@ -200,6 +201,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_CLOJURE**              | `true`                | Flag to enable or disable the linting process of the Clojure language.                                                                                                           |
 | **VALIDATE_CLOUDFORMATION**       | `true`                | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                               |
 | **VALIDATE_COFFEE**               | `true`                | Flag to enable or disable the linting process of the Coffeescript language .                                                                                                     |
+| **VALIDATE_CSHARP**               | `true`                | Flag to enable or disable the linting process of the C# language.                                                                                                                |
 | **VALIDATE_CSS**                  | `true`                | Flag to enable or disable the linting process of the CSS language.                                                                                                               |
 | **VALIDATE_DART**                 | `true`                | Flag to enable or disable the linting process of the Dart language.                                                                                                              |
 | **VALIDATE_DOCKERFILE**           | `true`                | Flag to enable or disable the linting process of the Docker language.                                                                                                            |
@@ -244,7 +246,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_XML**                  | `true`                | Flag to enable or disable the linting process of the XML language.                                                                                                               |
 | **VALIDATE_YAML**                 | `true`                | Flag to enable or disable the linting process of the YAML language.                                                                                                              |
 | **YAML_CONFIG_FILE**              | `.yaml-lint.yml`      | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                      |
-
 
 ### Template rules files
 

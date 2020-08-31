@@ -65,7 +65,9 @@ RUN apk add --update --no-cache \
     gnupg \
     icu-libs \
     jq \
-    libc-dev libxml2-dev libxml2-utils \
+    krb5-libs \
+    libc-dev libxml2-dev libxml2-utils libgcc \
+    libcurl libintl libssl1.1 libstdc++ \
     make \
     musl-dev \
     npm nodejs-current \
@@ -105,6 +107,16 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+###################################
+# Install DotNet and Dependancies #
+###################################
+RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+    && chmod +x dotnet-install.sh \
+    && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
+    && /usr/share/dotnet/dotnet tool install -g dotnet-format
+
+ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
 
 ##############################
 # Installs Perl dependencies #
@@ -222,9 +234,9 @@ RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/r
 RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
     && chmod +x /usr/bin/bash-exec
 
-################
-# Install Raku #
-################
+#################################################
+# Install Raku and additional Edge dependencies #
+#################################################
 # Basic setup, programs and init
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
     && apk add --update --no-cache rakudo zef
@@ -232,7 +244,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/reposi
 ######################
 # Install CheckStyle #
 ######################
-
 RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
     | grep browser_download_url \
     | grep ".jar" \
@@ -301,6 +312,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
     VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
     VALIDATE_COFFEE=${VALIDATE_COFFEE} \
+    VALIDATE_CSHARP=${VALIDATE_CSHARP} \
     VALIDATE_CSS=${VALIDATE_CSS} \
     VALIDATE_DART=${VALIDATE_DART} \
     VALIDATE_DOCKERFILE=${VALIDATE_DOCKERFILE} \

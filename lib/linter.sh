@@ -133,8 +133,8 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #######################################
 # Linter array for information prints #
 #######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'black' 'bash-exec' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
-  'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
+  'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
   'terrascan' 'tflint' 'xmllint' 'yamllint')
@@ -142,7 +142,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'black' 'bash-exec' 'cfn-
 #############################
 # Language array for prints #
 #############################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSS'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
@@ -178,6 +178,7 @@ VALIDATE_BASH_EXEC="${VALIDATE_BASH_EXEC}"                           # Boolean t
 VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"                 # Boolean to validate language
 VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean to validate language
 VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
+VALIDATE_CSHARP="${VALIDATE_CSHARP}"                                 # Boolean to validate language
 VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
 VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
 VALIDATE_DOCKERFILE="${VALIDATE_DOCKERFILE}"                         # Boolean to validate language
@@ -280,6 +281,7 @@ FILE_ARRAY_BASH=()                # Array of files to check
 FILE_ARRAY_CLOUDFORMATION=()      # Array of files to check
 FILE_ARRAY_CLOJURE=()             # Array of files to check
 FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
+FILE_ARRAY_CSHARP=()              # Array of files to check
 FILE_ARRAY_CSS=()                 # Array of files to check
 FILE_ARRAY_DART=()                # Array of files to check
 FILE_ARRAY_DOCKERFILE=()          # Array of files to check
@@ -334,6 +336,8 @@ ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
 export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
 ERRORS_FOUND_CLOJURE=0                  # Count of errors found
 export ERRORS_FOUND_CLOJURE             # Workaround SC2034
+ERRORS_FOUND_CSHARP=0                   # Count of errors found
+export ERRORS_FOUND_CSHARP              # Workaround SC2034
 ERRORS_FOUND_CSS=0                      # Count of errors found
 export ERRORS_FOUND_CSS                 # Workaround SC2034
 ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
@@ -1430,6 +1434,17 @@ if [ "${VALIDATE_COFFEE}" == "true" ]; then
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "${FILE_ARRAY_COFFEESCRIPT[@]}"
+fi
+
+##################
+# CSHARP LINTING #
+##################
+if [ "${VALIDATE_CSHARP}" == "true" ]; then
+  #########################
+  # Lint the C# files #
+  #########################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --exclude / --include" ".*\.\(cs\)\$" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###############

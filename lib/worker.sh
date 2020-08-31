@@ -229,6 +229,14 @@ function LintCodebase() {
           R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
         )
         #LINTER_COMMAND="lintr::lint('${FILE}')"
+      #########################################################
+      # Corner case for C# as it writes to tty and not stdout #
+      #########################################################
+      elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+        )
       else
         ################################
         # Lint the file with the rules #
@@ -468,6 +476,14 @@ function TestCodebase() {
         cd "${GITHUB_WORKSPACE}" || exit
         R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
       )
+    #########################################################
+    # Corner case for C# as it writes to tty and not stdout #
+    #########################################################
+    elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+      LINT_CMD=$(
+        cd "${DIR_NAME}" || exit
+        ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+      )
     else
       ################################
       # Lint the file with the rules #
@@ -626,6 +642,7 @@ function RunTestCases() {
   TestCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" ".*\.\(json\|yml\|yaml\)\$" "cloudformation"
   TestCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "clojure"
   TestCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "coffeescript"
+  TestCodebase "CSHARP" "dotnet-format" "dotnet-format --check --folder --exclude / --include" ".*\.\(cs\)\$" "csharp"
   TestCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\|scss\|sass\)\$" "css"
   TestCodebase "DART" "dart" "dartanalyzer --fatal-infos  --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "dart"
   TestCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c ${DOCKERFILE_LINTER_RULES}" ".*\(Dockerfile\)\$" "docker"
