@@ -151,7 +151,7 @@ ValidateInput() {
     info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
     # Set the docker Image repo and GCR image repo
     DOCKER_IMAGE_REPO="${IMAGE_REPO}"
-    GCR_IMAGE_REPO="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
+    GCR_IMAGE_REPO="${GCR_URL}/${IMAGE_REPO}"
     #########################
     # Set the container URL #
     #########################
