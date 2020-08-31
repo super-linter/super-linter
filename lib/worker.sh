@@ -168,6 +168,11 @@ function LintCodebase() {
         warn "Found [zsh] script"
         info "ShellCheck does NOT currently support zsh, skipping file"
         continue
+      elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && CheckZsh "${FILE}"; then
+        # ZSH file and we need to skip
+        warn "Found [zsh] script"
+        info "shfmt does NOT currently support zsh, skipping file"
+        continue
       fi
 
       ##################################
