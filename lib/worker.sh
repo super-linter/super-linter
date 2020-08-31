@@ -163,6 +163,11 @@ function LintCodebase() {
       elif [[ ${FILE} == *".rbenv"* ]]; then
         # This is likely the ruby environment folder and shouldn't be parsed
         continue
+      elif [[ ${FILE_TYPE} == "BASH" ]] && CheckZsh "${FILE}"; then
+        # ZSH file and we need to skip
+        warn "Found [zsh] script"
+        info "ShellCheck does NOT currently support zsh, skipping file"
+        continue
       fi
 
       ##################################
