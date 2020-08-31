@@ -35,11 +35,6 @@ GCR_IMAGE_REPO=''                         # Docker tag for the image when create
 FOUND_IMAGE=0                             # Flag for if the image has already been built
 CONTAINER_URL=''                          # Final URL to upload
 
-#####################
-# Get the repo name #
-#####################
-REPO_NAME=$(echo "${GITHUB_REPOSITORY}" |cut -f2 -d'/') # GitHub Repository name
-
 #########################
 # Source Function Files #
 #########################
@@ -151,7 +146,7 @@ ValidateInput() {
     info "Successfully found:${F[W]}[IMAGE_REPO]${F[B]}, value:${F[W]}[${IMAGE_REPO}]"
     # Set the docker Image repo and GCR image repo
     DOCKER_IMAGE_REPO="${IMAGE_REPO}"
-    GCR_IMAGE_REPO="${GCR_URL}/${IMAGE_REPO}/${REPO_NAME}"
+    GCR_IMAGE_REPO="${GCR_URL}/${IMAGE_REPO}"
     #########################
     # Set the container URL #
     #########################
