@@ -233,10 +233,9 @@ function LintCodebase() {
       # Corner case for C# as it writes to tty and not stdout #
       #########################################################
       elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
-        info "got into the csharp loop"
         LINT_CMD=$(
-          cd "${GITHUB_WORKSPACE}" || exit
-          ${LINTER_COMMAND} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
         )
       else
         ################################
@@ -481,10 +480,9 @@ function TestCodebase() {
     # Corner case for C# as it writes to tty and not stdout #
     #########################################################
     elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
-      info "got into the csharp loop"
       LINT_CMD=$(
-        cd "${GITHUB_WORKSPACE}" || exit
-        ${LINTER_COMMAND} "${FILE}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+        cd "${DIR_NAME}" || exit
+        ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
       )
     else
       ################################
