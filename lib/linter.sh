@@ -1366,7 +1366,7 @@ if [ "${VALIDATE_BASH}" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" "disabledfileext" "${FILE_ARRAY_BASH[@]}"
 fi
 
 #####################
@@ -1377,7 +1377,7 @@ if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "disabledfileext" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##########################
@@ -1834,6 +1834,26 @@ if [ "${VALIDATE_RUBY}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+fi
+
+#################
+# SHFMT LINTING #
+#################
+if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
+  ####################################
+  # Lint the files with shfmt #
+  ####################################
+  EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
+  if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
+    # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" "disabledfileext" "${FILE_ARRAY_BASH[@]}"
+  else
+    ###############################
+    # No .editorconfig file found #
+    ###############################
+    warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
+    debug "skipping shfmt"
+  fi
 fi
 
 ######################

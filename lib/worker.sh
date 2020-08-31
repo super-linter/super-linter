@@ -81,20 +81,27 @@ function LintCodebase() {
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
   else
-    ###############################################################################
-    # Set the file separator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
+    if [[ ${FILE_TYPE} == "BASH" ]] ||
+      [[ ${FILE_TYPE} == "BASH_EXEC" ]] ||
+      [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
+        # Populate a list of valid shell scripts.
+        PopulateShellScriptsList
+    else
+      ###############################################################################
+      # Set the file separator to newline to allow for grabbing objects with spaces #
+      ###############################################################################
+      IFS=$'\n'
 
-    #################################
-    # Get list of all files to lint #
-    #################################
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" 2>&1)
+      #################################
+      # Get list of all files to lint #
+      #################################
+      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" 2>&1)
 
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
+      ###########################
+      # Set IFS back to default #
+      ###########################
+      IFS="${DEFAULT_IFS}"
+    fi
 
     ############################################################
     # Set it back to empty if loaded with blanks from scanning #
@@ -163,11 +170,15 @@ function LintCodebase() {
       elif [[ ${FILE} == *".rbenv"* ]]; then
         # This is likely the ruby environment folder and shouldn't be parsed
         continue
-      elif [[ ${FILE_TYPE} == "BASH" ]] || [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
-        if CheckZsh "${FILE}"; then
-          # ZSH file and we need to skip
-          warn "$LINTER_NAME does NOT currently support zsh, skipping file"
-          continue
+      elif [[ ${FILE_TYPE} == "BASH" ]] && ! IsValidShellScript "${FILE}"; then
+        # not a valid script and we need to skip
+        continue
+      elif [[ ${FILE_TYPE} == "BASH_EXEC" ]] && ! IsValidShellScript "${FILE}"; then
+        # not a valid script and we need to skip
+        continue
+      elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && ! IsValidShellScript "${FILE}"; then
+        # not a valid script and we need to skip
+        continue
       fi
 
       ##################################
