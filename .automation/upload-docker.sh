@@ -166,7 +166,7 @@ ValidateInput() {
     ##############################
     # Get the name of the branch #
     ##############################
-    BRANCH_NAME=$(git -C "${GITHUB_WORKSPACE}" branch --contains "${GITHUB_SHA}" | awk '{print ${2}}' 2>&1)
+    BRANCH_NAME=$(git -C "${GITHUB_WORKSPACE}" branch --contains "${GITHUB_SHA}" | awk '{print $2}' 2>&1)
 
     #######################
     # Load the error code #
@@ -448,9 +448,9 @@ UploadImage() {
     ################
     # Get the data #
     ################
-    REPO=$(echo "${GET_INFO_CMD}" | awk '{print ${1}}')
-    TAG=$(echo "${GET_INFO_CMD}" | awk '{print ${2}}')
-    IMAGE_ID=$(echo "${GET_INFO_CMD}" | awk '{print ${3}}')
+    REPO=$(echo "${GET_INFO_CMD}" | awk '{print $1}')
+    TAG=$(echo "${GET_INFO_CMD}" | awk '{print $2}')
+    IMAGE_ID=$(echo "${GET_INFO_CMD}" | awk '{print $3}')
     SIZE="${GET_INFO_CMD##* }"
 
     ###################
