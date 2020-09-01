@@ -136,7 +136,7 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
   'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
-  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'spectral' 'standard' 'stylelint' 'sql-lint'
+  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
   'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 #############################
@@ -146,7 +146,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'C
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -211,6 +211,7 @@ VALIDATE_R="${VALIDATE_R}"                                           # Boolean t
 VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean to validate language
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
+VALIDATE_SHELL_SHFMT="${VALIDATE_SHELL_SHFMT}"                       # Boolean to check Shell files against editorconfig
 VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
 VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
@@ -404,6 +405,8 @@ ERRORS_FOUND_RAKU=0                     # Count of errors found
 export ERRORS_FOUND_RAKU                # Workaround SC2034
 ERRORS_FOUND_RUBY=0                     # Count of errors found
 export ERRORS_FOUND_RUBY                # Workaround SC2034
+ERRORS_FOUND_SHELL_SHFMT=0              # Count of errors found
+export ERRORS_FOUND_SHELL_SHFMT
 ERRORS_FOUND_STATES=0                   # Count of errors found
 export ERRORS_FOUND_STATES              # Workaround SC2034
 ERRORS_FOUND_SQL=0                      # Count of errors found
@@ -464,7 +467,7 @@ GetLinterVersions() {
     if [[ ${LINTER} == "arm-ttk" ]]; then
       # Need specific command for ARM
       mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
-    elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]]; then
+    elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]] || [[ ${LINTER} == "bash-exec" ]]; then
       # Need specific command for Protolint and editorconfig-checker
       mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
     elif [[ ${LINTER} == "lintr" ]]; then
@@ -475,6 +478,8 @@ GetLinterVersions() {
     elif [[ ${LINTER} == "lua" ]]; then
       # Semi standardversion command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
+    elif [[ ${LINTER} == "terrascan" ]]; then
+      mapfile -t GET_VERSION_CMD < <("${LINTER}" version 2>&1)
     else
       # Standard version command
       mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
@@ -1065,9 +1070,13 @@ Reports() {
     #############################################
     # Print info on reports that were generated #
     #############################################
-    info "Contents of report folder:"
-    OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
-    info "$OUTPUT_CONTENTS_CMD"
+    if [ -d "${REPORT_OUTPUT_FOLDER}" ]; then
+      info "Contents of report folder:"
+      OUTPUT_CONTENTS_CMD=$(ls "${REPORT_OUTPUT_FOLDER}")
+      info "$OUTPUT_CONTENTS_CMD"
+    else
+      warn "Report output folder (${REPORT_OUTPUT_FOLDER}) does NOT exist."
+    fi
   fi
 
   ################################
@@ -1366,7 +1375,7 @@ if [ "${VALIDATE_BASH}" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" "disabledfileext" "${FILE_ARRAY_BASH[@]}"
 fi
 
 #####################
@@ -1377,7 +1386,7 @@ if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "disabledfileext" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##########################
@@ -1834,6 +1843,26 @@ if [ "${VALIDATE_RUBY}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
   LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" ".*\.\(rb\)\$" "${FILE_ARRAY_RUBY[@]}"
+fi
+
+#################
+# SHFMT LINTING #
+#################
+if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
+  ####################################
+  # Lint the files with shfmt #
+  ####################################
+  EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
+  if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
+    # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILE_ARRAY_BASH[@]}"
+  else
+    ###############################
+    # No .editorconfig file found #
+    ###############################
+    warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
+    debug "skipping shfmt"
+  fi
 fi
 
 ######################

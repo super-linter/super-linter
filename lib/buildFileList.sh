@@ -73,13 +73,8 @@ function BuildFileList() {
   info "------ Files modified in the commit(s): ------"
   info "----------------------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
-    ###########################
-    # Get the files extension #
-    ###########################
     # Extract just the file extension
-    FILE_TYPE=${FILE##*.}
-    # To lowercase
-    FILE_TYPE=${FILE_TYPE,,}
+    FILE_TYPE="$(GetFileExtension "$FILE")"
     # get the baseFile for additonal logic
     BASE_FILE=$(basename "${FILE,,}")
 
@@ -94,23 +89,17 @@ function BuildFileList() {
     debug "FILE_TYPE:[${FILE_TYPE}]"
 
     ######################
-    # Get the BASH files #
+    # Get the shell files #
     ######################
-    if [ "${FILE_TYPE}" == "sh" ] || [ "${FILE_TYPE}" == "bash" ] ||
-      [ "${FILE_TYPE}" == "dash" ] || [ "${FILE_TYPE}" == "ksh" ]; then
-      # Need to check if its a zsh file as we cannot parse it
-      if CheckZsh "${FILE}"; then
-        warn "ShellCheck and shfmt do NOT currently support zsh, skipping file"
-      else
-        ################################
-        # Append the file to the array #
-        ################################
-        FILE_ARRAY_BASH+=("${FILE}")
-        ##########################################################
-        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-        ##########################################################
-        READ_ONLY_CHANGE_FLAG=1
-      fi
+    if IsValidShellScript "${FILE}"; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_BASH+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
 
     #########################
     # Get the CLOJURE files #
@@ -628,8 +617,8 @@ function BuildFileList() {
   info "Successfully gathered list of files..."
 }
 ################################################################################
-#### Function CheckFileType ####################################################
-function CheckFileType() {
+#### Function GetFileType ######################################################
+function GetFileType() {
   # Need to run the file through the 'file' exec to help determine
   # The type of file being parsed
 
@@ -643,15 +632,28 @@ function CheckFileType() {
   ##################
   GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
 
+  echo "${GET_FILE_TYPE_CMD}"
+}
+################################################################################
+#### Function CheckFileType ####################################################
+function CheckFileType() {
+  # Need to run the file through the 'file' exec to help determine
+  # The type of file being parsed
+
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  #################
+  # Get file type #
+  #################
+  GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
+
   #################
   # Check if bash #
   #################
-  if [[ ${GET_FILE_TYPE_CMD} == *"Bourne-Again shell script"* ]]; then
-    #######################
-    # It is a bash script #
-    #######################
-    warn "Found bash script without extension:[.sh]"
-    info "Please update file with proper extensions."
+  if IsValidShellScript "$FILE"; then
     ################################
     # Append the file to the array #
     ################################
@@ -674,12 +676,6 @@ function CheckFileType() {
     # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
     ##########################################################
     READ_ONLY_CHANGE_FLAG=1
-  elif [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
-    ######################
-    # It is a ZSH script #
-    ######################
-    warn "Found [zsh] script: ${FILE}"
-    info "ShellCheck does NOT currently support zsh, skipping file"
   else
     ############################
     # Extension was not found! #
@@ -692,34 +688,90 @@ function CheckFileType() {
   fi
 }
 ################################################################################
-#### Function CheckZsh #########################################################
-function CheckZsh() {
-  # Spagetti code to make sure were properly excluding zsh
-  # until we get a proper linter
-
+#### Function GetFileExtension ###############################################
+function GetFileExtension() {
   ################
   # Pull in Vars #
   ################
   FILE="$1"
 
-  ##################
-  # Check the file #
-  ##################
-  GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
+  ###########################
+  # Get the files extension #
+  ###########################
+  # Extract just the file extension
+  FILE_TYPE=${FILE##*.}
+  # To lowercase
+  FILE_TYPE=${FILE_TYPE,,}
 
-  if [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
-    ######################
-    # It is a ZSH script #
-    ######################
-    debug "Found [zsh] script: ${FILE}"
-    ###################################################
-    # We found zsh file and need to return with a hit #
-    ###################################################
-    return 0
-  else
-    ##################
-    # Not a zsh file #
-    ##################
+  echo "$FILE_TYPE"
+}
+################################################################################
+#### Function IsValidShellScript ###############################################
+function IsValidShellScript() {
+  ################
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  #################
+  # Get file type #
+  #################
+  FILE_EXTENSION="$(GetFileExtension "$FILE")"
+  GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
+
+  trace "File:[${FILE}], File extension:[${FILE_EXTENSION}], File type: [${GET_FILE_TYPE_CMD}]"
+
+  if [[ "${FILE_EXTENSION}" == "zsh" ]] ||
+    [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
+    warn "$FILE is a ZSH script. Skipping..."
     return 1
   fi
+
+  if [ "${FILE_EXTENSION}" == "sh" ] ||
+    [ "${FILE_EXTENSION}" == "bash" ] ||
+    [ "${FILE_EXTENSION}" == "dash" ] ||
+    [ "${FILE_EXTENSION}" == "ksh" ]; then
+      debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
+      return 0
+  fi
+
+  if [[ "${GET_FILE_TYPE_CMD}" == *"POSIX shell script"* ]] ||
+    [[ ${GET_FILE_TYPE_CMD} == *"Bourne-Again shell script"* ]] ||
+    [[ ${GET_FILE_TYPE_CMD} == *"dash script"* ]] ||
+    [[ ${GET_FILE_TYPE_CMD} == *"ksh script"* ]] ||
+    [[ ${GET_FILE_TYPE_CMD} == *"/usr/bin/env sh script"* ]]; then
+      debug "$FILE is a valid shell script (has a valid file type: ${GET_FILE_TYPE_CMD})"
+      return 0
+  fi
+
+  trace "$FILE is NOT a supported shell script. Skipping"
+  return 1
+}
+################################################################################
+#### Function IsValidShellScript ###############################################
+function PopulateShellScriptsList() {
+  debug "Populating shell script file list. Source: ${GITHUB_WORKSPACE}"
+
+  ###############################################################################
+  # Set the file seperator to newline to allow for grabbing objects with spaces #
+  ###############################################################################
+  IFS=$'\n'
+
+  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -path "*/\.git" -prune -o -type f 2>&1)
+  for FILE in "${LIST_FILES[@]}"; do
+    if IsValidShellScript "${FILE}"; then
+      debug "Adding ${FILE} to shell script files list"
+      FILE_ARRAY_BASH+=("${FILE}")
+
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    fi
+  done
+
+  ###########################
+  # Set IFS back to default #
+  ###########################
+  IFS="${DEFAULT_IFS}"
 }
