@@ -369,25 +369,30 @@ BuildImage() {
     info "Successfull [tag] Version:[${IMAGE_VERSION}] of additonal image!"
   fi
 
-  ###################
-  # Build the image #
-  ###################
-  docker build -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+  ########################################################
+  # Need to see if we need to tag a major update as well #
+  ########################################################
+  if [ ${UPDATE_MAJOR_TAG} -eq 1 ]; then
+    ###################
+    # Build the image #
+    ###################
+    docker build -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
 
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # ERROR
-    fatal "failed to [tag] Version:[${MAJOR_TAG}]Additonal location Dockerfile!"
-  else
-    # SUCCESS
-    info "Successfull [tag] Version:[${MAJOR_TAG}] of additonal image!"
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # ERROR
+      fatal "failed to [tag] Version:[${MAJOR_TAG}]Additonal location Dockerfile!"
+    else
+      # SUCCESS
+      info "Successfull [tag] Version:[${MAJOR_TAG}] of additonal image!"
+    fi
   fi
 }
 ################################################################################
