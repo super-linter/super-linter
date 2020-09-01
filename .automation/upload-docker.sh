@@ -29,7 +29,7 @@ IMAGE_VERSION="${IMAGE_VERSION}"          # Version to tag the image
 DOCKERFILE_PATH="${DOCKERFILE_PATH}"      # Path to the Dockerfile to be uploaded
 MAJOR_TAG=''                              # Major tag version if we need to update it
 UPDATE_MAJOR_TAG=0                        # Flag to deploy the major tag version as well
-GCR_URL='containers.pkg.github.com'       # URL to Github Container Registry
+GCR_URL='ghcr.io'                         # URL to Github Container Registry
 DOCKER_IMAGE_REPO=''                      # Docker tag for the image when created
 GCR_IMAGE_REPO=''                         # Docker tag for the image when created
 FOUND_IMAGE=0                             # Flag for if the image has already been built
@@ -166,7 +166,7 @@ ValidateInput() {
     ##############################
     # Get the name of the branch #
     ##############################
-    BRANCH_NAME=$(git -C "${GITHUB_WORKSPACE}" branch --contains "${GITHUB_SHA}" | awk '{print ${2}}' 2>&1)
+    BRANCH_NAME=$(git -C "${GITHUB_WORKSPACE}" branch --contains "${GITHUB_SHA}" | awk '{print $2}' 2>&1)
 
     #######################
     # Load the error code #
@@ -448,9 +448,9 @@ UploadImage() {
     ################
     # Get the data #
     ################
-    REPO=$(echo "${GET_INFO_CMD}" | awk '{print ${1}}')
-    TAG=$(echo "${GET_INFO_CMD}" | awk '{print ${2}}')
-    IMAGE_ID=$(echo "${GET_INFO_CMD}" | awk '{print ${3}}')
+    REPO=$(echo "${GET_INFO_CMD}" | awk '{print $1}')
+    TAG=$(echo "${GET_INFO_CMD}" | awk '{print $2}')
+    IMAGE_ID=$(echo "${GET_INFO_CMD}" | awk '{print $3}')
     SIZE="${GET_INFO_CMD##* }"
 
     ###################
