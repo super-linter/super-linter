@@ -168,6 +168,7 @@ function LintCodebase() {
           # ZSH file and we need to skip
           warn "$LINTER_NAME does NOT currently support zsh, skipping file"
           continue
+        fi
       fi
 
       ##################################
