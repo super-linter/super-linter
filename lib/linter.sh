@@ -1280,6 +1280,8 @@ GetLinterRules "POWERSHELL"
 GetLinterRules "PYTHON_PYLINT"
 # Get Python flake8 rules
 GetLinterRules "PYTHON_FLAKE8"
+# Get Python black rules
+GetLinterRules "PYTHON_BLACK"
 # Get R rules
 GetLinterRules "R"
 # Get Ruby rules
