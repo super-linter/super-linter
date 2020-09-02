@@ -24,6 +24,12 @@ FROM assignuser/chktex-alpine:v0.1.0 as chktex
 ##################
 FROM python:alpine
 
+############################
+# Get the build arguements #
+############################
+ARG BUILD_DATE
+ARG BUILD_VERSION
+
 #########################################
 # Label the instance and set maintainer #
 #########################################
@@ -32,12 +38,13 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       com.github.actions.icon="code" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.version=$BUILD_VERSION \
       org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
       org.opencontainers.image.url="https://github.com/github/super-linter" \
       org.opencontainers.image.documentation="https://github.com/github/super-linter" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.description="Lint your code base with GitHub Actions"
-
 
 ################################
 # Set ARG values used in Build #

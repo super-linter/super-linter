@@ -35,6 +35,12 @@ GCR_IMAGE_REPO=''                         # Docker tag for the image when create
 FOUND_IMAGE=0                             # Flag for if the image has already been built
 CONTAINER_URL=''                          # Final URL to upload
 
+###########################################################
+# Dynamic build variables to pass to container when built #
+###########################################################
+BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') # Current build date EX> "2017-08-28T09:24:41Z"
+BUILD_VERSION=''                            # Current version of the container being built
+
 #########################
 # Source Function Files #
 #########################
@@ -190,9 +196,14 @@ ValidateInput() {
     # Set the IMAGE_VERSION to the BRANCH_NAME #
     ############################################
     IMAGE_VERSION="${BRANCH_NAME}"
+    BUILD_VERSION="${IMAGE_VERSION}"
     info "Tag:[${IMAGE_VERSION}]"
   else
     info "Successfully found:${F[W]}[IMAGE_VERSION]${F[B]}, value:${F[W]}[${IMAGE_VERSION}]"
+    #########################
+    # Set the build version #
+    #########################
+    BUILD_VERSION="${IMAGE_VERSION}"
   fi
 
   ##################################
@@ -292,7 +303,7 @@ BuildImage() {
   ###################
   # Build the image #
   ###################
-  docker build --no-cache -t "${CONTAINER_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
+  docker build --no-cache --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${BUILD_VERSION}" -t "${CONTAINER_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
 
   #######################
   # Load the error code #
@@ -315,7 +326,7 @@ BuildImage() {
   ########################################################
   if [ ${UPDATE_MAJOR_TAG} -eq 1 ]; then
     # Tag the image with the major tag as well
-    docker build -t "${CONTAINER_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+    docker build  --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${MAJOR_TAG}" -t "${CONTAINER_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
 
     #######################
     # Load the error code #
@@ -351,7 +362,7 @@ BuildImage() {
   ###################
   # Build the image #
   ###################
-  docker build -t "${ADDITONAL_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
+  docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${BUILD_VERSION}" -t "${ADDITONAL_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
 
   #######################
   # Load the error code #
@@ -376,7 +387,7 @@ BuildImage() {
     ###################
     # Build the image #
     ###################
-    docker build -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+    docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${MAJOR_TAG}" -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
 
     #######################
     # Load the error code #
