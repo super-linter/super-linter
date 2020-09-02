@@ -97,7 +97,7 @@ function LintCodebase() {
       #################################
       mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
         -path "*/node_modules" -prune -o \
-        -path "*/\.git" -prune -o \
+        -path "*/.git" -prune -o \
         -path "*/.venv"-prune -o \
         -path "*/.rbenv"-prune -o \
         -type f -regex "${FILE_EXTENSIONS}" 2>&1)
