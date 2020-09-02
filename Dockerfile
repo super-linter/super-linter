@@ -122,7 +122,7 @@ ENV PATH="/node_modules/.bin:${PATH}"
 RUN bundle install
 
 ###################################
-# Install DotNet and Dependancies #
+# Install DotNet and Dependencies #
 ###################################
 RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
