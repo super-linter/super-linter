@@ -757,7 +757,12 @@ function PopulateShellScriptsList() {
   ###############################################################################
   IFS=$'\n'
 
-  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -path "*/\.git" -prune -o -type f 2>&1)
+  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
+    -path "*/node_modules" -prune -o \
+    -path "*/\.git" -prune -o \
+    -path "*/.venv"-prune -o \
+    -path "*/.rbenv"-prune -o \
+    -type f 2>&1)
   for FILE in "${LIST_FILES[@]}"; do
     if IsValidShellScript "${FILE}"; then
       debug "Adding ${FILE} to shell script files list"

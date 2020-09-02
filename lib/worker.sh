@@ -95,7 +95,12 @@ function LintCodebase() {
       #################################
       # Get list of all files to lint #
       #################################
-      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" 2>&1)
+      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
+        -path "*/node_modules" -prune -o \
+        -path "*/\.git" -prune -o \
+        -path "*/.venv"-prune -o \
+        -path "*/.rbenv"-prune -o \
+        -type f -regex "${FILE_EXTENSIONS}" 2>&1)
 
       ###########################
       # Set IFS back to default #
@@ -376,7 +381,13 @@ function TestCodebase() {
   #################################
   # Get list of all files to lint #
   #################################
-  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}" -path "*/node_modules" -prune -o -type f -regex "${FILE_EXTENSIONS}" ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
+  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}" \
+    -path "*/node_modules" -prune -o \
+    -path "*/.venv" -prune -o \
+    -path "*/.git" -prune -o \
+    -path "*/.rbenv" -prune -o \
+    -type f -regex "${FILE_EXTENSIONS}" \
+    ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
 
   ########################################
   # Prepare context if TAP output format #
