@@ -110,6 +110,8 @@ PYTHON_PYLINT_FILE_NAME="${PYTHON_PYLINT_CONFIG_FILE:-.python-lint}"            
 PYTHON_PYLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_PYLINT_FILE_NAME}" # Path to the python lint rules
 PYTHON_FLAKE8_FILE_NAME="${PYTHON_FLAKE8_CONFIG_FILE:-.flake8}"                   # Name of the file
 PYTHON_FLAKE8_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_FLAKE8_FILE_NAME}" # Path to the python lint rules
+PYTHON_BLACK_FILE_NAME="${PYTHON_BLACK_CONFIG_FILE:-.python-black}"               # Name of the file
+PYTHON_BLACK_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${PYTHON_BLACK_FILE_NAME}"   # Path to the python lint rules
 # R Vars
 R_FILE_NAME='.lintr'                                                              # Name of the file
 R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"                         # Path to the R lint rules
@@ -1777,7 +1779,7 @@ if [ "${VALIDATE_PYTHON_BLACK}" == "true" ]; then
   # Lint the python files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "PYTHON_BLACK" "black" "black --diff --check" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_BLACK[@]}"
+  LintCodebase "PYTHON_BLACK" "black" "black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check" ".*\.\(py\)\$" "${FILE_ARRAY_PYTHON_BLACK[@]}"
 fi
 
 #########################
