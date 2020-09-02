@@ -948,7 +948,9 @@ var = "terrible code down here..."
 
 ### Black Config file
 
-- There is no top level _configuration file_ available at this time
+- .github/linters/.python-black
+- You can pass multiple rules and overwrite default rules
+- File should be located at: .github/linters/.python-lint
 
 ### Black disable single line
 

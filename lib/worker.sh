@@ -684,7 +684,7 @@ function RunTestCases() {
   TestCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" ".*\.\(ymlopenapi\|jsonopenapi\)\$" "openapi"
   TestCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "powershell"
   TestCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "protobuf"
-  TestCodebase "PYTHON_BLACK" "black" "black --diff --check" ".*\.\(py\)\$" "python"
+  TestCodebase "PYTHON_BLACK" "black" "black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check" ".*\.\(py\)\$" "python"
   TestCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config ${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "python"
   TestCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "python"
   TestCodebase "R" "lintr" "lintr::lint()" ".*\.\(r\|rmd\)\$" "r"
