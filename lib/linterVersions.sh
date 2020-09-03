@@ -89,7 +89,7 @@ GetLinterVersions() {
         # Print the version info #
         ##########################
         info "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}"
-        WriteFile "${LINTER}" "${GET_VERSION_CMD}"
+        WriteFile "${LINTER}" "${GET_VERSION_CMD[*]}"
       fi
     fi
   done
