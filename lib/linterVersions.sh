@@ -15,9 +15,7 @@ source /action/lib/log.sh # Source the function script(s)
 ###########
 # GLOBALS #
 ###########
-MAIN_FILE='/action/lib/linter.sh'               # Main file for super-linter
 VERSION_FILE='/action/lib/linter-versions.txt'  # File to store linter versions
-DEFAULT_IFS="${IFS}"                            # Get the Default IFS for updating
 ARM_TTK_PSD1='/usr/bin/arm-ttk'                 # Powershell var
 
 #######################################
@@ -111,7 +109,7 @@ WriteFile() {
   #################################
   # Write the data to output file #
   #################################
-  WRITE_CMD=$(echo "${LINTER}: ${VERSION}" >> "${VERSION_FILE}" 2>&1)
+  echo "${LINTER}: ${VERSION}" >> "${VERSION_FILE}" 2>&1
 
   #######################
   # Load the error code #
@@ -122,7 +120,7 @@ WriteFile() {
   # Check the shell for errors #
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
-    fatal "Failed to write data to file:[${WRITE_CMD}]"
+    fatal "Failed to write data to file!"
   fi
 }
 ################################################################################
