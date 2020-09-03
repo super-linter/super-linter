@@ -988,17 +988,18 @@ CallStatusAPI() {
   else
     # Failure
     MESSAGE="${FAIL_MSG}"
-
-    # make sure we honor DISABLE_ERRORS
-    if [ "${DISABLE_ERRORS}" == "true" ]; then
-      STATUS="success"
-    fi
   fi
 
   ##########################################################
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
   if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
+
+    # make sure we honor DISABLE_ERRORS
+    if [ "${DISABLE_ERRORS}" == "true" ]; then
+      STATUS="success"
+    fi
+
     ##############################################
     # Call the status API to create status check #
     ##############################################
