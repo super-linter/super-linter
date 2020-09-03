@@ -455,7 +455,7 @@ GetLinterVersions() {
   ################################
   # Cat the linter versions file #
   ################################
-  CAT_CMD=$(cat ${VERSION_FILE} 2>&1)
+  CAT_CMD=$(cat "${VERSION_FILE}" 2>&1)
 
   #######################
   # Load the error code #
@@ -470,7 +470,7 @@ GetLinterVersions() {
     warn "Failed to view version file:[${VERSION_FILE}]"
   else
     # Success
-    info "${CAT_CMD}"
+    debug "${CAT_CMD}"
   fi
 
   #########################
