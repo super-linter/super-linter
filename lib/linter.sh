@@ -988,6 +988,11 @@ CallStatusAPI() {
   else
     # Failure
     MESSAGE="${FAIL_MSG}"
+
+    # make sure we honor DISABLE_ERRORS
+    if [ "${DISABLE_ERRORS}" == "true" ]; then
+      STATUS="success"
+    fi
   fi
 
   ##########################################################
