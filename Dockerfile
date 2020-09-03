@@ -393,7 +393,7 @@ COPY TEMPLATES /action/lib/.automation
 ###################################
 # Run to build file with versions #
 ###################################
-# RUN /action/lib/linterVersions.sh
+RUN /action/lib/linterVersions.sh
 
 ######################
 # Set the entrypoint #
