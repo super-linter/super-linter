@@ -17,66 +17,21 @@ source /action/lib/log.sh # Source the function script(s)
 ###########
 MAIN_FILE='/action/lib/linter.sh'               # Main file for super-linter
 VERSION_FILE='/action/lib/linter-versions.txt'  # File to store linter versions
-LINTER_ARRAY=()                                 # Array of languages to get versions
 DEFAULT_IFS="${IFS}"                            # Get the Default IFS for updating
 ARM_TTK_PSD1='/usr/bin/arm-ttk'                 # Powershell var
+
+#######################################
+# Linter array for information prints #
+#######################################
+LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
+  'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
+  'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
+  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
+  'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
 ################################################################################
-################################################################################
-#### Function GetLinterArray ###################################################
-GetLinterArray() {
-  ##################################
-  # Make sure we can find the file #
-  ##################################
-  if [ ! -f "${MAIN_FILE}" ]; then
-    fatal "Failed to find:[${MAIN_FILE}]"
-  fi
-
-  ###############################
-  # Get the array from the file #
-  ###############################
-  RAW_DATA=$(awk '/LINTER_ARRAY=\(/,/\)/' "${MAIN_FILE}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    error "Failed to get data from:[${MAIN_FILE}]"
-    fatal "RAW_DATA:[$RAW_DATA]"
-  fi
-
-  #################################
-  # Split the trash off the front #
-  #################################
-  CLEANER_DATA=$(echo "${RAW_DATA}" | cut -d'(' -f2 | cut -d')' -f1 | tr -d '\n')
-
-  #####################################################
-  # Remove first and last "'" for easy breaking apart #
-  #####################################################
-  MORE_CLEAN=$(echo "${CLEANER_DATA:1:${#CLEANER_DATA}-2}")
-
-  ##########################
-  # Set IFS for this event #
-  ##########################
-  IFS="' '"
-
-  ##################
-  # Load the array #
-  ##################
-  read -r -a LINTER_ARRAY <<< "${MORE_CLEAN}"
-
-  ################
-  # Set IFS back #
-  ################
-  IFS="${DEFAULT_IFS}"
-}
 ################################################################################
 #### Function GetLinterVersions ################################################
 GetLinterVersions() {
@@ -173,11 +128,6 @@ WriteFile() {
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
-
-###########################
-# Get the languages array #
-###########################
-GetLinterArray
 
 #####################
 # GetLinterVersions #
