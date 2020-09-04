@@ -38,9 +38,9 @@ CONTAINER_URL=''                          # Final URL to upload
 ###########################################################
 # Dynamic build variables to pass to container when built #
 ###########################################################
-BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') # Current build date EX> "2017-08-28T09:24:41Z"
-BUILD_REVISION=$(git rev-parse --short HEAD)# Current git commit EX> "e89faa7"
-BUILD_VERSION=''                            # Current version of the container being built
+BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')   # Current build date EX> "2017-08-28T09:24:41Z"
+BUILD_REVISION=$(git rev-parse --short HEAD)  # Current git commit EX> "e89faa7"
+BUILD_VERSION=''                              # Current version of the container being built
 
 #########################
 # Source Function Files #
@@ -363,7 +363,7 @@ BuildImage() {
   ###################
   # Build the image #
   ###################
-  docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${BUILD_VERSION}" -t "${ADDITONAL_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
+  docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${BUILD_REVISION}" --build-arg "BUILD_VERSION=${BUILD_VERSION}" -t "${ADDITONAL_URL}:${IMAGE_VERSION}" -f "${DOCKERFILE_PATH}" . 2>&1
 
   #######################
   # Load the error code #
@@ -388,7 +388,7 @@ BuildImage() {
     ###################
     # Build the image #
     ###################
-    docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_VERSION=${MAJOR_TAG}" -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
+    docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${BUILD_REVISION}" --build-arg "BUILD_VERSION=${MAJOR_TAG}" -t "${ADDITONAL_URL}:${MAJOR_TAG}" -f "${DOCKERFILE_PATH}" . 2>&1
 
     #######################
     # Load the error code #

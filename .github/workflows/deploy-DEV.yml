@@ -56,6 +56,13 @@ jobs:
         shell: bash
         run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} .
 
+      ########################################
+      # Validates the metadata docker labels #
+      ########################################
+      - name: Run Docker label test cases
+        shell: bash
+        run: .automation/validate-docker-labels.sh
+
       #####################################
       # Run Linter against Test code base #
       #####################################
@@ -76,10 +83,3 @@ jobs:
       - name: Run against all code base
         shell: bash
         run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
-
-      ########################################
-      # Validates the metadata docker labels #
-      ########################################
-      - name: Run Docker label test cases
-        shell: bash
-        run: .automation/validate-docker-labels.sh
