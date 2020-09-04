@@ -43,12 +43,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.2
 
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "::set-env name=BUILD_DATE::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
       ###################################
       # Build image locally for testing #
       ###################################
       - name: Build image
         shell: bash
-        run: docker build --no-cache -t github/super-linter:${GITHUB_SHA} .
+        run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} .
 
       #####################################
       # Run Linter against Test code base #
@@ -70,3 +76,10 @@ jobs:
       - name: Run against all code base
         shell: bash
         run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+
+      ########################################
+      # Validates the metadata docker labels #
+      ########################################
+      - name: Run Docker label test cases
+        shell: bash
+        run: .automation/validate-docker-labels.sh
