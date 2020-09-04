@@ -437,6 +437,9 @@ Header() {
   ##########
   info "---------------------------------------------"
   info "--- GitHub Actions Multi Language Linter ----"
+  info " created date: ${BUILD_DATE}"
+  info " revision: ${BUILD_REVISION}"
+  info " version: ${BUILD_VERSION}"
   info "---------------------------------------------"
   info "---------------------------------------------"
   info "The Super-Linter source code can be found at:"

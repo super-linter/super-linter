@@ -28,6 +28,7 @@ FROM python:alpine
 # Get the build arguements #
 ############################
 ARG BUILD_DATE
+ARG BUILD_REVISION
 ARG BUILD_VERSION
 
 #########################################
@@ -39,12 +40,20 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       com.github.actions.color="red" \
       maintainer="GitHub DevOps <github_devops@github.com>" \
       org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.revision=$BUILD_REVISION \
       org.opencontainers.image.version=$BUILD_VERSION \
       org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
       org.opencontainers.image.url="https://github.com/github/super-linter" \
       org.opencontainers.image.documentation="https://github.com/github/super-linter" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.description="Lint your code base with GitHub Actions"
+
+#################################################
+# Set ENV values used for debugging the version #
+#################################################
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
 
 ################################
 # Set ARG values used in Build #
