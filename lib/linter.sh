@@ -1553,7 +1553,7 @@ if [ "${VALIDATE_JAVASCRIPT_ES}" == "true" ]; then
   # Lint the Javascript files #
   #############################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
+  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\|vue\)\$" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
 fi
 
 ######################

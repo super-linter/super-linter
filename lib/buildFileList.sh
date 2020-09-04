@@ -251,7 +251,16 @@ function BuildFileList() {
     ############################
     # Get the JavaScript files #
     ############################
-    elif [ "${FILE_TYPE}" == "js" ]; then
+    elif [ "${FILE_TYPE}" == "vue" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+    elif [ "$FILE_TYPE" == "js" ]; then
       ################################
       # Append the file to the array #
       ################################
