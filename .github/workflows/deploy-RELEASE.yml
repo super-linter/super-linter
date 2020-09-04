@@ -54,9 +54,9 @@ jobs:
         shell: bash
         run: .automation/upload-docker.sh
 
-      #############################
-      # Run Deploy script for GPR #
-      #############################
+      ###################################################
+      # Run Deploy script for GitHub Container Registry #
+      ###################################################
       - name: Deploy Release image to GitHub Container Registry
         env:
           # Set the Env Vars

@@ -128,18 +128,11 @@ TERRAFORM_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TERRAFORM_FILE_NAME}" # Path
 TYPESCRIPT_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
 TYPESCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${TYPESCRIPT_FILE_NAME}" # Path to the Typescript lint rules
 TYPESCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
+# Version File info
+VERSION_FILE='/action/lib/linter-versions.txt'  # File to store linter versions
 # YAML Vars
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"            # Name of the file
 YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the yaml lint rules
-
-#######################################
-# Linter array for information prints #
-#######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
-  'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
-  'hadolint' 'htmlhint' 'jsonlint' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
-  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
-  'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 #############################
 # Language array for prints #
@@ -459,51 +452,26 @@ GetLinterVersions() {
   debug "---------------------------------------------"
   debug "Linter Version Info:"
 
-  ##########################################################
-  # Go through the array of linters and print version info #
-  ##########################################################
-  for LINTER in "${LINTER_ARRAY[@]}"; do
-    ####################
-    # Get the versions #
-    ####################
-    if [[ ${LINTER} == "arm-ttk" ]]; then
-      # Need specific command for ARM
-      mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
-    elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]] || [[ ${LINTER} == "bash-exec" ]]; then
-      # Need specific command for Protolint and editorconfig-checker
-      mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
-    elif [[ ${LINTER} == "lintr" ]]; then
-      # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
-      mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
-                  lintr_ver <- packageVersion('lintr'); \
-                  glue::glue('lintr { lintr_ver } on { r_ver }')")
-    elif [[ ${LINTER} == "lua" ]]; then
-      # Semi standardversion command
-      mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
-    elif [[ ${LINTER} == "terrascan" ]]; then
-      mapfile -t GET_VERSION_CMD < <("${LINTER}" version 2>&1)
-    else
-      # Standard version command
-      mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
-    fi
+  ################################
+  # Cat the linter versions file #
+  ################################
+  CAT_CMD=$(cat "${VERSION_FILE}" 2>&1)
 
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-      warn "[${LINTER}]: Failed to get version info for:"
-    else
-      ##########################
-      # Print the version info #
-      ##########################
-      debug "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}"
-    fi
-  done
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Failure
+    warn "Failed to view version file:[${VERSION_FILE}]"
+  else
+    # Success
+    debug "${CAT_CMD}"
+  fi
 
   #########################
   # Print version footers #

@@ -122,7 +122,7 @@ ENV PATH="/node_modules/.bin:${PATH}"
 RUN bundle install
 
 ###################################
-# Install DotNet and Dependancies #
+# Install DotNet and Dependencies #
 ###################################
 RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
@@ -306,11 +306,6 @@ ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 RUN go get mvdan.cc/sh/v3/cmd/shfmt
 
-#############################
-# Bootstrap npm-groovy-lint #
-#############################
-RUN npm-groovy-lint --version
-
 ###########################################
 # Load GitHub Env Vars for GitHub Actions #
 ###########################################
@@ -394,6 +389,11 @@ COPY lib /action/lib
 # Copy linter rules to container #
 ##################################
 COPY TEMPLATES /action/lib/.automation
+
+###################################
+# Run to build file with versions #
+###################################
+RUN /action/lib/linterVersions.sh
 
 ######################
 # Set the entrypoint #

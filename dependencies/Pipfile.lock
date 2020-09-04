@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1f13d59524584eca4db2ae57cf6d3acd02250a28bce7bee9414f21c45cae09af"
+            "sha256": "1f2a4e188bcf058f78905dbe7c959b9a801148e39a69e86d6a795b45a65b7af9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -62,25 +62,25 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:8a7aa1da29b7c8039f81798bd27465f29494629c40280a70c2ef0daed5bb7682",
-                "sha256:a2bf58d375ad1b918e6007a46e415721b51dd7bb23703332cc64afa1470b056d"
+                "sha256:4196b418598851ffd10cf9d1606694673cbfeca4ddf8b25d4e50addbd2fc60bf",
+                "sha256:69ad8f2184979e223e12ee3071674fdf910983cf9f4d6f34f7ec407b089064b5"
             ],
-            "version": "==1.14.49"
+            "version": "==1.14.54"
         },
         "botocore": {
             "hashes": [
-                "sha256:4433510d12dc783dd068f39ada942008f5792eea0c569f6b357bb751640c6ab4",
-                "sha256:87326c2d3b68c49a56f2d9237aa47a0476bb9ec6c6bc50d04df8bba66991930c"
+                "sha256:6fe05837646447d61acdaf1e3401b92cd9309f00b19c577a50d0ade7735a3403",
+                "sha256:9e493a21e6a8d45c631eb2952ae8e1d0a31b9984546d4268ea10c0c33e2435ce"
             ],
-            "version": "==1.17.49"
+            "version": "==1.17.54"
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:42023d89520e3a29891ec2eb4c326eef9d1f7516fe9abee8b6c97ce064187b45",
-                "sha256:8439925531fdd4c94e5b50974d067857b3af50b04b61254d3eae9b1e0ce20007"
+                "sha256:98c7e2c2846df779f1a878e76f3eb7a3f40dd7b7dd316e5673c4923cf2ed121e",
+                "sha256:cbf0ef2946c544db347874e36cf4c1a099c432280d62da9b9c739914668aec80"
             ],
             "index": "pypi",
-            "version": "==0.35.0"
+            "version": "==0.35.1"
         },
         "click": {
             "hashes": [
@@ -222,12 +222,6 @@
                 "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"
             ],
             "version": "==2.2.0"
-        },
-        "pyhcl": {
-            "hashes": [
-                "sha256:2d9b9dcdf1023d812bfed561ba72c99104c5b3f52e558d595130a44ce081b003"
-            ],
-            "version": "==0.4.4"
         },
         "pylint": {
             "hashes": [
