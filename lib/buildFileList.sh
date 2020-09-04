@@ -211,7 +211,7 @@ function BuildFileList() {
     # Get the GROOVY files #
     ########################
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
-      [ "$FILE_TYPE" == "gradle" ]; then
+      [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ]; then
       ################################
       # Append the file to the array #
       ################################

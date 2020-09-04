@@ -1517,7 +1517,7 @@ if [ "$VALIDATE_GROOVY" == "true" ]; then
   # Lint the groovy files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "${FILE_ARRAY_GROOVY[@]}"
+  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\|nf\)\$" "${FILE_ARRAY_GROOVY[@]}"
 fi
 
 ################
