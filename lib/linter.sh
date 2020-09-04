@@ -994,6 +994,12 @@ CallStatusAPI() {
   # Check to see if were enabled for multi Status mesaages #
   ##########################################################
   if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
+
+    # make sure we honor DISABLE_ERRORS
+    if [ "${DISABLE_ERRORS}" == "true" ]; then
+      STATUS="success"
+    fi
+
     ##############################################
     # Call the status API to create status check #
     ##############################################
@@ -1517,7 +1523,7 @@ if [ "$VALIDATE_GROOVY" == "true" ]; then
   # Lint the groovy files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\)\$" "${FILE_ARRAY_GROOVY[@]}"
+  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\|nf\)\$" "${FILE_ARRAY_GROOVY[@]}"
 fi
 
 ################
