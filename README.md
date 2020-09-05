@@ -163,6 +163,7 @@ jobs:
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
 _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
+
 - If none of them are passed, then they all default to true.
 - If any one of the variables are set to true, we default to leaving any unset variable to false (only validate those languages).
 - If any one of the variables are set to false, we default to leaving any unset variable to true (only exclude those languages).
@@ -180,6 +181,8 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **DEFAULT_WORKSPACE**             | `/tmp/lint`           | The location containing files to lint if you are running locally.                                                                                                                |
 | **DISABLE_ERRORS**                | `false`               | Flag to have the linter complete with exit code 0 even if errors were detected.                                                                                                  |
 | **DOCKERFILE_HADOLINT_FILE_NAME** | `.hadolint.yml`       | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                         |
+| **FILTER_REGEX_EXCLUDE**          | `none`                | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                                       |
+| **FILTER_REGEX_INCLUDE**          | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                        |
 | **JAVASCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
 | **LINTER_RULES_PATH**             | `.github/linters`     | Directory for all linter configuration rules.                                                                                                                                    |
 | **LOG_FILE**                      | `super-linter.log`    | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                 |
@@ -259,6 +262,16 @@ You can use the **GitHub** **Super-Linter** _with_ or _without_ your own persona
 ## Disabling rules
 
 If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
+
+## Filter linted files
+
+If you need to lint only a folder or exclude some files from linting, you can use optional environment parameters `FILTER_REGEX_INCLUDE` and `FILTER_REGEX_EXCLUDE`
+
+Examples :
+
+- Lint only src folder: `INCLUDED_FILES_REGEX=.*src/.*`
+- Do not lint files inside test folder: `EXCLUDED_FILES_REGEX=.*test/.*`
+- Do not lint javascript files inside test folder: `EXCLUDED_FILES_REGEX=.*test/.*.js`
 
 ## Docker Hub
 
