@@ -13,11 +13,13 @@ function LintCodebase() {
   ####################
   # Pull in the vars #
   ####################
-  FILE_TYPE="${1}" && shift       # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="${1}" && shift     # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="${1}" && shift  # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="${1}" && shift # Pull the variable and remove from array path  (Example: *.json)
-  FILE_ARRAY=("$@")               # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
+  FILE_TYPE="${1}" && shift            # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="${1}" && shift          # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="${1}" && shift       # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="${1}" && shift      # Pull the variable and remove from array path  (Example: *.json)
+  FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
+  FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
+  FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
   ######################
   # Create Print Array #
@@ -84,8 +86,8 @@ function LintCodebase() {
     if [[ ${FILE_TYPE} == "BASH" ]] ||
       [[ ${FILE_TYPE} == "BASH_EXEC" ]] ||
       [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
-        # Populate a list of valid shell scripts.
-        PopulateShellScriptsList
+      # Populate a list of valid shell scripts.
+      PopulateShellScriptsList
     else
       ###############################################################################
       # Set the file separator to newline to allow for grabbing objects with spaces #
@@ -121,6 +123,24 @@ function LintCodebase() {
       #############################
       SKIP_FLAG=1
     fi
+  fi
+
+  #################################################
+  # Filter files if FILTER_REGEX_INCLUDE is set #
+  #################################################
+  if [ "$FILTER_REGEX_INCLUDE" ]; then
+    for index in "${!LIST_FILES[@]}"; do
+      [[ ! (${LIST_FILES[$index]} =~ $FILTER_REGEX_INCLUDE) ]] && unset -v 'LIST_FILES[$index]'
+    done
+  fi
+
+  #################################################
+  # Filter files if FILTER_REGEX_EXCLUDE is set #
+  #################################################
+  if [ "$FILTER_REGEX_EXCLUDE" ]; then
+    for index in "${!LIST_FILES[@]}"; do
+      [[ ${LIST_FILES[$index]} =~ $FILTER_REGEX_EXCLUDE ]] && unset -v 'LIST_FILES[$index]'
+    done
   fi
 
   ###############################
@@ -256,7 +276,8 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
+          exit "${PIPESTATUS[0]}"
         )
       else
         ################################
@@ -320,7 +341,7 @@ function LintCodebase() {
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ]; then
       HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
-      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >>"${REPORT_OUTPUT_FILE}"
     fi
   fi
 }
@@ -330,12 +351,12 @@ function TestCodebase() {
   ####################
   # Pull in the vars #
   ####################
-  FILE_TYPE="${1}"             # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="${2}"           # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="${3}"        # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="${4}"       # Pull the variable and remove from array path  (Example: *.json)
+  FILE_TYPE="${1}"              # Pull the variable and remove from array path  (Example: JSON)
+  LINTER_NAME="${2}"            # Pull the variable and remove from array path  (Example: jsonlint)
+  LINTER_COMMAND="${3}"         # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
+  FILE_EXTENSIONS="${4}"        # Pull the variable and remove from array path  (Example: *.json)
   INDIVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
-  TESTS_RAN=0                  # Incremented when tests are ran, this will help find failed finds
+  TESTS_RAN=0                   # Incremented when tests are ran, this will help find failed finds
 
   ################
   # print header #
@@ -509,7 +530,8 @@ function TestCodebase() {
     elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
       LINT_CMD=$(
         cd "${DIR_NAME}" || exit
-        ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1; exit "${PIPESTATUS[0]}"
+        ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
+        exit "${PIPESTATUS[0]}"
       )
     else
       ################################
@@ -598,7 +620,7 @@ function TestCodebase() {
   ###########################################################################
   if IsTAP && [ ${TESTS_RAN} -gt 0 ]; then
     HeaderTap "${TESTS_RAN}" "${REPORT_OUTPUT_FILE}"
-    cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+    cat "${TMPFILE}" >>"${REPORT_OUTPUT_FILE}"
 
     ########################################################################
     # If expected TAP report exists then compare with the generated report #
@@ -607,7 +629,7 @@ function TestCodebase() {
     if [ -e "${EXPECTED_FILE}" ]; then
       TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
       ## Ignore white spaces, case sensitive
-      if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" > "${TMPFILE}" 2>&1; then
+      if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" >"${TMPFILE}" 2>&1; then
         #############################################
         # We failed to compare the reporting output #
         #############################################
@@ -904,7 +926,7 @@ function LintAnsibleFiles() {
     #################################
     if IsTAP && [ ${INDEX} -gt 0 ]; then
       HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
-      cat "${TMPFILE}" >> "${REPORT_OUTPUT_FILE}"
+      cat "${TMPFILE}" >>"${REPORT_OUTPUT_FILE}"
     fi
   else
     ########################
@@ -946,7 +968,7 @@ function HeaderTap() {
   ###################
   # Print the goods #
   ###################
-  printf "TAP version 13\n1..%s\n" "${INDEX}" > "${OUTPUT_FILE}"
+  printf "TAP version 13\n1..%s\n" "${INDEX}" >"${OUTPUT_FILE}"
 }
 ################################################################################
 #### Function OkTap ############################################################
@@ -961,7 +983,7 @@ function OkTap() {
   ###################
   # Print the goods #
   ###################
-  echo "ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
+  echo "ok ${INDEX} - ${FILE}" >>"${TEMP_FILE}"
 }
 ################################################################################
 #### Function NotOkTap #########################################################
@@ -976,7 +998,7 @@ function NotOkTap() {
   ###################
   # Print the goods #
   ###################
-  echo "not ok ${INDEX} - ${FILE}" >> "${TEMP_FILE}"
+  echo "not ok ${INDEX} - ${FILE}" >>"${TEMP_FILE}"
 }
 ################################################################################
 #### Function AddDetailedMessageIfEnabled ######################################
@@ -992,6 +1014,6 @@ function AddDetailedMessageIfEnabled() {
   ####################
   DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
   if [ -n "${DETAILED_MSG}" ]; then
-    printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >> "${TEMP_FILE}"
+    printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >>"${TEMP_FILE}"
   fi
 }
