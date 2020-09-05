@@ -21,6 +21,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
   - [Environment variables](#environment-variables)
     - [Template rules files](#template-rules-files)
   - [Disabling rules](#disabling-rules)
+  - [Filter linted files](#filter-linted-files)
   - [Docker Hub](#docker-hub)
   - [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
     - [Local (troubleshooting/debugging/enhancements)](#local-troubleshootingdebuggingenhancements)
@@ -181,8 +182,8 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **DEFAULT_WORKSPACE**             | `/tmp/lint`           | The location containing files to lint if you are running locally.                                                                                                                |
 | **DISABLE_ERRORS**                | `false`               | Flag to have the linter complete with exit code 0 even if errors were detected.                                                                                                  |
 | **DOCKERFILE_HADOLINT_FILE_NAME** | `.hadolint.yml`       | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                         |
-| **FILTER_REGEX_EXCLUDE**          | `none`                | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                                       |
-| **FILTER_REGEX_INCLUDE**          | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                        |
+| **FILTER_REGEX_EXCLUDE**          | `none`                | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                      |
+| **FILTER_REGEX_INCLUDE**          | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                            |
 | **JAVASCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
 | **LINTER_RULES_PATH**             | `.github/linters`     | Directory for all linter configuration rules.                                                                                                                                    |
 | **LOG_FILE**                      | `super-linter.log`    | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                 |
