@@ -118,6 +118,9 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"                       
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
+# Snakemake Vars
+SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"
+SNAKEMAKE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}"
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
@@ -1855,9 +1858,7 @@ if [ "${VALIDATE_SNAKEMAKE}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE" "snakefmt" "snakefmt --diff" ".*\.\(smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
-
-  # TODO: add --config <path>
+  LintCodebase "SNAKEMAKE" "snakefmt" "snakefmt --config ${SNAKEMAKE_LINTER_RULES} --diff" ".*\.\(smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################
