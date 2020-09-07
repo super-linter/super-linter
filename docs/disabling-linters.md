@@ -48,6 +48,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Raku](#raku)
   - [Ruby](#ruby)
   - [Shell](#shell)
+  - [Snakemake](#snakemake)
   - [SQL](#sql)
   - [Terraform](#terraform)
   - [Typescript eslint](#typescript-eslint)
@@ -1117,6 +1118,16 @@ moreThings()
 ### shfmt Config file
 
 shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/sh#shfmt), if available.
+
+---
+
+## Snakemake
+
+- [snakefmt](https://github.com/snakemake/snakefmt/)
+
+### snakefmt configuration
+
+- Check the repository's README
 
 ---
 
