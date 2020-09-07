@@ -207,6 +207,7 @@ VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean t
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
 VALIDATE_SHELL_SHFMT="${VALIDATE_SHELL_SHFMT}"                       # Boolean to check Shell files against editorconfig
+VALIDATE_SNAKEMAKE="${VALIDATE_SNAKEMAKE}"                           # Boolean to check Snakefiles
 VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
 VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
@@ -1844,6 +1845,19 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
     warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
     debug "skipping shfmt"
   fi
+fi
+
+#####################
+# SNAKEMAKE LINTING #
+#####################
+if [ "${VALIDATE_SNAKEMAKE}" == "true" ]; then
+  ################################
+  # Lint the files with snakefmt #
+  ################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SNAKEMAKE" "snakefmt" "snakefmt --diff" ".*\.\(smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+
+  # TODO: add --config <path>
 fi
 
 ######################
