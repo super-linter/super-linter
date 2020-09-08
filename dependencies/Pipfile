@@ -11,6 +11,7 @@ cfn-lint = "*"
 flake8 = "*"
 pylint = "*"
 snakefmt = "*"
+snakemake = "*"
 yamllint = "*"
 yq = "*"
 

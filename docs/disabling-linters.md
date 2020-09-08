@@ -1123,7 +1123,12 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ## Snakemake
 
+- [snakemake --lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)
 - [snakefmt](https://github.com/snakemake/snakefmt/)
+
+### snakemake's configuration
+
+- Check the repository's README
 
 ### snakefmt configuration
 
