@@ -495,18 +495,21 @@ GetLinterRules() {
   # Pull in vars #
   ################
   LANGUAGE_NAME="${1}" # Name of the language were looking for
+  debug "Getting linter rules for ${LANGUAGE_NAME}..."
 
   #######################################################
   # Need to create the variables for the real variables #
   #######################################################
   LANGUAGE_FILE_NAME="${LANGUAGE_NAME}_FILE_NAME"
   LANGUAGE_LINTER_RULES="${LANGUAGE_NAME}_LINTER_RULES"
+  debug "Variable names for language file name: ${LANGUAGE_FILE_NAME}, language linter rules: ${LANGUAGE_LINTER_RULES}"
 
   ##########################
   # Get the file extension #
   ##########################
   FILE_EXTENSION=$(echo "${!LANGUAGE_FILE_NAME}" | rev | cut -d'.' -f1 | rev)
-  FILE_NAME=$(echo "${!LANGUAGE_FILE_NAME}" | rev | cut -d'.' -f2 | rev)
+  FILE_NAME=$(basename "${!LANGUAGE_FILE_NAME}" ".${FILE_EXTENSION}")
+  debug "${LANGUAGE_NAME} language rule file (${!LANGUAGE_FILE_NAME}) has ${FILE_NAME} name and ${FILE_EXTENSION} extension"
 
   ###############################
   # Set the secondary file name #
@@ -536,8 +539,10 @@ GetLinterRules() {
     ########################################
     eval "${LANGUAGE_LINTER_RULES}=${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}"
   else
+    debug "  -> Codebase does NOT have file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}]"
     # Check if we have secondary name to check
     if [ -n "$SECONDARY_FILE_NAME" ]; then
+      debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check: ${SECONDARY_FILE_NAME}"
       # We have a secondary name to validate
       if [ -f "${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}" ]; then
         info "----------------------------------------------"
@@ -549,10 +554,11 @@ GetLinterRules() {
         eval "${LANGUAGE_LINTER_RULES}=${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
       fi
     fi
-      ########################################################
-      # No user default provided, using the template default #
-      ########################################################
-      debug "  -> Codebase does NOT have file:[${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
+
+    ########################################################
+    # No user default provided, using the template default #
+    ########################################################
+    debug "  -> Codebase does NOT have file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], nor file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
   fi
 }
 ################################################################################
