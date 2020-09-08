@@ -1859,7 +1859,7 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake --lint" "snakemake --lint -s" ".*\.\(smk\)\$" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\.\(smk\)\$" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################

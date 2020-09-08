@@ -702,7 +702,7 @@ function RunTestCases() {
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell_shfmt"
-  TestCodebase "SNAKEMAKE_LINT" "snakemake --lint" "snakemake --lint -s" ".*\.\(smk\)\$" "snakemake"
+  TestCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\.\(smk\)\$" "snakemake"
   TestCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" ".*\.\(smk\)\$" "snakemake"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
