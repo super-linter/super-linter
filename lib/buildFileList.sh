@@ -484,6 +484,19 @@ function BuildFileList() {
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
 
+    ###########################
+    # Get the SNAKEMAKE files #
+    ###########################
+    elif [ "${FILE_TYPE}" == "smk" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_SNAKEMAKE+=("${FILE}")
+      ##########################################################
+      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
+      ##########################################################
+      READ_ONLY_CHANGE_FLAG=1
+
     #####################
     # Get the SQL files #
     #####################

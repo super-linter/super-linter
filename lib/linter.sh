@@ -118,6 +118,9 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}"                       
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
+# Snakemake Vars
+SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                      # Name of the file
+SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}"  # Path to the snakemake lint rules
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
@@ -207,6 +210,8 @@ VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean t
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
 VALIDATE_SHELL_SHFMT="${VALIDATE_SHELL_SHFMT}"                       # Boolean to check Shell files against editorconfig
+VALIDATE_SNAKEMAKE_LINT="${VALIDATE_SNAKEMAKE_LINT}"                 # Boolean to validate Snakefiles
+VALIDATE_SNAKEMAKE_SNAKEFMT="${VALIDATE_SNAKEMAKE_SNAKEFMT}"         # Boolean to validate Snakefiles
 VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
 VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
@@ -1844,6 +1849,28 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
     warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
     debug "skipping shfmt"
   fi
+fi
+
+##################
+# SNAKEMAKE LINT #
+##################
+if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
+  ################################
+  # Lint the files with snakefmt #
+  ################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+fi
+
+######################
+# SNAKEMAKE SNAKEFMT #
+######################
+if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
+  ################################
+  # Lint the files with snakefmt #
+  ################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################
