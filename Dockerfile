@@ -90,6 +90,7 @@ RUN apk add --update --no-cache \
     krb5-libs \
     libc-dev libxml2-dev libxml2-utils libgcc \
     libcurl libintl libssl1.1 libstdc++ \
+    linux-headers \
     make \
     musl-dev \
     npm nodejs-current \
