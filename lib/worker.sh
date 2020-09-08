@@ -166,7 +166,7 @@ function LintCodebase() {
       elif [[ ${FILE} == *"${TEST_CASE_FOLDER}"* ]]; then
         # This is the test cases, we should always skip
         continue
-      elif [[ ${FILE} == *".git/"* ]]; then
+      elif [[ ${FILE} == *".git"* ]] && [[ ${FILE} != *".github"* ]]; then
         # This is likely the .git folder and shouldn't be parsed
         continue
       elif [[ ${FILE} == *".venv"* ]]; then
