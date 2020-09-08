@@ -10,7 +10,7 @@
 FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.30.0 as golangci-lint
+FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.19.1 as tflint
@@ -44,6 +44,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       org.opencontainers.image.version=$BUILD_VERSION \
       org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
       org.opencontainers.image.url="https://github.com/github/super-linter" \
+      org.opencontainers.image.source="https://github.com/github/super-linter" \
       org.opencontainers.image.documentation="https://github.com/github/super-linter" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.description="Lint your code base with GitHub Actions"
