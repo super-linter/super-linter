@@ -180,19 +180,19 @@ function LintCodebase() {
       ######################################################
       # Make sure we don't lint node modules or test cases #
       ######################################################
-      if [[ ${FILE} == *"node_modules"* ]]; then
+      if [[ ${DIR_NAME} == *"node_modules"* ]]; then
         # This is a node modules file
         continue
-      elif [[ ${FILE} == *"${TEST_CASE_FOLDER}"* ]]; then
+      elif [[ ${DIR_NAME} == *"${TEST_CASE_FOLDER}"* ]]; then
         # This is the test cases, we should always skip
         continue
-      elif [[ ${FILE} == *".git"* ]]; then
+      elif [[ ${DIR_NAME} == *".git" ]] || [[ ${FILE} == *".git" ]] || [[ ${FILE} == *".git/"* ]]; then
         # This is likely the .git folder and shouldn't be parsed
         continue
-      elif [[ ${FILE} == *".venv"* ]]; then
+      elif [[ ${DIR_NAME} == *".venv"* ]]; then
         # This is likely the python virtual environment folder and shouldn't be parsed
         continue
-      elif [[ ${FILE} == *".rbenv"* ]]; then
+      elif [[ ${DIR_NAME} == *".rbenv"* ]]; then
         # This is likely the ruby environment folder and shouldn't be parsed
         continue
       elif [[ ${FILE_TYPE} == "BASH" ]] && ! IsValidShellScript "${FILE}"; then
@@ -724,6 +724,8 @@ function RunTestCases() {
   TestCodebase "RAKU" "raku" "raku -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "raku"
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell_shfmt"
+  TestCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\.\(smk\)\$" "snakemake"
+  TestCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" ".*\.\(smk\)\$" "snakemake"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"

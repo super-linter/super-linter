@@ -10,7 +10,7 @@
 FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.30.0 as golangci-lint
+FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.19.1 as tflint
@@ -44,6 +44,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
       org.opencontainers.image.version=$BUILD_VERSION \
       org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
       org.opencontainers.image.url="https://github.com/github/super-linter" \
+      org.opencontainers.image.source="https://github.com/github/super-linter" \
       org.opencontainers.image.documentation="https://github.com/github/super-linter" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.description="Lint your code base with GitHub Actions"
@@ -90,6 +91,7 @@ RUN apk add --update --no-cache \
     krb5-libs \
     libc-dev libxml2-dev libxml2-utils libgcc \
     libcurl libintl libssl1.1 libstdc++ \
+    linux-headers \
     make \
     musl-dev \
     npm nodejs-current \
@@ -337,6 +339,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     OUTPUT_FOLDER=${OUTPUT_FOLDER} \
     OUTPUT_FORMAT=${OUTPUT_FORMAT} \
     RUN_LOCAL=${RUN_LOCAL} \
+    SNAKEMAKE_CONFIG_FILE=${SNAKEMAKE_CONFIG_FILE} \
     TEST_CASE_RUN=${TEST_CASE_RUN} \
     VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
     VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
@@ -380,6 +383,8 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_RAKU=${VALIDATE_RAKU} \
     VALIDATE_RUBY=${VALIDATE_RUBY} \
     VALIDATE_SHELL_SHFMT=${VALIDATE_SHELL_SHFMT} \
+    VALIDATE_SNAKEMAKE_LINT=${VALIDATE_SNAKEMAKE_LINT} \
+    VALIDATE_SNAKEMAKE_SNAKEFMT=${VALIDATE_SNAKEMAKE_SNAKEFMT} \
     VALIDATE_STATES=${VALIDATE_STATES} \
     VALIDATE_SQL=${VALIDATE_SQL} \
     VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \

@@ -118,6 +118,9 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}" # Path to the R lint r
 # Ruby Vars
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
+# Snakemake Vars
+SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                      # Name of the file
+SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}"  # Path to the snakemake lint rules
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
@@ -209,6 +212,8 @@ VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean t
 VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
 VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
 VALIDATE_SHELL_SHFMT="${VALIDATE_SHELL_SHFMT}"                       # Boolean to check Shell files against editorconfig
+VALIDATE_SNAKEMAKE_LINT="${VALIDATE_SNAKEMAKE_LINT}"                 # Boolean to validate Snakefiles
+VALIDATE_SNAKEMAKE_SNAKEFMT="${VALIDATE_SNAKEMAKE_SNAKEFMT}"         # Boolean to validate Snakefiles
 VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
 VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
 VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
@@ -492,18 +497,21 @@ GetLinterRules() {
   # Pull in vars #
   ################
   LANGUAGE_NAME="${1}" # Name of the language were looking for
+  debug "Getting linter rules for ${LANGUAGE_NAME}..."
 
   #######################################################
   # Need to create the variables for the real variables #
   #######################################################
   LANGUAGE_FILE_NAME="${LANGUAGE_NAME}_FILE_NAME"
   LANGUAGE_LINTER_RULES="${LANGUAGE_NAME}_LINTER_RULES"
+  debug "Variable names for language file name: ${LANGUAGE_FILE_NAME}, language linter rules: ${LANGUAGE_LINTER_RULES}"
 
   ##########################
   # Get the file extension #
   ##########################
   FILE_EXTENSION=$(echo "${!LANGUAGE_FILE_NAME}" | rev | cut -d'.' -f1 | rev)
-  FILE_NAME=$(echo "${!LANGUAGE_FILE_NAME}" | rev | cut -d'.' -f2 | rev)
+  FILE_NAME=$(basename "${!LANGUAGE_FILE_NAME}" ".${FILE_EXTENSION}")
+  debug "${LANGUAGE_NAME} language rule file (${!LANGUAGE_FILE_NAME}) has ${FILE_NAME} name and ${FILE_EXTENSION} extension"
 
   ###############################
   # Set the secondary file name #
@@ -533,8 +541,10 @@ GetLinterRules() {
     ########################################
     eval "${LANGUAGE_LINTER_RULES}=${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}"
   else
+    debug "  -> Codebase does NOT have file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}]"
     # Check if we have secondary name to check
     if [ -n "$SECONDARY_FILE_NAME" ]; then
+      debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check: ${SECONDARY_FILE_NAME}"
       # We have a secondary name to validate
       if [ -f "${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}" ]; then
         info "----------------------------------------------"
@@ -546,10 +556,11 @@ GetLinterRules() {
         eval "${LANGUAGE_LINTER_RULES}=${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
       fi
     fi
+
     ########################################################
     # No user default provided, using the template default #
     ########################################################
-    debug "  -> Codebase does NOT have file:[${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
+    debug "  -> Codebase does NOT have file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}], nor file:[${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
   fi
 }
 ################################################################################
@@ -1846,6 +1857,28 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
     warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
     debug "skipping shfmt"
   fi
+fi
+
+##################
+# SNAKEMAKE LINT #
+##################
+if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
+  ################################
+  # Lint the files with snakefmt #
+  ################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+fi
+
+######################
+# SNAKEMAKE SNAKEFMT #
+######################
+if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
+  ################################
+  # Lint the files with snakefmt #
+  ################################
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################
