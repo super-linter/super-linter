@@ -166,7 +166,11 @@ function LintCodebase() {
       elif [[ ${DIR_NAME} == *"${TEST_CASE_FOLDER}"* ]]; then
         # This is the test cases, we should always skip
         continue
+<<<<<<< HEAD
       elif [[ ${DIR_NAME} == *".git" ]]; then
+=======
+      elif [[ ${DIR_NAME} == *".git" ]] || [[ ${DIR_NAME} == *".git/"* ]]; then
+>>>>>>> e9811c85d6cb375158a20eaaf44e638348573478
         # This is likely the .git folder and shouldn't be parsed
         continue
       elif [[ ${DIR_NAME} == *".venv"* ]]; then
