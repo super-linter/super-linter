@@ -160,19 +160,19 @@ function LintCodebase() {
       ######################################################
       # Make sure we don't lint node modules or test cases #
       ######################################################
-      if [[ ${FILE} == *"node_modules"* ]]; then
+      if [[ ${DIR_NAME} == *"node_modules"* ]]; then
         # This is a node modules file
         continue
-      elif [[ ${FILE} == *"${TEST_CASE_FOLDER}"* ]]; then
+      elif [[ ${DIR_NAME} == *"${TEST_CASE_FOLDER}"* ]]; then
         # This is the test cases, we should always skip
         continue
-      elif [[ ${FILE} == *".git"* ]]; then
+      elif [[ ${DIR_NAME} == *".git" ]] || [[ ${FILE} == *".git" ]] || [[ ${FILE} == *".git/"* ]]; then
         # This is likely the .git folder and shouldn't be parsed
         continue
-      elif [[ ${FILE} == *".venv"* ]]; then
+      elif [[ ${DIR_NAME} == *".venv"* ]]; then
         # This is likely the python virtual environment folder and shouldn't be parsed
         continue
-      elif [[ ${FILE} == *".rbenv"* ]]; then
+      elif [[ ${DIR_NAME} == *".rbenv"* ]]; then
         # This is likely the ruby environment folder and shouldn't be parsed
         continue
       elif [[ ${FILE_TYPE} == "BASH" ]] && ! IsValidShellScript "${FILE}"; then
