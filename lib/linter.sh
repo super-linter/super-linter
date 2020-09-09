@@ -119,8 +119,8 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}" # Path to the R lint r
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
 # Snakemake Vars
-SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                      # Name of the file
-SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}"  # Path to the snakemake lint rules
+SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                     # Name of the file
+SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}" # Path to the snakemake lint rules
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
@@ -1019,7 +1019,8 @@ CallStatusAPI() {
     ##############################################
     # Call the status API to create status check #
     ##############################################
-    SEND_STATUS_CMD=$(curl -f -s -X POST \
+    SEND_STATUS_CMD=$(
+      curl -f -s -X POST \
       --url "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
       -H 'accept: application/vnd.github.v3+json' \
       -H "authorization: Bearer ${GITHUB_TOKEN}" \
@@ -1027,7 +1028,8 @@ CallStatusAPI() {
       -d "{ \"state\": \"${STATUS}\",
         \"target_url\": \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
         \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
-      }" 2>&1)
+      }" 2>&1
+    )
 
     #######################
     # Load the error code #
@@ -1866,8 +1868,8 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   ################################
   # Lint the files with snakefmt #
   ################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
 fi
 
 ######################
@@ -1877,8 +1879,8 @@ if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
   ################################
   # Lint the files with snakefmt #
   ################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
 fi
 
 ######################
