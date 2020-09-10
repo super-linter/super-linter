@@ -215,7 +215,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **OUTPUT_FORMAT**                 | `none`                | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap                              |
 | **OUTPUT_FOLDER**                 | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                           |
 | **OUTPUT_DETAILS**                | `simpler`             | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                    |
-| **PYTHON_PYLINT_CONFIG_FILE**     | `.python-lint`        | Filename for [pylint configuration](http://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)               |
+| **PYTHON_PYLINT_CONFIG_FILE**     | `.python-lint`        | Filename for [pylint configuration](https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)               |
 | **PYTHON_FLAKE8_CONFIG_FILE**     | `.flake8`             | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                       |
 | **PYTHON_BLACK_CONFIG_FILE**      | `.python-black`       | Filename for [black configuration](https://github.com/psf/black/blob/master/docs/compatible_configs.md) (ex: `.isort.cfg`, `pyproject.toml`)                                     |
 | **RUBY_CONFIG_FILE**              | `.ruby-lint.yml`      | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                 |
@@ -228,7 +228,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_BASH_EXEC**            | `true`                | Flag to enable or disable the linting process of the Bash language to validate if file is stored as executable.                                                                  |
 | **VALIDATE_CLOJURE**              | `true`                | Flag to enable or disable the linting process of the Clojure language.                                                                                                           |
 | **VALIDATE_CLOUDFORMATION**       | `true`                | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                               |
-| **VALIDATE_COFFEE**               | `true`                | Flag to enable or disable the linting process of the Coffeescript language .                                                                                                     |
+| **VALIDATE_COFFEE**               | `true`                | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                     |
 | **VALIDATE_CSHARP**               | `true`                | Flag to enable or disable the linting process of the C# language.                                                                                                                |
 | **VALIDATE_CSS**                  | `true`                | Flag to enable or disable the linting process of the CSS language.                                                                                                               |
 | **VALIDATE_DART**                 | `true`                | Flag to enable or disable the linting process of the Dart language.                                                                                                              |
@@ -313,7 +313,7 @@ Check out the [note](#how-it-works) in **How it Works** to understand more about
 
 ### Azure
 
-Check out this [article](http://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
+Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
 
 ### GitLab
 
