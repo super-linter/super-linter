@@ -18,6 +18,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
   - [Supported Linters](#supported-linters)
   - [How to use](#how-to-use)
     - [Example connecting GitHub Action Workflow](#example-connecting-github-action-workflow)
+    - [Add Super-Linter badge in your repository README](#add-super-linter-badge-in-your-repository-readme)
   - [Environment variables](#environment-variables)
     - [Template rules files](#template-rules-files)
   - [Disabling rules](#disabling-rules)
@@ -159,6 +160,26 @@ jobs:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+### Add Super-Linter badge in your repository README
+
+You can show Super-Linter status with a badge in your repository README
+
+[![GitHub Super-Linter](https://github.com/nvuillam/npm-groovy-lint/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
+Format:
+
+```markdown
+[![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+```
+
+Example:
+
+```markdown
+[![GitHub Super-Linter](https://github.com/nvuillam/npm-groovy-lint/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+```
+
+_Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
 
 ## Environment variables
 
