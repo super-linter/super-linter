@@ -68,16 +68,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:89939e68c6200154c326dfe791c6492ea8f78ba966de5e57308bc48847a16a91"
+                "sha256:20edd03ae4c4e141b0d8a9a9afc773af4345d54b68202b6aa502956b57b18b3f",
+                "sha256:b596a80181fecd775ccc009286400f4d785136f250967895cb34beeeef65eb1f"
             ],
-            "version": "==1.14.58"
+            "version": "==1.14.59"
         },
         "botocore": {
             "hashes": [
-                "sha256:37cc3f1013c00dc0f061582198d6b785dadf147bd99307d41c5c0e47debca65c",
-                "sha256:acd2df778a5e12b2a16ac040ce6e91a6c6f2d7ac67bd4f966472ce5c68b5b62d"
+                "sha256:47aa4683597b5b20bbaeee31f583d9ad701a6dd51ed56e1b61708a2057bbb1ae",
+                "sha256:9736ff0c2a27e800864953c812be2f41fb9a6247350db4f052ef5e5b200a1ac4"
             ],
-            "version": "==1.17.58"
+            "version": "==1.17.59"
         },
         "certifi": {
             "hashes": [
@@ -187,6 +188,13 @@
                 "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"
             ],
             "version": "==2.10"
+        },
+        "importlib-metadata": {
+            "hashes": [
+                "sha256:90bb658cdbbf6d1735b6341ce708fc7024a3e14e99ffdc5783edea9f9b077f83",
+                "sha256:dc15b2969b4ce36305c51eebe62d418ac7791e9a157911d58bfb1f9ccd8e2070"
+            ],
+            "version": "==1.7.0"
         },
         "ipython-genutils": {
             "hashes": [
@@ -444,11 +452,11 @@
         },
         "snakefmt": {
             "hashes": [
-                "sha256:550b893d0b115adf73e3fc0acee5960f047b5e2c3ca5bbda31ba83f9d594c931",
-                "sha256:e6612968c3cb98e204449a5d7ad01359ef46da3e1c41bffbda39fe0e253c0c5e"
+                "sha256:a394a202311c3f244f7f822f4ffa262972f97d117bd290faa3815065896fd923",
+                "sha256:e50c09202bab30451dc459df15da8254f26c7829572eca2831025593385467fa"
             ],
             "index": "pypi",
-            "version": "==0.1.4"
+            "version": "==0.1.5"
         },
         "snakemake": {
             "hashes": [
@@ -540,6 +548,13 @@
             ],
             "index": "pypi",
             "version": "==2.11.0"
+        },
+        "zipp": {
+            "hashes": [
+                "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b",
+                "sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96"
+            ],
+            "version": "==3.1.0"
         }
     },
     "develop": {}
