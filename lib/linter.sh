@@ -1869,7 +1869,7 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\(Snakefile\|\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
 fi
 
 ######################
@@ -1880,7 +1880,7 @@ if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILE_ARRAY" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" ".*\(Snakefile\|\.smk\)\$" "${FILE_ARRAY_SNAKEMAKE[@]}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}"
 fi
 
 ######################
