@@ -59,7 +59,7 @@ GROOVY_FILE_NAME='.groovylintrc.json'                               # Name of th
 GROOVY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GROOVY_FILE_NAME}" # Path to the Groovy lint rules
 # HTML Vars
 HTML_FILE_NAME='.htmlhintrc'                                    # Name of the file
-HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}" # Path to the CSS lint rules
+HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}" # Path to the HTML lint rules
 # Java Vars
 JAVA_FILE_NAME="sun_checks.xml"                                 # Name of the Java config file
 JAVA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVA_FILE_NAME}" # Path to the Java lint rules
