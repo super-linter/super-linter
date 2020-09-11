@@ -315,6 +315,7 @@ FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
 FILE_ARRAY_R=()                   # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
+FILE_ARRAY_SNAKEMAKE=()           # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
 FILE_ARRAY_SQL=()                 # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check

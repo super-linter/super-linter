@@ -487,7 +487,7 @@ function BuildFileList() {
     ###########################
     # Get the SNAKEMAKE files #
     ###########################
-    elif [ "${FILE_TYPE}" == "smk" ]; then
+    elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "Snakefile" ]; then
       ################################
       # Append the file to the array #
       ################################
