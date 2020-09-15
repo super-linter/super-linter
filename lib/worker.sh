@@ -128,7 +128,7 @@ function LintCodebase() {
   #################################################
   # Filter files if FILTER_REGEX_INCLUDE is set #
   #################################################
-  if [ "$FILTER_REGEX_INCLUDE" ]; then
+  if [[ -n "$FILTER_REGEX_INCLUDE" ]]; then
     for index in "${!LIST_FILES[@]}"; do
       [[ ! (${LIST_FILES[$index]} =~ $FILTER_REGEX_INCLUDE) ]] && unset -v 'LIST_FILES[$index]'
     done
@@ -137,7 +137,7 @@ function LintCodebase() {
   #################################################
   # Filter files if FILTER_REGEX_EXCLUDE is set #
   #################################################
-  if [ "$FILTER_REGEX_EXCLUDE" ]; then
+  if [[ -n "$FILTER_REGEX_EXCLUDE" ]]; then
     for index in "${!LIST_FILES[@]}"; do
       [[ ${LIST_FILES[$index]} =~ $FILTER_REGEX_EXCLUDE ]] && unset -v 'LIST_FILES[$index]'
     done
