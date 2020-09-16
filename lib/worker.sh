@@ -297,7 +297,7 @@ function LintCodebase() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        if [[ ${FILE_TYPE} == "BASH_EXEC" ]]; then
+        if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
           ########
           # WARN #
           ########
