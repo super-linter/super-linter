@@ -308,9 +308,9 @@ analyzer:
 
 ### Hadolint standard Config file
 
-- `.github/linters/.hadolint.yml`
+- `.github/linters/.hadolint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.hadolint.yml`
+- File should be located at: `.github/linters/.hadolint.yaml`
 
 ### Hadolint disable single line
 
