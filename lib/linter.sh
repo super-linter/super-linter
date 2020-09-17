@@ -258,7 +258,7 @@ DEFAULT_IFS="${IFS}"                                # Get the Default IFS for up
 DEFAULT_DISABLE_ERRORS='false'                          # Default to enabling errors
 export DEFAULT_DISABLE_ERRORS                           # Workaround SC2034
 ERROR_ON_MISSING_EXEC_BIT='false'                       # Default to report a warning if a shell script doesn't have the executable bit set to 1
-export ERROR_ON_MISSING_EXEC_BIT
+export ERROR_ON_MISSING_EXEC_BIT                        # Workaround SC2034
 RAW_FILE_ARRAY=()                                       # Array of all files that were changed
 export RAW_FILE_ARRAY                                   # Workaround SC2034
 READ_ONLY_CHANGE_FLAG=0                                 # Flag set to 1 if files changed are not txt or md
@@ -410,7 +410,7 @@ export ERRORS_FOUND_RAKU                # Workaround SC2034
 ERRORS_FOUND_RUBY=0                     # Count of errors found
 export ERRORS_FOUND_RUBY                # Workaround SC2034
 ERRORS_FOUND_SHELL_SHFMT=0              # Count of errors found
-export ERRORS_FOUND_SHELL_SHFMT
+export ERRORS_FOUND_SHELL_SHFMT         # Workaround SC2034
 ERRORS_FOUND_STATES=0                   # Count of errors found
 export ERRORS_FOUND_STATES              # Workaround SC2034
 ERRORS_FOUND_SQL=0                      # Count of errors found
@@ -957,14 +957,14 @@ function ValidatePowershellModules() {
   if [[ ${VALIDATE_PSSA_MODULE} == "PSScriptAnalyzer" ]]; then
     VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
   else
-    fatal "Failed to find module."
+    fatal "Failed to find PSScriptAnalyzer module."
   fi
 
   #########################################
   # validate we found the script analyzer #
   #########################################
   if [[ ${VALIDATE_PSSA_CMD} != "Invoke-ScriptAnalyzer" ]]; then
-    fatal "Failed to find module."
+    fatal "Failed to find Invoke-ScriptAnalyzer module."
   fi
 
   #######################
@@ -1318,7 +1318,12 @@ if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
   ########################################
   # Get list of files changed if env set #
   ########################################
-  BuildFileList
+  BuildFileList "modified"
+else
+  ####################################
+  # Lint all files in the repository #
+  ####################################
+  BuildFileList "all"
 fi
 
 ###################
@@ -1368,7 +1373,7 @@ fi
 ################
 # BASH LINTING #
 ################
-if [ "${VALIDATE_BASH}" == "true" ]; then
+if [ "${VALIDATE_BASH}" == "true" ] && [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
   #######################
   # Lint the bash files #
   #######################
@@ -1379,7 +1384,7 @@ fi
 #####################
 # BASH_EXEC LINTING #
 #####################
-if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
+if [ "${VALIDATE_BASH_EXEC}" == "true" ] && [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
   #######################
   # Lint the bash files #
   #######################
@@ -1421,7 +1426,7 @@ fi
 ###################
 # CLOJURE LINTING #
 ###################
-if [ "${VALIDATE_CLOJURE}" == "true" ]; then
+if [ "${VALIDATE_CLOJURE}" == "true" ] && [ ${#FILE_ARRAY_CLOJURE[@]} -ne 0 ]; then
   #################################
   # Get Clojure standard rules #
   #################################
@@ -1435,7 +1440,7 @@ fi
 ########################
 # COFFEESCRIPT LINTING #
 ########################
-if [ "${VALIDATE_COFFEE}" == "true" ]; then
+if [ "${VALIDATE_COFFEE}" == "true" ] && [ ${#FILE_ARRAY_COFFEESCRIPT[@]} -ne 0 ]; then
   #########################
   # Lint the coffee files #
   #########################
@@ -1446,7 +1451,7 @@ fi
 ##################
 # CSHARP LINTING #
 ##################
-if [ "${VALIDATE_CSHARP}" == "true" ]; then
+if [ "${VALIDATE_CSHARP}" == "true" ] && [ ${#FILE_ARRAY_CSHARP[@]} -ne 0 ]; then
   #########################
   # Lint the C# files #
   #########################
@@ -1457,7 +1462,7 @@ fi
 ###############
 # CSS LINTING #
 ###############
-if [ "${VALIDATE_CSS}" == "true" ]; then
+if [ "${VALIDATE_CSS}" == "true" ] && [ ${#FILE_ARRAY_CSS[@]} -ne 0 ]; then
   #################################
   # Get CSS standard rules #
   #################################
@@ -1471,7 +1476,7 @@ fi
 ################
 # DART LINTING #
 ################
-if [ "${VALIDATE_DART}" == "true" ]; then
+if [ "${VALIDATE_DART}" == "true" ] && [ ${#FILE_ARRAY_DART[@]} -ne 0 ]; then
   #######################
   # Lint the Dart files #
   #######################
@@ -1482,7 +1487,7 @@ fi
 ##################
 # DOCKER LINTING #
 ##################
-if [ "${VALIDATE_DOCKERFILE}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE}" == "true" ] && [ ${#FILE_ARRAY_DOCKERFILE[@]} -ne 0 ]; then
   #########################
   # Lint the docker files #
   #########################
@@ -1494,7 +1499,7 @@ fi
 ###########################
 # DOCKER LINTING HADOLINT #
 ###########################
-if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
+if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ] && [ ${#FILE_ARRAY_DOCKERFILE[@]} -ne 0 ]; then
   #########################
   # Lint the docker files #
   #########################
@@ -1505,7 +1510,7 @@ fi
 ########################
 # EDITORCONFIG LINTING #
 ########################
-if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
+if [ "${VALIDATE_EDITORCONFIG}" == "true" ] && [ ${#FILE_ARRAY_ENV[@]} -ne 0 ]; then
   ####################################
   # Lint the files with editorconfig #
   ####################################
@@ -1516,7 +1521,7 @@ fi
 ###############
 # ENV LINTING #
 ###############
-if [ "${VALIDATE_ENV}" == "true" ]; then
+if [ "${VALIDATE_ENV}" == "true" ] && [ ${#FILE_ARRAY_ENV[@]} -ne 0 ]; then
   #######################
   # Lint the env files #
   #######################
@@ -1527,7 +1532,7 @@ fi
 ##################
 # GOLANG LINTING #
 ##################
-if [ "${VALIDATE_GO}" == "true" ]; then
+if [ "${VALIDATE_GO}" == "true" ] && [ ${#FILE_ARRAY_GO[@]} -ne 0 ]; then
   #########################
   # Lint the golang files #
   #########################
@@ -1538,7 +1543,7 @@ fi
 ##################
 # GROOVY LINTING #
 ##################
-if [ "$VALIDATE_GROOVY" == "true" ]; then
+if [ "$VALIDATE_GROOVY" == "true" ] && [ ${#FILE_ARRAY_GROOVY[@]} -ne 0 ]; then
   #########################
   # Lint the groovy files #
   #########################
@@ -1549,7 +1554,7 @@ fi
 ################
 # HTML LINTING #
 ################
-if [ "${VALIDATE_HTML}" == "true" ]; then
+if [ "${VALIDATE_HTML}" == "true" ] && [ ${#FILE_ARRAY_HTML[@]} -ne 0 ]; then
   ###########################
   # Get HTML standard rules #
   ###########################
@@ -1563,7 +1568,7 @@ fi
 ################
 # JAVA LINTING #
 ################
-if [ "$VALIDATE_JAVA" == "true" ]; then
+if [ "$VALIDATE_JAVA" == "true" ] && [ ${#FILE_ARRAY_JAVA[@]} -ne 0 ]; then
   #######################
   # Lint the JAVA files #
   #######################
@@ -1574,7 +1579,7 @@ fi
 ######################
 # JAVASCRIPT LINTING #
 ######################
-if [ "${VALIDATE_JAVASCRIPT_ES}" == "true" ]; then
+if [ "${VALIDATE_JAVASCRIPT_ES}" == "true" ] && [ ${#FILE_ARRAY_JAVASCRIPT_ES[@]} -ne 0 ]; then
   #############################
   # Lint the Javascript files #
   #############################
@@ -1585,7 +1590,7 @@ fi
 ######################
 # JAVASCRIPT LINTING #
 ######################
-if [ "${VALIDATE_JAVASCRIPT_STANDARD}" == "true" ]; then
+if [ "${VALIDATE_JAVASCRIPT_STANDARD}" == "true" ] && [ ${#FILE_ARRAY_JAVASCRIPT_STANDARD[@]} -ne 0 ]; then
   #################################
   # Get Javascript standard rules #
   #################################
@@ -1600,7 +1605,7 @@ fi
 ################
 # JSON LINTING #
 ################
-if [ "${VALIDATE_JSON}" == "true" ]; then
+if [ "${VALIDATE_JSON}" == "true" ] && [ ${#FILE_ARRAY_JSON[@]} -ne 0 ]; then
   #######################
   # Lint the json files #
   #######################
@@ -1611,7 +1616,7 @@ fi
 ###############
 # JSX LINTING #
 ###############
-if [ "${VALIDATE_JSX}" == "true" ]; then
+if [ "${VALIDATE_JSX}" == "true" ] && [ ${#FILE_ARRAY_JSX[@]} -ne 0 ]; then
   ######################
   # Lint the JSX files #
   ######################
@@ -1622,7 +1627,7 @@ fi
 ##################
 # KOTLIN LINTING #
 ##################
-if [ "${VALIDATE_KOTLIN}" == "true" ]; then
+if [ "${VALIDATE_KOTLIN}" == "true" ] && [ ${#FILE_ARRAY_KOTLIN[@]} -ne 0 ]; then
   #######################
   # Lint the Kotlin files #
   #######################
@@ -1633,7 +1638,7 @@ fi
 #################
 # LATEX LINTING #
 #################
-if [ "${VALIDATE_LATEX}" == "true" ]; then
+if [ "${VALIDATE_LATEX}" == "true" ] && [ ${#FILE_ARRAY_LATEX[@]} -ne 0 ]; then
   ########################
   # Lint the LATEX files #
   ########################
@@ -1644,7 +1649,7 @@ fi
 ###############
 # LUA LINTING #
 ###############
-if [ "${VALIDATE_LUA}" == "true" ]; then
+if [ "${VALIDATE_LUA}" == "true" ] && [ ${#FILE_ARRAY_LUA[@]} -ne 0 ]; then
   ######################
   # Lint the Lua files #
   ######################
@@ -1655,7 +1660,7 @@ fi
 ####################
 # MARKDOWN LINTING #
 ####################
-if [ "${VALIDATE_MARKDOWN}" == "true" ]; then
+if [ "${VALIDATE_MARKDOWN}" == "true" ] && [ ${#FILE_ARRAY_MARKDOWN[@]} -ne 0 ]; then
   ###########################
   # Lint the Markdown Files #
   ###########################
@@ -1697,7 +1702,7 @@ fi
 ################
 # PERL LINTING #
 ################
-if [ "${VALIDATE_PERL}" == "true" ]; then
+if [ "${VALIDATE_PERL}" == "true" ] && [ ${#FILE_ARRAY_PERL[@]} -ne 0 ]; then
   #######################
   # Lint the perl files #
   #######################
@@ -1708,7 +1713,7 @@ fi
 ################
 # PHP LINTING #
 ################
-if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
+if [ "${VALIDATE_PHP_BUILTIN}" == "true" ] && [ ${#FILE_ARRAY_PHP_BUILTIN[@]} -ne 0 ]; then
   ################################################
   # Lint the PHP files using built-in PHP linter #
   ################################################
@@ -1716,7 +1721,7 @@ if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
   LintCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_BUILTIN[@]}"
 fi
 
-if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
+if [ "${VALIDATE_PHP_PHPCS}" == "true" ] && [ ${#FILE_ARRAY_PHP_PHPCS[@]} -ne 0 ]; then
   ############################################
   # Lint the PHP files using PHP CodeSniffer #
   ############################################
@@ -1724,7 +1729,7 @@ if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
   LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPCS[@]}"
 fi
 
-if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
+if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ] && [ ${#FILE_ARRAY_PHP_PHPSTAN[@]} -ne 0 ]; then
   #######################
   # Lint the PHP files using PHPStan #
   #######################
@@ -1732,7 +1737,7 @@ if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
   LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
 fi
 
-if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
+if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ ${#FILE_ARRAY_PHP_PSALM[@]} -ne 0 ]; then
   ##################################
   # Lint the PHP files using Psalm #
   ##################################
@@ -1743,7 +1748,7 @@ fi
 ######################
 # POWERSHELL LINTING #
 ######################
-if [ "${VALIDATE_POWERSHELL}" == "true" ]; then
+if [ "${VALIDATE_POWERSHELL}" == "true" ] && [ ${#FILE_ARRAY_POWERSHELL[@]} -ne 0 ]; then
   ###############################################################
   # For POWERSHELL, ensure PSScriptAnalyzer module is available #
   ###############################################################
@@ -1759,7 +1764,7 @@ fi
 ####################
 # PROTOBUF LINTING #
 ####################
-if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
+if [ "${VALIDATE_PROTOBUF}" == "true" ] && [ ${#FILE_ARRAY_PROTOBUF[@]} -ne 0 ]; then
   #######################
   # Lint the Protocol Buffers files #
   #######################
@@ -1770,7 +1775,7 @@ fi
 ########################
 # PYTHON BLACK LINTING #
 ########################
-if [ "${VALIDATE_PYTHON_BLACK}" == "true" ]; then
+if [ "${VALIDATE_PYTHON_BLACK}" == "true" ] && [ ${#FILE_ARRAY_PYTHON_BLACK[@]} -ne 0 ]; then
   #########################
   # Lint the python files #
   #########################
@@ -1781,7 +1786,7 @@ fi
 #########################
 # PYTHON PYLINT LINTING #
 #########################
-if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
+if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ] && [ ${#FILE_ARRAY_PYTHON_PYLINT[@]} -ne 0 ]; then
   #########################
   # Lint the python files #
   #########################
@@ -1792,7 +1797,7 @@ fi
 #########################
 # PYTHON FLAKE8 LINTING #
 #########################
-if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
+if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ] && [ ${#FILE_ARRAY_PYTHON_FLAKE8[@]} -ne 0 ]; then
   #########################
   # Lint the python files #
   #########################
@@ -1803,7 +1808,7 @@ fi
 #############
 # R LINTING #
 #############
-if [ "${VALIDATE_R}" == "true" ]; then
+if [ "${VALIDATE_R}" == "true" ] && [ ${#FILE_ARRAY_R[@]} -ne 0 ]; then
   ##########################
   # Check for local config #
   ##########################
@@ -1821,7 +1826,7 @@ fi
 ################
 # RAKU LINTING #
 ################
-if [ "${VALIDATE_RAKU}" == "true" ]; then
+if [ "${VALIDATE_RAKU}" == "true" ] && [ ${#FILE_ARRAY_RAKU[@]} -ne 0 ]; then
   #######################
   # Lint the raku files #
   #######################
@@ -1835,7 +1840,7 @@ fi
 ################
 # RUBY LINTING #
 ################
-if [ "${VALIDATE_RUBY}" == "true" ]; then
+if [ "${VALIDATE_RUBY}" == "true" ] && [ ${#FILE_ARRAY_RUBY[@]} -ne 0 ]; then
   #######################
   # Lint the ruby files #
   #######################
@@ -1846,7 +1851,7 @@ fi
 #################
 # SHFMT LINTING #
 #################
-if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
+if [ "${VALIDATE_SHELL_SHFMT}" == "true" ] && [ ${#FILE_ARRAY_BASH[@]} -ne 0 ]; then
   ####################################
   # Lint the files with shfmt #
   ####################################
@@ -1866,7 +1871,7 @@ fi
 ##################
 # SNAKEMAKE LINT #
 ##################
-if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
+if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ] && [ ${#FILE_ARRAY_SNAKEMAKE[@]} -ne 0 ]; then
   ################################
   # Lint the files with snakefmt #
   ################################
@@ -1877,7 +1882,7 @@ fi
 ######################
 # SNAKEMAKE SNAKEFMT #
 ######################
-if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
+if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ] && [ ${#FILE_ARRAY_SNAKEMAKE[@]} -ne 0 ]; then
   ################################
   # Lint the files with snakefmt #
   ################################
@@ -1918,7 +1923,7 @@ fi
 ###############
 # SQL LINTING #
 ###############
-if [ "${VALIDATE_SQL}" == "true" ]; then
+if [ "${VALIDATE_SQL}" == "true" ] && [ ${#FILE_ARRAY_SQL[@]} -ne 0 ]; then
   ######################
   # Lint the SQL files #
   ######################
@@ -1929,7 +1934,7 @@ fi
 #####################
 # TERRAFORM LINTING #
 #####################
-if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
+if [ "${VALIDATE_TERRAFORM}" == "true" ] && [ ${#FILE_ARRAY_TERRAFORM[@]} -ne 0 ]; then
   ############################
   # Lint the Terraform files #
   ############################
@@ -1940,7 +1945,7 @@ fi
 ###############################
 # TERRAFORM TERRASCAN LINTING #
 ###############################
-if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
+if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ] && [ ${#FILE_ARRAY_TERRAFORM_TERRASCAN[@]} -ne 0 ]; then
   ############################
   # Lint the Terraform files #
   ############################
@@ -1951,7 +1956,7 @@ fi
 ###############
 # TSX LINTING #
 ###############
-if [ "${VALIDATE_TSX}" == "true" ]; then
+if [ "${VALIDATE_TSX}" == "true" ] && [ ${#FILE_ARRAY_TSX[@]} -ne 0 ]; then
   ######################
   # Lint the TSX files #
   ######################
@@ -1961,7 +1966,7 @@ fi
 ######################
 # TYPESCRIPT LINTING #
 ######################
-if [ "${VALIDATE_TYPESCRIPT_ES}" == "true" ]; then
+if [ "${VALIDATE_TYPESCRIPT_ES}" == "true" ] && [ ${#FILE_ARRAY_TYPESCRIPT_ES[@]} -ne 0 ]; then
   #############################
   # Lint the Typescript files #
   #############################
@@ -1971,7 +1976,7 @@ fi
 ######################
 # TYPESCRIPT LINTING #
 ######################
-if [ "${VALIDATE_TYPESCRIPT_STANDARD}" == "true" ]; then
+if [ "${VALIDATE_TYPESCRIPT_STANDARD}" == "true" ] && [ ${#FILE_ARRAY_TYPESCRIPT_STANDARD[@]} -ne 0 ]; then
   #################################
   # Get Typescript standard rules #
   #################################
@@ -1985,7 +1990,7 @@ fi
 ###############
 # XML LINTING #
 ###############
-if [ "${VALIDATE_XML}" == "true" ]; then
+if [ "${VALIDATE_XML}" == "true" ] && [ ${#FILE_ARRAY_XML[@]} -ne 0 ]; then
   ######################
   # Lint the XML Files #
   ######################
@@ -1996,7 +2001,7 @@ fi
 ################
 # YAML LINTING #
 ################
-if [ "${VALIDATE_YAML}" == "true" ]; then
+if [ "${VALIDATE_YAML}" == "true" ] && [ ${#FILE_ARRAY_YAML[@]} -ne 0 ]; then
   ######################
   # Lint the Yml Files #
   ######################

@@ -14,64 +14,22 @@ function BuildFileList() {
   # This can be pulled from the GITHUB_EVENT_PATH payload
 
   ################
-  # print header #
+  # Pull in vars #
   ################
-  debug "----------------------------------------------"
-  debug "Pulling in code history and branches..."
+  ACTION="$1"   # Options: modified / all | which files to view
 
-  #################################################################################
-  # Switch codebase back to the default branch to get a list of all files changed #
-  #################################################################################
-  SWITCH_CMD=$(
-    git -C "${GITHUB_WORKSPACE}" pull --quiet
-    git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
-  )
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
-    fatal "[${SWITCH_CMD}]"
+  ##############################################
+  # Check if we need to get only modifed files #
+  ##############################################
+  if [[ $ACTION == "modified" ]]; then
+    # Get only modified files
+    GetModifiedFileList
+  else
+    # Get all files
+    GetAllFilesList
   fi
 
-  ################
-  # print header #
-  ################
-  debug "----------------------------------------------"
-  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
 
-  #################################################
-  # Get the Array of files changed in the commits #
-  #################################################
-  mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    error "Failed to gain a list of all files changed!"
-    fatal "[${RAW_FILE_ARRAY[*]}]"
-  fi
-
-  ################################################
-  # Iterate through the array of all files found #
-  ################################################
-  info "----------------------------------------------"
-  info "------ Files modified in the commit(s): ------"
-  info "----------------------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     # Extract just the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
@@ -792,4 +750,115 @@ function PopulateShellScriptsList() {
   # Set IFS back to default #
   ###########################
   IFS="${DEFAULT_IFS}"
+}
+################################################################################
+#### Function GetModifiedFileList ##############################################
+function GetModifiedFileList() {
+
+  ################
+  # print header #
+  ################
+  debug "----------------------------------------------"
+  debug "Pulling in code history and branches..."
+
+  #################################################################################
+  # Switch codebase back to the default branch to get a list of all files changed #
+  #################################################################################
+  SWITCH_CMD=$(
+    git -C "${GITHUB_WORKSPACE}" pull --quiet
+    git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
+  )
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Error
+    info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
+    fatal "[${SWITCH_CMD}]"
+  fi
+
+  ################
+  # print header #
+  ################
+  debug "----------------------------------------------"
+  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+
+  #################################################
+  # Get the Array of files changed in the commits #
+  #################################################
+  mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Error
+    error "Failed to gain a list of all files changed!"
+    fatal "[${RAW_FILE_ARRAY[*]}]"
+  fi
+
+  ################################################
+  # Iterate through the array of all files found #
+  ################################################
+  info "----------------------------------------------"
+  info "------ Files modified in the commit(s): ------"
+  info "----------------------------------------------"
+}
+################################################################################
+#### Function GetAllFilesList ##################################################
+function GetAllFilesList() {
+
+  ################
+  # print header #
+  ################
+  debug "----------------------------------------------"
+  debug "Gathering all files in workspace..."
+
+  ################
+  # print header #
+  ################
+  debug "----------------------------------------------"
+  debug "Generating list of all files found in the current workspace using find -type f"
+
+  #################################
+  # Get list of all files to lint #
+  #################################
+  mapfile -t RAW_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" \
+    -path "*/node_modules" -prune -o \
+    -path "*/.git" -prune -o \
+    -path "*/.venv" -prune -o \
+    -path "*/.rbenv" -prune -o \
+    -type f 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Error
+    error "Failed to gain a list of all files in workspace!"
+    fatal "[${RAW_FILE_ARRAY[*]}]"
+  fi
+
+  ################################################
+  # Iterate through the array of all files found #
+  ################################################
+  info "----------------------------------------------"
+  info "------ All file(s) found in workspace: -------"
+  info "----------------------------------------------"
 }

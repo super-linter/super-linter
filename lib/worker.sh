@@ -88,26 +88,6 @@ function LintCodebase() {
       [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
       # Populate a list of valid shell scripts.
       PopulateShellScriptsList
-    else
-      ###############################################################################
-      # Set the file separator to newline to allow for grabbing objects with spaces #
-      ###############################################################################
-      IFS=$'\n'
-
-      #################################
-      # Get list of all files to lint #
-      #################################
-      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
-        -path "*/node_modules" -prune -o \
-        -path "*/.git" -prune -o \
-        -path "*/.venv" -prune -o \
-        -path "*/.rbenv" -prune -o \
-        -type f -regex "${FILE_EXTENSIONS}" 2>&1)
-
-      ###########################
-      # Set IFS back to default #
-      ###########################
-      IFS="${DEFAULT_IFS}"
     fi
 
     ############################################################
