@@ -412,4 +412,4 @@ RUN /action/lib/linterVersions.sh
 ######################
 # Set the entrypoint #
 ######################
-ENTRYPOINT ["/action/lib/linter.sh"]
+ENTRYPOINT ["/action/lib/entrypoint.sh"]
