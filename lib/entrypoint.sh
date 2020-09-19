@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-python SuperLinter.py
+python SuperLinter.py --cli

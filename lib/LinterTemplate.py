@@ -25,6 +25,9 @@ class LinterTemplate:
     fileExtensions = [] # Array of strings defining file extensions. Override at custom linter class level. Ex: ['.js','.cjs']
     fileNames = [] # Array of file names. Ex: ['Dockerfile']
 
+    filterRegexInclude
+    filterRegexExclude
+
     # Runtime fields 
     isActive = True
     files = []
@@ -43,6 +46,12 @@ class LinterTemplate:
         # Configuration file name 
         if (os.environ[self.name+"_FILE_NAME"]):
             self.configFileName = os.environ[self.name+"_FILE_NAME"]
+        # Include regex 
+        if (os.environ[self.name+"_FILTER_REGEX_INCLUDE"]):
+            self.filterRegexInclude = os.environ[self.name+"_FILTER_REGEX_INCLUDE"]
+        # Exclude regex 
+        if (os.environ[self.name+"_FILTER_REGEX_EXCLUDE"]):
+            self.filterRegexExclude = os.environ[self.name+"_FILTER_REGEX_EXCLUDE"]        
 
     # Processes the linter 
     def run():
@@ -58,7 +67,11 @@ class LinterTemplate:
         for file in allFiles:
             baseFileName = os.path.basename(file)
             filename, file_extension = os.path.splitext(baseFileName)
-            if (file_extension in self.fileExtensions)
+            if self.filterRegexInclude and re.search(self.filterRegexInclude,file) == None :
+                continue 
+            elif self.filterRegexExclude and re.search(self.filterRegexExclude,file) != None :
+                continue 
+            elif (file_extension in self.fileExtensions)
                 self.files.append(file)
             elif (filename in self.fileNames)
                 self.files.append(file)

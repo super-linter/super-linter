@@ -7,6 +7,7 @@ Main Super-Linter class, encapsulating all linters process and reporting
 
 import importlib
 import os
+import re
 from glob import glob
 from collections import OrderedDict
 
@@ -39,13 +40,13 @@ class SuperLinter:
     # Manage configuration variables 
     def loadConfigVars():
         # Linter rules root path
-        if (os.environ["LINTER_RULES_PATH"]):
+        if os.environ["LINTER_RULES_PATH"] :
             self.linterRulesPath = os.environ["LINTER_RULES_PATH"]        
         # Filtering regex (inclusion)
-        if (os.environ["FILTER_REGEX_INCLUDE"]):
+        if os.environ["FILTER_REGEX_INCLUDE"] :
             self.filterRegexInclude = os.environ["FILTER_REGEX_INCLUDE"]
         # Filtering regex (exclusion)
-        if (os.environ["FILTER_REGEX_EXCLUDE"]):
+        if os.environ["FILTER_REGEX_EXCLUDE"] :
             self.filterRegexExclude = os.environ["FILTER_REGEX_EXCLUDE"]
 
     # List all classes from /linter folder then instanciate each of them
@@ -67,12 +68,27 @@ class SuperLinter:
 
     # Collect list of files matchins extensions and regex
     def collectFiles():
+        # Lisl all files of root directory
         allFiles = os.listdir(self.filesToLintRoot) 
-        # to do : make a first filter with self.fileExtensions , self.fileNames, self.filterRegexInclude and self.filterRegexExclude
-        # ....
-        # Collect matching files for each linter
+
+        # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
+        filteredFiles = []
         for file in allFiles:
-            linter.collectFiles(allFiles)
+            baseFileName = os.path.basename(file)
+            filename, file_extension = os.path.splitext(baseFileName)
+            if self.filterRegexInclude and re.search(self.filterRegexInclude,file) == None :
+                continue 
+            if self.filterRegexExclude and re.search(self.filterRegexExclude,file) != None :
+                continue 
+            elif file_extension in self.fileExtensions
+                filteredFiles.append(file)
+            elif filename in self.fileNames
+                filteredFiles.append(file)
+
+        # Collect matching files for each linter
+        for linter in self.linters:
+            linter.collectFiles(filteredFiles)
 
 # Run script
-SuperLinter().run()
+if sys.argv[1] == '--cli' :
+    SuperLinter().run()
