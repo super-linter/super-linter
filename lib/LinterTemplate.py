@@ -40,7 +40,9 @@ class LinterTemplate:
         if self.name is None:
             self.name = self.language
         self.load_config_vars()
+
         self.status = "success"
+        self.number_errors = 0
         self.files_lint_results = {}
 
     # Manage configuration variables 
@@ -68,15 +70,16 @@ class LinterTemplate:
     def run(self):
         self.display_header()
         for file in self.files:
-            return_code, stdout, stderr = self.lint_file(file)
+            return_code, stdout = self.lint_file(file)
             if return_code == 0:
                 logging.info(" - File:" + file + " was linted with " + self.name + " successfully")
                 self.files_lint_results[file] = {"status": "success"}
             else:
                 logging.error(
-                    "Error(s) detected in " + file + "\n" + stderr + "\n" + stdout)
+                    "Error(s) detected in " + file + "\n" + stdout)
                 self.files_lint_results[file] = {"status": "error"}
                 self.status = "error"
+                self.number_errors = self.number_errors + 1
 
     # Filter files to keep only the ones matching extension or file name
     def collect_files(self, all_files):
@@ -100,12 +103,11 @@ class LinterTemplate:
         logging.debug('Linter command: ' + str(command))
         process = subprocess.run(command,
                                  stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+                                 stderr=subprocess.STDOUT)
         return_code = process.returncode
         logging.debug(
-            'Linter result: ' + str(return_code) + " " + process.stdout.decode("utf-8") + " " + process.stderr.decode(
-                "utf-8"))
-        return return_code, process.stdout.decode("utf-8"), process.stderr.decode("utf-8")
+            'Linter result: ' + str(return_code) + " " + process.stdout.decode("utf-8"))
+        return return_code, process.stdout.decode("utf-8")
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):

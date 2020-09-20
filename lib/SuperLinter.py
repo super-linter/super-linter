@@ -13,6 +13,7 @@ import re
 import sys
 
 from collections import OrderedDict
+from terminaltables import AsciiTable
 
 
 class SuperLinter:
@@ -31,6 +32,7 @@ class SuperLinter:
         self.files_to_lint_root = params['lint_root_path'] if "lint_root_path" in params else './tmp/lint'
         self.filter_regex_include = None
         self.filter_regex_exclude = None
+        self.cli = params['cli'] if "cli" in params else False
 
         self.linters = []
         self.file_extensions = []
@@ -113,29 +115,46 @@ class SuperLinter:
         # Header prints
         logging.info("---------------------------------------------")
         logging.info("--- GitHub Actions Multi Language Linter ----")
-        logging.info(
-            "- Image Creation Date: " + (os.environ['BUILD_DATE'] if "BUILD_DATE" in os.environ else 'No docker image'))
-        logging.info(
-            "- Image Revision: " + (os.environ['BUILD_REVISION'] if "BUILD_REVISION" in os.environ else 'No docker image'))
-        logging.info(
-            "- Image Version: " + (os.environ['BUILD_VERSION'] if "BUILD_VERSION" in os.environ else 'No docker image'))
         logging.info("---------------------------------------------")
+        logging.info(
+            " - Image Creation Date: " + (
+                os.environ['BUILD_DATE'] if "BUILD_DATE" in os.environ else 'No docker image'))
+        logging.info(
+            " - Image Revision: " + (
+                os.environ['BUILD_REVISION'] if "BUILD_REVISION" in os.environ else 'No docker image'))
+        logging.info(
+            " - Image Version: " + (
+                os.environ['BUILD_VERSION'] if "BUILD_VERSION" in os.environ else 'No docker image'))
         logging.info("---------------------------------------------")
         logging.info("The Super-Linter source code can be found at:")
         logging.info(" - https://github.com/github/super-linter")
         logging.info("---------------------------------------------")
+        logging.info("")
 
     def manage_reports(self):
-        logging.info('Reports not implemented yet')
+        logging.info("")
+        logging.info("----------------------------------------------")
+        logging.info("------------------- SUMMARY -------------------")
+        logging.info("----------------------------------------------")
+        table_data = [["Linter", "Errors", "Total files"]]
+        for linter in self.linters:
+            table_data.append([linter.name, str(linter.number_errors), str(len(linter.files))])
+        table = AsciiTable(table_data)
+        for table_line in table.table.splitlines():
+            logging.info(table_line)
+        logging.info("----------------------------------------------")
+        logging.info("")
 
     def check_results(self):
         if self.status == 'success':
             logging.info('Successfully linted all files without errors')
         else:
             logging.error('Error(s) has been found during linting')
-            sys.exit(1)
+            if self.cli is True:
+                sys.exit(1)
+
 
 # Run script
 if sys.argv is not None and len(sys.argv) > 1 and sys.argv[1] == '--cli':
     # Run Super-Linter
-    SuperLinter().run()
+    SuperLinter({'cli': True}).run()

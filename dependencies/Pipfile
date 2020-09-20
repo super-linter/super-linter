@@ -12,6 +12,7 @@ flake8 = "*"
 pylint = "*"
 snakefmt = "*"
 snakemake = "*"
+terminaltables = "*"
 yamllint = "*"
 yq = "*"
 

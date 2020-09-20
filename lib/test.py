@@ -19,6 +19,7 @@ class SuperLinterTest(unittest.TestCase):
                                     'linter_rules_path': '../.github/linters',
                                     'logging_level': logging.DEBUG})
         super_linter.run()
+        assert len(super_linter.linters) > 0, "Linters have been created and run"
 
 
 def suite():
