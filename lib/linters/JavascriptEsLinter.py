@@ -4,19 +4,18 @@ Use eslint to lint JS files
 @author: Nicolas Vuillamy
 """
 
-import os.path
+from lib.LinterTemplate import LinterTemplate
+
 
 class JavascriptEsLinter(LinterTemplate):
     language = "JAVASCRIPT"
     name = "JAVASCRIPT_ES"
-    configFileName = ".eslintrc.json"
-    fileExtensions = ['.js']
+    config_file_name = ".eslintrc.json"
+    file_extensions = ['.js']
 
     # Build the CLI command to call to lint a file
-    def buildLintCommand(file):
-        dirName = os.path.dirname(file)
-        fileName = os.path.basename(file)
+    def build_lint_command(self, file):
         cmd = "eslint"
-        if (self.configFile):
-            cmd = cmd + " --no-eslintrc -c "+self.configFile
+        if self.config_file is not None:
+            cmd = cmd + " --no-eslintrc -c "+self.config_file
         return cmd

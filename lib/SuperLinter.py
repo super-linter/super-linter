@@ -34,9 +34,9 @@ class SuperLinter:
 
     # Collect files, run linters on them and write reports
     def run(self):
-        files = self.collect_files()
+        self.collect_files()
         for linter in self.linters:
-            linter.run(files)
+            linter.run()
 
     # Manage configuration variables 
     def load_config_vars(self):
@@ -88,7 +88,7 @@ class SuperLinter:
 
         # Collect matching files for each linter
         for linter in self.linters:
-            linter.collectFiles(filtered_files)
+            linter.collect_files(filtered_files)
 
 
 # Run script
