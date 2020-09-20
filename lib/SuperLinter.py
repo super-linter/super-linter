@@ -15,13 +15,14 @@ from collections import OrderedDict
 
 
 class SuperLinter:
-    default_rules_location = '/action/lib/.automation'
-    github_api_uri = 'https://api.github.com'
-    linter_rules_path = '.github/linters'
-    files_to_lint_root = './tmp/lint'
 
     # Constructor: Load global config, linters & compute file extensions
-    def __init__(self):
+    def __init__(self, lint_root_path=None):
+        self.rules_location = '/action/lib/.automation'
+        self.github_api_uri = 'https://api.github.com'
+        self.linter_rules_path = '.github/linters'
+        self.files_to_lint_root = lint_root_path if lint_root_path is not None else './tmp/lint'
+
         self.linters = []
         self.file_extensions = []
         self.file_names = []
@@ -41,18 +42,21 @@ class SuperLinter:
     # Manage configuration variables 
     def load_config_vars(self):
         # Linter rules root path
-        if os.environ["LINTER_RULES_PATH"]:
+        if "LINTER_RULES_PATH" in os.environ:
+            self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
+        # Linter rules root path
+        if "LINTER_RULES_PATH" in os.environ:
             self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
         # Filtering regex (inclusion)
-        if os.environ["FILTER_REGEX_INCLUDE"]:
+        if "FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ["FILTER_REGEX_INCLUDE"]
         # Filtering regex (exclusion)
-        if os.environ["FILTER_REGEX_EXCLUDE"]:
+        if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
 
     # List all classes from /linter folder then instantiate each of them
     def load_linters(self):
-        for file in glob.glob('/linters/*.py'):
+        for file in glob.glob('./linters/*.py'):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
             linter_class = getattr(importlib.import_module(linter_class_file_name), linter_class_file_name)
             linter = linter_class()
@@ -92,5 +96,5 @@ class SuperLinter:
 
 
 # Run script
-if sys.argv[1] == '--cli':
+if sys.argv is not None and len(sys.argv) > 1 and sys.argv[1] == '--cli':
     SuperLinter().run()
