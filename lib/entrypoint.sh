@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "${TEST_CASE_RUN}" == "true" ]; then
-  python test.py
+  python /action/lib/test.py
 else
-  python SuperLinter.py --cli
+  python /action/lib/SuperLinter.py --cli
 fi
