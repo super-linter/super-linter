@@ -19,7 +19,10 @@ class GroovyLinter(LinterTemplate):
     def build_lint_command(self, file):
         dir_name = os.path.dirname(file)
         file_name = os.path.basename(file)
-        cmd = "npm-groovy-lint --failon warning --path " + dir_name + " --files " + file_name
+        cmd = ["npm-groovy-lint",
+               "--failon", "warning",
+               "--path ", dir_name,
+               "--files ", file_name]
         if self.config_file is not None:
-            cmd = cmd + " -c " + self.config_file
+            cmd.extend(["-c", self.config_file])
         return cmd

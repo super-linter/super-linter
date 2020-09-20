@@ -15,7 +15,7 @@ class JavascriptEsLinter(LinterTemplate):
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):
-        cmd = "eslint"
+        cmd = ["eslint"]
         if self.config_file is not None:
-            cmd = cmd + " --no-eslintrc -c "+self.config_file
+            cmd.extend(["--no-eslintrc", "-c", self.config_file])
         return cmd

@@ -40,16 +40,16 @@ class LinterTemplate:
     # Manage configuration variables 
     def load_config_vars(self):
         # Activation / Deactivation of the linter 
-        if not os.environ["VALIDATE_" + self.name]:
+        if "VALIDATE_" + self.name is False:
             self.isActive = False
         # Configuration file name 
-        if os.environ[self.name + "_FILE_NAME"] is not None:
+        if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
         # Include regex 
-        if os.environ[self.name + "_FILTER_REGEX_INCLUDE"] is not None:
+        if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
         # Exclude regex 
-        if os.environ[self.name + "_FILTER_REGEX_EXCLUDE"] is not None:
+        if self.name + "_FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ[self.name + "_FILTER_REGEX_EXCLUDE"]
 
     # Processes the linter 
@@ -79,7 +79,8 @@ class LinterTemplate:
     # lint a single file 
     def lint_file(self, file):
         command = self.build_lint_command(file)
-        logging.debug('Linter command: ' + command)
+        print(str(command))
+        logging.debug('Linter command: ' + str(command))
         process = subprocess.Popen(command,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)

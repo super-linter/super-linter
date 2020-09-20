@@ -58,7 +58,7 @@ class SuperLinter:
     def load_linters(self):
         for file in glob.glob('./linters/*.py'):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_class = getattr(importlib.import_module(linter_class_file_name), linter_class_file_name)
+            linter_class = getattr(importlib.import_module('linters.'+linter_class_file_name), linter_class_file_name)
             linter = linter_class()
             self.linters.append(linter)
 
@@ -74,7 +74,9 @@ class SuperLinter:
     # Collect list of files matching extensions and regex
     def collect_files(self):
         # List all files of root directory
-        all_files = os.listdir(self.files_to_lint_root)
+        all_files = list()
+        for (dirpath, dirnames, filenames) in os.walk(self.files_to_lint_root):
+            all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
         filtered_files = []
