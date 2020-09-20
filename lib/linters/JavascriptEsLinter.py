@@ -9,6 +9,7 @@ from lib.LinterTemplate import LinterTemplate
 
 class JavascriptEsLinter(LinterTemplate):
     language = "JAVASCRIPT"
+    linter_name = "eslint"
     name = "JAVASCRIPT_ES"
     config_file_name = ".eslintrc.yml"
     file_extensions = ['.js']

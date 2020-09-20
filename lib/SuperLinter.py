@@ -21,20 +21,22 @@ class SuperLinter:
     def __init__(self, params=None):
         if params is None:
             params = {}
+        logging_level = params['logging_level'] if "logging_level" in params else logging.INFO
+        logging.basicConfig(level=logging_level)
+
+        self.display_header()
         self.rules_location = '/action/lib/.automation'
         self.github_api_uri = 'https://api.github.com'
         self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.github/linters'
         self.files_to_lint_root = params['lint_root_path'] if "lint_root_path" in params else './tmp/lint'
-
-        logging_level = params['logging_level'] if "logging_level" in params else logging.INFO
-        logging.basicConfig(level=logging_level)
+        self.filter_regex_include = None
+        self.filter_regex_exclude = None
 
         self.linters = []
         self.file_extensions = []
         self.file_names = []
+        self.status = "success"
 
-        self.filter_regex_include = None
-        self.filter_regex_exclude = None
         self.load_config_vars()
         self.load_linters()
         self.compute_file_extensions()
@@ -44,6 +46,10 @@ class SuperLinter:
         self.collect_files()
         for linter in self.linters:
             linter.run()
+            if linter.status != 'success':
+                self.status = 'error'
+        self.manage_reports()
+        self.check_results()
 
     # Manage configuration variables 
     def load_config_vars(self):
@@ -102,7 +108,34 @@ class SuperLinter:
         for linter in self.linters:
             linter.collect_files(filtered_files)
 
+    @staticmethod
+    def display_header():
+        # Header prints
+        logging.info("---------------------------------------------")
+        logging.info("--- GitHub Actions Multi Language Linter ----")
+        logging.info(
+            "- Image Creation Date: " + (os.environ['BUILD_DATE'] if "BUILD_DATE" in os.environ else 'No docker image'))
+        logging.info(
+            "- Image Revision: " + (os.environ['BUILD_REVISION'] if "BUILD_REVISION" in os.environ else 'No docker image'))
+        logging.info(
+            "- Image Version: " + (os.environ['BUILD_VERSION'] if "BUILD_VERSION" in os.environ else 'No docker image'))
+        logging.info("---------------------------------------------")
+        logging.info("---------------------------------------------")
+        logging.info("The Super-Linter source code can be found at:")
+        logging.info(" - https://github.com/github/super-linter")
+        logging.info("---------------------------------------------")
+
+    def manage_reports(self):
+        logging.info('Reports not implemented yet')
+
+    def check_results(self):
+        if self.status == 'success':
+            logging.info('Successfully linted all files without errors')
+        else:
+            logging.error('Error(s) has been found during linting')
+            sys.exit(1)
 
 # Run script
 if sys.argv is not None and len(sys.argv) > 1 and sys.argv[1] == '--cli':
+    # Run Super-Linter
     SuperLinter().run()

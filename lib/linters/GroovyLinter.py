@@ -11,6 +11,7 @@ from lib.LinterTemplate import LinterTemplate
 
 class GroovyLinter(LinterTemplate):
     language = "GROOVY"
+    linter_name = "npm-groovy-lint"
     config_file_name = ".groovylintrc.json"
     file_extensions = ['.groovy', '.gvy', '.gradle', '.nf']
     file_names = ['Jenkinsfile']

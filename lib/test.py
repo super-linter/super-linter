@@ -19,3 +19,17 @@ class SuperLinterTest(unittest.TestCase):
                                     'linter_rules_path': '../.github/linters',
                                     'logging_level': logging.DEBUG})
         super_linter.run()
+
+
+def suite():
+    """Test suite"""
+    test_suite = unittest.TestSuite()
+    test_suite.addTests(
+        unittest.TestLoader().loadTestsFromTestCase(SuperLinterTest)
+    )
+    return suite
+
+
+if __name__ == '__main__':
+    # noinspection PyTypeChecker
+    unittest.TextTestRunner(verbosity=2).run(suite())
