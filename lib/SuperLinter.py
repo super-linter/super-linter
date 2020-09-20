@@ -7,6 +7,7 @@ Main Super-Linter class, encapsulating all linters process and reporting
 
 import glob
 import importlib
+import logging
 import os
 import re
 import sys
@@ -17,11 +18,16 @@ from collections import OrderedDict
 class SuperLinter:
 
     # Constructor: Load global config, linters & compute file extensions
-    def __init__(self, lint_root_path=None):
+    def __init__(self, params=None):
+        if params is None:
+            params = {}
         self.rules_location = '/action/lib/.automation'
         self.github_api_uri = 'https://api.github.com'
-        self.linter_rules_path = '.github/linters'
-        self.files_to_lint_root = lint_root_path if lint_root_path is not None else './tmp/lint'
+        self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.github/linters'
+        self.files_to_lint_root = params['lint_root_path'] if "lint_root_path" in params else './tmp/lint'
+
+        logging_level = params['logging_level'] if "logging_level" in params else logging.INFO
+        logging.basicConfig(level=logging_level)
 
         self.linters = []
         self.file_extensions = []
@@ -58,8 +64,8 @@ class SuperLinter:
     def load_linters(self):
         for file in glob.glob('./linters/*.py'):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_class = getattr(importlib.import_module('linters.'+linter_class_file_name), linter_class_file_name)
-            linter = linter_class()
+            linter_class = getattr(importlib.import_module('linters.' + linter_class_file_name), linter_class_file_name)
+            linter = linter_class({'linter_rules_path': self.linter_rules_path})
             self.linters.append(linter)
 
     # Define all file extensions to browse

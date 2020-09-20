@@ -10,7 +10,7 @@ from lib.LinterTemplate import LinterTemplate
 class JavascriptEsLinter(LinterTemplate):
     language = "JAVASCRIPT"
     name = "JAVASCRIPT_ES"
-    config_file_name = ".eslintrc.json"
+    config_file_name = ".eslintrc.yml"
     file_extensions = ['.js']
 
     # Build the CLI command to call to lint a file
@@ -18,4 +18,5 @@ class JavascriptEsLinter(LinterTemplate):
         cmd = ["eslint"]
         if self.config_file is not None:
             cmd.extend(["--no-eslintrc", "-c", self.config_file])
+        cmd.append(file)
         return cmd

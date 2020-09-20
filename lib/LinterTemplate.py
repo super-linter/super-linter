@@ -4,16 +4,18 @@ Template class for custom linters: any linter class in /linters folder must inhe
 The following list of items can/must be overridden on custom linter local class:
 - field language (required)
 - field name (optional)
-- field configFileName (required)
-- field fileExtensions (required)
-- method buildLintCommand (required)
+- field config_file_name (required)
+- field file_extensions (required)
+- method build_lint_command (required)
 
 @author: Nicolas Vuillamy
 """
 import logging
 import os
 import re
+import shutil
 import subprocess
+import sys
 
 
 # Abstract Linter class
@@ -27,11 +29,12 @@ class LinterTemplate:
     file_names = []  # Array of file names. Ex: ['Dockerfile']
 
     # Constructor: Initialize Linter instance with name and config variables
-    def __init__(self):
+    def __init__(self, params):
+        self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.'
+        self.config_file = None
         self.filter_regex_include = None
         self.filter_regex_exclude = None
         self.isActive = True
-        self.config_file = self.config_file_name
         self.files = []
         if self.name is None:
             self.name = self.language
@@ -45,7 +48,13 @@ class LinterTemplate:
         # Configuration file name 
         if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
-        # Include regex 
+        # Linter rules path
+        if self.name + "_RULES_PATH" in os.environ:
+            self.linter_rules_path = os.environ[self.name + "_RULES_PATH"]
+        # Linter config file
+        if self.config_file_name is not None and self.config_file_name != "LINTER_DEFAULT":
+            self.config_file = os.path.join(self.linter_rules_path,self.config_file_name)
+        # Include regex
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
         # Exclude regex 
@@ -79,16 +88,16 @@ class LinterTemplate:
     # lint a single file 
     def lint_file(self, file):
         command = self.build_lint_command(file)
-        print(str(command))
+        if sys.platform == 'win32':
+            command[0] = shutil.which(command[0])
         logging.debug('Linter command: ' + str(command))
-        process = subprocess.Popen(command,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
+        process = subprocess.run(command,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
         return_code = process.returncode
         logging.debug(
-            'Linter result: ' + str(return_code) + " " + stdout.decode("utf-8") + " " + stderr.decode("utf-8"))
-        return return_code, stdout.decode("utf-8"), stderr.decode("utf-8")
+            'Linter result: ' + str(return_code) + " " + process.stdout.decode("utf-8") + " " + process.stderr.decode("utf-8"))
+        return return_code, process.stdout.decode("utf-8"), process.stderr.decode("utf-8")
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):

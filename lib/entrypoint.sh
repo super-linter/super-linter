@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-python SuperLinter.py --cli
+if [ "${TEST_CASE_RUN}" == "true" ]; then
+  python test.py
+else
+  python SuperLinter.py --cli
+fi
