@@ -1270,6 +1270,8 @@ GetLinterRules "PHP_PHPSTAN"
 GetLinterRules "PHP_PSALM"
 # Get PowerShell rules
 GetLinterRules "POWERSHELL"
+# Get Protobuff linter rules
+GetLinterRules "PROTOBUF"
 # Get Python pylint rules
 GetLinterRules "PYTHON_PYLINT"
 # Get Python flake8 rules
