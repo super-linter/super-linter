@@ -257,8 +257,8 @@ DEFAULT_IFS="${IFS}"                                # Get the Default IFS for up
 ###############################################################
 DEFAULT_DISABLE_ERRORS='false'                          # Default to enabling errors
 export DEFAULT_DISABLE_ERRORS                           # Workaround SC2034
-ERROR_ON_MISSING_EXEC_BIT='false'                       # Default to report a warning if a shell script doesn't have the executable bit set to 1
-export ERROR_ON_MISSING_EXEC_BIT                        # Workaround SC2034
+ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
+export ERROR_ON_MISSING_EXEC_BIT
 RAW_FILE_ARRAY=()                                       # Array of all files that were changed
 export RAW_FILE_ARRAY                                   # Workaround SC2034
 READ_ONLY_CHANGE_FLAG=0                                 # Flag set to 1 if files changed are not txt or md
