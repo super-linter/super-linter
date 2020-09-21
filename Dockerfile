@@ -16,8 +16,8 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.20.1 as tflint
 FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/lintr-lib:v0.1.2 as lintr-lib
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
+FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
 
 ##################
 # Get base image #
