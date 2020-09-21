@@ -69,9 +69,12 @@ class SuperLinter:
 
     # List all classes from /linter folder then instantiate each of them
     def load_linters(self):
-        for file in glob.glob('./linters/*.py'):
+        linters_dir = os.path.dirname(os.path.abspath(__file__))+'/linters'
+        linters_glob_pattern = linters_dir+'/*Linter.py'
+        for file in glob.glob(linters_glob_pattern):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_class = getattr(importlib.import_module('linters.' + linter_class_file_name), linter_class_file_name)
+            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package= __package__)
+            linter_class = getattr(linter_module, linter_class_file_name)
             linter = linter_class({'linter_rules_path': self.linter_rules_path})
             if linter.is_active is False:
                 logging.info('Skipped [' + linter.language + '] linter [' + linter.linter_name + ']: Deactivated')
@@ -90,6 +93,7 @@ class SuperLinter:
     # Collect list of files matching extensions and regex
     def collect_files(self):
         # List all files of root directory
+        logging.info('Listing all files in directory ['+os.path.dirname(os.path.abspath(self.lint_files_root_path))+']')
         all_files = list()
         for (dirpath, dirnames, filenames) in os.walk(self.lint_files_root_path):
             all_files += [os.path.join(dirpath, file) for file in filenames]
@@ -107,6 +111,8 @@ class SuperLinter:
                 filtered_files.append(file)
             elif filename in self.file_names:
                 filtered_files.append(file)
+
+        logging.info('Kept ['+str(len(filtered_files))+'] files on ['+str(len(all_files))+'] found files')
 
         # Collect matching files for each linter
         for linter in self.linters:
@@ -169,7 +175,3 @@ class SuperLinter:
                 sys.exit(1)
 
 
-# Run script if main module
-if __name__ == "__main__":
-    # Run Super-Linter
-    SuperLinter({'cli': True}).run()

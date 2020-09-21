@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
+"""
+Unit tests for SuperLinter class
 
+@author: Nicolas Vuillamy
+"""
 import contextlib
 import io
 import os
 import unittest
 
-from lib.SuperLinter import SuperLinter
-
-"""
-Unit tests for Super-Linter
-
-@author: Nicolas Vuillamy
-"""
+from lib.superlinter import SuperLinter
 
 
 class SuperLinterTest(unittest.TestCase):
     def setUp(self):
-        os.environ["LINTER_RULES_PATH"] = '../.github/linters'
-        os.environ["LINT_FILES_ROOT_PATH"] = '../.automation/test'
+        root_dir = os.path.dirname(os.path.abspath(__file__))+'/../../../..'
+        os.environ["LINTER_RULES_PATH"] = root_dir+'/.github/linters'
+        os.environ["LINT_FILES_ROOT_PATH"] = root_dir+'/.automation/test'
         os.environ["LOG_LEVEL"] = "INFO"
 
     def test_logging_level_info(self):
@@ -49,6 +48,7 @@ class SuperLinterTest(unittest.TestCase):
             os.environ["VALIDATE_JAVASCRIPT"] = 'false'
             super_linter = SuperLinter()
             super_linter.run()
+            del os.environ["VALIDATE_JAVASCRIPT"]
         output = usage_stdout.getvalue().strip()
         print(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
@@ -60,21 +60,11 @@ class SuperLinterTest(unittest.TestCase):
             os.environ["VALIDATE_JAVASCRIPT_ES"] = 'false'
             super_linter = SuperLinter()
             super_linter.run()
+            del os.environ["VALIDATE_JAVASCRIPT_ES"]
         output = usage_stdout.getvalue().strip()
         print(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
 
 
-def suite():
-    """Test suite"""
-    test_suite = unittest.TestSuite()
-    test_suite.addTests(
-        unittest.TestLoader().loadTestsFromTestCase(SuperLinterTest)
-    )
-    return suite
 
-
-if __name__ == '__main__':
-    # noinspection PyTypeChecker
-    unittest.TextTestRunner(verbosity=2).run(suite())

@@ -6,7 +6,8 @@ Use npm-groovy-lint to lint Groovy,Jenkinsfile,Gradle and Nextflow files
 
 import os.path
 
-from lib.LinterTemplate import LinterTemplate
+
+from lib.superlinter import LinterTemplate
 
 
 class GroovyLinter(LinterTemplate):

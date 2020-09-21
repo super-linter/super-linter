@@ -4,7 +4,8 @@ Use eslint to lint JS files
 @author: Nicolas Vuillamy
 """
 
-from lib.LinterTemplate import LinterTemplate
+
+from lib.superlinter import LinterTemplate
 
 
 class JavascriptEsLinter(LinterTemplate):
