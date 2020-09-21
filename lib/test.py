@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import logging
+
+import contextlib
+import io
+import os
 import unittest
 
 from lib.SuperLinter import SuperLinter
@@ -12,14 +15,55 @@ Unit tests for Super-Linter
 
 
 class SuperLinterTest(unittest.TestCase):
+    def setUp(self):
+        os.environ["LINTER_RULES_PATH"] = '../.github/linters'
+        os.environ["LINT_FILES_ROOT_PATH"] = '../.automation/test'
+        os.environ["LOG_LEVEL"] = "INFO"
 
-    @staticmethod
-    def test_super_linter():
-        super_linter = SuperLinter({'lint_root_path': '../.automation/test',
-                                    'linter_rules_path': '../.github/linters',
-                                    'logging_level': logging.DEBUG})
-        super_linter.run()
-        assert len(super_linter.linters) > 0, "Linters have been created and run"
+    def test_logging_level_info(self):
+        usage_stdout = io.StringIO()
+        with contextlib.redirect_stdout(usage_stdout):
+            super_linter = SuperLinter()
+            super_linter.run()
+        output = usage_stdout.getvalue().strip()
+        print(output)
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn("[INFO]", output)
+        self.assertNotIn("[DEBUG]", output)
+
+    def test_logging_level_debug(self):
+        usage_stdout = io.StringIO()
+        with contextlib.redirect_stdout(usage_stdout):
+            os.environ["LOG_LEVEL"] = "DEBUG"
+            super_linter = SuperLinter()
+            super_linter.run()
+        output = usage_stdout.getvalue().strip()
+        print(output)
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn("[INFO]", output)
+        self.assertIn("[DEBUG]", output)
+
+    def test_disable_language(self):
+        usage_stdout = io.StringIO()
+        with contextlib.redirect_stdout(usage_stdout):
+            os.environ["VALIDATE_JAVASCRIPT"] = 'false'
+            super_linter = SuperLinter()
+            super_linter.run()
+        output = usage_stdout.getvalue().strip()
+        print(output)
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
+
+    def test_disable_linter(self):
+        usage_stdout = io.StringIO()
+        with contextlib.redirect_stdout(usage_stdout):
+            os.environ["VALIDATE_JAVASCRIPT_ES"] = 'false'
+            super_linter = SuperLinter()
+            super_linter.run()
+        output = usage_stdout.getvalue().strip()
+        print(output)
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
 
 
 def suite():

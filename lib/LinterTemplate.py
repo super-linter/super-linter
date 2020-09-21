@@ -35,7 +35,7 @@ class LinterTemplate:
         self.config_file = None
         self.filter_regex_include = None
         self.filter_regex_exclude = None
-        self.isActive = True
+        self.is_active = True
         self.files = []
         if self.name is None:
             self.name = self.language
@@ -48,8 +48,10 @@ class LinterTemplate:
     # Manage configuration variables 
     def load_config_vars(self):
         # Activation / Deactivation of the linter 
-        if "VALIDATE_" + self.name is False:
-            self.isActive = False
+        if "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'false':
+            self.is_active = False
+        if "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'false':
+            self.is_active = False
         # Configuration file name 
         if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
@@ -70,16 +72,19 @@ class LinterTemplate:
     def run(self):
         self.display_header()
         for file in self.files:
+            logging.info("File:[" + file + "]")
             return_code, stdout = self.lint_file(file)
             if return_code == 0:
-                logging.info(" - File:" + file + " was linted with " + self.name + " successfully")
+                logging.info(
+                    " - File:[" + os.path.basename(file) + "] was linted with [" + self.name + "] successfully")
                 self.files_lint_results[file] = {"status": "success"}
             else:
-                logging.error(
-                    "Error(s) detected in " + file + "\n" + stdout)
+                logging.error("Found errors in [" + self.linter_name + "] linter!")
+                logging.error(stdout)
                 self.files_lint_results[file] = {"status": "error"}
                 self.status = "error"
                 self.number_errors = self.number_errors + 1
+            logging.info("---------------------------")
 
     # Filter files to keep only the ones matching extension or file name
     def collect_files(self, all_files):
@@ -118,8 +123,9 @@ class LinterTemplate:
         # Linter header prints
         msg = "Linting " + self.language + " files with " + self.linter_name
         if self.language != self.name:
-            msg = msg + " (key: "+self.name+")"
+            msg = msg + " (key: " + self.name + ")"
         logging.info("")
         logging.info("-------------------------------------------------------------------------------")
-        logging.info("--------- "+msg+" ---------")
+        logging.info("--------- " + msg + " ---------")
         logging.info("-------------------------------------------------------------------------------")
+        logging.info("")

@@ -22,24 +22,23 @@ class SuperLinter:
     def __init__(self, params=None):
         if params is None:
             params = {}
-        logging_level = params['logging_level'] if "logging_level" in params else logging.INFO
-        logging.basicConfig(level=logging_level)
-
+        self.initialize_logger()
         self.display_header()
         self.rules_location = '/action/lib/.automation'
         self.github_api_uri = 'https://api.github.com'
-        self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.github/linters'
-        self.files_to_lint_root = params['lint_root_path'] if "lint_root_path" in params else './tmp/lint'
+        self.linter_rules_path = '.github/linters'
+        self.lint_files_root_path = './tmp/lint'
         self.filter_regex_include = None
         self.filter_regex_exclude = None
         self.cli = params['cli'] if "cli" in params else False
+
+        self.load_config_vars()
 
         self.linters = []
         self.file_extensions = []
         self.file_names = []
         self.status = "success"
 
-        self.load_config_vars()
         self.load_linters()
         self.compute_file_extensions()
 
@@ -59,8 +58,8 @@ class SuperLinter:
         if "LINTER_RULES_PATH" in os.environ:
             self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
         # Linter rules root path
-        if "LINTER_RULES_PATH" in os.environ:
-            self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
+        if "LINT_FILES_ROOT_PATH" in os.environ:
+            self.lint_files_root_path = os.environ["LINT_FILES_ROOT_PATH"]
         # Filtering regex (inclusion)
         if "FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ["FILTER_REGEX_INCLUDE"]
@@ -74,6 +73,9 @@ class SuperLinter:
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
             linter_class = getattr(importlib.import_module('linters.' + linter_class_file_name), linter_class_file_name)
             linter = linter_class({'linter_rules_path': self.linter_rules_path})
+            if linter.is_active is False:
+                logging.info('Skipped [' + linter.language + '] linter [' + linter.linter_name + ']: Deactivated')
+                continue
             self.linters.append(linter)
 
     # Define all file extensions to browse
@@ -89,7 +91,7 @@ class SuperLinter:
     def collect_files(self):
         # List all files of root directory
         all_files = list()
-        for (dirpath, dirnames, filenames) in os.walk(self.files_to_lint_root):
+        for (dirpath, dirnames, filenames) in os.walk(self.lint_files_root_path):
             all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
@@ -109,6 +111,22 @@ class SuperLinter:
         # Collect matching files for each linter
         for linter in self.linters:
             linter.collect_files(filtered_files)
+
+    @staticmethod
+    def initialize_logger():
+        logging_level_key = os.environ['LOG_LEVEL'] if "LOG_LEVEL" in os.environ else 'INFO'
+        logging_level_list = {'INFO': logging.INFO,
+                              "DEBUG": logging.DEBUG,
+                              "WARNING": logging.WARNING,
+                              "ERROR": logging.ERROR,
+                              # Previous values for v3 ascending compatibility
+                              "TRACE": logging.WARNING,
+                              "VERBOSE": logging.INFO
+                              }
+        logging.basicConfig(stream=sys.stdout,
+                            force=True,
+                            level=logging_level_list[logging_level_key],
+                            format='%(asctime)s [%(levelname)s] %(message)s')
 
     @staticmethod
     def display_header():
@@ -133,16 +151,13 @@ class SuperLinter:
 
     def manage_reports(self):
         logging.info("")
-        logging.info("----------------------------------------------")
-        logging.info("------------------- SUMMARY -------------------")
-        logging.info("----------------------------------------------")
-        table_data = [["Linter", "Errors", "Total files"]]
+        table_data = [["Language", "Linter", "Errors", "Total files"]]
         for linter in self.linters:
-            table_data.append([linter.name, str(linter.number_errors), str(len(linter.files))])
+            table_data.append([linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
         table = AsciiTable(table_data)
+        table.title = "----SUMMARY"
         for table_line in table.table.splitlines():
             logging.info(table_line)
-        logging.info("----------------------------------------------")
         logging.info("")
 
     def check_results(self):
@@ -154,7 +169,7 @@ class SuperLinter:
                 sys.exit(1)
 
 
-# Run script
-if sys.argv is not None and len(sys.argv) > 1 and sys.argv[1] == '--cli':
+# Run script if main module
+if __name__ == "__main__":
     # Run Super-Linter
     SuperLinter({'cli': True}).run()
