@@ -33,6 +33,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [JavaScript eslint](#javascript-eslint)
   - [JavaScript standard](#javascript-standard)
   - [JSON](#json)
+  - [Kubeval](#kubeval)
   - [Kotlin](#kotlin)
   - [LaTeX](#latex)
   - [Lua](#lua)
@@ -602,6 +603,16 @@ import package.b.*
 ### ktlint disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Kubernetes
+
+- [kubeval](https://github.com/instrumenta/kubeval)
+
+### Kubeval
+
+- There is no top level _configuration file_ available at this time
 
 ---
 

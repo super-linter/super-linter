@@ -706,6 +706,7 @@ function RunTestCases() {
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
+  TestCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\)\$" "kubeval"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "latex"
   TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
@@ -807,26 +808,7 @@ function LintAnsibleFiles() {
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(ls "${ANSIBLE_DIRECTORY}"/*.{yaml,yml} 2>&1)
-
-    ###############################################################
-    # Set the list to empty if only MD and TXT files were changed #
-    ###############################################################
-    # No need to run the full ansible checks on read only file changes
-    if [ "${READ_ONLY_CHANGE_FLAG}" -eq 0 ]; then
-      ##########################
-      # Set the array to empty #
-      ##########################
-      LIST_FILES=()
-      ###################################
-      # Send message that were skipping #
-      ###################################
-      debug "- Skipping Ansible lint run as file(s) that were modified were read only..."
-      ############################
-      # Create flag to skip loop #
-      ############################
-      SKIP_FLAG=1
-    fi
+    mapfile -t LIST_FILES < <(find "${ANSIBLE_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
 
     ####################################
     # Check if we have data to look at #
