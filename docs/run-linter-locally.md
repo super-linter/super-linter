@@ -33,6 +33,14 @@ You can follow the link below on how to install and configure **Docker** on your
 
 You can add as many **Additional** flags as needed, documented in [README.md](../README.md#Environment-variables)
 
+### Example
+
+```bash
+docker pull github/super-linter:latest
+git clone https://github.com/nvuillam/npm-groovy-lint.git
+docker run -e RUN_LOCAL=true -e FILTER_REGEX_INCLUDE='(.*lib/.*)' -e FILTER_REGEX_EXCLUDE='(.*lib/example/.*)' -v ~/npm-groovy-lint:/tmp/lint github/super-linter
+```
+
 ## Troubleshooting
 
 ### Run container and gain access to the command line
