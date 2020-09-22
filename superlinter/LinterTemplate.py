@@ -125,11 +125,11 @@ class LinterTemplate:
 
     def display_header(self):
         # Linter header prints
-        msg = "Linting " + self.language + " files with " + self.linter_name
-        if self.language != self.name:
-            msg = msg + " (key: " + self.name + ")"
+        msg = "Linting " + self.language + " files with " + self.linter_name + ' ('+self.linter_url+')'
         logging.info("")
-        logging.info("-------------------------------------------------------------------------------")
+        logging.info("------------------------------------------------------------------------------------------")
         logging.info("--------- " + msg + " ---------")
-        logging.info("-------------------------------------------------------------------------------")
+        if self.language != self.name:
+            logging.info("--------- " + "Linter key: " + self.name + " ---------")
+        logging.info("------------------------------------------------------------------------------------------")
         logging.info("")

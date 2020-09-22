@@ -10,22 +10,21 @@ import os
 import unittest
 
 from superlinter import SuperLinter
+from superlinter.tests.test_superlinter.helpers import utilstest
 
 
 class SuperLinterTest(unittest.TestCase):
     def setUp(self):
-        root_dir = os.path.dirname(os.path.abspath(__file__))+'/../../..'
-        os.environ["LINTER_RULES_PATH"] = root_dir+'/.github/linters'
-        os.environ["LINT_FILES_ROOT_PATH"] = root_dir+'/.automation/test'
-        os.environ["LOG_LEVEL"] = "INFO"
+        utilstest.linter_test_setup()
 
     def test_logging_level_info(self):
         usage_stdout = io.StringIO()
         with contextlib.redirect_stdout(usage_stdout):
+            os.environ["LOG_LEVEL"] = "INFO"
             super_linter = SuperLinter()
             super_linter.run()
         output = usage_stdout.getvalue().strip()
-        print(output)
+        utilstest.print_output(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn("[INFO]", output)
         self.assertNotIn("[DEBUG]", output)
@@ -37,7 +36,7 @@ class SuperLinterTest(unittest.TestCase):
             super_linter = SuperLinter()
             super_linter.run()
         output = usage_stdout.getvalue().strip()
-        print(output)
+        utilstest.print_output(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn("[INFO]", output)
         self.assertIn("[DEBUG]", output)
@@ -50,7 +49,7 @@ class SuperLinterTest(unittest.TestCase):
             super_linter.run()
             del os.environ["VALIDATE_JAVASCRIPT"]
         output = usage_stdout.getvalue().strip()
-        print(output)
+        utilstest.print_output(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
         self.assertIn('Skipped [JAVASCRIPT] linter [standard]: Deactivated', output)
@@ -63,9 +62,7 @@ class SuperLinterTest(unittest.TestCase):
             super_linter.run()
             del os.environ["VALIDATE_JAVASCRIPT_ES"]
         output = usage_stdout.getvalue().strip()
-        print(output)
+        utilstest.print_output(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
-
-
-
+        self.assertIn('Linting JAVASCRIPT files with standard', output)

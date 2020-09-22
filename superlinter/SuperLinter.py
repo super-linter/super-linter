@@ -49,10 +49,13 @@ class SuperLinter:
         self.collect_files()
 
         # Display collection summary in log
-        table_data = [["Language", "Linter", "File names/extensions","Matching files"]]
+        table_data = [["Language", "Linter", "File names/extensions", "Matching files"]]
         for linter in self.linters:
             if len(linter.files) > 0:
-                table_data.append([linter.language, linter.linter_name, linter.file_extensions, str(len(linter.files))])
+                table_data.append([linter.language,
+                                   linter.linter_name,
+                                   str(linter.file_extensions)+str(linter.file_names),
+                                   str(len(linter.files))])
         table = AsciiTable(table_data)
         table.title = "----MATCHING LINTERS"
         logging.info("")
@@ -176,7 +179,7 @@ class SuperLinter:
 
     def manage_reports(self):
         logging.info("")
-        table_data = [["Language", "Linter", "Errors", "Total files"]]
+        table_data = [["Language", "Linter", "Files with error(s)", "Total files"]]
         for linter in self.linters:
             if linter.is_active is True:
                 table_data.append([linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])

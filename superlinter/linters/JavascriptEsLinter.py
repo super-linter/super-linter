@@ -12,7 +12,7 @@ from superlinter.linters.JavascriptLinterRoot import JavascriptLinterRoot
 class JavascriptEsLinter(JavascriptLinterRoot):
     linter_name = "eslint"
     linter_url = "https://eslint.org/"
-    name = "JAVASCRIPT_STANDARD"
+    name = "JAVASCRIPT_ES"
     config_file_name = ".eslintrc.yml"
 
     # Build the CLI command to call to lint a file

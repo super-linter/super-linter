@@ -66,3 +66,5 @@ typings/
 
 # default output report
 super-linter.report
+
+superlinter/__pycache__/
