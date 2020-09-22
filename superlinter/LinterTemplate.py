@@ -13,6 +13,7 @@ The following list of items can/must be overridden on custom linter local class:
 
 @author: Nicolas Vuillamy
 """
+import errno
 import logging
 import os
 import re
@@ -114,6 +115,10 @@ class LinterTemplate:
             cli_absolute = shutil.which(command[0])
             if cli_absolute is not None:
                 command[0] = shutil.which(command[0])
+            else:
+                msg = "Unable to find command: " + command[0]
+                logging.error(msg)
+                return errno.ESRCH, msg
 
         # Call linter with a sub-process
         logging.debug('Linter command: ' + str(command))
