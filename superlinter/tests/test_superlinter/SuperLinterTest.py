@@ -7,7 +7,6 @@ Unit tests for SuperLinter class
 import unittest
 
 from superlinter.tests.test_superlinter.helpers import utilstest
-from superlinter.tests.test_superlinter.helpers.utilstest import call_super_linter
 
 
 class SuperLinterTest(unittest.TestCase):
@@ -15,25 +14,25 @@ class SuperLinterTest(unittest.TestCase):
         utilstest.linter_test_setup()
 
     def test_logging_level_info(self):
-        super_linter, output = call_super_linter({"LOG_LEVEL": 'INFO'})
+        super_linter, output = utilstest.call_super_linter({"LOG_LEVEL": 'INFO'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn("[INFO]", output)
         self.assertNotIn("[DEBUG]", output)
 
     def test_logging_level_debug(self):
-        super_linter, output = call_super_linter({"LOG_LEVEL": 'DEBUG'})
+        super_linter, output = utilstest.call_super_linter({"LOG_LEVEL": 'DEBUG'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn("[INFO]", output)
         self.assertIn("[DEBUG]", output)
 
     def test_disable_language(self):
-        super_linter, output = call_super_linter({"VALIDATE_JAVASCRIPT": 'false'})
+        super_linter, output = utilstest.call_super_linter({"VALIDATE_JAVASCRIPT": 'false'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
         self.assertIn('Skipped [JAVASCRIPT] linter [standard]: Deactivated', output)
 
     def test_disable_linter(self):
-        super_linter, output = call_super_linter({"VALIDATE_JAVASCRIPT_ES": 'false'})
+        super_linter, output = utilstest.call_super_linter({"VALIDATE_JAVASCRIPT_ES": 'false'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
         self.assertIn('Linting JAVASCRIPT files with standard', output)

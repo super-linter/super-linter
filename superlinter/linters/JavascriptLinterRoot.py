@@ -11,3 +11,4 @@ from superlinter import LinterTemplate
 class JavascriptLinterRoot(LinterTemplate):
     language = "JAVASCRIPT"
     file_extensions = ['.js']
+    test_folder = 'javascript'

@@ -14,6 +14,7 @@ import sys
 from collections import OrderedDict
 
 from terminaltables import AsciiTable
+from superlinter import utils
 
 
 class SuperLinter:
@@ -161,9 +162,9 @@ class SuperLinter:
     @staticmethod
     def display_header():
         # Header prints
-        logging.info("---------------------------------------------")
-        logging.info("--- GitHub Actions Multi Language Linter ----")
-        logging.info("---------------------------------------------")
+        logging.info(utils.format_hyphens(""))
+        logging.info(utils.format_hyphens("GitHub Actions Multi Language Linter"))
+        logging.info(utils.format_hyphens(""))
         logging.info(
             " - Image Creation Date: " + (
                 os.environ['BUILD_DATE'] if "BUILD_DATE" in os.environ else 'No docker image'))
@@ -173,10 +174,10 @@ class SuperLinter:
         logging.info(
             " - Image Version: " + (
                 os.environ['BUILD_VERSION'] if "BUILD_VERSION" in os.environ else 'No docker image'))
-        logging.info("---------------------------------------------")
+        logging.info(utils.format_hyphens(""))
         logging.info("The Super-Linter source code can be found at:")
         logging.info(" - https://github.com/github/super-linter")
-        logging.info("---------------------------------------------")
+        logging.info(utils.format_hyphens(""))
         logging.info("")
 
     def manage_reports(self):

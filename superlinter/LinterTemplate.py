@@ -6,6 +6,7 @@ The following list of items can/must be overridden on custom linter local class:
 - field name (optional) ex: "JAVASCRIPT_ES"
 - field linter_name (required) ex: "eslint"
 - field linter_url (required) ex: "https://eslint.org/"
+- field test_folder (required) ex: "javascript"
 - field config_file_name (required) ex: ".eslintrc.yml"
 - field file_extensions (required) ex: [".js"]
 - field file_names (optional) ex: ["Dockerfile"]
@@ -21,6 +22,8 @@ import shutil
 import subprocess
 import sys
 
+from superlinter import utils
+
 
 # Abstract Linter class
 class LinterTemplate:
@@ -29,13 +32,16 @@ class LinterTemplate:
     name = None  # If you have several linters for the same language, please override with a different name. Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
     linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
+    test_folder = "Field 'test_folder' must be overridden at custom linter class level"  # ex: groovy
 
     config_file_name = None  # Default name of the configuration file to use with the linter. Override at custom linter class level. Ex: '.eslintrc.js'
     file_extensions = []  # Array of strings defining file extensions. Override at custom linter class level. Ex: ['.js','.cjs']
     file_names = []  # Array of file names. Ex: ['Dockerfile']
 
     # Constructor: Initialize Linter instance with name and config variables
-    def __init__(self, params):
+    def __init__(self, params=None):
+        if params is None:
+            params = {}
         self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.'
         self.config_file = None
         self.filter_regex_include = None
@@ -81,15 +87,15 @@ class LinterTemplate:
             return_code, stdout = self.lint_file(file)
             if return_code == 0:
                 logging.info(
-                    " - File:[" + os.path.basename(file) + "] was linted with [" + self.name + "] successfully")
+                    " - File:[" + os.path.basename(file) + "] was linted with [" + self.linter_name + "] successfully")
                 self.files_lint_results[file] = {"status": "success"}
             else:
-                logging.error("Found errors in [" + self.linter_name + "] linter!")
+                logging.error(" - File:[" + os.path.basename(file) + "] contains error(s) according to [" + self.linter_name + "]")
                 logging.error(stdout)
                 self.files_lint_results[file] = {"status": "error"}
                 self.status = "error"
                 self.number_errors = self.number_errors + 1
-            logging.info("---------------------------")
+            logging.info(utils.format_hyphens(""))
 
     # Filter files to keep only the ones matching extension or file name
     def collect_files(self, all_files):
@@ -141,9 +147,9 @@ class LinterTemplate:
         # Linter header prints
         msg = "Linting " + self.language + " files with " + self.linter_name + ' (' + self.linter_url + ')'
         logging.info("")
-        logging.info("------------------------------------------------------------------------------------------")
-        logging.info("--------- " + msg + " ---------")
+        logging.info(utils.format_hyphens(""))
+        logging.info(utils.format_hyphens(msg))
         if self.language != self.name:
-            logging.info("------------------- " + "Linter key: " + self.name + " --------------------")
-        logging.info("------------------------------------------------------------------------------------------")
+            logging.info(utils.format_hyphens("Linter key: " + self.name))
+        logging.info(utils.format_hyphens(""))
         logging.info("")

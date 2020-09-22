@@ -17,7 +17,7 @@ class GroovyLinter(LinterTemplate):
     config_file_name = ".groovylintrc.json"
     file_extensions = ['.groovy', '.gvy', '.gradle', '.nf']
     file_names = ['Jenkinsfile']
-
+    test_folder = 'groovy'
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):
         dir_name = os.path.dirname(file)
