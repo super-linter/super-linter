@@ -416,4 +416,5 @@ RUN /action/lib/linterVersions.sh
 ######################
 COPY ./entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
+RUN ls
 ENTRYPOINT ["./entrypoint.sh"]
