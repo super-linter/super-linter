@@ -49,12 +49,13 @@ class SuperLinter:
         self.collect_files()
 
         # Display collection summary in log
-        table_data = [["Language", "Linter", "File names/extensions", "Matching files"]]
+        table_data = [["Language", "Linter", "Criteria", "Matching files"]]
         for linter in self.linters:
             if len(linter.files) > 0:
+                all_criteria = linter.file_extensions + linter.file_names
                 table_data.append([linter.language,
                                    linter.linter_name,
-                                   str(linter.file_extensions) + str(linter.file_names),
+                                   '|'.join(all_criteria),
                                    str(len(linter.files))])
         table = AsciiTable(table_data)
         table.title = "----MATCHING LINTERS"

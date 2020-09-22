@@ -27,7 +27,7 @@ class LinterTemplate:
     language = "Field 'Language' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
     name = None  # If you have several linters for the same language, please override with a different name. Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
-    linter_url = "Field 'linter_url' must be overridden at custom linter class level" # ex: https://eslint.org/
+    linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
 
     config_file_name = None  # Default name of the configuration file to use with the linter. Override at custom linter class level. Ex: '.eslintrc.js'
     file_extensions = []  # Array of strings defining file extensions. Override at custom linter class level. Ex: ['.js','.cjs']
@@ -106,9 +106,16 @@ class LinterTemplate:
 
     # lint a single file 
     def lint_file(self, file):
+        # Build command using method locally defined on Linter class
         command = self.build_lint_command(file)
+
+        # Use full executable path if we are on Windows
         if sys.platform == 'win32':
-            command[0] = shutil.which(command[0])
+            cli_absolute = shutil.which(command[0])
+            if cli_absolute is not None:
+                command[0] = shutil.which(command[0])
+
+        # Call linter with a sub-process
         logging.debug('Linter command: ' + str(command))
         process = subprocess.run(command,
                                  stdout=subprocess.PIPE,
@@ -116,6 +123,8 @@ class LinterTemplate:
         return_code = process.returncode
         logging.debug(
             'Linter result: ' + str(return_code) + " " + process.stdout.decode("utf-8"))
+
+        # Return linter result
         return return_code, process.stdout.decode("utf-8")
 
     # Build the CLI command to call to lint a file
@@ -125,11 +134,11 @@ class LinterTemplate:
 
     def display_header(self):
         # Linter header prints
-        msg = "Linting " + self.language + " files with " + self.linter_name + ' ('+self.linter_url+')'
+        msg = "Linting " + self.language + " files with " + self.linter_name + ' (' + self.linter_url + ')'
         logging.info("")
         logging.info("------------------------------------------------------------------------------------------")
         logging.info("--------- " + msg + " ---------")
         if self.language != self.name:
-            logging.info("--------- " + "Linter key: " + self.name + " ---------")
+            logging.info("------------------- " + "Linter key: " + self.name + " --------------------")
         logging.info("------------------------------------------------------------------------------------------")
         logging.info("")

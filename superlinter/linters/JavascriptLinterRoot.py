@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Root linter class for Javascript linters
+Root class for Javascript linters
 https://eslint.org/
 @author: Nicolas Vuillamy
 """
