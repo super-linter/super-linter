@@ -5,7 +5,6 @@ https://eslint.org/
 @author: Nicolas Vuillamy
 """
 
-
 from superlinter.linters.JavascriptLinterRoot import JavascriptLinterRoot
 
 

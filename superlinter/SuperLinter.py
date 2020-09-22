@@ -11,8 +11,8 @@ import logging
 import os
 import re
 import sys
-
 from collections import OrderedDict
+
 from terminaltables import AsciiTable
 
 

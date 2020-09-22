@@ -5,7 +5,6 @@ https://flake8.pycqa.org/
 @author: Nicolas Vuillamy
 """
 
-
 from superlinter.linters.PythonLinterRoot import PythonLinterRoot
 
 

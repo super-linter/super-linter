@@ -7,7 +7,6 @@ https://github.com/nvuillam/npm-groovy-lint
 
 import os.path
 
-
 from superlinter import LinterTemplate
 
 

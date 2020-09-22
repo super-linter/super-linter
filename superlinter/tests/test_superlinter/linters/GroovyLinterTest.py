@@ -5,12 +5,8 @@ Unit tests for GroovyLinter class
 @author: Nicolas Vuillamy
 """
 
-import contextlib
-import io
-import os
 import unittest
 
-from superlinter import SuperLinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 

@@ -5,7 +5,6 @@ https://github.com/standard/standard
 @author: Nicolas Vuillamy
 """
 
-
 from superlinter.linters.JavascriptLinterRoot import JavascriptLinterRoot
 
 
@@ -16,7 +15,6 @@ class JavascriptStandardLinter(JavascriptLinterRoot):
     config_file_name = ""
 
     # Build the CLI command to call to lint a file
-    @staticmethod
-    def build_lint_command(file):
+    def build_lint_command(self, file):
         cmd = ["standard", file]
         return cmd

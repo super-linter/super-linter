@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from .SuperLinter import SuperLinter
 from .LinterTemplate import LinterTemplate
+from .SuperLinter import SuperLinter
 from .linters import *
 
 __all__ = [

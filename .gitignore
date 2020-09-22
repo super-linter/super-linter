@@ -76,3 +76,5 @@ superlinter/linters/__pycache__/
 .idea/
 
 .vscode/
+
+superlinter/tests/test_superlinter/__pycache__/
