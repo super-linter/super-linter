@@ -78,3 +78,5 @@ superlinter/linters/__pycache__/
 .vscode/
 
 superlinter/tests/test_superlinter/__pycache__/
+
+superlinter/tests/test_superlinter/linters/__pycache__/
