@@ -100,8 +100,8 @@ function LintCodebase() {
       mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
         -path "*/node_modules" -prune -o \
         -path "*/.git" -prune -o \
-        -path "*/.venv"-prune -o \
-        -path "*/.rbenv"-prune -o \
+        -path "*/.venv" -prune -o \
+        -path "*/.rbenv" -prune -o \
         -type f -regex "${FILE_EXTENSIONS}" 2>&1)
 
       ###########################
@@ -128,7 +128,7 @@ function LintCodebase() {
   #################################################
   # Filter files if FILTER_REGEX_INCLUDE is set #
   #################################################
-  if [ "$FILTER_REGEX_INCLUDE" ]; then
+  if [[ -n "$FILTER_REGEX_INCLUDE" ]]; then
     for index in "${!LIST_FILES[@]}"; do
       [[ ! (${LIST_FILES[$index]} =~ $FILTER_REGEX_INCLUDE) ]] && unset -v 'LIST_FILES[$index]'
     done
@@ -137,7 +137,7 @@ function LintCodebase() {
   #################################################
   # Filter files if FILTER_REGEX_EXCLUDE is set #
   #################################################
-  if [ "$FILTER_REGEX_EXCLUDE" ]; then
+  if [[ -n "$FILTER_REGEX_EXCLUDE" ]]; then
     for index in "${!LIST_FILES[@]}"; do
       [[ ${LIST_FILES[$index]} =~ $FILTER_REGEX_EXCLUDE ]] && unset -v 'LIST_FILES[$index]'
     done
@@ -180,19 +180,19 @@ function LintCodebase() {
       ######################################################
       # Make sure we don't lint node modules or test cases #
       ######################################################
-      if [[ ${DIR_NAME} == *"node_modules"* ]]; then
+      if [[ ${FILE} == *"node_modules"* ]]; then
         # This is a node modules file
         continue
-      elif [[ ${DIR_NAME} == *"${TEST_CASE_FOLDER}"* ]]; then
+      elif [[ ${FILE} == *"${TEST_CASE_FOLDER}"* ]]; then
         # This is the test cases, we should always skip
         continue
-      elif [[ ${DIR_NAME} == *".git" ]] || [[ ${FILE} == *".git" ]] || [[ ${FILE} == *".git/"* ]]; then
+      elif [[ ${FILE} == *".git" ]] || [[ ${FILE} == *".git/"* ]]; then
         # This is likely the .git folder and shouldn't be parsed
         continue
-      elif [[ ${DIR_NAME} == *".venv"* ]]; then
+      elif [[ ${FILE} == *".venv"* ]]; then
         # This is likely the python virtual environment folder and shouldn't be parsed
         continue
-      elif [[ ${DIR_NAME} == *".rbenv"* ]]; then
+      elif [[ ${FILE} == *".rbenv"* ]]; then
         # This is likely the ruby environment folder and shouldn't be parsed
         continue
       elif [[ ${FILE_TYPE} == "BASH" ]] && ! IsValidShellScript "${FILE}"; then
@@ -297,7 +297,8 @@ function LintCodebase() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
-        if [[ ${FILE_TYPE} == "BASH_EXEC" ]]; then
+        debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
+        if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
           ########
           # WARN #
           ########
@@ -699,12 +700,13 @@ function RunTestCases() {
   TestCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" ".*\.ext$" "editorconfig-checker"
   TestCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\)\$" "env"
   TestCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "golang"
-  TestCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon error" ".*\.\(groovy\|jenkinsfile\|gradle\|nf\)\$" "groovy"
+  TestCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning" ".*\.\(groovy\|jenkinsfile\|gradle\|nf\)\$" "groovy"
   TestCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "html"
   TestCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}" ".*\.\(java\)\$" "java"
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
+  TestCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\)\$" "kubeval"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "latex"
   TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
@@ -806,26 +808,7 @@ function LintAnsibleFiles() {
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(ls "${ANSIBLE_DIRECTORY}"/*.{yaml,yml} 2>&1)
-
-    ###############################################################
-    # Set the list to empty if only MD and TXT files were changed #
-    ###############################################################
-    # No need to run the full ansible checks on read only file changes
-    if [ "${READ_ONLY_CHANGE_FLAG}" -eq 0 ]; then
-      ##########################
-      # Set the array to empty #
-      ##########################
-      LIST_FILES=()
-      ###################################
-      # Send message that were skipping #
-      ###################################
-      debug "- Skipping Ansible lint run as file(s) that were modified were read only..."
-      ############################
-      # Create flag to skip loop #
-      ############################
-      SKIP_FLAG=1
-    fi
+    mapfile -t LIST_FILES < <(find "${ANSIBLE_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
 
     ####################################
     # Check if we have data to look at #

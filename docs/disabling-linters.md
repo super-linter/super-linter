@@ -30,9 +30,10 @@ For some linters it is also possible to override rules on a case by case level w
   - [Groovy](#groovy)
   - [HTML](#html)
   - [Java](#java)
-  - [Javascript eslint](#javascript-eslint)
-  - [Javascript standard](#javascript-standard)
+  - [JavaScript eslint](#javascript-eslint)
+  - [JavaScript standard](#javascript-standard)
   - [JSON](#json)
+  - [Kubeval](#kubeval)
   - [Kotlin](#kotlin)
   - [LaTeX](#latex)
   - [Lua](#lua)
@@ -488,17 +489,17 @@ def variable = 1;
 
 ---
 
-## Javascript eslint
+## JavaScript eslint
 
 - [eslint](https://eslint.org/)
 
-### Javascript eslint Config file
+### JavaScript eslint Config file
 
 - `.github/linters/.eslintrc.yml`
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.eslintrc.yml`
 
-### Javascript eslint disable single line
+### JavaScript eslint disable single line
 
 ```javascript
 var thing = new Thing(); // eslint-disable-line no-use-before-define
@@ -511,7 +512,7 @@ function Thing() {
 }
 ```
 
-### Javascript eslint disable code block
+### JavaScript eslint disable code block
 
 ```javascript
 /*eslint-disable */
@@ -522,7 +523,7 @@ alert("foo");
 /*eslint-enable */
 ```
 
-### Javascript eslint disable entire file
+### JavaScript eslint disable entire file
 
 - Place at the top of the file:
 
@@ -532,23 +533,23 @@ alert("foo");
 
 ---
 
-## Javascript standard
+## JavaScript standard
 
 - [standard js](https://standardjs.com/)
 
-### Javascript standard Config file
+### JavaScript standard Config file
 
 - There is no top level _configuration file_ available at this time
 
-### Javascript standard disable single line
+### JavaScript standard disable single line
 
 - There is currently **No** way to disable rules inline of the file(s)
 
-### Javascript standard disable code block
+### JavaScript standard disable code block
 
 - There is currently **No** way to disable rules inline of the file(s)
 
-### Javascript standard disable entire file
+### JavaScript standard disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 
@@ -602,6 +603,16 @@ import package.b.*
 ### ktlint disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Kubernetes
+
+- [kubeval](https://github.com/instrumenta/kubeval)
+
+### Kubeval
+
+- There is no top level _configuration file_ available at this time
 
 ---
 

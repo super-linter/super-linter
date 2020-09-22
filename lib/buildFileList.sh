@@ -591,6 +591,16 @@ function BuildFileList() {
         READ_ONLY_CHANGE_FLAG=1
       fi
 
+      ############################################
+      # Check if the file is Kubernetes template #
+      ############################################
+      if DetectKubernetesFile "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_KUBERNETES+=("${FILE}")
+      fi
+
     ########################################################################
     # We have something that we need to try to check file type another way #
     ########################################################################
@@ -773,8 +783,8 @@ function PopulateShellScriptsList() {
   mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
     -path "*/node_modules" -prune -o \
     -path "*/.git" -prune -o \
-    -path "*/.venv"-prune -o \
-    -path "*/.rbenv"-prune -o \
+    -path "*/.venv" -prune -o \
+    -path "*/.rbenv" -prune -o \
     -type f 2>&1)
   for FILE in "${LIST_FILES[@]}"; do
     if IsValidShellScript "${FILE}"; then

@@ -71,7 +71,7 @@ jobs:
         run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
 
       #########################################
-      # Clean code base to run agaisnt it all #
+      # Clean code base to run against it all #
       #########################################
       - name: Clean Test code base for additional testing
         shell: bash

@@ -7,17 +7,18 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
+FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
 FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.19.1 as tflint
-FROM accurics/terrascan:latest as terrascan
+FROM wata727/tflint:0.20.1 as tflint
+FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/lintr-lib:v0.1.0 as lintr-lib
-FROM assignuser/chktex-alpine:v0.1.0 as chktex
+FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
 # Get base image #
@@ -305,6 +306,11 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
 
+###################
+# Install kubeval #
+###################
+COPY --from=kubeval /kubeval /usr/bin/
+
 #################
 # Install shfmt #
 #################
@@ -331,6 +337,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     GITHUB_TOKEN=${GITHUB_TOKEN} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
     JAVASCRIPT_ES_CONFIG_FILE=${JAVASCRIPT_ES_CONFIG_FILE} \
+    KUBERNETES_DIRECTORY=${KUBERNETES_DIRECTORY} \
     LINTER_RULES_PATH=${LINTER_RULES_PATH} \
     LOG_FILE=${LOG_FILE} \
     LOG_LEVEL=${LOG_LEVEL} \
@@ -362,6 +369,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
+    VALIDATE_KUBERNETES_KUBEVAL=${VALIDATE_KUBERNETES_KUBEVAL} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_LATEX=${VALIDATE_LATEX} \
     VALIDATE_LUA=${VALIDATE_LUA} \
