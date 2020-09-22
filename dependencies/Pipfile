@@ -12,9 +12,9 @@ flake8 = "*"
 pylint = "*"
 snakefmt = "*"
 snakemake = "*"
-terminaltables = "*"
 yamllint = "*"
 yq = "*"
+terminaltables = "*"
 
 [requires]
 python_version = "3.8"
