@@ -68,3 +68,5 @@ typings/
 super-linter.report
 
 superlinter/__pycache__/
+
+superlinter/tests/test_superlinter/helpers/__pycache__/
