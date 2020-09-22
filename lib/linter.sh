@@ -144,7 +144,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'C
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -317,6 +317,7 @@ FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
 FILE_ARRAY_R=()                   # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
+FILE_ARRAY_SNAKEMAKE=()           # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
 FILE_ARRAY_SQL=()                 # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check
@@ -1934,6 +1935,7 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
   LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+
 fi
 
 ######################
@@ -1944,7 +1946,7 @@ if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" "\(Snakefile|.*\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################
