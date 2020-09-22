@@ -18,6 +18,7 @@ FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
 # Get base image #
@@ -305,6 +306,11 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
 
+###################
+# Install kubeval #
+###################
+COPY --from=kubeval /kubeval /usr/bin/
+
 #################
 # Install shfmt #
 #################
@@ -331,6 +337,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     GITHUB_TOKEN=${GITHUB_TOKEN} \
     GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
     JAVASCRIPT_ES_CONFIG_FILE=${JAVASCRIPT_ES_CONFIG_FILE} \
+    KUBERNETES_DIRECTORY=${KUBERNETES_DIRECTORY} \
     LINTER_RULES_PATH=${LINTER_RULES_PATH} \
     LOG_FILE=${LOG_FILE} \
     LOG_LEVEL=${LOG_LEVEL} \
@@ -362,6 +369,7 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
     VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
     VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
     VALIDATE_JSON=${VALIDATE_JSON} \
+    VALIDATE_KUBERNETES_KUBEVAL=${VALIDATE_KUBERNETES_KUBEVAL} \
     VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
     VALIDATE_LATEX=${VALIDATE_LATEX} \
     VALIDATE_LUA=${VALIDATE_LUA} \
