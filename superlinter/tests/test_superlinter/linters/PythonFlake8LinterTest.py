@@ -10,7 +10,7 @@ from superlinter.linters.PythonFlake8Linter import PythonFlake8Linter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class JavascriptStandardLinterTest(unittest.TestCase):
+class PythonFlake8LinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 

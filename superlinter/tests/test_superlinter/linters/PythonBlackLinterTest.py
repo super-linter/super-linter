@@ -10,7 +10,7 @@ from superlinter.linters.PythonBlackLinter import PythonBlackLinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class JavascriptStandardLinterTest(unittest.TestCase):
+class PythonBlackLinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 

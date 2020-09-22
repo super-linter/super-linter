@@ -10,7 +10,7 @@ from superlinter.linters.PythonPyLintLinter import PythonPyLintLinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class JavascriptStandardLinterTest(unittest.TestCase):
+class PythonPyLintLinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 
