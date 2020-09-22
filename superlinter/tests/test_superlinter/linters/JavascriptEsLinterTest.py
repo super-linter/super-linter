@@ -4,7 +4,6 @@ Unit tests for JavascriptEsLinter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.JavascriptEsLinter import JavascriptEsLinter

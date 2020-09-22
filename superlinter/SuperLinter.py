@@ -14,6 +14,7 @@ import sys
 from collections import OrderedDict
 
 from terminaltables import AsciiTable
+
 from superlinter import utils
 
 

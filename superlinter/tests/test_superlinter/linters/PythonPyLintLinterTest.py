@@ -4,7 +4,6 @@ Unit tests for PythonPyLintLinter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.PythonPyLintLinter import PythonPyLintLinter

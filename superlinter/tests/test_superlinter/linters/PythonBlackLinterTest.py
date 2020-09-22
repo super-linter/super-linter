@@ -4,7 +4,6 @@ Unit tests for PythonBlackLinter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.PythonBlackLinter import PythonBlackLinter

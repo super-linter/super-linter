@@ -4,7 +4,6 @@ Unit tests for PythonFlake8Linter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.PythonFlake8Linter import PythonFlake8Linter

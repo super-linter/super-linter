@@ -4,7 +4,6 @@ Unit tests for JavascriptStandardLinter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.JavascriptStandardLinter import JavascriptStandardLinter

@@ -94,7 +94,8 @@ class LinterTemplate:
                     " - File:[" + os.path.basename(file) + "] was linted with [" + self.linter_name + "] successfully")
                 self.files_lint_results[file] = {"status": "success"}
             else:
-                logging.error(" - File:[" + os.path.basename(file) + "] contains error(s) according to [" + self.linter_name + "]")
+                logging.error(" - File:[" + os.path.basename(
+                    file) + "] contains error(s) according to [" + self.linter_name + "]")
                 logging.error(stdout)
                 self.files_lint_results[file] = {"status": "error"}
                 self.status = "error"
