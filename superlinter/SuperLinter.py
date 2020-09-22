@@ -26,9 +26,9 @@ class SuperLinter:
             params = {}
         self.initialize_logger()
         self.display_header()
-        self.rules_location = '/action/lib/.automation'
+        self.rules_location = os.path.realpath('/action/lib/.automation')
         self.github_api_uri = 'https://api.github.com'
-        self.github_workspace = os.environ['GITHUB_WORKSPACE'] if "GITHUB_WORKSPACE" in os.environ else '/tmp/lint'
+        self.github_workspace = os.path.realpath(os.environ['GITHUB_WORKSPACE'] if "GITHUB_WORKSPACE" in os.environ else '/tmp/lint')
         self.linter_rules_path = '.github/linters'
         self.filter_regex_include = None
         self.filter_regex_exclude = None
@@ -80,7 +80,7 @@ class SuperLinter:
     def load_config_vars(self):
         # Linter rules root path
         if "LINTER_RULES_PATH" in os.environ:
-            self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
+            self.linter_rules_path = os.path.realpath(os.environ["LINTER_RULES_PATH"])
         # Filtering regex (inclusion)
         if "FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ["FILTER_REGEX_INCLUDE"]
@@ -121,7 +121,7 @@ class SuperLinter:
     def collect_files(self):
         # List all files of root directory
         logging.info(
-            'Listing all files in directory [' + os.path.dirname(os.path.abspath(self.github_workspace)) + ']')
+            'Listing all files in directory [' + self.github_workspace + ']')
         all_files = list()
         for (dirpath, dirnames, filenames) in os.walk(self.github_workspace):
             all_files += [os.path.join(dirpath, file) for file in filenames]
