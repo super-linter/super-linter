@@ -45,9 +45,12 @@ def call_super_linter(env_vars=None):
 def test_linter_success(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    super_linter, output = call_super_linter(
-        {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
-         'FILTER_REGEX_INCLUDE': '.*good.*'})
+    linter_key = "VALIDATE_" + linter_name
+    env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
+                'FILTER_REGEX_INCLUDE': '.*good.*'}
+    linter_key = "VALIDATE_" + linter.name
+    env_vars[linter_key] = 'true'
+    super_linter, output = call_super_linter(env_vars)
     test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
     test_self.assertRegex(output, rf"File:\[.*good.*] was linted with \[{linter_name}\] successfully")
 
@@ -55,9 +58,12 @@ def test_linter_success(linter, test_self):
 def test_linter_failure(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    super_linter, output = call_super_linter(
-        {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
-         'FILTER_REGEX_INCLUDE': '.*bad.*'})
+    linter_key = "VALIDATE_" + linter_name
+    env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
+                'FILTER_REGEX_INCLUDE': '.*bad.*'}
+    linter_key = "VALIDATE_" + linter.name
+    env_vars[linter_key] = 'true'
+    super_linter, output = call_super_linter(env_vars)
     test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
     test_self.assertRegex(output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
     test_self.assertNotRegex(output, rf"File:\[.*bad.*] was linted with \[{linter_name}\] successfully")

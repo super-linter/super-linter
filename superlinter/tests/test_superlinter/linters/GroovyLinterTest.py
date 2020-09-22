@@ -4,7 +4,6 @@ Unit tests for GroovyLinter class
 
 @author: Nicolas Vuillamy
 """
-import os
 import unittest
 
 from superlinter.linters.GroovyLinter import GroovyLinter

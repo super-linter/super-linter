@@ -32,6 +32,7 @@ class SuperLinter:
         self.filter_regex_include = None
         self.filter_regex_exclude = None
         self.cli = params['cli'] if "cli" in params else False
+        self.default_linter_activation = True
 
         self.load_config_vars()
 
@@ -85,6 +86,11 @@ class SuperLinter:
         # Filtering regex (exclusion)
         if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
+        # Define default value for linter validation
+        for env_var in os.environ:
+            if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODE_BASE':
+                if os.environ[env_var] == 'true':
+                    self.default_linter_activation = False
 
     # List all classes from /linter folder then instantiate each of them
     def load_linters(self):
@@ -94,7 +100,8 @@ class SuperLinter:
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
             linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
             linter_class = getattr(linter_module, linter_class_file_name)
-            linter = linter_class({'linter_rules_path': self.linter_rules_path})
+            linter = linter_class({'linter_rules_path': self.linter_rules_path,
+                                   'default_linter_activation': self.default_linter_activation})
             if linter.is_active is False:
                 logging.info('Skipped [' + linter.language + '] linter [' + linter.linter_name + ']: Deactivated')
                 continue

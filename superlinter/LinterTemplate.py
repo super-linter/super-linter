@@ -41,12 +41,12 @@ class LinterTemplate:
     # Constructor: Initialize Linter instance with name and config variables
     def __init__(self, params=None):
         if params is None:
-            params = {}
+            params = {'default_linter_activation': False}
         self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.'
         self.config_file = None
         self.filter_regex_include = None
         self.filter_regex_exclude = None
-        self.is_active = True
+        self.is_active = params['default_linter_activation']
         self.files = []
         if self.name is None:
             self.name = self.language
@@ -58,12 +58,16 @@ class LinterTemplate:
 
     # Manage configuration variables 
     def load_config_vars(self):
-        # Activation / Deactivation of the linter 
+        # Activation / Deactivation of the linter
         if "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'false':
             self.is_active = False
-        if "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'false':
+        elif "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'false':
             self.is_active = False
-        # Configuration file name 
+        elif "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'true':
+            self.is_active = True
+        elif "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'true':
+            self.is_active = True
+        # Configuration file name
         if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
         # Linter rules path
