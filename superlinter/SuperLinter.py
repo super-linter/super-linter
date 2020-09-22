@@ -54,7 +54,7 @@ class SuperLinter:
             if len(linter.files) > 0:
                 table_data.append([linter.language,
                                    linter.linter_name,
-                                   str(linter.file_extensions)+str(linter.file_names),
+                                   str(linter.file_extensions) + str(linter.file_names),
                                    str(len(linter.files))])
         table = AsciiTable(table_data)
         table.title = "----MATCHING LINTERS"
@@ -89,11 +89,11 @@ class SuperLinter:
 
     # List all classes from /linter folder then instantiate each of them
     def load_linters(self):
-        linters_dir = os.path.dirname(os.path.abspath(__file__))+'/linters'
-        linters_glob_pattern = linters_dir+'/*Linter.py'
+        linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
+        linters_glob_pattern = linters_dir + '/*Linter.py'
         for file in glob.glob(linters_glob_pattern):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package= __package__)
+            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
             linter_class = getattr(linter_module, linter_class_file_name)
             linter = linter_class({'linter_rules_path': self.linter_rules_path})
             if linter.is_active is False:
@@ -113,7 +113,8 @@ class SuperLinter:
     # Collect list of files matching extensions and regex
     def collect_files(self):
         # List all files of root directory
-        logging.info('Listing all files in directory ['+os.path.dirname(os.path.abspath(self.lint_files_root_path))+']')
+        logging.info(
+            'Listing all files in directory [' + os.path.dirname(os.path.abspath(self.lint_files_root_path)) + ']')
         all_files = list()
         for (dirpath, dirnames, filenames) in os.walk(self.lint_files_root_path):
             all_files += [os.path.join(dirpath, file) for file in filenames]
@@ -132,7 +133,7 @@ class SuperLinter:
             elif filename in self.file_names:
                 filtered_files.append(file)
 
-        logging.info('Kept ['+str(len(filtered_files))+'] files on ['+str(len(all_files))+'] found files')
+        logging.info('Kept [' + str(len(filtered_files)) + '] files on [' + str(len(all_files)) + '] found files')
 
         # Collect matching files for each linter
         for linter in self.linters:
@@ -140,6 +141,7 @@ class SuperLinter:
             if len(linter.files) == 0:
                 linter.is_active = False
 
+    # noinspection PyArgumentList
     @staticmethod
     def initialize_logger():
         logging_level_key = os.environ['LOG_LEVEL'] if "LOG_LEVEL" in os.environ else 'INFO'
@@ -151,9 +153,11 @@ class SuperLinter:
                               "TRACE": logging.WARNING,
                               "VERBOSE": logging.INFO
                               }
+        logging_level = logging_level_list[
+            logging_level_key] if logging_level_key in logging_level_list else logging.INFO
         logging.basicConfig(stream=sys.stdout,
                             force=True,
-                            level=logging_level_list[logging_level_key],
+                            level=logging_level,
                             format='%(asctime)s [%(levelname)s] %(message)s')
 
     @staticmethod
@@ -182,7 +186,8 @@ class SuperLinter:
         table_data = [["Language", "Linter", "Files with error(s)", "Total files"]]
         for linter in self.linters:
             if linter.is_active is True:
-                table_data.append([linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
+                table_data.append(
+                    [linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
         table = AsciiTable(table_data)
         table.title = "----SUMMARY"
         for table_line in table.table.splitlines():
@@ -196,5 +201,3 @@ class SuperLinter:
             logging.error('Error(s) has been found during linting')
             if self.cli is True:
                 sys.exit(1)
-
-
