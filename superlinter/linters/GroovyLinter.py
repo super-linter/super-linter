@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
 Use npm-groovy-lint to lint Groovy,Jenkinsfile,Gradle and Nextflow files
+https://github.com/nvuillam/npm-groovy-lint
 @author: Nicolas Vuillamy
 """
 
 import os.path
 
 
-from lib.superlinter import LinterTemplate
+from superlinter import LinterTemplate
 
 
 class GroovyLinter(LinterTemplate):
     language = "GROOVY"
     linter_name = "npm-groovy-lint"
+    linter_url = "https://github.com/nvuillam/npm-groovy-lint"
     config_file_name = ".groovylintrc.json"
     file_extensions = ['.groovy', '.gvy', '.gradle', '.nf']
     file_names = ['Jenkinsfile']

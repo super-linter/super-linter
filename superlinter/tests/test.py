@@ -6,7 +6,7 @@ Unit tests for Super-Linter
 """
 import unittest
 
-from lib.superlinter.tests.test_superlinter.test_suite import suite
+from superlinter.tests.test_superlinter.test_suite import suite
 
 if __name__ == '__main__':
     # noinspection PyTypeChecker

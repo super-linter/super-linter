@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
 Use eslint to lint JS files
+https://eslint.org/
 @author: Nicolas Vuillamy
 """
 
 
-from lib.superlinter import LinterTemplate
+from superlinter.linters.JavascriptLinterRoot import JavascriptLinterRoot
 
 
-class JavascriptEsLinter(LinterTemplate):
-    language = "JAVASCRIPT"
+class JavascriptEsLinter(JavascriptLinterRoot):
     linter_name = "eslint"
-    name = "JAVASCRIPT_ES"
+    linter_url = "https://eslint.org/"
+    name = "JAVASCRIPT_STANDARD"
     config_file_name = ".eslintrc.yml"
-    file_extensions = ['.js']
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):

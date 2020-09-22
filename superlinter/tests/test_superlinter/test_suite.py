@@ -6,7 +6,7 @@ Unit tests for SuperLinter class
 """
 import unittest
 
-from lib.superlinter.tests.test_superlinter.SuperLinterTest import SuperLinterTest
+from superlinter.tests.test_superlinter.SuperLinterTest import SuperLinterTest
 
 
 def suite():

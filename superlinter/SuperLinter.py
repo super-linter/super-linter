@@ -44,11 +44,28 @@ class SuperLinter:
 
     # Collect files, run linters on them and write reports
     def run(self):
+
+        # Collect files for each identified linter
         self.collect_files()
+
+        # Display collection summary in log
+        table_data = [["Language", "Linter", "File names/extensions","Matching files"]]
         for linter in self.linters:
-            linter.run()
-            if linter.status != 'success':
-                self.status = 'error'
+            if len(linter.files) > 0:
+                table_data.append([linter.language, linter.linter_name, linter.file_extensions, str(len(linter.files))])
+        table = AsciiTable(table_data)
+        table.title = "----MATCHING LINTERS"
+        logging.info("")
+        for table_line in table.table.splitlines():
+            logging.info(table_line)
+        logging.info("")
+
+        # Run linters
+        for linter in self.linters:
+            if linter.is_active is True:
+                linter.run()
+                if linter.status != 'success':
+                    self.status = 'error'
         self.manage_reports()
         self.check_results()
 
@@ -117,6 +134,8 @@ class SuperLinter:
         # Collect matching files for each linter
         for linter in self.linters:
             linter.collect_files(filtered_files)
+            if len(linter.files) == 0:
+                linter.is_active = False
 
     @staticmethod
     def initialize_logger():
@@ -159,7 +178,8 @@ class SuperLinter:
         logging.info("")
         table_data = [["Language", "Linter", "Errors", "Total files"]]
         for linter in self.linters:
-            table_data.append([linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
+            if linter.is_active is True:
+                table_data.append([linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
         table = AsciiTable(table_data)
         table.title = "----SUMMARY"
         for table_line in table.table.splitlines():

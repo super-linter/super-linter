@@ -9,12 +9,12 @@ import io
 import os
 import unittest
 
-from lib.superlinter import SuperLinter
+from superlinter import SuperLinter
 
 
 class SuperLinterTest(unittest.TestCase):
     def setUp(self):
-        root_dir = os.path.dirname(os.path.abspath(__file__))+'/../../../..'
+        root_dir = os.path.dirname(os.path.abspath(__file__))+'/../../..'
         os.environ["LINTER_RULES_PATH"] = root_dir+'/.github/linters'
         os.environ["LINT_FILES_ROOT_PATH"] = root_dir+'/.automation/test'
         os.environ["LOG_LEVEL"] = "INFO"
@@ -53,6 +53,7 @@ class SuperLinterTest(unittest.TestCase):
         print(output)
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
+        self.assertIn('Skipped [JAVASCRIPT] linter [standard]: Deactivated', output)
 
     def test_disable_linter(self):
         usage_stdout = io.StringIO()

@@ -399,6 +399,8 @@ ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
 #############################
 COPY lib /action/lib
 
+COPY superlinter /superlinter
+
 ##################################
 # Copy linter rules to container #
 ##################################
@@ -412,5 +414,6 @@ RUN /action/lib/linterVersions.sh
 ######################
 # Set the entrypoint #
 ######################
-RUN chmod +x /action/lib/entrypoint.sh
-ENTRYPOINT ["/action/lib/entrypoint.sh"]
+COPY ./entrypoint.sh ./entrypoint.sh
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]

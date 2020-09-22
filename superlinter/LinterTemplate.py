@@ -2,10 +2,13 @@
 """
 Template class for custom linters: any linter class in /linters folder must inherit from this class
 The following list of items can/must be overridden on custom linter local class:
-- field language (required)
-- field name (optional)
-- field config_file_name (required)
-- field file_extensions (required)
+- field language (required) ex: "JAVASCRIPT"
+- field name (optional) ex: "JAVASCRIPT_ES"
+- field linter_name (required) ex: "eslint"
+- field linter_url (required) ex: "https://eslint.org/"
+- field config_file_name (required) ex: ".eslintrc.yml"
+- field file_extensions (required) ex: [".js"]
+- field file_names (optional) ex: ["Dockerfile"]
 - method build_lint_command (required)
 
 @author: Nicolas Vuillamy
@@ -24,6 +27,7 @@ class LinterTemplate:
     language = "Field 'Language' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
     name = None  # If you have several linters for the same language, please override with a different name. Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
+    linter_url = "Field 'linter_url' must be overridden at custom linter class level" # ex: https://eslint.org/
 
     config_file_name = None  # Default name of the configuration file to use with the linter. Override at custom linter class level. Ex: '.eslintrc.js'
     file_extensions = []  # Array of strings defining file extensions. Override at custom linter class level. Ex: ['.js','.cjs']

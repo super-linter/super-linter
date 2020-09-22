@@ -5,7 +5,7 @@ Run super-linter
 @author: Nicolas Vuillamy
 """
 
-from lib.superlinter import SuperLinter
+from superlinter import SuperLinter
 
 # Run Super-Linter
 SuperLinter({'cli': True}).run()
