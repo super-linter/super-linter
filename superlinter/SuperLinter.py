@@ -88,7 +88,7 @@ class SuperLinter:
         # Filtering regex (exclusion)
         if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
-        # Define default value for linter validation
+        # If at least one language/linter is activated with VALIDATE_XXX , all others are deactivated by default
         for env_var in os.environ:
             if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODE_BASE':
                 if os.environ[env_var] == 'true':
@@ -98,6 +98,7 @@ class SuperLinter:
     def load_linters(self):
         linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
         linters_glob_pattern = linters_dir + '/*Linter.py'
+        skipped_linters = []
         for file in glob.glob(linters_glob_pattern):
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
             linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
@@ -105,9 +106,11 @@ class SuperLinter:
             linter = linter_class({'linter_rules_path': self.linter_rules_path,
                                    'default_linter_activation': self.default_linter_activation})
             if linter.is_active is False:
-                logging.info('Skipped [' + linter.language + '] linter [' + linter.linter_name + ']: Deactivated')
+                skipped_linters.append(linter.name)
                 continue
             self.linters.append(linter)
+        if len(skipped_linters) > 0:
+            logging.info('Skipped linters: ' + ', '.join(skipped_linters))
 
     # Define all file extensions to browse
     def compute_file_extensions(self):
@@ -128,6 +131,10 @@ class SuperLinter:
             all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
+        if len(self.file_extensions) > 0:
+            logging.info('File extensions: ' + ', '.join(self.file_extensions))
+        if len(self.file_names) > 0:
+            logging.info('File names: ' + ', '.join(self.file_names))
         filtered_files = []
         for file in all_files:
             base_file_name = os.path.basename(file)

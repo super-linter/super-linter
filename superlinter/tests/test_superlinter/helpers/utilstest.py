@@ -91,3 +91,7 @@ def test_get_linter_version(linter, test_self):
     version = linter.get_linter_version()
     print('[' + linter.linter_name + '] version: ' + version)
     test_self.assertFalse(version == 'ERROR')
+
+
+def assert_is_skipped(skipped_item, output, test_self):
+    test_self.assertRegex(output, rf"(?<=Skipped linters:)*({skipped_item})(?=.*[\n])")
