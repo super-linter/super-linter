@@ -9,5 +9,5 @@ COPY package.json /usr/src/app/
 RUN npm install
 
 COPY server.js server.js
-EXPOSE 3000
+EXPOSE 3002
 CMD ["node", "server.js"]
