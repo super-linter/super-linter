@@ -28,7 +28,8 @@ class SuperLinter:
         self.display_header()
         self.rules_location = os.path.realpath('/action/lib/.automation')
         self.github_api_uri = 'https://api.github.com'
-        self.github_workspace = os.path.realpath(os.environ['GITHUB_WORKSPACE'] if "GITHUB_WORKSPACE" in os.environ else '/tmp/lint')
+        self.github_workspace = os.path.realpath(
+            os.environ['GITHUB_WORKSPACE'] if "GITHUB_WORKSPACE" in os.environ else '/tmp/lint')
         self.linter_rules_path = '.github/linters'
         self.filter_regex_include = None
         self.filter_regex_exclude = None

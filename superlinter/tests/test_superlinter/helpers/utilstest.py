@@ -5,13 +5,21 @@ import os
 from superlinter import SuperLinter
 
 
+# Define env variables before any test case
 def linter_test_setup():
+    # Root path of default rules
     root_dir = '/action' if os.path.exists('/action') else os.path.dirname(
         os.path.abspath(__file__)) + '/../../../..'
     os.environ["LINTER_RULES_PATH"] = os.path.realpath(root_dir + '/lib/.automation') if os.path.exists(
         root_dir + '/lib/.automation') else root_dir + '/.github/linters'
-    os.environ["GITHUB_WORKSPACE"] = os.path.realpath(root_dir + '/.automation/test') if os.path.exists(
-        root_dir + '/.automation/test') else '/tmp/lint'
+    assert os.path.exists(os.environ["LINTER_RULES_PATH"]), 'LINTER_RULES_PATH ' + os.environ[
+        "LINTER_RULES_PATH"] + ' is a valid folder'
+
+    # Root path of files to lint
+    os.environ["GITHUB_WORKSPACE"] = '/tmp/lint/.automation/test' if os.path.exists(
+        '/tmp/lint/.automation/test') else root_dir + '/.automation/test'
+    assert os.path.exists(os.environ["GITHUB_WORKSPACE"]), 'GITHUB_WORKSPACE ' + os.environ[
+        "GITHUB_WORKSPACE"] + ' is a valid folder'
 
 
 def print_output(output):
@@ -45,7 +53,6 @@ def call_super_linter(env_vars=None):
 def test_linter_success(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    linter_key = "VALIDATE_" + linter_name
     env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
                 'FILTER_REGEX_INCLUDE': '.*good.*'}
     linter_key = "VALIDATE_" + linter.name
@@ -58,7 +65,6 @@ def test_linter_success(linter, test_self):
 def test_linter_failure(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    linter_key = "VALIDATE_" + linter_name
     env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
                 'FILTER_REGEX_INCLUDE': '.*bad.*'}
     linter_key = "VALIDATE_" + linter.name
