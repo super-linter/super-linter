@@ -75,4 +75,4 @@ jobs:
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v FILTER_REGEX_EXCLUDE=.*_bad_.* -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v FILTER_REGEX_EXCLUDE=.*_bad_.* -v LOG_LEVEL=DEBUG -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

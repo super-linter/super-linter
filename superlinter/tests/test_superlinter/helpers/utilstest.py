@@ -78,8 +78,10 @@ def test_linter_failure(linter, test_self):
     super_linter, output = call_super_linter(env_vars)
     test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
     if len(linter.file_names) > 0 and len(linter.file_extensions) == 0:
-        test_self.assertRegex(output, rf"File:\[{linter.file_names[0]}] contains error\(s\) according to \[{linter_name}\]")
-        test_self.assertNotRegex(output, rf"File:\[{linter.file_names[0]}] was linted with \[{linter_name}\] successfully")
+        test_self.assertRegex(output,
+                              rf"File:\[{linter.file_names[0]}] contains error\(s\) according to \[{linter_name}\]")
+        test_self.assertNotRegex(output,
+                                 rf"File:\[{linter.file_names[0]}] was linted with \[{linter_name}\] successfully")
     else:
         test_self.assertRegex(output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
         test_self.assertNotRegex(output, rf"File:\[.*bad.*] was linted with \[{linter_name}\] successfully")
