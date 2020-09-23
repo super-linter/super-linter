@@ -46,7 +46,7 @@ def call_super_linter(env_vars=None):
             else:
                 del os.environ[env_var_key]
     output = usage_stdout.getvalue().strip()
-    print_output(output)
+    # print_output(output)
     return super_linter, output
 
 
