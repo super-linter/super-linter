@@ -68,18 +68,11 @@ jobs:
       #####################################
       - name: Run Test Cases
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint -v FILTER_REGEX_EXCLUDE=.*bad.* github/super-linter:${GITHUB_SHA}
-
-      #########################################
-      # Clean code base to run agaisnt it all #
-      #########################################
-      - name: Clean Test code base for additional testing
-        shell: bash
-        run: .automation/clean-code-base-for-tests.sh
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
 
       ############################################
       # Run Linter against ALL cleaned code base #
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v FILTER_REGEX_EXCLUDE=.*_bad_.* -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
