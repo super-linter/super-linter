@@ -69,6 +69,8 @@ def test_linter_failure(linter, test_self):
                 'FILTER_REGEX_INCLUDE': '.*bad.*'}
     linter_key = "VALIDATE_" + linter.name
     env_vars[linter_key] = 'true'
+    if linter.name == 'JAVASCRIPT_ES':
+        env_vars['LOG_LEVEL'] = 'DEBUG'
     super_linter, output = call_super_linter(env_vars)
     test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
     test_self.assertRegex(output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
