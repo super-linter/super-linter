@@ -10,7 +10,7 @@ def linter_test_setup():
     # Root path of default rules
     root_dir = '/action' if os.path.exists('/action') else os.path.dirname(
         os.path.abspath(__file__)) + '/../../../..'
-    os.environ["LINTER_RULES_PATH"] = os.path.realpath(root_dir + '/lib/.automation') if os.path.exists(
+    os.environ["LINTER_RULES_PATH"] = root_dir + '/lib/.automation' if os.path.exists(
         root_dir + '/lib/.automation') else root_dir + '/.github/linters'
     assert os.path.exists(os.environ["LINTER_RULES_PATH"]), 'LINTER_RULES_PATH ' + os.environ[
         "LINTER_RULES_PATH"] + ' is a valid folder'
