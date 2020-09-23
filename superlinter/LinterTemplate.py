@@ -150,7 +150,7 @@ class LinterTemplate:
 
     def display_header(self):
         # Linter header prints
-        msg = "Linting " + self.language + " files with " + self.linter_name + ' (' + self.linter_url + ')'
+        msg = "Linting [" + self.language + "] files with [" + self.linter_name + '] (' + self.linter_url + ')'
         logging.info("")
         logging.info(utils.format_hyphens(""))
         logging.info(utils.format_hyphens(msg))

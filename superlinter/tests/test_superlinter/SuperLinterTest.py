@@ -35,4 +35,18 @@ class SuperLinterTest(unittest.TestCase):
         super_linter, output = utilstest.call_super_linter({"VALIDATE_JAVASCRIPT_ES": 'false'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Skipped [JAVASCRIPT] linter [eslint]: Deactivated', output)
-        self.assertIn('Linting JAVASCRIPT files with standard', output)
+        self.assertIn('Linting [JAVASCRIPT] files with [standard]', output)
+
+    def test_enable_only_one_linter(self):
+        super_linter, output = utilstest.call_super_linter({"VALIDATE_JAVASCRIPT_ES": 'true'})
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint]', output)
+        self.assertIn('Skipped [JAVASCRIPT] linter [standard]: Deactivated', output)
+        self.assertIn('Skipped [GROOVY] linter [npm-groovy-lint]: Deactivated', output)
+
+    def test_enable_only_one_language(self):
+        super_linter, output = utilstest.call_super_linter({"VALIDATE_JAVASCRIPT": 'true'})
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint]', output)
+        self.assertIn('Linting [JAVASCRIPT] files with [standard]', output)
+        self.assertIn('Skipped [GROOVY] linter [npm-groovy-lint]: Deactivated', output)

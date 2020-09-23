@@ -18,6 +18,6 @@ class JavascriptEsLinter(JavascriptLinterRoot):
     def build_lint_command(self, file):
         cmd = ["eslint"]
         if self.config_file is not None:
-            cmd.extend(["--no-eslintrc", "-c", self.config_file])
+            cmd.extend(["--no-eslintrc", "--no-ignore", "-c", self.config_file])
         cmd.append(file)
         return cmd
