@@ -132,9 +132,10 @@ class SuperLinter:
         for file in all_files:
             base_file_name = os.path.basename(file)
             filename, file_extension = os.path.splitext(base_file_name)
-            if self.filter_regex_include is not None and re.search(self.filter_regex_include, file) is None:
+            norm_file = file.replace(os.sep, '/')
+            if self.filter_regex_include is not None and re.search(self.filter_regex_include, norm_file) is None:
                 continue
-            if self.filter_regex_exclude is not None and re.search(self.filter_regex_exclude, file) is not None:
+            if self.filter_regex_exclude is not None and re.search(self.filter_regex_exclude, norm_file) is not None:
                 continue
             elif file_extension in self.file_extensions:
                 filtered_files.append(file)

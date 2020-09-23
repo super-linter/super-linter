@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""
+Use Hadolint to lint Dockerfile
+https://github.com/hadolint/hadolint
+@author: Nicolas Vuillamy
+"""
+
+from superlinter.linters.DockerfileLinterRoot import DockerfileLinterRoot
+
+
+class DockerfileHadolintLinter(DockerfileLinterRoot):
+    linter_name = "hadolint"
+    linter_url = "https://github.com/hadolint/hadolint"
+    name = "DOCKERFILE_HADOLINT"
+    config_file_name = ".hadolint.yml"
+
+    # Build the CLI command to call to lint a file
+    def build_lint_command(self, file):
+        cmd = ["hadolint"]
+        if self.config_file is not None:
+            cmd.extend(["-c", self.config_file])
+        cmd.append(file)
+        return cmd
