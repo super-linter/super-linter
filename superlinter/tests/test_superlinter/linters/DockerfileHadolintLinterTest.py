@@ -19,3 +19,6 @@ class DockerfileHadolintLinterTest(unittest.TestCase):
 
     def test_failure(self):
         utilstest.test_linter_failure(DockerfileHadolintLinter(), self)
+
+    def test_get_linter_version(self):
+        utilstest.test_get_linter_version(DockerfileHadolintLinter(), self)

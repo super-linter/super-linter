@@ -19,3 +19,6 @@ class PythonFlake8LinterTest(unittest.TestCase):
 
     def test_failure(self):
         utilstest.test_linter_failure(PythonFlake8Linter(), self)
+
+    def test_get_linter_version(self):
+        utilstest.test_get_linter_version(PythonFlake8Linter(), self)

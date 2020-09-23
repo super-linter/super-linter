@@ -85,3 +85,9 @@ def test_linter_failure(linter, test_self):
     else:
         test_self.assertRegex(output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
         test_self.assertNotRegex(output, rf"File:\[.*bad.*] was linted with \[{linter_name}\] successfully")
+
+
+def test_get_linter_version(linter, test_self):
+    version = linter.get_linter_version()
+    print('[' + linter.linter_name + '] version: ' + version)
+    test_self.assertFalse(version == 'ERROR')

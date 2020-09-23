@@ -10,7 +10,11 @@ The following list of items can/must be overridden on custom linter local class:
 - field config_file_name (required) ex: ".eslintrc.yml"
 - field file_extensions (required) ex: [".js"]
 - field file_names (optional) ex: ["Dockerfile"]
-- method build_lint_command (required)
+- method build_lint_command (required) : Return CLI command to lint a file with the related linter
+- method build_version_command (optional): Returns CLI command to get the related linter version.
+                                           Default: linter_name --version
+- method build_extract_version_regex (optional): Returns RegEx to extract version from version command output
+                                                 Default: r"\d+(\.\d+)+"
 
 @author: Nicolas Vuillamy
 """
@@ -125,7 +129,7 @@ class LinterTemplate:
         if sys.platform == 'win32':
             cli_absolute = shutil.which(command[0])
             if cli_absolute is not None:
-                command[0] = shutil.which(command[0])
+                command[0] = cli_absolute
             else:
                 msg = "Unable to find command: " + command[0]
                 logging.error(msg)
@@ -143,10 +147,32 @@ class LinterTemplate:
         # Return linter result
         return return_code, process.stdout.decode("utf-8")
 
-    # Build the CLI command to call to lint a file
-    def build_lint_command(self, file):
-        error_msg = "Method buildLintCommand should be overridden at custom linter class level, to return a shell command string"
-        raise Exception(error_msg + "\nself:" + str(self) + "\nfile:" + file)
+    # Returns linter version
+    def get_linter_version(self):
+        version_output = self.get_linter_version_output()
+        reg = self.build_extract_version_regex()
+        m = re.search(reg, version_output, re.MULTILINE)
+        if m:
+            return m.group()
+        return "ERROR"
+
+    # Returns the version of the associated linter
+    def get_linter_version_output(self):
+        command = self.build_version_command()
+        if sys.platform == 'win32':
+            cli_absolute = shutil.which(command[0])
+            if cli_absolute is not None:
+                command[0] = cli_absolute
+        process = subprocess.run(command,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT)
+        return_code = process.returncode
+        output = process.stdout.decode("utf-8")
+        if return_code != 0:
+            logging.warning('Unable to get version for linter [' + self.linter_name + ']')
+            logging.warning(' '.join(command) + ' returned output: ' + output)
+            return 'ERROR'
+        return output
 
     def display_header(self):
         # Linter header prints
@@ -158,3 +184,18 @@ class LinterTemplate:
             logging.info(utils.format_hyphens("Linter key: " + self.name))
         logging.info(utils.format_hyphens(""))
         logging.info("")
+
+    # Build the CLI command to call to lint a file
+    def build_lint_command(self, file):
+        error_msg = "Method buildLintCommand should be overridden at custom linter class level, to return a shell command string"
+        raise Exception(error_msg + "\nself:" + str(self) + "\nfile:" + file)
+
+    # Build the CLI command to get linter version (can be overridden if --version is not the way to get the version)
+    def build_version_command(self):
+        command = [self.linter_name, '--version']
+        return command
+
+    # Build regular expression to extract version from output
+    @staticmethod
+    def build_extract_version_regex():
+        return r"\d+(\.\d+)+"

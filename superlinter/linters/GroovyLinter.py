@@ -30,3 +30,8 @@ class GroovyLinter(LinterTemplate):
         if self.config_file is not None:
             cmd.extend(["-c", self.config_file])
         return cmd
+
+    # Build regular expression to extract version from output
+    @staticmethod
+    def build_extract_version_regex():
+        return r"(?<=npm-groovy-lint version )\d+(\.\d+)+"

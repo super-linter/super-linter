@@ -19,3 +19,6 @@ class PythonBlackLinterTest(unittest.TestCase):
 
     def test_failure(self):
         utilstest.test_linter_failure(PythonBlackLinter(), self)
+
+    def test_get_linter_version(self):
+        utilstest.test_get_linter_version(PythonBlackLinter(), self)
