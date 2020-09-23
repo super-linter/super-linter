@@ -27,4 +27,3 @@ class MarkdownLinter(LinterTemplate):
             cmd.extend(["-c", self.config_file])
         cmd.append(file)
         return cmd
-

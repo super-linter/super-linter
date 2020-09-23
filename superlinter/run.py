@@ -5,7 +5,10 @@ Run super-linter
 @author: Nicolas Vuillamy
 """
 
-from superlinter import SuperLinter
+import superlinter
+
+# Guess who's there ? :)
+superlinter.possum()
 
 # Run Super-Linter
-SuperLinter({'cli': True}).run()
+superlinter.SuperLinter({'cli': True}).run()
