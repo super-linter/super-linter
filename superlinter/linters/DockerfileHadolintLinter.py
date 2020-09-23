@@ -4,6 +4,7 @@ Use Hadolint to lint Dockerfile
 https://github.com/hadolint/hadolint
 @author: Nicolas Vuillamy
 """
+import os
 
 from superlinter.linters.DockerfileLinterRoot import DockerfileLinterRoot
 
@@ -18,6 +19,6 @@ class DockerfileHadolintLinter(DockerfileLinterRoot):
     def build_lint_command(self, file):
         cmd = ["hadolint"]
         if self.config_file is not None:
-            cmd.extend(["-c", self.config_file])
+            cmd.extend(["-c", os.path.realpath(self.config_file)])
         cmd.append(file)
         return cmd

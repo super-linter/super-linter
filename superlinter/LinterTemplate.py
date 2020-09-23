@@ -75,7 +75,7 @@ class LinterTemplate:
             self.linter_rules_path = os.environ[self.name + "_RULES_PATH"]
         # Linter config file
         if self.config_file_name is not None and self.config_file_name != "LINTER_DEFAULT":
-            self.config_file = os.path.join(self.linter_rules_path, self.config_file_name)
+            self.config_file = self.linter_rules_path + os.path.sep + self.config_file_name
         # Include regex
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
