@@ -1312,6 +1312,10 @@ GetLinterRules "PYTHON_BLACK"
 GetLinterRules "R"
 # Get Ruby rules
 GetLinterRules "RUBY"
+# Get Snakemake lint rules
+GetLinterRules "SNAKEMAKE_LINT"
+# Get Snakemake snakefmt rules
+GetLinterRules "SNAKEMAKE_SNAKEFMT"
 # Get SQL rules
 GetLinterRules "SQL"
 # Get Terraform rules
