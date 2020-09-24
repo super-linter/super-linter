@@ -70,9 +70,9 @@ jobs:
         shell: bash
         run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
 
-      ############################################
-      # Run Linter against ALL cleaned code base #
-      ############################################
+      #####################################
+      # Run Linter against ALL code base  #
+      #####################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(.*_bad_.*|.*\/bad\/.*)' -e LOG_LEVEL=DEBUG -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(.*_bad_.*|.*\/bad\/.*)' -e VALIDATE_PYTHON_BLACK=false -e VALIDATE_DOCKERFILE_HADOLINT=false -e LOG_LEVEL=DEBUG -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

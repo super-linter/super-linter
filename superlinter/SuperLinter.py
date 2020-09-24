@@ -88,7 +88,7 @@ class SuperLinter:
         else:
             return '/tmp/lint'
 
-    # Manage configuration variables 
+    # Manage configuration variables
     def load_config_vars(self):
         # Linter rules root path
         if "LINTER_RULES_PATH" in os.environ:

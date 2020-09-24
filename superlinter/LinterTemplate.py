@@ -10,7 +10,8 @@ The following list of items can/must be overridden on custom linter local class:
 - field config_file_name (optional) ex: ".eslintrc.yml"
 - field file_extensions (optional) ex: [".js"]
 - field file_names (optional) ex: ["Dockerfile"]
-- method build_lint_command (required) : Return CLI command to lint a file with the related linter
+- method build_lint_command (optional) : Return CLI command to lint a file with the related linter
+                                         Default: linter_name + (if config_file(-c + config_file)) + config_file
 - method build_version_command (optional): Returns CLI command to get the related linter version.
                                            Default: linter_name --version
 - method build_extract_version_regex (optional): Returns RegEx to extract version from version command output
@@ -33,13 +34,13 @@ from superlinter import utils
 class LinterTemplate:
     # Definition fields: can be overridden at custom linter class level
     language = "Field 'Language' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
-    name = None  # If you have several linters for the same language, please override with a different name. Ex: JAVASCRIPT_ES
+    name = None  # If you have several linters for the same language,override with a different name.Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
     linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
     test_folder = "Field 'test_folder' must be overridden at custom linter class level"  # ex: groovy
 
-    config_file_name = None  # Default name of the configuration file to use with the linter. Override at custom linter class level. Ex: '.eslintrc.js'
-    file_extensions = []  # Array of strings defining file extensions. Override at custom linter class level. Ex: ['.js','.cjs']
+    config_file_name = None  # Default name of the configuration file to use with the linter. Ex: '.eslintrc.js'
+    file_extensions = []  # Array of strings defining file extensions. Ex: ['.js','.cjs']
     file_names = []  # Array of file names. Ex: ['Dockerfile']
 
     # Constructor: Initialize Linter instance with name and config variables
@@ -65,7 +66,7 @@ class LinterTemplate:
         self.number_errors = 0
         self.files_lint_results = {}
 
-    # Manage configuration variables 
+    # Manage configuration variables
     def load_config_vars(self):
 
         # Activation / Deactivation of the linter
@@ -99,11 +100,11 @@ class LinterTemplate:
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
 
-        # Exclude regex 
+        # Exclude regex
         if self.name + "_FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ[self.name + "_FILTER_REGEX_EXCLUDE"]
 
-    # Processes the linter 
+    # Processes the linter
     def run(self):
         self.display_header()
         for file in self.files:
@@ -136,7 +137,7 @@ class LinterTemplate:
             elif filename in self.file_names:
                 self.files.append(file)
 
-    # lint a single file 
+    # lint a single file
     def lint_file(self, file):
         # Build command using method locally defined on Linter class
         command = self.build_lint_command(file)
@@ -218,10 +219,13 @@ class LinterTemplate:
         logging.info(utils.format_hyphens(""))
         logging.info("")
 
-    # Build the CLI command to call to lint a file
+    # Build the CLI command to call to lint a file (can be overridden)
     def build_lint_command(self, file):
-        error_msg = "Method buildLintCommand should be overridden at custom linter class level, to return a shell command string"
-        raise Exception(error_msg + "\nself:" + str(self) + "\nfile:" + file)
+        cmd = [self.linter_name]
+        if self.config_file is not None:
+            cmd.extend(["-c", self.config_file])
+        cmd.append(file)
+        return cmd
 
     # Build the CLI command to get linter version (can be overridden if --version is not the way to get the version)
     def build_version_command(self):
