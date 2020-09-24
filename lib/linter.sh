@@ -119,8 +119,8 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}" # Path to the R lint r
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
 # Snakemake Vars
-SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                     # Name of the file
-SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}" # Path to the snakemake lint rules
+SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"                     # Name of the file
+SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_SNAKEFMT_FILE_NAME}" # Path to the snakemake lint rules
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
