@@ -8,23 +8,21 @@ from superlinter import SuperLinter
 # Define env variables before any test case
 def linter_test_setup():
     # Root path of default rules
-    root_dir = '/action' if os.path.exists('/action') else os.path.dirname(
-        os.path.abspath(__file__)) + '/../../../..'
-    os.environ["LINTER_RULES_PATH"] = root_dir + '/lib/.automation' if os.path.exists(
-        root_dir + '/lib/.automation') else root_dir + '/.github/linters'
-    assert os.path.exists(os.environ["LINTER_RULES_PATH"]), 'LINTER_RULES_PATH ' + os.environ[
-        "LINTER_RULES_PATH"] + ' is a valid folder'
+    root_dir = '/tmp/lint' if os.path.exists('/tmp/lint') else os.path.relpath(os.path.relpath(os.path.dirname(
+        os.path.abspath(__file__))) + '/../../../..')
 
     # Root path of files to lint
-    os.environ["GITHUB_WORKSPACE"] = '/tmp/lint/.automation/test' if os.path.exists(
-        '/tmp/lint/.automation/test') else root_dir + '/.automation/test'
+    os.environ["GITHUB_WORKSPACE"] = os.environ["GITHUB_WORKSPACE"] + '/.automation/test' \
+        if "GITHUB_WORKSPACE" in os.environ and os.path.exists(
+        os.environ["GITHUB_WORKSPACE"] + '/.automation/test') else root_dir + '/.automation/test'
     assert os.path.exists(os.environ["GITHUB_WORKSPACE"]), 'GITHUB_WORKSPACE ' + os.environ[
-        "GITHUB_WORKSPACE"] + ' is a valid folder'
+        "GITHUB_WORKSPACE"] + ' is not a valid folder'
 
 
 def print_output(output):
-    for line in output.splitlines():
-        print(line.encode('utf-8'))
+    if 'OUTPUT_DETAILS' in os.environ and os.environ['OUTPUT_DETAILS'] == 'detailed':
+        for line in output.splitlines():
+            print(line)
 
 
 def call_super_linter(env_vars=None):
@@ -46,7 +44,7 @@ def call_super_linter(env_vars=None):
             else:
                 del os.environ[env_var_key]
     output = usage_stdout.getvalue().strip()
-    # print_output(output)
+    print_output(output)
     return super_linter, output
 
 
@@ -90,8 +88,10 @@ def test_linter_failure(linter, test_self):
 def test_get_linter_version(linter, test_self):
     version = linter.get_linter_version()
     print('[' + linter.linter_name + '] version: ' + version)
-    test_self.assertFalse(version == 'ERROR')
+    test_self.assertFalse(version == 'ERROR', 'Returned version invalid: [' + version + ']')
 
 
 def assert_is_skipped(skipped_item, output, test_self):
-    test_self.assertRegex(output, rf"(?<=Skipped linters:)*({skipped_item})(?=.*[\n])")
+    test_self.assertRegex(output,
+                          rf"(?<=Skipped linters:)*({skipped_item})(?=.*[\n])",
+                          'No trace of skipped item ' + skipped_item + ' in log')

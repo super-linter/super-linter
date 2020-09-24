@@ -14,9 +14,8 @@ class DockerfileHadolintLinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 
-    # temporary disable
-    # def test_success(self):
-    #    utilstest.test_linter_success(DockerfileHadolintLinter(), self)
+    def test_success(self):
+        utilstest.test_linter_success(DockerfileHadolintLinter(), self)
 
     def test_failure(self):
         utilstest.test_linter_failure(DockerfileHadolintLinter(), self)

@@ -6,15 +6,15 @@ if [ "${TEST_CASE_RUN}" == "true" ] ; then
   echo "RUNNING TEST CASES"
   echo ""
   echo "[CURRENT FOLDER CONTENT]"
-  ls -1
+  ls -a -1
   if [ -d "/tmp/lint" ]; then
       echo "[CONTENT OF /tmp/lint]"
-      ls "/tmp/lint" -1
+      ls "/tmp/lint" -a -1
       echo ""
   fi
   if [ -d "/action" ]; then
       echo "[CONTENT OF /action]"
-      ls "/action" -1
+      ls "/action" -a -1
       echo ""
   fi
   python -m superlinter.test

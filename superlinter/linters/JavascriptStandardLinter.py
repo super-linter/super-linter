@@ -12,7 +12,6 @@ class JavascriptStandardLinter(JavascriptLinterRoot):
     linter_name = "standard"
     linter_url = "https://github.com/standard/standard"
     name = "JAVASCRIPT_STANDARD"
-    config_file_name = ""
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):

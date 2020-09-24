@@ -26,11 +26,14 @@ class SuperLinter:
             params = {}
         self.initialize_logger()
         self.display_header()
-        self.rules_location = '/action/lib/.automation'
         self.github_api_uri = 'https://api.github.com'
-        self.github_workspace = os.environ['GITHUB_WORKSPACE'] if "GITHUB_WORKSPACE" in os.environ and os.environ[
-            'GITHUB_WORKSPACE'] != "" and os.path.exists(os.environ['GITHUB_WORKSPACE']) else '/tmp/lint'
-        self.linter_rules_path = '.github/linters'
+        self.workspace = self.get_workspace()
+        # Super-Linter default rules location
+        self.default_rules_location = '/action/lib/.automation' if os.path.exists('/action/lib/.automation') \
+            else os.path.relpath(os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../TEMPLATES'))
+        # User-defined rules location
+        self.linter_rules_path = self.workspace + os.path.sep + '.github/linters'
+
         self.filter_regex_include = None
         self.filter_regex_exclude = None
         self.cli = params['cli'] if "cli" in params else False
@@ -77,38 +80,51 @@ class SuperLinter:
         self.manage_reports()
         self.check_results()
 
+    @staticmethod
+    def get_workspace():
+        if "GITHUB_WORKSPACE" in os.environ and os.environ['GITHUB_WORKSPACE'] != "" and \
+                os.path.exists(os.environ['GITHUB_WORKSPACE']):
+            return os.environ['GITHUB_WORKSPACE']
+        else:
+            return '/tmp/lint'
+
     # Manage configuration variables 
     def load_config_vars(self):
         # Linter rules root path
         if "LINTER_RULES_PATH" in os.environ:
-            self.linter_rules_path = os.environ["LINTER_RULES_PATH"]
+            self.linter_rules_path = self.workspace + os.path.sep + os.environ["LINTER_RULES_PATH"]
         # Filtering regex (inclusion)
         if "FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ["FILTER_REGEX_INCLUDE"]
         # Filtering regex (exclusion)
         if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
+
         # If at least one language/linter is activated with VALIDATE_XXX , all others are deactivated by default
         for env_var in os.environ:
             if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODE_BASE':
                 if os.environ[env_var] == 'true':
                     self.default_linter_activation = False
 
-    # List all classes from /linter folder then instantiate each of them
+    # List all classes from ./linter directory, then instantiate each of them
     def load_linters(self):
         linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
         linters_glob_pattern = linters_dir + '/*Linter.py'
         skipped_linters = []
         for file in glob.glob(linters_glob_pattern):
+            # Dynamic class import
             linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
             linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
             linter_class = getattr(linter_module, linter_class_file_name)
+            # Instantiate and initialize linter from linter class
             linter = linter_class({'linter_rules_path': self.linter_rules_path,
+                                   'default_rules_location': self.default_rules_location,
                                    'default_linter_activation': self.default_linter_activation})
             if linter.is_active is False:
                 skipped_linters.append(linter.name)
                 continue
             self.linters.append(linter)
+        # Display skipped linters in log
         if len(skipped_linters) > 0:
             logging.info('Skipped linters: ' + ', '.join(skipped_linters))
 
@@ -125,9 +141,9 @@ class SuperLinter:
     def collect_files(self):
         # List all files of root directory
         logging.info(
-            'Listing all files in directory [' + self.github_workspace + ']')
+            'Listing all files in directory [' + self.workspace + ']')
         all_files = list()
-        for (dirpath, dirnames, filenames) in os.walk(self.github_workspace):
+        for (dirpath, dirnames, filenames) in os.walk(self.workspace):
             all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
