@@ -141,16 +141,20 @@ class SuperLinter:
     def collect_files(self):
         # List all files of root directory
         logging.info(
-            'Listing all files in directory [' + self.workspace + ']')
+            'Listing all files in directory [' + self.workspace + '], then filter with:')
         all_files = list()
         for (dirpath, dirnames, filenames) in os.walk(self.workspace):
             all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
         if len(self.file_extensions) > 0:
-            logging.info('File extensions: ' + ', '.join(self.file_extensions))
+            logging.info('- File extensions: ' + ', '.join(self.file_extensions))
         if len(self.file_names) > 0:
-            logging.info('File names: ' + ', '.join(self.file_names))
+            logging.info('- File names: ' + ', '.join(self.file_names))
+        if self.filter_regex_include is not None:
+            logging.info('- Including regex: ' + self.filter_regex_include)
+        if self.filter_regex_exclude is not None:
+            logging.info('- Excluding regex: ' + self.filter_regex_exclude)
         filtered_files = []
         for file in all_files:
             base_file_name = os.path.basename(file)
