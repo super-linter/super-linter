@@ -9,7 +9,7 @@ import os
 from superlinter.linters.DockerfileLinterRoot import DockerfileLinterRoot
 
 
-class DockerfileDockerfileLintLinter(DockerfileLinterRoot):
+class DockerfileDockerfilelintLinter(DockerfileLinterRoot):
     linter_name = "dockerfilelint"
     linter_url = "https://github.com/replicatedhq/dockerfilelint"
     name = "DOCKERFILE_DOCKERFILELINT"

@@ -6,11 +6,11 @@ Unit tests for DockerfileDockerfileLintLinter class
 """
 import unittest
 
-from superlinter.linters.DockerfileDockerfileLintLinter import DockerfileDockerfileLintLinter
+from superlinter.linters.DockerfileDockerfilelintLinter import DockerfileDockerfileLintLinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class DockerfileDockerfileLintLinterTest(unittest.TestCase):
+class DockerfileDockerfilelintLinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 

@@ -67,16 +67,8 @@ typings/
 # default output report
 super-linter.report
 
-superlinter/__pycache__/
-
-superlinter/tests/test_superlinter/helpers/__pycache__/
-
-superlinter/linters/__pycache__/
+__pycache__/
 
 .idea/
 
 .vscode/
-
-superlinter/tests/test_superlinter/__pycache__/
-
-superlinter/tests/test_superlinter/linters/__pycache__/
