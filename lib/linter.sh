@@ -263,8 +263,6 @@ ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to rep
 export ERROR_ON_MISSING_EXEC_BIT
 RAW_FILE_ARRAY=()                                       # Array of all files that were changed
 export RAW_FILE_ARRAY                                   # Workaround SC2034
-READ_ONLY_CHANGE_FLAG=0                                 # Flag set to 1 if files changed are not txt or md
-export READ_ONLY_CHANGE_FLAG                            # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test'                     # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER                                 # Workaround SC2034
 WARNING_ARRAY_TEST=()                                   # Array of warning linters that did not have an expected test result.
