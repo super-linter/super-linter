@@ -126,7 +126,10 @@ class SuperLinter:
             self.linters.append(linter)
         # Display skipped linters in log
         if len(skipped_linters) > 0:
+            skipped_linters.sort()
             logging.info('Skipped linters: ' + ', '.join(skipped_linters))
+        # Sort linters by language and linter_name
+        self.linters.sort(key=lambda x: (x.language, x.linter_name))
 
     # Define all file extensions to browse
     def compute_file_extensions(self):
