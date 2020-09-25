@@ -3,13 +3,13 @@
 Template class for custom linters: any linter class in /linters folder must inherit from this class
 The following list of items can/must be overridden on custom linter local class:
 - field language (required) ex: "JAVASCRIPT"
-- field name (optional) ex: "JAVASCRIPT_ES"
+- field name (optional) ex: "JAVASCRIPT_ES". If not set, language value is used
 - field linter_name (required) ex: "eslint"
 - field linter_url (required) ex: "https://eslint.org/"
-- field test_folder (required) ex: "javascript"
-- field config_file_name (optional) ex: ".eslintrc.yml"
-- field file_extensions (optional) ex: [".js"]
-- field file_names (optional) ex: ["Dockerfile"]
+- field test_folder (optional) ex: "docker". If not set, language.lowercase() value is used
+- field config_file_name (optional) ex: ".eslintrc.yml". If not set, no cdefault config file will be searched
+- field file_extensions (optional) ex: [".js"]. At least file_extension of file_names must be set
+- field file_names (optional) ex: ["Dockerfile"]. At least file_extension of file_names must be set
 - method build_lint_command (optional) : Return CLI command to lint a file with the related linter
                                          Default: linter_name + (if config_file(-c + config_file)) + config_file
 - method build_version_command (optional): Returns CLI command to get the related linter version.
@@ -37,7 +37,7 @@ class LinterTemplate:
     name = None  # If you have several linters for the same language,override with a different name.Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
     linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
-    test_folder = "Field 'test_folder' must be overridden at custom linter class level"  # ex: groovy
+    test_folder = None  # Override only if different from language.lowercase()
 
     config_file_name = None  # Default name of the configuration file to use with the linter. Ex: '.eslintrc.js'
     file_extensions = []  # Array of strings defining file extensions. Ex: ['.js','.cjs']
@@ -58,6 +58,8 @@ class LinterTemplate:
         self.files = []
         if self.name is None:
             self.name = self.language
+        if self.test_folder is None:
+            self.test_folder = self.language.lower()
         self.load_config_vars()
 
         # Runtime items
