@@ -66,3 +66,6 @@ typings/
 
 # default output report
 super-linter.report
+
+# Git directory (useful for .dockerignore)
+.git
