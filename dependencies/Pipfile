@@ -15,6 +15,7 @@ snakemake = "*"
 yamllint = "*"
 yq = "*"
 terminaltables = "*"
+gitpython = "*"
 
 [requires]
 python_version = "3.8"

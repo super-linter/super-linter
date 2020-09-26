@@ -6,15 +6,20 @@ from superlinter import SuperLinter
 
 
 # Define env variables before any test case
-def linter_test_setup():
+def linter_test_setup(params=None):
+    if params is None:
+        params = {}
+    sub_lint_root = params['sub_lint_root'] if 'sub_lint_root' in params else '/.automation/test'
+
     # Root path of default rules
     root_dir = '/tmp/lint' if os.path.exists('/tmp/lint') else os.path.relpath(os.path.relpath(os.path.dirname(
         os.path.abspath(__file__))) + '/../../../..')
 
+    os.environ['VALIDATE_ALL_CODEBASE'] = 'true'
     # Root path of files to lint
-    os.environ["GITHUB_WORKSPACE"] = os.environ["GITHUB_WORKSPACE"] + '/.automation/test' \
+    os.environ["GITHUB_WORKSPACE"] = os.environ["GITHUB_WORKSPACE"] + sub_lint_root \
         if "GITHUB_WORKSPACE" in os.environ and os.path.exists(
-        os.environ["GITHUB_WORKSPACE"] + '/.automation/test') else root_dir + '/.automation/test'
+        os.environ["GITHUB_WORKSPACE"] + sub_lint_root) else root_dir + sub_lint_root
     assert os.path.exists(os.environ["GITHUB_WORKSPACE"]), 'GITHUB_WORKSPACE ' + os.environ[
         "GITHUB_WORKSPACE"] + ' is not a valid folder'
 

@@ -4,6 +4,7 @@ Unit tests for SuperLinter class
 
 @author: Nicolas Vuillamy
 """
+import os
 import unittest
 
 from superlinter.tests.test_superlinter.helpers import utilstest
@@ -50,3 +51,10 @@ class SuperLinterTest(unittest.TestCase):
         self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
         self.assertIn('Linting [JAVASCRIPT] files with [standard', output)
         utilstest.assert_is_skipped('GROOVY', output, self)
+
+    def test_validate_all_code_base_false(self):
+        os.environ["GITHUB_WORKSPACE"] = '/tmp/lint' if os.path.exists('/tmp/lint') else os.path.relpath(
+            os.path.relpath(os.path.dirname(
+                os.path.abspath(__file__))) + '/../../..')
+        super_linter, output = utilstest.call_super_linter({"VALIDATE_ALL_CODEBASE": 'false'})
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")

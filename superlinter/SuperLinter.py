@@ -5,15 +5,16 @@ Main Super-Linter class, encapsulating all linters process and reporting
 @author: Nicolas Vuillamy
 """
 
+import collections
 import glob
 import importlib
 import logging
 import os
 import re
 import sys
-from collections import OrderedDict
 
-from terminaltables import AsciiTable
+import git
+import terminaltables
 
 from superlinter import utils
 
@@ -34,6 +35,7 @@ class SuperLinter:
         # User-defined rules location
         self.linter_rules_path = self.workspace + os.path.sep + '.github/linters'
 
+        self.validate_all_code_base = True
         self.filter_regex_include = None
         self.filter_regex_exclude = None
         self.cli = params['cli'] if "cli" in params else False
@@ -64,7 +66,7 @@ class SuperLinter:
                                    linter.linter_name,
                                    '|'.join(all_criteria),
                                    str(len(linter.files))])
-        table = AsciiTable(table_data)
+        table = terminaltables.AsciiTable(table_data)
         table.title = "----MATCHING LINTERS"
         logging.info("")
         for table_line in table.table.splitlines():
@@ -102,9 +104,13 @@ class SuperLinter:
 
         # If at least one language/linter is activated with VALIDATE_XXX , all others are deactivated by default
         for env_var in os.environ:
-            if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODE_BASE':
+            if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODEBASE':
                 if os.environ[env_var] == 'true':
                     self.default_linter_activation = False
+
+        # If VALIDATE_ALL_CODEBASE is false,
+        if "VALIDATE_ALL_CODEBASE" in os.environ and os.environ["VALIDATE_ALL_CODEBASE"] == 'false':
+            self.validate_all_code_base = False
 
     # List all classes from ./linter directory, then instantiate each of them
     def load_linters(self):
@@ -137,17 +143,34 @@ class SuperLinter:
             self.file_extensions.extend(linter.file_extensions)
             self.file_names.extend(linter.file_names)
         # Remove duplicates
-        self.file_extensions = list(OrderedDict.fromkeys(self.file_extensions))
-        self.file_names = list(OrderedDict.fromkeys(self.file_names))
+        self.file_extensions = list(collections.OrderedDict.fromkeys(self.file_extensions))
+        self.file_names = list(collections.OrderedDict.fromkeys(self.file_names))
 
     # Collect list of files matching extensions and regex
     def collect_files(self):
-        # List all files of root directory
-        logging.info(
-            'Listing all files in directory [' + self.workspace + '], then filter with:')
         all_files = list()
-        for (dirpath, dirnames, filenames) in os.walk(self.workspace):
-            all_files += [os.path.join(dirpath, file) for file in filenames]
+        if self.validate_all_code_base is False:
+            # List all updated files from git
+            logging.info(
+                'Listing updated files in [' + self.workspace + '] using git diff, then filter with:')
+            repo = git.Repo(os.path.realpath(self.workspace))
+            default_branch = os.environ['DEFAULT_BRANCH'] if 'DEFAULT_BRANCH' in os.environ else 'master'
+            current_branch = os.environ[
+                'GITHUB_SHA'] if 'GITHUB_SHA' in os.environ else repo.active_branch.commit.hexsha
+            repo.git.pull()
+            repo.git.checkout(default_branch)
+            diff = repo.git.diff(f"{default_branch}...{current_branch}", name_only=True)
+            repo.git.checkout(current_branch)
+            logging.info('Git diff :')
+            logging.info(diff)
+            for diff_line in diff.splitlines():
+                all_files += [diff_line]
+        else:
+            # List all files under workspace root directory
+            logging.info(
+                'Listing all files in directory [' + self.workspace + '], then filter with:')
+            for (dirpath, dirnames, filenames) in os.walk(self.workspace):
+                all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
         if len(self.file_extensions) > 0:
@@ -227,7 +250,7 @@ class SuperLinter:
             if linter.is_active is True:
                 table_data.append(
                     [linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
-        table = AsciiTable(table_data)
+        table = terminaltables.AsciiTable(table_data)
         table.title = "----SUMMARY"
         for table_line in table.table.splitlines():
             logging.info(table_line)
