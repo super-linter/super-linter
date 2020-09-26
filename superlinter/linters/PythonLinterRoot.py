@@ -10,4 +10,3 @@ from superlinter import LinterTemplate
 class PythonLinterRoot(LinterTemplate):
     language = "PYTHON"
     file_extensions = ['.py']
-    test_folder = 'python'

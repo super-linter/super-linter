@@ -14,4 +14,3 @@ class MarkdownLinter(LinterTemplate):
     linter_url = "https://github.com/DavidAnson/markdownlint"
     config_file_name = ".markdown-lint.yml"
     file_extensions = ['.md']
-    test_folder = 'markdown'
