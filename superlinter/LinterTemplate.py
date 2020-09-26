@@ -207,7 +207,7 @@ class LinterTemplate:
     def display_header(self):
         linter_version = self.get_linter_version()
         # Linter header prints
-        msg = "Linting [" + self.language + "] files with [" + self.linter_name + '][v' + \
+        msg = "Linting [" + self.language + "] files with [" + self.linter_name + ' v' + \
               linter_version + '] (' + self.linter_url + ')'
         logging.info("")
         logging.info(utils.format_hyphens(""))
