@@ -124,7 +124,8 @@ class SuperLinter:
             # Instantiate and initialize linter from linter class
             linter = linter_class({'linter_rules_path': self.linter_rules_path,
                                    'default_rules_location': self.default_rules_location,
-                                   'default_linter_activation': self.default_linter_activation})
+                                   'default_linter_activation': self.default_linter_activation,
+                                   'workspace': self.workspace})
             if linter.is_active is False:
                 skipped_linters.append(linter.name)
                 continue

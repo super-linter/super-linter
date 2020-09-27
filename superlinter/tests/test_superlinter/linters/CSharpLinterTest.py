@@ -9,7 +9,7 @@ from superlinter.linters.CSharpLinter import CSharpLinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class CssLinterTest(unittest.TestCase):
+class CSharpLinterTest(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 

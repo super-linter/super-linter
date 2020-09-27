@@ -50,6 +50,7 @@ class LinterTemplate:
         # Config items
         self.linter_rules_path = params['linter_rules_path'] if "linter_rules_path" in params else '.'
         self.default_rules_location = params['default_rules_location'] if "default_rules_location" in params else '.'
+        self.workspace = params['workspace'] if "workspace" in params else '.'
         self.config_file = None
         self.filter_regex_include = None
         self.filter_regex_exclude = None
