@@ -2,7 +2,6 @@
 """
 Use stylelint to lint CSS files
 https://stylelint.io/
-@author: Nicolas Vuillamy
 """
 
 from superlinter import LinterTemplate

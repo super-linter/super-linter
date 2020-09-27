@@ -2,7 +2,6 @@
 """
 Unit tests for PythonFlake8Linter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

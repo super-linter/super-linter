@@ -2,7 +2,6 @@
 """
 Unit tests for SuperLinter class
 
-@author: Nicolas Vuillamy
 """
 import os
 import unittest

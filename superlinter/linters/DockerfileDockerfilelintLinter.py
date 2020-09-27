@@ -2,7 +2,6 @@
 """
 Use dockerfilelint to lint Dockerfile
 https://github.com/replicatedhq/dockerfilelint
-@author: Nicolas Vuillamy
 """
 
 from superlinter.linters.DockerfileLinterRoot import DockerfileLinterRoot

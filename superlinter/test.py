@@ -2,7 +2,6 @@
 """
 Unit tests for Super-Linter
 
-@author: Nicolas Vuillamy
 """
 import sys
 import unittest

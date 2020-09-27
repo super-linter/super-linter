@@ -2,7 +2,6 @@
 """
 Use Hadolint to lint Dockerfile
 https://github.com/hadolint/hadolint
-@author: Nicolas Vuillamy
 """
 
 from superlinter.linters.DockerfileLinterRoot import DockerfileLinterRoot

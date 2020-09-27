@@ -2,7 +2,6 @@
 """
 Use standard to lint JS files
 https://github.com/standard/standard
-@author: Nicolas Vuillamy
 """
 
 from superlinter.linters.JavascriptLinterRoot import JavascriptLinterRoot

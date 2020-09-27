@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Root class for Javascript linters
-@author: Nicolas Vuillamy
 """
 
 from superlinter import LinterTemplate

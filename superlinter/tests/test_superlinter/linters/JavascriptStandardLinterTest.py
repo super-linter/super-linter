@@ -2,7 +2,6 @@
 """
 Unit tests for JavascriptStandardLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

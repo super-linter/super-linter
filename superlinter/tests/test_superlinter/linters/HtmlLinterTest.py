@@ -2,7 +2,6 @@
 """
 Unit tests for CssLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

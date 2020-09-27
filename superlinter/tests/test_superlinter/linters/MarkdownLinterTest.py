@@ -2,7 +2,6 @@
 """
 Unit tests for GroovyLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

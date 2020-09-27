@@ -2,7 +2,6 @@
 """
 Use npm-groovy-lint to lint Groovy,Jenkinsfile,Gradle and Nextflow files
 https://github.com/nvuillam/npm-groovy-lint
-@author: Nicolas Vuillamy
 """
 
 import os.path

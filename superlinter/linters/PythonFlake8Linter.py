@@ -2,7 +2,6 @@
 """
 Use Flake8 to lint Python files
 https://flake8.pycqa.org/
-@author: Nicolas Vuillamy
 """
 
 from superlinter.linters.PythonLinterRoot import PythonLinterRoot

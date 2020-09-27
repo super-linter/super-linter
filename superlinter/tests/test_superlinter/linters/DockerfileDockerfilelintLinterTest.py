@@ -2,7 +2,6 @@
 """
 Unit tests for DockerfileDockerfileLintLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

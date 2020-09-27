@@ -2,7 +2,6 @@
 """
 Unit tests for PythonBlackLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 

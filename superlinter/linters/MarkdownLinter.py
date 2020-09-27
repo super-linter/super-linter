@@ -2,7 +2,6 @@
 """
 Use markdownlint to lint Markdown files
 https://github.com/DavidAnson/markdownlint
-@author: Nicolas Vuillamy
 """
 
 from superlinter import LinterTemplate

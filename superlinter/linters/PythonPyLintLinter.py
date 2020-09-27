@@ -2,7 +2,6 @@
 """
 Use eslint to lint JS files
 https://eslint.org/
-@author: Nicolas Vuillamy
 """
 
 from superlinter.linters.PythonLinterRoot import PythonLinterRoot

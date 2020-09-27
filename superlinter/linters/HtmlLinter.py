@@ -2,7 +2,6 @@
 """
 Use HtmlHint to lint HTML files
 https://github.com/htmlhint/HTMLHint
-@author: Nicolas Vuillamy
 """
 
 from superlinter import LinterTemplate

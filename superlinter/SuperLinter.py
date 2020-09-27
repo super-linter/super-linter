@@ -2,7 +2,6 @@
 """
 Main Super-Linter class, encapsulating all linters process and reporting
 
-@author: Nicolas Vuillamy
 """
 
 import collections

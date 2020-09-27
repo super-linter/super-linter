@@ -2,7 +2,6 @@
 """
 Run super-linter
 
-@author: Nicolas Vuillamy
 """
 
 import superlinter

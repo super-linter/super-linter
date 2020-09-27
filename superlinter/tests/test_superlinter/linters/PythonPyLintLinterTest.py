@@ -2,7 +2,6 @@
 """
 Unit tests for PythonPyLintLinter class
 
-@author: Nicolas Vuillamy
 """
 import unittest
 
