@@ -13,6 +13,7 @@ pylint = "*"
 snakefmt = "*"
 snakemake = "*"
 yamllint = "*"
+typing_extensions = "*"
 yq = "*"
 
 [requires]
