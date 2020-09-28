@@ -96,10 +96,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_BASH+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #########################
     # Get the CLOJURE files #
@@ -110,10 +106,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_CLOJURE+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the COFFEE files #
@@ -123,10 +115,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_COFFEESCRIPT+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the CSHARP files #
@@ -136,10 +124,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_CSHARP+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the CSS files #
@@ -150,10 +134,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_CSS+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ######################
     # Get the DART files #
@@ -163,10 +143,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_DART+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the DOCKER files #
@@ -176,10 +152,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_DOCKER+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the ENV files #
@@ -189,10 +161,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_ENV+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the Golang files #
@@ -202,10 +170,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_GO+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the GROOVY files #
@@ -216,10 +180,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_GROOVY+=("$FILE")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ######################
     # Get the HTML files #
@@ -229,11 +189,6 @@ function BuildFileList() {
       # Append the file to the array #
       ##############################p##
       FILE_ARRAY_HTML+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
-
 
     ######################
     # Get the Java files #
@@ -243,10 +198,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_JAVA+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ############################
     # Get the JavaScript files #
@@ -257,10 +208,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
+
     #####################
     # Get the JSX files #
     #####################
@@ -309,20 +257,12 @@ function BuildFileList() {
         ################################
         FILE_ARRAY_STATES+=("${FILE}")
       fi
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     elif [ "${FILE_TYPE}" == "jsx" ]; then
       ################################
       # Append the file to the array #
       ################################
       FILE_ARRAY_JSX+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the KOTLIN files #
@@ -332,10 +272,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_KOTLIN+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the LUA files #
@@ -345,10 +281,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_LUA+=("$FILE")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #######################
     # Get the LaTeX files #
@@ -358,11 +290,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_LATEX+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
-
 
     ##########################
     # Get the MARKDOWN files #
@@ -384,10 +311,6 @@ function BuildFileList() {
       FILE_ARRAY_PHP_PHPCS+=("${FILE}")
       FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
       FILE_ARRAY_PHP_PSALM+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ######################
     # Get the PERL files #
@@ -398,10 +321,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PERL+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ############################
     # Get the Powershell files #
@@ -411,10 +330,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_POWERSHELL+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #################################
     # Get the PROTOCOL BUFFER files #
@@ -424,10 +339,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PROTOBUF+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ########################
     # Get the PYTHON files #
@@ -438,10 +349,6 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ######################
     # Get the RAKU files #
@@ -453,10 +360,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_RAKU+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ####################
     # Get the R files  #
@@ -466,10 +369,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_R+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ######################
     # Get the RUBY files #
@@ -479,10 +378,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ###########################
     # Get the SNAKEMAKE files #
@@ -492,10 +387,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_SNAKEMAKE+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the SQL files #
@@ -505,10 +396,6 @@ function BuildFileList() {
       # Append the file to the array #
       ##############################p##
       FILE_ARRAY_SQL+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ###########################
     # Get the Terraform files #
@@ -519,10 +406,6 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TERRAFORM+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ############################
     # Get the TypeScript files #
@@ -533,10 +416,6 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the TSX files #
@@ -546,10 +425,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_TSX+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     #####################
     # Get the XML files #
@@ -559,10 +434,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_XML+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
     ################################
     # Get the CLOUDFORMATION files #
@@ -572,10 +443,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_YAML+=("${FILE}")
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
 
       #####################################
       # Check if the file is CFN template #
@@ -585,10 +452,6 @@ function BuildFileList() {
         # Append the file to the array #
         ################################
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
-        ##########################################################
-        # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-        ##########################################################
-        READ_ONLY_CHANGE_FLAG=1
       fi
 
       ############################################
@@ -611,8 +474,6 @@ function BuildFileList() {
       CheckFileType "${FILE}"
     fi
   done
-
-  export READ_ONLY_CHANGE_FLAG # Workaround SC2034
 
   #########################################
   # Need to switch back to branch of code #
@@ -681,10 +542,6 @@ function CheckFileType() {
     # Append the file to the array #
     ################################
     FILE_ARRAY_BASH+=("${FILE}")
-    ##########################################################
-    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-    ##########################################################
-    READ_ONLY_CHANGE_FLAG=1
   elif [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
     #######################
     # It is a Ruby script #
@@ -695,19 +552,11 @@ function CheckFileType() {
     # Append the file to the array #
     ################################
     FILE_ARRAY_RUBY+=("${FILE}")
-    ##########################################################
-    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-    ##########################################################
-    READ_ONLY_CHANGE_FLAG=1
   else
     ############################
     # Extension was not found! #
     ############################
     warn "Failed to get filetype for:[${FILE}]!"
-    ##########################################################
-    # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-    ##########################################################
-    READ_ONLY_CHANGE_FLAG=1
   fi
 }
 ################################################################################
@@ -790,11 +639,6 @@ function PopulateShellScriptsList() {
     if IsValidShellScript "${FILE}"; then
       debug "Adding ${FILE} to shell script files list"
       FILE_ARRAY_BASH+=("${FILE}")
-
-      ##########################################################
-      # Set the READ_ONLY_CHANGE_FLAG since this could be exec #
-      ##########################################################
-      READ_ONLY_CHANGE_FLAG=1
     fi
   done
 
