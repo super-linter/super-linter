@@ -72,3 +72,6 @@ __pycache__/
 .idea/
 
 .vscode/
+
+# Git directory (useful for .dockerignore)
+.git

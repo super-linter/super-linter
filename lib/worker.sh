@@ -297,6 +297,7 @@ function LintCodebase() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ]; then
+        debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
         if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
           ########
           # WARN #
@@ -705,6 +706,7 @@ function RunTestCases() {
   TestCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "javascript"
   TestCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "json"
+  TestCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\)\$" "kubeval"
   TestCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "kotlin"
   TestCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "latex"
   TestCodebase "LUA" "lua" "luacheck" ".*\.\(lua\)\$" "lua"
@@ -725,7 +727,7 @@ function RunTestCases() {
   TestCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES}" ".*\.\(rb\)\$" "ruby"
   TestCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "shell_shfmt"
   TestCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\.\(smk\)\$" "snakemake"
-  TestCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" ".*\.\(smk\)\$" "snakemake"
+  TestCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\.\(smk\)\$" "snakemake"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
@@ -806,26 +808,7 @@ function LintAnsibleFiles() {
     #################################
     # Get list of all files to lint #
     #################################
-    mapfile -t LIST_FILES < <(ls "${ANSIBLE_DIRECTORY}"/*.{yaml,yml} 2>&1)
-
-    ###############################################################
-    # Set the list to empty if only MD and TXT files were changed #
-    ###############################################################
-    # No need to run the full ansible checks on read only file changes
-    if [ "${READ_ONLY_CHANGE_FLAG}" -eq 0 ]; then
-      ##########################
-      # Set the array to empty #
-      ##########################
-      LIST_FILES=()
-      ###################################
-      # Send message that were skipping #
-      ###################################
-      debug "- Skipping Ansible lint run as file(s) that were modified were read only..."
-      ############################
-      # Create flag to skip loop #
-      ############################
-      SKIP_FLAG=1
-    fi
+    mapfile -t LIST_FILES < <(find "${ANSIBLE_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
 
     ####################################
     # Check if we have data to look at #

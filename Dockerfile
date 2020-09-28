@@ -13,11 +13,12 @@ FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
 FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.20.1 as tflint
+FROM wata727/tflint:0.20.2 as tflint
 FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/lintr-lib:v0.1.0 as lintr-lib
-FROM assignuser/chktex-alpine:v0.1.0 as chktex
+FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
 # Get base image #
@@ -304,6 +305,11 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 ##################
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
+
+###################
+# Install kubeval #
+###################
+COPY --from=kubeval /kubeval /usr/bin/
 
 #################
 # Install shfmt #

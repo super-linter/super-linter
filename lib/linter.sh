@@ -119,8 +119,8 @@ R_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${R_FILE_NAME}" # Path to the R lint r
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"            # Name of the file
 RUBY_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${RUBY_FILE_NAME}" # Path to the ruby lint rules
 # Snakemake Vars
-SNAKEMAKE_FILE_NAME="${SNAKEMAKE_CONFIG_FILE:-.snakefmt.toml}"                     # Name of the file
-SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_FILE_NAME}" # Path to the snakemake lint rules
+SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"                     # Name of the file
+SNAKEMAKE_SNAKEFMT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SNAKEMAKE_SNAKEFMT_FILE_NAME}" # Path to the snakemake lint rules
 # SQL Vars
 SQL_FILE_NAME=".sql-config.json"                              # Name of the file
 SQL_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${SQL_FILE_NAME}" # Path to the SQL lint rules
@@ -142,9 +142,9 @@ YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the ya
 #############################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
+  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'STATES' 'SQL' 'TERRAFORM'
+  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ############################################
@@ -166,6 +166,7 @@ GITHUB_RUN_ID="${GITHUB_RUN_ID}"                                     # GitHub RU
 GITHUB_SHA="${GITHUB_SHA}"                                           # GitHub sha from the commit
 GITHUB_TOKEN="${GITHUB_TOKEN}"                                       # GitHub Token passed from environment
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                               # Github Workspace
+KUBERNETES_DIRECTORY="${KUBERNETES_DIRECTORY}"                       # Kubernetes directory
 LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
 LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
 MULTI_STATUS="${MULTI_STATUS:-true}"                                 # Multiple status are created for each check ran
@@ -193,6 +194,7 @@ VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"                   # Boolean t
 VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"       # Boolean to validate language
 VALIDATE_JSON="${VALIDATE_JSON}"                                     # Boolean to validate language
 VALIDATE_JSX="${VALIDATE_JSX}"                                       # Boolean to validate language
+VALIDATE_KUBERNETES_KUBEVAL="${VALIDATE_KUBERNETES_KUBEVAL}"         # Boolean to validate language
 VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                                 # Boolean to validate language
 VALIDATE_LATEX="${VALIDATE_LATEX}"                                   # Boolean to validate language
 VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean to validate language
@@ -257,16 +259,12 @@ DEFAULT_IFS="${IFS}"                                # Get the Default IFS for up
 ###############################################################
 DEFAULT_DISABLE_ERRORS='false'                          # Default to enabling errors
 export DEFAULT_DISABLE_ERRORS                           # Workaround SC2034
-ERROR_ON_MISSING_EXEC_BIT='false'                       # Default to report a warning if a shell script doesn't have the executable bit set to 1
+ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
 export ERROR_ON_MISSING_EXEC_BIT
 RAW_FILE_ARRAY=()                                       # Array of all files that were changed
 export RAW_FILE_ARRAY                                   # Workaround SC2034
-READ_ONLY_CHANGE_FLAG=0                                 # Flag set to 1 if files changed are not txt or md
-export READ_ONLY_CHANGE_FLAG                            # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test'                     # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER                                 # Workaround SC2034
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible" # Default Ansible Directory
-export DEFAULT_ANSIBLE_DIRECTORY                        # Workaround SC2034
 WARNING_ARRAY_TEST=()                                   # Array of warning linters that did not have an expected test result.
 export WARNING_ARRAY_TEST                               # Workaround SC2034
 
@@ -276,7 +274,6 @@ export WARNING_ARRAY_TEST                               # Workaround SC2034
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                            # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"       # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                 # What level of details. (simpler or detailed). Default simpler
-REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
 
 ##########################
 # Array of changed files #
@@ -299,6 +296,7 @@ FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_JSON=()                # Array of files to check
 FILE_ARRAY_JSX=()                 # Array of files to check
+FILE_ARRAY_KUBERNETES=()
 FILE_ARRAY_KOTLIN=()              # Array of files to check
 FILE_ARRAY_LATEX=()               # Array of files to check
 FILE_ARRAY_LUA=()                 # Array of files to check
@@ -317,6 +315,7 @@ FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
 FILE_ARRAY_R=()                   # Array of files to check
 FILE_ARRAY_RAKU=()                # Array of files to check
 FILE_ARRAY_RUBY=()                # Array of files to check
+FILE_ARRAY_SNAKEMAKE=()           # Array of files to check
 FILE_ARRAY_STATES=()              # Array of files to check
 FILE_ARRAY_SQL=()                 # Array of files to check
 FILE_ARRAY_TERRAFORM=()           # Array of files to check
@@ -373,6 +372,8 @@ ERRORS_FOUND_JSON=0                     # Count of errors found
 export ERRORS_FOUND_JSON                # Workaround SC2034
 ERRORS_FOUND_JSX=0                      # Count of errors found
 export ERRORS_FOUND_JSX                 # Workaround SC2034
+ERRORS_FOUND_KUBERNETES_KUBEVAL=0       # Count of errors found
+export ERRORS_FOUND_KUBERNETES_KUBEVAL
 ERRORS_FOUND_KOTLIN=0                   # Count of errors found
 export ERRORS_FOUND_KOTLIN              # Workaround SC2034
 ERRORS_FOUND_LATEX=0                    # Count of errors found
@@ -738,6 +739,24 @@ DetectCloudFormationFile() {
   # No identifiers of a CLOUDFORMATION template found #
   #####################################################
   return 1
+}
+################################################################################
+#### Function DetectKubernetesFile #########################################
+DetectKubernetesFile() {
+  ################
+  # Pull in Vars #
+  ################
+  FILE="${1}" # File that we need to validate
+  debug "Checking if ${FILE} is a Kubernetes descriptor..."
+
+  if grep -q -E '(apiVersion):' "${FILE}" >/dev/null; then
+    debug "${FILE} is a Kubernetes descriptor"
+    return 0
+  fi
+
+  debug "${FILE} is NOT a Kubernetes descriptor"
+  return 1
+
 }
 ################################################################################
 #### Function DetectAWSStatesFIle ##############################################
@@ -1222,6 +1241,15 @@ fi
 # needed to connect back and update checks
 GetGitHubVars
 
+########################################################
+# Initialize variables that depend on GitHub variables #
+########################################################
+DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"          # Default Ansible Directory
+export DEFAULT_ANSIBLE_DIRECTORY                                 # Workaround SC2034
+DEFAULT_KUBERNETES_DIRECTORY="${GITHUB_WORKSPACE}/kubernetes"    # Default Kubernetes Directory
+export DEFAULT_KUBERNETES_DIRECTORY                              # Workaround SC2034
+REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"      # Location for the report folder
+
 #########################################
 # Get the languages we need to validate #
 #########################################
@@ -1270,6 +1298,8 @@ GetLinterRules "PHP_PHPSTAN"
 GetLinterRules "PHP_PSALM"
 # Get PowerShell rules
 GetLinterRules "POWERSHELL"
+# Get Protobuff linter rules
+GetLinterRules "PROTOBUF"
 # Get Python pylint rules
 GetLinterRules "PYTHON_PYLINT"
 # Get Python flake8 rules
@@ -1280,6 +1310,10 @@ GetLinterRules "PYTHON_BLACK"
 GetLinterRules "R"
 # Get Ruby rules
 GetLinterRules "RUBY"
+# Get Snakemake lint rules
+GetLinterRules "SNAKEMAKE_LINT"
+# Get Snakemake snakefmt rules
+GetLinterRules "SNAKEMAKE_SNAKEFMT"
 # Get SQL rules
 GetLinterRules "SQL"
 # Get Terraform rules
@@ -1510,7 +1544,7 @@ if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
   # Lint the files with editorconfig #
   ####################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${RAW_FILE_ARRAY[@]}"
 fi
 
 ###############
@@ -1628,6 +1662,37 @@ if [ "${VALIDATE_KOTLIN}" == "true" ]; then
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
   LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KOTLIN[@]}"
+fi
+
+##############################
+# KUBERNETES Kubeval LINTING #
+##############################
+if [ "${VALIDATE_KUBERNETES_KUBEVAL}" == "true" ]; then
+  if [ -d "${KUBERNETES_DIRECTORY}" ]; then
+    if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+      ###############################################################################
+      # Set the file seperator to newline to allow for grabbing objects with spaces #
+      ###############################################################################
+      IFS=$'\n'
+
+      mapfile -t LIST_FILES < <(find "${KUBERNETES_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
+      for FILE in "${LIST_FILES[@]}"; do
+        if DetectKubernetesFile "${FILE}"; then
+          FILE_ARRAY_KUBERNETES+=("${FILE}")
+        fi
+      done
+
+      ###########################
+      # Set IFS back to default #
+      ###########################
+      IFS="${DEFAULT_IFS}"
+    fi
+
+    LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\|json\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES[@]}"
+  else
+    warn "No Kubernetes directory found at:[${KUBERNETES_DIRECTORY}]"
+    debug "skipping Kubeval lint"
+  fi
 fi
 
 #################
@@ -1871,7 +1936,8 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "\(Snakefile|.*\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+
 fi
 
 ######################
@@ -1882,7 +1948,7 @@ if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --diff" "\(Snakefile|.*\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
 fi
 
 ######################
