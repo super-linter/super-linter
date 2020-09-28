@@ -212,7 +212,7 @@ function GetValidationInfo() {
   debug "---------------------------------------------"
   RUNNER=$(whoami)
   debug "Runner:[${RUNNER}]"
-  PRINTENV=$(printenv)
+  PRINTENV=$(printenv | sort)
   debug "ENV:"
   debug "${PRINTENV}"
   debug "---------------------------------------------"
