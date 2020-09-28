@@ -231,8 +231,8 @@ class LinterTemplate:
 
     # Build the CLI command to get linter version (can be overridden if --version is not the way to get the version)
     def build_version_command(self):
-        command = [self.linter_name, '--version']
-        return command
+        cmd = [self.linter_name, '--version']
+        return cmd
 
     # Build regular expression to extract version from output
     @staticmethod

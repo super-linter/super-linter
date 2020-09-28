@@ -21,3 +21,8 @@ class JavaLinter(LinterTemplate):
             cmd.extend(["-c", self.config_file])
         cmd.append(file)
         return cmd
+
+    # Build the CLI command to get linter version
+    def build_version_command(self):
+        cmd = ["java", "-jar", "/usr/bin/checkstyle", "--version"]
+        return cmd
