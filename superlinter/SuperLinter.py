@@ -113,14 +113,8 @@ class SuperLinter:
 
     # List all classes from ./linter directory, then instantiate each of them
     def load_linters(self):
-        linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
-        linters_glob_pattern = linters_dir + '/*Linter.py'
         skipped_linters = []
-        for file in glob.glob(linters_glob_pattern):
-            # Dynamic class import
-            linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
-            linter_class = getattr(linter_module, linter_class_file_name)
+        for linter_class in self.list_linter_classes():
             # Instantiate and initialize linter from linter class
             linter = linter_class({'linter_rules_path': self.linter_rules_path,
                                    'default_rules_location': self.default_rules_location,
@@ -136,6 +130,20 @@ class SuperLinter:
             logging.info('Skipped linters: ' + ', '.join(skipped_linters))
         # Sort linters by language and linter_name
         self.linters.sort(key=lambda x: (x.language, x.linter_name))
+
+    # List linter classes
+    @staticmethod
+    def list_linter_classes():
+        linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
+        linters_glob_pattern = linters_dir + '/*Linter.py'
+        linter_classes = []
+        for file in glob.glob(linters_glob_pattern):
+            # Dynamic class import
+            linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
+            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
+            linter_class = getattr(linter_module, linter_class_file_name)
+            linter_classes.append(linter_class)
+        return linter_classes
 
     # Define all file extensions to browse
     def compute_file_extensions(self):
