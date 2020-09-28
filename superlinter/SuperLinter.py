@@ -241,6 +241,10 @@ class SuperLinter:
         logging.info("The Super-Linter source code can be found at:")
         logging.info(" - https://github.com/github/super-linter")
         logging.info(utils.format_hyphens(""))
+        # Display env variables for debug mode
+        for name, value in sorted(os.environ.items()):
+            logging.debug("" + name + "=" + value)
+        logging.debug(utils.format_hyphens(""))
         logging.info("")
 
     def manage_reports(self):
