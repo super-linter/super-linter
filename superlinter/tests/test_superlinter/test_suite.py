@@ -3,10 +3,11 @@
 Unit tests for SuperLinter class
 
 """
+import importlib
 import unittest
 
+import superlinter
 from superlinter.tests.test_superlinter.SuperLinterTest import SuperLinterTest
-from superlinter.tests.test_superlinter.linters.GenericLinterTest import GenericLinterTest
 
 
 def suite():
@@ -16,10 +17,16 @@ def suite():
     test_suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(SuperLinterTest)
     )
-    # Linter test classes
-    test_suite.addTests(
-        unittest.TestLoader().loadTestsFromTestCase(GenericLinterTest)
-    )
+    # Linter test classes: one must exist for each linter class ( run .automation/build.py if not present)
+    linter_classes = superlinter.SuperLinter.list_linter_classes()
+    for linter_class in linter_classes:
+        linter_test_class_name = linter_class.__name__ + 'Test'
+        test_module_name = 'superlinter.tests.test_superlinter.linters.' + linter_test_class_name
+        linter_module = importlib.import_module(test_module_name, package=__package__)
+        linter_test_class = getattr(linter_module, linter_test_class_name)
+        test_suite.addTests(
+            unittest.TestLoader().loadTestsFromTestCase(linter_test_class)
+        )
     return test_suite
 
 
