@@ -17,6 +17,9 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more
 # Log Vars                                                       #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
+LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
+
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
 # Boolean to see trace logs
 LOG_TRACE=$(if [[ ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
@@ -189,8 +192,6 @@ GITHUB_SHA="${GITHUB_SHA}"                                           # GitHub sh
 GITHUB_TOKEN="${GITHUB_TOKEN}"                                       # GitHub Token passed from environment
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                               # Github Workspace
 KUBERNETES_DIRECTORY="${KUBERNETES_DIRECTORY}"                       # Kubernetes directory
-LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
 MULTI_STATUS="${MULTI_STATUS:-true}"                                 # Multiple status are created for each check ran
 TEST_CASE_RUN="${TEST_CASE_RUN}"                                     # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                     # Boolean to validate all files
