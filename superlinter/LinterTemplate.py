@@ -7,7 +7,7 @@ The following list of items can/must be overridden on custom linter local class:
 - field linter_name (required) ex: "eslint"
 - field linter_url (required) ex: "https://eslint.org/"
 - field test_folder (optional) ex: "docker". If not set, language.lowercase() value is used
-- field config_file_name (optional) ex: ".eslintrc.yml". If not set, no cdefault config file will be searched
+- field config_file_name (optional) ex: ".eslintrc.yml". If not set, no default config file will be searched
 - field file_extensions (optional) ex: [".js"]. At least file_extension of file_names must be set
 - field file_names (optional) ex: ["Dockerfile"]. At least file_extension of file_names must be set
 - method build_lint_command (optional) : Return CLI command to lint a file with the related linter
@@ -27,9 +27,10 @@ import subprocess
 import sys
 
 from superlinter import utils
-
-
 # Abstract Linter class
+from superlinter.utils import decode_utf8
+
+
 class LinterTemplate:
     # Definition fields: can be overridden at custom linter class level
     language = "Field 'Language' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
@@ -161,7 +162,15 @@ class LinterTemplate:
     def lint_file(self, file):
         # Build command using method locally defined on Linter class
         command = self.build_lint_command(file)
+        logging.debug('Linter command: ' + str(command))
+        return_code, return_output = self.execute_lint_command(command)
+        logging.debug(
+            'Linter result: ' + str(return_code) + " " + return_output)
+        return return_code, return_output
 
+    # Execute a linting command . Can be overridden for special cases, like use of PowerShell script
+    # noinspection PyMethodMayBeStatic
+    def execute_lint_command(self, command):
         # Use full executable path if we are on Windows
         if sys.platform == 'win32':
             cli_absolute = shutil.which(command[0])
@@ -173,16 +182,13 @@ class LinterTemplate:
                 return errno.ESRCH, msg
 
         # Call linter with a sub-process
-        logging.debug('Linter command: ' + str(command))
         process = subprocess.run(command,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT)
         return_code = process.returncode
-        logging.debug(
-            'Linter result: ' + str(return_code) + " " + process.stdout.decode("utf-8"))
-
+        return_stdout = decode_utf8(process.stdout)
         # Return linter result
-        return return_code, process.stdout.decode("utf-8")
+        return return_code, return_stdout
 
     # Returns linter version
     def get_linter_version(self):
@@ -192,8 +198,9 @@ class LinterTemplate:
         reg = self.build_extract_version_regex()
         m = re.search(reg, version_output, re.MULTILINE)
         if m:
-            self.linter_version_cache = m.group()
+            self.linter_version_cache = '.'.join(m.group().split())
         else:
+            logging.error(f"Unable to extract version with regex {str(reg)} from {version_output}")
             self.linter_version_cache = "ERROR"
         return self.linter_version_cache
 
@@ -204,12 +211,15 @@ class LinterTemplate:
             cli_absolute = shutil.which(command[0])
             if cli_absolute is not None:
                 command[0] = cli_absolute
+        logging.debug('Linter version command: ' + str(command))
         try:
             process = subprocess.run(command,
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT)
             return_code = process.returncode
-            output = process.stdout.decode("utf-8")
+            output = decode_utf8(process.stdout)
+            logging.debug(
+                'Linter version result: ' + str(return_code) + " " + output)
         except FileNotFoundError:
             logging.warning('Unable to call command [' + ' '.join(command) + ']')
             return_code = 666
@@ -253,6 +263,6 @@ class LinterTemplate:
         return cmd
 
     # Build regular expression to extract version from output
-    @staticmethod
-    def build_extract_version_regex():
+    # noinspection PyMethodMayBeStatic
+    def build_extract_version_regex(self):
         return r"\d+(\.\d+)+"

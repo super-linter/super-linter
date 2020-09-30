@@ -30,6 +30,6 @@ class GroovyLinter(LinterTemplate):
         return cmd
 
     # Build regular expression to extract version from output
-    @staticmethod
-    def build_extract_version_regex():
+    # noinspection PyMethodMayBeStatic
+    def build_extract_version_regex(self):
         return r"(?<=npm-groovy-lint version )\d+(\.\d+)+"

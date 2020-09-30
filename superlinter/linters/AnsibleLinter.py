@@ -26,7 +26,7 @@ class AnsibleLinter(LinterTemplate):
             if not (self.is_active is True and os.path.exists(self.ansible_directory)):
                 self.is_active = False
 
-    # Filter files to keep only the ones matching extension or file name
+    # Filter files to keep only Ansible files
     def collect_files(self, all_files):
         # Lint only if there is an ansible directory
         if os.path.exists(self.ansible_directory):

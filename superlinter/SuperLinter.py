@@ -88,8 +88,8 @@ class SuperLinter:
         self.manage_reports()
         self.check_results()
 
-    @staticmethod
-    def get_workspace():
+    # noinspection PyMethodMayBeStatic
+    def get_workspace(self):
         if "GITHUB_WORKSPACE" in os.environ and os.environ['GITHUB_WORKSPACE'] != "" and \
                 os.path.exists(os.environ['GITHUB_WORKSPACE']):
             return os.environ['GITHUB_WORKSPACE']

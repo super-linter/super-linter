@@ -3,7 +3,6 @@
 Use cfn-lint to lint CloudFormation files
 https://github.com/martysweet/cfn-lint
 """
-import os
 
 from superlinter import LinterTemplate
 from superlinter.utils import file_contains
@@ -22,7 +21,7 @@ class CloudFormationLinter(LinterTemplate):
         # Apply additional filters
         cloudformation_files = []
         for file in self.files:
-            if file_contains(os.path.realpath(file), [r"AWSTemplateFormatVersion", r"(AWS|Alexa|Custom)::"]):
+            if file_contains(file, ["AWSTemplateFormatVersion", r"(AWS|Alexa|Custom)::"]):
                 cloudformation_files.append(file)
         self.files = cloudformation_files
 
