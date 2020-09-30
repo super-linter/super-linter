@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH=$PATHONPATH:`pwd`
+PYTHONPATH=$PYTHONPATH:$(pwd)
+export PYTHONPATH
 
 if [ "${TEST_CASE_RUN}" == "true" ] ; then
   echo "RUNNING TEST CASES"

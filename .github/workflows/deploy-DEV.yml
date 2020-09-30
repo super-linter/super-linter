@@ -75,4 +75,4 @@ jobs:
       #####################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(.*_bad_.*|.*\/bad\/.*)' -e VALIDATE_PYTHON_BLACK=false -e VALIDATE_DOCKERFILE_HADOLINT=false -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(.*_bad_.*|.*\/bad\/.*)' -e VALIDATE_BASH_EXEC=false -e VALIDATE_BASH_SHFMT=false -e VALIDATE_PYTHON_BLACK=false -e VALIDATE_DOCKERFILE_HADOLINT=false -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
