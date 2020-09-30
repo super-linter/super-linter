@@ -43,6 +43,8 @@ class LinterTemplate:
     file_extensions = []  # Array of strings defining file extensions. Ex: ['.js','.cjs']
     file_names = []  # Array of file names. Ex: ['Dockerfile']
 
+    version_command_return_code = 0  # If linter --version does not return 0 when it is in success, override. ex: 1
+
     # Constructor: Initialize Linter instance with name and config variables
     def __init__(self, params=None):
         if params is None:
@@ -225,7 +227,7 @@ class LinterTemplate:
             return_code = 666
             output = 'ERROR'
 
-        if return_code != 0:
+        if return_code != self.version_command_return_code:
             logging.warning('Unable to get version for linter [' + self.linter_name + ']')
             logging.warning(' '.join(command) + ' returned output: ' + output)
             return 'ERROR'
