@@ -21,3 +21,9 @@ def file_contains(file_name, regex_list):
             if re.match(regex, content, re.MULTILINE):
                 return True
     return False
+
+
+def get_dict_string_list(dict, key, default):
+    if key in dict:
+        return dict[key].split(',')
+    return default

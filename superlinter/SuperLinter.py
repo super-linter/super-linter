@@ -16,6 +16,7 @@ import git
 import terminaltables
 
 from superlinter import utils
+from superlinter.utils import get_dict_string_list
 
 
 class SuperLinter:
@@ -40,6 +41,12 @@ class SuperLinter:
         self.cli = params['cli'] if "cli" in params else False
         self.default_linter_activation = True
 
+        # Get enable / disable vars
+        self.enable_languages = get_dict_string_list(os.environ, 'ENABLE_LANGUAGES', [])
+        self.enable_linters = get_dict_string_list(os.environ, 'ENABLE_LINTERS', [])
+        self.disable_languages = get_dict_string_list(os.environ, 'DISABLE_LANGUAGES', [])
+        self.disable_linters = get_dict_string_list(os.environ, 'DISABLE_LINTERS', [])
+        self.manage_default_linter_activation()
         self.load_config_vars()
 
         self.linters = []
@@ -101,24 +108,34 @@ class SuperLinter:
         if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
 
+        # If VALIDATE_ALL_CODEBASE is false,
+        if "VALIDATE_ALL_CODEBASE" in os.environ and os.environ["VALIDATE_ALL_CODEBASE"] == 'false':
+            self.validate_all_code_base = False
+
+    # Calculate default linter activation according to env variables
+    def manage_default_linter_activation(self):
         # If at least one language/linter is activated with VALIDATE_XXX , all others are deactivated by default
+        if len(self.enable_languages) > 0 or len(self.enable_linters) > 0:
+            self.default_linter_activation = False
+        # V3 legacy variables
         for env_var in os.environ:
             if env_var.startswith('VALIDATE_') and env_var != 'VALIDATE_ALL_CODEBASE':
                 if os.environ[env_var] == 'true':
                     self.default_linter_activation = False
 
-        # If VALIDATE_ALL_CODEBASE is false,
-        if "VALIDATE_ALL_CODEBASE" in os.environ and os.environ["VALIDATE_ALL_CODEBASE"] == 'false':
-            self.validate_all_code_base = False
-
     # List all classes from ./linter directory, then instantiate each of them
     def load_linters(self):
+        # Browse classes
         skipped_linters = []
         for linter_class in self.list_linter_classes():
             # Instantiate and initialize linter from linter class
             linter = linter_class({'linter_rules_path': self.linter_rules_path,
                                    'default_rules_location': self.default_rules_location,
                                    'default_linter_activation': self.default_linter_activation,
+                                   'enable_languages': self.enable_languages,
+                                   'enable_linters': self.enable_linters,
+                                   'disable_languages': self.disable_languages,
+                                   'disable_linters': self.disable_linters,
                                    'workspace': self.workspace})
             if linter.is_active is False:
                 skipped_linters.append(linter.name)

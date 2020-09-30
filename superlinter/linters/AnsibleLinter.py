@@ -20,10 +20,11 @@ class AnsibleLinter(LinterTemplate):
 
     def __init__(self, params=None):
         super().__init__(params)
-        self.ansible_directory = os.environ['ANSIBLE_DIRECTORY'] if "ANSIBLE_DIRECTORY" in os.environ \
-            else self.workspace + os.path.sep + 'ansible'
-        if not (self.is_active is True and os.path.exists(self.ansible_directory)):
-            self.is_active = False
+        if self.is_active is True:
+            self.ansible_directory = os.environ['ANSIBLE_DIRECTORY'] if "ANSIBLE_DIRECTORY" in os.environ \
+                else self.workspace + os.path.sep + 'ansible'
+            if not (self.is_active is True and os.path.exists(self.ansible_directory)):
+                self.is_active = False
 
     # Filter files to keep only the ones matching extension or file name
     def collect_files(self, all_files):
