@@ -172,7 +172,7 @@ class SuperLinter:
             logging.info('Git diff :')
             logging.info(diff)
             for diff_line in diff.splitlines():
-                all_files += [diff_line]
+                all_files += [self.workspace + os.path.sep + diff_line]
         else:
             # List all files under workspace root directory
             logging.info(
