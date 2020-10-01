@@ -26,6 +26,8 @@ import shutil
 import subprocess
 import sys
 
+import requests
+
 from superlinter import utils
 # Abstract Linter class
 from superlinter.utils import decode_utf8
@@ -52,7 +54,8 @@ class LinterTemplate:
                       'enable_languages': [],
                       'enable_linters': [],
                       'disable_languages': [],
-                      'disable_linters': []}
+                      'disable_linters': [],
+                      'post_linter_status': True}
 
         self.is_active = params['default_linter_activation']
         if self.name is None:
@@ -72,6 +75,8 @@ class LinterTemplate:
             self.config_file = None
             self.filter_regex_include = None
             self.filter_regex_exclude = None
+            self.post_linter_status = params['post_linter_status'] if "post_linter_status" in params else False
+            self.github_api_url = params['github_api_url'] if "github_api_url" in params else None
 
             self.load_config_vars()
 
@@ -158,6 +163,7 @@ class LinterTemplate:
                 self.status = "error"
                 self.number_errors = self.number_errors + 1
             logging.info(utils.format_hyphens(""))
+        self.manage_reports()
 
     def display_header(self):
         linter_version = self.get_linter_version()
@@ -263,6 +269,40 @@ class LinterTemplate:
             return 'ERROR'
         else:
             return output
+
+    def manage_reports(self):
+        # Post status to Github
+        if self.post_linter_status is True and 'GITHUB_REPOSITORY' in os.environ and 'GITHUB_SHA' in os.environ and \
+                'GITHUB_TOKEN' in os.environ and 'GITHUB_RUN_ID' in os.environ:
+            github_repo = os.environ['GITHUB_REPOSITORY']
+            sha = os.environ['GITHUB_SHA']
+            run_id = os.environ['GITHUB_RUN_ID']
+            success_msg = 'No errors were found in the linting process'
+            error_msg = 'Errors were detected, please view logs'
+            url = f"{self.github_api_url}/repos/{github_repo}/statuses/{sha}"
+            headers = {
+                'accept': 'application/vnd.github.v3+json',
+                'authorization': f"Bearer {os.environ['GITHUB_TOKEN']}",
+                'content-type': 'application/json'
+            }
+            target_url = f"https://github.com/{github_repo}/actions/runs/{run_id}"
+            data = {
+                'state': self.status,
+                'target_url': target_url,
+                'description': success_msg if self.status == 'success' else error_msg,
+                'context': f"--> Lint: {self.language} with {self.linter_name}"
+            }
+            response = requests.post(url,
+                                     headers=headers,
+                                     json=data)
+            if 200 <= response.status_code < 299:
+                logging.debug(f"Successfully posted Github Status for {self.language} with {self.linter_name}")
+            else:
+                logging.error(
+                    f"Error posting Github Status for {self.language} with {self.linter_name}: {response.status_code}")
+                logging.error(f"GitHub API response: {response.text}")
+        else:
+            logging.debug(f"Skipped post of Github Status for {self.language} with {self.linter_name}")
 
     ########################################
     # Methods that can be overridden below #

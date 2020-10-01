@@ -16,6 +16,7 @@ yamllint = "*"
 yq = "*"
 terminaltables = "*"
 gitpython = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

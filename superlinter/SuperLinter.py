@@ -28,7 +28,8 @@ class SuperLinter:
         self.workspace = self.get_workspace()
         self.initialize_logger()
         self.display_header()
-        self.github_api_uri = 'https://api.github.com'
+        self.github_api_url = 'https://api.github.com'
+        self.workspace = self.get_workspace()
         # Super-Linter default rules location
         self.default_rules_location = '/action/lib/.automation' if os.path.exists('/action/lib/.automation') \
             else os.path.relpath(os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../TEMPLATES'))
@@ -40,6 +41,7 @@ class SuperLinter:
         self.filter_regex_exclude = None
         self.cli = params['cli'] if "cli" in params else False
         self.default_linter_activation = True
+        self.multi_status = True
 
         # Get enable / disable vars
         self.enable_languages = get_dict_string_list(os.environ, 'ENABLE_LANGUAGES', [])
@@ -108,9 +110,13 @@ class SuperLinter:
         if "FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ["FILTER_REGEX_EXCLUDE"]
 
-        # If VALIDATE_ALL_CODEBASE is false,
+        # Disable all fields validation if VALIDATE_ALL_CODEBASE is 'false'
         if "VALIDATE_ALL_CODEBASE" in os.environ and os.environ["VALIDATE_ALL_CODEBASE"] == 'false':
             self.validate_all_code_base = False
+
+        # Disable status for each linter if MULTI_STATUS is 'false'
+        if "MULTI_STATUS" in os.environ and os.environ["MULTI_STATUS"] == 'false':
+            self.multi_status = False
 
     # Calculate default linter activation according to env variables
     def manage_default_linter_activation(self):
@@ -136,7 +142,9 @@ class SuperLinter:
                                    'enable_linters': self.enable_linters,
                                    'disable_languages': self.disable_languages,
                                    'disable_linters': self.disable_linters,
-                                   'workspace': self.workspace})
+                                   'workspace': self.workspace,
+                                   'post_linter_status': self.multi_status,
+                                   'github_api_url': self.github_api_url})
             if linter.is_active is False:
                 skipped_linters.append(linter.name)
                 continue
@@ -179,9 +187,8 @@ class SuperLinter:
             logging.info(
                 'Listing updated files in [' + self.workspace + '] using git diff, then filter with:')
             repo = git.Repo(os.path.realpath(self.workspace))
-            default_branch = os.environ['DEFAULT_BRANCH'] if 'DEFAULT_BRANCH' in os.environ else 'master'
-            current_branch = os.environ[
-                'GITHUB_SHA'] if 'GITHUB_SHA' in os.environ else repo.active_branch.commit.hexsha
+            default_branch = os.environ.get('DEFAULT_BRANCH', 'master')
+            current_branch = os.environ.get('GITHUB_SHA', repo.active_branch.commit.hexsha)
             repo.git.pull()
             repo.git.checkout(default_branch)
             diff = repo.git.diff(f"{default_branch}...{current_branch}", name_only=True)
@@ -229,7 +236,7 @@ class SuperLinter:
                 linter.is_active = False
 
     def initialize_logger(self):
-        logging_level_key = os.environ['LOG_LEVEL'] if "LOG_LEVEL" in os.environ else 'INFO'
+        logging_level_key = os.environ.get('LOG_LEVEL', 'INFO')
         logging_level_list = {'INFO': logging.INFO,
                               "DEBUG": logging.DEBUG,
                               "WARNING": logging.WARNING,
@@ -255,15 +262,9 @@ class SuperLinter:
         logging.info(utils.format_hyphens(""))
         logging.info(utils.format_hyphens("GitHub Actions Multi Language Linter"))
         logging.info(utils.format_hyphens(""))
-        logging.info(
-            " - Image Creation Date: " + (
-                os.environ['BUILD_DATE'] if "BUILD_DATE" in os.environ else 'No docker image'))
-        logging.info(
-            " - Image Revision: " + (
-                os.environ['BUILD_REVISION'] if "BUILD_REVISION" in os.environ else 'No docker image'))
-        logging.info(
-            " - Image Version: " + (
-                os.environ['BUILD_VERSION'] if "BUILD_VERSION" in os.environ else 'No docker image'))
+        logging.info(" - Image Creation Date: " + os.environ.get('BUILD_DATE', 'No docker image'))
+        logging.info(" - Image Revision: " + os.environ.get('BUILD_REVISION', 'No docker image'))
+        logging.info(" - Image Version: " + os.environ.get('BUILD_VERSION', 'No docker image'))
         logging.info(utils.format_hyphens(""))
         logging.info("The Super-Linter source code can be found at:")
         logging.info(" - https://github.com/github/super-linter")

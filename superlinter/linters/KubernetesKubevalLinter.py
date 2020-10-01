@@ -20,8 +20,8 @@ class KubernetesKubevalLinter(LinterTemplate):
     def __init__(self, params=None):
         super().__init__(params)
         if self.is_active is True:
-            self.kubernetes_directory = os.environ['KUBERNETES_DIRECTORY'] if "KUBERNETES_DIRECTORY" in os.environ \
-                else self.workspace + os.path.sep + 'kubernetes'
+            self.kubernetes_directory = os.environ.get('KUBERNETES_DIRECTORY',
+                                                       self.workspace + os.path.sep + 'kubernetes')
             if not (self.is_active is True and os.path.exists(self.kubernetes_directory)):
                 self.is_active = False
 
