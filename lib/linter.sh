@@ -6,6 +6,31 @@
 ################################################################################
 ################################################################################
 
+##################################################################
+# Debug Vars                                                     #
+# Define these early, so we can use debug logging ASAP if needed #
+##################################################################
+RUN_LOCAL="${RUN_LOCAL}"                              # Boolean to see if we are running locally
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
+
+##################################################################
+# Log Vars                                                       #
+# Define these early, so we can use debug logging ASAP if needed #
+##################################################################
+LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
+
+if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
+# Boolean to see trace logs
+LOG_TRACE=$(if [[ ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
+export LOG_TRACE
+# Boolean to see debug logs
+LOG_DEBUG=$(if [[ ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
+export LOG_DEBUG
+# Boolean to see verbose logs (info function)
+LOG_VERBOSE=$(if [[ ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
+export LOG_VERBOSE
+
 #########################
 # Source Function Files #
 #########################
@@ -167,83 +192,9 @@ GITHUB_SHA="${GITHUB_SHA}"                                           # GitHub sh
 GITHUB_TOKEN="${GITHUB_TOKEN}"                                       # GitHub Token passed from environment
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                               # Github Workspace
 KUBERNETES_DIRECTORY="${KUBERNETES_DIRECTORY}"                       # Kubernetes directory
-LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
 MULTI_STATUS="${MULTI_STATUS:-true}"                                 # Multiple status are created for each check ran
 TEST_CASE_RUN="${TEST_CASE_RUN}"                                     # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                     # Boolean to validate all files
-VALIDATE_ANSIBLE="${VALIDATE_ANSIBLE}"                               # Boolean to validate language
-VALIDATE_ARM="${VALIDATE_ARM}"                                       # Boolean to validate language
-VALIDATE_BASH="${VALIDATE_BASH}"                                     # Boolean to validate language
-VALIDATE_BASH_EXEC="${VALIDATE_BASH_EXEC}"                           # Boolean to validate language
-VALIDATE_CLOUDFORMATION="${VALIDATE_CLOUDFORMATION}"                 # Boolean to validate language
-VALIDATE_CLOJURE="${VALIDATE_CLOJURE}"                               # Boolean to validate language
-VALIDATE_COFFEE="${VALIDATE_COFFEE}"                                 # Boolean to validate language
-VALIDATE_CSHARP="${VALIDATE_CSHARP}"                                 # Boolean to validate language
-VALIDATE_CSS="${VALIDATE_CSS}"                                       # Boolean to validate language
-VALIDATE_DART="${VALIDATE_DART}"                                     # Boolean to validate language
-VALIDATE_DOCKERFILE="${VALIDATE_DOCKERFILE}"                         # Boolean to validate language
-VALIDATE_DOCKERFILE_HADOLINT="${VALIDATE_DOCKERFILE_HADOLINT}"       # Boolean to validate language
-VALIDATE_EDITORCONFIG="${VALIDATE_EDITORCONFIG}"                     # Boolean to validate files with editorconfig
-VALIDATE_ENV="${VALIDATE_ENV}"                                       # Boolean to validate language
-VALIDATE_GO="${VALIDATE_GO}"                                         # Boolean to validate language
-VALIDATE_GROOVY="${VALIDATE_GROOVY}"                                 # Boolean to validate language
-VALIDATE_HTML="${VALIDATE_HTML}"                                     # Boolean to validate language
-VALIDATE_JAVA="${VALIDATE_JAVA}"                                     # Boolean to validate language
-VALIDATE_JAVASCRIPT_ES="${VALIDATE_JAVASCRIPT_ES}"                   # Boolean to validate language
-VALIDATE_JAVASCRIPT_STANDARD="${VALIDATE_JAVASCRIPT_STANDARD}"       # Boolean to validate language
-VALIDATE_JSON="${VALIDATE_JSON}"                                     # Boolean to validate language
-VALIDATE_JSX="${VALIDATE_JSX}"                                       # Boolean to validate language
-VALIDATE_KUBERNETES_KUBEVAL="${VALIDATE_KUBERNETES_KUBEVAL}"         # Boolean to validate language
-VALIDATE_KOTLIN="${VALIDATE_KOTLIN}"                                 # Boolean to validate language
-VALIDATE_LATEX="${VALIDATE_LATEX}"                                   # Boolean to validate language
-VALIDATE_LUA="${VALIDATE_LUA}"                                       # Boolean to validate language
-VALIDATE_MARKDOWN="${VALIDATE_MD:-}"                                 # Boolean to validate language
-VALIDATE_OPENAPI="${VALIDATE_OPENAPI}"                               # Boolean to validate language
-VALIDATE_PERL="${VALIDATE_PERL}"                                     # Boolean to validate language
-VALIDATE_PHP_BUILTIN="${VALIDATE_PHP:-$VALIDATE_PHP_BUILTIN}"        # Boolean to validate language
-VALIDATE_PHP_PHPCS="${VALIDATE_PHP_PHPCS}"                           # Boolean to validate language
-VALIDATE_PHP_PHPSTAN="${VALIDATE_PHP_PHPSTAN}"                       # Boolean to validate language
-VALIDATE_PHP_PSALM="${VALIDATE_PHP_PSALM}"                           # Boolean to validate language
-VALIDATE_POWERSHELL="${VALIDATE_POWERSHELL}"                         # Boolean to validate language
-VALIDATE_PYTHON_FLAKE8="${VALIDATE_PYTHON_FLAKE8}"                   # Boolean to validate language
-VALIDATE_PYTHON_BLACK="${VALIDATE_PYTHON_BLACK}"                     # Boolean to validate language
-VALIDATE_PYTHON_PYLINT="${VALIDATE_PYTHON:-$VALIDATE_PYTHON_PYLINT}" # Boolean to validate language
-VALIDATE_R="${VALIDATE_R}"                                           # Boolean to validate language
-VALIDATE_RAKU="${VALIDATE_RAKU}"                                     # Boolean to validate language
-VALIDATE_RUBY="${VALIDATE_RUBY}"                                     # Boolean to validate language
-VALIDATE_STATES="${VALIDATE_STATES}"                                 # Boolean to validate language
-VALIDATE_SHELL_SHFMT="${VALIDATE_SHELL_SHFMT}"                       # Boolean to check Shell files against editorconfig
-VALIDATE_SNAKEMAKE_LINT="${VALIDATE_SNAKEMAKE_LINT}"                 # Boolean to validate Snakefiles
-VALIDATE_SNAKEMAKE_SNAKEFMT="${VALIDATE_SNAKEMAKE_SNAKEFMT}"         # Boolean to validate Snakefiles
-VALIDATE_SQL="${VALIDATE_SQL}"                                       # Boolean to validate language
-VALIDATE_TERRAFORM="${VALIDATE_TERRAFORM}"                           # Boolean to validate language
-VALIDATE_TERRAFORM_TERRASCAN="${VALIDATE_TERRAFORM_TERRASCAN}"       # Boolean to validate language
-VALIDATE_TSX="${VALIDATE_TSX}"                                       # Boolean to validate language
-VALIDATE_TYPESCRIPT_ES="${VALIDATE_TYPESCRIPT_ES}"                   # Boolean to validate language
-VALIDATE_TYPESCRIPT_STANDARD="${VALIDATE_TYPESCRIPT_STANDARD}"       # Boolean to validate language
-VALIDATE_XML="${VALIDATE_XML}"                                       # Boolean to validate language
-VALIDATE_YAML="${VALIDATE_YAML}"                                     # Boolean to validate language
-
-##############
-# Debug Vars #
-##############
-RUN_LOCAL="${RUN_LOCAL}"                              # Boolean to see if we are running locally
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
-
-############
-# Log Vars #
-############
-if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
-# Boolean to see trace logs
-LOG_TRACE=$(if [[ ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_TRACE
-# Boolean to see debug logs
-LOG_DEBUG=$(if [[ ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_DEBUG
-# Boolean to see verbose logs (info function)
-LOG_VERBOSE=$(if [[ ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_VERBOSE
 
 ################
 # Default Vars #
@@ -324,112 +275,6 @@ FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
 FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
 FILE_ARRAY_XML=()                 # Array of files to check
 FILE_ARRAY_YAML=()                # Array of files to check
-
-############
-# Counters #
-############
-ERRORS_FOUND_ANSIBLE=0                  # Count of errors found
-export ERRORS_FOUND_ANSIBLE             # Workaround SC2034
-ERRORS_FOUND_ARM=0                      # Count of errors found
-export ERRORS_FOUND_ARM                 # Workaround SC2034
-ERRORS_FOUND_BASH=0                     # Count of errors found
-export ERRORS_FOUND_BASH                # Workaround SC2034
-ERRORS_FOUND_BASH_EXEC=0                # Count of errors found
-export ERRORS_FOUND_BASH_EXEC           # Workaround SC2034
-ERRORS_FOUND_CLOUDFORMATION=0           # Count of errors found
-export ERRORS_FOUND_CLOUDFORMATION      # Workaround SC2034
-ERRORS_FOUND_CLOJURE=0                  # Count of errors found
-export ERRORS_FOUND_CLOJURE             # Workaround SC2034
-ERRORS_FOUND_CSHARP=0                   # Count of errors found
-export ERRORS_FOUND_CSHARP              # Workaround SC2034
-ERRORS_FOUND_CSS=0                      # Count of errors found
-export ERRORS_FOUND_CSS                 # Workaround SC2034
-ERRORS_FOUND_COFFEESCRIPT=0             # Count of errors found
-export ERRORS_FOUND_COFFEESCRIPT        # Workaround SC2034
-ERRORS_FOUND_DART=0                     # Count of errors found
-export ERRORS_FOUND_DART                # Workaround SC2034
-ERRORS_FOUND_DOCKERFILE=0               # Count of errors found
-export ERRORS_FOUND_DOCKERFILE          # Workaround SC2034
-ERRORS_FOUND_DOCKERFILE_HADOLINT=0      # Count of errors found
-export ERRORS_FOUND_DOCKERFILE_HADOLINT # Workaround SC2034
-ERRORS_FOUND_EDITORCONFIG=0             # Count of errors found
-export ERRORS_FOUND_EDITORCONFIG        # Workaround SC2034
-ERRORS_FOUND_ENV=0                      # Count of errors found
-export ERRORS_FOUND_ENV                 # Workaround SC2034
-ERRORS_FOUND_GO=0                       # Count of errors found
-export ERRORS_FOUND_GO                  # Workaround SC2034
-ERRORS_FOUND_GROOVY=0                   # Count of errors found
-export ERRORS_FOUND_GROOVY              # Workaround SC2034
-ERRORS_FOUND_HTML=0                     # Count of errors found
-export ERRORS_FOUND_HTML                # Workaround SC2034
-ERRORS_FOUND_JAVA=0                     # Count of errors found
-export ERRORS_FOUND_JAVA                # Workaround SC2034
-ERRORS_FOUND_JAVASCRIPT_STANDARD=0      # Count of errors found
-export ERRORS_FOUND_JAVASCRIPT_STANDARD # Workaround SC2034
-ERRORS_FOUND_JAVASCRIPT_ES=0            # Count of errors found
-export ERRORS_FOUND_JAVASCRIPT_ES       # Workaround SC2034
-ERRORS_FOUND_JSON=0                     # Count of errors found
-export ERRORS_FOUND_JSON                # Workaround SC2034
-ERRORS_FOUND_JSX=0                      # Count of errors found
-export ERRORS_FOUND_JSX                 # Workaround SC2034
-ERRORS_FOUND_KUBERNETES_KUBEVAL=0       # Count of errors found
-export ERRORS_FOUND_KUBERNETES_KUBEVAL
-ERRORS_FOUND_KOTLIN=0                   # Count of errors found
-export ERRORS_FOUND_KOTLIN              # Workaround SC2034
-ERRORS_FOUND_LATEX=0                    # Count of errors found
-export ERRORS_FOUND_LATEX=0             # Workaround SC2034
-ERRORS_FOUND_LUA=0                      # Count of errors found
-export ERRORS_FOUND_LUA=0               # Workaround SC2034
-ERRORS_FOUND_MARKDOWN=0                 # Count of errors found
-export ERRORS_FOUND_MARKDOWN            # Workaround SC2034
-ERRORS_FOUND_OPENAPI=0                  # Count of errors found
-export ERRORS_FOUND_OPENAPI             # Workaround SC2034
-ERRORS_FOUND_PERL=0                     # Count of errors found
-export ERRORS_FOUND_PERL                # Workaround SC2034
-ERRORS_FOUND_PHP_BUILTIN=0              # Count of errors found
-export ERRORS_FOUND_PHP_BUILTIN         # Workaround SC2034
-ERRORS_FOUND_PHP_PHPCS=0                # Count of errors found
-export ERRORS_FOUND_PHP_PHPCS           # Workaround SC2034
-ERRORS_FOUND_PHP_PHPSTAN=0              # Count of errors found
-export ERRORS_FOUND_PHP_PHPSTAN         # Workaround SC2034
-ERRORS_FOUND_PHP_PSALM=0                # Count of errors found
-export ERRORS_FOUND_PHP_PSALM           # Workaround SC2034
-ERRORS_FOUND_POWERSHELL=0               # Count of errors found
-export ERRORS_FOUND_POWERSHELL          # Workaround SC2034
-ERRORS_FOUND_PROTOBUF=0                 # Count of errors found
-export ERRORS_FOUND_PROTOBUF            # Workaround SC2034
-ERRORS_FOUND_PYTHON_BLACK=0             # Count of errors found
-export ERRORS_FOUND_PYTHON_BLACK        # Workaround SC2034
-ERRORS_FOUND_PYTHON_PYLINT=0            # Count of errors found
-export ERRORS_FOUND_PYTHON_PYLINT       # Workaround SC2034
-ERRORS_FOUND_PYTHON_FLAKE8=0            # Count of errors found
-export ERRORS_FOUND_PYTHON_FLAKE8       # Workaround SC2034
-ERRORS_FOUND_R=0                        # Count of errors found
-export ERRORS_FOUND_R                   # Workaround SC2034
-ERRORS_FOUND_RAKU=0                     # Count of errors found
-export ERRORS_FOUND_RAKU                # Workaround SC2034
-ERRORS_FOUND_RUBY=0                     # Count of errors found
-export ERRORS_FOUND_RUBY                # Workaround SC2034
-ERRORS_FOUND_SHELL_SHFMT=0              # Count of errors found
-export ERRORS_FOUND_SHELL_SHFMT
-ERRORS_FOUND_STATES=0                   # Count of errors found
-export ERRORS_FOUND_STATES              # Workaround SC2034
-ERRORS_FOUND_SQL=0                      # Count of errors found
-export ERRORS_FOUND_SQL                 # Workaround SC2034
-ERRORS_FOUND_TERRAFORM=0                # Count of errors found
-export ERRORS_FOUND_TERRAFORM           # Workaround SC2034
-ERRORS_FOUND_TERRAFORM_TERRASCAN=0      # Count of errors found
-export ERRORS_FOUND_TERRAFORM_TERRASCAN # Workaround SC2034
-ERRORS_FOUND_TSX=0                      # Count of errors found
-export ERRORS_FOUND_TSX                 # Workaround SC2034
-ERRORS_FOUND_TYPESCRIPT_STANDARD=0      # Count of errors found
-export ERRORS_FOUND_TYPESCRIPT_STANDARD # Workaround SC2034
-ERRORS_FOUND_TYPESCRIPT_ES=0            # Count of errors found
-export ERRORS_FOUND_TYPESCRIPT_ES       # Workaround SC2034
-ERRORS_FOUND_XML=0                      # Count of errors found
-export ERRORS_FOUND_XML                 # Workaround SC2034
-ERRORS_FOUND_YAML=0                     # Count of errors found
-export ERRORS_FOUND_YAML                # Workaround SC2034
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################

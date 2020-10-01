@@ -110,7 +110,15 @@ function GetValidationInfo() {
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     if [[ ${!VALIDATE_LANGUAGE} == "true" ]]; then
       # We need to validate
-      PRINT_ARRAY+=("- Validating [$LANGUAGE] files in code base...")
+      PRINT_ARRAY+=("- Validating [${LANGUAGE}] files in code base...")
+
+      debug "Defining variables for ${LANGUAGE} linter..."
+
+      ERRORS_VARIABLE_NAME="ERRORS_FOUND_${LANGUAGE}"
+      debug "Setting ${ERRORS_VARIABLE_NAME} variable value to 0..."
+      eval "${ERRORS_VARIABLE_NAME}=0"
+      debug "Exporting ${ERRORS_VARIABLE_NAME} variable..."
+      eval "export ${ERRORS_VARIABLE_NAME}"
     else
       # We are skipping the language
       PRINT_ARRAY+=("- Excluding [$LANGUAGE] files in code base...")

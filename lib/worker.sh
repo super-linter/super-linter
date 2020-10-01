@@ -359,6 +359,8 @@ function TestCodebase() {
   INDIVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
   TESTS_RAN=0                   # Incremented when tests are ran, this will help find failed finds
 
+  debug "Running ${FILE_TYPE} test. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, file extensions: ${FILE_EXTENSIONS}, individual test folder: ${INDIVIDUAL_TEST_FOLDER}"
+
   ################
   # print header #
   ################
