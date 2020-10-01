@@ -114,10 +114,15 @@ class LinterTemplate:
         elif self.language + "_RULES_PATH" in os.environ:
             self.linter_rules_path = os.environ[self.language + "_RULES_PATH"]
 
-        # Linter config file
+        # Linter config file:
+        # 1: repo + config_name_name
+        # 2: linter_rules_path + config_file_name
+        # 3: super-linter default rules path + config_file_name
         if self.config_file_name is not None and self.config_file_name != "LINTER_DEFAULT":
+            if os.path.exists(self.workspace + os.path.sep + self.config_file_name):
+                self.config_file = self.workspace + os.path.sep + self.config_file_name
             # in user repo ./github/linters folder
-            if os.path.exists(self.linter_rules_path + os.path.sep + self.config_file_name):
+            elif os.path.exists(self.linter_rules_path + os.path.sep + self.config_file_name):
                 self.config_file = self.linter_rules_path + os.path.sep + self.config_file_name
             # in user repo directory provided in <Linter>RULES_PATH or LINTER_RULES_PATH
             elif os.path.exists(self.default_rules_location + os.path.sep + self.config_file_name):
