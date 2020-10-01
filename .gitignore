@@ -75,3 +75,7 @@ __pycache__/
 .git
 
 .automation/test/arm/arm-ttk/
+
+.coverage
+
+coverage.xml

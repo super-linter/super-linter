@@ -13,7 +13,7 @@ if __name__ == '__main__':
     superlinter.possum()
 
     # noinspection PyTypeChecker
-    run_result = unittest.TextTestRunner(verbosity=2).run(superlinter.tests.test_superlinter.test_suite.suite())
+    run_result = unittest.TextTestRunner(verbosity=2).run(superlinter.tests.test_superlinter.suite.suite())
     if run_result.wasSuccessful():
         sys.exit(0)
     else:

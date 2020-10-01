@@ -2,7 +2,7 @@
 from .LinterTemplate import LinterTemplate
 from .SuperLinter import SuperLinter
 from .possum import possum
-from .tests.test_superlinter.test_suite import suite
+from .tests.test_superlinter.suite import suite
 
 __all__ = [
     'SuperLinter',

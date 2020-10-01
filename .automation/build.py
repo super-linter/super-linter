@@ -23,7 +23,7 @@ from superlinter.linters.{class_name} import {class_name}
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
-class {class_name}Test(unittest.TestCase):
+class {class_name}_test(unittest.TestCase):
     def setUp(self):
         utilstest.linter_test_setup()
 
@@ -36,7 +36,7 @@ class {class_name}Test(unittest.TestCase):
     def test_get_linter_version(self):
         utilstest.test_get_linter_version({class_name}(), self)
 """
-        file = open('./../superlinter/tests/test_superlinter/linters/' + class_name + 'Test.py', 'w')
+        file = open('./../superlinter/tests/test_superlinter/linters/' + class_name + '_test.py', 'w')
         file.write(test_class_code)
         file.close()
 

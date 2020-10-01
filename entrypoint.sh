@@ -18,7 +18,8 @@ if [ "${TEST_CASE_RUN}" == "true" ] ; then
       ls "/action" -a -1
       echo ""
   fi
-  python -m superlinter.test
+  pytest --cov=superlinter --cov-report=xml superlinter/
+  bash <(curl -s https://codecov.io/bash)
 else
   python -m superlinter.run
 fi
