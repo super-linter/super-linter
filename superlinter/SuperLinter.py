@@ -25,10 +25,10 @@ class SuperLinter:
     def __init__(self, params=None):
         if params is None:
             params = {}
+        self.workspace = self.get_workspace()
         self.initialize_logger()
         self.display_header()
         self.github_api_uri = 'https://api.github.com'
-        self.workspace = self.get_workspace()
         # Super-Linter default rules location
         self.default_rules_location = '/action/lib/.automation' if os.path.exists('/action/lib/.automation') \
             else os.path.relpath(os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../TEMPLATES'))
@@ -228,9 +228,7 @@ class SuperLinter:
             if len(linter.files) == 0:
                 linter.is_active = False
 
-    # noinspection PyArgumentList
-    @staticmethod
-    def initialize_logger():
+    def initialize_logger(self):
         logging_level_key = os.environ['LOG_LEVEL'] if "LOG_LEVEL" in os.environ else 'INFO'
         logging_level_list = {'INFO': logging.INFO,
                               "DEBUG": logging.DEBUG,
@@ -242,10 +240,14 @@ class SuperLinter:
                               }
         logging_level = logging_level_list[
             logging_level_key] if logging_level_key in logging_level_list else logging.INFO
-        logging.basicConfig(stream=sys.stdout,
-                            force=True,
+        log_file = self.workspace + os.path.sep + os.environ.get('LOG_FILE', 'super-linter.log')
+        logging.basicConfig(force=True,
                             level=logging_level,
-                            format='%(asctime)s [%(levelname)s] %(message)s')
+                            format='%(asctime)s [%(levelname)s] %(message)s',
+                            handlers=[
+                                logging.FileHandler(log_file),
+                                logging.StreamHandler(sys.stdout)
+                            ])
 
     @staticmethod
     def display_header():
