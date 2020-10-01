@@ -102,13 +102,17 @@ class LinterTemplate:
 
     # Manage configuration variables
     def load_config_vars(self):
-        # Configuration file name
+        # Configuration file name: try first NAME + _FILE_NAME, then LANGUAGE + _FILE_NAME
         if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
+        elif self.language + "_FILE_NAME" in os.environ:
+            self.config_file_name = os.environ[self.language + "_FILE_NAME"]
 
-        # Linter rules path
+        # Linter rules path: try first NAME + _RULE_PATH, then LANGUAGE + _RULE_PATH
         if self.name + "_RULES_PATH" in os.environ:
             self.linter_rules_path = os.environ[self.name + "_RULES_PATH"]
+        elif self.language + "_RULES_PATH" in os.environ:
+            self.linter_rules_path = os.environ[self.language + "_RULES_PATH"]
 
         # Linter config file
         if self.config_file_name is not None and self.config_file_name != "LINTER_DEFAULT":
@@ -119,13 +123,17 @@ class LinterTemplate:
             elif os.path.exists(self.default_rules_location + os.path.sep + self.config_file_name):
                 self.config_file = self.default_rules_location + os.path.sep + self.config_file_name
 
-        # Include regex
+        # Include regex :try first NAME + _FILTER_REGEX_INCLUDE, then LANGUAGE + _FILTER_REGEX_INCLUDE
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
+        elif self.language + "_FILTER_REGEX_INCLUDE" in os.environ:
+            self.filter_regex_include = os.environ[self.language + "_FILTER_REGEX_INCLUDE"]
 
-        # Exclude regex
+        # Exclude regex: try first NAME + _FILTER_REGEX_EXCLUDE, then LANGUAGE + _FILTER_REGEX_EXCLUDE
         if self.name + "_FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ[self.name + "_FILTER_REGEX_EXCLUDE"]
+        elif self.language + "_FILTER_REGEX_EXCLUDE" in os.environ:
+            self.filter_regex_exclude = os.environ[self.language + "_FILTER_REGEX_EXCLUDE"]
 
     # Processes the linter
     def run(self):
@@ -145,6 +153,23 @@ class LinterTemplate:
                 self.status = "error"
                 self.number_errors = self.number_errors + 1
             logging.info(utils.format_hyphens(""))
+
+    def display_header(self):
+        linter_version = self.get_linter_version()
+        # Linter header prints
+        msg = "Linting [" + self.language + "] files with [" + self.linter_name + ' v' + \
+              linter_version + '] (' + self.linter_url + ')'
+        logging.info("")
+        logging.info(utils.format_hyphens(""))
+        logging.info(utils.format_hyphens(msg))
+        if self.language != self.name:
+            logging.info(utils.format_hyphens("Key: [" + self.name + "]"))
+        if self.config_file is not None:
+            logging.info(utils.format_hyphens("Rules: [" + self.config_file + "]"))
+        else:
+            logging.info(utils.format_hyphens("Rules: identified by [" + self.linter_name + ']'))
+        logging.info(utils.format_hyphens(""))
+        logging.info("")
 
     # Filter files to keep only the ones matching extension or file name
     def collect_files(self, all_files):
@@ -192,7 +217,7 @@ class LinterTemplate:
         # Return linter result
         return return_code, return_stdout
 
-    # Returns linter version
+    # Returns linter version (can be overridden in special cases, like version has special format)
     def get_linter_version(self):
         if self.linter_version_cache is not None:
             return self.linter_version_cache
@@ -206,7 +231,7 @@ class LinterTemplate:
             self.linter_version_cache = "ERROR"
         return self.linter_version_cache
 
-    # Returns the version of the associated linter
+    # Returns the version of the associated linter (can be overridden in special cases, like version has special format)
     def get_linter_version_output(self):
         command = self.build_version_command()
         if sys.platform == 'win32':
@@ -234,22 +259,9 @@ class LinterTemplate:
         else:
             return output
 
-    def display_header(self):
-        linter_version = self.get_linter_version()
-        # Linter header prints
-        msg = "Linting [" + self.language + "] files with [" + self.linter_name + ' v' + \
-              linter_version + '] (' + self.linter_url + ')'
-        logging.info("")
-        logging.info(utils.format_hyphens(""))
-        logging.info(utils.format_hyphens(msg))
-        if self.language != self.name:
-            logging.info(utils.format_hyphens("Key: [" + self.name + "]"))
-        if self.config_file is not None:
-            logging.info(utils.format_hyphens("Rules: [" + self.config_file + "]"))
-        else:
-            logging.info(utils.format_hyphens("Rules: identified by [" + self.linter_name + ']'))
-        logging.info(utils.format_hyphens(""))
-        logging.info("")
+    ########################################
+    # Methods that can be overridden below #
+    ########################################
 
     # Build the CLI command to call to lint a file (can be overridden)
     def build_lint_command(self, file):
