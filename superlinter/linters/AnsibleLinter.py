@@ -14,7 +14,7 @@ class AnsibleLinter(LinterTemplate):
     linter_name = "ansible-lint"
     linter_url = "https://github.com/ansible/ansible-lint"
     config_file_name = ".ansible-lint.yml"
-    file_extensions = ['.yml', 'yaml']
+    file_extensions = ['.yml', '.yaml']
 
     file_end_exclude = ["vault.yml", "vault.yaml", "galaxy.yml", "galaxy.yaml"]
 
