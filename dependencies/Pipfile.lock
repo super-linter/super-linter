@@ -451,11 +451,11 @@
         },
         "snakefmt": {
             "hashes": [
-                "sha256:6dfd5f82ae9799c359776079fef37f2dfb582ff1653ca25095c6a4083338dc51",
-                "sha256:ec3f97feb69df2dcda2d63de145e561db9a3be97ae015b7159332560e13a1e9b"
+                "sha256:6569cf849719b5383261250cf0d82effe0bc57b58f412a196a5daeadfa201ed6",
+                "sha256:adb3c7a512e4ceff557057e25f87f4792436c17d24db7441722c3e153e89626c"
             ],
             "index": "pypi",
-            "version": "==0.2.0"
+            "version": "==0.2.1"
         },
         "snakemake": {
             "hashes": [
