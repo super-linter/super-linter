@@ -88,6 +88,9 @@ function BuildFileList() {
     #########
     debug "FILE_TYPE:[${FILE_TYPE}]"
 
+    # Editorconfig-checker should check every file
+    FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+
     ######################
     # Get the shell files #
     ######################
