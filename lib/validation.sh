@@ -99,6 +99,7 @@ function GetValidationInfo() {
       # No linter flags were set - default all to true
       eval "${VALIDATE_LANGUAGE}='true'"
     fi
+    eval "export ${VALIDATE_LANGUAGE}"
   done
 
   #######################################
