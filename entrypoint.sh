@@ -20,7 +20,7 @@ if [ "${TEST_CASE_RUN}" == "true" ] ; then
       echo ""
   fi
   # Run pytest
-  pytest --cov=superlinter --cov-report=xml superlinter/
+  pytest -v --cov=superlinter --cov-report=xml superlinter/
   PYTEST_STATUS=$?
   echo Pytest exited $PYTEST_STATUS
   # Manage return code

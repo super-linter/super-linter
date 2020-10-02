@@ -78,4 +78,4 @@ jobs:
       #####################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(.*_bad_.*|.*\/bad\/.*)' -e DISABLE_LINTERS="BASH_EXEC,BASH_SHFMT,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(\.automation\/test\/)' -e DISABLE_LINTERS="BASH_EXEC,BASH_SHFMT,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
