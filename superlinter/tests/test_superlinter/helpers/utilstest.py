@@ -30,9 +30,7 @@ def print_output(output):
             print(line)
 
 
-def call_super_linter(env_vars=None):
-    if env_vars is None:
-        env_vars = {}
+def call_super_linter(env_vars):
     prev_environ = os.environ.copy()
     usage_stdout = io.StringIO()
     with contextlib.redirect_stdout(usage_stdout):
@@ -94,6 +92,8 @@ def test_get_linter_version(linter, test_self):
     version = linter.get_linter_version()
     print('[' + linter.linter_name + '] version: ' + version)
     test_self.assertFalse(version == 'ERROR', 'Returned version invalid: [' + version + ']')
+    version_cache = linter.get_linter_version()
+    test_self.assertTrue(version == version_cache, 'Version not found in liner instance cache')
 
 
 def assert_is_skipped(skipped_item, output, test_self):

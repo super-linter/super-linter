@@ -6,6 +6,7 @@ Unit tests for SuperLinter class
 import os
 import unittest
 
+import superlinter
 from superlinter.tests.test_superlinter.helpers import utilstest
 
 
@@ -83,3 +84,38 @@ class SuperLinterTest(unittest.TestCase):
                 os.path.abspath(__file__))) + '/../../..')
         super_linter, output = utilstest.call_super_linter({"VALIDATE_ALL_CODEBASE": 'false'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+
+    def test_override_linter_rules_path(self):
+        super_linter, output = utilstest.call_super_linter({
+            'ENABLE_LINTERS': 'JAVASCRIPT_ES',
+            'LINTER_RULES_PATH': '.',
+            "JAVASCRIPT_ES_FILE_NAME": '.eslintrc-custom.yml',
+        })
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
+
+    def test_custom_config_on_language(self):
+        super_linter, output = utilstest.call_super_linter({
+            'DISABLE_LINTERS': 'JAVASCRIPT_STANDARD',
+            'JAVASCRIPT_LINTER_RULES_PATH': '.',
+            "JAVASCRIPT_FILE_NAME": '.eslintrc-custom.yml',
+            "JAVASCRIPT_FILTER_REGEX_INCLUDE": '(.*_good_.*|.*\\/good\\/.*)',
+            "JAVASCRIPT_FILTER_REGEX_EXCLUDE": '(.*_bad_.*|.*\\/bad\\/.*)'
+        })
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
+
+    def test_custom_config_on_linter(self):
+        super_linter, output = utilstest.call_super_linter({
+            'JAVASCRIPT_ES_LINTER_RULES_PATH': '.',
+            "JAVASCRIPT_ES_FILE_NAME": '.eslintrc-custom.yml',
+            "JAVASCRIPT_ES_FILTER_REGEX_INCLUDE": '(.*_good_.*|.*\\/good\\/.*)',
+            "JAVASCRIPT_ES_FILTER_REGEX_EXCLUDE": '(.*_bad_.*|.*\\/bad\\/.*)',
+            'MULTI_STATUS':  'false'
+        })
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
+
+    def test_possum(self):
+        res = superlinter.possum()
+        self.assertTrue(res is True)

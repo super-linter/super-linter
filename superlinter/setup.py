@@ -9,6 +9,7 @@ setup(name='superlinter',
       license='MIT',
       packages=['superlinter'],
       install_requires=[
-          'terminaltables',
+          'requests',
+          'terminaltables'
       ],
       zip_safe=False)
