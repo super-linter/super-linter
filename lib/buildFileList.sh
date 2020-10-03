@@ -157,6 +157,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_DOCKER+=("${FILE}")
+      FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
 
     #####################
     # Get the ENV files #
