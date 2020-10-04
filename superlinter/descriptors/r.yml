@@ -1,0 +1,20 @@
+# Name of the language, in uppercase
+language: R
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".r"
+  - ".R"
+  - ".Rmd"
+  - ".RMD"
+
+linters:
+
+  # Lintr
+  lintr:
+    class: RLinter
+    linter_name: lintr
+    linter_url: https://github.com/jimhester/lintr
+    config_file_name: .lintr
+    examples:
+      - "R --slave -e \"errors <- lintr::lint('myfile.r'); print(errors); quit(save = 'no', status = if (length(errors) > 0) 1 else 0) \""

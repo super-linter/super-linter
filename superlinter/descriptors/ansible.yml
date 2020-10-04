@@ -1,0 +1,28 @@
+# Name of the language, in uppercase
+language: ANSIBLE
+
+# Define sub-directory containing files to lint
+files_sub_directory: ansible
+files_names_not_ends_with:
+  - "vault.yml"
+  - "vault.yaml"
+  - "galaxy.yml"
+  - "galaxy.yaml"
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".yml"
+  - ".yaml"
+
+linters:
+
+  # MarkdownLint
+  ansible-lint:
+    linter_name: ansible-lint
+    linter_url: https://github.com/ansible/ansible-lint
+    config_file_name: .ansible-lint.yml
+    cli_config_extra_args:
+      - "-v"
+    examples:
+      - "ansible-lint -v myfile.yml"
+      - "ansible-lint -v -c .ansible-lint.yml myfile.yml"

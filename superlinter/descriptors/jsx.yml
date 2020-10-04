@@ -1,0 +1,20 @@
+# Name of the language, in uppercase
+language: JSX
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".jsx"
+
+linters:
+
+  # ESLINT
+  eslint:
+    linter_name: eslint
+    linter_url: https://eslint.org
+    config_file_name: .eslintrc.yml
+    cli_config_extra_args:
+      - "--no-eslintrc"
+      - "--no-ignore"
+    examples:
+      - "eslint myfile.jsx"
+      - "eslint -c .eslintrc.yml  --no-eslintrc --no-ignore myfile.jsx"

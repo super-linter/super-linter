@@ -1,0 +1,17 @@
+# Name of the language, in uppercase
+language: MARKDOWN
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".md"
+
+linters:
+
+  # MarkdownLint
+  markdownlint:
+    linter_name: markdownlint
+    linter_url: https://github.com/DavidAnson/markdownlint
+    config_file_name: .markdown-lint.yml
+    examples:
+      - "markdownlint myfile.css"
+      - "markdownlint -c .markdown-lint.yml myfile.md"

@@ -1,0 +1,23 @@
+# Name of the language, in uppercase
+language: CLOJURE
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".clj"
+  - ".cljs"
+  - ".cljc"
+  - ".edn"
+
+linters:
+
+  # clj-kondo
+  clj-kondo:
+    linter_name: clj-kondo
+    linter_url: https://github.com/borkdude/clj-kondo
+    config_file_name: .clj-kondo/config.edn
+    cli_config_arg_name: "--config"
+    cli_lint_extra_args_after:
+      - "--lint"
+    examples:
+      - "clj-kondo --lint myfile.clj"
+      - "clj-kondo --lint --config .clj-kondo/config.edn myfile.clj"

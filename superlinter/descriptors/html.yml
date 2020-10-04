@@ -1,0 +1,19 @@
+# Name of the language, in uppercase
+language: HTML
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".html"
+  - ".htm"
+
+linters:
+
+  # HTML HINT
+  htmlhint:
+    linter_name: htmlhint
+    linter_url: https://github.com/htmlhint/HTMLHint
+    config_file_name: .htmlhintrc
+    cli_config_arg_name: "--config"
+    examples:
+      - "htmlhint myfile.html"
+      - "htmlhint --config .htmlhintrc myfile.html"

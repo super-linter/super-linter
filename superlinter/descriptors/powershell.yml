@@ -1,0 +1,25 @@
+# Name of the language, in uppercase
+language: POWERSHELL
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".ps1"
+  - ".psm1"
+  - ".psd1"
+  - ".ps1xml"
+  - ".pssc"
+  - ".psrc"
+  - ".cdxml"
+
+linters:
+
+  # Internal powershell linter
+  powershell:
+    class: PowershellLinter
+    linter_name: powershell
+    linter_url: https://github.com/PowerShell/PSScriptAnalyzer
+    config_file_name: .powershell-psscriptanalyzer.psd1
+    version_extract_regex: "(\\d+) *(\\d+) *(\\d+)"
+    examples:
+      - "pwsh -NoProfile -NoLogo -Command \"Invoke-ScriptAnalyzer -EnableExit -Path myfile.ps1\""
+      - "pwsh -NoProfile -NoLogo -Command \"Invoke-ScriptAnalyzer -EnableExit -Settings .powershell-psscriptanalyzer.psd1 -Path myfile.ps1\""

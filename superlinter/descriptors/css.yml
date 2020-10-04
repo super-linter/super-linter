@@ -1,0 +1,20 @@
+# Name of the language, in uppercase
+language: CSS
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".css"
+  - ".scss"
+  - ".saas"
+
+linters:
+
+  # StyleLint
+  stylelint:
+    linter_name: stylelint
+    linter_url: https://stylelint.io
+    config_file_name: .stylelintrc.json
+    cli_config_arg_name: "--config"
+    examples:
+      - "stylelint myfile.css"
+      - "stylelint --config .stylelintrc.json myfile.css"

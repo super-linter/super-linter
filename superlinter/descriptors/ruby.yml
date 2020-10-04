@@ -1,0 +1,19 @@
+# Name of the language, in uppercase
+language: RUBY
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".rb"
+
+linters:
+
+  # RUBOCOP
+  rubocop:
+    linter_name: rubocop
+    linter_url: https://github.com/rubocop-hq/rubocop
+    config_file_name: .ruby-lint.yml
+    cli_lint_extra_args:
+      - "--force-exclusion"
+    examples:
+      - "rubocop --force-exclusion myfile.rb"
+      - "rubocop --force-exclusion -c .ruby-lint.yml myfile.rb"

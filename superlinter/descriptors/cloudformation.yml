@@ -1,0 +1,25 @@
+# Name of the language, in uppercase
+language: CLOUDFORMATION
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".yml"
+  - ".yaml"
+  - ".json"
+
+# Define content that must be found in file to be identified
+file_contains:
+  - "AWSTemplateFormatVersion"
+  - "(AWS|Alexa|Custom)::"
+
+linters:
+
+  # AWS CloudFormation Lint
+  cfn-lint:
+    linter_name: cfn-lint
+    linter_url: https://github.com/martysweet/cfn-lint
+    config_file_name: .cfnlintrc.yml
+    cli_config_arg_name: "--config-file"
+    examples:
+      - "cfn-lint myfile.yml"
+      - "cfn-lint --config-file .cfnlintrc.yml myfile.yml"

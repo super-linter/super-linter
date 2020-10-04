@@ -1,0 +1,18 @@
+# Name of the language, in uppercase
+language: YAML
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".yml"
+  - ".yaml"
+
+linters:
+
+  # YAMLLINT
+  yamllint:
+    linter_name: yamllint
+    linter_url: https://github.com/adrienverge/yamllint
+    config_file_name: .yaml-lint.yml
+    examples:
+      - "yamllint myfile.yaml"
+      - "yamllint -c .yaml-lint.yml myfile.yaml"

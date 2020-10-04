@@ -1,0 +1,24 @@
+# Name of the language, in uppercase
+language: JAVA
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".java"
+
+linters:
+
+  # Java Checkstyle
+  checkstyle:
+    linter_name: checkstyle
+    linter_url: https://checkstyle.sourceforge.io
+    config_file_name: sun_checks.xml
+    cli_executable: java
+    cli_lint_extra_args:
+      - "-jar"
+      - "/usr/bin/checkstyle"
+    cli_version_extra_args:
+      - "-jar"
+      - "/usr/bin/checkstyle"
+    examples:
+      - "java -jar /usr/bin/checkstyle myfile.java"
+      - "java -jar /usr/bin/checkstyle -c sun_checks.xml myfile.java"

@@ -1,0 +1,22 @@
+# Name of the language, in uppercase
+language: DART
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".dart"
+
+linters:
+
+  # Dart Analyzer
+  dartanalyzer:
+    linter_name: dartanalyzer
+    linter_url: https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli
+    config_file_name: analysis_options.yml
+    cli_lint_extra_args:
+      - "--fatal-infos"
+      - "--fatal-warnings"
+    cli_config_arg_name: "--options"
+    linter_version_cache: "0.0.0" # dartanalyzer --version returns <unknown>
+    examples:
+      - "dartanalyzer --fatal-infos --fatal-warnings myfile.dart"
+      - "dartanalyzer --fatal-infos --fatal-warnings --options analysis_options.yml myfile.dart"

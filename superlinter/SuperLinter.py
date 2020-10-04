@@ -5,8 +5,6 @@ Main Super-Linter class, encapsulating all linters process and reporting
 """
 
 import collections
-import glob
-import importlib
 import logging
 import os
 import re
@@ -16,7 +14,6 @@ import git
 import terminaltables
 
 from superlinter import utils
-from superlinter.utils import get_dict_string_list
 
 
 class SuperLinter:
@@ -44,10 +41,10 @@ class SuperLinter:
         self.multi_status = True
 
         # Get enable / disable vars
-        self.enable_languages = get_dict_string_list(os.environ, 'ENABLE_LANGUAGES', [])
-        self.enable_linters = get_dict_string_list(os.environ, 'ENABLE_LINTERS', [])
-        self.disable_languages = get_dict_string_list(os.environ, 'DISABLE_LANGUAGES', [])
-        self.disable_linters = get_dict_string_list(os.environ, 'DISABLE_LINTERS', [])
+        self.enable_languages = utils.get_dict_string_list(os.environ, 'ENABLE_LANGUAGES', [])
+        self.enable_linters = utils.get_dict_string_list(os.environ, 'ENABLE_LINTERS', [])
+        self.disable_languages = utils.get_dict_string_list(os.environ, 'DISABLE_LANGUAGES', [])
+        self.disable_linters = utils.get_dict_string_list(os.environ, 'DISABLE_LINTERS', [])
         self.manage_default_linter_activation()
         self.load_config_vars()
 
@@ -131,44 +128,35 @@ class SuperLinter:
 
     # List all classes from ./linter directory, then instantiate each of them
     def load_linters(self):
-        # Browse classes
+        # Linters init params
+        linter_init_params = {'linter_rules_path': self.linter_rules_path,
+                              'default_rules_location': self.default_rules_location,
+                              'default_linter_activation': self.default_linter_activation,
+                              'enable_languages': self.enable_languages,
+                              'enable_linters': self.enable_linters,
+                              'disable_languages': self.disable_languages,
+                              'disable_linters': self.disable_linters,
+                              'workspace': self.workspace,
+                              'post_linter_status': self.multi_status,
+                              'github_api_url': self.github_api_url}
+
+        # Build linters from descriptor files
         skipped_linters = []
-        for linter_class in self.list_linter_classes():
-            # Instantiate and initialize linter from linter class
-            linter = linter_class({'linter_rules_path': self.linter_rules_path,
-                                   'default_rules_location': self.default_rules_location,
-                                   'default_linter_activation': self.default_linter_activation,
-                                   'enable_languages': self.enable_languages,
-                                   'enable_linters': self.enable_linters,
-                                   'disable_languages': self.disable_languages,
-                                   'disable_linters': self.disable_linters,
-                                   'workspace': self.workspace,
-                                   'post_linter_status': self.multi_status,
-                                   'github_api_url': self.github_api_url})
-            if linter.is_active is False:
-                skipped_linters.append(linter.name)
-                continue
-            self.linters.append(linter)
+        descriptor_files = utils.list_descriptor_files()
+        for descriptor_file in descriptor_files:
+            descriptor_linters = utils.build_descriptor_linters(descriptor_file, linter_init_params)
+            for linter in descriptor_linters:
+                if linter.is_active is False:
+                    skipped_linters.append(linter.name)
+                    continue
+                self.linters.append(linter)
+
         # Display skipped linters in log
         if len(skipped_linters) > 0:
             skipped_linters.sort()
             logging.info('Skipped linters: ' + ', '.join(skipped_linters))
         # Sort linters by language and linter_name
         self.linters.sort(key=lambda x: (x.language, x.linter_name))
-
-    # List linter classes
-    @staticmethod
-    def list_linter_classes():
-        linters_dir = os.path.dirname(os.path.abspath(__file__)) + '/linters'
-        linters_glob_pattern = linters_dir + '/*Linter.py'
-        linter_classes = []
-        for file in glob.glob(linters_glob_pattern):
-            # Dynamic class import
-            linter_class_file_name = os.path.splitext(os.path.basename(file))[0]
-            linter_module = importlib.import_module('.linters.' + linter_class_file_name, package=__package__)
-            linter_class = getattr(linter_module, linter_class_file_name)
-            linter_classes.append(linter_class)
-        return linter_classes
 
     # Define all file extensions to browse
     def compute_file_extensions(self):

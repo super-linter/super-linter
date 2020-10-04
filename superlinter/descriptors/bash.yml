@@ -1,0 +1,46 @@
+# Name of the language, in uppercase
+language: BASH
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".sh"
+  - ".bash"
+  - ".dash"
+  - ".ksh"
+
+# Folder containing test files, if different from language.tolower()
+test_folder: shell
+
+linters:
+
+  # Bash Built in Linter
+  bash-exec:
+    linter_name: bash-exec
+    linter_url: https://tiswww.case.edu/php/chet/bash/bashtop.html
+    name: BASH_EXEC
+    cli_executable_version: bash
+    examples:
+      - "bash-exec myfile.sh"
+
+  # Shellcheck
+  shellcheck:
+    linter_name: shellcheck
+    linter_url: https://github.com/koalaman/shellcheck
+    name: BASH_SHELLCHECK
+    cli_lint_extra_args:
+      - "--color=auto"
+      - "--external-sources"
+    examples:
+      - "shellcheck --color=auto --external-sources myfile.sh"
+
+  # SHFMT
+  shfmt:
+    linter_name: shfmt
+    linter_url: https://github.com/mvdan/sh
+    name: BASH_SHFMT
+    cli_lint_extra_args:
+      - "-d"
+    test_folder: shell_shfmt
+    examples:
+      - "shfmt -d myfile.sh"
+

@@ -18,6 +18,7 @@ terminaltables = "*"
 gitpython = "*"
 requests = "*"
 pytest-cov = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

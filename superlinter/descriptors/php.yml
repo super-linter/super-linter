@@ -1,0 +1,55 @@
+# Name of the language, in uppercase
+language: PHP
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".php"
+
+linters:
+
+  # PHP Built in Linter
+  php:
+    linter_name: php
+    linter_url: https://www.php.net
+    name: PHP_BUILTIN
+    cli_lint_extra_args:
+      - "-l"
+    examples:
+      - "php -l myfile.js"
+
+
+  # PHPCS
+  phpcs:
+    linter_name: phpcs
+    linter_url: https://github.com/squizlabs/PHP_CodeSniffer
+    name: PHP_PHPCS
+    config_file_name: phpcs.xml
+    cli_config_arg_name: "--standard="
+    examples:
+      - "phpcs myfile.php"
+      - "phpcs --standard=phpcs.xml myfile.php"
+
+  # PHP Stan
+  phpstan:
+    linter_name: phpstan
+    linter_url: https://github.com/phpstan/phpstan
+    name: PHP_PHPSTAN
+    config_file_name: phpstan.neon
+    cli_lint_extra_args:
+      - "analyse"
+      - "--no-progress"
+      - "--no-ansi"
+    examples:
+      - "phpstan analyse --no-progress --no-ansi myfile.php"
+      - "phpstan analyse --no-progress --no-ansi -c phpstan.neon myfile.php"
+
+  # PHPCS
+  psalm:
+    linter_name: psalm
+    linter_url: https://psalm.dev
+    name: PHP_PSALM
+    config_file_name: psalm.xml
+    cli_config_arg_name: "--config="
+    examples:
+      - "psalm myfile.php"
+      - "psalm --config=psalm.xml myfile.php"

@@ -1,0 +1,25 @@
+# Name of the language, in uppercase
+language: GROOVY
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".groovy"
+  - ".gvy"
+  - ".gradle"
+  - ".nf"
+
+file_names:
+  - Jenkinsfile
+
+linters:
+
+  # npm-groovy-lint
+  npm-groovy-lint:
+    class: GroovyNpmGroovyLintLinter
+    linter_name: npm-groovy-lint
+    linter_url: https://github.com/nvuillam/npm-groovy-lint
+    config_file_name: .groovylintrc.json
+    version_extract_regex: "(?<=npm-groovy-lint version )\\d+(\\.\\d+)+"
+    examples:
+      - "npm-groovy-lint --failon warning --path . --files myfile.groovy"
+      - "npm-groovy-lint --failon warning --path . --files myfile.groovy -c .groovylintrc.json"

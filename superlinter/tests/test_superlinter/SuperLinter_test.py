@@ -111,7 +111,7 @@ class SuperLinterTest(unittest.TestCase):
             "JAVASCRIPT_ES_FILE_NAME": '.eslintrc-custom.yml',
             "JAVASCRIPT_ES_FILTER_REGEX_INCLUDE": '(.*_good_.*|.*\\/good\\/.*)',
             "JAVASCRIPT_ES_FILTER_REGEX_EXCLUDE": '(.*_bad_.*|.*\\/bad\\/.*)',
-            'MULTI_STATUS':  'false'
+            'MULTI_STATUS': 'false'
         })
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)

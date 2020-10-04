@@ -1,0 +1,16 @@
+# Name of the language, in uppercase
+language: XML
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".xml"
+
+linters:
+
+  # StyleLint
+  xmllint:
+    linter_name: xmllint
+    linter_url: http://xmlsoft.org/xmllint.html
+    version_extract_regex: "(?<=libxml version )\\d+(\\d+)+"
+    examples:
+      - "xmllint myfile.xml"

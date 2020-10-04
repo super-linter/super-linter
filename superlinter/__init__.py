@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-from .LinterTemplate import LinterTemplate
+from .Linter import Linter
 from .SuperLinter import SuperLinter
 from .possum import possum
 
 __all__ = [
     'SuperLinter',
-    'LinterTemplate',
+    'Linter',
+    'utils',
     'possum'
 ]

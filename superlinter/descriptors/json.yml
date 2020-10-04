@@ -1,0 +1,16 @@
+# Name of the language, in uppercase
+language: JSON
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".json"
+
+linters:
+
+  # JSONLINT
+  jsonlint:
+    linter_name: jsonlint
+    linter_url: https://github.com/zaach/jsonlint
+    version_command_return_code: 1
+    examples:
+      - "jsonlint myfile.json"

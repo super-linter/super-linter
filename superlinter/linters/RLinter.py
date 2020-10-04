@@ -6,15 +6,10 @@ https://github.com/jimhester/lintr
 import os
 from shutil import copyfile
 
-from superlinter import LinterTemplate
+from superlinter import Linter
 
 
-class RLinter(LinterTemplate):
-    language = "R"
-    linter_name = "lintr"
-    linter_url = "https://github.com/jimhester/lintr"
-    config_file_name = '.lintr'
-    file_extensions = ['.r', '.R', '.Rmd', 'RMD']
+class RLinter(Linter):
 
     # Build the CLI command to call to lint a file
     def build_lint_command(self, file):

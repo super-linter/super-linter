@@ -1,0 +1,29 @@
+# Name of the language, in uppercase
+language: KUBERNETES
+
+# Define sub-directory containing files to lint
+files_sub_directory: kubernetes
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".yml"
+  - ".yaml"
+  - ".json"
+
+# Define content that must be found in file to be identified
+file_contains:
+  - 'apiVersion:'
+
+linters:
+
+  # KUBEVAL
+  kubeval:
+    linter_name: kubeval
+    name: KUBERNETES_KUBEVAL
+    linter_url: https://github.com/instrumenta/kubeval
+    cli_config_extra_args:
+      - "--strict"
+    version_extract_regex: "((\\d+(\\.\\d+)+)|(dev))"
+    examples:
+      - "kubeval -strict myfile.yml"
+

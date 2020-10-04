@@ -1,0 +1,29 @@
+# Name of the language, in uppercase
+language: JAVASCRIPT
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".js"
+
+linters:
+
+  # ESLINT
+  eslint:
+    linter_name: eslint
+    linter_url: https://eslint.org
+    name: JAVASCRIPT_ES
+    config_file_name: .eslintrc.yml
+    cli_config_extra_args:
+      - "--no-eslintrc"
+      - "--no-ignore"
+    examples:
+      - "eslint myfile.js"
+      - "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js"
+
+  # STANDARD
+  standard:
+    linter_name: standard
+    linter_url: https://github.com/standard/standard
+    name: JAVASCRIPT_STANDARD
+    examples:
+      - "standard myfile.js"
