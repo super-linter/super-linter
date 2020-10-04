@@ -11,7 +11,7 @@ linters:
   luacheck:
     linter_name: luacheck
     linter_url: https://github.com/luarocks/luacheck
-    config_file_name: .chktexrc
+    config_file_name: .luacheckrc
     cli_config_arg_name: "--config"
     examples:
       - "luacheck myfile.lua"
