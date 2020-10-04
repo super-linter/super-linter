@@ -1,0 +1,18 @@
+# Name of the language, in uppercase
+language: PERL
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".pl"
+  - ".pm"
+  - ".t"
+
+linters:
+
+  # PERL CRITIC
+  perlcritic:
+    linter_name: perlcritic
+    linter_url: https://metacpan.org/pod/Perl::Critic
+    examples:
+      - "perlcritic myfile.pl"
+

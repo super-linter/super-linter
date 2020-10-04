@@ -1,0 +1,16 @@
+# Name of the language, in uppercase
+language: KOTLIN
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".kt"
+  - ".kts"
+
+linters:
+
+  # KTLINT
+  ktlint:
+    linter_name: ktlint
+    linter_url: https://ktlint.github.io/
+    examples:
+      - "ktlint myfile.kt"

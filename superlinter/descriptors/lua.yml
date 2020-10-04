@@ -1,0 +1,18 @@
+# Name of the language, in uppercase
+language: LUA
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".lua"
+
+linters:
+
+  # LUACHECK
+  luacheck:
+    linter_name: luacheck
+    linter_url: https://github.com/luarocks/luacheck
+    config_file_name: .chktexrc
+    cli_config_arg_name: "--config"
+    examples:
+      - "luacheck myfile.lua"
+      - "luacheck --config .chktexrc myfile.lua"

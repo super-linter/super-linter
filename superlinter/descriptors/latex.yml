@@ -1,0 +1,20 @@
+# Name of the language, in uppercase
+language: LATEX
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".tex"
+
+linters:
+
+  # Check TEX
+  chktex:
+    linter_name: chktex
+    linter_url: https://www.nongnu.org/chktex
+    config_file_name: .chktexrc
+    cli_lint_extra_args:
+      - "-q"
+    cli_config_arg_name: "-l"
+    examples:
+      - "chktex -q myfile.tex"
+      - "chktex -q -l .chktexrc myfile.tex"
