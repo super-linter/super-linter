@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: R
+type: language
 
 # Define file extensions associated to the language
 file_extensions:

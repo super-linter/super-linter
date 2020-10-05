@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: YAML
+type: format
 
 # Define file extensions associated to the language
 file_extensions:

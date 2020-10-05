@@ -44,33 +44,24 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
 <!-- linters-table-start -->
+### Languages
+
 | Language / Format | Linter | Configuration key |
 | ----------------- | -------------- | ------------ |
-| **ANSIBLE** | [ansible-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md)| [ANSIBLE](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md) |
 | **BASH** | [bash-exec](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_bash_exec.md)| [BASH_EXEC](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_bash_exec.md) |
 |  | [shellcheck](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_shellcheck.md)| [BASH_SHELLCHECK](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_shellcheck.md) |
 |  | [shfmt](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_shfmt.md)| [BASH_SHFMT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/bash_shfmt.md) |
 | **CLOJURE** | [clj-kondo](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/clojure_clj_kondo.md)| [CLOJURE](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/clojure_clj_kondo.md) |
-| **CLOUDFORMATION** | [cfn-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md)| [CLOUDFORMATION](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md) |
 | **COFFEE** | [coffeelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/coffee_coffeelint.md)| [COFFEE](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/coffee_coffeelint.md) |
-| **CSS** | [stylelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/css_stylelint.md)| [CSS](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/css_stylelint.md) |
 | **DART** | [dartanalyzer](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dart_dartanalyzer.md)| [DART](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dart_dartanalyzer.md) |
-| **DOCKERFILE** | [dockerfilelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md)| [DOCKERFILE_DOCKERFILELINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md) |
-|  | [hadolint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md)| [DOCKERFILE_HADOLINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md) |
-| **ENV** | [dotenv-linter](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/env_dotenv_linter.md)| [ENV](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/env_dotenv_linter.md) |
 | **GO** | [golangci-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/go_golangci_lint.md)| [GO](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/go_golangci_lint.md) |
 | **GROOVY** | [npm-groovy-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/groovy_npm_groovy_lint.md)| [GROOVY](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/groovy_npm_groovy_lint.md) |
-| **HTML** | [htmlhint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/html_htmlhint.md)| [HTML](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/html_htmlhint.md) |
 | **JAVA** | [checkstyle](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/java_checkstyle.md)| [JAVA](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/java_checkstyle.md) |
 | **JAVASCRIPT** | [eslint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/javascript_eslint.md)| [JAVASCRIPT_ES](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/javascript_eslint.md) |
 |  | [standard](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/javascript_standard.md)| [JAVASCRIPT_STANDARD](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/javascript_standard.md) |
-| **JSON** | [jsonlint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/json_jsonlint.md)| [JSON](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/json_jsonlint.md) |
 | **JSX** | [eslint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/jsx_eslint.md)| [JSX](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/jsx_eslint.md) |
 | **KOTLIN** | [ktlint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kotlin_ktlint.md)| [KOTLIN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kotlin_ktlint.md) |
-| **KUBERNETES** | [kubeval](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md)| [KUBERNETES_KUBEVAL](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md) |
-| **LATEX** | [chktex](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/latex_chktex.md)| [LATEX](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/latex_chktex.md) |
 | **LUA** | [luacheck](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/lua_luacheck.md)| [LUA](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/lua_luacheck.md) |
-| **MARKDOWN** | [markdownlint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/markdown_markdownlint.md)| [MARKDOWN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/markdown_markdownlint.md) |
 | **PERL** | [perlcritic](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/perl_perlcritic.md)| [PERL](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/perl_perlcritic.md) |
 | **PHP** | [php](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/php_php.md)| [PHP_BUILTIN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/php_php.md) |
 |  | [phpcs](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/php_phpcs.md)| [PHP_PHPCS](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/php_phpcs.md) |
@@ -82,8 +73,30 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 |  | [flake8](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/python_flake8.md)| [PYTHON_FLAKE8](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/python_flake8.md) |
 | **R** | [lintr](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/r_lintr.md)| [R](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/r_lintr.md) |
 | **RUBY** | [rubocop](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ruby_rubocop.md)| [RUBY](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ruby_rubocop.md) |
+
+### Formats
+
+| Language / Format | Linter | Configuration key |
+| ----------------- | -------------- | ------------ |
+| **CSS** | [stylelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/css_stylelint.md)| [CSS](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/css_stylelint.md) |
+| **ENV** | [dotenv-linter](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/env_dotenv_linter.md)| [ENV](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/env_dotenv_linter.md) |
+| **HTML** | [htmlhint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/html_htmlhint.md)| [HTML](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/html_htmlhint.md) |
+| **JSON** | [jsonlint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/json_jsonlint.md)| [JSON](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/json_jsonlint.md) |
+| **LATEX** | [chktex](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/latex_chktex.md)| [LATEX](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/latex_chktex.md) |
+| **MARKDOWN** | [markdownlint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/markdown_markdownlint.md)| [MARKDOWN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/markdown_markdownlint.md) |
 | **XML** | [xmllint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/xml_xmllint.md)| [XML](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/xml_xmllint.md) |
 | **YAML** | [yamllint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/yaml_yamllint.md)| [YAML](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/yaml_yamllint.md) |
+
+### Tooling formats
+
+| Language / Format | Linter | Configuration key |
+| ----------------- | -------------- | ------------ |
+| **ANSIBLE** | [ansible-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md)| [ANSIBLE](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md) |
+| **CLOUDFORMATION** | [cfn-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md)| [CLOUDFORMATION](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md) |
+| **DOCKERFILE** | [dockerfilelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md)| [DOCKERFILE_DOCKERFILELINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md) |
+|  | [hadolint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md)| [DOCKERFILE_HADOLINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md) |
+| **KUBERNETES** | [kubeval](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md)| [KUBERNETES_KUBEVAL](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md) |
+
 <!-- linters-table-end -->
 
 ## How to use

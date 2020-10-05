@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: ANSIBLE
+type: tooling_format
 
 # Define sub-directory containing files to lint
 files_sub_directory: ansible

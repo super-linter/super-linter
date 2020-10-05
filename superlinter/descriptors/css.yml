@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: CSS
+type: format
 
 # Define file extensions associated to the language
 file_extensions:
@@ -13,6 +14,7 @@ linters:
   stylelint:
     linter_name: stylelint
     linter_url: https://stylelint.io
+    linter_header_image_url: https://github.com/stylelint/stylelint/raw/master/identity/stylelint-icon-and-text-white.png
     config_file_name: .stylelintrc.json
     cli_config_arg_name: "--config"
     examples:

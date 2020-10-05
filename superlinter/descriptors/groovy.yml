@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: GROOVY
+type: language
 
 # Define file extensions associated to the language
 file_extensions:
@@ -18,6 +19,7 @@ linters:
     class: GroovyNpmGroovyLintLinter
     linter_name: npm-groovy-lint
     linter_url: https://github.com/nvuillam/npm-groovy-lint
+    linter_image_url: https://repository-images.githubusercontent.com/240214900/1dcdef80-773c-11ea-8c94-305acc58f5c6
     config_file_name: .groovylintrc.json
     version_extract_regex: "(?<=npm-groovy-lint version )\\d+(\\.\\d+)+"
     examples:

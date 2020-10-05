@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: PERL
+type: language
 
 # Define file extensions associated to the language
 file_extensions:
@@ -13,6 +14,7 @@ linters:
   perlcritic:
     linter_name: perlcritic
     linter_url: https://metacpan.org/pod/Perl::Critic
+    linter_header_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
     examples:
       - "perlcritic myfile.pl"
 

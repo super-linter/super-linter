@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: JAVA
+type: language
 
 # Define file extensions associated to the language
 file_extensions:
@@ -11,6 +12,7 @@ linters:
   checkstyle:
     linter_name: checkstyle
     linter_url: https://checkstyle.sourceforge.io
+    linter_header_image_url: https://checkstyle.sourceforge.io/images/header-checkstyle-logo.png
     config_file_name: sun_checks.xml
     cli_executable: java
     cli_lint_extra_args:

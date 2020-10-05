@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: PHP
+type: language
 
 # Define file extensions associated to the language
 file_extensions:
@@ -11,6 +12,7 @@ linters:
   php:
     linter_name: php
     linter_url: https://www.php.net
+    linter_header_image_url: https://www.php.net/images/logos/new-php-logo.svg
     name: PHP_BUILTIN
     cli_lint_extra_args:
       - "-l"
@@ -33,6 +35,7 @@ linters:
   phpstan:
     linter_name: phpstan
     linter_url: https://github.com/phpstan/phpstan
+    linter_image_url: https://i.imgur.com/MOt7taM.png
     name: PHP_PHPSTAN
     config_file_name: phpstan.neon
     cli_lint_extra_args:
@@ -43,10 +46,11 @@ linters:
       - "phpstan analyse --no-progress --no-ansi myfile.php"
       - "phpstan analyse --no-progress --no-ansi -c phpstan.neon myfile.php"
 
-  # PHPCS
+  # PSALM
   psalm:
     linter_name: psalm
     linter_url: https://psalm.dev
+    linter_header_image_url: https://i1.wp.com/phpmagazine.net/wp-content/uploads/2018/12/PsalmLogo.png?w=653&ssl=1
     name: PHP_PSALM
     config_file_name: psalm.xml
     cli_config_arg_name: "--config="

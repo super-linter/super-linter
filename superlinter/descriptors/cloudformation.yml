@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: CLOUDFORMATION
+type: tooling_format
 
 # Define file extensions associated to the language
 file_extensions:
@@ -18,6 +19,7 @@ linters:
   cfn-lint:
     linter_name: cfn-lint
     linter_url: https://github.com/martysweet/cfn-lint
+    linter_header_image_url: https://raw.githubusercontent.com/aws-cloudformation/cfn-python-lint/master/logo/cfn-lint-label%401x.png
     config_file_name: .cfnlintrc.yml
     cli_config_arg_name: "--config-file"
     examples:

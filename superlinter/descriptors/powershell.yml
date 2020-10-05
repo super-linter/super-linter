@@ -1,5 +1,6 @@
 # Name of the language, in uppercase
 language: POWERSHELL
+type: language
 
 # Define file extensions associated to the language
 file_extensions:
@@ -18,6 +19,7 @@ linters:
     class: PowershellLinter
     linter_name: powershell
     linter_url: https://github.com/PowerShell/PSScriptAnalyzer
+    linter_image_url: https://github.com/PowerShell/PSScriptAnalyzer/raw/master/logo.png
     config_file_name: .powershell-psscriptanalyzer.psd1
     version_extract_regex: "(\\d+) *(\\d+) *(\\d+)"
     examples:
