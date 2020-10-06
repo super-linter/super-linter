@@ -25,3 +25,6 @@ linters:
     examples:
       - "npm-groovy-lint --failon warning --path . --files myfile.groovy"
       - "npm-groovy-lint --failon warning --path . --files myfile.groovy -c .groovylintrc.json"
+    install:
+      npm:
+        - npm-groovy-lint

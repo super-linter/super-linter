@@ -222,7 +222,7 @@ class Linter:
                 continue
             elif len(self.file_contains) > 0 and not superlinter.utils.file_contains(file, self.file_contains):
                 continue
-            self.files.append(file)
+            self.files += [file]
 
     # lint a single file
     def lint_file(self, file):
@@ -342,23 +342,23 @@ class Linter:
     def build_lint_command(self, file):
         cmd = [self.cli_executable]
         # Add other lint cli arguments if defined
-        cmd.extend(self.cli_lint_extra_args)
+        cmd += self.cli_lint_extra_args
         # Add config arguments if defined
         if self.config_file is not None:
             if self.cli_config_arg_name.endswith('='):
-                cmd.append(self.cli_config_arg_name + self.config_file)
+                cmd += [self.cli_config_arg_name + self.config_file]
             else:
-                cmd.extend([self.cli_config_arg_name, self.config_file])
-            cmd.extend(self.cli_config_extra_args)
+                cmd += [self.cli_config_arg_name, self.config_file]
+            cmd += self.cli_config_extra_args
         # Add other lint cli arguments after other arguments if defined
-        cmd.extend(self.cli_lint_extra_args_after)
+        cmd += self.cli_lint_extra_args_after
         # Append file in command arguments
-        cmd.append(file)
+        cmd += [file]
         return cmd
 
     # Build the CLI command to get linter version (can be overridden if --version is not the way to get the version)
     def build_version_command(self):
         cmd = [self.cli_executable_version]
-        cmd.extend(self.cli_version_extra_args)
-        cmd.append('--version')
+        cmd += self.cli_version_extra_args
+        cmd += ['--version']
         return cmd

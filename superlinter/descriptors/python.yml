@@ -19,6 +19,9 @@ linters:
     examples:
       - "pylint myfile.py"
       - "pylint --rcfile .python-lint myfile.py"
+    install:
+      pip:
+        - pylint
 
   # BLACK
   black:
@@ -34,6 +37,9 @@ linters:
     examples:
       - "black --diff --check myfile.py"
       - "black --config .python-black --diff --check myfile.py"
+    install:
+      pip:
+        - black
 
   # FLAKE8
   flake8:
@@ -45,3 +51,6 @@ linters:
     examples:
       - "flake8 myfile.py"
       - "flake8 --config .python-lint myfile.py"
+    install:
+      pip:
+        - flake8

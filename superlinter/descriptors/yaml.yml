@@ -17,3 +17,6 @@ linters:
     examples:
       - "yamllint myfile.yaml"
       - "yamllint -c .yaml-lint.yml myfile.yaml"
+    install:
+      pip:
+        - yamllint

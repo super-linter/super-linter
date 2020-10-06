@@ -19,3 +19,9 @@ linters:
     examples:
       - "golangci-lint run myfile.go"
       - "golangci-lint run -c .golangci.yml myfile.go"
+    install:
+      apk:
+        - go
+      dockerfile:
+        - FROM golangci/golangci-lint:v1.31.0 as golangci-lint
+        - COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/

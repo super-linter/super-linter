@@ -27,3 +27,7 @@ linters:
     examples:
       - "ansible-lint -v myfile.yml"
       - "ansible-lint -v -c .ansible-lint.yml myfile.yml"
+    install:
+      apk:
+        - ansible-lint
+

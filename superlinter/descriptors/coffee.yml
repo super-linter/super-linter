@@ -20,3 +20,6 @@ linters:
     examples:
       - "coffeelint myfile.coffee"
       - "coffeelint -f .coffee-lint.json myfile.coffee"
+    install:
+      npm:
+        - "@coffeelint/cli"

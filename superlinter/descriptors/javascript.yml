@@ -21,6 +21,14 @@ linters:
     examples:
       - "eslint myfile.js"
       - "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js"
+    install:
+      npm:
+        - eslint
+        - eslint-config-airbnb
+        - eslint-config-prettier
+        - eslint-plugin-jest
+        - eslint-plugin-prettier
+        - babel-eslint
 
   # STANDARD
   standard:
@@ -30,3 +38,6 @@ linters:
     name: JAVASCRIPT_STANDARD
     examples:
       - "standard myfile.js"
+    install:
+      npm:
+        - standard

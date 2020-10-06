@@ -20,13 +20,23 @@ def get_descriptor_dir():
     return os.path.dirname(os.path.abspath(__file__)) + '/descriptors'
 
 
+# List all defined linters
+def list_all_linters(linters_init_params=None):
+    descriptor_files = list_descriptor_files()
+    linters = []
+    for descriptor_file in descriptor_files:
+        descriptor_linters = build_descriptor_linters(descriptor_file, linters_init_params)
+        linters += descriptor_linters
+    return linters
+
+
 # List all descriptor files (one by language)
 def list_descriptor_files():
     descriptors_dir = get_descriptor_dir()
     linters_glob_pattern = descriptors_dir + '/*.yml'
     descriptor_files = []
     for descriptor_file in glob.glob(linters_glob_pattern):
-        descriptor_files.append(descriptor_file)
+        descriptor_files += [descriptor_file]
     return descriptor_files
 
 
@@ -61,7 +71,7 @@ def build_descriptor_linters(file, linter_init_params=None, linter_names=None):
             # Create a Linter class instance by linter
             instance_attributes = {**common_attributes, **linter_descriptor}
             linter_instance = linter_class(linter_init_params, instance_attributes)
-            linters.append(linter_instance)
+            linters += [linter_instance]
 
     return linters
 

@@ -20,14 +20,21 @@ linters:
     examples:
       - "dockerfilelint Dockerfile"
       - "dockerfilelint -c .dockerfilelintrc Dockerfile"
+    install:
+      npm:
+        - dockerfilelint
 
   # Hadolint
   hadolint:
     linter_name: hadolint
     name: DOCKERFILE_HADOLINT
     linter_url: https://github.com/hadolint/hadolint
-    linter_image_url: https://camo.githubusercontent.com/ed1547b1b7f6060ad464d180a0c28975ba876830/68747470733a2f2f6861646f6c696e742e6769746875622e696f2f6861646f6c696e742f696d672f6361745f636f6e7461696e65722e706e67
+    linter_image_url: https://hadolint.github.io/hadolint/img/cat_container.png
     config_file_name: .hadolint.yml
     examples:
-      - "dockerfilelint Dockerfile"
-      - "dockerfilelint -c .dockerfilelintrc Dockerfile"
+      - "hadolint Dockerfile"
+      - "hadolint -c .dockerfilelintrc Dockerfile"
+    install:
+      dockerfile:
+        - FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+        - COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint

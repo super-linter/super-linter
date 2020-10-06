@@ -15,3 +15,6 @@ linters:
     version_command_return_code: 1
     examples:
       - "jsonlint myfile.json"
+    install:
+      npm:
+        - jsonlint

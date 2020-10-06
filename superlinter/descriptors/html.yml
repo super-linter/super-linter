@@ -19,3 +19,6 @@ linters:
     examples:
       - "htmlhint myfile.html"
       - "htmlhint --config .htmlhintrc myfile.html"
+    install:
+      npm:
+        - htmlhint

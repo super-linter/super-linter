@@ -16,3 +16,9 @@ linters:
     linter_header_image_url: https://miro.medium.com/max/655/1*sLboL6JnC9yUodFsdSMB-w.png
     examples:
       - "ktlint myfile.kt"
+    install:
+      dockerfile:
+        - |
+          RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && \
+              chmod a+x ktlint && \
+              mv "ktlint" /usr/bin/

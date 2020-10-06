@@ -17,3 +17,6 @@ linters:
     examples:
       - "markdownlint myfile.css"
       - "markdownlint -c .markdown-lint.yml myfile.md"
+    install:
+      npm:
+        - markdownlint-cli

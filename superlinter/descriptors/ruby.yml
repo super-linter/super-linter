@@ -19,3 +19,15 @@ linters:
     examples:
       - "rubocop --force-exclusion myfile.rb"
       - "rubocop --force-exclusion -c .ruby-lint.yml myfile.rb"
+    install:
+      apk:
+        - ruby
+        - ruby-dev
+        - ruby-bundler
+        - ruby-rdoc
+      gem:
+        - rubocop:0.82.0
+        - rubocop-github:0.16.0
+        - rubocop-performance:1.7.1
+        - rubocop-rails:2.5
+        - rubocop-rspec:1.41.0

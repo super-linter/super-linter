@@ -22,3 +22,19 @@ linters:
     examples:
       - "dartanalyzer --fatal-infos --fatal-warnings myfile.dart"
       - "dartanalyzer --fatal-infos --fatal-warnings --options analysis_options.yml myfile.dart"
+
+    install:
+      ## stable dart sdk: https://dart.dev/get-dart#release-channels
+      ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
+      dockerfile:
+        - ARG DART_VERSION='2.8.4'
+        - ARG GLIBC_VERSION='2.31-r0'
+      # TODO: uncomment (For now, hardcoded in Dockerfile to avoid issue)
+      #  - RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+      #  - RUN wget --tries=5 https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
+      #  - RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
+      #  - |
+      #    RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+      #        && chmod +x dart-sdk/bin/dart* \
+      #        && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
+      #        && rm -r dart-sdk/

@@ -22,6 +22,11 @@ linters:
     cli_executable_version: bash
     examples:
       - "bash-exec myfile.sh"
+    install:
+      dockerfile:
+        - |
+          RUN printf '#!/bin/bash \\n\\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
+              && chmod +x /usr/bin/bash-exec
 
   # Shellcheck
   shellcheck:
@@ -33,6 +38,10 @@ linters:
       - "--external-sources"
     examples:
       - "shellcheck --color=auto --external-sources myfile.sh"
+    install:
+      dockerfile:
+        - FROM koalaman/shellcheck:v0.7.1 as shellcheck
+        - COPY --from=shellcheck /bin/shellcheck /usr/bin/
 
   # SHFMT
   shfmt:
@@ -44,4 +53,12 @@ linters:
     test_folder: shell_shfmt
     examples:
       - "shfmt -d myfile.sh"
-
+    install:
+      dockerfile:
+        - |
+          ENV GO111MODULE=on \
+              GOROOT=/usr/lib/go \
+              GOPATH=/go
+        - ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
+        - RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+        - RUN go get mvdan.cc/sh/v3/cmd/shfmt

@@ -20,3 +20,7 @@ linters:
     examples:
       - "stylelint myfile.css"
       - "stylelint --config .stylelintrc.json myfile.css"
+    install:
+      npm:
+        - stylelint
+        - stylelint-config-standard

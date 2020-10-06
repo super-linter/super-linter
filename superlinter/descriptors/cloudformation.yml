@@ -25,3 +25,6 @@ linters:
     examples:
       - "cfn-lint myfile.yml"
       - "cfn-lint --config-file .cfnlintrc.yml myfile.yml"
+    install:
+      pip:
+        - cfn-lint

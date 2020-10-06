@@ -67,10 +67,10 @@ class SuperLinter:
         for linter in self.linters:
             if len(linter.files) > 0:
                 all_criteria = linter.file_extensions + linter.file_names
-                table_data.append([linter.language,
-                                   linter.linter_name,
-                                   '|'.join(all_criteria),
-                                   str(len(linter.files))])
+                table_data += [[linter.language,
+                                linter.linter_name,
+                                '|'.join(all_criteria),
+                                str(len(linter.files))]]
         table = terminaltables.AsciiTable(table_data)
         table.title = "----MATCHING LINTERS"
         logging.info("")
@@ -142,14 +142,12 @@ class SuperLinter:
 
         # Build linters from descriptor files
         skipped_linters = []
-        descriptor_files = utils.list_descriptor_files()
-        for descriptor_file in descriptor_files:
-            descriptor_linters = utils.build_descriptor_linters(descriptor_file, linter_init_params)
-            for linter in descriptor_linters:
-                if linter.is_active is False:
-                    skipped_linters.append(linter.name)
-                    continue
-                self.linters.append(linter)
+        all_linters = utils.list_all_linters(linter_init_params)
+        for linter in all_linters:
+            if linter.is_active is False:
+                skipped_linters += [linter.name]
+                continue
+            self.linters += [linter]
 
         # Display skipped linters in log
         if len(skipped_linters) > 0:
@@ -161,8 +159,8 @@ class SuperLinter:
     # Define all file extensions to browse
     def compute_file_extensions(self):
         for linter in self.linters:
-            self.file_extensions.extend(linter.file_extensions)
-            self.file_names.extend(linter.file_names)
+            self.file_extensions += linter.file_extensions
+            self.file_names += linter.file_names
         # Remove duplicates
         self.file_extensions = list(collections.OrderedDict.fromkeys(self.file_extensions))
         self.file_names = list(collections.OrderedDict.fromkeys(self.file_names))
@@ -184,7 +182,8 @@ class SuperLinter:
             logging.info('Git diff :')
             logging.info(diff)
             for diff_line in diff.splitlines():
-                all_files += [self.workspace + os.path.sep + diff_line]
+                if os.path.exists(self.workspace + os.path.sep + diff_line):
+                    all_files += [self.workspace + os.path.sep + diff_line]
         else:
             # List all files under workspace root directory
             logging.info(
@@ -211,9 +210,9 @@ class SuperLinter:
             if self.filter_regex_exclude is not None and re.search(self.filter_regex_exclude, norm_file) is not None:
                 continue
             elif file_extension in self.file_extensions:
-                filtered_files.append(file)
+                filtered_files += [file]
             elif filename in self.file_names:
-                filtered_files.append(file)
+                filtered_files += [file]
 
         logging.info('Kept [' + str(len(filtered_files)) + '] files on [' + str(len(all_files)) + '] found files')
 
@@ -268,8 +267,8 @@ class SuperLinter:
         table_data = [["Language", "Linter", "Files with error(s)", "Total files"]]
         for linter in self.linters:
             if linter.is_active is True:
-                table_data.append(
-                    [linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))])
+                table_data += [
+                    [linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))]]
         table = terminaltables.AsciiTable(table_data)
         table.title = "----SUMMARY"
         for table_line in table.table.splitlines():

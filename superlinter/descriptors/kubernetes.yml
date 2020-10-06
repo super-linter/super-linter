@@ -27,4 +27,8 @@ linters:
     version_extract_regex: "((\\d+(\\.\\d+)+)|(dev))"
     examples:
       - "kubeval -strict myfile.yml"
+    install:
+      dockerfile:
+        - FROM garethr/kubeval:0.15.0 as kubeval
+        - COPY --from=kubeval /kubeval /usr/bin/
 

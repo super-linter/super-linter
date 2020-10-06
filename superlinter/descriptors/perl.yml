@@ -17,4 +17,10 @@ linters:
     linter_header_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
     examples:
       - "perlcritic myfile.pl"
+    install:
+      apk:
+        - perl
+        - perl-dev
+      dockerfile:
+        - RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
 
