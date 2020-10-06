@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.20.2 as tflint
+FROM mvdan/shfmt:v3.1.2 as shfmt
 FROM accurics/terrascan:d182f1c as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
@@ -313,14 +314,7 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 # Install shfmt #
 #################
-ENV GO111MODULE=on \
-    GOROOT=/usr/lib/go \
-    GOPATH=/go
-
-ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
-
-RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
-RUN go get mvdan.cc/sh/v3/cmd/shfmt
+COPY --from=shfmt /bin/shfmt /usr/bin/
 
 #############################
 # Copy scripts to container #
