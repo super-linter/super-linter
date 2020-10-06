@@ -189,7 +189,12 @@ class SuperLinter:
             logging.info(
                 'Listing all files in directory [' + self.workspace + '], then filter with:')
             for (dirpath, dirnames, filenames) in os.walk(self.workspace):
-                all_files += [os.path.join(dirpath, file) for file in filenames]
+                exclude = False
+                for dir1 in dirnames:
+                    if dir1 in ['node_modules', '.git', '.rbenv', '.venv']:
+                        exclude = True
+                if exclude is False:
+                    all_files += [os.path.join(dirpath, file) for file in filenames]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
         if len(self.file_extensions) > 0:
@@ -212,6 +217,8 @@ class SuperLinter:
             elif file_extension in self.file_extensions:
                 filtered_files += [file]
             elif filename in self.file_names:
+                filtered_files += [file]
+            elif "*" in self.file_extensions:
                 filtered_files += [file]
 
         logging.info('Kept [' + str(len(filtered_files)) + '] files on [' + str(len(all_files)) + '] found files')

@@ -7,10 +7,12 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.php`
+
 ## Configuration
 
 | Variable | Description | Default value |

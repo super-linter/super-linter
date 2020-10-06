@@ -19,6 +19,7 @@ The following list of items can/must be overridden on custom linter local class:
 
 """
 import errno
+import glob
 import logging
 import os
 import re
@@ -45,6 +46,7 @@ class Linter:
     files_sub_directory = None
     file_contains = []
     files_names_not_ends_with = []
+    active_only_if_file_found = None
 
     cli_executable = None
     cli_executable_version = None
@@ -52,6 +54,7 @@ class Linter:
     cli_config_extra_args = []  # Extra arguments to send to cli when a config file is used
     cli_lint_extra_args = []  # Extra arguments to send to cli everytime
     cli_lint_extra_args_after = []  # Extra arguments to send to cli everytime, just before file argument
+    cli_version_arg_name = '--version'  # Default arg name for configurations to use in linter version call
     cli_version_extra_args = []  # Extra arguments to send to cli everytime
 
     version_extract_regex = r"\d+(\.\d+)+"
@@ -103,6 +106,12 @@ class Linter:
             if self.files_sub_directory is not None:
                 self.files_sub_directory = os.environ.get(f"{self.language}_DIRECTORY", self.files_sub_directory)
                 if not os.path.exists(self.workspace + os.path.sep + self.files_sub_directory):
+                    self.is_active = False
+
+            # Some linters require a file to be existing, else they are deactivated ( ex: .editorconfig )
+            if self.active_only_if_file_found is not None:
+                found_files = glob.glob(f"{self.workspace}/**/{self.active_only_if_file_found}", recursive=True)
+                if len(found_files) == 0:
                     self.is_active = False
 
             # Runtime items
@@ -173,6 +182,7 @@ class Linter:
     # Processes the linter
     def run(self):
         self.display_header()
+        self.before_lint_files()
         for file in self.files:
             logging.info("File:[" + file + "]")
             return_code, stdout = self.lint_file(file)
@@ -207,8 +217,9 @@ class Linter:
         logging.info(superlinter.utils.format_hyphens(""))
         logging.info("")
 
-    # Filter files to keep only the ones matching extension or file name
+    # Collect all files that will be analyzed by the current linter
     def collect_files(self, all_files):
+        # Filter all files to keep only the ones matching with the current linter
         for file in all_files:
             if self.filter_regex_include is not None and re.search(self.filter_regex_include, file) is None:
                 continue
@@ -338,6 +349,9 @@ class Linter:
     # Methods that can be overridden below #
     ########################################
 
+    def before_lint_files(self):
+        pass
+
     # Build the CLI command to call to lint a file (can be overridden)
     def build_lint_command(self, file):
         cmd = [self.cli_executable]
@@ -360,5 +374,5 @@ class Linter:
     def build_version_command(self):
         cmd = [self.cli_executable_version]
         cmd += self.cli_version_extra_args
-        cmd += ['--version']
+        cmd += [self.cli_version_arg_name]
         return cmd

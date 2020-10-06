@@ -7,15 +7,18 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.yml`
   - `.yaml`
   - `.json`
+
 - Detected file content:
   - `AWSTemplateFormatVersion`
   - `(AWS|Alexa|Custom)::`
+
 ## Configuration
 
 | Variable | Description | Default value |

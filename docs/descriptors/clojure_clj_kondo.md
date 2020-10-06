@@ -7,6 +7,7 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
@@ -14,6 +15,7 @@
   - `.cljs`
   - `.cljc`
   - `.edn`
+
 ## Configuration
 
 | Variable | Description | Default value |

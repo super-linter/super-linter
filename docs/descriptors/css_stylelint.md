@@ -7,12 +7,14 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.css`
   - `.scss`
   - `.saas`
+
 ## Configuration
 
 | Variable | Description | Default value |

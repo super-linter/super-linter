@@ -92,6 +92,8 @@ def check_file_extension_or_name(file, file_extensions, file_names):
         return True
     elif len(file_names) > 0 and filename in file_names:
         return True
+    elif len(file_extensions) == 1 and file_extensions[0] == "*":
+        return True
     return False
 
 

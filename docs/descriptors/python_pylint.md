@@ -7,10 +7,12 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.py`
+
 ## Configuration
 
 | Variable | Description | Default value |

@@ -7,12 +7,14 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.pl`
   - `.pm`
   - `.t`
+
 ## Configuration
 
 | Variable | Description | Default value |

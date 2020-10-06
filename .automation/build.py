@@ -161,20 +161,26 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
             linter_doc_md += [f"# {linter.linter_name}"]
 
         linter_doc_md += [
+            "",
             "## Linted files",
             ""]
+        if linter.active_only_if_file_found is not None:
+            linter_doc_md += [f"- Activated only if file is found: `{linter.active_only_if_file_found}`"]
         if len(linter.file_extensions) > 0:
             linter_doc_md += ['- File extensions:']
-        for file_extension in linter.file_extensions:
-            linter_doc_md += [f"  - `{file_extension}`"]
+            for file_extension in linter.file_extensions:
+                linter_doc_md += [f"  - `{file_extension}`"]
+            linter_doc_md += [""]
         if len(linter.file_names) > 0:
             linter_doc_md += ['- File names:']
-        for file_name in linter.file_names:
-            linter_doc_md += [f"  - `{file_name}`"]
+            for file_name in linter.file_names:
+                linter_doc_md += [f"  - `{file_name}`"]
+            linter_doc_md += [""]
         if len(linter.file_contains) > 0:
             linter_doc_md += ['- Detected file content:']
-        for file_contains_expr in linter.file_contains:
-            linter_doc_md += [f"  - `{file_contains_expr}`"]
+            for file_contains_expr in linter.file_contains:
+                linter_doc_md += [f"  - `{file_contains_expr}`"]
+            linter_doc_md += [""]
 
         linter_doc_md += [
             "## Configuration",

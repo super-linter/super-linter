@@ -7,11 +7,13 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.kt`
   - `.kts`
+
 ## Configuration
 
 | Variable | Description | Default value |

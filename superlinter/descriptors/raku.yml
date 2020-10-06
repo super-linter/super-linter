@@ -1,0 +1,31 @@
+# Name of the language, in uppercase
+language: RAKU
+type: language
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".raku"
+  - ".rakumod"
+  - ".rakutest"
+  - ".pm6"
+  - ".pl6"
+  - ".p6"
+
+linters:
+
+  # Raku internal linter
+  raku:
+    class: RakuLinter
+    linter_name: raku
+    linter_url: https://raku.org/
+    linter_image_url: https://raku.org/camelia-logo.png
+    config_file_name: META6.json
+    cli_lint_extra_args:
+      - "-I"
+      - "./lib"
+      - "-c"
+    examples:
+      - "raku -I ./lib -c myfile.raku"
+    install:
+      dockerfile:
+        - RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && apk add --update --no-cache rakudo zef

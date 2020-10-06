@@ -7,10 +7,12 @@
   </a>
 </div>
 
+
 ## Linted files
 
 - File extensions:
   - `.jsx`
+
 ## Configuration
 
 | Variable | Description | Default value |

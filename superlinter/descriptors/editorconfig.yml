@@ -1,0 +1,27 @@
+# Name of the language, in uppercase
+language: EDITORCONFIG
+type: tooling_format
+
+# Define file extensions associated to the language
+file_extensions:
+  - "*"
+# If one of these files is not found, the linter will be skipped
+active_only_if_file_found: ".editorconfig"
+
+test_folder: editorconfig-checker
+
+linters:
+
+  # Dart Analyzer
+  editorconfig-checker:
+    linter_name: editorconfig-checker
+    linter_url: https://github.com/editorconfig-checker/editorconfig-checker
+    linter_header_image_url: https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/master/docs/logo.png
+    cli_version_arg_name: '-version'
+    linter_version_cache: "0.0.0"  # editorconfig-checker -version should work but seems to do not
+    examples:
+      - "editorconfig-checker myfile.js"
+    install:
+      dockerfile:
+        - FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+        - COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker

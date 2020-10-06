@@ -1,0 +1,26 @@
+# Name of the language, in uppercase
+language: PROTOBUF
+type: format
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".proto"
+
+linters:
+
+  # Protolint
+  protolint:
+    linter_name: protolint
+    linter_url: https://github.com/yoheimuta/protolint
+    config_file_name: .protolintrc.yml
+    cli_lint_extra_args:
+      - "lint"
+    cli_config_arg_name: "--config_path"
+    cli_version_arg_name: 'version'
+    examples:
+      - "protolint lint myfile.proto"
+      - "protolint lint --config_path .protolintrc.yml myfile.proto"
+    install:
+      dockerfile:
+        - FROM yoheimuta/protolint:v0.26.0 as protolint
+        - COPY --from=protolint /usr/local/bin/protolint /usr/bin/
