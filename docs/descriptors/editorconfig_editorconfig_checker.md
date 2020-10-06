@@ -7,7 +7,6 @@
   </a>
 </div>
 
-
 ## Linted files
 
 - Activated only if file is found: `.editorconfig`

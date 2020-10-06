@@ -1,0 +1,55 @@
+# Name of the language, in uppercase
+language: TYPESCRIPT
+type: language
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".ts"
+
+linters:
+
+  # ESLINT
+  eslint:
+    linter_name: eslint
+    linter_url: https://eslint.org
+    linter_header_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
+    name: TYPESCRIPT_ES
+    config_file_name: .eslintrc.yml
+    cli_config_extra_args:
+      - "--no-eslintrc"
+      - "--no-ignore"
+    examples:
+      - "eslint myfile.ts"
+      - "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.ts"
+    install:
+      npm:
+        - typescript
+        - eslint
+        - eslint-config-airbnb
+        - eslint-config-prettier
+        - eslint-plugin-jest
+        - eslint-plugin-prettier
+        - babel-eslint
+        - prettier
+        - prettyjson
+        - "@typescript-eslint/eslint-plugin"
+        - "@typescript-eslint/parser"
+
+  # STANDARD
+  standard:
+    linter_name: standard
+    linter_url: https://github.com/standard/standard
+    linter_header_image_url: https://github.com/standard/standard/raw/master/sticker.png
+    name: TYPESCRIPT_STANDARD
+    cli_lint_extra_args:
+      - '--parser'
+      - '@typescript-eslint/parser'
+      - '--plugin'
+      - '@typescript-eslint/eslint-plugin'
+    examples:
+      - "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin myfile.ts"
+    install:
+      npm:
+        - standard
+        - "@typescript-eslint/eslint-plugin"
+        - "@typescript-eslint/parser"

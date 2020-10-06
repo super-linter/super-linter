@@ -1,0 +1,46 @@
+# Name of the language, in uppercase
+language: TERRAFORM
+type: tooling_format
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".tf"
+
+linters:
+
+  # TFLINT
+  tflint:
+    linter_name: tflint
+    name: TERRAFORM_TFLINT
+    linter_url: https://github.com/terraform-linters/tflint
+    config_file_name: .tflint.hcl
+    examples:
+      - "tflint myfile.tf"
+      - "tflint -c .tflint.hcl myfile.tf"
+    install:
+      dockerfile:
+        - FROM wata727/tflint:0.20.2 as tflint
+        - COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+
+  # TERRASCAN
+  terrascan:
+    linter_name: terrascan
+    name: TERRAFORM_TERRASCAN
+    linter_url: https://github.com/accurics/terrascan
+    linter_header_image_url: https://www.accurics.com/wp-content/uploads/elementor/thumbs/Terrascan_By_Accurics_Logo_38B34A-F2F2F2_600px-ousqq3op24fn35s67j5dzk3akvuupafmt2sq5dygka.png
+    cli_lint_extra_args:
+      - "scan"
+      - "-p"
+      - "/root/.terrascan/pkg/policies/opa/rego/"
+      - "-t"
+      - "aws"
+      - "-f"
+    cli_version_arg_name: 'version'
+    test_folder: terraform_terrascan
+    examples:
+      - "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f myfile.tf"
+    install:
+      dockerfile:
+        - FROM accurics/terrascan:d182f1c as terrascan
+        - COPY --from=terrascan /go/bin/terrascan /usr/bin/
+        - RUN terrascan init

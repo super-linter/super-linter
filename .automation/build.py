@@ -59,19 +59,19 @@ def generate_dockerfile():
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#OTHER__START", "#OTHER__END", "\n".join(docker_other))
     # apk packages
     apk_install_command = 'RUN apk add --update --no-cache \\\n                ' + \
-                          " \\\n                ".join(apk_packages)
+                          " \\\n                ".join(list(dict.fromkeys(apk_packages)))
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#APK__START", "#APK__END", apk_install_command)
     # NPM packages
     npm_install_command = 'RUN npm install --no-cache \\\n                ' + \
-                          " \\\n                ".join(npm_packages)
+                          " \\\n                ".join(list(dict.fromkeys(npm_packages)))
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#NPM__START", "#NPM__END", npm_install_command)
     # Python pip packages
     pip_install_command = 'RUN pip3 install \\\n          ' + \
-                          " \\\n          ".join(pip_packages)
+                          " \\\n          ".join(list(dict.fromkeys(pip_packages)))
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#PIP__START", "#PIP__END", pip_install_command)
     # Ruby gem packages
     gem_install_command = 'RUN gem install \\\n          ' + \
-                          " \\\n          ".join(gem_packages)
+                          " \\\n          ".join(list(dict.fromkeys(gem_packages)))
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#GEM__START", "#GEM__END", gem_install_command)
 
 
@@ -235,8 +235,7 @@ def image_link(src, alt, link, title, align, maxheight):
   <a href=\"{link}\" target=\"blank\" title=\"{title}\">
     <img src=\"{src}\" alt=\"{alt}\" height=\"{maxheight}px\">
   </a>
-</div>
-"""
+</div>"""
 
 
 def logo_link(src, alt, link, title, maxheight):

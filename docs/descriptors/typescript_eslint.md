@@ -10,28 +10,28 @@
 ## Linted files
 
 - File extensions:
-  - `.js`
+  - `.ts`
 
 ## Configuration
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JAVASCRIPT_ES | Activate or deactivate eslint | `true` |
-| JAVASCRIPT_ES_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
-| JAVASCRIPT_ES_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
-| JAVASCRIPT_ES_FILE_NAME | Rules file name | `.eslintrc.yml` |
-| JAVASCRIPT_ES_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| VALIDATE_TYPESCRIPT_ES | Activate or deactivate eslint | `true` |
+| TYPESCRIPT_ES_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
+| TYPESCRIPT_ES_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
+| TYPESCRIPT_ES_FILE_NAME | Rules file name | `.eslintrc.yml` |
+| TYPESCRIPT_ES_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
 
 ## Behind the scenes
 
 ### Example calls
 
 ```shell
-eslint myfile.js
+eslint myfile.ts
 ```
 
 ```shell
-eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js
+eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.ts
 ```
 
 ### Linter web site

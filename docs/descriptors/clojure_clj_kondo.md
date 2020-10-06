@@ -7,7 +7,6 @@
   </a>
 </div>
 
-
 ## Linted files
 
 - File extensions:

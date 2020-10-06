@@ -10,22 +10,22 @@
 ## Linted files
 
 - File extensions:
-  - `.js`
+  - `.ts`
 
 ## Configuration
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JAVASCRIPT_STANDARD | Activate or deactivate standard | `true` |
-| JAVASCRIPT_STANDARD_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
-| JAVASCRIPT_STANDARD_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
+| VALIDATE_TYPESCRIPT_STANDARD | Activate or deactivate standard | `true` |
+| TYPESCRIPT_STANDARD_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
+| TYPESCRIPT_STANDARD_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 
 ## Behind the scenes
 
 ### Example calls
 
 ```shell
-standard myfile.js
+standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin myfile.ts
 ```
 
 ### Linter web site

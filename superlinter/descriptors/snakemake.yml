@@ -1,0 +1,43 @@
+# Name of the language, in uppercase
+language: SNAKEMAKE
+type: tooling_format
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".smk"
+file_names:
+  - "Snakefile"
+
+linters:
+
+  # Internal snakemake linter
+  snakemake:
+    linter_name: snakemake
+    name: SNAKEMAKE_LINT
+    linter_url: https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli
+    linter_header_image_url: https://github.com/snakemake/snakemake/raw/6fcdc8a22db5522e232638bff16da9b50996eb45/images/biglogo.png
+    cli_lint_extra_args:
+      - "--lint"
+      - "-s"
+    examples:
+      - "snakemake --lint -s Snakefile"
+    install:
+      pip:
+        - snakemake
+
+  # Snake Fmt
+  snakefmt:
+    linter_name: snakefmt
+    name: SNAKEMAKE_SNAKEFMT
+    linter_url: https://github.com/snakemake/snakefmt
+    config_file_name: .snakefmt.toml
+    cli_lint_extra_args:
+      - "--check"
+      - "--compact-diff"
+    cli_config_arg_name: "--config"
+    examples:
+      - "snakefmt --check --compact-diff Snakefile"
+      - "snakefmt --check --compact-diff --config .snakefmt.toml Snakefile"
+    install:
+      pip:
+        - snakefmt

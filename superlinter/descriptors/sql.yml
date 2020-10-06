@@ -1,0 +1,22 @@
+# Name of the language, in uppercase
+language: SQL
+type: language
+
+# Define file extensions associated to the language
+file_extensions:
+  - ".sql"
+
+linters:
+
+  # SQL-LINT
+  sql-lint:
+    linter_name: sql-lint
+    linter_url: https://github.com/joereynolds/sql-lint
+    config_file_name: .sql-config.json
+    cli_config_arg_name: "--config"
+    examples:
+      - "sql-lint myfile.sql"
+      - "sql-lint --config .sql-config.json myfile.sql"
+    install:
+      npm:
+        - sql-lint

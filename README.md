@@ -74,6 +74,10 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **R** | [lintr](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/r_lintr.md)| [R](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/r_lintr.md) |
 | **RAKU** | [raku](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/raku_raku.md)| [RAKU](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/raku_raku.md) |
 | **RUBY** | [rubocop](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ruby_rubocop.md)| [RUBY](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ruby_rubocop.md) |
+| **SQL** | [sql-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/sql_sql_lint.md)| [SQL](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/sql_sql_lint.md) |
+| **TSX** | [eslint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/tsx_eslint.md)| [TSX](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/tsx_eslint.md) |
+| **TYPESCRIPT** | [eslint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/typescript_eslint.md)| [TYPESCRIPT_ES](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/typescript_eslint.md) |
+|  | [standard](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/typescript_standard.md)| [TYPESCRIPT_STANDARD](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/typescript_standard.md) |
 
 ### Formats
 
@@ -100,6 +104,10 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **EDITORCONFIG** | [editorconfig-checker](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/editorconfig_editorconfig_checker.md)| [EDITORCONFIG](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/editorconfig_editorconfig_checker.md) |
 | **KUBERNETES** | [kubeval](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md)| [KUBERNETES_KUBEVAL](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/kubernetes_kubeval.md) |
 | **OPENAPI** | [spectral](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/openapi_spectral.md)| [OPENAPI](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/openapi_spectral.md) |
+| **SNAKEMAKE** | [snakemake](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakemake.md)| [SNAKEMAKE_LINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakemake.md) |
+|  | [snakefmt](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakefmt.md)| [SNAKEMAKE_SNAKEFMT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakefmt.md) |
+| **TERRAFORM** | [tflint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_tflint.md)| [TERRAFORM_TFLINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_tflint.md) |
+|  | [terrascan](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terrascan.md)| [TERRAFORM_TERRASCAN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terrascan.md) |
 
 
 <!-- linters-table-end -->
