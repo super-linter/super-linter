@@ -229,52 +229,11 @@ OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                 # What level of deta
 ##########################
 # Array of changed files #
 ##########################
-FILE_ARRAY_ARM=()                 # Array of files to check
-FILE_ARRAY_BASH=()                # Array of files to check
-FILE_ARRAY_CLOUDFORMATION=()      # Array of files to check
-FILE_ARRAY_CLOJURE=()             # Array of files to check
-FILE_ARRAY_COFFEESCRIPT=()        # Array of files to check
-FILE_ARRAY_CSHARP=()              # Array of files to check
-FILE_ARRAY_CSS=()                 # Array of files to check
-FILE_ARRAY_DART=()                # Array of files to check
-FILE_ARRAY_DOCKERFILE=()          # Array of files to check
-FILE_ARRAY_ENV=()                 # Array of files to check
-FILE_ARRAY_GO=()                  # Array of files to check
-FILE_ARRAY_GROOVY=()              # Array of files to check
-FILE_ARRAY_HTML=()                # Array of files to check
-FILE_ARRAY_JAVA=()                # Array of files to check
-FILE_ARRAY_JAVASCRIPT_ES=()       # Array of files to check
-FILE_ARRAY_JAVASCRIPT_STANDARD=() # Array of files to check
-FILE_ARRAY_JSON=()                # Array of files to check
-FILE_ARRAY_JSX=()                 # Array of files to check
-FILE_ARRAY_KUBERNETES=()
-FILE_ARRAY_KOTLIN=()              # Array of files to check
-FILE_ARRAY_LATEX=()               # Array of files to check
-FILE_ARRAY_LUA=()                 # Array of files to check
-FILE_ARRAY_MARKDOWN=()            # Array of files to check
-FILE_ARRAY_OPENAPI=()             # Array of files to check
-FILE_ARRAY_PERL=()                # Array of files to check
-FILE_ARRAY_PHP_BUILTIN=()         # Array of files to check
-FILE_ARRAY_PHP_PHPCS=()           # Array of files to check
-FILE_ARRAY_PHP_PHPSTAN=()         # Array of files to check
-FILE_ARRAY_PHP_PSALM=()           # Array of files to check
-FILE_ARRAY_POWERSHELL=()          # Array of files to check
-FILE_ARRAY_PROTOBUF=()            # Array of files to check
-FILE_ARRAY_PYTHON_BLACK=()        # Array of files to check
-FILE_ARRAY_PYTHON_PYLINT=()       # Array of files to check
-FILE_ARRAY_PYTHON_FLAKE8=()       # Array of files to check
-FILE_ARRAY_R=()                   # Array of files to check
-FILE_ARRAY_RAKU=()                # Array of files to check
-FILE_ARRAY_RUBY=()                # Array of files to check
-FILE_ARRAY_SNAKEMAKE=()           # Array of files to check
-FILE_ARRAY_STATES=()              # Array of files to check
-FILE_ARRAY_SQL=()                 # Array of files to check
-FILE_ARRAY_TERRAFORM=()           # Array of files to check
-FILE_ARRAY_TSX=()                 # Array of files to check
-FILE_ARRAY_TYPESCRIPT_ES=()       # Array of files to check
-FILE_ARRAY_TYPESCRIPT_STANDARD=() # Array of files to check
-FILE_ARRAY_XML=()                 # Array of files to check
-FILE_ARRAY_YAML=()                # Array of files to check
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
+  debug "Setting ${FILE_ARRAY_VARIABLE_NAME} variable..."
+  eval "${FILE_ARRAY_VARIABLE_NAME}=()"
+done
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1263,7 +1222,7 @@ if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
   # Lint the bash files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH_EXEC[@]}"
 fi
 
 ##########################
@@ -1355,6 +1314,7 @@ if [ "${VALIDATE_DART}" == "true" ]; then
   # Lint the Dart files #
   #######################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
+  # shellcheck disable=SC2153
   LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DART[@]}"
 fi
 
@@ -1378,7 +1338,7 @@ if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
   # Lint the docker files #
   #########################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE[@]}"
+  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE_HADOLINT[@]}"
 fi
 
 ########################
@@ -1389,7 +1349,7 @@ if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
   # Lint the files with editorconfig #
   ####################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${RAW_FILE_ARRAY[@]}"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_EDITORCONFIG[@]}"
 fi
 
 ###############
@@ -1523,7 +1483,7 @@ if [ "${VALIDATE_KUBERNETES_KUBEVAL}" == "true" ]; then
       mapfile -t LIST_FILES < <(find "${KUBERNETES_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
       for FILE in "${LIST_FILES[@]}"; do
         if DetectKubernetesFile "${FILE}"; then
-          FILE_ARRAY_KUBERNETES+=("${FILE}")
+          FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
         fi
       done
 
@@ -1533,7 +1493,7 @@ if [ "${VALIDATE_KUBERNETES_KUBEVAL}" == "true" ]; then
       IFS="${DEFAULT_IFS}"
     fi
 
-    LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\|json\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES[@]}"
+    LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\|json\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES_KUBEVAL[@]}"
   else
     warn "No Kubernetes directory found at:[${KUBERNETES_DIRECTORY}]"
     debug "skipping Kubeval lint"
@@ -1717,6 +1677,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ##########################
   # Check for local config #
   ##########################
+  # shellcheck disable=SC2153
   if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && ((${#FILE_ARRAY_R[@]})); then
     info "No .lintr configuration file found, using defaults."
     cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
@@ -1763,7 +1724,7 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
   EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
   if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
     # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
+    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SHELL_SHFMT[@]}"
   else
     ###############################
     # No .editorconfig file found #
@@ -1781,7 +1742,7 @@ if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_LINT[@]}"
 
 fi
 
@@ -1793,7 +1754,7 @@ if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
   # Lint the files with snakefmt #
   ################################
   # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE[@]}"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_SNAKEFMT[@]}"
 fi
 
 ######################

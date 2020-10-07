@@ -88,6 +88,9 @@ function BuildFileList() {
     #########
     debug "FILE_TYPE:[${FILE_TYPE}]"
 
+    # Editorconfig-checker should check every file
+    FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+
     ######################
     # Get the shell files #
     ######################
@@ -96,6 +99,8 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_BASH+=("${FILE}")
+      FILE_ARRAY_BASH_EXEC+=("${FILE}")
+      FILE_ARRAY_SHELL_SHFMT+=("${FILE}")
 
     #########################
     # Get the CLOJURE files #
@@ -152,6 +157,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_DOCKER+=("${FILE}")
+      FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
 
     #####################
     # Get the ENV files #
@@ -386,7 +392,8 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_SNAKEMAKE+=("${FILE}")
+      FILE_ARRAY_SNAKEMAKE_LINT+=("${FILE}")
+      FILE_ARRAY_SNAKEMAKE_SNAKEFMT+=("${FILE}")
 
     #####################
     # Get the SQL files #
@@ -461,7 +468,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_KUBERNETES+=("${FILE}")
+        FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
       fi
 
     ########################################################################
@@ -542,6 +549,8 @@ function CheckFileType() {
     # Append the file to the array #
     ################################
     FILE_ARRAY_BASH+=("${FILE}")
+    FILE_ARRAY_BASH_EXEC+=("${FILE}")
+    FILE_ARRAY_SHELL_SHFMT+=("${FILE}")
   elif [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
     #######################
     # It is a Ruby script #
@@ -639,6 +648,8 @@ function PopulateShellScriptsList() {
     if IsValidShellScript "${FILE}"; then
       debug "Adding ${FILE} to shell script files list"
       FILE_ARRAY_BASH+=("${FILE}")
+      FILE_ARRAY_BASH_EXEC+=("${FILE}")
+      FILE_ARRAY_SHELL_SHFMT+=("${FILE}")
     fi
   done
 
