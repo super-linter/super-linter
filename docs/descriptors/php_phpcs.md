@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### phpcs configuration
+
+- [Configure phpcs rules](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file)
+  - If custom phpcs.xml is not found, [phpcs.xml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/phpcs.xml) will be used
+- [Disable phpcs rules in files](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PHP_PHPCS | Activate or deactivate phpcs | `true` |

@@ -15,6 +15,14 @@
 
 ## Configuration
 
+### powershell configuration
+
+- [Configure powershell rules](https://github.com/PowerShell/PSScriptAnalyzer#explicit)
+  - If custom .powershell-psscriptanalyzer.psd1 is not found, [.powershell-psscriptanalyzer.psd1](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.powershell-psscriptanalyzer.psd1) will be used
+- [Disable powershell rules in files](https://github.com/PowerShell/PSScriptAnalyzer#suppressing-rules)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_POWERSHELL | Activate or deactivate powershell | `true` |

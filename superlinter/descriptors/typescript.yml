@@ -6,9 +6,11 @@ linters:
   # ESLINT
   -
     linter_name: eslint
+    name: TYPESCRIPT_ES
     linter_url: https://eslint.org
     linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
-    name: TYPESCRIPT_ES
+    linter_rules_configuration_url: https://eslint.org/docs/user-guide/configuring
+    linter_rules_inline_disable_url: https://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments
     config_file_name: .eslintrc.yml
     cli_config_extra_args:
       - "--no-eslintrc"

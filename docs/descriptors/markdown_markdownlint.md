@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### markdownlint configuration
+
+- [Configure markdownlint rules](https://github.com/DavidAnson/markdownlint#optionsconfig)
+  - If custom .markdown-lint.yml is not found, [.markdown-lint.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.markdown-lint.yml) will be used
+- [Disable markdownlint rules in files](https://github.com/DavidAnson/markdownlint#configuration)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_MARKDOWN | Activate or deactivate markdownlint | `true` |

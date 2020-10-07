@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### psalm configuration
+
+- [Configure psalm rules](https://psalm.dev/docs/running_psalm/configuration/)
+  - If custom psalm.xml is not found, [psalm.xml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/psalm.xml) will be used
+- [Disable psalm rules in files](https://psalm.dev/docs/running_psalm/dealing_with_code_issues/#docblock-suppression)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PHP_PSALM | Activate or deactivate psalm | `true` |

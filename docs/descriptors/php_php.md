@@ -14,6 +14,13 @@
 
 ## Configuration
 
+### php configuration
+
+- php has no known capability to configure custom rules
+- php has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PHP_BUILTIN | Activate or deactivate php | `true` |

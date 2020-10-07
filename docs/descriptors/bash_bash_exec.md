@@ -12,6 +12,13 @@
 
 ## Configuration
 
+### bash-exec configuration
+
+- bash-exec has no known capability to configure custom rules
+- bash-exec has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_BASH_EXEC | Activate or deactivate bash-exec | `true` |

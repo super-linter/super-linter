@@ -17,6 +17,14 @@
 
 ## Configuration
 
+### clj-kondo configuration
+
+- [Configure clj-kondo rules](https://github.com/borkdude/clj-kondo/blob/master/doc/config.md#configuration)
+  - If custom .clj-kondo/config.edn is not found, [.clj-kondo/config.edn](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.clj-kondo/config.edn) will be used
+- clj-kondo has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_CLOJURE | Activate or deactivate clj-kondo | `true` |

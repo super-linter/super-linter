@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### dockerfilelint configuration
+
+- [Configure dockerfilelint rules](https://github.com/replicatedhq/dockerfilelint#configuring)
+  - If custom .dockerfilelintrc is not found, [.dockerfilelintrc](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.dockerfilelintrc) will be used
+- dockerfilelint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_DOCKERFILE_DOCKERFILELINT | Activate or deactivate dockerfilelint | `true` |

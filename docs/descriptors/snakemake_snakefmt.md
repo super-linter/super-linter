@@ -12,6 +12,14 @@
 
 ## Configuration
 
+### snakefmt configuration
+
+- [Configure snakefmt rules](https://github.com/snakemake/snakefmt#configuration)
+  - If custom .snakefmt.toml is not found, [.snakefmt.toml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.snakefmt.toml) will be used
+- snakefmt has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_SNAKEMAKE_SNAKEFMT | Activate or deactivate snakefmt | `true` |

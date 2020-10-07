@@ -59,7 +59,6 @@ class Linter:
 
     version_extract_regex = r"\d+(\.\d+)+"
     version_command_return_code = 0  # If linter --version does not return 0 when it is in success, override. ex: 1
-    examples = []
 
     # Constructor: Initialize Linter instance with name and config variables
     def __init__(self, params=None, linter_config=None):

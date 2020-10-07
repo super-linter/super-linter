@@ -12,6 +12,14 @@
 
 ## Configuration
 
+### lintr configuration
+
+- [Configure lintr rules](https://github.com/jimhester/lintr#project-configuration)
+  - If custom .lintr is not found, [.lintr](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.lintr) will be used
+- lintr has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_R | Activate or deactivate lintr | `true` |

@@ -9,6 +9,13 @@
 
 ## Configuration
 
+### jsonlint configuration
+
+- jsonlint has no known capability to configure custom rules
+- jsonlint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_JSON | Activate or deactivate jsonlint | `true` |

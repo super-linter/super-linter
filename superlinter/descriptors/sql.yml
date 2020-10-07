@@ -7,6 +7,7 @@ linters:
   -
     linter_name: sql-lint
     linter_url: https://github.com/joereynolds/sql-lint
+    linter_rules_configuration_url: https://sql-lint.readthedocs.io/en/latest/files/configuration.html
     config_file_name: .sql-config.json
     cli_config_arg_name: "--config"
     examples:

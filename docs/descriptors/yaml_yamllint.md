@@ -10,6 +10,14 @@
 
 ## Configuration
 
+### yamllint configuration
+
+- [Configure yamllint rules](https://yamllint.readthedocs.io/en/stable/configuration.html#configuration)
+  - If custom .yaml-lint.yml is not found, [.yaml-lint.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.yaml-lint.yml) will be used
+- yamllint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_YAML | Activate or deactivate yamllint | `true` |

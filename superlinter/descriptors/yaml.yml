@@ -8,6 +8,7 @@ linters:
   -
     linter_name: yamllint
     linter_url: https://github.com/adrienverge/yamllint
+    linter_rules_configuration_url: https://yamllint.readthedocs.io/en/stable/configuration.html#configuration
     config_file_name: .yaml-lint.yml
     examples:
       - "yamllint myfile.yaml"

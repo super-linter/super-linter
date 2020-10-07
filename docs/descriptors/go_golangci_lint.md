@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### golangci-lint configuration
+
+- [Configure golangci-lint rules](https://golangci-lint.run/usage/configuration/#config-file)
+  - If custom .golangci.yml is not found, [.golangci.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.golangci.yml) will be used
+- [Disable golangci-lint rules in files](https://golangci-lint.run/usage/false-positives/#nolint)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_GO | Activate or deactivate golangci-lint | `true` |

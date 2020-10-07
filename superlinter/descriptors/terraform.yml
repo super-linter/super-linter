@@ -8,6 +8,8 @@ linters:
     linter_name: tflint
     name: TERRAFORM_TFLINT
     linter_url: https://github.com/terraform-linters/tflint
+    linter_rules_configuration_url: https://github.com/terraform-linters/tflint/blob/master/docs/guides/config.md
+    linter_rules_inline_disable_url: https://github.com/terraform-linters/tflint/blob/master/docs/guides/annotations.md
     config_file_name: .tflint.hcl
     examples:
       - "tflint myfile.tf"
@@ -21,6 +23,7 @@ linters:
     linter_name: terrascan
     name: TERRAFORM_TERRASCAN
     linter_url: https://github.com/accurics/terrascan
+    linter_rules_configuration_url: https://docs.accurics.com/projects/accurics-terrascan/en/latest/policies/
     linter_banner_image_url: https://www.accurics.com/wp-content/uploads/elementor/thumbs/Terrascan_By_Accurics_Logo_38B34A-F2F2F2_600px-ousqq3op24fn35s67j5dzk3akvuupafmt2sq5dygka.png
     cli_lint_extra_args:
       - "scan"

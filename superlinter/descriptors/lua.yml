@@ -7,6 +7,8 @@ linters:
   -
     linter_name: luacheck
     linter_url: https://github.com/luarocks/luacheck
+    linter_rules_configuration_url: https://luacheck.readthedocs.io/en/stable/config.html
+    linter_rules_inline_disable_url: https://luacheck.readthedocs.io/en/stable/inline.html
     config_file_name: .luacheckrc
     cli_config_arg_name: "--config"
     examples:

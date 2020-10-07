@@ -9,6 +9,13 @@
 
 ## Configuration
 
+### xmllint configuration
+
+- xmllint has no known capability to configure custom rules
+- xmllint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_XML | Activate or deactivate xmllint | `true` |

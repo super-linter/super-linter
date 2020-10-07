@@ -8,6 +8,8 @@ linters:
     linter_name: checkstyle
     linter_url: https://checkstyle.sourceforge.io
     linter_banner_image_url: https://checkstyle.sourceforge.io/images/header-checkstyle-logo.png
+    linter_rules_configuration_url: https://checkstyle.sourceforge.io/config.html#Overview
+    linter_rules_inline_disable_url: https://checkstyle.sourceforge.io/config_filters.html#SuppressionCommentFilter
     config_file_name: sun_checks.xml
     cli_executable: java
     cli_lint_extra_args:

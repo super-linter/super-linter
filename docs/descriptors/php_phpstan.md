@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### phpstan configuration
+
+- [Configure phpstan rules](https://phpstan.org/config-reference#neon-format)
+  - If custom phpstan.neon is not found, [phpstan.neon](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/phpstan.neon) will be used
+- [Disable phpstan rules in files](https://phpstan.org/user-guide/ignoring-errors#ignoring-in-code-using-phpdocs)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PHP_PHPSTAN | Activate or deactivate phpstan | `true` |

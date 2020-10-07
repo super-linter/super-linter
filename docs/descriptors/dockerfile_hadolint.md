@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### hadolint configuration
+
+- [Configure hadolint rules](https://github.com/hadolint/hadolint#configure)
+  - If custom .hadolint.yml is not found, [.hadolint.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.hadolint.yml) will be used
+- [Disable hadolint rules in files](https://github.com/hadolint/hadolint#inline-ignores)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_DOCKERFILE_HADOLINT | Activate or deactivate hadolint | `true` |

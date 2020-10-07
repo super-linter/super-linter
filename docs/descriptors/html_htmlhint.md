@@ -10,6 +10,14 @@
 
 ## Configuration
 
+### htmlhint configuration
+
+- [Configure htmlhint rules](https://htmlhint.com/docs/user-guide/configuration)
+  - If custom .htmlhintrc is not found, [.htmlhintrc](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.htmlhintrc) will be used
+- [Disable htmlhint rules in files](https://htmlhint.com/docs/user-guide/configuration)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_HTML | Activate or deactivate htmlhint | `true` |

@@ -15,6 +15,13 @@
 
 ## Configuration
 
+### ktlint configuration
+
+- ktlint has no known capability to configure custom rules
+- ktlint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_KOTLIN | Activate or deactivate ktlint | `true` |

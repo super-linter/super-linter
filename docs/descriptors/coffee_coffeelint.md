@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### coffeelint configuration
+
+- [Configure coffeelint rules](http://www.coffeelint.org/#options)
+  - If custom .coffee-lint.json is not found, [.coffee-lint.json](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.coffee-lint.json) will be used
+- [Disable coffeelint rules in files](http://www.coffeelint.org/#options)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_COFFEE | Activate or deactivate coffeelint | `true` |

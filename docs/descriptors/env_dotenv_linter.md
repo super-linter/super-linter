@@ -14,6 +14,13 @@
 
 ## Configuration
 
+### dotenv-linter configuration
+
+- dotenv-linter has no known capability to configure custom rules
+- dotenv-linter has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_ENV | Activate or deactivate dotenv-linter | `true` |

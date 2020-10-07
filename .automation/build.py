@@ -12,7 +12,9 @@ import yaml
 
 import superlinter
 
-DOCS_URL_ROOT = "https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs"
+URL_ROOT = "https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython"
+TEMPLATES_URL_ROOT = URL_ROOT + "/TEMPLATES"
+DOCS_URL_ROOT = URL_ROOT + "/docs"
 DOCS_URL_DESCRIPTORS_ROOT = DOCS_URL_ROOT + "/descriptors"
 REPO_HOME = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + '..'
 
@@ -163,6 +165,7 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
         else:
             linter_doc_md += [f"# {linter.linter_name}"]
 
+        # Criteria used by the linter to identify files to lint
         linter_doc_md += [
             "",
             "## Linted files",
@@ -184,9 +187,38 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
             for file_contains_expr in linter.file_contains:
                 linter_doc_md += [f"  - `{file_contains_expr}`"]
             linter_doc_md += [""]
-
+        # How to configure this linter
         linter_doc_md += [
             "## Configuration",
+            ""]
+        # Linter-specific configuration
+        linter_doc_md += [
+            f"### {linter.linter_name} configuration",
+            ""]
+        # Rules configuration URL
+        if hasattr(linter, 'linter_rules_configuration_url') and linter.linter_rules_configuration_url is not None:
+            linter_doc_md += [f"- [Configure {linter.linter_name} rules]({linter.linter_rules_configuration_url})"]
+        else:
+            linter_doc_md += [f"- {linter.linter_name} has no known capability to configure custom rules"]
+        # Default rules riles
+        if linter.config_file_name is not None:
+            config_file = f"TEMPLATES{os.path.sep}{linter.config_file_name}"
+            if os.path.exists(f"{REPO_HOME}{os.path.sep}{config_file}"):
+                linter_doc_md += [f"  - If custom {linter.config_file_name} is not found, "
+                                  f"[{linter.config_file_name}]({TEMPLATES_URL_ROOT}/{linter.config_file_name})"
+                                  " will be used"]
+        if hasattr(linter, 'linter_rules_inline_disable_url') and linter.linter_rules_inline_disable_url is not None:
+            linter_doc_md += [
+                f"- [Disable {linter.linter_name} rules in files]({linter.linter_rules_inline_disable_url})"
+            ]
+        else:
+            linter_doc_md += [
+                f"- {linter.linter_name} has no known capability to inline-disable rules"
+            ]
+        linter_doc_md += ['']
+        # Super-linter variables
+        linter_doc_md += [
+            "### Super-linter configuration",
             "",
             "| Variable | Description | Default value |",
             "| ----------------- | -------------- | -------------- |",

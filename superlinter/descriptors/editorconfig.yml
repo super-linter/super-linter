@@ -10,6 +10,9 @@ linters:
     linter_name: editorconfig-checker
     linter_url: https://github.com/editorconfig-checker/editorconfig-checker
     linter_banner_image_url: https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/master/docs/logo.png
+    linter_rules_configuration_url: https://github.com/editorconfig-checker/editorconfig-checker#configuration
+    linter_rules_inline_disable_url: https://github.com/editorconfig-checker/editorconfig-checker#excluding
+    config_file_name: .ecrc
     cli_version_arg_name: '-version'
     linter_version_cache: "0.0.0"  # editorconfig-checker -version should work but seems to do not
     examples:

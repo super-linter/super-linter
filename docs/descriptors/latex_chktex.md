@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### chktex configuration
+
+- [Configure chktex rules](https://github.com/amaloz/dotfiles/blob/master/chktexrc)
+  - If custom .chktexrc is not found, [.chktexrc](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.chktexrc) will be used
+- chktex has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_LATEX | Activate or deactivate chktex | `true` |

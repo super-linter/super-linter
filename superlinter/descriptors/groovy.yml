@@ -14,6 +14,8 @@ linters:
     linter_name: npm-groovy-lint
     linter_url: https://github.com/nvuillam/npm-groovy-lint
     linter_image_url: https://repository-images.githubusercontent.com/240214900/1dcdef80-773c-11ea-8c94-305acc58f5c6
+    linter_rules_configuration_url: https://github.com/nvuillam/npm-groovy-lint#configuration
+    linter_rules_inline_disable_url: https://github.com/nvuillam/npm-groovy-lint#disabling-rules-in-source
     config_file_name: .groovylintrc.json
     version_extract_regex: "(?<=npm-groovy-lint version )\\d+(\\.\\d+)+"
     examples:

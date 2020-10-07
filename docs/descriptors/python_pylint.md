@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### pylint configuration
+
+- [Configure pylint rules](https://github.com/PyCQA/pylint/blob/master/pylintrc)
+  - If custom .python-lint is not found, [.python-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.python-lint) will be used
+- [Disable pylint rules in files](https://pylint.readthedocs.io/en/latest/user_guide/message-control.html)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PYTHON_PYLINT | Activate or deactivate pylint | `true` |

@@ -16,6 +16,14 @@
 
 ## Configuration
 
+### stylelint configuration
+
+- [Configure stylelint rules](https://stylelint.io/user-guide/configure)
+  - If custom .stylelintrc.json is not found, [.stylelintrc.json](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.stylelintrc.json) will be used
+- [Disable stylelint rules in files](https://stylelint.io/user-guide/ignore-code)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_CSS | Activate or deactivate stylelint | `true` |

@@ -16,6 +16,13 @@
 
 ## Configuration
 
+### perlcritic configuration
+
+- [Configure perlcritic rules](https://metacpan.org/pod/Perl::Critic#CONFIGURATION)
+- [Disable perlcritic rules in files](https://metacpan.org/pod/Perl::Critic#BENDING-THE-RULES)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PERL | Activate or deactivate perlcritic | `true` |

@@ -8,6 +8,8 @@ linters:
     linter_name: markdownlint
     linter_url: https://github.com/DavidAnson/markdownlint
     linter_image_url: https://davidanson.gallerycdn.vsassets.io/extensions/davidanson/vscode-markdownlint/0.37.1/1601748708034/Microsoft.VisualStudio.Services.Icons.Default
+    linter_rules_configuration_url: https://github.com/DavidAnson/markdownlint#optionsconfig
+    linter_rules_inline_disable_url: https://github.com/DavidAnson/markdownlint#configuration
     config_file_name: .markdown-lint.yml
     examples:
       - "markdownlint myfile.css"

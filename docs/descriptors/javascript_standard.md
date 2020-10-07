@@ -14,6 +14,13 @@
 
 ## Configuration
 
+### standard configuration
+
+- standard has no known capability to configure custom rules
+- standard has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_JAVASCRIPT_STANDARD | Activate or deactivate standard | `true` |

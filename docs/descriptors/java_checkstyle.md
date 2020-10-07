@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### checkstyle configuration
+
+- [Configure checkstyle rules](https://checkstyle.sourceforge.io/config.html#Overview)
+  - If custom sun_checks.xml is not found, [sun_checks.xml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/sun_checks.xml) will be used
+- [Disable checkstyle rules in files](https://checkstyle.sourceforge.io/config_filters.html#SuppressionCommentFilter)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_JAVA | Activate or deactivate checkstyle | `true` |

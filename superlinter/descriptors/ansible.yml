@@ -14,6 +14,7 @@ linters:
   -
     linter_name: ansible-lint
     linter_url: https://github.com/ansible/ansible-lint
+    linter_rules_configuration_url: https://github.com/ansible/ansible-lint#configuration-file
     config_file_name: .ansible-lint.yml
     cli_config_extra_args:
       - "-v"

@@ -12,6 +12,13 @@
 
 ## Configuration
 
+### shfmt configuration
+
+- shfmt has no known capability to configure custom rules
+- shfmt has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_BASH_SHFMT | Activate or deactivate shfmt | `true` |

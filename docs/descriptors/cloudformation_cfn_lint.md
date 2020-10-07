@@ -20,6 +20,14 @@
 
 ## Configuration
 
+### cfn-lint configuration
+
+- cfn-lint has no known capability to configure custom rules
+  - If custom .cfnlintrc.yml is not found, [.cfnlintrc.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.cfnlintrc.yml) will be used
+- cfn-lint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_CLOUDFORMATION | Activate or deactivate cfn-lint | `true` |

@@ -8,6 +8,8 @@ linters:
   -
     linter_name: coffeelint
     linter_url: http://www.coffeelint.org
+    linter_rules_configuration_url: http://www.coffeelint.org/#options
+    linter_rules_inline_disable_url: http://www.coffeelint.org/#options
     config_file_name: .coffee-lint.json
     cli_config_arg_name: "-f"
     examples:

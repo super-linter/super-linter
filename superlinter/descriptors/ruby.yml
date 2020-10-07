@@ -8,6 +8,8 @@ linters:
     linter_name: rubocop
     linter_url: https://github.com/rubocop-hq/rubocop
     linter_banner_image_url: https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png
+    linter_rules_configuration_url: https://docs.rubocop.org/rubocop/0.92/configuration.html
+    linter_rules_inline_disable_url: https://docs.rubocop.org/rubocop/0.92/configuration.html#disabling-cops-within-source-code
     config_file_name: .ruby-lint.yml
     cli_lint_extra_args:
       - "--force-exclusion"

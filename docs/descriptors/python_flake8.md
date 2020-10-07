@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### flake8 configuration
+
+- [Configure flake8 rules](https://flake8.pycqa.org/en/latest/user/configuration.html#project-configuration)
+  - If custom .flake8 is not found, [.flake8](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.flake8) will be used
+- [Disable flake8 rules in files](https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PYTHON_FLAKE8 | Activate or deactivate flake8 | `true` |
@@ -26,7 +34,7 @@ flake8 myfile.py
 ```
 
 ```shell
-flake8 --config .python-lint myfile.py
+flake8 --config .flake8 myfile.py
 ```
 
 ### Linter web site

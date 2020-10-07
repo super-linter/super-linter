@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### scalafix configuration
+
+- [Configure scalafix rules](https://scalacenter.github.io/scalafix/docs/users/configuration.html)
+  - If custom .scalafix.conf is not found, [.scalafix.conf](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.scalafix.conf) will be used
+- [Disable scalafix rules in files](https://scalacenter.github.io/scalafix/docs/users/suppression.html)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_SCALA | Activate or deactivate scalafix | `true` |

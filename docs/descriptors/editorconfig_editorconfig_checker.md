@@ -15,11 +15,20 @@
 
 ## Configuration
 
+### editorconfig-checker configuration
+
+- [Configure editorconfig-checker rules](https://github.com/editorconfig-checker/editorconfig-checker#configuration)
+- [Disable editorconfig-checker rules in files](https://github.com/editorconfig-checker/editorconfig-checker#excluding)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_EDITORCONFIG | Activate or deactivate editorconfig-checker | `true` |
 | EDITORCONFIG_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | EDITORCONFIG_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
+| EDITORCONFIG_FILE_NAME | Rules file name | `.ecrc` |
+| EDITORCONFIG_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
 
 ## Behind the scenes
 

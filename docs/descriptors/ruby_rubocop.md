@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### rubocop configuration
+
+- [Configure rubocop rules](https://docs.rubocop.org/rubocop/0.92/configuration.html)
+  - If custom .ruby-lint.yml is not found, [.ruby-lint.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.ruby-lint.yml) will be used
+- [Disable rubocop rules in files](https://docs.rubocop.org/rubocop/0.92/configuration.html#disabling-cops-within-source-code)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_RUBY | Activate or deactivate rubocop | `true` |

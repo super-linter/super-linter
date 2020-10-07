@@ -37,8 +37,10 @@ linters:
   # PHPCS
   -
     linter_name: phpcs
-    linter_url: https://github.com/squizlabs/PHP_CodeSniffer
     name: PHP_PHPCS
+    linter_url: https://github.com/squizlabs/PHP_CodeSniffer
+    linter_rules_configuration_url: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file
+    linter_rules_inline_disable_url: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file
     config_file_name: phpcs.xml
     cli_config_arg_name: "--standard="
     examples:
@@ -51,9 +53,11 @@ linters:
   # PHP Stan
   -
     linter_name: phpstan
+    name: PHP_PHPSTAN
     linter_url: https://github.com/phpstan/phpstan
     linter_image_url: https://i.imgur.com/MOt7taM.png
-    name: PHP_PHPSTAN
+    linter_rules_configuration_url: https://phpstan.org/config-reference#neon-format
+    linter_rules_inline_disable_url: https://phpstan.org/user-guide/ignoring-errors#ignoring-in-code-using-phpdocs
     config_file_name: phpstan.neon
     cli_lint_extra_args:
       - "analyse"
@@ -69,9 +73,11 @@ linters:
   # PSALM
   -
     linter_name: psalm
+    name: PHP_PSALM
     linter_url: https://psalm.dev
     linter_banner_image_url: https://i1.wp.com/phpmagazine.net/wp-content/uploads/2018/12/PsalmLogo.png?w=653&ssl=1
-    name: PHP_PSALM
+    linter_rules_configuration_url: https://psalm.dev/docs/running_psalm/configuration/
+    linter_rules_inline_disable_url: https://psalm.dev/docs/running_psalm/dealing_with_code_issues/#docblock-suppression
     config_file_name: psalm.xml
     cli_config_arg_name: "--config="
     examples:

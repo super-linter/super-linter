@@ -14,6 +14,13 @@
 
 ## Configuration
 
+### raku configuration
+
+- raku has no known capability to configure custom rules
+- raku has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_RAKU | Activate or deactivate raku | `true` |

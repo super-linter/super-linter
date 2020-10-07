@@ -10,6 +10,14 @@
 
 ## Configuration
 
+### ansible-lint configuration
+
+- [Configure ansible-lint rules](https://github.com/ansible/ansible-lint#configuration-file)
+  - If custom .ansible-lint.yml is not found, [.ansible-lint.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.ansible-lint.yml) will be used
+- ansible-lint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_ANSIBLE | Activate or deactivate ansible-lint | `true` |

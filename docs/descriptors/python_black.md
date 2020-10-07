@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### black configuration
+
+- [Configure black rules](https://black.readthedocs.io/en/stable/compatible_configs.html)
+  - If custom .python-black is not found, [.python-black](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.python-black) will be used
+- black has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PYTHON_BLACK | Activate or deactivate black | `true` |

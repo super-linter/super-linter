@@ -11,6 +11,7 @@ linters:
     linter_name: clj-kondo
     linter_url: https://github.com/borkdude/clj-kondo
     linter_banner_image_url: https://github.com/borkdude/clj-kondo/raw/master/logo/logo-300dpi.png
+    linter_rules_configuration_url: https://github.com/borkdude/clj-kondo/blob/master/doc/config.md#configuration
     config_file_name: .clj-kondo/config.edn
     cli_config_arg_name: "--config"
     cli_lint_extra_args_after:

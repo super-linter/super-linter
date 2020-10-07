@@ -11,6 +11,7 @@ linters:
     class: RLinter
     linter_name: lintr
     linter_url: https://github.com/jimhester/lintr
+    linter_rules_configuration_url: https://github.com/jimhester/lintr#project-configuration
     config_file_name: .lintr
     examples:
       - "R --slave -e \"errors <- lintr::lint('myfile.r'); print(errors); quit(save = 'no', status = if (length(errors) > 0) 1 else 0) \""

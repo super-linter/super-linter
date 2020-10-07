@@ -8,6 +8,8 @@ linters:
     linter_name: scalafix
     linter_url: https://scalacenter.github.io/scalafix/
     linter_image_url: https://scalacenter.github.io/scalafix/img/scalacenter2x.png
+    linter_rules_configuration_url: https://scalacenter.github.io/scalafix/docs/users/configuration.html
+    linter_rules_inline_disable_url: https://scalacenter.github.io/scalafix/docs/users/suppression.html
     config_file_name: .scalafix.conf
     cli_config_arg_name: "--config"
     cli_lint_extra_args:

@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### sql-lint configuration
+
+- [Configure sql-lint rules](https://sql-lint.readthedocs.io/en/latest/files/configuration.html)
+  - If custom .sql-config.json is not found, [.sql-config.json](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.sql-config.json) will be used
+- sql-lint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_SQL | Activate or deactivate sql-lint | `true` |

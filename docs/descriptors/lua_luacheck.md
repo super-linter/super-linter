@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### luacheck configuration
+
+- [Configure luacheck rules](https://luacheck.readthedocs.io/en/stable/config.html)
+  - If custom .luacheckrc is not found, [.luacheckrc](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.luacheckrc) will be used
+- [Disable luacheck rules in files](https://luacheck.readthedocs.io/en/stable/inline.html)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_LUA | Activate or deactivate luacheck | `true` |

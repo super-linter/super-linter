@@ -14,6 +14,13 @@
 
 ## Configuration
 
+### kubeval configuration
+
+- kubeval has no known capability to configure custom rules
+- kubeval has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_KUBERNETES_KUBEVAL | Activate or deactivate kubeval | `true` |

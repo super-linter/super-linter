@@ -14,6 +14,14 @@
 
 ## Configuration
 
+### eslint configuration
+
+- [Configure eslint rules](https://eslint.org/docs/user-guide/configuring)
+  - If custom .eslintrc.yml is not found, [.eslintrc.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.eslintrc.yml) will be used
+- [Disable eslint rules in files](https://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_JSX | Activate or deactivate eslint | `true` |

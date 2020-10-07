@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### protolint configuration
+
+- [Configure protolint rules](https://github.com/yoheimuta/protolint#rules)
+  - If custom .protolintrc.yml is not found, [.protolintrc.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.protolintrc.yml) will be used
+- protolint has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_PROTOBUF | Activate or deactivate protolint | `true` |

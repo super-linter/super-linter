@@ -22,6 +22,14 @@
 
 ## Configuration
 
+### spectral configuration
+
+- [Configure spectral rules](https://meta.stoplight.io/docs/spectral/docs/getting-started/3-rulesets.md)
+  - If custom .openapirc.yml is not found, [.openapirc.yml](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.openapirc.yml) will be used
+- spectral has no known capability to inline-disable rules
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_OPENAPI | Activate or deactivate spectral | `true` |

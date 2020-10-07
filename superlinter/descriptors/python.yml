@@ -6,9 +6,11 @@ linters:
   # PYLINT
   -
     linter_name: pylint
+    name: PYTHON_PYLINT
     linter_url: https://www.pylint.org
     linter_banner_image_url: https://www.pylint.org/pylint.svg
-    name: PYTHON_PYLINT
+    linter_rules_configuration_url: https://github.com/PyCQA/pylint/blob/master/pylintrc
+    linter_rules_inline_disable_url: https://pylint.readthedocs.io/en/latest/user_guide/message-control.html
     config_file_name: .python-lint
     cli_config_arg_name: "--rcfile"
     examples:
@@ -20,9 +22,10 @@ linters:
   # BLACK
   -
     linter_name: black
+    name: PYTHON_BLACK
     linter_url: https://github.com/psf/black
     linter_banner_image_url: https://raw.githubusercontent.com/psf/black/master/docs/_static/logo2-readme.png
-    name: PYTHON_BLACK
+    linter_rules_configuration_url: https://black.readthedocs.io/en/stable/compatible_configs.html
     config_file_name: .python-black
     cli_config_arg_name: "--config"
     cli_lint_extra_args:
@@ -38,13 +41,15 @@ linters:
   # FLAKE8
   -
     linter_name: flake8
-    linter_url: https://flake8.pycqa.org
     name: PYTHON_FLAKE8
+    linter_url: https://flake8.pycqa.org
+    linter_rules_configuration_url: https://flake8.pycqa.org/en/latest/user/configuration.html#project-configuration
+    linter_rules_inline_disable_url: https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors
     config_file_name: .flake8
     cli_config_arg_name: "--config"
     examples:
       - "flake8 myfile.py"
-      - "flake8 --config .python-lint myfile.py"
+      - "flake8 --config .flake8 myfile.py"
     install:
       pip:
         - flake8

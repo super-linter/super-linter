@@ -15,6 +15,14 @@
 
 ## Configuration
 
+### npm-groovy-lint configuration
+
+- [Configure npm-groovy-lint rules](https://github.com/nvuillam/npm-groovy-lint#configuration)
+  - If custom .groovylintrc.json is not found, [.groovylintrc.json](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.groovylintrc.json) will be used
+- [Disable npm-groovy-lint rules in files](https://github.com/nvuillam/npm-groovy-lint#disabling-rules-in-source)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_GROOVY | Activate or deactivate npm-groovy-lint | `true` |

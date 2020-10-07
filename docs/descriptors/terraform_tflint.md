@@ -9,6 +9,14 @@
 
 ## Configuration
 
+### tflint configuration
+
+- [Configure tflint rules](https://github.com/terraform-linters/tflint/blob/master/docs/guides/config.md)
+  - If custom .tflint.hcl is not found, [.tflint.hcl](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/TEMPLATES/.tflint.hcl) will be used
+- [Disable tflint rules in files](https://github.com/terraform-linters/tflint/blob/master/docs/guides/annotations.md)
+
+### Super-linter configuration
+
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
 | VALIDATE_TERRAFORM_TFLINT | Activate or deactivate tflint | `true` |
