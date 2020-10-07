@@ -77,7 +77,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 # Run APK installs #
 ####################
-RUN apk add --update --no-cache \
+RUN apk add --no-cache \
     ansible-lint \
     bash \
     coreutils \
@@ -263,7 +263,7 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 #################################################
 # Basic setup, programs and init
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && apk add --update --no-cache rakudo zef
+    && apk add --no-cache rakudo zef
 
 ######################
 # Install CheckStyle #
