@@ -311,6 +311,14 @@ GetLinterRules() {
   LANGUAGE_LINTER_RULES="${LANGUAGE_NAME}_LINTER_RULES"
   debug "Variable names for language file name: ${LANGUAGE_FILE_NAME}, language linter rules: ${LANGUAGE_LINTER_RULES}"
 
+  #####################################################
+  # Check if the language rules variables are defined #
+  #####################################################
+  if [ -z "${!LANGUAGE_FILE_NAME+x}" ]; then
+    debug "${LANGUAGE_FILE_NAME} is not set. Skipping loading rules for ${LANGUAGE_NAME}..."
+    return
+  fi
+
   ##########################
   # Get the file extension #
   ##########################
@@ -1058,70 +1066,10 @@ GetValidationInfo
 ########################
 # Get the linter rules #
 ########################
-# Get Ansible rules
-GetLinterRules "ANSIBLE"
-# Get ARM rules
-GetLinterRules "ARM"
-# Get CLOUDFORMATION rules
-GetLinterRules "CLOUDFORMATION"
-# Get Coffeescript rules
-GetLinterRules "COFFEESCRIPT"
-# Get CSS rules
-GetLinterRules "CSS"
-# Get DART rules
-GetLinterRules "DART"
-# Get Docker rules
-GetLinterRules "DOCKERFILE"
-# Get Docker rules
-GetLinterRules "DOCKERFILE_HADOLINT"
-# Get Golang rules
-GetLinterRules "GO"
-# Get Groovy rules
-GetLinterRules "GROOVY"
-# Get HTML rules
-GetLinterRules "HTML"
-# get Java rules
-GetLinterRules "JAVA"
-# Get JavaScript rules
-GetLinterRules "JAVASCRIPT"
-# Get LATEX rules
-GetLinterRules "LATEX"
-# Get LUA rules
-GetLinterRules "LUA"
-# Get Markdown rules
-GetLinterRules "MARKDOWN"
-# Get PHPCS rules
-GetLinterRules "PHP_PHPCS"
-# Get PHP_PHPSTAN rules
-GetLinterRules "PHP_PHPSTAN"
-# Get PHP_PSALM rules
-GetLinterRules "PHP_PSALM"
-# Get PowerShell rules
-GetLinterRules "POWERSHELL"
-# Get Protobuff linter rules
-GetLinterRules "PROTOBUF"
-# Get Python pylint rules
-GetLinterRules "PYTHON_PYLINT"
-# Get Python flake8 rules
-GetLinterRules "PYTHON_FLAKE8"
-# Get Python black rules
-GetLinterRules "PYTHON_BLACK"
-# Get R rules
-GetLinterRules "R"
-# Get Ruby rules
-GetLinterRules "RUBY"
-# Get Snakemake lint rules
-GetLinterRules "SNAKEMAKE_LINT"
-# Get Snakemake snakefmt rules
-GetLinterRules "SNAKEMAKE_SNAKEFMT"
-# Get SQL rules
-GetLinterRules "SQL"
-# Get Terraform rules
-GetLinterRules "TERRAFORM"
-# Get TypeScript rules
-GetLinterRules "TYPESCRIPT"
-# Get YAML rules
-GetLinterRules "YAML"
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  debug "Loading rules for ${LANGUAGE}..."
+  eval "GetLinterRules ${LANGUAGE}"
+done
 
 ##################################
 # Get and print all version info #
