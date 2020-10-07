@@ -16,7 +16,6 @@ function LintCodebase() {
   FILE_TYPE="${1}" && shift            # Pull the variable and remove from array path  (Example: JSON)
   LINTER_NAME="${1}" && shift          # Pull the variable and remove from array path  (Example: jsonlint)
   LINTER_COMMAND="${1}" && shift       # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="${1}" && shift      # Pull the variable and remove from array path  (Example: *.json)
   FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
   FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
@@ -75,54 +74,12 @@ function LintCodebase() {
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
+  if [ ${#FILE_ARRAY[@]} -eq 0 ]; then
     SKIP_FLAG=1
     debug " - No files found in changeset to lint for language:[${FILE_TYPE}]"
-  elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
+  else
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
-  else
-    if [[ ${FILE_TYPE} == "BASH" ]] ||
-      [[ ${FILE_TYPE} == "BASH_EXEC" ]] ||
-      [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
-      # Populate a list of valid shell scripts.
-      PopulateShellScriptsList
-    else
-      ###############################################################################
-      # Set the file separator to newline to allow for grabbing objects with spaces #
-      ###############################################################################
-      IFS=$'\n'
-
-      #################################
-      # Get list of all files to lint #
-      #################################
-      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
-        -path "*/node_modules" -prune -o \
-        -path "*/.git" -prune -o \
-        -path "*/.venv" -prune -o \
-        -path "*/.rbenv" -prune -o \
-        -type f -regex "${FILE_EXTENSIONS}" 2>&1)
-
-      ###########################
-      # Set IFS back to default #
-      ###########################
-      IFS="${DEFAULT_IFS}"
-    fi
-
-    ############################################################
-    # Set it back to empty if loaded with blanks from scanning #
-    ############################################################
-    if [ ${#LIST_FILES[@]} -lt 1 ]; then
-      ######################
-      # Set to empty array #
-      ######################
-      LIST_FILES=()
-      #############################
-      # Skip as we found no files #
-      #############################
-      SKIP_FLAG=1
-    fi
   fi
 
   #################################################

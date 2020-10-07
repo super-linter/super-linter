@@ -191,7 +191,6 @@ GITHUB_RUN_ID="${GITHUB_RUN_ID}"                                     # GitHub RU
 GITHUB_SHA="${GITHUB_SHA}"                                           # GitHub sha from the commit
 GITHUB_TOKEN="${GITHUB_TOKEN}"                                       # GitHub Token passed from environment
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                               # Github Workspace
-KUBERNETES_DIRECTORY="${KUBERNETES_DIRECTORY}"                       # Kubernetes directory
 MULTI_STATUS="${MULTI_STATUS:-true}"                                 # Multiple status are created for each check ran
 TEST_CASE_RUN="${TEST_CASE_RUN}"                                     # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                     # Boolean to validate all files
@@ -203,7 +202,6 @@ DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if running locally
 DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
-DEFAULT_IFS="${IFS}"                                # Get the Default IFS for updating
 
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
@@ -574,7 +572,7 @@ DetectAWSStatesFIle() {
   ###############################
   # check if file has resources #
   ###############################
-  if grep '"Resource": *"arn"*' "${FILE}"; then
+  if grep -q '"Resource": *"arn"*' "${FILE}"; then
     # Found it
     return 0
   fi
@@ -1050,8 +1048,6 @@ GetGitHubVars
 ########################################################
 DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"          # Default Ansible Directory
 export DEFAULT_ANSIBLE_DIRECTORY                                 # Workaround SC2034
-DEFAULT_KUBERNETES_DIRECTORY="${GITHUB_WORKSPACE}/kubernetes"    # Default Kubernetes Directory
-export DEFAULT_KUBERNETES_DIRECTORY                              # Workaround SC2034
 REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"      # Location for the report folder
 
 #########################################
@@ -1149,15 +1145,10 @@ if [[ ${TEST_CASE_RUN} != "false" ]]; then
   RunTestCases
 fi
 
-#############################################
-# check flag for validation of all codebase #
-#############################################
-if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-  ########################################
-  # Get list of files changed if env set #
-  ########################################
-  BuildFileList
-fi
+###########################################
+# Build the list of files for each linter #
+###########################################
+BuildFileList "${VALIDATE_ALL_CODEBASE}"
 
 ###################
 # ANSIBLE LINTING #
@@ -1176,31 +1167,10 @@ fi
 # ARM Template LINTING #
 ########################
 if [ "${VALIDATE_ARM}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every json file is an ARM file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectARMFile "${FILE}"; then
-        FILE_ARRAY_ARM+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
   ###############################
   # Lint the ARM Template files #
   ###############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ARM[@]}"
+  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ARM[@]}"
 fi
 
 ################
@@ -1210,8 +1180,7 @@ if [ "${VALIDATE_BASH}" == "true" ]; then
   #######################
   # Lint the bash files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
+  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
 fi
 
 #####################
@@ -1221,39 +1190,17 @@ if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
   #######################
   # Lint the bash files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH_EXEC[@]}"
+  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
 fi
 
 ##########################
 # CLOUDFORMATION LINTING #
 ##########################
 if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every yml/json file is an CLOUDFORMATION file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectCloudFormationFile "${FILE}"; then
-        FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
   #################################
   # Lint the CloudFormation files #
   #################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOUDFORMATION[@]}"
+  LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOUDFORMATION[@]}"
 fi
 
 ###################
@@ -1267,7 +1214,7 @@ if [ "${VALIDATE_CLOJURE}" == "true" ]; then
   #########################
   # Lint the Clojure files #
   #########################
-  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" ".*\.\(clj\|cljs\|cljc\|edn\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOJURE[@]}"
+  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOJURE[@]}"
 fi
 
 ########################
@@ -1277,8 +1224,7 @@ if [ "${VALIDATE_COFFEE}" == "true" ]; then
   #########################
   # Lint the coffee files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" ".*\.\(coffee\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_COFFEESCRIPT[@]}"
+  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_COFFEESCRIPT[@]}"
 fi
 
 ##################
@@ -1288,8 +1234,7 @@ if [ "${VALIDATE_CSHARP}" == "true" ]; then
   #########################
   # Lint the C# files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --exclude / --include" ".*\.\(cs\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSHARP[@]}"
+  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --exclude / --include" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSHARP[@]}"
 fi
 
 ###############
@@ -1303,7 +1248,7 @@ if [ "${VALIDATE_CSS}" == "true" ]; then
   #############################
   # Lint the CSS files #
   #############################
-  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" ".*\.\(css\|scss\|sass\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSS[@]}"
+  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSS[@]}"
 fi
 
 ################
@@ -1313,9 +1258,7 @@ if [ "${VALIDATE_DART}" == "true" ]; then
   #######################
   # Lint the Dart files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  # shellcheck disable=SC2153
-  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" ".*\.\(dart\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DART[@]}"
+  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DART[@]}"
 fi
 
 ##################
@@ -1325,9 +1268,8 @@ if [ "${VALIDATE_DOCKERFILE}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
   # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" ".*\(Dockerfile\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE[@]}"
+  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE[@]}"
 fi
 
 ###########################
@@ -1337,8 +1279,7 @@ if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
   #########################
   # Lint the docker files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" ".*\(Dockerfile\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE_HADOLINT[@]}"
+  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE_HADOLINT[@]}"
 fi
 
 ########################
@@ -1348,8 +1289,7 @@ if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
   ####################################
   # Lint the files with editorconfig #
   ####################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "^.*$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_EDITORCONFIG[@]}"
+  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_EDITORCONFIG[@]}"
 fi
 
 ###############
@@ -1359,8 +1299,7 @@ if [ "${VALIDATE_ENV}" == "true" ]; then
   #######################
   # Lint the env files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" ".*\.\(env\).*\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ENV[@]}"
+  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ENV[@]}"
 fi
 
 ##################
@@ -1370,8 +1309,7 @@ if [ "${VALIDATE_GO}" == "true" ]; then
   #########################
   # Lint the golang files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" ".*\.\(go\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GO[@]}"
+  LintCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GO[@]}"
 fi
 
 ##################
@@ -1381,8 +1319,7 @@ if [ "$VALIDATE_GROOVY" == "true" ]; then
   #########################
   # Lint the groovy files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning" ".*\.\(groovy\|jenkinsfile\|gradle\|nf\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GROOVY[@]}"
+  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GROOVY[@]}"
 fi
 
 ################
@@ -1396,7 +1333,7 @@ if [ "${VALIDATE_HTML}" == "true" ]; then
   #######################
   # Lint the HTML files #
   #######################
-  LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" ".*\.\(html\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_HTML[@]}"
+  LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_HTML[@]}"
 fi
 
 ################
@@ -1406,8 +1343,7 @@ if [ "$VALIDATE_JAVA" == "true" ]; then
   #######################
   # Lint the JAVA files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}" ".*\.\(java\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVA[@]}"
+  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVA[@]}"
 fi
 
 ######################
@@ -1417,8 +1353,7 @@ if [ "${VALIDATE_JAVASCRIPT_ES}" == "true" ]; then
   #############################
   # Lint the Javascript files #
   #############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(js\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
+  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
 fi
 
 ######################
@@ -1432,8 +1367,7 @@ if [ "${VALIDATE_JAVASCRIPT_STANDARD}" == "true" ]; then
   #############################
   # Lint the Javascript files #
   #############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" ".*\.\(js\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
+  LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
 fi
 
 ################
@@ -1443,8 +1377,7 @@ if [ "${VALIDATE_JSON}" == "true" ]; then
   #######################
   # Lint the json files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "JSON" "jsonlint" "jsonlint" ".*\.\(json\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSON[@]}"
+  LintCodebase "JSON" "jsonlint" "jsonlint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSON[@]}"
 fi
 
 ###############
@@ -1454,50 +1387,24 @@ if [ "${VALIDATE_JSX}" == "true" ]; then
   ######################
   # Lint the JSX files #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" ".*\.\(jsx\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSX[@]}"
+  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSX[@]}"
 fi
 
 ##################
 # KOTLIN LINTING #
 ##################
 if [ "${VALIDATE_KOTLIN}" == "true" ]; then
-  #######################
+  #########################
   # Lint the Kotlin files #
-  #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "KOTLIN" "ktlint" "ktlint" ".*\.\(kt\|kts\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KOTLIN[@]}"
+  #########################
+  LintCodebase "KOTLIN" "ktlint" "ktlint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KOTLIN[@]}"
 fi
 
 ##############################
 # KUBERNETES Kubeval LINTING #
 ##############################
 if [ "${VALIDATE_KUBERNETES_KUBEVAL}" == "true" ]; then
-  if [ -d "${KUBERNETES_DIRECTORY}" ]; then
-    if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-      ###############################################################################
-      # Set the file seperator to newline to allow for grabbing objects with spaces #
-      ###############################################################################
-      IFS=$'\n'
-
-      mapfile -t LIST_FILES < <(find "${KUBERNETES_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
-      for FILE in "${LIST_FILES[@]}"; do
-        if DetectKubernetesFile "${FILE}"; then
-          FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
-        fi
-      done
-
-      ###########################
-      # Set IFS back to default #
-      ###########################
-      IFS="${DEFAULT_IFS}"
-    fi
-
-    LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" ".*\.\(yml\|yaml\|json\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES_KUBEVAL[@]}"
-  else
-    warn "No Kubernetes directory found at:[${KUBERNETES_DIRECTORY}]"
-    debug "skipping Kubeval lint"
-  fi
+  LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES_KUBEVAL[@]}"
 fi
 
 #################
@@ -1507,8 +1414,7 @@ if [ "${VALIDATE_LATEX}" == "true" ]; then
   ########################
   # Lint the LATEX files #
   ########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" ".*\.\(tex\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LATEX[@]}"
+  LintCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LATEX[@]}"
 fi
 
 ###############
@@ -1518,8 +1424,7 @@ if [ "${VALIDATE_LUA}" == "true" ]; then
   ######################
   # Lint the Lua files #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "LUA" "lua" "luacheck --config ${LUA_LINTER_RULES}" ".*\.\(lua\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LUA[@]}"
+  LintCodebase "LUA" "lua" "luacheck --config ${LUA_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LUA[@]}"
 fi
 
 ####################
@@ -1529,39 +1434,17 @@ if [ "${VALIDATE_MARKDOWN}" == "true" ]; then
   ###########################
   # Lint the Markdown Files #
   ###########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" ".*\.\(md\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_MARKDOWN[@]}"
+  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_MARKDOWN[@]}"
 fi
 
 ###################
 # OPENAPI LINTING #
 ###################
 if [ "${VALIDATE_OPENAPI}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every yml/json file is an OpenAPI file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectOpenAPIFile "${FILE}"; then
-        FILE_ARRAY_OPENAPI+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
   ##########################
   # Lint the OpenAPI files #
   ##########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_OPENAPI[@]}"
+  LintCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_OPENAPI[@]}"
 fi
 
 ################
@@ -1571,8 +1454,7 @@ if [ "${VALIDATE_PERL}" == "true" ]; then
   #######################
   # Lint the perl files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PERL" "perl" "perlcritic" ".*\.\(pl\|pm\|t\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PERL[@]}"
+  LintCodebase "PERL" "perl" "perlcritic" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PERL[@]}"
 fi
 
 ################
@@ -1582,32 +1464,28 @@ if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
   ################################################
   # Lint the PHP files using built-in PHP linter #
   ################################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PHP_BUILTIN" "php" "php -l" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_BUILTIN[@]}"
+  LintCodebase "PHP_BUILTIN" "php" "php -l" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_BUILTIN[@]}"
 fi
 
 if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
   ############################################
   # Lint the PHP files using PHP CodeSniffer #
   ############################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPCS[@]}"
+  LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPCS[@]}"
 fi
 
 if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
   #######################
   # Lint the PHP files using PHPStan #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
+  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
 fi
 
 if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
   ##################################
   # Lint the PHP files using Psalm #
   ##################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" ".*\.\(php\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PSALM[@]}"
+  LintCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PSALM[@]}"
 fi
 
 ######################
@@ -1622,8 +1500,7 @@ if [ "${VALIDATE_POWERSHELL}" == "true" ]; then
   #############################
   # Lint the powershell files #
   #############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" ".*\.\(ps1\|psm1\|psd1\|ps1xml\|pssc\|psrc\|cdxml\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_POWERSHELL[@]}"
+  LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_POWERSHELL[@]}"
 fi
 
 ####################
@@ -1633,8 +1510,7 @@ if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
   #######################
   # Lint the Protocol Buffers files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" ".*\.\(proto\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PROTOBUF[@]}"
+  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PROTOBUF[@]}"
 fi
 
 ########################
@@ -1644,8 +1520,7 @@ if [ "${VALIDATE_PYTHON_BLACK}" == "true" ]; then
   #########################
   # Lint the python files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PYTHON_BLACK" "black" "black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check" ".*\.\(py\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_BLACK[@]}"
+  LintCodebase "PYTHON_BLACK" "black" "black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_BLACK[@]}"
 fi
 
 #########################
@@ -1655,8 +1530,7 @@ if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
   #########################
   # Lint the python files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" ".*\.\(py\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
+  LintCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
 fi
 
 #########################
@@ -1666,8 +1540,7 @@ if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
   #########################
   # Lint the python files #
   #########################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" ".*\.\(py\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
+  LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
 fi
 
 #############
@@ -1686,7 +1559,7 @@ if [ "${VALIDATE_R}" == "true" ]; then
   ######################
   # Lint the R files   #
   ######################
-  LintCodebase "R" "lintr" "lintr::lint(File)" ".*\.\(r\|R\|Rmd\|rmd\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_R[@]}"
+  LintCodebase "R" "lintr" "lintr::lint(File)" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_R[@]}"
 fi
 
 ################
@@ -1699,8 +1572,7 @@ if [ "${VALIDATE_RAKU}" == "true" ]; then
   if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
     cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "RAKU" "raku" "raku -I ${GITHUB_WORKSPACE}/lib -c" ".*\.\(raku\|rakumod\|rakutest\|pm6\|pl6\|p6\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RAKU[@]}"
+  LintCodebase "RAKU" "raku" "raku -I ${GITHUB_WORKSPACE}/lib -c" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RAKU[@]}"
 fi
 
 ################
@@ -1710,8 +1582,7 @@ if [ "${VALIDATE_RUBY}" == "true" ]; then
   #######################
   # Lint the ruby files #
   #######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" ".*\.\(rb\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RUBY[@]}"
+  LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RUBY[@]}"
 fi
 
 #################
@@ -1723,8 +1594,7 @@ if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
   ####################################
   EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
   if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
-    # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" ".*\.\(sh\|bash\|dash\|ksh\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SHELL_SHFMT[@]}"
+    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SHELL_SHFMT[@]}"
   else
     ###############################
     # No .editorconfig file found #
@@ -1738,53 +1608,24 @@ fi
 # SNAKEMAKE LINT #
 ##################
 if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
-  ################################
-  # Lint the files with snakefmt #
-  ################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_LINT[@]}"
-
+  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_LINT[@]}"
 fi
 
 ######################
 # SNAKEMAKE SNAKEFMT #
 ######################
 if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
-  ################################
-  # Lint the files with snakefmt #
-  ################################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\(Snakefile\|\.smk\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_SNAKEFMT[@]}"
+  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_SNAKEFMT[@]}"
 fi
 
 ######################
 # AWS STATES LINTING #
 ######################
 if [ "${VALIDATE_STATES}" == "true" ]; then
-  # If we are validating all codebase we need to build file list because not every json file is an aws states file
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
-    ###############################################################################
-    # Set the file seperator to newline to allow for grabbing objects with spaces #
-    ###############################################################################
-    IFS=$'\n'
-
-    mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(json\)\$" 2>&1)
-    for FILE in "${LIST_FILES[@]}"; do
-      if DetectAWSStatesFIle "${FILE}"; then
-        FILE_ARRAY_STATES+=("${FILE}")
-      fi
-    done
-
-    ###########################
-    # Set IFS back to default #
-    ###########################
-    IFS="${DEFAULT_IFS}"
-  fi
-
   #########################
   # Lint the STATES files #
   #########################
-  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "disabledfileext" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_STATES[@]}"
+  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_STATES[@]}"
 fi
 
 ###############
@@ -1794,8 +1635,7 @@ if [ "${VALIDATE_SQL}" == "true" ]; then
   ######################
   # Lint the SQL files #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SQL[@]}"
+  LintCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SQL[@]}"
 fi
 
 #####################
@@ -1805,8 +1645,7 @@ if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
   ############################
   # Lint the Terraform files #
   ############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM[@]}"
+  LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM[@]}"
 fi
 
 ###############################
@@ -1816,8 +1655,7 @@ if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
   ############################
   # Lint the Terraform files #
   ############################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " ".*\.\(tf\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
+  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
 fi
 
 ###############
@@ -1827,7 +1665,7 @@ if [ "${VALIDATE_TSX}" == "true" ]; then
   ######################
   # Lint the TSX files #
   ######################
-  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(tsx\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TSX[@]}"
+  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TSX[@]}"
 fi
 
 ######################
@@ -1837,7 +1675,7 @@ if [ "${VALIDATE_TYPESCRIPT_ES}" == "true" ]; then
   #############################
   # Lint the Typescript files #
   #############################
-  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
+  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
 fi
 
 ######################
@@ -1851,7 +1689,7 @@ if [ "${VALIDATE_TYPESCRIPT_STANDARD}" == "true" ]; then
   #############################
   # Lint the Typescript files #
   #############################
-  LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
+  LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
 fi
 
 ###############
@@ -1861,8 +1699,7 @@ if [ "${VALIDATE_XML}" == "true" ]; then
   ######################
   # Lint the XML Files #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_XML[@]}"
+  LintCodebase "XML" "xmllint" "xmllint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_XML[@]}"
 fi
 
 ################
@@ -1872,8 +1709,7 @@ if [ "${VALIDATE_YAML}" == "true" ]; then
   ######################
   # Lint the Yml Files #
   ######################
-  # LintCodebase "FILE_TYPE" "LINTER_NAME" "LINTER_CMD" "FILE_TYPES_REGEX" "FILTER_REGEX_INCLUDE" "FILTER_REGEX_EXCLUDE" "FILE_ARRAY"
-  LintCodebase "YAML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" ".*\.\(yml\|yaml\)\$" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_YAML[@]}"
+  LintCodebase "YAML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_YAML[@]}"
 fi
 
 ###########

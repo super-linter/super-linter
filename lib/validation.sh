@@ -146,26 +146,6 @@ function GetValidationInfo() {
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
 
-  #################################
-  # Validate Kubernetes Directory #
-  #################################
-  if [ -z "${KUBERNETES_DIRECTORY}" ]; then
-    # No Value, need to default
-    KUBERNETES_DIRECTORY="${DEFAULT_KUBERNETES_DIRECTORY}"
-    debug "Setting Kubernetes directory to the default: ${DEFAULT_KUBERNETES_DIRECTORY}"
-  else
-    # Check if first char is '/'
-    if [[ ${KUBERNETES_DIRECTORY:0:1} == "/" ]]; then
-      # Remove first char
-      KUBERNETES_DIRECTORY="${KUBERNETES_DIRECTORY:1}"
-    fi
-    # Need to give it full path
-    TEMP_KUBERNETES_DIRECTORY="${GITHUB_WORKSPACE}/${KUBERNETES_DIRECTORY}"
-    # Set the value
-    KUBERNETES_DIRECTORY="${TEMP_KUBERNETES_DIRECTORY}"
-    debug "Setting Kubernetes directory to: ${KUBERNETES_DIRECTORY}"
-  fi
-
   ###############################
   # Get the disable errors flag #
   ###############################
