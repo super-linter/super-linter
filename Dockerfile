@@ -366,6 +366,12 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 # raku installation
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && apk add --update --no-cache rakudo zef
 
+# scalafix installation
+RUN curl -fLo coursier https://git.io/coursier-cli && \
+        chmod +x coursier
+
+RUN ./coursier install scalafix --quiet --install-dir /usr/bin
+
 # tflint installation
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
