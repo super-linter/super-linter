@@ -1,25 +1,18 @@
-# Name of the language, in uppercase
-language: CLOUDFORMATION
-type: tooling_format
-
-# Define file extensions associated to the language
+descriptor_id: CLOUDFORMATION
+descriptor_type: tooling_format
 file_extensions:
   - ".yml"
   - ".yaml"
   - ".json"
-
-# Define content that must be found in file to be identified
 file_contains:
   - "AWSTemplateFormatVersion"
   - "(AWS|Alexa|Custom)::"
-
 linters:
-
   # AWS CloudFormation Lint
-  cfn-lint:
+  -
     linter_name: cfn-lint
     linter_url: https://github.com/martysweet/cfn-lint
-    linter_header_image_url: https://raw.githubusercontent.com/aws-cloudformation/cfn-python-lint/master/logo/cfn-lint-label%401x.png
+    linter_banner_image_url: https://raw.githubusercontent.com/aws-cloudformation/cfn-python-lint/master/logo/cfn-lint-label%401x.png
     config_file_name: .cfnlintrc.yml
     cli_config_arg_name: "--config-file"
     examples:
@@ -28,3 +21,5 @@ linters:
     install:
       pip:
         - cfn-lint
+      npm:
+        - asl-validator

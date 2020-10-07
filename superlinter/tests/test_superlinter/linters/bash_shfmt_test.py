@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class bash_shfmt_test(LinterTestRoot):
-    language = 'BASH'
+    descriptor_id = 'BASH'
     linter_name = 'shfmt'

@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: R
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: R
+descriptor_type: language
 file_extensions:
   - ".r"
   - ".R"
   - ".Rmd"
   - ".RMD"
-
 linters:
-
   # Lintr
-  lintr:
+  -
     class: RLinter
     linter_name: lintr
     linter_url: https://github.com/jimhester/lintr

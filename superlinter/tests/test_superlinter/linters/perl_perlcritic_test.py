@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class perl_perlcritic_test(LinterTestRoot):
-    language = 'PERL'
+    descriptor_id = 'PERL'
     linter_name = 'perlcritic'

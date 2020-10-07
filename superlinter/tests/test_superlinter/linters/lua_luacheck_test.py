@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class lua_luacheck_test(LinterTestRoot):
-    language = 'LUA'
+    descriptor_id = 'LUA'
     linter_name = 'luacheck'

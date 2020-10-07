@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class editorconfig_editorconfig_checker_test(LinterTestRoot):
-    language = 'EDITORCONFIG'
+    descriptor_id = 'EDITORCONFIG'
     linter_name = 'editorconfig-checker'

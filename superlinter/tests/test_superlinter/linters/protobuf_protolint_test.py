@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class protobuf_protolint_test(LinterTestRoot):
-    language = 'PROTOBUF'
+    descriptor_id = 'PROTOBUF'
     linter_name = 'protolint'

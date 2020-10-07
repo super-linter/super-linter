@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class php_phpstan_test(LinterTestRoot):
-    language = 'PHP'
+    descriptor_id = 'PHP'
     linter_name = 'phpstan'

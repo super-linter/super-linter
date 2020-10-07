@@ -2,7 +2,7 @@
 """
 Template class for custom linters: any linter class in /linters folder must inherit from this class
 The following list of items can/must be overridden on custom linter local class:
-- field language (required) ex: "JAVASCRIPT"
+- field descriptor_id (required) ex: "JAVASCRIPT"
 - field name (optional) ex: "JAVASCRIPT_ES". If not set, language value is used
 - field linter_name (required) ex: "eslint"
 - field linter_url (required) ex: "https://eslint.org/"
@@ -34,7 +34,7 @@ import superlinter
 
 class Linter:
     # Definition fields: can be overridden at custom linter class level
-    language = "Field 'Language' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
+    descriptor_id = "Field 'descriptor_id' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
     name = None  # If you have several linters for the same language,override with a different name.Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
     linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
@@ -78,13 +78,13 @@ class Linter:
 
         self.is_active = params['default_linter_activation']
         if self.name is None:
-            self.name = self.language
+            self.name = self.descriptor_id
         if self.cli_executable is None:
             self.cli_executable = self.linter_name
         if self.cli_executable_version is None:
             self.cli_executable_version = self.cli_executable
         if self.test_folder is None:
-            self.test_folder = self.language.lower()
+            self.test_folder = self.descriptor_id.lower()
 
         self.manage_activation(params)
 
@@ -104,7 +104,7 @@ class Linter:
 
             # Manage sub-directory filter if defined
             if self.files_sub_directory is not None:
-                self.files_sub_directory = os.environ.get(f"{self.language}_DIRECTORY", self.files_sub_directory)
+                self.files_sub_directory = os.environ.get(f"{self.descriptor_id}_DIRECTORY", self.files_sub_directory)
                 if not os.path.exists(self.workspace + os.path.sep + self.files_sub_directory):
                     self.is_active = False
 
@@ -126,17 +126,17 @@ class Linter:
             self.is_active = True
         elif self.name in params['disable_linters']:
             self.is_active = False
-        elif self.language in params['disable_languages'] or self.name in params['disable_linters']:
+        elif self.descriptor_id in params['disable_languages'] or self.name in params['disable_linters']:
             self.is_active = False
-        elif self.language in params['enable_languages']:
+        elif self.descriptor_id in params['enable_languages']:
             self.is_active = True
         elif "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'false':
             self.is_active = False
-        elif "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'false':
+        elif "VALIDATE_" + self.descriptor_id in os.environ and os.environ["VALIDATE_" + self.descriptor_id] == 'false':
             self.is_active = False
         elif "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'true':
             self.is_active = True
-        elif "VALIDATE_" + self.language in os.environ and os.environ["VALIDATE_" + self.language] == 'true':
+        elif "VALIDATE_" + self.descriptor_id in os.environ and os.environ["VALIDATE_" + self.descriptor_id] == 'true':
             self.is_active = True
 
     # Manage configuration variables
@@ -144,14 +144,14 @@ class Linter:
         # Configuration file name: try first NAME + _FILE_NAME, then LANGUAGE + _FILE_NAME
         if self.name + "_FILE_NAME" in os.environ:
             self.config_file_name = os.environ[self.name + "_FILE_NAME"]
-        elif self.language + "_FILE_NAME" in os.environ:
-            self.config_file_name = os.environ[self.language + "_FILE_NAME"]
+        elif self.descriptor_id + "_FILE_NAME" in os.environ:
+            self.config_file_name = os.environ[self.descriptor_id + "_FILE_NAME"]
 
         # Linter rules path: try first NAME + _RULE_PATH, then LANGUAGE + _RULE_PATH
         if self.name + "_RULES_PATH" in os.environ:
             self.linter_rules_path = os.environ[self.name + "_RULES_PATH"]
-        elif self.language + "_RULES_PATH" in os.environ:
-            self.linter_rules_path = os.environ[self.language + "_RULES_PATH"]
+        elif self.descriptor_id + "_RULES_PATH" in os.environ:
+            self.linter_rules_path = os.environ[self.descriptor_id + "_RULES_PATH"]
 
         # Linter config file:
         # 1: repo + config_name_name
@@ -170,14 +170,14 @@ class Linter:
         # Include regex :try first NAME + _FILTER_REGEX_INCLUDE, then LANGUAGE + _FILTER_REGEX_INCLUDE
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
-        elif self.language + "_FILTER_REGEX_INCLUDE" in os.environ:
-            self.filter_regex_include = os.environ[self.language + "_FILTER_REGEX_INCLUDE"]
+        elif self.descriptor_id + "_FILTER_REGEX_INCLUDE" in os.environ:
+            self.filter_regex_include = os.environ[self.descriptor_id + "_FILTER_REGEX_INCLUDE"]
 
         # Exclude regex: try first NAME + _FILTER_REGEX_EXCLUDE, then LANGUAGE + _FILTER_REGEX_EXCLUDE
         if self.name + "_FILTER_REGEX_EXCLUDE" in os.environ:
             self.filter_regex_exclude = os.environ[self.name + "_FILTER_REGEX_EXCLUDE"]
-        elif self.language + "_FILTER_REGEX_EXCLUDE" in os.environ:
-            self.filter_regex_exclude = os.environ[self.language + "_FILTER_REGEX_EXCLUDE"]
+        elif self.descriptor_id + "_FILTER_REGEX_EXCLUDE" in os.environ:
+            self.filter_regex_exclude = os.environ[self.descriptor_id + "_FILTER_REGEX_EXCLUDE"]
 
     # Processes the linter
     def run(self):
@@ -203,12 +203,12 @@ class Linter:
     def display_header(self):
         linter_version = self.get_linter_version()
         # Linter header prints
-        msg = "Linting [" + self.language + "] files with [" + self.linter_name + ' v' + \
+        msg = "Linting [" + self.descriptor_id + "] files with [" + self.linter_name + ' v' + \
               linter_version + '] (' + self.linter_url + ')'
         logging.info("")
         logging.info(superlinter.utils.format_hyphens(""))
         logging.info(superlinter.utils.format_hyphens(msg))
-        if self.language != self.name:
+        if self.descriptor_id != self.name:
             logging.info(superlinter.utils.format_hyphens("Key: [" + self.name + "]"))
         if self.config_file is not None:
             logging.info(superlinter.utils.format_hyphens("Rules: [" + self.config_file + "]"))
@@ -331,19 +331,20 @@ class Linter:
                 'state': self.status,
                 'target_url': target_url,
                 'description': success_msg if self.status == 'success' else error_msg,
-                'context': f"--> Lint: {self.language} with {self.linter_name}"
+                'context': f"--> Lint: {self.descriptor_id} with {self.linter_name}"
             }
             response = requests.post(url,
                                      headers=headers,
                                      json=data)
             if 200 <= response.status_code < 299:
-                logging.debug(f"Successfully posted Github Status for {self.language} with {self.linter_name}")
+                logging.debug(f"Successfully posted Github Status for {self.descriptor_id} with {self.linter_name}")
             else:
                 logging.error(
-                    f"Error posting Github Status for {self.language} with {self.linter_name}: {response.status_code}")
+                    f"Error posting Github Status for {self.descriptor_id}"
+                    f"with {self.linter_name}: {response.status_code}")
                 logging.error(f"GitHub API response: {response.text}")
         else:
-            logging.debug(f"Skipped post of Github Status for {self.language} with {self.linter_name}")
+            logging.debug(f"Skipped post of Github Status for {self.descriptor_id} with {self.linter_name}")
 
     ########################################
     # Methods that can be overridden below #

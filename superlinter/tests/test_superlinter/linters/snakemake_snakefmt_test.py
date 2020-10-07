@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class snakemake_snakefmt_test(LinterTestRoot):
-    language = 'SNAKEMAKE'
+    descriptor_id = 'SNAKEMAKE'
     linter_name = 'snakefmt'

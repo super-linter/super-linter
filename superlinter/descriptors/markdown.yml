@@ -1,15 +1,10 @@
-# Name of the language, in uppercase
-language: MARKDOWN
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: MARKDOWN
+descriptor_type: format
 file_extensions:
   - ".md"
-
 linters:
-
   # MarkdownLint
-  markdownlint:
+  -
     linter_name: markdownlint
     linter_url: https://github.com/DavidAnson/markdownlint
     linter_image_url: https://davidanson.gallerycdn.vsassets.io/extensions/davidanson/vscode-markdownlint/0.37.1/1601748708034/Microsoft.VisualStudio.Services.Icons.Default

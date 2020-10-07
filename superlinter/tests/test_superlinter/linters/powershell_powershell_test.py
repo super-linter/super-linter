@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class powershell_powershell_test(LinterTestRoot):
-    language = 'POWERSHELL'
+    descriptor_id = 'POWERSHELL'
     linter_name = 'powershell'

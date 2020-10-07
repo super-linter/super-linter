@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class coffee_coffeelint_test(LinterTestRoot):
-    language = 'COFFEE'
+    descriptor_id = 'COFFEE'
     linter_name = 'coffeelint'

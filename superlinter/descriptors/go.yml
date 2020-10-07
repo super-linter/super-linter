@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: GO
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: GO
+descriptor_type: language
 file_extensions:
   - ".go"
-
 linters:
-
   # GOLANG CI LINT
-  golangci-lint:
+  -
     linter_name: golangci-lint
     linter_url: https://github.com/golangci/golangci-lint
-    linter_header_image_url: https://repository-images.githubusercontent.com/132145189/05239680-dfaf-11e9-9646-2c3ef2f5f8d4
+    linter_banner_image_url: https://repository-images.githubusercontent.com/132145189/05239680-dfaf-11e9-9646-2c3ef2f5f8d4
     config_file_name: .golangci.yml
     cli_lint_extra_args:
       - "run"

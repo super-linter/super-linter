@@ -1,8 +1,5 @@
-# Name of the language, in uppercase
-language: RAKU
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: RAKU
+descriptor_type: language
 file_extensions:
   - ".raku"
   - ".rakumod"
@@ -10,11 +7,9 @@ file_extensions:
   - ".pm6"
   - ".pl6"
   - ".p6"
-
 linters:
-
   # Raku internal linter
-  raku:
+  -
     class: RakuLinter
     linter_name: raku
     linter_url: https://raku.org/

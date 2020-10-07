@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class markdown_markdownlint_test(LinterTestRoot):
-    language = 'MARKDOWN'
+    descriptor_id = 'MARKDOWN'
     linter_name = 'markdownlint'

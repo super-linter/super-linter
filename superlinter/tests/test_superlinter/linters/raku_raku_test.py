@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class raku_raku_test(LinterTestRoot):
-    language = 'RAKU'
+    descriptor_id = 'RAKU'
     linter_name = 'raku'

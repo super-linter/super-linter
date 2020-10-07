@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class cloudformation_cfn_lint_test(LinterTestRoot):
-    language = 'CLOUDFORMATION'
+    descriptor_id = 'CLOUDFORMATION'
     linter_name = 'cfn-lint'

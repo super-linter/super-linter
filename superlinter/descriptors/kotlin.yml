@@ -1,19 +1,14 @@
-# Name of the language, in uppercase
-language: KOTLIN
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: KOTLIN
+descriptor_type: language
 file_extensions:
   - ".kt"
   - ".kts"
-
 linters:
-
   # KTLINT
-  ktlint:
+  -
     linter_name: ktlint
     linter_url: https://ktlint.github.io
-    linter_header_image_url: https://miro.medium.com/max/655/1*sLboL6JnC9yUodFsdSMB-w.png
+    linter_banner_image_url: https://miro.medium.com/max/655/1*sLboL6JnC9yUodFsdSMB-w.png
     examples:
       - "ktlint myfile.kt"
     install:

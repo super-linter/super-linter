@@ -67,7 +67,7 @@ class SuperLinter:
         for linter in self.linters:
             if len(linter.files) > 0:
                 all_criteria = linter.file_extensions + linter.file_names
-                table_data += [[linter.language,
+                table_data += [[linter.descriptor_id,
                                 linter.linter_name,
                                 '|'.join(all_criteria),
                                 str(len(linter.files))]]
@@ -154,7 +154,7 @@ class SuperLinter:
             skipped_linters.sort()
             logging.info('Skipped linters: ' + ', '.join(skipped_linters))
         # Sort linters by language and linter_name
-        self.linters.sort(key=lambda x: (x.language, x.linter_name))
+        self.linters.sort(key=lambda x: (x.descriptor_id, x.linter_name))
 
     # Define all file extensions to browse
     def compute_file_extensions(self):
@@ -275,7 +275,7 @@ class SuperLinter:
         for linter in self.linters:
             if linter.is_active is True:
                 table_data += [
-                    [linter.language, linter.linter_name, str(linter.number_errors), str(len(linter.files))]]
+                    [linter.descriptor_id, linter.linter_name, str(linter.number_errors), str(len(linter.files))]]
         table = terminaltables.AsciiTable(table_data)
         table.title = "----SUMMARY"
         for table_line in table.table.splitlines():

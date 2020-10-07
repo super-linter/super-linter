@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class kubernetes_kubeval_test(LinterTestRoot):
-    language = 'KUBERNETES'
+    descriptor_id = 'KUBERNETES'
     linter_name = 'kubeval'

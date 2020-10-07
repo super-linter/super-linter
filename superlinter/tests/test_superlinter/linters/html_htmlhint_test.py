@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class html_htmlhint_test(LinterTestRoot):
-    language = 'HTML'
+    descriptor_id = 'HTML'
     linter_name = 'htmlhint'

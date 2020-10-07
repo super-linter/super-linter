@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class javascript_standard_test(LinterTestRoot):
-    language = 'JAVASCRIPT'
+    descriptor_id = 'JAVASCRIPT'
     linter_name = 'standard'

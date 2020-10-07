@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class clojure_clj_kondo_test(LinterTestRoot):
-    language = 'CLOJURE'
+    descriptor_id = 'CLOJURE'
     linter_name = 'clj-kondo'

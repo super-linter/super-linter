@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: JSX
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: JSX
+descriptor_type: language
 file_extensions:
   - ".jsx"
-
 linters:
-
   # ESLINT
-  eslint:
+  -
     linter_name: eslint
     linter_url: https://eslint.org
-    linter_header_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
+    linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
     config_file_name: .eslintrc.yml
     cli_config_extra_args:
       - "--no-eslintrc"
@@ -20,3 +15,6 @@ linters:
     examples:
       - "eslint myfile.jsx"
       - "eslint -c .eslintrc.yml  --no-eslintrc --no-ignore myfile.jsx"
+    install:
+      npm:
+        - eslint

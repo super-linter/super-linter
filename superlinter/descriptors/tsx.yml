@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: TSX
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: TSX
+descriptor_type: language
 file_extensions:
   - ".tsx"
-
 linters:
-
   # ESLINT
-  eslint:
+  -
     linter_name: eslint
     linter_url: https://eslint.org
-    linter_header_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
+    linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
     config_file_name: .eslintrc.yml
     cli_config_extra_args:
       - "--no-eslintrc"

@@ -1,15 +1,10 @@
-# Name of the language, in uppercase
-language: LUA
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: LUA
+descriptor_type: language
 file_extensions:
   - ".lua"
-
 linters:
-
   # LUACHECK
-  luacheck:
+  -
     linter_name: luacheck
     linter_url: https://github.com/luarocks/luacheck
     config_file_name: .luacheckrc

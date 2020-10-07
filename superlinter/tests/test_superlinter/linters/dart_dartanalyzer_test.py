@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class dart_dartanalyzer_test(LinterTestRoot):
-    language = 'DART'
+    descriptor_id = 'DART'
     linter_name = 'dartanalyzer'

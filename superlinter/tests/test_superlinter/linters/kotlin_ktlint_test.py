@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class kotlin_ktlint_test(LinterTestRoot):
-    language = 'KOTLIN'
+    descriptor_id = 'KOTLIN'
     linter_name = 'ktlint'

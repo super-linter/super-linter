@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class sql_sql_lint_test(LinterTestRoot):
-    language = 'SQL'
+    descriptor_id = 'SQL'
     linter_name = 'sql-lint'

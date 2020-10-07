@@ -1,18 +1,11 @@
-# Name of the language, in uppercase
-language: DOCKERFILE
-type: tooling_format
-
-# Define file extensions associated to the language
+descriptor_id: DOCKERFILE
+descriptor_type: tooling_format
 file_names:
   - "Dockerfile"
-
-# Folder containing test files, if different from language.tolower()
 test_folder: docker
-
 linters:
-
   # dockerfilelint
-  dockerfilelint:
+  -
     linter_name: dockerfilelint
     name: DOCKERFILE_DOCKERFILELINT
     linter_url: https://github.com/replicatedhq/dockerfilelint
@@ -23,9 +16,8 @@ linters:
     install:
       npm:
         - dockerfilelint
-
   # Hadolint
-  hadolint:
+  -
     linter_name: hadolint
     name: DOCKERFILE_HADOLINT
     linter_url: https://github.com/hadolint/hadolint

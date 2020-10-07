@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class latex_chktex_test(LinterTestRoot):
-    language = 'LATEX'
+    descriptor_id = 'LATEX'
     linter_name = 'chktex'

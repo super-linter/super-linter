@@ -4,22 +4,10 @@ PYTHONPATH=$PYTHONPATH:$(pwd)
 export PYTHONPATH
 
 if [ "${TEST_CASE_RUN}" == "true" ] ; then
-  # Test cases run
+  # Run build to check if descriptors are valid
+  bash build.sh
+  # Run test cases with pytest
   echo "RUNNING TEST CASES"
-  echo ""
-  echo "[CURRENT FOLDER CONTENT]"
-  ls -a -1
-  if [ -d "/tmp/lint" ]; then
-      echo "[CONTENT OF /tmp/lint]"
-      ls "/tmp/lint" -a -1
-      echo ""
-  fi
-  if [ -d "/action" ]; then
-      echo "[CONTENT OF /action]"
-      ls "/action" -a -1
-      echo ""
-  fi
-  # Run pytest
   pytest -v --cov=superlinter --cov-report=xml superlinter/
   PYTEST_STATUS=$?
   echo Pytest exited $PYTEST_STATUS

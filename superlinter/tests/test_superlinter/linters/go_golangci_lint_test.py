@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class go_golangci_lint_test(LinterTestRoot):
-    language = 'GO'
+    descriptor_id = 'GO'
     linter_name = 'golangci-lint'

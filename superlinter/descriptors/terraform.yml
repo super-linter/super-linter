@@ -1,15 +1,10 @@
-# Name of the language, in uppercase
-language: TERRAFORM
-type: tooling_format
-
-# Define file extensions associated to the language
+descriptor_id: TERRAFORM
+descriptor_type: tooling_format
 file_extensions:
   - ".tf"
-
 linters:
-
   # TFLINT
-  tflint:
+  -
     linter_name: tflint
     name: TERRAFORM_TFLINT
     linter_url: https://github.com/terraform-linters/tflint
@@ -21,13 +16,12 @@ linters:
       dockerfile:
         - FROM wata727/tflint:0.20.2 as tflint
         - COPY --from=tflint /usr/local/bin/tflint /usr/bin/
-
   # TERRASCAN
-  terrascan:
+  -
     linter_name: terrascan
     name: TERRAFORM_TERRASCAN
     linter_url: https://github.com/accurics/terrascan
-    linter_header_image_url: https://www.accurics.com/wp-content/uploads/elementor/thumbs/Terrascan_By_Accurics_Logo_38B34A-F2F2F2_600px-ousqq3op24fn35s67j5dzk3akvuupafmt2sq5dygka.png
+    linter_banner_image_url: https://www.accurics.com/wp-content/uploads/elementor/thumbs/Terrascan_By_Accurics_Logo_38B34A-F2F2F2_600px-ousqq3op24fn35s67j5dzk3akvuupafmt2sq5dygka.png
     cli_lint_extra_args:
       - "scan"
       - "-p"

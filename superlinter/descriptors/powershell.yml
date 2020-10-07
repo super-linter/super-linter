@@ -1,8 +1,5 @@
-# Name of the language, in uppercase
-language: POWERSHELL
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: POWERSHELL
+descriptor_type: language
 file_extensions:
   - ".ps1"
   - ".psm1"
@@ -11,11 +8,9 @@ file_extensions:
   - ".pssc"
   - ".psrc"
   - ".cdxml"
-
 linters:
-
   # Internal powershell linter
-  powershell:
+  -
     class: PowershellLinter
     linter_name: powershell
     linter_url: https://github.com/PowerShell/PSScriptAnalyzer

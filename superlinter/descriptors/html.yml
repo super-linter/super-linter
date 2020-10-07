@@ -1,16 +1,11 @@
-# Name of the language, in uppercase
-language: HTML
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: HTML
+descriptor_type: format
 file_extensions:
   - ".html"
   - ".htm"
-
 linters:
-
   # HTML HINT
-  htmlhint:
+  -
     linter_name: htmlhint
     linter_url: https://github.com/htmlhint/HTMLHint
     linter_image_url: https://raw.githubusercontent.com/htmlhint/HTMLHint/master/website/static/img/htmlhint.png

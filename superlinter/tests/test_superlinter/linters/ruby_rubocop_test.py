@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class ruby_rubocop_test(LinterTestRoot):
-    language = 'RUBY'
+    descriptor_id = 'RUBY'
     linter_name = 'rubocop'

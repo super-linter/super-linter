@@ -1,20 +1,15 @@
-# Name of the language, in uppercase
-language: CSS
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: CSS
+descriptor_type: format
 file_extensions:
   - ".css"
   - ".scss"
   - ".saas"
-
 linters:
-
   # StyleLint
-  stylelint:
+  -
     linter_name: stylelint
     linter_url: https://stylelint.io
-    linter_header_image_url: https://github.com/stylelint/stylelint/raw/master/identity/stylelint-icon-and-text-white.png
+    linter_banner_image_url: https://github.com/stylelint/stylelint/raw/master/identity/stylelint-icon-and-text-white.png
     config_file_name: .stylelintrc.json
     cli_config_arg_name: "--config"
     examples:

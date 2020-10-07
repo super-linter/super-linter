@@ -1,21 +1,14 @@
-# Name of the language, in uppercase
-language: BASH
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: BASH
+descriptor_type: language
 file_extensions:
   - ".sh"
   - ".bash"
   - ".dash"
   - ".ksh"
-
-# Folder containing test files, if different from language.tolower()
 test_folder: shell
-
 linters:
-
   # Bash Built in Linter
-  bash-exec:
+  -
     linter_name: bash-exec
     linter_url: https://tiswww.case.edu/php/chet/bash/bashtop.html
     name: BASH_EXEC
@@ -27,9 +20,8 @@ linters:
         - |
           RUN printf '#!/bin/bash \\n\\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
               && chmod +x /usr/bin/bash-exec
-
   # Shellcheck
-  shellcheck:
+  -
     linter_name: shellcheck
     linter_url: https://github.com/koalaman/shellcheck
     name: BASH_SHELLCHECK
@@ -42,9 +34,8 @@ linters:
       dockerfile:
         - FROM koalaman/shellcheck:v0.7.1 as shellcheck
         - COPY --from=shellcheck /bin/shellcheck /usr/bin/
-
   # SHFMT
-  shfmt:
+  -
     linter_name: shfmt
     linter_url: https://github.com/mvdan/sh
     name: BASH_SHFMT

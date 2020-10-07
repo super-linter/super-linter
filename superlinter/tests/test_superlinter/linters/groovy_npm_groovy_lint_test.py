@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class groovy_npm_groovy_lint_test(LinterTestRoot):
-    language = 'GROOVY'
+    descriptor_id = 'GROOVY'
     linter_name = 'npm-groovy-lint'

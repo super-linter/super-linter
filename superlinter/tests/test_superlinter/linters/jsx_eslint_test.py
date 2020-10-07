@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class jsx_eslint_test(LinterTestRoot):
-    language = 'JSX'
+    descriptor_id = 'JSX'
     linter_name = 'eslint'

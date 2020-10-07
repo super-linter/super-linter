@@ -1,15 +1,10 @@
-# Name of the language, in uppercase
-language: LATEX
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: LATEX
+descriptor_type: format
 file_extensions:
   - ".tex"
-
 linters:
-
   # Check TEX
-  chktex:
+  -
     linter_name: chktex
     linter_url: https://www.nongnu.org/chktex
     config_file_name: .chktexrc

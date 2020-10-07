@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class java_checkstyle_test(LinterTestRoot):
-    language = 'JAVA'
+    descriptor_id = 'JAVA'
     linter_name = 'checkstyle'

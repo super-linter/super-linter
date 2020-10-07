@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class openapi_spectral_test(LinterTestRoot):
-    language = 'OPENAPI'
+    descriptor_id = 'OPENAPI'
     linter_name = 'spectral'

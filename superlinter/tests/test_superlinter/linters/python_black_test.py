@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class python_black_test(LinterTestRoot):
-    language = 'PYTHON'
+    descriptor_id = 'PYTHON'
     linter_name = 'black'

@@ -1,27 +1,20 @@
-# Name of the language, in uppercase
-language: OPENAPI
-type: tooling_format
-
-# Define file extensions associated to the language
+descriptor_id: OPENAPI
+descriptor_type: tooling_format
 file_extensions:
   - ".yml"
   - ".yaml"
   - ".json"
-
-# Define content that must be found in file to be identified
 file_contains:
   - '"openapi":'
   - '"swagger":'
   - 'openapi:'
   - 'swagger:'
-
 linters:
-
   # Spectral
-  spectral:
+  -
     linter_name: spectral
     linter_url: https://github.com/stoplightio/spectral
-    linter_header_image_url: https://github.com/stoplightio/spectral/raw/develop/docs/img/spectral-banner.png
+    linter_banner_image_url: https://github.com/stoplightio/spectral/raw/develop/docs/img/spectral-banner.png
     config_file_name: .openapirc.yml
     cli_lint_extra_args:
       - "lint"

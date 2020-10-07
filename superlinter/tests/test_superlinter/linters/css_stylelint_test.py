@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class css_stylelint_test(LinterTestRoot):
-    language = 'CSS'
+    descriptor_id = 'CSS'
     linter_name = 'stylelint'

@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class env_dotenv_linter_test(LinterTestRoot):
-    language = 'ENV'
+    descriptor_id = 'ENV'
     linter_name = 'dotenv-linter'

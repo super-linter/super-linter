@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class ansible_ansible_lint_test(LinterTestRoot):
-    language = 'ANSIBLE'
+    descriptor_id = 'ANSIBLE'
     linter_name = 'ansible-lint'

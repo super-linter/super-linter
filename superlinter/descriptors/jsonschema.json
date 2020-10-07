@@ -1,0 +1,420 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://github.com/nvuillam/superlinter.json",
+  "type": "object",
+  "title": "Super-Linter descriptor",
+  "description": "Descriptor definition for super-linter",
+  "required": [
+    "descriptor_id",
+    "descriptor_type",
+    "linters"
+  ],
+  "properties": {
+    "descriptor": {
+      "$id": "#/properties/descriptor_id",
+      "type": "string",
+      "title": "Descriptor unique identifier",
+      "description": "Uppercase unique identifier for the language, tooling format or identifier",
+      "default": "",
+      "examples": [
+        "PYTHON",
+        "XML",
+        "OPENAPI"
+      ]
+    },
+    "type": {
+      "$id": "#/properties/descriptor_type",
+      "type": "string",
+      "enum": [
+        "language",
+        "format",
+        "tooling_format"
+      ],
+      "title": "Descriptor type",
+      "description": "Descriptor type: language, format or tooling format",
+      "default": "",
+      "examples": [
+        "language",
+        "format",
+        "tooling_format"
+      ]
+    },
+    "file_extensions": {
+      "$id": "#/properties/file_extensions",
+      "type": "array",
+      "title": "List of file extensions catch by the descriptor",
+      "description": "File extension filters. Can be overridden at linter level",
+      "default": [],
+      "examples": [
+        [
+          ".py"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "file_names": {
+      "$id": "#/properties/file_names",
+      "type": "array",
+      "title": "List of file names catch by the descriptor",
+      "description": "File name filter. Can be overridden at linter level",
+      "default": [],
+      "examples": [
+        [
+          "Dockerfile",
+          "Jenkinsfile"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "file_contains": {
+      "$id": "#/properties/file_contains",
+      "type": "array",
+      "title": "File content filters",
+      "description": "List of strings or regular expressions to filter the files according to their content",
+      "default": [],
+      "examples": [
+        [
+          "AWSTemplateFormatVersion",
+          "(AWS|Alexa|Custom)::"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "files_sub_directory": {
+      "$id": "#/properties/files_sub_directory",
+      "type": "string",
+      "title": "Files sub-directory",
+      "description": "Set when a linter only lints a sub-directory",
+      "examples": [
+        [
+          "ansible",
+          "kubernetes"
+        ]
+      ]
+    },
+    "files_names_not_ends_with": {
+      "$id": "#/properties/files_names_not_ends_with",
+      "type": "array",
+      "title": "Filter on end of file name",
+      "description": "List of strings to filter the files according to their end of file name",
+      "default": [],
+      "examples": [
+        [
+          "vault.yml",
+          "galaxy.xml"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_folder": {
+      "$id": "#/properties/test_folder",
+      "type": "string",
+      "title": "Test folder in .automation/",
+      "description": "Test folder containing _good_ and _bad_ files. Default: lowercase(descriptor_id)",
+      "examples": [
+        [
+          "bash_shfmt",
+          "terraform_terrascan"
+        ]
+      ]
+    },
+    "linters": {
+      "$id": "#/properties/linters",
+      "type": "array",
+      "title": "List of linters ",
+      "description": "List of linter definitions associated to the descriptor",
+      "examples": [
+        [
+          {
+            "linter_name": "eslint",
+            "linter_url": "https://eslint.org",
+            "linter_banner_image_url": "https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png",
+            "name": "JAVASCRIPT_ES",
+            "config_file_name": ".eslintrc.yml",
+            "cli_config_extra_args": [
+              "--no-eslintrc",
+              "--no-ignore"
+            ],
+            "examples": [
+              "eslint myfile.js",
+              "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js"
+            ],
+            "install": {
+              "npm": [
+                "eslint",
+                "eslint-config-airbnb",
+                "eslint-config-prettier",
+                "eslint-plugin-jest",
+                "eslint-plugin-prettier",
+                "babel-eslint"
+              ]
+            }
+          },
+          {
+            "linter_name": "standard",
+            "linter_url": "https://github.com/standard/standard",
+            "linter_banner_image_url": "https://github.com/standard/standard/raw/master/sticker.png",
+            "name": "JAVASCRIPT_STANDARD",
+            "examples": [
+              "standard myfile.js"
+            ],
+            "install": {
+              "npm": [
+                "standard"
+              ]
+            }
+          }
+        ]
+      ],
+      "items": {
+        "$id": "#/properties/linters/items",
+        "type": "object",
+        "title": "Linter definition",
+        "description": "Parameters defining behaviour and installation of a linter",
+        "examples": [
+          {
+            "linter_name": "eslint",
+            "linter_url": "https://eslint.org",
+            "linter_banner_image_url": "https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png",
+            "name": "JAVASCRIPT_ES",
+            "config_file_name": ".eslintrc.yml",
+            "cli_config_extra_args": [
+              "--no-eslintrc",
+              "--no-ignore"
+            ],
+            "examples": [
+              "eslint myfile.js",
+              "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js"
+            ],
+            "install": {
+              "npm": [
+                "eslint",
+                "eslint-config-airbnb",
+                "eslint-config-prettier",
+                "eslint-plugin-jest",
+                "eslint-plugin-prettier",
+                "babel-eslint"
+              ]
+            }
+          }
+        ],
+        "required": [
+          "linter_name",
+          "linter_url",
+          "examples",
+          "install"
+        ],
+        "properties": {
+          "linter_name": {
+            "$id": "#/properties/linters/items/properties/linter_name",
+            "type": "string",
+            "title": "Linter name",
+            "description": "Name of the linter (same as cli command if possible)",
+            "examples": [
+              "eslint"
+            ]
+          },
+          "name": {
+            "$id": "#/properties/linters/items/properties/name",
+            "type": "string",
+            "title": "Linter configuration key",
+            "description": "When several linters in a descriptor, set a different name that will be used for configuration",
+            "examples": [
+              "JAVASCRIPT_ES"
+            ]
+          },
+          "linter_url": {
+            "$id": "#/properties/linters/items/properties/linter_url",
+            "type": "string",
+            "title": "Linter URL",
+            "description": "URL of the linter home page",
+            "examples": [
+              "https://eslint.org"
+            ]
+          },
+          "linter_banner_image_url": {
+            "$id": "#/properties/linters/items/properties/linter_banner_image_url",
+            "type": "string",
+            "title": "Linter banner image URL",
+            "description": "URL of an image used to build header of linter Markdown documentation",
+            "examples": [
+              "https://github.com/stylelint/stylelint/raw/master/identity/stylelint-icon-and-text-white.png"
+            ]
+          },
+          "linter_image_url": {
+            "$id": "#/properties/linters/items/properties/linter_image_url",
+            "type": "string",
+            "title": "Linter image URL",
+            "description": "URL of an image used in linter Markdown documentation",
+            "examples": [
+              "https://raku.org/camelia-logo.png"
+            ]
+          },
+          "config_file_name": {
+            "$id": "#/properties/linters/items/properties/config_file_name",
+            "type": "string",
+            "title": "Default file name for the linter configuration file",
+            "description": "An explanation about the purpose of this instance.",
+            "examples": [
+              ".eslintrc.yml",
+              ".markdown-lint.yml",
+              ".python-black"
+            ]
+          },
+          "cli_config_extra_args": {
+            "$id": "#/properties/linters/items/properties/cli_config_extra_args",
+            "type": "array",
+            "title": "Additional CLI arguments when config file is used",
+            "description": "When a configuration file is used with the linter CLI, send these additional arguments",
+            "default": [],
+            "examples": [
+              [
+                "--no-eslintrc",
+                "--no-ignore"
+              ]
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "examples": {
+            "$id": "#/properties/linters/items/properties/examples",
+            "type": "array",
+            "title": "Linter CLI commands examples",
+            "description": "Please add an example with and without configuration file in the command. They will appear in documentation",
+            "examples": [
+              [
+                "golangci-lint run myfile.go",
+                "golangci-lint run -c .golangci.yml myfile.go"
+              ],
+              [
+                "eslint myfile.js",
+                "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.js"
+              ]
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "install": {
+            "$id": "#/properties/linters/items/properties/install",
+            "type": "object",
+            "title": "Installation requirements",
+            "description": "List of apk, dockerfile instructions, npm/pip/gem packages required to install the linter",
+            "default": {},
+            "examples": [
+              {
+                "dockerfile": [
+                  "FROM accurics/terrascan:d182f1c as terrascan",
+                  "COPY --from=terrascan /go/bin/terrascan /usr/bin/",
+                  "RUN terrascan init"
+                ]
+              },
+              {
+                "npm": [
+                  "eslint",
+                  "eslint-config-airbnb",
+                  "eslint-config-prettier",
+                  "eslint-plugin-jest",
+                  "eslint-plugin-prettier",
+                  "babel-eslint"
+                ]
+              }
+            ],
+            "properties": {
+              "dockerfile": {
+                "$id": "#/properties/linters/items/properties/install/properties/dockerfile",
+                "type": "array",
+                "title": "List of Dockerfile instructions packages",
+                "description": "Will be automatically integrated in generated Dockerfile",
+                "examples": [
+                  [
+                    "FROM accurics/terrascan:d182f1c as terrascan",
+                    "COPY --from=terrascan /go/bin/terrascan /usr/bin/",
+                    "RUN terrascan init"
+                  ]
+                ],
+                "items": {
+                  "$id": "#/properties/linters/items/properties/install/properties/dockerfile/items",
+                  "type": "string"
+                }
+              },
+              "apk": {
+                "$id": "#/properties/linters/items/properties/install/properties/apk",
+                "type": "array",
+                "title": "List of APK packages (Linux)",
+                "description": "APK packages identifiers (with or without version)",
+                "examples": [
+                  [
+                    "perl",
+                    "perl-dev"
+                  ]
+                ],
+                "items": {
+                  "$id": "#/properties/linters/items/properties/install/properties/apk/items",
+                  "type": "string"
+                }
+              },
+              "npm": {
+                "$id": "#/properties/linters/items/properties/install/properties/npm",
+                "type": "array",
+                "title": "List of NPM packages (Node.js)",
+                "description": "NPM packages identifiers (with or without version)",
+                "examples": [
+                  [
+                    "eslint",
+                    "eslint-config-airbnb@3.2.1"
+                  ]
+                ],
+                "items": {
+                  "$id": "#/properties/linters/items/properties/install/properties/npm/items",
+                  "type": "string"
+                }
+              },
+              "gem": {
+                "$id": "#/properties/linters/items/properties/install/properties/gem",
+                "type": "array",
+                "title": "List of GEM packages (Ruby)",
+                "description": "GEM packages identifiers (with or without version)",
+                "examples": [
+                  [
+                    "rubocop:0.82.0",
+                    "rubocop-github:0.16.0",
+                    "rubocop-performance"
+                  ]
+                ],
+                "items": {
+                  "$id": "#/properties/linters/items/properties/install/properties/gem/items",
+                  "type": "string"
+                }
+              },
+              "pip": {
+                "$id": "#/properties/linters/items/properties/install/properties/pip",
+                "type": "array",
+                "title": "List of PIP packages (Python)",
+                "description": "PIP packages identifiers (with or without version)",
+                "examples": [
+                  [
+                    "flake8"
+                  ]
+                ],
+                "items": {
+                  "$id": "#/properties/linters/items/properties/install/properties/pip/items",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

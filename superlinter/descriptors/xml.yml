@@ -1,17 +1,18 @@
-# Name of the language, in uppercase
-language: XML
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: XML
+descriptor_type: format
 file_extensions:
   - ".xml"
-
 linters:
-
-  # StyleLint
-  xmllint:
+  # XML LINT
+  -
     linter_name: xmllint
     linter_url: http://xmlsoft.org/xmllint.html
     version_extract_regex: "(?<=libxml version )\\d+(\\d+)+"
     examples:
       - "xmllint myfile.xml"
+    install:
+      apk:
+        - libc-dev
+        - libxml2-dev
+        - libxml2-utils
+        - libgcc

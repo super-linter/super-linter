@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: TYPESCRIPT
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: TYPESCRIPT
+descriptor_type: language
 file_extensions:
   - ".ts"
-
 linters:
-
   # ESLINT
-  eslint:
+  -
     linter_name: eslint
     linter_url: https://eslint.org
-    linter_header_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
+    linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
     name: TYPESCRIPT_ES
     config_file_name: .eslintrc.yml
     cli_config_extra_args:
@@ -34,12 +29,11 @@ linters:
         - prettyjson
         - "@typescript-eslint/eslint-plugin"
         - "@typescript-eslint/parser"
-
   # STANDARD
-  standard:
+  -
     linter_name: standard
     linter_url: https://github.com/standard/standard
-    linter_header_image_url: https://github.com/standard/standard/raw/master/sticker.png
+    linter_banner_image_url: https://github.com/standard/standard/raw/master/sticker.png
     name: TYPESCRIPT_STANDARD
     cli_lint_extra_args:
       - '--parser'

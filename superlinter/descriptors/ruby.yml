@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: RUBY
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: RUBY
+descriptor_type: language
 file_extensions:
   - ".rb"
-
 linters:
-
   # RUBOCOP
-  rubocop:
+  -
     linter_name: rubocop
     linter_url: https://github.com/rubocop-hq/rubocop
-    linter_header_image_url: https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png
+    linter_banner_image_url: https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png
     config_file_name: .ruby-lint.yml
     cli_lint_extra_args:
       - "--force-exclusion"

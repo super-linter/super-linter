@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class dockerfile_dockerfilelint_test(LinterTestRoot):
-    language = 'DOCKERFILE'
+    descriptor_id = 'DOCKERFILE'
     linter_name = 'dockerfilelint'

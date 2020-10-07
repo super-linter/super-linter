@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class terraform_terrascan_test(LinterTestRoot):
-    language = 'TERRAFORM'
+    descriptor_id = 'TERRAFORM'
     linter_name = 'terrascan'

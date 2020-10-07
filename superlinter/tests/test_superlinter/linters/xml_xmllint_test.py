@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class xml_xmllint_test(LinterTestRoot):
-    language = 'XML'
+    descriptor_id = 'XML'
     linter_name = 'xmllint'

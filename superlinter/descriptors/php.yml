@@ -1,27 +1,41 @@
-# Name of the language, in uppercase
-language: PHP
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: PHP
+descriptor_type: language
 file_extensions:
   - ".php"
-
 linters:
-
   # PHP Built in Linter
-  php:
+  -
     linter_name: php
     linter_url: https://www.php.net
-    linter_header_image_url: https://www.php.net/images/logos/new-php-logo.svg
+    linter_banner_image_url: https://www.php.net/images/logos/new-php-logo.svg
     name: PHP_BUILTIN
     cli_lint_extra_args:
       - "-l"
     examples:
       - "php -l myfile.js"
-
-
+    install:
+      apk:
+        - php7
+        - php7-phar
+        - php7-json
+        - php7-mbstring
+        - php-xmlwriter
+        - php7-tokenizer
+        - php7-ctype
+        - php7-curl
+        - php7-dom
+        - php7-simplexml
+      dockerfile:
+        - |
+          RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+              && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+              && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+              && gpg --verify phive.phar.asc phive.phar \
+              && chmod +x phive.phar \
+              && mv phive.phar /usr/local/bin/phive \
+              && rm phive.phar.asc
   # PHPCS
-  phpcs:
+  -
     linter_name: phpcs
     linter_url: https://github.com/squizlabs/PHP_CodeSniffer
     name: PHP_PHPCS
@@ -30,9 +44,12 @@ linters:
     examples:
       - "phpcs myfile.php"
       - "phpcs --standard=phpcs.xml myfile.php"
-
+    install:
+      dockerfile:
+        - |
+          RUN phive install phpcs -g --trust-gpg-keys 31C7E470E2138192
   # PHP Stan
-  phpstan:
+  -
     linter_name: phpstan
     linter_url: https://github.com/phpstan/phpstan
     linter_image_url: https://i.imgur.com/MOt7taM.png
@@ -45,15 +62,22 @@ linters:
     examples:
       - "phpstan analyse --no-progress --no-ansi myfile.php"
       - "phpstan analyse --no-progress --no-ansi -c phpstan.neon myfile.php"
-
+    install:
+      dockerfile:
+        - |
+          RUN phive install phpstan -g --trust-gpg-keys CF1A108D0E7AE720
   # PSALM
-  psalm:
+  -
     linter_name: psalm
     linter_url: https://psalm.dev
-    linter_header_image_url: https://i1.wp.com/phpmagazine.net/wp-content/uploads/2018/12/PsalmLogo.png?w=653&ssl=1
+    linter_banner_image_url: https://i1.wp.com/phpmagazine.net/wp-content/uploads/2018/12/PsalmLogo.png?w=653&ssl=1
     name: PHP_PSALM
     config_file_name: psalm.xml
     cli_config_arg_name: "--config="
     examples:
       - "psalm myfile.php"
       - "psalm --config=psalm.xml myfile.php"
+    install:
+      dockerfile:
+        - |
+          RUN phive install psalm -g --trust-gpg-keys 8A03EA3B385DBAA1

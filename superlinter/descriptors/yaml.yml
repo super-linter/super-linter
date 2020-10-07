@@ -1,16 +1,11 @@
-# Name of the language, in uppercase
-language: YAML
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: YAML
+descriptor_type: format
 file_extensions:
   - ".yml"
   - ".yaml"
-
 linters:
-
   # YAMLLINT
-  yamllint:
+  -
     linter_name: yamllint
     linter_url: https://github.com/adrienverge/yamllint
     config_file_name: .yaml-lint.yml

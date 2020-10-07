@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class yaml_yamllint_test(LinterTestRoot):
-    language = 'YAML'
+    descriptor_id = 'YAML'
     linter_name = 'yamllint'

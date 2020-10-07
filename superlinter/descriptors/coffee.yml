@@ -1,18 +1,11 @@
-# Name of the language, in uppercase
-language: COFFEE
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: COFFEE
+descriptor_type: language
 file_extensions:
   - ".coffee"
-
-# Folder containing test files, if different from language.tolower()
 test_folder: coffeescript
-
 linters:
-
   # Coffee Lint
-  coffeelint:
+  -
     linter_name: coffeelint
     linter_url: http://www.coffeelint.org
     config_file_name: .coffee-lint.json

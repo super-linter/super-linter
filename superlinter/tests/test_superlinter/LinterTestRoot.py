@@ -9,23 +9,23 @@ from superlinter.tests.test_superlinter.helpers import utilstest
 
 
 class LinterTestRoot(unittest.TestCase):
-    language = None
+    descriptor_id = None
     linter_name = None
 
     def setUp(self):
         utilstest.linter_test_setup()
 
     def get_linter_instance(self):
-        return utils.build_linter(self.language, self.linter_name)
+        return utils.build_linter(self.descriptor_id, self.linter_name)
 
     def test_success(self):
-        if self.language is not None:
+        if self.descriptor_id is not None:
             utilstest.test_linter_success(self.get_linter_instance(), self)
 
     def test_failure(self):
-        if self.language is not None:
+        if self.descriptor_id is not None:
             utilstest.test_linter_failure(self.get_linter_instance(), self)
 
     def test_get_linter_version(self):
-        if self.language is not None:
+        if self.descriptor_id is not None:
             utilstest.test_get_linter_version(self.get_linter_instance(), self)

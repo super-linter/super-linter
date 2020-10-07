@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class typescript_standard_test(LinterTestRoot):
-    language = 'TYPESCRIPT'
+    descriptor_id = 'TYPESCRIPT'
     linter_name = 'standard'

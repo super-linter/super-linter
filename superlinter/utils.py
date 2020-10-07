@@ -56,8 +56,8 @@ def build_descriptor_linters(file, linter_init_params=None, linter_names=None):
                 common_attributes[attr_key] = attr_value
 
         # Browse linters defined for language
-        for linter_name, linter_descriptor in language_descriptor.get('linters').items():
-            if len(linter_names) > 0 and linter_name not in linter_names:
+        for linter_descriptor in language_descriptor.get('linters'):
+            if len(linter_names) > 0 and linter_descriptor['linter_name'] not in linter_names:
                 continue
 
             # Use custom class if defined in file

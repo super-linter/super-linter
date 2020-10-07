@@ -1,21 +1,15 @@
-# Name of the language, in uppercase
-language: GROOVY
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: GROOVY
+descriptor_type: language
 file_extensions:
   - ".groovy"
   - ".gvy"
   - ".gradle"
   - ".nf"
-
 file_names:
   - Jenkinsfile
-
 linters:
-
   # npm-groovy-lint
-  npm-groovy-lint:
+  -
     class: GroovyNpmGroovyLintLinter
     linter_name: npm-groovy-lint
     linter_url: https://github.com/nvuillam/npm-groovy-lint

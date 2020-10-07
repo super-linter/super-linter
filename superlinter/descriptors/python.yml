@@ -1,18 +1,13 @@
-# Name of the language, in uppercase
-language: PYTHON
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: PYTHON
+descriptor_type: language
 file_extensions:
   - ".py"
-
 linters:
-
   # PYLINT
-  pylint:
+  -
     linter_name: pylint
     linter_url: https://www.pylint.org
-    linter_header_image_url: https://www.pylint.org/pylint.svg
+    linter_banner_image_url: https://www.pylint.org/pylint.svg
     name: PYTHON_PYLINT
     config_file_name: .python-lint
     cli_config_arg_name: "--rcfile"
@@ -22,12 +17,11 @@ linters:
     install:
       pip:
         - pylint
-
   # BLACK
-  black:
+  -
     linter_name: black
     linter_url: https://github.com/psf/black
-    linter_header_image_url: https://raw.githubusercontent.com/psf/black/master/docs/_static/logo2-readme.png
+    linter_banner_image_url: https://raw.githubusercontent.com/psf/black/master/docs/_static/logo2-readme.png
     name: PYTHON_BLACK
     config_file_name: .python-black
     cli_config_arg_name: "--config"
@@ -42,7 +36,7 @@ linters:
         - black
 
   # FLAKE8
-  flake8:
+  -
     linter_name: flake8
     linter_url: https://flake8.pycqa.org
     name: PYTHON_FLAKE8

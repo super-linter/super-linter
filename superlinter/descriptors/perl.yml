@@ -1,20 +1,15 @@
-# Name of the language, in uppercase
-language: PERL
-type: language
-
-# Define file extensions associated to the language
+descriptor_id: PERL
+descriptor_type: language
 file_extensions:
   - ".pl"
   - ".pm"
   - ".t"
-
 linters:
-
   # PERL CRITIC
-  perlcritic:
+  -
     linter_name: perlcritic
     linter_url: https://metacpan.org/pod/Perl::Critic
-    linter_header_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
+    linter_banner_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
     examples:
       - "perlcritic myfile.pl"
     install:

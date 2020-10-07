@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class json_jsonlint_test(LinterTestRoot):
-    language = 'JSON'
+    descriptor_id = 'JSON'
     linter_name = 'jsonlint'

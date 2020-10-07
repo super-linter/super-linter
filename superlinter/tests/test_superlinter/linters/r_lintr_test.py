@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class r_lintr_test(LinterTestRoot):
-    language = 'R'
+    descriptor_id = 'R'
     linter_name = 'lintr'

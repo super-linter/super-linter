@@ -1,15 +1,10 @@
-# Name of the language, in uppercase
-language: PROTOBUF
-type: format
-
-# Define file extensions associated to the language
+descriptor_id: PROTOBUF
+descriptor_type: format
 file_extensions:
   - ".proto"
-
 linters:
-
   # Protolint
-  protolint:
+  -
     linter_name: protolint
     linter_url: https://github.com/yoheimuta/protolint
     config_file_name: .protolintrc.yml

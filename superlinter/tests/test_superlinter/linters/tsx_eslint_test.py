@@ -7,5 +7,5 @@ from superlinter.tests.test_superlinter.LinterTestRoot import LinterTestRoot
 
 
 class tsx_eslint_test(LinterTestRoot):
-    language = 'TSX'
+    descriptor_id = 'TSX'
     linter_name = 'eslint'
