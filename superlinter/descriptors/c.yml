@@ -1,0 +1,16 @@
+descriptor_id: C
+descriptor_type: language
+file_extensions:
+  - '.c'
+  - '.h'
+linters:
+  # CPPLINT
+  -
+    linter_name: cpplint
+    name: C_CPPLINT
+    linter_url: https://github.com/cpplint/cpplint
+    examples:
+      - "cpplint myfile.cpp"
+    install:
+      pip:
+      - cpplint

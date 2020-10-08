@@ -145,6 +145,7 @@ RUN python ./superlinter/setup.py install
 #############################################################################################
 #PIP__START
 RUN pip3 install \
+          cpplint \
           cfn-lint \
           pylint \
           black \
