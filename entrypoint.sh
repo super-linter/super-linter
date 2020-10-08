@@ -8,7 +8,7 @@ if [ "${TEST_CASE_RUN}" == "true" ] ; then
   bash build.sh
   # Run test cases with pytest
   echo "RUNNING TEST CASES"
-  pytest -v --cov=superlinter --cov-report=xml superlinter/
+  pytest -v --durations=0 --cov=superlinter --cov-report=xml superlinter/
   PYTEST_STATUS=$?
   echo Pytest exited $PYTEST_STATUS
   # Manage return code
