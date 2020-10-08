@@ -4,11 +4,10 @@ file_extensions:
   - ".java"
 install:
   apk:
-  - openjdk8-jre
+    - openjdk8-jre
 linters:
   # Java Checkstyle
-  -
-    linter_name: checkstyle
+  - linter_name: checkstyle
     linter_url: https://checkstyle.sourceforge.io
     linter_banner_image_url: https://checkstyle.sourceforge.io/images/header-checkstyle-logo.png
     linter_rules_configuration_url: https://checkstyle.sourceforge.io/config.html#Overview

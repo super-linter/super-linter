@@ -9,8 +9,7 @@ file_contains:
   - "(AWS|Alexa|Custom)::"
 linters:
   # AWS CloudFormation Lint
-  -
-    linter_name: cfn-lint
+  - linter_name: cfn-lint
     linter_url: https://github.com/martysweet/cfn-lint
     linter_banner_image_url: https://raw.githubusercontent.com/aws-cloudformation/cfn-python-lint/master/logo/cfn-lint-label%401x.png
     config_file_name: .cfnlintrc.yml

@@ -10,8 +10,7 @@ install:
     - perl-dev
 linters:
   # PERL CRITIC
-  -
-    linter_name: perlcritic
+  - linter_name: perlcritic
     linter_url: https://metacpan.org/pod/Perl::Critic
     linter_banner_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
     linter_rules_configuration_url: https://metacpan.org/pod/Perl::Critic#CONFIGURATION

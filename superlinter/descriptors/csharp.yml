@@ -11,7 +11,7 @@ install:
     - ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
 linters:
   # DOTNET FORMAT
-  -
+  - class: CSharpDotnetFormatLinter
     linter_name: dotnet-format
     linter_url: https://github.com/dotnet/format
     linter_image_url: https://user-images.githubusercontent.com/9797472/61659851-6bbdc880-ac7d-11e9-95f7-d30c7de1a18a.png

@@ -11,8 +11,7 @@ file_contains:
   - 'swagger:'
 linters:
   # Spectral
-  -
-    linter_name: spectral
+  - linter_name: spectral
     linter_url: https://github.com/stoplightio/spectral
     linter_banner_image_url: https://github.com/stoplightio/spectral/raw/develop/docs/img/spectral-banner.png
     linter_rules_configuration_url: https://meta.stoplight.io/docs/spectral/docs/getting-started/3-rulesets.md

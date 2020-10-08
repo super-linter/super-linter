@@ -9,8 +9,7 @@ file_extensions:
   - ".p6"
 linters:
   # Raku internal linter
-  -
-    class: RakuLinter
+  - class: RakuLinter
     linter_name: raku
     linter_url: https://raku.org/
     linter_image_url: https://raku.org/camelia-logo.png

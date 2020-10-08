@@ -13,8 +13,7 @@ install:
     - RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 linters:
   # GOLANG CI LINT
-  -
-    linter_name: golangci-lint
+  - linter_name: golangci-lint
     linter_url: https://github.com/golangci/golangci-lint
     linter_banner_image_url: https://repository-images.githubusercontent.com/132145189/05239680-dfaf-11e9-9646-2c3ef2f5f8d4
     linter_rules_configuration_url: https://golangci-lint.run/usage/configuration/#config-file

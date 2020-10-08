@@ -6,8 +6,7 @@ file_contains:
   - "schema.management.azure.com"
 linters:
   # ARM TTK
-  -
-    class: ArmLinter
+  - class: ArmLinter
     linter_name: arm-ttk
     linter_url: https://github.com/Azure/arm-ttk
     linter_rules_configuration_url: https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit#customize-tests

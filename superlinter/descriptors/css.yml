@@ -6,8 +6,7 @@ file_extensions:
   - ".saas"
 linters:
   # StyleLint
-  -
-    linter_name: stylelint
+  - linter_name: stylelint
     linter_url: https://stylelint.io
     linter_banner_image_url: https://github.com/stylelint/stylelint/raw/master/identity/stylelint-icon-and-text-white.png
     linter_rules_configuration_url: https://stylelint.io/user-guide/configure

@@ -9,8 +9,7 @@ file_names:
   - Jenkinsfile
 linters:
   # npm-groovy-lint
-  -
-    class: GroovyNpmGroovyLintLinter
+  - class: GroovyNpmGroovyLintLinter
     linter_name: npm-groovy-lint
     linter_url: https://github.com/nvuillam/npm-groovy-lint
     linter_image_url: https://repository-images.githubusercontent.com/240214900/1dcdef80-773c-11ea-8c94-305acc58f5c6

@@ -4,8 +4,7 @@ file_extensions:
   - ".tf"
 linters:
   # TFLINT
-  -
-    linter_name: tflint
+  - linter_name: tflint
     name: TERRAFORM_TFLINT
     linter_url: https://github.com/terraform-linters/tflint
     linter_rules_configuration_url: https://github.com/terraform-linters/tflint/blob/master/docs/guides/config.md
@@ -19,8 +18,7 @@ linters:
         - FROM wata727/tflint:0.20.2 as tflint
         - COPY --from=tflint /usr/local/bin/tflint /usr/bin/
   # TERRASCAN
-  -
-    linter_name: terrascan
+  - linter_name: terrascan
     name: TERRAFORM_TERRASCAN
     linter_url: https://github.com/accurics/terrascan
     linter_rules_configuration_url: https://docs.accurics.com/projects/accurics-terrascan/en/latest/policies/

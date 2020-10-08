@@ -4,8 +4,7 @@ file_extensions:
   - ".tex"
 linters:
   # Check TEX
-  -
-    linter_name: chktex
+  - linter_name: chktex
     linter_url: https://www.nongnu.org/chktex
     linter_rules_configuration_url: https://github.com/amaloz/dotfiles/blob/master/chktexrc
     config_file_name: .chktexrc

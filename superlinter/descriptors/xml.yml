@@ -4,8 +4,7 @@ file_extensions:
   - ".xml"
 linters:
   # XML LINT
-  -
-    linter_name: xmllint
+  - linter_name: xmllint
     linter_url: http://xmlsoft.org/xmllint.html
     version_extract_regex: "(?<=libxml version )\\d+(\\d+)+"
     examples:

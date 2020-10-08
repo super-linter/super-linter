@@ -6,8 +6,7 @@ active_only_if_file_found: ".editorconfig"
 test_folder: editorconfig-checker
 linters:
   # EDITORCONFIG-CHECKER
-  -
-    linter_name: editorconfig-checker
+  - linter_name: editorconfig-checker
     linter_url: https://github.com/editorconfig-checker/editorconfig-checker
     linter_banner_image_url: https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/master/docs/logo.png
     linter_rules_configuration_url: https://github.com/editorconfig-checker/editorconfig-checker#configuration

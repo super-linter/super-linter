@@ -4,8 +4,7 @@ file_extensions:
   - ".lua"
 linters:
   # LUACHECK
-  -
-    linter_name: luacheck
+  - linter_name: luacheck
     linter_url: https://github.com/luarocks/luacheck
     linter_rules_configuration_url: https://luacheck.readthedocs.io/en/stable/config.html
     linter_rules_inline_disable_url: https://luacheck.readthedocs.io/en/stable/inline.html

@@ -6,8 +6,7 @@ file_names:
   - "Snakefile"
 linters:
   # Internal snakemake linter
-  -
-    linter_name: snakemake
+  - linter_name: snakemake
     name: SNAKEMAKE_LINT
     linter_url: https://snakemake.readthedocs.io/en/stable/
     linter_banner_image_url: https://github.com/snakemake/snakemake/raw/6fcdc8a22db5522e232638bff16da9b50996eb45/images/biglogo.png
@@ -20,8 +19,7 @@ linters:
       pip:
         - snakemake
   # Snake Fmt
-  -
-    linter_name: snakefmt
+  - linter_name: snakefmt
     name: SNAKEMAKE_SNAKEFMT
     linter_url: https://github.com/snakemake/snakefmt
     linter_rules_configuration_url: https://github.com/snakemake/snakefmt#configuration

@@ -4,8 +4,7 @@ file_extensions:
   - ".md"
 linters:
   # MarkdownLint
-  -
-    linter_name: markdownlint
+  - linter_name: markdownlint
     linter_url: https://github.com/DavidAnson/markdownlint
     linter_image_url: https://davidanson.gallerycdn.vsassets.io/extensions/davidanson/vscode-markdownlint/0.37.1/1601748708034/Microsoft.VisualStudio.Services.Icons.Default
     linter_rules_configuration_url: https://github.com/DavidAnson/markdownlint#optionsconfig

@@ -10,8 +10,7 @@ install:
     - ruby-rdoc
 linters:
   # RUBOCOP
-  -
-    linter_name: rubocop
+  - linter_name: rubocop
     linter_url: https://github.com/rubocop-hq/rubocop
     linter_banner_image_url: https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png
     linter_rules_configuration_url: https://docs.rubocop.org/rubocop/0.92/configuration.html
