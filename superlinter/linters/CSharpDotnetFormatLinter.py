@@ -15,4 +15,4 @@ class CSharpDotnetFormatLinter(Linter):
         commands = [f'cd "{os.path.dirname(file)}" || exit 1',
                     " ".join(super().build_lint_command(file)) + ' | tee /dev/tty2 2>&1',
                     'exit "${PIPESTATUS[0]}"']
-        return " && ".join(commands)
+        return ";".join(commands)
