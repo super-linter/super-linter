@@ -10,7 +10,6 @@ from superlinter import Linter
 
 
 class ArmLinter(Linter):
-    cli_powershell_executable = "powershell" if sys.platform == 'win32' else 'pwsh'
     arm_ttk_psd1 = os.environ.get('ARM_TTK_PSD1', '/usr/bin/arm-ttk')
 
     # Build the CLI command to call to lint a file with a powershell script
@@ -23,7 +22,19 @@ class ArmLinter(Linter):
         else:
             pwsh_script += ["Test-AzTemplate -TemplatePath " + file + " ;"]
         pwsh_script += ['if (${Error}.Count) {exit 1}']
-        cmd = [self.cli_powershell_executable,
+        cmd = [("powershell" if sys.platform == 'win32' else 'pwsh'),
+               '-NoProfile',
+               '-NoLogo',
+               '-Command', '\n'.join(pwsh_script)
+               ]
+        return cmd
+
+    # Build the CLI command to get linter version
+    def build_version_command(self):
+        pwsh_script = ["Import-Module " + self.arm_ttk_psd1 + " ;",
+                       '$TAZ_V = (Test-AzTemplate -version);',
+                       'Write-Output $TAZ_V;']
+        cmd = [("powershell" if sys.platform == 'win32' else 'pwsh'),
                '-NoProfile',
                '-NoLogo',
                '-Command', '\n'.join(pwsh_script)
