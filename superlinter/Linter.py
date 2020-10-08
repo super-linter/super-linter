@@ -252,7 +252,8 @@ class Linter:
             process = subprocess.run(command,
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT,
-                                     shell=True)
+                                     shell=True,
+                                     executable='/bin/bash')
         else:
             # Use full executable path if we are on Windows
             if sys.platform == 'win32':

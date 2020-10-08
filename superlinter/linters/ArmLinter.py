@@ -3,13 +3,14 @@
 Use Azure Resource Manager Template Toolkit to lint ARM files
 https://github.com/Azure/arm-ttk
 """
+import os
 import sys
 
 from superlinter import Linter
 
 
 class ArmLinter(Linter):
-    arm_ttk_psd1 = '/usr/bin/arm-ttk'
+    arm_ttk_psd1 = os.environ.get('ARM_TTK_PSD1', '/usr/bin/arm-ttk')
 
     # Build the CLI command to call to lint a file with a powershell script
     def build_lint_command(self, file):
