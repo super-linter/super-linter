@@ -2,6 +2,9 @@ descriptor_id: TYPESCRIPT
 descriptor_type: language
 file_extensions:
   - ".ts"
+install:
+  npm:
+    - typescript
 linters:
   # ESLINT
   -
@@ -20,7 +23,6 @@ linters:
       - "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.ts"
     install:
       npm:
-        - typescript
         - eslint
         - eslint-config-airbnb
         - eslint-config-prettier

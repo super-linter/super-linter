@@ -2,6 +2,9 @@ descriptor_id: JAVA
 descriptor_type: language
 file_extensions:
   - ".java"
+install:
+  apk:
+  - openjdk8-jre
 linters:
   # Java Checkstyle
   -

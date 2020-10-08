@@ -2,6 +2,10 @@ descriptor_id: JAVASCRIPT
 descriptor_type: language
 file_extensions:
   - ".js"
+install:
+  apk:
+    - npm
+    - nodejs-current
 linters:
   # ESLINT
   -

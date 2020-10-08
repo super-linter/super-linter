@@ -46,10 +46,5 @@ linters:
       - "shfmt -d myfile.sh"
     install:
       dockerfile:
-        - |
-          ENV GO111MODULE=on \
-              GOROOT=/usr/lib/go \
-              GOPATH=/go
-        - ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
-        - RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+        - ENV GO111MODULE=on
         - RUN go get mvdan.cc/sh/v3/cmd/shfmt

@@ -4,6 +4,10 @@ file_extensions:
   - ".pl"
   - ".pm"
   - ".t"
+install:
+  apk:
+    - perl
+    - perl-dev
 linters:
   # PERL CRITIC
   -
@@ -15,9 +19,6 @@ linters:
     examples:
       - "perlcritic myfile.pl"
     install:
-      apk:
-        - perl
-        - perl-dev
       dockerfile:
         - RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
 

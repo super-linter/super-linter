@@ -2,6 +2,12 @@ descriptor_id: RUBY
 descriptor_type: language
 file_extensions:
   - ".rb"
+install:
+  apk:
+    - ruby
+    - ruby-dev
+    - ruby-bundler
+    - ruby-rdoc
 linters:
   # RUBOCOP
   -
@@ -17,11 +23,6 @@ linters:
       - "rubocop --force-exclusion myfile.rb"
       - "rubocop --force-exclusion -c .ruby-lint.yml myfile.rb"
     install:
-      apk:
-        - ruby
-        - ruby-dev
-        - ruby-bundler
-        - ruby-rdoc
       gem:
         - rubocop:0.82.0
         - rubocop-github:0.16.0

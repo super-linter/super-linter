@@ -52,7 +52,7 @@ def build_descriptor_linters(file, linter_init_params=None, linter_names=None):
         # Build common attributes
         common_attributes = {}
         for attr_key, attr_value in language_descriptor.items():
-            if attr_key != 'linters':
+            if attr_key not in ['linters', 'install']:
                 common_attributes[attr_key] = attr_value
 
         # Browse linters defined for language
