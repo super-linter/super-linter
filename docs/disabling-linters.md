@@ -1201,6 +1201,28 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ---
 
+## Terragrunt
+
+- [terragrunt](https://github.com/gruntwork-io/terragrunt)
+
+### Terragrunt standard Config file
+
+- There is currently **No** Terragrunt format config rules file
+
+### Terragrunt disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Terragrunt disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Terragrunt disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
 ## Typescript eslint
 
 - [eslint](https://eslint.org/)

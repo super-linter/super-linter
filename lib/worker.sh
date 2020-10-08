@@ -161,6 +161,9 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && ! IsValidShellScript "${FILE}"; then
         # not a valid script and we need to skip
         continue
+      elif [[ ${FILE_TYPE} == "TERRAGRUNT" ]] && [[ ${FILE} == *".tflint.hcl"* ]]; then
+        # This is likely a tflint configuration file and should not be linted by Terragrunt
+        continue
       fi
 
       ##################################
@@ -691,6 +694,7 @@ function RunTestCases() {
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
   TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " ".*\.\(tf\)\$" "terraform_terrascan"
+  TestCodebase "TERRAGRUNT" "terragrunt" "terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file " ".*\.\(hcl\)\$" "terragrunt"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"
