@@ -77,7 +77,7 @@ DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_FILE_NAME}" # Pa
 DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yml}"               # Name of the file
 DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_FILE_NAME}" # Path to the Docker lint rules
 # Editorconfig Vars
-EDITORCONFIG_FILE_NAME='.ecrc'                                                  # Name of the file
+EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"                       # Name of the file
 EDITORCONFIG_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${EDITORCONFIG_FILE_NAME}" # Path to the Editorconfig lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                # Name of the file
