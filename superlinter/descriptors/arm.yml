@@ -11,7 +11,6 @@ linters:
     linter_url: https://github.com/Azure/arm-ttk
     linter_rules_configuration_url: https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit#customize-tests
     config_file_name: .arm-ttk.psd1
-    cli_executable_version: '/usr/bin/arm-ttk'
     examples:
       - |
         pwsh -NoProfile -NoLogo -Command "
