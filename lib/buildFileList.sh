@@ -440,6 +440,15 @@ function BuildFileList() {
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
 
     ############################
+    # Get the Terragrunt files #
+    ############################
+    elif [ "${FILE_TYPE}" == "hcl" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_TERRAGRUNT+=("${FILE}")
+
+    ############################
     # Get the TypeScript files #
     ############################
     elif [ "${FILE_TYPE}" == "ts" ]; then
