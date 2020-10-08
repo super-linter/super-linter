@@ -20,6 +20,7 @@ FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
 FROM wata727/tflint:0.20.2 as tflint
 FROM accurics/terrascan:d182f1c as terrascan
+FROM alpine/terragrunt:0.13.4 as terragrunt
 #FROM__END
 
 ##################
@@ -359,6 +360,9 @@ COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 # terrascan installation
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
 RUN terrascan init
+
+# terragrunt installation
+COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 
 #OTHER__END
 
