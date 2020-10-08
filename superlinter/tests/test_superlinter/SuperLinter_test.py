@@ -82,7 +82,10 @@ class SuperLinterTest(unittest.TestCase):
         os.environ["GITHUB_WORKSPACE"] = '/tmp/lint' if os.path.exists('/tmp/lint') else os.path.relpath(
             os.path.relpath(os.path.dirname(
                 os.path.abspath(__file__))) + '/../../..')
-        super_linter, output = utilstest.call_super_linter({"VALIDATE_ALL_CODEBASE": 'false'})
+        super_linter, output = utilstest.call_super_linter({
+            'ENABLE_LINTERS': 'PYTHON_PYLINT',
+            "VALIDATE_ALL_CODEBASE": 'false'
+        })
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
 
     def test_override_linter_rules_path(self):
