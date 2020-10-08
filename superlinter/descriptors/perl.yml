@@ -4,10 +4,13 @@ file_extensions:
   - ".pl"
   - ".pm"
   - ".t"
+install:
+  apk:
+    - perl
+    - perl-dev
 linters:
   # PERL CRITIC
-  -
-    linter_name: perlcritic
+  - linter_name: perlcritic
     linter_url: https://metacpan.org/pod/Perl::Critic
     linter_banner_image_url: https://chrisdolan.net/madmongers/images/perl-critic-logo.gif
     linter_rules_configuration_url: https://metacpan.org/pod/Perl::Critic#CONFIGURATION
@@ -15,9 +18,6 @@ linters:
     examples:
       - "perlcritic myfile.pl"
     install:
-      apk:
-        - perl
-        - perl-dev
       dockerfile:
         - RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
 

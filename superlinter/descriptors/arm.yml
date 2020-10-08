@@ -1,0 +1,40 @@
+descriptor_id: ARM
+descriptor_type: tooling_format
+file_extensions:
+  - ".json"
+file_contains:
+  - "schema.management.azure.com"
+linters:
+  # ARM TTK
+  - class: ArmLinter
+    linter_name: arm-ttk
+    linter_url: https://github.com/Azure/arm-ttk
+    linter_rules_configuration_url: https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit#customize-tests
+    config_file_name: .arm-ttk.psd1
+    linter_version_cache: "0.0.0"  # TODO: retrieve arm-ttk version
+    examples:
+      - |
+        pwsh -NoProfile -NoLogo -Command "
+            Import-Module /usr/bin/arm-ttk;
+            Test-AzTemplate -TemplatePath myfile.json;
+            if (${Error}.Count) {exit 1}"
+            "
+      - |
+        "pwsh -NoProfile -NoLogo -Command "
+            Import-Module /usr/bin/arm-ttk;
+            ${config} = $(Import-PowerShellDataFile -Path ".arm-ttk.psd1");
+            Test-AzTemplate @config -TemplatePath myfile.json;
+            if (${Error}.Count) {exit 1}
+            "
+    install:
+      dockerfile:
+        - ARG ARM_TTK_NAME='master.zip'
+        - ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
+        - ARG ARM_TTK_DIRECTORY='/opt/microsoft'
+        - ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
+        - |
+          RUN curl --retry 5 --retry-delay 5 -sLO "${ARM_TTK_URI}" \
+              && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
+              && rm "${ARM_TTK_NAME}" \
+              && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk \
+              && chmod a+x /usr/bin/arm-ttk

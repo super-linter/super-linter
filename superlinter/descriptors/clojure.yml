@@ -7,8 +7,7 @@ file_extensions:
   - ".edn"
 linters:
   # clj-kondo
-  -
-    linter_name: clj-kondo
+  - linter_name: clj-kondo
     linter_url: https://github.com/borkdude/clj-kondo
     linter_banner_image_url: https://github.com/borkdude/clj-kondo/raw/master/logo/logo-300dpi.png
     linter_rules_configuration_url: https://github.com/borkdude/clj-kondo/blob/master/doc/config.md#configuration

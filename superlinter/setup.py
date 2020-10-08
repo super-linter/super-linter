@@ -9,7 +9,12 @@ setup(name='superlinter',
       license='MIT',
       packages=['superlinter'],
       install_requires=[
+          'gitpython',
+          'jsonschema',
+          'pytest-cov',
+          'pyyaml',
           'requests',
-          'terminaltables'
+          'terminaltables',
+          'yq'
       ],
       zip_safe=False)

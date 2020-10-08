@@ -4,8 +4,7 @@ file_extensions:
   - ".proto"
 linters:
   # Protolint
-  -
-    linter_name: protolint
+  - linter_name: protolint
     linter_url: https://github.com/yoheimuta/protolint
     linter_rules_configuration_url: https://github.com/yoheimuta/protolint#rules
     config_file_name: .protolintrc.yml

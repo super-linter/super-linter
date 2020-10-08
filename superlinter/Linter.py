@@ -247,20 +247,28 @@ class Linter:
     # Execute a linting command . Can be overridden for special cases, like use of PowerShell script
     # noinspection PyMethodMayBeStatic
     def execute_lint_command(self, command):
-        # Use full executable path if we are on Windows
-        if sys.platform == 'win32':
-            cli_absolute = shutil.which(command[0])
-            if cli_absolute is not None:
-                command[0] = cli_absolute
-            else:
-                msg = "Unable to find command: " + command[0]
-                logging.error(msg)
-                return errno.ESRCH, msg
+        if type(command) == str:
+            # Call linter with a sub-process
+            process = subprocess.run(command,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT,
+                                     shell=True,
+                                     executable='/bin/bash')
+        else:
+            # Use full executable path if we are on Windows
+            if sys.platform == 'win32':
+                cli_absolute = shutil.which(command[0])
+                if cli_absolute is not None:
+                    command[0] = cli_absolute
+                else:
+                    msg = "Unable to find command: " + command[0]
+                    logging.error(msg)
+                    return errno.ESRCH, msg
 
-        # Call linter with a sub-process
-        process = subprocess.run(command,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT)
+            # Call linter with a sub-process (RECOMMENDED: with a list of strings corresponding to the command)
+            process = subprocess.run(command,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
         return_code = process.returncode
         return_stdout = superlinter.utils.decode_utf8(process.stdout)
         # Return linter result

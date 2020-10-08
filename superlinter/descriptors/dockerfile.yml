@@ -5,8 +5,7 @@ file_names:
 test_folder: docker
 linters:
   # dockerfilelint
-  -
-    linter_name: dockerfilelint
+  - linter_name: dockerfilelint
     name: DOCKERFILE_DOCKERFILELINT
     linter_url: https://github.com/replicatedhq/dockerfilelint
     linter_rules_configuration_url: https://github.com/replicatedhq/dockerfilelint#configuring
@@ -18,8 +17,7 @@ linters:
       npm:
         - dockerfilelint
   # Hadolint
-  -
-    linter_name: hadolint
+  - linter_name: hadolint
     name: DOCKERFILE_HADOLINT
     linter_url: https://github.com/hadolint/hadolint
     linter_image_url: https://hadolint.github.io/hadolint/img/cat_container.png

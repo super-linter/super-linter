@@ -7,8 +7,7 @@ file_extensions:
   - ".RMD"
 linters:
   # Lintr
-  -
-    class: RLinter
+  - class: RLinter
     linter_name: lintr
     linter_url: https://github.com/jimhester/lintr
     linter_rules_configuration_url: https://github.com/jimhester/lintr#project-configuration

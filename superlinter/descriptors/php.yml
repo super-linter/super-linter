@@ -2,10 +2,30 @@ descriptor_id: PHP
 descriptor_type: language
 file_extensions:
   - ".php"
+install:
+  apk:
+    - php7
+    - php7-phar
+    - php7-json
+    - php7-mbstring
+    - php-xmlwriter
+    - php7-tokenizer
+    - php7-ctype
+    - php7-curl
+    - php7-dom
+    - php7-simplexml
+  dockerfile:
+    - |
+      RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+          && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+          && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+          && gpg --verify phive.phar.asc phive.phar \
+          && chmod +x phive.phar \
+          && mv phive.phar /usr/local/bin/phive \
+          && rm phive.phar.asc
 linters:
   # PHP Built in Linter
-  -
-    linter_name: php
+  - linter_name: php
     linter_url: https://www.php.net
     linter_banner_image_url: https://www.php.net/images/logos/new-php-logo.svg
     name: PHP_BUILTIN
@@ -14,29 +34,10 @@ linters:
     examples:
       - "php -l myfile.js"
     install:
-      apk:
-        - php7
-        - php7-phar
-        - php7-json
-        - php7-mbstring
-        - php-xmlwriter
-        - php7-tokenizer
-        - php7-ctype
-        - php7-curl
-        - php7-dom
-        - php7-simplexml
       dockerfile:
-        - |
-          RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-              && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
-              && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
-              && gpg --verify phive.phar.asc phive.phar \
-              && chmod +x phive.phar \
-              && mv phive.phar /usr/local/bin/phive \
-              && rm phive.phar.asc
+        - RUN echo "No additional install for PHP built-in linter"
   # PHPCS
-  -
-    linter_name: phpcs
+  - linter_name: phpcs
     name: PHP_PHPCS
     linter_url: https://github.com/squizlabs/PHP_CodeSniffer
     linter_rules_configuration_url: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file
@@ -51,8 +52,7 @@ linters:
         - |
           RUN phive install phpcs -g --trust-gpg-keys 31C7E470E2138192
   # PHP Stan
-  -
-    linter_name: phpstan
+  - linter_name: phpstan
     name: PHP_PHPSTAN
     linter_url: https://github.com/phpstan/phpstan
     linter_image_url: https://i.imgur.com/MOt7taM.png
@@ -71,8 +71,7 @@ linters:
         - |
           RUN phive install phpstan -g --trust-gpg-keys CF1A108D0E7AE720
   # PSALM
-  -
-    linter_name: psalm
+  - linter_name: psalm
     name: PHP_PSALM
     linter_url: https://psalm.dev
     linter_banner_image_url: https://i1.wp.com/phpmagazine.net/wp-content/uploads/2018/12/PsalmLogo.png?w=653&ssl=1

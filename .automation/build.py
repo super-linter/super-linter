@@ -21,7 +21,19 @@ REPO_HOME = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + '..'
 
 # Automatically generate Dockerfile parts
 def generate_dockerfile():
+    descriptor_and_linters = []
+    # Get install instructions at descriptor level
+    descriptor_files = superlinter.utils.list_descriptor_files()
+    for descriptor_file in descriptor_files:
+        with open(descriptor_file) as f:
+            descriptor = yaml.load(f, Loader=yaml.FullLoader)
+            if 'install' in descriptor:
+                descriptor_and_linters += [descriptor]
+    # Get install instructions at linter level
     linters = superlinter.utils.list_all_linters()
+    for linter in linters:
+        if hasattr(linter, 'install'):
+            descriptor_and_linters += [vars(linter)]
     # Gather all dockerfile commands
     docker_from = []
     docker_arg = []
@@ -30,33 +42,33 @@ def generate_dockerfile():
     npm_packages = []
     pip_packages = []
     gem_packages = []
-    for linter in linters:
-        if hasattr(linter, 'install'):
-            # Collect Dockerfile items
-            if 'dockerfile' in linter.install:
-                docker_other += [
-                    f"# {linter.linter_name} installation"
-                ]
-                for dockerfile_item in linter.install['dockerfile']:
-                    if dockerfile_item.startswith('FROM'):
-                        docker_from += [dockerfile_item]
-                    elif dockerfile_item.startswith('ARG'):
-                        docker_arg += [dockerfile_item]
-                    else:
-                        docker_other += [dockerfile_item]
-                docker_other += [""]
-            # Collect python packages
-            if 'apk' in linter.install:
-                apk_packages += linter.install['apk']
-            # Collect npm packages
-            if 'npm' in linter.install:
-                npm_packages += linter.install['npm']
-            # Collect python packages
-            if 'pip' in linter.install:
-                pip_packages += linter.install['pip']
-            # Collect ruby packages
-            if 'gem' in linter.install:
-                gem_packages += linter.install['gem']
+    for item in descriptor_and_linters:
+        # Collect Dockerfile items
+        if 'dockerfile' in item['install']:
+            item_label = item.get('linter_name', item.get('descriptor_id', ''))
+            docker_other += [
+                f"# {item_label} installation"
+            ]
+            for dockerfile_item in item['install']['dockerfile']:
+                if dockerfile_item.startswith('FROM'):
+                    docker_from += [dockerfile_item]
+                elif dockerfile_item.startswith('ARG'):
+                    docker_arg += [dockerfile_item]
+                else:
+                    docker_other += [dockerfile_item]
+            docker_other += [""]
+        # Collect python packages
+        if 'apk' in item['install']:
+            apk_packages += item['install']['apk']
+        # Collect npm packages
+        if 'npm' in item['install']:
+            npm_packages += item['install']['npm']
+        # Collect python packages
+        if 'pip' in item['install']:
+            pip_packages += item['install']['pip']
+        # Collect ruby packages
+        if 'gem' in item['install']:
+            gem_packages += item['install']['gem']
     # Replace between tags in Dockerfile
     # Commands
     replace_in_file(f"{REPO_HOME}/Dockerfile", "#FROM__START", "#FROM__END", "\n".join(docker_from))
@@ -310,7 +322,7 @@ def validate_descriptors():
                     logging.error(f"reason: {validation_error.message}")
                     errors = errors + 1
         if errors > 0:
-            raise ValueError(f"{str(errors)} have been found while validating descriptor YML files")
+            raise ValueError("Errors have been found while validating descriptor YML files, please check logs")
 
 
 if __name__ == '__main__':

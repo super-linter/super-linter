@@ -4,8 +4,7 @@ file_extensions:
   - ".json"
 linters:
   # JSONLINT
-  -
-    linter_name: jsonlint
+  - linter_name: jsonlint
     linter_url: https://github.com/zaach/jsonlint
     version_command_return_code: 1
     examples:

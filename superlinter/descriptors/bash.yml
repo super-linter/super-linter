@@ -8,8 +8,7 @@ file_extensions:
 test_folder: shell
 linters:
   # Bash Built in Linter
-  -
-    linter_name: bash-exec
+  - linter_name: bash-exec
     linter_url: https://tiswww.case.edu/php/chet/bash/bashtop.html
     name: BASH_EXEC
     cli_executable_version: bash
@@ -21,8 +20,7 @@ linters:
           RUN printf '#!/bin/bash \\n\\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
               && chmod +x /usr/bin/bash-exec
   # Shellcheck
-  -
-    linter_name: shellcheck
+  - linter_name: shellcheck
     linter_url: https://github.com/koalaman/shellcheck
     name: BASH_SHELLCHECK
     cli_lint_extra_args:
@@ -35,8 +33,7 @@ linters:
         - FROM koalaman/shellcheck:v0.7.1 as shellcheck
         - COPY --from=shellcheck /bin/shellcheck /usr/bin/
   # SHFMT
-  -
-    linter_name: shfmt
+  - linter_name: shfmt
     linter_url: https://github.com/mvdan/sh
     name: BASH_SHFMT
     cli_lint_extra_args:
@@ -46,10 +43,5 @@ linters:
       - "shfmt -d myfile.sh"
     install:
       dockerfile:
-        - |
-          ENV GO111MODULE=on \
-              GOROOT=/usr/lib/go \
-              GOPATH=/go
-        - ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
-        - RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+        - ENV GO111MODULE=on
         - RUN go get mvdan.cc/sh/v3/cmd/shfmt

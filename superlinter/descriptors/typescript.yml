@@ -2,10 +2,12 @@ descriptor_id: TYPESCRIPT
 descriptor_type: language
 file_extensions:
   - ".ts"
+install:
+  npm:
+    - typescript
 linters:
   # ESLINT
-  -
-    linter_name: eslint
+  - linter_name: eslint
     name: TYPESCRIPT_ES
     linter_url: https://eslint.org
     linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
@@ -20,7 +22,6 @@ linters:
       - "eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.ts"
     install:
       npm:
-        - typescript
         - eslint
         - eslint-config-airbnb
         - eslint-config-prettier
@@ -32,8 +33,7 @@ linters:
         - "@typescript-eslint/eslint-plugin"
         - "@typescript-eslint/parser"
   # STANDARD
-  -
-    linter_name: standard
+  - linter_name: standard
     linter_url: https://github.com/standard/standard
     linter_banner_image_url: https://github.com/standard/standard/raw/master/sticker.png
     name: TYPESCRIPT_STANDARD

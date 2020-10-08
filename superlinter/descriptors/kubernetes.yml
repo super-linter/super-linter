@@ -9,8 +9,7 @@ file_contains:
   - 'apiVersion:'
 linters:
   # KUBEVAL
-  -
-    linter_name: kubeval
+  - linter_name: kubeval
     name: KUBERNETES_KUBEVAL
     linter_url: https://github.com/instrumenta/kubeval
     cli_config_extra_args:

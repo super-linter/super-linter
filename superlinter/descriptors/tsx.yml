@@ -4,8 +4,7 @@ file_extensions:
   - ".tsx"
 linters:
   # ESLINT
-  -
-    linter_name: eslint
+  - linter_name: eslint
     linter_url: https://eslint.org
     linter_banner_image_url: https://miro.medium.com/max/875/1*jFyfsakE2WBv5sFjBQUsuw.png
     linter_rules_configuration_url: https://eslint.org/docs/user-guide/configuring

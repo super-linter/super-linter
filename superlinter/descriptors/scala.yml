@@ -2,10 +2,14 @@ descriptor_id: SCALA
 descriptor_type: language
 file_extensions:
   - ".scala"
+install:
+  dockerfile:
+    - |
+      RUN curl -fLo coursier https://git.io/coursier-cli && \
+              chmod +x coursier
 linters:
   # SCALAFIX
-  -
-    linter_name: scalafix
+  - linter_name: scalafix
     linter_url: https://scalacenter.github.io/scalafix/
     linter_image_url: https://scalacenter.github.io/scalafix/img/scalacenter2x.png
     linter_rules_configuration_url: https://scalacenter.github.io/scalafix/docs/users/configuration.html
@@ -19,7 +23,4 @@ linters:
       - "scalafix --config .scalafix.conf myfile.scala"
     install:
       dockerfile:
-        - |
-          RUN curl -fLo coursier https://git.io/coursier-cli && \
-                  chmod +x coursier
         - RUN ./coursier install scalafix --quiet --install-dir /usr/bin

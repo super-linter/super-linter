@@ -99,6 +99,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | Language / Format | Linter | Configuration key |
 | ----------------- | -------------- | ------------ |
 | **ANSIBLE** | [ansible-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md)| [ANSIBLE](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/ansible_ansible_lint.md) |
+| **ARM** | [arm-ttk](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/arm_arm_ttk.md)| [ARM](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/arm_arm_ttk.md) |
 | **CLOUDFORMATION** | [cfn-lint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md)| [CLOUDFORMATION](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/cloudformation_cfn_lint.md) |
 | **DOCKERFILE** | [dockerfilelint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md)| [DOCKERFILE_DOCKERFILELINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_dockerfilelint.md) |
 |  | [hadolint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md)| [DOCKERFILE_HADOLINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/dockerfile_hadolint.md) |
