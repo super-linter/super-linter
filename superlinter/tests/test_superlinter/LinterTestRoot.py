@@ -21,11 +21,17 @@ class LinterTestRoot(unittest.TestCase):
     def test_success(self):
         if self.descriptor_id is not None:
             utilstest.test_linter_success(self.get_linter_instance(), self)
+        else:
+            raise unittest.SkipTest('Template method')
 
     def test_failure(self):
         if self.descriptor_id is not None:
             utilstest.test_linter_failure(self.get_linter_instance(), self)
+        else:
+            raise unittest.SkipTest('Template method')
 
     def test_get_linter_version(self):
         if self.descriptor_id is not None:
             utilstest.test_get_linter_version(self.get_linter_instance(), self)
+        else:
+            raise unittest.SkipTest('Template method')
