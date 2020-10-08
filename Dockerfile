@@ -273,7 +273,7 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
     | grep browser_download_url \
     | grep ".jar" \
     | cut -d '"' -f 4) \
-    && curl --retry 5 --retry-delay 5 -sSL $CHECKSTYLE_LATEST \
+    && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
     --output /usr/bin/checkstyle
 
 ####################
