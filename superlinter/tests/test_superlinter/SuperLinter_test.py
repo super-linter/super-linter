@@ -105,6 +105,15 @@ class SuperLinterTest(unittest.TestCase):
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
 
+    def test_general_include_exclude(self):
+        super_linter, output = utilstest.call_super_linter({
+            'ENABLE_LINTERS': 'JAVASCRIPT_ES',
+            "FILTER_REGEX_INCLUDE": '(.*_good_.*|.*\\/good\\/.*)',
+            "FILTER_REGEX_EXCLUDE": '(.*_bad_.*|.*\\/bad\\/.*)'
+        })
+        self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+        self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
+
     def test_custom_config_on_linter(self):
         super_linter, output = utilstest.call_super_linter({
             'JAVASCRIPT_ES_LINTER_RULES_PATH': '.',
