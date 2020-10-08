@@ -19,7 +19,8 @@ class RakuLinter(superlinter.Linter):
             logging.debug('Raku before_lint_files: ' + pre_command)
             process = subprocess.run(pre_command,
                                      stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
+                                     stderr=subprocess.STDOUT,
+                                     shell=True)
             return_code = process.returncode
             return_stdout = superlinter.utils.decode_utf8(process.stdout)
             logging.debug(f"{return_code} : {return_stdout}")

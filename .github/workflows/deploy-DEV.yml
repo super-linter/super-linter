@@ -54,7 +54,7 @@ jobs:
       ###################################
       - name: Build image
         shell: bash
-        run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} .
+        run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} . | while read line ; do echo "$(date)| $line"; done;
 
       ########################################
       # Validates the metadata docker labels #
