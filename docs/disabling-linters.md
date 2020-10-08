@@ -315,7 +315,13 @@ analyzer:
 
 ### Hadolint disable single line
 
-- There is currently **No** way to disable rules inline of the file(s)
+```dockerfile
+# hadolint ignore=DL3006
+FROM ubuntu
+
+# hadolint ignore=DL3003,SC1035
+RUN cd /tmp && echo "hello!"
+```
 
 ### Hadolint disable code block
 
