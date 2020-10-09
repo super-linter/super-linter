@@ -559,12 +559,7 @@ DetectKubernetesFile() {
   FILE="${1}" # File that we need to validate
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
 
-  if grep -q -E 'apiVersion:\s*kustomize.config.k8s.io' "${FILE}" >/dev/null; then
-    debug "${FILE} is NOT a Kubernetes descriptor (Kustomize only)"
-    return 1
-  fi
-
-  if grep -q -E '(apiVersion):' "${FILE}" >/dev/null; then
+  if grep -v 'kustomize.config.k8s.io' "${FILE}" | grep -q -E '(apiVersion):'; then
     debug "${FILE} is a Kubernetes descriptor"
     return 0
   fi
