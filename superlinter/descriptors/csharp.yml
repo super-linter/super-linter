@@ -1,4 +1,5 @@
 descriptor_id: CSHARP
+descriptor_label: "C#"
 descriptor_type: language
 file_extensions:
   - ".cs"
