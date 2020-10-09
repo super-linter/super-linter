@@ -42,6 +42,16 @@ rubocop --force-exclusion myfile.rb
 rubocop --force-exclusion -c .ruby-lint.yml myfile.rb
 ```
 
+
+### Installation on super-linter Docker image
+
+- GEM packages (Ruby) :
+  - [rubocop](https://rubygems.org/gems/rubocop)
+  - [rubocop-github](https://rubygems.org/gems/rubocop-github)
+  - [rubocop-performance](https://rubygems.org/gems/rubocop-performance)
+  - [rubocop-rails](https://rubygems.org/gems/rubocop-rails)
+  - [rubocop-rspec](https://rubygems.org/gems/rubocop-rspec)
+
 ### Linter web site
 - [https://github.com/rubocop-hq/rubocop](https://github.com/rubocop-hq/rubocop)
 

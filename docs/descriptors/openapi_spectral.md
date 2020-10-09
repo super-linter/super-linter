@@ -50,6 +50,12 @@ spectral lint myfile.yml
 spectral lint -r .openapirc.yml myfile.yml
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [@stoplight/spectral](https://www.npmjs.com/package/@stoplight/spectral)
+
 ### Linter web site
 - [https://github.com/stoplightio/spectral](https://github.com/stoplightio/spectral)
 

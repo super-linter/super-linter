@@ -42,6 +42,12 @@ eslint myfile.jsx
 eslint -c .eslintrc.yml  --no-eslintrc --no-ignore myfile.jsx
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [eslint](https://www.npmjs.com/package/eslint)
+
 ### Linter web site
 - [https://eslint.org](https://eslint.org)
 

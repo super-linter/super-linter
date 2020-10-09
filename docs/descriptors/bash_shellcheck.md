@@ -33,6 +33,16 @@
 shellcheck --color=auto --external-sources myfile.sh
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM koalaman/shellcheck:v0.7.1 as shellcheck
+COPY --from=shellcheck /bin/shellcheck /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/koalaman/shellcheck](https://github.com/koalaman/shellcheck)
 

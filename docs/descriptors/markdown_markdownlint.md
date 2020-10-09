@@ -37,6 +37,12 @@ markdownlint myfile.css
 markdownlint -c .markdown-lint.yml myfile.md
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [markdownlint-cli](https://www.npmjs.com/package/markdownlint-cli)
+
 ### Linter web site
 - [https://github.com/DavidAnson/markdownlint](https://github.com/DavidAnson/markdownlint)
 

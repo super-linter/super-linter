@@ -37,6 +37,16 @@ protolint lint myfile.proto
 protolint lint --config_path .protolintrc.yml myfile.proto
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM yoheimuta/protolint:v0.26.0 as protolint
+COPY --from=protolint /usr/local/bin/protolint /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/yoheimuta/protolint](https://github.com/yoheimuta/protolint)
 

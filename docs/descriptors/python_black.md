@@ -42,6 +42,12 @@ black --diff --check myfile.py
 black --config .python-black --diff --check myfile.py
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [black](https://pypi.org/project/black)
+
 ### Linter web site
 - [https://github.com/psf/black](https://github.com/psf/black)
 

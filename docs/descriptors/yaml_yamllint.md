@@ -38,6 +38,12 @@ yamllint myfile.yaml
 yamllint -c .yaml-lint.yml myfile.yaml
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [yamllint](https://pypi.org/project/yamllint)
+
 ### Linter web site
 - [https://github.com/adrienverge/yamllint](https://github.com/adrienverge/yamllint)
 

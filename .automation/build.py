@@ -12,11 +12,15 @@ import yaml
 
 import superlinter
 
-URL_ROOT = "https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython"
+BRANCH = 'POC_RefactorInPython'
+URL_ROOT = "https://github.com/nvuillam/super-linter/tree/" + BRANCH
+URL_RAW_ROOT = "https://github.com/nvuillam/super-linter/raw/" + BRANCH
 TEMPLATES_URL_ROOT = URL_ROOT + "/TEMPLATES"
 DOCS_URL_ROOT = URL_ROOT + "/docs"
 DOCS_URL_DESCRIPTORS_ROOT = DOCS_URL_ROOT + "/descriptors"
+DOCS_URL_RAW_ROOT = URL_RAW_ROOT + "/docs"
 REPO_HOME = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + '..'
+REPO_ICONS = REPO_HOME + '/docs/assets/icons'
 
 
 # Automatically generate Dockerfile parts
@@ -45,7 +49,7 @@ def generate_dockerfile():
     for item in descriptor_and_linters:
         # Collect Dockerfile items
         if 'dockerfile' in item['install']:
-            item_label = item.get('linter_name', item.get('descriptor_id',''))
+            item_label = item.get('linter_name', item.get('descriptor_id', ''))
             docker_other += [
                 f"# {item_label} installation"
             ]
@@ -142,19 +146,31 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
     linters_tables_md += [
         f"### {type_label}",
         "",
-        "| Language / Format | Linter | Configuration key |",
-        "| ----------------- | -------------- | ------------ |"]
+        "| <!-- --> | Language / Format | Linter | Configuration key |",
+        "| --- | ----------------- | -------------- | ------------ |"]
     descriptor_linters = linters_by_type[type1]
     prev_lang = ''
     for linter in descriptor_linters:
         lang_lower = linter.descriptor_id.lower()
         linter_name_lower = linter.linter_name.lower().replace('-', '_')
         # Append in general linter tables
-        descriptor_id_cell = f"**{linter.descriptor_id}**" if prev_lang != linter.descriptor_id else ''
+        descriptor_label = f"**{linter.descriptor_label}** ({linter.descriptor_id})" \
+            if hasattr(linter, 'descriptor_label') else f"**{linter.descriptor_id}**"
+        if prev_lang != linter.descriptor_id and \
+                os.path.exists(REPO_ICONS + '/' + linter.descriptor_id.lower() + '.ico'):
+            icon_html = icon(f"{DOCS_URL_RAW_ROOT}/assets/icons/{linter.descriptor_id.lower()}.ico",
+                             '', '', descriptor_label, 32)
+        elif prev_lang != linter.descriptor_id and \
+                os.path.exists(REPO_ICONS + '/default.ico'):
+            icon_html = icon(f"{DOCS_URL_RAW_ROOT}/assets/icons/default.ico",
+                             '', '', descriptor_label, 32)
+        else:
+            icon_html = '<!-- -->'
+        descriptor_id_cell = descriptor_label if prev_lang != linter.descriptor_id else ''
         prev_lang = linter.descriptor_id
         linter_doc_url = f"{DOCS_URL_DESCRIPTORS_ROOT}/{lang_lower}_{linter_name_lower}.md"
         linters_tables_md += [
-            f"| {descriptor_id_cell} | [{linter.linter_name}]({linter_doc_url})"
+            f"| {icon_html} | {descriptor_id_cell} | [{linter.linter_name}]({linter_doc_url})"
             f"| [{linter.name}]({linter_doc_url}) |"]
         # Build individual linter doc
         linter_doc_md = [
@@ -262,8 +278,33 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
                 example,
                 "```",
                 ""]
+        linter_doc_md += ["",
+                          "### Installation on super-linter Docker image",
+                          ""]
+        item = vars(linter)
+        merge_install_attr(item)
+        if 'dockerfile' in item['install']:
+            linter_doc_md += ["- Dockerfile commands :"]
+            linter_doc_md += ['```dockerfile']
+            linter_doc_md += item['install']['dockerfile']
+            linter_doc_md += ['```',
+                              ""]
+        if 'apk' in item['install']:
+            linter_doc_md += ["- APK packages (Linux):"]
+            linter_doc_md += md_package_list(item['install']['apk'], "  ",
+                                             "https://pkgs.alpinelinux.org/packages?branch=edge&name=")
+        if 'npm' in item['install']:
+            linter_doc_md += ["- NPM packages (node.js):"]
+            linter_doc_md += md_package_list(item['install']['npm'], "  ", "https://www.npmjs.com/package/")
+        if 'pip' in item['install']:
+            linter_doc_md += ["- PIP packages (Python):"]
+            linter_doc_md += md_package_list(item['install']['pip'], "  ", "https://pypi.org/project/")
+        if 'gem' in item['install']:
+            linter_doc_md += ["- GEM packages (Ruby) :"]
+            linter_doc_md += md_package_list(item['install']['gem'], "  ", "https://rubygems.org/gems/")
 
         linter_doc_md += [
+            "",
             "### Linter web site",
             f"- [{linter.linter_url}]({linter.linter_url})",
             ""]
@@ -288,6 +329,33 @@ def image_link(src, alt, link, title, align, maxheight):
 def logo_link(src, alt, link, title, maxheight):
     return f"<a href=\"{link}\" target=\"blank\" title=\"{title}\">" \
            f"<img src=\"{src}\" alt=\"{alt}\" height=\"{maxheight}px\"></a>"
+
+
+def icon(src, alt, _link, _title, height):
+    return f"<img src=\"{src}\" alt=\"{alt}\" height=\"{height}px\"></a>"
+
+
+def merge_install_attr(item):
+    if 'descriptor_install' not in item:
+        return
+    for elt, elt_val in item['descriptor_install'].items():
+        if elt in item['install']:
+            if elt == 'dockerfile':
+                item['install'][elt] = ['# Parent descriptor install'] + item['descriptor_install'][elt] + \
+                                       ['# Linter install'] + item['install'][elt]
+            else:
+                item['install'][elt] = item['descriptor_install'][elt] + item['install'][elt]
+
+
+def md_package_list(package_list, indent, start_url):
+    res = []
+    for package_id_v in package_list:
+        if package_id_v.startswith('@'):
+            package_id = package_id_v
+        else:
+            package_id = package_id_v.split("@")[0].split(":")[0]
+        res += [f"{indent}- [{package_id}]({start_url}{package_id})"]
+    return res
 
 
 def replace_in_file(file_path, start, end, content):

@@ -37,6 +37,15 @@
 raku -I ./lib -c myfile.raku
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && apk add --update --no-cache rakudo zef
+```
+
+
 ### Linter web site
 - [https://raku.org/](https://raku.org/)
 

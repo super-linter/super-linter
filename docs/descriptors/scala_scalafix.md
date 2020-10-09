@@ -37,6 +37,20 @@ scalafix myfile.scala
 scalafix --config .scalafix.conf myfile.scala
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+# Parent descriptor install
+RUN curl -fLo coursier https://git.io/coursier-cli && \
+        chmod +x coursier
+
+# Linter install
+RUN ./coursier install scalafix --quiet --install-dir /usr/bin
+```
+
+
 ### Linter web site
 - [https://scalacenter.github.io/scalafix/](https://scalacenter.github.io/scalafix/)
 

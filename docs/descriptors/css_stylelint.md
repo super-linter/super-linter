@@ -44,6 +44,13 @@ stylelint myfile.css
 stylelint --config .stylelintrc.json myfile.css
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [stylelint](https://www.npmjs.com/package/stylelint)
+  - [stylelint-config-standard](https://www.npmjs.com/package/stylelint-config-standard)
+
 ### Linter web site
 - [https://stylelint.io](https://stylelint.io)
 

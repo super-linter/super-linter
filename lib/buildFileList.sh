@@ -10,47 +10,69 @@
 ################################################################################
 #### Function BuildFileList ####################################################
 function BuildFileList() {
-  # Need to build a list of all files changed
-  # This can be pulled from the GITHUB_EVENT_PATH payload
+  debug "Building file list..."
 
   ################
-  # print header #
+  # Pull in vars #
   ################
-  debug "----------------------------------------------"
-  debug "Pulling in code history and branches..."
+  VALIDATE_ALL_CODEBASE="${1}"
+  debug "Validate all code base: ${VALIDATE_ALL_CODEBASE}..."
 
-  #################################################################################
-  # Switch codebase back to the default branch to get a list of all files changed #
-  #################################################################################
-  SWITCH_CMD=$(
-    git -C "${GITHUB_WORKSPACE}" pull --quiet
-    git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
-  )
+  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
+    # Need to build a list of all files changed
+    # This can be pulled from the GITHUB_EVENT_PATH payload
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
+    ################
+    # print header #
+    ################
+    debug "----------------------------------------------"
+    debug "Pulling in code history and branches..."
 
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
-    fatal "[${SWITCH_CMD}]"
+    #################################################################################
+    # Switch codebase back to the default branch to get a list of all files changed #
+    #################################################################################
+    SWITCH_CMD=$(
+      git -C "${GITHUB_WORKSPACE}" pull --quiet
+      git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
+    )
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # Error
+      info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
+      fatal "[${SWITCH_CMD}]"
+    fi
+
+    ################
+    # print header #
+    ################
+    debug "----------------------------------------------"
+    debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+
+    #################################################
+    # Get the Array of files changed in the commits #
+    #################################################
+    mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+  else
+    ################
+    # print header #
+    ################
+    debug "----------------------------------------------"
+    debug "Populating the file list with all the files in the ${GITHUB_WORKSPACE} workspace"
+    mapfile -t RAW_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" \
+    -path "*/node_modules" -prune -o \
+    -path "*/.git" -prune -o \
+    -path "*/.venv" -prune -o \
+    -path "*/.rbenv" -prune -o \
+    -type f 2>&1)
   fi
-
-  ################
-  # print header #
-  ################
-  debug "----------------------------------------------"
-  debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
-
-  #################################################
-  # Get the Array of files changed in the commits #
-  #################################################
-  mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
 
   #######################
   # Load the error code #
@@ -69,24 +91,22 @@ function BuildFileList() {
   ################################################
   # Iterate through the array of all files found #
   ################################################
-  info "----------------------------------------------"
-  info "------ Files modified in the commit(s): ------"
-  info "----------------------------------------------"
+  info "---------------------------------"
+  info "------ File list to check: ------"
+  info "---------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     # Extract just the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
-    # get the baseFile for additonal logic
+    # get the baseFile for additonal logic, lowercase
     BASE_FILE=$(basename "${FILE,,}")
 
     ##############
     # Print file #
     ##############
-    info "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
+    debug "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
 
-    #########
-    # DEBUG #
-    #########
-    debug "FILE_TYPE:[${FILE_TYPE}]"
+    # Editorconfig-checker should check every file
+    FILE_ARRAY_EDITORCONFIG+=("${FILE}")
 
     ######################
     # Get the shell files #
@@ -96,6 +116,8 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_BASH+=("${FILE}")
+      FILE_ARRAY_BASH_EXEC+=("${FILE}")
+      FILE_ARRAY_SHELL_SHFMT+=("${FILE}")
 
     #########################
     # Get the CLOJURE files #
@@ -147,11 +169,13 @@ function BuildFileList() {
     ########################
     # Get the DOCKER files #
     ########################
-    elif [ "${FILE_TYPE}" == "dockerfile" ] || [[ "${BASE_FILE}" == *"dockerfile."* ]]; then
+    # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
+    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_DOCKER+=("${FILE}")
+      FILE_ARRAY_DOCKERFILE+=("${FILE}")
+      FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
 
     #####################
     # Get the ENV files #
@@ -325,7 +349,13 @@ function BuildFileList() {
     ############################
     # Get the Powershell files #
     ############################
-    elif [ "${FILE_TYPE}" == "ps1" ]; then
+    elif [ "${FILE_TYPE}" == "ps1" ] ||
+    [ "${FILE_TYPE}" == "psm1" ] ||
+    [ "${FILE_TYPE}" == "psd1" ] ||
+    [ "${FILE_TYPE}" == "ps1xml" ] ||
+    [ "${FILE_TYPE}" == "pssc" ] ||
+    [ "${FILE_TYPE}" == "psrc" ] ||
+    [ "${FILE_TYPE}" == "cdxml" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -347,6 +377,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
+      FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
 
@@ -382,11 +413,12 @@ function BuildFileList() {
     ###########################
     # Get the SNAKEMAKE files #
     ###########################
-    elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "Snakefile" ]; then
+    elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "snakefile" ]; then
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_SNAKEMAKE+=("${FILE}")
+      FILE_ARRAY_SNAKEMAKE_LINT+=("${FILE}")
+      FILE_ARRAY_SNAKEMAKE_SNAKEFMT+=("${FILE}")
 
     #####################
     # Get the SQL files #
@@ -406,6 +438,15 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TERRAFORM+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
+
+    ############################
+    # Get the Terragrunt files #
+    ############################
+    elif [ "${FILE_TYPE}" == "hcl" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_TERRAGRUNT+=("${FILE}")
 
     ############################
     # Get the TypeScript files #
@@ -461,9 +502,8 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_KUBERNETES+=("${FILE}")
+        FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
       fi
-
     ########################################################################
     # We have something that we need to try to check file type another way #
     ########################################################################
@@ -475,23 +515,25 @@ function BuildFileList() {
     fi
   done
 
-  #########################################
-  # Need to switch back to branch of code #
-  #########################################
-  SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
+  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
+    #########################################
+    # Need to switch back to branch of code #
+    #########################################
+    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
 
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    error "Failed to switch back to branch!"
-    fatal "[${SWITCH2_CMD}]"
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # Error
+      error "Failed to switch back to branch!"
+      fatal "[${SWITCH2_CMD}]"
+    fi
   fi
 
   ################
@@ -534,15 +576,7 @@ function CheckFileType() {
   #################
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
-  #################
-  # Check if bash #
-  #################
-  if IsValidShellScript "$FILE"; then
-    ################################
-    # Append the file to the array #
-    ################################
-    FILE_ARRAY_BASH+=("${FILE}")
-  elif [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
+  if [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
     #######################
     # It is a Ruby script #
     #######################
@@ -618,32 +652,4 @@ function IsValidShellScript() {
 
   trace "$FILE is NOT a supported shell script. Skipping"
   return 1
-}
-################################################################################
-#### Function IsValidShellScript ###############################################
-function PopulateShellScriptsList() {
-  debug "Populating shell script file list. Source: ${GITHUB_WORKSPACE}"
-
-  ###############################################################################
-  # Set the file seperator to newline to allow for grabbing objects with spaces #
-  ###############################################################################
-  IFS=$'\n'
-
-  mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
-    -path "*/node_modules" -prune -o \
-    -path "*/.git" -prune -o \
-    -path "*/.venv" -prune -o \
-    -path "*/.rbenv" -prune -o \
-    -type f 2>&1)
-  for FILE in "${LIST_FILES[@]}"; do
-    if IsValidShellScript "${FILE}"; then
-      debug "Adding ${FILE} to shell script files list"
-      FILE_ARRAY_BASH+=("${FILE}")
-    fi
-  done
-
-  ###########################
-  # Set IFS back to default #
-  ###########################
-  IFS="${DEFAULT_IFS}"
 }

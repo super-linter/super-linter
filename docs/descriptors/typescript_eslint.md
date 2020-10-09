@@ -42,6 +42,22 @@ eslint myfile.ts
 eslint -c .eslintrc.yml --no-eslintrc --no-ignore myfile.ts
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [typescript](https://www.npmjs.com/package/typescript)
+  - [eslint](https://www.npmjs.com/package/eslint)
+  - [eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb)
+  - [eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier)
+  - [eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest)
+  - [eslint-plugin-prettier](https://www.npmjs.com/package/eslint-plugin-prettier)
+  - [babel-eslint](https://www.npmjs.com/package/babel-eslint)
+  - [prettier](https://www.npmjs.com/package/prettier)
+  - [prettyjson](https://www.npmjs.com/package/prettyjson)
+  - [@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)
+  - [@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser)
+
 ### Linter web site
 - [https://eslint.org](https://eslint.org)
 

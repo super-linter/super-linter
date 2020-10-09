@@ -35,6 +35,15 @@
 standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin myfile.ts
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [typescript](https://www.npmjs.com/package/typescript)
+  - [standard](https://www.npmjs.com/package/standard)
+  - [@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)
+  - [@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser)
+
 ### Linter web site
 - [https://github.com/standard/standard](https://github.com/standard/standard)
 

@@ -48,6 +48,14 @@ cfn-lint myfile.yml
 cfn-lint --config-file .cfnlintrc.yml myfile.yml
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [asl-validator](https://www.npmjs.com/package/asl-validator)
+- PIP packages (Python):
+  - [cfn-lint](https://pypi.org/project/cfn-lint)
+
 ### Linter web site
 - [https://github.com/martysweet/cfn-lint](https://github.com/martysweet/cfn-lint)
 

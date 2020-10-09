@@ -45,6 +45,16 @@ clj-kondo --lint myfile.clj
 clj-kondo --lint --config .clj-kondo/config.edn myfile.clj
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
+COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/borkdude/clj-kondo](https://github.com/borkdude/clj-kondo)
 

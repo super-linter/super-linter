@@ -37,6 +37,16 @@ hadolint Dockerfile
 hadolint -c .dockerfilelintrc Dockerfile
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
+```
+
+
 ### Linter web site
 - [https://github.com/hadolint/hadolint](https://github.com/hadolint/hadolint)
 

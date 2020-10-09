@@ -42,6 +42,25 @@ psalm myfile.php
 psalm --config=psalm.xml myfile.php
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+# Parent descriptor install
+RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc
+
+# Linter install
+RUN phive install psalm -g --trust-gpg-keys 8A03EA3B385DBAA1
+```
+
+
 ### Linter web site
 - [https://psalm.dev](https://psalm.dev)
 

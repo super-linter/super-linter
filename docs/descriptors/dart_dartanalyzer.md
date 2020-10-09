@@ -42,6 +42,23 @@ dartanalyzer --fatal-infos --fatal-warnings myfile.dart
 dartanalyzer --fatal-infos --fatal-warnings --options analysis_options.yml myfile.dart
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+ARG DART_VERSION='2.8.4'
+ARG GLIBC_VERSION='2.31-r0'
+RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+RUN wget --tries=5 https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
+RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
+RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+    && chmod +x dart-sdk/bin/dart* \
+    && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
+    && rm -r dart-sdk/
+```
+
+
 ### Linter web site
 - [https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli](https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli)
 

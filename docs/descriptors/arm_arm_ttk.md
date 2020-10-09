@@ -51,6 +51,23 @@ pwsh -NoProfile -NoLogo -Command "
 
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+ARG ARM_TTK_NAME='master.zip'
+ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
+ARG ARM_TTK_DIRECTORY='/opt/microsoft'
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
+RUN curl --retry 5 --retry-delay 5 -sLO "${ARM_TTK_URI}" \
+    && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
+    && rm "${ARM_TTK_NAME}" \
+    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk \
+    && chmod a+x /usr/bin/arm-ttk
+```
+
+
 ### Linter web site
 - [https://github.com/Azure/arm-ttk](https://github.com/Azure/arm-ttk)
 

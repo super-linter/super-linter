@@ -16,7 +16,6 @@ function LintCodebase() {
   FILE_TYPE="${1}" && shift            # Pull the variable and remove from array path  (Example: JSON)
   LINTER_NAME="${1}" && shift          # Pull the variable and remove from array path  (Example: jsonlint)
   LINTER_COMMAND="${1}" && shift       # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILE_EXTENSIONS="${1}" && shift      # Pull the variable and remove from array path  (Example: *.json)
   FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
   FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
@@ -75,54 +74,12 @@ function LintCodebase() {
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
-  if [ ${#FILE_ARRAY[@]} -eq 0 ] && [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    # No files found in commit and user has asked to not validate code base
+  if [ ${#FILE_ARRAY[@]} -eq 0 ]; then
     SKIP_FLAG=1
     debug " - No files found in changeset to lint for language:[${FILE_TYPE}]"
-  elif [ ${#FILE_ARRAY[@]} -ne 0 ]; then
+  else
     # We have files added to array of files to check
     LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
-  else
-    if [[ ${FILE_TYPE} == "BASH" ]] ||
-      [[ ${FILE_TYPE} == "BASH_EXEC" ]] ||
-      [[ ${FILE_TYPE} == "SHELL_SHFMT" ]]; then
-      # Populate a list of valid shell scripts.
-      PopulateShellScriptsList
-    else
-      ###############################################################################
-      # Set the file separator to newline to allow for grabbing objects with spaces #
-      ###############################################################################
-      IFS=$'\n'
-
-      #################################
-      # Get list of all files to lint #
-      #################################
-      mapfile -t LIST_FILES < <(find "${GITHUB_WORKSPACE}" \
-        -path "*/node_modules" -prune -o \
-        -path "*/.git" -prune -o \
-        -path "*/.venv" -prune -o \
-        -path "*/.rbenv" -prune -o \
-        -type f -regex "${FILE_EXTENSIONS}" 2>&1)
-
-      ###########################
-      # Set IFS back to default #
-      ###########################
-      IFS="${DEFAULT_IFS}"
-    fi
-
-    ############################################################
-    # Set it back to empty if loaded with blanks from scanning #
-    ############################################################
-    if [ ${#LIST_FILES[@]} -lt 1 ]; then
-      ######################
-      # Set to empty array #
-      ######################
-      LIST_FILES=()
-      #############################
-      # Skip as we found no files #
-      #############################
-      SKIP_FLAG=1
-    fi
   fi
 
   #################################################
@@ -203,6 +160,9 @@ function LintCodebase() {
         continue
       elif [[ ${FILE_TYPE} == "SHELL_SHFMT" ]] && ! IsValidShellScript "${FILE}"; then
         # not a valid script and we need to skip
+        continue
+      elif [[ ${FILE_TYPE} == "TERRAGRUNT" ]] && [[ ${FILE} == *".tflint.hcl"* ]]; then
+        # This is likely a tflint configuration file and should not be linted by Terragrunt
         continue
       fi
 
@@ -358,6 +318,8 @@ function TestCodebase() {
   FILE_EXTENSIONS="${4}"        # Pull the variable and remove from array path  (Example: *.json)
   INDIVIDUAL_TEST_FOLDER="${5}" # Folder for specific tests
   TESTS_RAN=0                   # Incremented when tests are ran, this will help find failed finds
+
+  debug "Running ${FILE_TYPE} test. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, file extensions: ${FILE_EXTENSIONS}, individual test folder: ${INDIVIDUAL_TEST_FOLDER}"
 
   ################
   # print header #
@@ -732,6 +694,7 @@ function RunTestCases() {
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
   TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " ".*\.\(tf\)\$" "terraform_terrascan"
+  TestCodebase "TERRAGRUNT" "terragrunt" "terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file " ".*\.\(hcl\)\$" "terragrunt"
   TestCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" ".*\.\(ts\)\$" "typescript"
   TestCodebase "XML" "xmllint" "xmllint" ".*\.\(xml\)\$" "xml"

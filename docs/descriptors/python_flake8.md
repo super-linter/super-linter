@@ -37,6 +37,12 @@ flake8 myfile.py
 flake8 --config .flake8 myfile.py
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [flake8](https://pypi.org/project/flake8)
+
 ### Linter web site
 - [https://flake8.pycqa.org](https://flake8.pycqa.org)
 

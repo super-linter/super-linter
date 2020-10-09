@@ -37,6 +37,16 @@ tflint myfile.tf
 tflint -c .tflint.hcl myfile.tf
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM wata727/tflint:0.20.2 as tflint
+COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/terraform-linters/tflint](https://github.com/terraform-linters/tflint)
 

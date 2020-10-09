@@ -37,6 +37,12 @@ sql-lint myfile.sql
 sql-lint --config .sql-config.json myfile.sql
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [sql-lint](https://www.npmjs.com/package/sql-lint)
+
 ### Linter web site
 - [https://github.com/joereynolds/sql-lint](https://github.com/joereynolds/sql-lint)
 

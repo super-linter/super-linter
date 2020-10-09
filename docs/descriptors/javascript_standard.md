@@ -35,6 +35,12 @@
 standard myfile.js
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [standard](https://www.npmjs.com/package/standard)
+
 ### Linter web site
 - [https://github.com/standard/standard](https://github.com/standard/standard)
 

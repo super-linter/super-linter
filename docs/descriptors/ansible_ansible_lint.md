@@ -39,6 +39,12 @@ ansible-lint -v myfile.yml
 ansible-lint -v -c .ansible-lint.yml myfile.yml
 ```
 
+
+### Installation on super-linter Docker image
+
+- APK packages (Linux):
+  - [ansible-lint](https://pkgs.alpinelinux.org/packages?branch=edge&name=ansible-lint)
+
 ### Linter web site
 - [https://github.com/ansible/ansible-lint](https://github.com/ansible/ansible-lint)
 

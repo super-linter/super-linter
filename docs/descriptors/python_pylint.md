@@ -42,6 +42,12 @@ pylint myfile.py
 pylint --rcfile .python-lint myfile.py
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [pylint](https://pypi.org/project/pylint)
+
 ### Linter web site
 - [https://www.pylint.org](https://www.pylint.org)
 

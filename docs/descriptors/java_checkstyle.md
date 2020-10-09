@@ -42,6 +42,21 @@ java -jar /usr/bin/checkstyle myfile.java
 java -jar /usr/bin/checkstyle -c sun_checks.xml myfile.java
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
+ | grep browser_download_url \
+ | grep ".jar" \
+ | cut -d '"' -f 4) \
+&& curl --retry 5 --retry-delay 5 -sSL $CHECKSTYLE_LATEST \
+--output /usr/bin/checkstyle
+
+```
+
+
 ### Linter web site
 - [https://checkstyle.sourceforge.io](https://checkstyle.sourceforge.io)
 

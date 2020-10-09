@@ -38,6 +38,12 @@ htmlhint myfile.html
 htmlhint --config .htmlhintrc myfile.html
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [htmlhint](https://www.npmjs.com/package/htmlhint)
+
 ### Linter web site
 - [https://github.com/htmlhint/HTMLHint](https://github.com/htmlhint/HTMLHint)
 

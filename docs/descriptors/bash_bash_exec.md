@@ -33,6 +33,17 @@
 bash-exec myfile.sh
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+RUN printf '#!/bin/bash \\n\\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
+    && chmod +x /usr/bin/bash-exec
+
+```
+
+
 ### Linter web site
 - [https://tiswww.case.edu/php/chet/bash/bashtop.html](https://tiswww.case.edu/php/chet/bash/bashtop.html)
 
