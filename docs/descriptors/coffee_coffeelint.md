@@ -37,6 +37,12 @@ coffeelint myfile.coffee
 coffeelint -f .coffee-lint.json myfile.coffee
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [@coffeelint/cli](https://www.npmjs.com/package/@coffeelint/cli)
+
 ### Linter web site
 - [http://www.coffeelint.org](http://www.coffeelint.org)
 

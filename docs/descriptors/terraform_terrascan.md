@@ -35,6 +35,17 @@
 terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f myfile.tf
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM accurics/terrascan:d182f1c as terrascan
+COPY --from=terrascan /go/bin/terrascan /usr/bin/
+RUN terrascan init
+```
+
+
 ### Linter web site
 - [https://github.com/accurics/terrascan](https://github.com/accurics/terrascan)
 

@@ -37,6 +37,15 @@
 perlcritic myfile.pl
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
+```
+
+
 ### Linter web site
 - [https://metacpan.org/pod/Perl::Critic](https://metacpan.org/pod/Perl::Critic)
 

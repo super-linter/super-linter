@@ -38,6 +38,12 @@
 snakemake --lint -s Snakefile
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [snakemake](https://pypi.org/project/snakemake)
+
 ### Linter web site
 - [https://snakemake.readthedocs.io/en/stable/](https://snakemake.readthedocs.io/en/stable/)
 

@@ -35,6 +35,16 @@
 dotenv-linter myfile.env
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
+COPY --from=dotenv-linter /dotenv-linter /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
 

@@ -36,6 +36,19 @@
 R --slave -e "errors <- lintr::lint('myfile.r'); print(errors); quit(save = 'no', status = if (length(errors) > 0) 1 else 0) "
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+```
+
+- APK packages (Linux):
+  - [R](https://pkgs.alpinelinux.org/packages?branch=edge&name=R)
+
 ### Linter web site
 - [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)
 

@@ -42,6 +42,23 @@ golangci-lint run myfile.go
 golangci-lint run -c .golangci.yml myfile.go
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+# Parent descriptor install
+ENV GOROOT=/usr/lib/go \
+    GOPATH=/go
+
+ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
+RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+# Linter install
+FROM golangci/golangci-lint:v1.31.0 as golangci-lint
+COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/golangci/golangci-lint](https://github.com/golangci/golangci-lint)
 

@@ -37,6 +37,12 @@ dockerfilelint Dockerfile
 dockerfilelint -c .dockerfilelintrc Dockerfile
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [dockerfilelint](https://www.npmjs.com/package/dockerfilelint)
+
 ### Linter web site
 - [https://github.com/replicatedhq/dockerfilelint](https://github.com/replicatedhq/dockerfilelint)
 

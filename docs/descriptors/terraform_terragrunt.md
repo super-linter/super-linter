@@ -32,6 +32,20 @@
 terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file myfile.hcl
 ```
 
+```shell
+terragrunt hclfmt --terragrunt-check --terragrunt-config terragrunt.hcl --terragrunt-hclfmt-file myfile.hcl
+```
+
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM alpine/terragrunt:0.13.4 as terragrunt
+COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
+```
+
+
 ### Linter web site
 - [https://terragrunt.gruntwork.io](https://terragrunt.gruntwork.io)
 

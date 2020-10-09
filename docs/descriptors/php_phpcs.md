@@ -37,6 +37,26 @@ phpcs myfile.php
 phpcs --standard=phpcs.xml myfile.php
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+# Parent descriptor install
+RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc
+
+# Linter install
+RUN phive install phpcs -g --trust-gpg-keys 31C7E470E2138192
+
+```
+
+
 ### Linter web site
 - [https://github.com/squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 

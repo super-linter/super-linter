@@ -38,6 +38,16 @@
 editorconfig-checker myfile.js
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
+```
+
+
 ### Linter web site
 - [https://github.com/editorconfig-checker/editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
 

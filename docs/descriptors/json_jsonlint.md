@@ -30,6 +30,12 @@
 jsonlint myfile.json
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [jsonlint](https://www.npmjs.com/package/jsonlint)
+
 ### Linter web site
 - [https://github.com/zaach/jsonlint](https://github.com/zaach/jsonlint)
 

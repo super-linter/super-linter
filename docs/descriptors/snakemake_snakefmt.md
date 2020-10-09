@@ -40,6 +40,12 @@ snakefmt --check --compact-diff Snakefile
 snakefmt --check --compact-diff --config .snakefmt.toml Snakefile
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [snakefmt](https://pypi.org/project/snakefmt)
+
 ### Linter web site
 - [https://github.com/snakemake/snakefmt](https://github.com/snakemake/snakefmt)
 

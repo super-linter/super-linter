@@ -31,6 +31,12 @@
 cpplint myfile.cpp
 ```
 
+
+### Installation on super-linter Docker image
+
+- PIP packages (Python):
+  - [cpplint](https://pypi.org/project/cpplint)
+
 ### Linter web site
 - [https://github.com/cpplint/cpplint](https://github.com/cpplint/cpplint)
 

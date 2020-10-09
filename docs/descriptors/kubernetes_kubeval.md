@@ -36,6 +36,16 @@
 kubeval -strict myfile.yml
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM garethr/kubeval:0.15.0 as kubeval
+COPY --from=kubeval /kubeval /usr/bin/
+```
+
+
 ### Linter web site
 - [https://github.com/instrumenta/kubeval](https://github.com/instrumenta/kubeval)
 

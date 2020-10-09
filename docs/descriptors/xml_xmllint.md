@@ -30,6 +30,15 @@
 xmllint myfile.xml
 ```
 
+
+### Installation on super-linter Docker image
+
+- APK packages (Linux):
+  - [libc-dev](https://pkgs.alpinelinux.org/packages?branch=edge&name=libc-dev)
+  - [libxml2-dev](https://pkgs.alpinelinux.org/packages?branch=edge&name=libxml2-dev)
+  - [libxml2-utils](https://pkgs.alpinelinux.org/packages?branch=edge&name=libxml2-utils)
+  - [libgcc](https://pkgs.alpinelinux.org/packages?branch=edge&name=libgcc)
+
 ### Linter web site
 - [http://xmlsoft.org/xmllint.html](http://xmlsoft.org/xmllint.html)
 

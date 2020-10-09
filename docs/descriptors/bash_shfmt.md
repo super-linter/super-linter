@@ -33,6 +33,16 @@
 shfmt -d myfile.sh
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+ENV GO111MODULE=on
+RUN go get mvdan.cc/sh/v3/cmd/shfmt
+```
+
+
 ### Linter web site
 - [https://github.com/mvdan/sh](https://github.com/mvdan/sh)
 

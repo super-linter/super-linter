@@ -37,6 +37,17 @@ chktex -q myfile.tex
 chktex -q -l .chktexrc myfile.tex
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+COPY --from=chktex /usr/bin/chktex /usr/bin/
+RUN cd ~ && touch .chktexrc
+```
+
+
 ### Linter web site
 - [https://www.nongnu.org/chktex](https://www.nongnu.org/chktex)
 

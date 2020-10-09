@@ -43,6 +43,12 @@ npm-groovy-lint --failon warning --path . --files myfile.groovy
 npm-groovy-lint --failon warning --path . --files myfile.groovy -c .groovylintrc.json
 ```
 
+
+### Installation on super-linter Docker image
+
+- NPM packages (node.js):
+  - [npm-groovy-lint](https://www.npmjs.com/package/npm-groovy-lint)
+
 ### Linter web site
 - [https://github.com/nvuillam/npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)
 
