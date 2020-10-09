@@ -253,7 +253,7 @@ class Linter:
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT,
                                      shell=True,
-                                     executable='/bin/bash')
+                                     executable=shutil.which('bash') if sys.platform == 'win32' else '/bin/bash')
         else:
             # Use full executable path if we are on Windows
             if sys.platform == 'win32':
