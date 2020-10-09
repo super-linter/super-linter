@@ -112,7 +112,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 |  | [snakefmt](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakefmt.md)| [SNAKEMAKE_SNAKEFMT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/snakemake_snakefmt.md) |
 | **TERRAFORM** | [tflint](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_tflint.md)| [TERRAFORM_TFLINT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_tflint.md) |
 |  | [terrascan](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terrascan.md)| [TERRAFORM_TERRASCAN](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terrascan.md) |
-| **TERRAGRUNT** | [terragrunt](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terragrunt_terragrunt.md)| [TERRAGRUNT](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terragrunt_terragrunt.md) |
+|  | [terragrunt](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terragrunt.md)| [TERRAFORM](https://github.com/nvuillam/super-linter/tree/POC_RefactorInPython/docs/descriptors/terraform_terragrunt.md) |
 
 
 <!-- linters-table-end -->

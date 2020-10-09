@@ -39,3 +39,27 @@ linters:
         - FROM accurics/terrascan:d182f1c as terrascan
         - COPY --from=terrascan /go/bin/terrascan /usr/bin/
         - RUN terrascan init
+  # TERRAGRUNT
+  - linter_name: terragrunt
+    file_extensions:
+      - ".hcl"
+    files_names_not_ends_with:
+      - ".tflint.hcl"
+    linter_url: https://terragrunt.gruntwork.io
+    linter_rules_configuration_url: https://terragrunt.gruntwork.io/docs/getting-started/configuration/#terragrunt-configuration-file
+    linter_image_url: https://github.com/gruntwork-io/terragrunt/blob/master/docs/assets/img/favicon/ms-icon-310x310.png
+    config_file_name: terragrunt.hcl
+    cli_config_arg_name: "--terragrunt-config"
+    cli_lint_extra_args:
+      - "hclfmt"
+      - "--terragrunt-check"
+    cli_lint_extra_args_after:
+      - "--terragrunt-hclfmt-file"
+    test_folder: terraform_terragrunt
+    examples:
+      - "terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file myfile.hcl"
+      - "terragrunt hclfmt --terragrunt-check --terragrunt-config terragrunt.hcl --terragrunt-hclfmt-file myfile.hcl"
+    install:
+      dockerfile:
+        - FROM alpine/terragrunt:0.13.4 as terragrunt
+        - COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
