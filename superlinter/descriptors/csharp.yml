@@ -1,0 +1,29 @@
+descriptor_id: CSHARP
+descriptor_label: "C#"
+descriptor_type: language
+file_extensions:
+  - ".cs"
+install:
+  dockerfile:
+    - |
+      RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+          && chmod +x dotnet-install.sh \
+          && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest
+    - ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
+linters:
+  # DOTNET FORMAT
+  - class: CSharpDotnetFormatLinter
+    linter_name: dotnet-format
+    linter_url: https://github.com/dotnet/format
+    linter_image_url: https://user-images.githubusercontent.com/9797472/61659851-6bbdc880-ac7d-11e9-95f7-d30c7de1a18a.png
+    cli_lint_extra_args:
+      - "--folder"
+      - "--check"
+      - "--exclude"
+      - "/"
+      - "--include"
+    examples:
+      - "dotnet-format --folder --check --exclude / --include myfile.cs"
+    install:
+      dockerfile:
+        - RUN /usr/share/dotnet/dotnet tool install -g dotnet-format

@@ -30,6 +30,22 @@
 dotnet-format --folder --check --exclude / --include myfile.cs
 ```
 
+
+### Installation on super-linter Docker image
+
+- Dockerfile commands :
+```dockerfile
+# Parent descriptor install
+RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+    && chmod +x dotnet-install.sh \
+    && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest
+
+ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
+# Linter install
+RUN /usr/share/dotnet/dotnet tool install -g dotnet-format
+```
+
+
 ### Linter web site
 - [https://github.com/dotnet/format](https://github.com/dotnet/format)
 
