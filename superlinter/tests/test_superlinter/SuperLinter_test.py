@@ -27,7 +27,7 @@ class SuperLinterTest(unittest.TestCase):
         self.assertIn("[DEBUG]", output)
 
     def test_disable_language(self):
-        super_linter, output = utilstest.call_super_linter({"DISABLE_LANGUAGES": 'JAVASCRIPT'})
+        super_linter, output = utilstest.call_super_linter({"DISABLE": 'JAVASCRIPT'})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         utilstest.assert_is_skipped('JAVASCRIPT_ES', output, self)
         utilstest.assert_is_skipped('JAVASCRIPT_STANDARD', output, self)
@@ -65,7 +65,7 @@ class SuperLinterTest(unittest.TestCase):
         utilstest.assert_is_skipped('GROOVY', output, self)
 
     def test_enable_only_one_language(self):
-        super_linter, output = utilstest.call_super_linter({"ENABLE_LANGUAGES": "JAVASCRIPT"})
+        super_linter, output = utilstest.call_super_linter({"ENABLE": "JAVASCRIPT"})
         self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
         self.assertIn('Linting [JAVASCRIPT] files with [eslint', output)
         self.assertIn('Linting [JAVASCRIPT] files with [standard', output)

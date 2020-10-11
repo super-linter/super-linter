@@ -41,9 +41,9 @@ class SuperLinter:
         self.multi_status = True
 
         # Get enable / disable vars
-        self.enable_languages = utils.get_dict_string_list(os.environ, 'ENABLE_LANGUAGES', [])
+        self.enable_descriptors = utils.get_dict_string_list(os.environ, 'ENABLE', [])
         self.enable_linters = utils.get_dict_string_list(os.environ, 'ENABLE_LINTERS', [])
-        self.disable_languages = utils.get_dict_string_list(os.environ, 'DISABLE_LANGUAGES', [])
+        self.disable_descriptors = utils.get_dict_string_list(os.environ, 'DISABLE', [])
         self.disable_linters = utils.get_dict_string_list(os.environ, 'DISABLE_LINTERS', [])
         self.manage_default_linter_activation()
         self.load_config_vars()
@@ -118,7 +118,7 @@ class SuperLinter:
     # Calculate default linter activation according to env variables
     def manage_default_linter_activation(self):
         # If at least one language/linter is activated with VALIDATE_XXX , all others are deactivated by default
-        if len(self.enable_languages) > 0 or len(self.enable_linters) > 0:
+        if len(self.enable_descriptors) > 0 or len(self.enable_linters) > 0:
             self.default_linter_activation = False
         # V3 legacy variables
         for env_var in os.environ:
@@ -132,9 +132,9 @@ class SuperLinter:
         linter_init_params = {'linter_rules_path': self.linter_rules_path,
                               'default_rules_location': self.default_rules_location,
                               'default_linter_activation': self.default_linter_activation,
-                              'enable_languages': self.enable_languages,
+                              'enable_descriptors': self.enable_descriptors,
                               'enable_linters': self.enable_linters,
-                              'disable_languages': self.disable_languages,
+                              'disable_descriptors': self.disable_descriptors,
                               'disable_linters': self.disable_linters,
                               'workspace': self.workspace,
                               'post_linter_status': self.multi_status,

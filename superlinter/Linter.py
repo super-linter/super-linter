@@ -69,9 +69,9 @@ class Linter:
         # Initialize parameters
         if params is None:
             params = {'default_linter_activation': False,
-                      'enable_languages': [],
+                      'enable_descriptors': [],
                       'enable_linters': [],
-                      'disable_languages': [],
+                      'disable_descriptors': [],
                       'disable_linters': [],
                       'post_linter_status': True}
 
@@ -125,9 +125,9 @@ class Linter:
             self.is_active = True
         elif self.name in params['disable_linters']:
             self.is_active = False
-        elif self.descriptor_id in params['disable_languages'] or self.name in params['disable_linters']:
+        elif self.descriptor_id in params['disable_descriptors'] or self.name in params['disable_linters']:
             self.is_active = False
-        elif self.descriptor_id in params['enable_languages']:
+        elif self.descriptor_id in params['enable_descriptors']:
             self.is_active = True
         elif "VALIDATE_" + self.name in os.environ and os.environ["VALIDATE_" + self.name] == 'false':
             self.is_active = False
