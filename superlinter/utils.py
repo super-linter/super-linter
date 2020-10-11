@@ -106,13 +106,15 @@ def format_hyphens(str_in):
     return '{s:{c}^{n}}'.format(s=str_in, n=100, c='-')
 
 
-# Can receive a list of strings, regexes, or even mixed :)
+# Can receive a list of strings, regexes, or even mixed :).
+# Regexes must start with '(' to be identified are regex
 def file_contains(file_name, regex_or_str_list):
     with open(file_name) as f:
         content = f.read()
         for regex_or_str in regex_or_str_list:
-            if hasattr(regex_or_str, 'match'):
-                if regex_or_str.match(content, re.MULTILINE):
+            if regex_or_str[0] == '(':
+                regex = re.compile(regex_or_str)
+                if regex.search(content, re.MULTILINE) is not None:
                     return True
             else:
                 if regex_or_str in content:

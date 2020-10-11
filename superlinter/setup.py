@@ -11,6 +11,8 @@ setup(name='superlinter',
       install_requires=[
           'gitpython',
           'jsonschema',
+          'pygithub',
+          'pytablewriter',
           'pytest-cov',
           'pyyaml',
           'requests',

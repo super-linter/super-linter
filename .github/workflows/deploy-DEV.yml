@@ -28,7 +28,7 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Deploy Docker Image - DEV
+    name: Tests + Deploy Docker Image - DEV
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
@@ -71,11 +71,11 @@ jobs:
         run: |
           export CI_ENV="$(bash <(curl -s https://codecov.io/env)) -e GITHUB_ACTIONS"
           echo "CI_ENV=${CI_ENV}"
-          docker run $CI_ENV -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+          docker run $CI_ENV -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e PAT="${{secrets.PAT}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
 
       #####################################
       # Run Linter against ALL code base  #
       #####################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(\.automation\/test\/)' -e DISABLE_LINTERS="BASH_EXEC,BASH_SHFMT,CLOUDFORMATION,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(\.automation\/test\/)' -e DISABLE_LINTERS="BASH_EXEC,BASH_SHFMT,CLOUDFORMATION,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -e PAT="${{secrets.PAT}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

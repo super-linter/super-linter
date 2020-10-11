@@ -15,12 +15,11 @@ file_extensions:
   - '.cuh'
 linters:
   # CPPLINT
-  -
-    linter_name: cpplint
+  - linter_name: cpplint
     name: CPP_CPPLINT
     linter_url: https://github.com/cpplint/cpplint
     examples:
       - "cpplint myfile.cpp"
     install:
       pip:
-      - cpplint
+        - cpplint

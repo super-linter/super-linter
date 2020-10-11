@@ -79,3 +79,5 @@ __pycache__/
 .coverage
 
 coverage.xml
+
+.coverage*

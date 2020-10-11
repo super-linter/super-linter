@@ -1,0 +1,9 @@
+TAP version 13
+1..1
+
+ok 1 - ..\..\..\../.automation/test/c\c_good_01.c
+  ---
+  message: Done processing ..\..\..\../.automation/test/c\c_good_01.c
+
+  ...
+

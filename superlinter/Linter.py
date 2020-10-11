@@ -60,6 +60,9 @@ class Linter:
     version_extract_regex = r"\d+(\.\d+)+"
     version_command_return_code = 0  # If linter --version does not return 0 when it is in success, override. ex: 1
 
+    report_type = ''  # Can be tap or tap_detailed
+    report_folder = ''
+
     # Constructor: Initialize Linter instance with name and config variables
     def __init__(self, params=None, linter_config=None):
         self.linter_version_cache = None
@@ -99,6 +102,9 @@ class Linter:
             self.post_linter_status = params['post_linter_status'] if "post_linter_status" in params else False
             self.github_api_url = params['github_api_url'] if "github_api_url" in params else None
 
+            self.report_type = params['report_type'] if "report_type" in params else ''
+            self.report_folder = params['report_folder'] if "report_folder" in params else ''
+
             self.load_config_vars()
 
             # Manage sub-directory filter if defined
@@ -118,6 +124,7 @@ class Linter:
             self.status = "success"
             self.number_errors = 0
             self.files_lint_results = {}
+            self.report_lines = []
 
     # Enable or disable linter
     def manage_activation(self, params):
@@ -182,7 +189,10 @@ class Linter:
     def run(self):
         self.display_header()
         self.before_lint_files()
+
+        index = 0
         for file in self.files:
+            index = index + 1
             logging.info("File:[" + file + "]")
             return_code, stdout = self.lint_file(file)
             if return_code == 0:
@@ -197,7 +207,8 @@ class Linter:
                 self.status = "error"
                 self.number_errors = self.number_errors + 1
             logging.info(superlinter.utils.format_hyphens(""))
-        self.manage_reports()
+            self.update_report(file, return_code, stdout, index)
+        self.generate_reports()
 
     def display_header(self):
         linter_version = self.get_linter_version()
@@ -318,7 +329,33 @@ class Linter:
         else:
             return output
 
-    def manage_reports(self):
+    def update_report(self, file, return_code, stdout, index):
+        if self.report_type.startswith('tap'):
+            tap_status = "ok" if return_code == 0 else 'not ok'
+            file_tap_lines = [f"{tap_status} {str(index)} - {os.path.basename(file)}"]
+            if self.report_type == 'tap_detailed' and stdout != '' and return_code != 0:
+                std_out_tap = stdout.rstrip(f" {os.linesep}") + os.linesep
+                std_out_tap = "\\n".join(std_out_tap.split(os.linesep))
+                std_out_tap = std_out_tap.replace(':', ' ')
+                detailed_lines = ["  ---",
+                                  f"  message: {std_out_tap}",
+                                  "  ..."]
+                file_tap_lines += detailed_lines
+            self.report_lines += file_tap_lines
+
+    def generate_reports(self):
+        # Create TAP file if necessary
+        if self.report_type.startswith('tap'):
+            tap_report_lines = ["TAP version 13",
+                                f"1..{str(len(self.files))}"]
+            tap_report_lines += self.report_lines
+            tap_file_name = f"{self.report_folder}{os.path.sep}super-linter-{self.name}.tap"
+            if not os.path.exists(os.path.dirname(tap_file_name)):
+                os.makedirs(os.path.dirname(tap_file_name))
+            with open(tap_file_name, 'w', encoding='utf-8') as tap_file:
+                tap_file_content = "\n".join(tap_report_lines) + "\n"
+                tap_file.write(tap_file_content)
+
         # Post status to Github
         if self.post_linter_status is True and 'GITHUB_REPOSITORY' in os.environ and 'GITHUB_SHA' in os.environ and \
                 'GITHUB_TOKEN' in os.environ and 'GITHUB_RUN_ID' in os.environ:

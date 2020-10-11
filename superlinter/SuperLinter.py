@@ -11,7 +11,9 @@ import re
 import sys
 
 import git
+import github
 import terminaltables
+from pytablewriter import MarkdownTableWriter
 
 from superlinter import utils
 
@@ -46,13 +48,20 @@ class SuperLinter:
         self.disable_descriptors = utils.get_dict_string_list(os.environ, 'DISABLE', [])
         self.disable_linters = utils.get_dict_string_list(os.environ, 'DISABLE_LINTERS', [])
         self.manage_default_linter_activation()
+        # Report vars
+        self.report_type = os.environ.get('OUTPUT_FORMAT', '')
+        if self.report_type.startswith('tap') and os.environ.get('OUTPUT_DETAILS', '') == 'detailed':
+            self.report_type = 'tap_detailed'
+        self.report_folder = os.environ.get('REPORT_OUTPUT_FOLDER', self.workspace + os.path.sep + 'report')
+        self.post_github_pr_comment = False if os.environ.get('POST_GITHUB_COMMENT', 'true') == 'false' else True
+        # Load optional configuration
         self.load_config_vars()
-
+        # Runtime properties
         self.linters = []
         self.file_extensions = []
         self.file_names = []
         self.status = "success"
-
+        # Initialize linters and gather criteria to browse files
         self.load_linters()
         self.compute_file_extensions()
 
@@ -84,7 +93,7 @@ class SuperLinter:
                 linter.run()
                 if linter.status != 'success':
                     self.status = 'error'
-        self.manage_reports()
+        self.generate_reports()
         self.check_results()
 
     # noinspection PyMethodMayBeStatic
@@ -138,6 +147,8 @@ class SuperLinter:
                               'disable_linters': self.disable_linters,
                               'workspace': self.workspace,
                               'post_linter_status': self.multi_status,
+                              'report_type': self.report_type,
+                              'report_folder': self.report_folder,
                               'github_api_url': self.github_api_url}
 
         # Build linters from descriptor files
@@ -194,7 +205,7 @@ class SuperLinter:
                     if dir1 in ['node_modules', '.git', '.rbenv', '.venv']:
                         exclude = True
                 if exclude is False:
-                    all_files += [os.path.join(dirpath, file) for file in filenames]
+                    all_files += [os.path.join(dirpath, file) for file in sorted(filenames)]
 
         # Filter files according to fileExtensions, fileNames , filterRegexInclude and filterRegexExclude
         if len(self.file_extensions) > 0:
@@ -269,18 +280,63 @@ class SuperLinter:
         logging.debug(utils.format_hyphens(""))
         logging.info("")
 
-    def manage_reports(self):
-        logging.info("")
-        table_data = [["Language", "Linter", "Files with error(s)", "Total files"]]
+    def generate_reports(self):
+        table_header = ["Language/Format", "Linter", "Files with error(s)", "Total files"]
+        table_data = [table_header]
+        table_data_raw = [table_header]
         for linter in self.linters:
             if linter.is_active is True:
                 table_data += [
                     [linter.descriptor_id, linter.linter_name, str(linter.number_errors), str(len(linter.files))]]
+                table_data_raw += [
+                    [linter.descriptor_id, linter.linter_name, linter.number_errors, len(linter.files)]]
         table = terminaltables.AsciiTable(table_data)
         table.title = "----SUMMARY"
+        # Output table in console
+        logging.info("")
         for table_line in table.table.splitlines():
             logging.info(table_line)
         logging.info("")
+        # Post comment on GitHub pull request
+        if self.post_github_pr_comment is True and os.environ.get('GITHUB_TOKEN', '') != '':
+            # Build message
+            github_repo = os.environ['GITHUB_REPOSITORY']
+            run_id = os.environ['GITHUB_RUN_ID']
+            sha = os.environ.get('GITHUB_SHA')
+            action_run_url = f"https://github.com/{github_repo}/actions/runs/{run_id}"
+            # Build markdown table
+            writer = MarkdownTableWriter(
+                table_name="Summary",
+                headers=table_header,
+                value_matrix=table_data_raw
+            )
+            table_content = str(writer)
+            p_r_msg = f"Super-Linter status: ${self.status}" + os.linesep + os.linesep
+            p_r_msg += table_content + os.linesep + os.linesep
+            p_r_msg += f"[See details in GitHub Action logs]({action_run_url})" + os.linesep
+            logging.debug("\n" + p_r_msg)
+            # Post comment on pull request if found
+            github_auth = os.environ['PAT'] if os.environ.get('PAT', '') != '' else os.environ['GITHUB_TOKEN']
+            g = github.Github(github_auth)
+            repo = g.get_repo(github_repo)
+            commit = repo.get_commit(sha=sha)
+            pr_list = commit.get_pulls()
+            for pr in pr_list:
+                try:
+                    pr.create_issue_comment(p_r_msg)
+                    logging.debug(f'Posted Github comment: {p_r_msg}')
+                except github.GithubException as e:
+                    logging.warning(f"Unable to post pull request comment: {str(e)}.\n"
+                                    "To enable this function, please :\n"
+                                    "1. Create a Personal Access Token (https://docs.github.com/en/free-pro-team@"
+                                    "latest/github/authenticating-to-github/creating-a-personal-access-token)\n"
+                                    "2. Create a secret named PAT with its value on your repository (https://docs."
+                                    "github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#"
+                                    "creating-encrypted-secrets-for-a-repository)"
+                                    "3. Define PAT={{secrets.PAT}} in your GitHub action environment variables")
+        # Not in github contest, or env var POST_GITHUB_COMMENT = false
+        else:
+            logging.debug("Skipped post of pull request comment")
 
     def check_results(self):
         if self.status == 'success':
