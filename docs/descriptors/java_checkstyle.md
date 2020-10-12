@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JAVA | Activate or deactivate checkstyle | `true` |
 | JAVA_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | JAVA_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | JAVA_FILE_NAME | Rules file name | `sun_checks.xml` |
 | JAVA_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| JAVA_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

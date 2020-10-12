@@ -21,7 +21,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_BASH_SHELLCHECK | Activate or deactivate shellcheck | `true` |
 | BASH_SHELLCHECK_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | BASH_SHELLCHECK_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 
@@ -38,7 +37,7 @@ shellcheck --color=auto --external-sources myfile.sh
 
 - Dockerfile commands :
 ```dockerfile
-FROM koalaman/shellcheck:v0.7.1 as shellcheck
+FROM koalaman/shellcheck:latest as shellcheck
 COPY --from=shellcheck /bin/shellcheck /usr/bin/
 ```
 

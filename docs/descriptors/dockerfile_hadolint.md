@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_DOCKERFILE_HADOLINT | Activate or deactivate hadolint | `true` |
 | DOCKERFILE_HADOLINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | DOCKERFILE_HADOLINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | DOCKERFILE_HADOLINT_FILE_NAME | Rules file name | `.hadolint.yml` |
 | DOCKERFILE_HADOLINT_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| DOCKERFILE_HADOLINT_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

@@ -21,7 +21,7 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_BASH_EXEC | Activate or deactivate bash-exec | `true` |
+| ERROR_ON_MISSING_EXEC_BIT | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an arror instead | false |
 | BASH_EXEC_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | BASH_EXEC_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

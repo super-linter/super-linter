@@ -21,7 +21,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_BASH_SHFMT | Activate or deactivate shfmt | `true` |
 | BASH_SHFMT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | BASH_SHFMT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

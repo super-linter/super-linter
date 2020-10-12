@@ -20,11 +20,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_YAML | Activate or deactivate yamllint | `true` |
 | YAML_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | YAML_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | YAML_FILE_NAME | Rules file name | `.yaml-lint.yml` |
 | YAML_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| YAML_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

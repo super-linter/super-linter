@@ -20,11 +20,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_HTML | Activate or deactivate htmlhint | `true` |
 | HTML_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | HTML_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | HTML_FILE_NAME | Rules file name | `.htmlhintrc` |
 | HTML_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| HTML_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

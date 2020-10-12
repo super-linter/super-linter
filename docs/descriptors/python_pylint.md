@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PYTHON_PYLINT | Activate or deactivate pylint | `true` |
 | PYTHON_PYLINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PYTHON_PYLINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PYTHON_PYLINT_FILE_NAME | Rules file name | `.python-lint` |
 | PYTHON_PYLINT_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PYTHON_PYLINT_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PHP_PHPSTAN | Activate or deactivate phpstan | `true` |
 | PHP_PHPSTAN_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PHP_PHPSTAN_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PHP_PHPSTAN_FILE_NAME | Rules file name | `phpstan.neon` |
 | PHP_PHPSTAN_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PHP_PHPSTAN_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

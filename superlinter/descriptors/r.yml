@@ -18,6 +18,6 @@ linters:
       apk:
         - R
       dockerfile:
-        - FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+        - FROM ghcr.io/assignuser/lintr-lib:latest as lintr-lib
         - COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
         - RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"

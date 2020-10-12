@@ -27,11 +27,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_CLOJURE | Activate or deactivate clj-kondo | `true` |
 | CLOJURE_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | CLOJURE_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | CLOJURE_FILE_NAME | Rules file name | `.clj-kondo/config.edn` |
 | CLOJURE_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| CLOJURE_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

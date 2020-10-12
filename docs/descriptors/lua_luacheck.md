@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_LUA | Activate or deactivate luacheck | `true` |
 | LUA_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | LUA_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | LUA_FILE_NAME | Rules file name | `.luacheckrc` |
 | LUA_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| LUA_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

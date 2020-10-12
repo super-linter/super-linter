@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_EDITORCONFIG | Activate or deactivate editorconfig-checker | `true` |
 | EDITORCONFIG_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | EDITORCONFIG_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | EDITORCONFIG_FILE_NAME | Rules file name | `.ecrc` |
 | EDITORCONFIG_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| EDITORCONFIG_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -43,7 +43,7 @@ editorconfig-checker myfile.js
 
 - Dockerfile commands :
 ```dockerfile
-FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:latest as editorconfig-checker
 COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 ```
 

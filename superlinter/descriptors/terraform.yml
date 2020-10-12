@@ -15,7 +15,7 @@ linters:
       - "tflint -c .tflint.hcl myfile.tf"
     install:
       dockerfile:
-        - FROM wata727/tflint:0.20.2 as tflint
+        - FROM wata727/tflint:latest as tflint
         - COPY --from=tflint /usr/local/bin/tflint /usr/bin/
   # TERRASCAN
   - linter_name: terrascan
@@ -36,7 +36,7 @@ linters:
       - "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f myfile.tf"
     install:
       dockerfile:
-        - FROM accurics/terrascan:d182f1c as terrascan
+        - FROM accurics/terrascan:latest as terrascan
         - COPY --from=terrascan /go/bin/terrascan /usr/bin/
         - RUN terrascan init
   # TERRAGRUNT
@@ -61,5 +61,5 @@ linters:
       - "terragrunt hclfmt --terragrunt-check --terragrunt-config terragrunt.hcl --terragrunt-hclfmt-file myfile.hcl"
     install:
       dockerfile:
-        - FROM alpine/terragrunt:0.13.4 as terragrunt
+        - FROM alpine/terragrunt:latest as terragrunt
         - COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/

@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_DART | Activate or deactivate dartanalyzer | `true` |
 | DART_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | DART_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | DART_FILE_NAME | Rules file name | `analysis_options.yml` |
 | DART_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| DART_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

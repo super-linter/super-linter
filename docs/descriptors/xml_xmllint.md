@@ -18,7 +18,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_XML | Activate or deactivate xmllint | `true` |
 | XML_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | XML_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

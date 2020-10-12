@@ -2,7 +2,7 @@
 # Super-Linter
 
 This repository is for the **GitHub Action** to run a **Super-Linter**.
-It is a simple combination of various linters, written in `bash`, to help validate your source code.
+It is a simple combination of various linters, written in `python`, to help validate your source code.
 
 **The end goal of this tool:**
 
@@ -149,7 +149,7 @@ This file should have the following code:
 ## Linter GitHub Actions ##
 ###########################
 ###########################
-name: Lint Code Base
+name: Super-Linter
 
 #
 # Documentation:
@@ -172,7 +172,7 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Lint Code Base
+    name: Super-Linter
     # Set the agent to run on
     runs-on: ubuntu-latest
 
@@ -185,6 +185,9 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
 
       ################################
       # Run Linter against code base #
@@ -192,7 +195,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v3
         env:
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: false  # Validates only the diff. set true to validate all repository code
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -206,38 +209,61 @@ You can show Super-Linter status with a badge in your repository README
 Format:
 
 ```markdown
-[![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/workflows/Super-Linter/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
 Example:
 
 ```markdown
-[![GitHub Super-Linter](https://github.com/nvuillam/npm-groovy-lint/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![GitHub Super-Linter](https://github.com/nvuillam/npm-groovy-lint/workflows/Super-Linter/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
-_Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
+_Note:_ IF you did not use `Super-Linter` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
 
 ## Environment variables
 
+### Activation / Deactivation
+
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
-_Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
+_Note:_ All the `ENABLE`, `ENABLE_LINTERS`, `DISABLE`, `DISABLE_LINTERS` variables behave in a very specific way:
 
-- If none of them are passed, then they all default to true.
-- If any one of the variables are set to true, we default to leaving any unset variable to false (only validate those languages).
-- If any one of the variables are set to false, we default to leaving any unset variable to true (only exclude those languages).
-- If there are `VALIDATE_[LANGUAGE]` variables set to both true and false. It will fail.
+- If `ENABLE` is not set, all descriptors are activated by default. If set, all linters of listed descriptors will be activated by default
+- If `ENABLE_LINTERS` is set, only listed linters will be processed
+- If `DISABLE` is set, the linters in the listed descriptors will be skipped
+- If `DISABLE_LINTERS` is set, the listed linters will be skipped
 
-This means that if you run the linter "out of the box", all languages will be checked.
+This means that if you run the linter "out of the box", all linters will be checked.
 But if you wish to select or exclude specific linters, we give you full control to choose which linters are run, and won't run anything unexpected.
+
+Examples:
+
+- Run all javascript and groovy linters except STANDARD javascript linter
+
+```config
+ENABLE = JAVASCRIPT,GROOVY
+DISABLE_LINTERS = JAVSCRIPT_STANDARD
+```
+
+- Run all linters except PHP linters (PHP_BUILTIN, PHP_PCPCS, PHP_STAN, PHP_PSALM)
+
+```config
+DISABLE = PHP
+```
+
+- Run all linters except PHP_STAN and PHP_PSALM linters
+
+```config
+DISABLE_LINTERS = PHP_STAN,PHP_PSALM
+```
+
+### SHARED VARIABLES
 
 | **ENV VAR**                       | **Default Value**     | **Notes**                                                                                                                                                                        |
 | --------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ACTIONS_RUNNER_DEBUG**          | `false`               | Flag to enable additional information about the linter, versions, and additional output.                                                                                         |
 | **DEFAULT_BRANCH**                | `master`              | The name of the repository default branch.                                                                                                                                       |
 | **DEFAULT_WORKSPACE**             | `/tmp/lint`           | The location containing files to lint if you are running locally.                                                                                                                |
 | **DISABLE_ERRORS**                | `false`               | Flag to have the linter complete with exit code 0 even if errors were detected.                                                                                                  |
-| **ERROR_ON_MISSING_EXEC_BIT**     | `false`               | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an arror instead.      |
 | **FILTER_REGEX_EXCLUDE**          | `none`                | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                      |
 | **FILTER_REGEX_INCLUDE**          | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                            |
 | **LINTER_RULES_PATH**             | `.github/linters`     | Directory for all linter configuration rules.                                                                                                                                    |
@@ -248,6 +274,10 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **OUTPUT_FOLDER**                 | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                           |
 | **OUTPUT_DETAILS**                | `simpler`             | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                    |
 | **VALIDATE_ALL_CODEBASE**         | `true`                | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
+
+### LINTER SPECIFIC VARIABLES
+
+See linters specific variables in their Super-Linter documentation
 
 ### Template rules files
 

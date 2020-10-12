@@ -25,11 +25,12 @@ def linter_test_setup(params=None):
 
     os.environ['VALIDATE_ALL_CODEBASE'] = 'true'
     # Root path of files to lint
-    os.environ["GITHUB_WORKSPACE"] = os.environ["GITHUB_WORKSPACE"] + sub_lint_root \
-        if "GITHUB_WORKSPACE" in os.environ and os.path.exists(
-        os.environ["GITHUB_WORKSPACE"] + sub_lint_root) else root_dir + sub_lint_root
-    assert os.path.exists(os.environ["GITHUB_WORKSPACE"]), 'GITHUB_WORKSPACE ' + os.environ[
-        "GITHUB_WORKSPACE"] + ' is not a valid folder'
+    os.environ["DEFAULT_WORKSPACE"] = os.environ["DEFAULT_WORKSPACE"] + sub_lint_root \
+        if "DEFAULT_WORKSPACE" in os.environ and os.path.exists(
+        os.environ["DEFAULT_WORKSPACE"] + sub_lint_root) else root_dir + sub_lint_root
+    assert os.path.exists(os.environ["DEFAULT_WORKSPACE"]), 'DEFAULT_WORKSPACE ' + os.environ[
+        "DEFAULT_WORKSPACE"] + ' is not a valid folder'
+    os.environ["GITHUB_WORKSPACE"] = root_dir
 
 
 def print_output(output):
@@ -62,51 +63,59 @@ def call_super_linter(env_vars):
 def test_linter_success(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
+    env_vars = {'DEFAULT_WORKSPACE': os.environ["DEFAULT_WORKSPACE"] + '/' + test_folder,
                 'FILTER_REGEX_INCLUDE': "(.*_good_.*|.*\\/good\\/.*)",
                 'LOG_LEVEL': 'DEBUG'}
     linter_key = "VALIDATE_" + linter.name
     env_vars[linter_key] = 'true'
     super_linter, output = call_super_linter(env_vars)
-    test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+    test_self.assertTrue(len(super_linter.linters) > 0,
+                         "Linters have been created and run")
     if len(linter.file_names) > 0 and len(linter.file_extensions) == 0:
-        test_self.assertRegex(output, rf"File:\[{linter.file_names[0]}] was linted with \[{linter_name}\] successfully")
+        test_self.assertRegex(
+            output, rf"File:\[{linter.file_names[0]}] was linted with \[{linter_name}\] successfully")
     else:
-        test_self.assertRegex(output, rf"File:\[.*good.*] was linted with \[{linter_name}\] successfully")
+        test_self.assertRegex(
+            output, rf"File:\[.*good.*] was linted with \[{linter_name}\] successfully")
 
 
 def test_linter_failure(linter, test_self):
     test_folder = linter.test_folder
     linter_name = linter.linter_name
-    env_vars = {'GITHUB_WORKSPACE': os.environ["GITHUB_WORKSPACE"] + '/' + test_folder,
+    env_vars = {'DEFAULT_WORKSPACE': os.environ["DEFAULT_WORKSPACE"] + '/' + test_folder,
                 'FILTER_REGEX_INCLUDE': '(.*_bad_.*|.*\\/bad\\/.*)',
                 'LOG_LEVEL': 'DEBUG'
                 }
     linter_key = "VALIDATE_" + linter.name
     env_vars[linter_key] = 'true'
     super_linter, output = call_super_linter(env_vars)
-    test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+    test_self.assertTrue(len(super_linter.linters) > 0,
+                         "Linters have been created and run")
     if len(linter.file_names) > 0 and len(linter.file_extensions) == 0:
         test_self.assertRegex(output,
                               rf"File:\[{linter.file_names[0]}] contains error\(s\) according to \[{linter_name}\]")
         test_self.assertNotRegex(output,
                                  rf"File:\[{linter.file_names[0]}] was linted with \[{linter_name}\] successfully")
     else:
-        test_self.assertRegex(output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
-        test_self.assertNotRegex(output, rf"File:\[.*bad.*] was linted with \[{linter_name}\] successfully")
+        test_self.assertRegex(
+            output, rf"File:\[.*bad.*] contains error\(s\) according to \[{linter_name}\]")
+        test_self.assertNotRegex(
+            output, rf"File:\[.*bad.*] was linted with \[{linter_name}\] successfully")
 
 
 def test_get_linter_version(linter, test_self):
     version = linter.get_linter_version()
     print('[' + linter.linter_name + '] version: ' + version)
-    test_self.assertFalse(version == 'ERROR', 'Returned version invalid: [' + version + ']')
+    test_self.assertFalse(version == 'ERROR',
+                          'Returned version invalid: [' + version + ']')
     version_cache = linter.get_linter_version()
-    test_self.assertTrue(version == version_cache, 'Version not found in linter instance cache')
+    test_self.assertTrue(version == version_cache,
+                         'Version not found in linter instance cache')
 
 
 def test_linter_reports(linter, test_self):
     test_folder = linter.test_folder
-    workspace = os.environ["GITHUB_WORKSPACE"] + '/' + test_folder
+    workspace = os.environ["DEFAULT_WORKSPACE"] + '/' + test_folder
     expected_file_name = ''
     # Identify expected report if defined
     reports_with_extension = []
@@ -121,7 +130,7 @@ def test_linter_reports(linter, test_self):
         raise unittest.SkipTest('Expected report not defined')
     # Call linter
     tmp_report_folder = tempfile.gettempdir()
-    env_vars = {'GITHUB_WORKSPACE': workspace,
+    env_vars = {'DEFAULT_WORKSPACE': workspace,
                 'OUTPUT_FORMAT': 'tap',
                 'OUTPUT_DETAIL': 'detailed',
                 'REPORT_OUTPUT_FOLDER': tmp_report_folder,
@@ -129,11 +138,13 @@ def test_linter_reports(linter, test_self):
                 }
     linter_key = "VALIDATE_" + linter.name
     env_vars[linter_key] = 'true'
-    super_linter, output = call_super_linter(env_vars)
-    test_self.assertTrue(len(super_linter.linters) > 0, "Linters have been created and run")
+    super_linter, _output = call_super_linter(env_vars)
+    test_self.assertTrue(len(super_linter.linters) > 0,
+                         "Linters have been created and run")
     # Check TAP file has been produced
     tmp_tap_file_name = f"{tmp_report_folder}{os.path.sep}super-linter-{linter.name}.tap"
-    test_self.assertTrue(os.path.exists(tmp_tap_file_name), f"TAP report not found {tmp_tap_file_name}")
+    test_self.assertTrue(os.path.exists(tmp_tap_file_name),
+                         f"TAP report not found {tmp_tap_file_name}")
     # Compare file content
     with open(tmp_tap_file_name, 'r', encoding='utf-8') as f_produced:
         content_produced = f_produced.read()
@@ -152,7 +163,8 @@ def test_linter_reports(linter, test_self):
                 produced_lines = content_produced.splitlines()
                 identical_nb = 0
                 for expected_idx, expected_line in enumerate(expected_lines):
-                    produced_line = produced_lines[expected_idx] if expected_idx < len(produced_lines) else ''
+                    produced_line = produced_lines[expected_idx] if expected_idx < len(
+                        produced_lines) else ''
                     if produced_line.strip().startswith('message:'):
                         continue
                     test_self.assertEqual(produced_line, expected_line)

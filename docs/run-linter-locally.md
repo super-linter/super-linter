@@ -23,11 +23,9 @@ You can follow the link below on how to install and configure **Docker** on your
 ## Run the container Locally
 
 - You can run the container locally with the following **Base** flags to run your code:
-  - `docker run -e RUN_LOCAL=true -v /path/to/local/codebase:/tmp/lint github/super-linter`
-    - To run against a single file you can use: `docker run -e RUN_LOCAL=true -v /path/to/local/codebase/file:/tmp/lint/file github/super-linter`
-  - **NOTE:** You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint` so that the linter can pick up the code
+  - `docker run -v /path/to/local/codebase:/tmp/lint github/super-linter`
+    - To run against a single file you can use: `docker run -v /path/to/local/codebase/file:/tmp/lint/file github/super-linter`
   - **NOTE:** If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
-  - **NOTE:** The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted
 
 ### Flags for running Locally
 
@@ -38,7 +36,7 @@ You can add as many **Additional** flags as needed, documented in [README.md](..
 ```bash
 docker pull github/super-linter:latest
 git clone https://github.com/nvuillam/npm-groovy-lint.git
-docker run -e RUN_LOCAL=true -e FILTER_REGEX_INCLUDE='(.*lib/.*)' -e FILTER_REGEX_EXCLUDE='(.*lib/example/.*)' -v ~/npm-groovy-lint:/tmp/lint github/super-linter
+docker run -e FILTER_REGEX_INCLUDE='(.*lib/.*)' -e FILTER_REGEX_EXCLUDE='(.*lib/example/.*)' -v ~/npm-groovy-lint:/tmp/lint github/super-linter
 ```
 
 ## Troubleshooting

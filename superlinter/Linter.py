@@ -34,15 +34,18 @@ import superlinter
 
 class Linter:
     # Definition fields: can be overridden at custom linter class level
-    descriptor_id = "Field 'descriptor_id' must be overridden at custom linter class level"  # Ex: JAVASCRIPT
+    # Ex: JAVASCRIPT
+    descriptor_id = "Field 'descriptor_id' must be overridden at custom linter class level"
     name = None  # If you have several linters for the same language,override with a different name.Ex: JAVASCRIPT_ES
     linter_name = "Field 'linter_name' must be overridden at custom linter class level"  # Ex: eslint
-    linter_url = "Field 'linter_url' must be overridden at custom linter class level"  # ex: https://eslint.org/
+    # ex: https://eslint.org/
+    linter_url = "Field 'linter_url' must be overridden at custom linter class level"
     test_folder = None  # Override only if different from language.lowercase()
 
     file_extensions = []  # Array of strings defining file extensions. Ex: ['.js','.cjs']
     file_names = []  # Array of file names. Ex: ['Dockerfile']
-    config_file_name = None  # Default name of the configuration file to use with the linter. Ex: '.eslintrc.js'
+    # Default name of the configuration file to use with the linter. Ex: '.eslintrc.js'
+    config_file_name = None
     files_sub_directory = None
     file_contains = []
     files_names_not_ends_with = []
@@ -50,15 +53,19 @@ class Linter:
 
     cli_executable = None
     cli_executable_version = None
-    cli_config_arg_name = '-c'  # Default arg name for configurations to use in linter CLI call
+    # Default arg name for configurations to use in linter CLI call
+    cli_config_arg_name = '-c'
     cli_config_extra_args = []  # Extra arguments to send to cli when a config file is used
     cli_lint_extra_args = []  # Extra arguments to send to cli everytime
-    cli_lint_extra_args_after = []  # Extra arguments to send to cli everytime, just before file argument
-    cli_version_arg_name = '--version'  # Default arg name for configurations to use in linter version call
+    # Extra arguments to send to cli everytime, just before file argument
+    cli_lint_extra_args_after = []
+    # Default arg name for configurations to use in linter version call
+    cli_version_arg_name = '--version'
     cli_version_extra_args = []  # Extra arguments to send to cli everytime
 
     version_extract_regex = r"\d+(\.\d+)+"
-    version_command_return_code = 0  # If linter --version does not return 0 when it is in success, override. ex: 1
+    # If linter --version does not return 0 when it is in success, override. ex: 1
+    version_command_return_code = 0
 
     report_type = ''  # Can be tap or tap_detailed
     report_folder = ''
@@ -96,6 +103,7 @@ class Linter:
             self.default_rules_location = params[
                 'default_rules_location'] if "default_rules_location" in params else '.'
             self.workspace = params['workspace'] if "workspace" in params else '.'
+            self.github_workspace = params['github_workspace'] if "workspace" in params else '.'
             self.config_file = None
             self.filter_regex_include = None
             self.filter_regex_exclude = None
@@ -109,19 +117,23 @@ class Linter:
 
             # Manage sub-directory filter if defined
             if self.files_sub_directory is not None:
-                self.files_sub_directory = os.environ.get(f"{self.descriptor_id}_DIRECTORY", self.files_sub_directory)
+                self.files_sub_directory = os.environ.get(
+                    f"{self.descriptor_id}_DIRECTORY", self.files_sub_directory)
                 if not os.path.exists(self.workspace + os.path.sep + self.files_sub_directory):
                     self.is_active = False
 
             # Some linters require a file to be existing, else they are deactivated ( ex: .editorconfig )
             if self.active_only_if_file_found is not None:
-                found_files = glob.glob(f"{self.workspace}/**/{self.active_only_if_file_found}", recursive=True)
+                found_files = glob.glob(
+                    f"{self.workspace}/**/{self.active_only_if_file_found}", recursive=True)
                 if len(found_files) == 0:
                     self.is_active = False
 
             # Runtime items
             self.files = []
+            self.disable_errors = False
             self.status = "success"
+            self.return_code = 0
             self.number_errors = 0
             self.files_lint_results = {}
             self.report_lines = []
@@ -171,19 +183,30 @@ class Linter:
                 self.config_file = self.linter_rules_path + os.path.sep + self.config_file_name
             # in user repo directory provided in <Linter>RULES_PATH or LINTER_RULES_PATH
             elif os.path.exists(self.default_rules_location + os.path.sep + self.config_file_name):
-                self.config_file = self.default_rules_location + os.path.sep + self.config_file_name
+                self.config_file = self.default_rules_location + \
+                                   os.path.sep + self.config_file_name
 
         # Include regex :try first NAME + _FILTER_REGEX_INCLUDE, then LANGUAGE + _FILTER_REGEX_INCLUDE
         if self.name + "_FILTER_REGEX_INCLUDE" in os.environ:
-            self.filter_regex_include = os.environ[self.name + "_FILTER_REGEX_INCLUDE"]
+            self.filter_regex_include = os.environ[self.name +
+                                                   "_FILTER_REGEX_INCLUDE"]
         elif self.descriptor_id + "_FILTER_REGEX_INCLUDE" in os.environ:
-            self.filter_regex_include = os.environ[self.descriptor_id + "_FILTER_REGEX_INCLUDE"]
+            self.filter_regex_include = os.environ[self.descriptor_id +
+                                                   "_FILTER_REGEX_INCLUDE"]
+
+        # Disable errors for this linter NAME + _DISABLE_ERRORS, then LANGUAGE + _DISABLE_ERRORS
+        if os.environ.get(self.name + "_DISABLE_ERRORS", "false") == 'true':
+            self.disable_errors = True
+        elif os.environ.get(self.descriptor_id + "_DISABLE_ERRORS", "false") == 'true':
+            self.disable_errors = True
 
         # Exclude regex: try first NAME + _FILTER_REGEX_EXCLUDE, then LANGUAGE + _FILTER_REGEX_EXCLUDE
         if self.name + "_FILTER_REGEX_EXCLUDE" in os.environ:
-            self.filter_regex_exclude = os.environ[self.name + "_FILTER_REGEX_EXCLUDE"]
+            self.filter_regex_exclude = os.environ[self.name +
+                                                   "_FILTER_REGEX_EXCLUDE"]
         elif self.descriptor_id + "_FILTER_REGEX_EXCLUDE" in os.environ:
-            self.filter_regex_exclude = os.environ[self.descriptor_id + "_FILTER_REGEX_EXCLUDE"]
+            self.filter_regex_exclude = os.environ[self.descriptor_id +
+                                                   "_FILTER_REGEX_EXCLUDE"]
 
     # Processes the linter
     def run(self):
@@ -205,10 +228,13 @@ class Linter:
                 logging.error(stdout)
                 self.files_lint_results[file] = {"status": "error"}
                 self.status = "error"
+                self.return_code = 1
                 self.number_errors = self.number_errors + 1
             logging.info(superlinter.utils.format_hyphens(""))
             self.update_report(file, return_code, stdout, index)
         self.generate_reports()
+        if self.return_code != 0 and self.disable_errors is True:
+            self.return_code = 0
 
     def display_header(self):
         linter_version = self.get_linter_version()
@@ -219,11 +245,14 @@ class Linter:
         logging.info(superlinter.utils.format_hyphens(""))
         logging.info(superlinter.utils.format_hyphens(msg))
         if self.descriptor_id != self.name:
-            logging.info(superlinter.utils.format_hyphens("Key: [" + self.name + "]"))
+            logging.info(superlinter.utils.format_hyphens(
+                "Key: [" + self.name + "]"))
         if self.config_file is not None:
-            logging.info(superlinter.utils.format_hyphens("Rules: [" + self.config_file + "]"))
+            logging.info(superlinter.utils.format_hyphens(
+                "Rules: [" + self.config_file + "]"))
         else:
-            logging.info(superlinter.utils.format_hyphens("Rules: identified by [" + self.linter_name + ']'))
+            logging.info(superlinter.utils.format_hyphens(
+                "Rules: identified by [" + self.linter_name + ']'))
         logging.info(superlinter.utils.format_hyphens(""))
         logging.info("")
 
@@ -297,7 +326,8 @@ class Linter:
         if m:
             self.linter_version_cache = '.'.join(m.group().split())
         else:
-            logging.error(f"Unable to extract version with regex {str(reg)} from {version_output}")
+            logging.error(
+                f"Unable to extract version with regex {str(reg)} from {version_output}")
             self.linter_version_cache = "ERROR"
         return self.linter_version_cache
 
@@ -318,12 +348,14 @@ class Linter:
             logging.debug(
                 'Linter version result: ' + str(return_code) + " " + output)
         except FileNotFoundError:
-            logging.warning('Unable to call command [' + ' '.join(command) + ']')
+            logging.warning(
+                'Unable to call command [' + ' '.join(command) + ']')
             return_code = 666
             output = 'ERROR'
 
         if return_code != self.version_command_return_code:
-            logging.warning('Unable to get version for linter [' + self.linter_name + ']')
+            logging.warning(
+                'Unable to get version for linter [' + self.linter_name + ']')
             logging.warning(' '.join(command) + ' returned output: ' + output)
             return 'ERROR'
         else:
@@ -332,7 +364,8 @@ class Linter:
     def update_report(self, file, return_code, stdout, index):
         if self.report_type.startswith('tap'):
             tap_status = "ok" if return_code == 0 else 'not ok'
-            file_tap_lines = [f"{tap_status} {str(index)} - {os.path.basename(file)}"]
+            file_tap_lines = [
+                f"{tap_status} {str(index)} - {os.path.basename(file)}"]
             if self.report_type == 'tap_detailed' and stdout != '' and return_code != 0:
                 std_out_tap = stdout.rstrip(f" {os.linesep}") + os.linesep
                 std_out_tap = "\\n".join(std_out_tap.split(os.linesep))
@@ -381,14 +414,16 @@ class Linter:
                                      headers=headers,
                                      json=data)
             if 200 <= response.status_code < 299:
-                logging.debug(f"Successfully posted Github Status for {self.descriptor_id} with {self.linter_name}")
+                logging.debug(
+                    f"Successfully posted Github Status for {self.descriptor_id} with {self.linter_name}")
             else:
                 logging.error(
                     f"Error posting Github Status for {self.descriptor_id}"
                     f"with {self.linter_name}: {response.status_code}")
                 logging.error(f"GitHub API response: {response.text}")
         else:
-            logging.debug(f"Skipped post of Github Status for {self.descriptor_id} with {self.linter_name}")
+            logging.debug(
+                f"Skipped post of Github Status for {self.descriptor_id} with {self.linter_name}")
 
     ########################################
     # Methods that can be overridden below #

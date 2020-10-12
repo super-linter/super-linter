@@ -25,11 +25,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_GROOVY | Activate or deactivate npm-groovy-lint | `true` |
 | GROOVY_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | GROOVY_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | GROOVY_FILE_NAME | Rules file name | `.groovylintrc.json` |
 | GROOVY_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| GROOVY_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

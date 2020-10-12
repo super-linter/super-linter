@@ -7,7 +7,7 @@ We're thrilled that you'd like to contribute to this project. Your help is essen
 
 [Pull Requests][pulls] are used for adding new playbooks, roles, and documents to the repository, or editing the existing ones.
 
-**With write access**
+### With write access
 
 1. Clone the repository (only if you have write access)
 1. Create a new branch: `git checkout -b my-branch-name`
@@ -15,13 +15,14 @@ We're thrilled that you'd like to contribute to this project. Your help is essen
 1. Push and [submit a pull request][pr]
 1. Pat yourself on the back and wait for your pull request to be reviewed and merged.
 
-**Without write access**
+### Without write access
 
 1. [Fork][fork] and clone the repository
-1. Create a new branch: `git checkout -b my-branch-name`
-1. Make your change
-1. Push to your fork and [submit a pull request][pr]
-1. Pat your self on the back and wait for your pull request to be reviewed and merged.
+2. Create a new branch: `git checkout -b my-branch-name`
+3. Make your change
+4. Run `bash build.sh` to regenerate dockerfile and documentation from updated sources
+5. Push to your fork and [submit a pull request][pr]
+6. Pat your self on the back and wait for your pull request to be reviewed and merged.
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
 

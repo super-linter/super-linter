@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_SQL | Activate or deactivate sql-lint | `true` |
 | SQL_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | SQL_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | SQL_FILE_NAME | Rules file name | `.sql-config.json` |
 | SQL_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| SQL_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

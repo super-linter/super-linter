@@ -18,11 +18,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_TERRAFORM | Activate or deactivate terragrunt | `true` |
 | TERRAFORM_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | TERRAFORM_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | TERRAFORM_FILE_NAME | Rules file name | `terragrunt.hcl` |
 | TERRAFORM_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| TERRAFORM_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -41,7 +41,7 @@ terragrunt hclfmt --terragrunt-check --terragrunt-config terragrunt.hcl --terrag
 
 - Dockerfile commands :
 ```dockerfile
-FROM alpine/terragrunt:0.13.4 as terragrunt
+FROM alpine/terragrunt:latest as terragrunt
 COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 ```
 

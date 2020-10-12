@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_GO | Activate or deactivate golangci-lint | `true` |
 | GO_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | GO_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | GO_FILE_NAME | Rules file name | `.golangci.yml` |
 | GO_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| GO_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -54,7 +54,7 @@ ENV GOROOT=/usr/lib/go \
 ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 # Linter install
-FROM golangci/golangci-lint:v1.31.0 as golangci-lint
+FROM golangci/golangci-lint:latest as golangci-lint
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 ```
 

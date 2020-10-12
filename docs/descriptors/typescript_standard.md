@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_TYPESCRIPT_STANDARD | Activate or deactivate standard | `true` |
 | TYPESCRIPT_STANDARD_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | TYPESCRIPT_STANDARD_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

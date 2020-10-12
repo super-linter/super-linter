@@ -252,8 +252,13 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
             "### Super-linter configuration",
             "",
             "| Variable | Description | Default value |",
-            "| ----------------- | -------------- | -------------- |",
-            f"| VALIDATE_{linter.name} | Activate or deactivate {linter.linter_name} | `true` |",
+            "| ----------------- | -------------- | -------------- |"]
+        if hasattr(linter, 'variables'):
+            for variable in linter.variables:
+                linter_doc_md += [
+                    f"| {variable['name']} | {variable['description']} | {variable['default_value']} |"
+                ]
+        linter_doc_md += [
             f"| {linter.name}_FILTER_REGEX_INCLUDE | Custom regex including filter |  |",
             f"| {linter.name}_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |"
         ]
@@ -261,7 +266,8 @@ def process_type(linters_by_type, type1, type_label, linters_tables_md):
             linter_doc_md += [
                 f"| {linter.name}_FILE_NAME | Rules file name | `{linter.config_file_name}` |",
                 f"| {linter.name}_RULES_PATH | Path where to find rules | "
-                "Workspace folder, then super-linter default rules |"
+                "Workspace folder, then super-linter default rules |",
+                f"| {linter.name}_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |",
             ]
         if linter.files_sub_directory is not None:
             linter_doc_md += [
@@ -344,10 +350,10 @@ def merge_install_attr(item):
     for elt, elt_val in item['descriptor_install'].items():
         if elt in item['install']:
             if elt == 'dockerfile':
-                item['install'][elt] = ['# Parent descriptor install'] + item['descriptor_install'][elt] + \
+                item['install'][elt] = ['# Parent descriptor install'] + elt_val + \
                                        ['# Linter install'] + item['install'][elt]
             else:
-                item['install'][elt] = item['descriptor_install'][elt] + item['install'][elt]
+                item['install'][elt] = elt_val + item['install'][elt]
 
 
 def md_package_list(package_list, indent, start_url):

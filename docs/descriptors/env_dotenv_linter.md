@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_ENV | Activate or deactivate dotenv-linter | `true` |
 | ENV_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | ENV_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 
@@ -40,7 +39,7 @@ dotenv-linter myfile.env
 
 - Dockerfile commands :
 ```dockerfile
-FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
+FROM dotenvlinter/dotenv-linter:latest as dotenv-linter
 COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 ```
 

@@ -20,11 +20,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_ANSIBLE | Activate or deactivate ansible-lint | `true` |
 | ANSIBLE_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | ANSIBLE_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | ANSIBLE_FILE_NAME | Rules file name | `.ansible-lint.yml` |
 | ANSIBLE_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| ANSIBLE_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 | ANSIBLE_DIRECTORY | Directory containing ANSIBLE files | `ansible` |
 
 ## Behind the scenes

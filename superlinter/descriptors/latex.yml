@@ -16,6 +16,6 @@ linters:
       - "chktex -q -l .chktexrc myfile.tex"
     install:
       dockerfile:
-        - FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+        - FROM ghcr.io/assignuser/chktex-alpine:latest as chktex
         - COPY --from=chktex /usr/bin/chktex /usr/bin/
         - RUN cd ~ && touch .chktexrc

@@ -26,7 +26,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_SNAKEMAKE_LINT | Activate or deactivate snakemake | `true` |
 | SNAKEMAKE_LINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | SNAKEMAKE_LINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

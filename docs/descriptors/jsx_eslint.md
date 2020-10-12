@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JSX | Activate or deactivate eslint | `true` |
 | JSX_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | JSX_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | JSX_FILE_NAME | Rules file name | `.eslintrc.yml` |
 | JSX_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| JSX_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

@@ -23,11 +23,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_RAKU | Activate or deactivate raku | `true` |
 | RAKU_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | RAKU_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | RAKU_FILE_NAME | Rules file name | `META6.json` |
 | RAKU_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| RAKU_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

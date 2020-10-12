@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PHP_PSALM | Activate or deactivate psalm | `true` |
 | PHP_PSALM_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PHP_PSALM_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PHP_PSALM_FILE_NAME | Rules file name | `psalm.xml` |
 | PHP_PSALM_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PHP_PSALM_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

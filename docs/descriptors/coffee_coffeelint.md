@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_COFFEE | Activate or deactivate coffeelint | `true` |
 | COFFEE_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | COFFEE_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | COFFEE_FILE_NAME | Rules file name | `.coffee-lint.json` |
 | COFFEE_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| COFFEE_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

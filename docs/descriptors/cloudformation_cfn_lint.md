@@ -30,11 +30,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_CLOUDFORMATION | Activate or deactivate cfn-lint | `true` |
 | CLOUDFORMATION_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | CLOUDFORMATION_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | CLOUDFORMATION_FILE_NAME | Rules file name | `.cfnlintrc.yml` |
 | CLOUDFORMATION_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| CLOUDFORMATION_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

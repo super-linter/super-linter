@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PYTHON_BLACK | Activate or deactivate black | `true` |
 | PYTHON_BLACK_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PYTHON_BLACK_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PYTHON_BLACK_FILE_NAME | Rules file name | `.python-black` |
 | PYTHON_BLACK_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PYTHON_BLACK_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

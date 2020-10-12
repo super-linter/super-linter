@@ -22,11 +22,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_ARM | Activate or deactivate arm-ttk | `true` |
 | ARM_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | ARM_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | ARM_FILE_NAME | Rules file name | `.arm-ttk.psd1` |
 | ARM_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| ARM_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

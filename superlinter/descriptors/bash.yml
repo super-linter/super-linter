@@ -8,7 +8,8 @@ file_extensions:
 test_folder: shell
 linters:
   # Bash Built in Linter
-  - linter_name: bash-exec
+  - class: BashBashExecLinter
+    linter_name: bash-exec
     linter_url: https://tiswww.case.edu/php/chet/bash/bashtop.html
     name: BASH_EXEC
     cli_executable_version: bash
@@ -19,6 +20,10 @@ linters:
         - |
           RUN printf '#!/bin/bash \\n\\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
               && chmod +x /usr/bin/bash-exec
+    variables:
+      - name: ERROR_ON_MISSING_EXEC_BIT
+        description: If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an arror instead
+        default_value: "false"
   # Shellcheck
   - linter_name: shellcheck
     linter_url: https://github.com/koalaman/shellcheck
@@ -30,7 +35,7 @@ linters:
       - "shellcheck --color=auto --external-sources myfile.sh"
     install:
       dockerfile:
-        - FROM koalaman/shellcheck:v0.7.1 as shellcheck
+        - FROM koalaman/shellcheck:latest as shellcheck
         - COPY --from=shellcheck /bin/shellcheck /usr/bin/
   # SHFMT
   - linter_name: shfmt

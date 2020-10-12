@@ -18,7 +18,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JSON | Activate or deactivate jsonlint | `true` |
 | JSON_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | JSON_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

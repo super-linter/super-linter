@@ -22,11 +22,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_R | Activate or deactivate lintr | `true` |
 | R_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | R_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | R_FILE_NAME | Rules file name | `.lintr` |
 | R_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| R_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -41,7 +41,7 @@ R --slave -e "errors <- lintr::lint('myfile.r'); print(errors); quit(save = 'no'
 
 - Dockerfile commands :
 ```dockerfile
-FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/lintr-lib:latest as lintr-lib
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 ```

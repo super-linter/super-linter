@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_TERRAFORM_TERRASCAN | Activate or deactivate terrascan | `true` |
 | TERRAFORM_TERRASCAN_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | TERRAFORM_TERRASCAN_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 
@@ -40,7 +39,7 @@ terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f myfile.tf
 
 - Dockerfile commands :
 ```dockerfile
-FROM accurics/terrascan:d182f1c as terrascan
+FROM accurics/terrascan:latest as terrascan
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
 RUN terrascan init
 ```

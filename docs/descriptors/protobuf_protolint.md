@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PROTOBUF | Activate or deactivate protolint | `true` |
 | PROTOBUF_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PROTOBUF_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PROTOBUF_FILE_NAME | Rules file name | `.protolintrc.yml` |
 | PROTOBUF_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PROTOBUF_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -42,7 +42,7 @@ protolint lint --config_path .protolintrc.yml myfile.proto
 
 - Dockerfile commands :
 ```dockerfile
-FROM yoheimuta/protolint:v0.26.0 as protolint
+FROM yoheimuta/protolint:latest as protolint
 COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 ```
 

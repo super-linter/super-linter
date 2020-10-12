@@ -24,7 +24,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_KOTLIN | Activate or deactivate ktlint | `true` |
 | KOTLIN_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | KOTLIN_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

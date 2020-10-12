@@ -25,11 +25,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_POWERSHELL | Activate or deactivate powershell | `true` |
 | POWERSHELL_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | POWERSHELL_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | POWERSHELL_FILE_NAME | Rules file name | `.powershell-psscriptanalyzer.psd1` |
 | POWERSHELL_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| POWERSHELL_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

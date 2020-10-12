@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_KUBERNETES_KUBEVAL | Activate or deactivate kubeval | `true` |
 | KUBERNETES_KUBEVAL_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | KUBERNETES_KUBEVAL_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | KUBERNETES_DIRECTORY | Directory containing KUBERNETES files | `kubernetes` |
@@ -41,7 +40,7 @@ kubeval -strict myfile.yml
 
 - Dockerfile commands :
 ```dockerfile
-FROM garethr/kubeval:0.15.0 as kubeval
+FROM garethr/kubeval:latest as kubeval
 COPY --from=kubeval /kubeval /usr/bin/
 ```
 

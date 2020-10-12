@@ -26,5 +26,5 @@ linters:
       - "golangci-lint run -c .golangci.yml myfile.go"
     install:
       dockerfile:
-        - FROM golangci/golangci-lint:v1.31.0 as golangci-lint
+        - FROM golangci/golangci-lint:latest as golangci-lint
         - COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/

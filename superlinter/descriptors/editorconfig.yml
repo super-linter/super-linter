@@ -12,11 +12,12 @@ linters:
     linter_rules_configuration_url: https://github.com/editorconfig-checker/editorconfig-checker#configuration
     linter_rules_inline_disable_url: https://github.com/editorconfig-checker/editorconfig-checker#excluding
     config_file_name: .ecrc
-    cli_version_arg_name: '-version'
-    linter_version_cache: "0.0.0"  # editorconfig-checker -version should work but seems to do not
+    cli_config_arg_name: "-config"
+    cli_version_arg_name: "-version"
+    linter_version_cache: "0.0.0" # editorconfig-checker -version should work but seems to do not
     examples:
       - "editorconfig-checker myfile.js"
     install:
       dockerfile:
-        - FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
+        - FROM mstruebing/editorconfig-checker:latest as editorconfig-checker
         - COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker

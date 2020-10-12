@@ -33,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    # Set max build time for the job
+    timeout-minutes: 60
     ##################
     # Load all steps #
     ##################
@@ -42,6 +44,9 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2.3.3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
 
       ########################
       # Get the current date #
@@ -55,6 +60,7 @@ jobs:
       - name: Build image
         shell: bash
         run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} . | while read line ; do echo "$(date +'%H:%M:%S')| $line"; done;
+        timeout-minutes: 30
 
       ########################################
       # Validates the metadata docker labels #
@@ -72,10 +78,12 @@ jobs:
           export CI_ENV="$(bash <(curl -s https://codecov.io/env)) -e GITHUB_ACTIONS"
           echo "CI_ENV=${CI_ENV}"
           docker run $CI_ENV -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e PAT="${{secrets.PAT}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        timeout-minutes: 20
 
       #####################################
       # Run Linter against ALL code base  #
       #####################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(\.automation\/test\/)' -e DISABLE_LINTERS="BASH_EXEC,BASH_SHFMT,CLOUDFORMATION,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -e PAT="${{secrets.PAT}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e OUTPUT_DETAILS=detailed -e FILTER_REGEX_EXCLUDE='(\.automation\/test\/)' -e DISABLE_LINTERS="BASH_SHFMT,CLOUDFORMATION,PYTHON_BLACK,DOCKERFILE_HADOLINT" -e GITHUB_REPOSITORY="${{github.repository}}" -e GITHUB_SHA="${{github.sha}}" -e GITHUB_TOKEN="${{github.token}}" -e GITHUB_RUN_ID="${{github.run_id}}" -e PAT="${{secrets.PAT}}" -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        timeout-minutes: 5

@@ -22,11 +22,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_SNAKEMAKE_SNAKEFMT | Activate or deactivate snakefmt | `true` |
 | SNAKEMAKE_SNAKEFMT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | SNAKEMAKE_SNAKEFMT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | SNAKEMAKE_SNAKEFMT_FILE_NAME | Rules file name | `.snakefmt.toml` |
 | SNAKEMAKE_SNAKEFMT_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| SNAKEMAKE_SNAKEFMT_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

@@ -19,6 +19,6 @@ linters:
       - "kubeval -strict myfile.yml"
     install:
       dockerfile:
-        - FROM garethr/kubeval:0.15.0 as kubeval
+        - FROM garethr/kubeval:latest as kubeval
         - COPY --from=kubeval /kubeval /usr/bin/
 

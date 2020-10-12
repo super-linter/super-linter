@@ -32,11 +32,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_OPENAPI | Activate or deactivate spectral | `true` |
 | OPENAPI_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | OPENAPI_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | OPENAPI_FILE_NAME | Rules file name | `.openapirc.yml` |
 | OPENAPI_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| OPENAPI_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

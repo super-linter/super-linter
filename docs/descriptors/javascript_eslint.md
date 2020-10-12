@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JAVASCRIPT_ES | Activate or deactivate eslint | `true` |
 | JAVASCRIPT_ES_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | JAVASCRIPT_ES_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | JAVASCRIPT_ES_FILE_NAME | Rules file name | `.eslintrc.yml` |
 | JAVASCRIPT_ES_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| JAVASCRIPT_ES_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

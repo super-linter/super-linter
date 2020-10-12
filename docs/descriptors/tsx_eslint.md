@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_TSX | Activate or deactivate eslint | `true` |
 | TSX_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | TSX_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | TSX_FILE_NAME | Rules file name | `.eslintrc.yml` |
 | TSX_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| TSX_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

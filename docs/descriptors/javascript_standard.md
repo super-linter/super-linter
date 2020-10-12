@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_JAVASCRIPT_STANDARD | Activate or deactivate standard | `true` |
 | JAVASCRIPT_STANDARD_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | JAVASCRIPT_STANDARD_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

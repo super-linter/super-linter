@@ -18,7 +18,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_CSHARP | Activate or deactivate dotnet-format | `true` |
 | CSHARP_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | CSHARP_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

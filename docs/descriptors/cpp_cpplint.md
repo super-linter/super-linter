@@ -28,7 +28,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_CPP_CPPLINT | Activate or deactivate cpplint | `true` |
 | CPP_CPPLINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | CPP_CPPLINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PYTHON_FLAKE8 | Activate or deactivate flake8 | `true` |
 | PYTHON_FLAKE8_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PYTHON_FLAKE8_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | PYTHON_FLAKE8_FILE_NAME | Rules file name | `.flake8` |
 | PYTHON_FLAKE8_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| PYTHON_FLAKE8_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

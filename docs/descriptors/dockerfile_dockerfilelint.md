@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_DOCKERFILE_DOCKERFILELINT | Activate or deactivate dockerfilelint | `true` |
 | DOCKERFILE_DOCKERFILELINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | DOCKERFILE_DOCKERFILELINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | DOCKERFILE_DOCKERFILELINT_FILE_NAME | Rules file name | `.dockerfilelintrc` |
 | DOCKERFILE_DOCKERFILELINT_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| DOCKERFILE_DOCKERFILELINT_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

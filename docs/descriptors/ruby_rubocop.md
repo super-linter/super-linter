@@ -24,11 +24,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_RUBY | Activate or deactivate rubocop | `true` |
 | RUBY_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | RUBY_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | RUBY_FILE_NAME | Rules file name | `.ruby-lint.yml` |
 | RUBY_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| RUBY_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

@@ -25,7 +25,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PERL | Activate or deactivate perlcritic | `true` |
 | PERL_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PERL_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

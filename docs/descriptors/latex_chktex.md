@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_LATEX | Activate or deactivate chktex | `true` |
 | LATEX_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | LATEX_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | LATEX_FILE_NAME | Rules file name | `.chktexrc` |
 | LATEX_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| LATEX_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 
@@ -42,7 +42,7 @@ chktex -q -l .chktexrc myfile.tex
 
 - Dockerfile commands :
 ```dockerfile
-FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM ghcr.io/assignuser/chktex-alpine:latest as chktex
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
 ```

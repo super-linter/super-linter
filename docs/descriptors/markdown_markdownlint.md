@@ -19,11 +19,11 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_MARKDOWN | Activate or deactivate markdownlint | `true` |
 | MARKDOWN_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | MARKDOWN_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 | MARKDOWN_FILE_NAME | Rules file name | `.markdown-lint.yml` |
 | MARKDOWN_RULES_PATH | Path where to find rules | Workspace folder, then super-linter default rules |
+| MARKDOWN_DISABLE_ERRORS | Run linter but disable crash if errors found | `false` |
 
 ## Behind the scenes
 

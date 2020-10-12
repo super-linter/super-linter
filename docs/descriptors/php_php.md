@@ -23,7 +23,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_PHP_BUILTIN | Activate or deactivate php | `true` |
 | PHP_BUILTIN_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | PHP_BUILTIN_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 

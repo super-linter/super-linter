@@ -25,15 +25,15 @@ class SuperLinter:
         if params is None:
             params = {}
         self.workspace = self.get_workspace()
+        self.github_workspace = os.environ.get('GITHUB_WORKSPACE', self.workspace)
         self.initialize_logger()
         self.display_header()
         self.github_api_url = 'https://api.github.com'
-        self.workspace = self.get_workspace()
         # Super-Linter default rules location
         self.default_rules_location = '/action/lib/.automation' if os.path.exists('/action/lib/.automation') \
             else os.path.relpath(os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../TEMPLATES'))
         # User-defined rules location
-        self.linter_rules_path = self.workspace + os.path.sep + '.github/linters'
+        self.linter_rules_path = self.github_workspace + os.path.sep + '.github/linters'
 
         self.validate_all_code_base = True
         self.filter_regex_include = None
@@ -52,7 +52,7 @@ class SuperLinter:
         self.report_type = os.environ.get('OUTPUT_FORMAT', '')
         if self.report_type.startswith('tap') and os.environ.get('OUTPUT_DETAILS', '') == 'detailed':
             self.report_type = 'tap_detailed'
-        self.report_folder = os.environ.get('REPORT_OUTPUT_FOLDER', self.workspace + os.path.sep + 'report')
+        self.report_folder = os.environ.get('REPORT_OUTPUT_FOLDER', self.github_workspace + os.path.sep + 'report')
         self.post_github_pr_comment = False if os.environ.get('POST_GITHUB_COMMENT', 'true') == 'false' else True
         # Load optional configuration
         self.load_config_vars()
@@ -61,6 +61,7 @@ class SuperLinter:
         self.file_extensions = []
         self.file_names = []
         self.status = "success"
+        self.return_code = 0
         # Initialize linters and gather criteria to browse files
         self.load_linters()
         self.compute_file_extensions()
@@ -93,14 +94,15 @@ class SuperLinter:
                 linter.run()
                 if linter.status != 'success':
                     self.status = 'error'
+                if linter.return_code != 0:
+                    self.return_code = linter.return_code
         self.generate_reports()
         self.check_results()
 
     # noinspection PyMethodMayBeStatic
     def get_workspace(self):
-        if "GITHUB_WORKSPACE" in os.environ and os.environ['GITHUB_WORKSPACE'] != "" and \
-                os.path.exists(os.environ['GITHUB_WORKSPACE']):
-            return os.environ['GITHUB_WORKSPACE']
+        if os.environ.get('DEFAULT_WORKSPACE', "") != "" and os.path.exists(os.environ['DEFAULT_WORKSPACE']):
+            return os.environ['DEFAULT_WORKSPACE']
         else:
             return '/tmp/lint'
 
@@ -108,7 +110,7 @@ class SuperLinter:
     def load_config_vars(self):
         # Linter rules root path
         if "LINTER_RULES_PATH" in os.environ:
-            self.linter_rules_path = self.workspace + os.path.sep + os.environ["LINTER_RULES_PATH"]
+            self.linter_rules_path = self.github_workspace + os.path.sep + os.environ["LINTER_RULES_PATH"]
         # Filtering regex (inclusion)
         if "FILTER_REGEX_INCLUDE" in os.environ:
             self.filter_regex_include = os.environ["FILTER_REGEX_INCLUDE"]
@@ -146,6 +148,7 @@ class SuperLinter:
                               'disable_descriptors': self.disable_descriptors,
                               'disable_linters': self.disable_linters,
                               'workspace': self.workspace,
+                              'github_workspace': self.github_workspace,
                               'post_linter_status': self.multi_status,
                               'report_type': self.report_type,
                               'report_folder': self.report_folder,
@@ -182,8 +185,8 @@ class SuperLinter:
         if self.validate_all_code_base is False:
             # List all updated files from git
             logging.info(
-                'Listing updated files in [' + self.workspace + '] using git diff, then filter with:')
-            repo = git.Repo(os.path.realpath(self.workspace))
+                'Listing updated files in [' + self.github_workspace + '] using git diff, then filter with:')
+            repo = git.Repo(os.path.realpath(self.github_workspace))
             default_branch = os.environ.get('DEFAULT_BRANCH', 'master')
             current_branch = os.environ.get('GITHUB_SHA', repo.active_branch.commit.hexsha)
             repo.git.pull()
@@ -344,4 +347,7 @@ class SuperLinter:
         else:
             logging.error('Error(s) has been found during linting')
             if self.cli is True:
-                sys.exit(1)
+                if os.environ.get('DISABLE_ERRORS', 'false') == 'true':
+                    sys.exit(0)
+                else:
+                    sys.exit(self.return_code)

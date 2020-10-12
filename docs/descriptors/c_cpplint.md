@@ -19,7 +19,6 @@
 
 | Variable | Description | Default value |
 | ----------------- | -------------- | -------------- |
-| VALIDATE_C_CPPLINT | Activate or deactivate cpplint | `true` |
 | C_CPPLINT_FILTER_REGEX_INCLUDE | Custom regex including filter |  |
 | C_CPPLINT_FILTER_REGEX_EXCLUDE | Custom regex excluding filter |  |
 
