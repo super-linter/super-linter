@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
-FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
+FROM dotenvlinter/dotenv-linter:2.2.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
 FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
