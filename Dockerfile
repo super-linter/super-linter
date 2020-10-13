@@ -107,6 +107,13 @@ RUN apk add --no-cache \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc
 
+#################################################
+# Install Raku and additional Edge dependencies #
+#################################################
+# Basic setup, programs and init
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+    && apk add --no-cache rakudo zef libstdc++6
+        
 ########################################
 # Copy dependencies files to container #
 ########################################
@@ -264,13 +271,6 @@ RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/r
 ################################
 RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
     && chmod +x /usr/bin/bash-exec
-
-#################################################
-# Install Raku and additional Edge dependencies #
-#################################################
-# Basic setup, programs and init
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && apk add --no-cache rakudo zef libstdc++6
 
 ######################
 # Install CheckStyle #
