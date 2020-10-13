@@ -1,49 +1,33 @@
-apiVersion: tekton.dev/v1alpha1
-kind: Pipeline
+apiVersion: tekton.dev/v1beta1
+kind: Task
 metadata:
-  name: build-and-deploy-pipeline
+  name: example-task-name
 spec:
-  resources:
-    - name: git-source
-      type: git
   params:
-    - name: pathToContext
-      description: The path to the build context, used by Kaniko - within the workspace
-      default: src
-    - name: pathToYamlFile
-      description: The path to the yaml file to deploy within the git source
-    - name: imageUrl
-      description: Url of image repository
-    - name: imageTag
-      description: Tag to apply to the built image
-  tasks:
-  - name: source-to-image
-    taskRef:
-      name: source-to-image
-    params:
-      - name: pathToContext
-        value: "$(params.pathToContext)"
-      - name: imageUrl
-        value: "$(params.imageUrl)"
-      - name: imageTag
-        value: "$(params.imageTag)"
-    resources:
-      inputs:
-        - name: git-source
-          resource: git-source
-  - name: deploy-to-cluster
-    taskRef:
-      name: deploy-using-kubectl
-    runAfter:
-      - source-to-image
-    params:
-      - name: pathToYamlFile
-        value:  "$(params.pathToYamlFile)"
-      - name: imageUrl
-        value: "$(params.imageUrl)"
-      - name: imageTag
-        value: "$(params.imageTag)"
-    resources:
-      inputs:
-        - name: git-source
-          resource: git-source
+    - name: pathToDockerFile
+      type: string
+      description: The path to the dockerfile to build
+      default: /workspace/workspace/Dockerfile
+  resources:
+    inputs:
+      - name: workspace
+        type: git
+    outputs:
+      - name: builtImage
+        type: image
+  steps:
+    - name: ubuntu-example
+      image: ubuntu
+      args: ["ubuntu-build-example", "SECRETS-example.md"]
+    - image: gcr.io/example-builders/build-example
+      command: ["echo"]
+      args: ["$(params.pathToDockerFile)"]
+    - name: dockerfile-pushexample
+      image: gcr.io/example-builders/push-example
+      args: ["push", "$(resources.outputs.builtImage.url)"]
+      volumeMounts:
+        - name: example-volume
+          mountPath: /var/run/docker.sock
+  volumes:
+    - name: example-volume
+      emptyDir: {}
