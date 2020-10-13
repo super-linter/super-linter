@@ -370,6 +370,7 @@ function TestCodebase() {
     -path "*/.venv" -prune -o \
     -path "*/.git" -prune -o \
     -path "*/.rbenv" -prune -o \
+    -path "*/.terragrunt-cache" -prune -o \
     -type f -regex "${FILE_EXTENSIONS}" \
     ! -path "${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible/ghe-initialize/*" | sort 2>&1)
 
