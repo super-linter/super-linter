@@ -71,6 +71,7 @@ function BuildFileList() {
     -path "*/.git" -prune -o \
     -path "*/.venv" -prune -o \
     -path "*/.rbenv" -prune -o \
+    -path "*/.terragrunt-cache" -prune -o \
     -type f 2>&1)
   fi
 
