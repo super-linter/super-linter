@@ -93,7 +93,7 @@ RUN apk add --no-cache \
     jq \
     krb5-libs \
     libc-dev libxml2-dev libxml2-utils libgcc \
-    libcurl libintl libssl1.1 libstdc++ lib32stdc++6 \
+    libcurl libintl libssl1.1 libstdc++ \
     linux-headers \
     make \
     musl-dev \
@@ -270,7 +270,7 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 #################################################
 # Basic setup, programs and init
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && apk add --no-cache rakudo zef
+    && apk add --no-cache rakudo zef libstdc++6
 
 ######################
 # Install CheckStyle #
