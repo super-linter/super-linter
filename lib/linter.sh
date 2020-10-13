@@ -76,6 +76,9 @@ DOCKERFILE_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_FILE_NAME}" # Pa
 # Dockerfile Hadolint Vars
 DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yml}"               # Name of the file
 DOCKERFILE_HADOLINT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${DOCKERFILE_HADOLINT_FILE_NAME}" # Path to the Docker lint rules
+# Editorconfig Vars
+EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"                       # Name of the file
+EDITORCONFIG_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${EDITORCONFIG_FILE_NAME}" # Path to the Editorconfig lint rules
 # Golang Vars
 GO_FILE_NAME='.golangci.yml'                                # Name of the file
 GO_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${GO_FILE_NAME}" # Path to the Go lint rules
@@ -162,15 +165,73 @@ VERSION_FILE='/action/lib/linter-versions.txt' # File to store linter versions
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"            # Name of the file
 YAML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${YAML_FILE_NAME}" # Path to the yaml lint rules
 
-#############################
-# Language array for prints #
-#############################
+##################
+# Language array #
+##################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'TERRAFORM'
   'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+
+##############################
+# Linter command names array #
+##############################
+declare -A LINTER_NAMES_ARRAY
+LINTER_NAMES_ARRAY['ARM']="arm-ttk"
+LINTER_NAMES_ARRAY['BASH']="shellcheck"
+LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
+LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
+LINTER_NAMES_ARRAY['COFFEESCRIPT']="coffeelint"
+LINTER_NAMES_ARRAY['CSHARP']="dotnet-format"
+LINTER_NAMES_ARRAY['CSS']="stylelint"
+LINTER_NAMES_ARRAY['DART']="dart"
+LINTER_NAMES_ARRAY['DOCKERFILE']="dockerfilelint"
+LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
+LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
+LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
+LINTER_NAMES_ARRAY['GO']="golangci-lint"
+LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
+LINTER_NAMES_ARRAY['HTML']="htmlhint"
+LINTER_NAMES_ARRAY['JAVA']="checkstyle"
+LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
+LINTER_NAMES_ARRAY['JAVASCRIPT_STANDARD']="standard"
+LINTER_NAMES_ARRAY['JSON']="jsonlint"
+LINTER_NAMES_ARRAY['JSX']="eslint"
+LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
+LINTER_NAMES_ARRAY['KUBERNETES_KUBEVAL']="kubeval"
+LINTER_NAMES_ARRAY['LATEX']="chktex"
+LINTER_NAMES_ARRAY['LUA']="lua"
+LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
+LINTER_NAMES_ARRAY['OPENAPI']="spectral"
+LINTER_NAMES_ARRAY['PERL']="perl"
+LINTER_NAMES_ARRAY['PHP_BUILTIN']="php"
+LINTER_NAMES_ARRAY['PHP_PHPCS']="phpcs"
+LINTER_NAMES_ARRAY['PHP_PHPSTAN']="phpstan"
+LINTER_NAMES_ARRAY['PHP_PSALM']="psalm"
+LINTER_NAMES_ARRAY['POWERSHELL']="pwsh"
+LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
+LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
+LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
+LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
+LINTER_NAMES_ARRAY['R']="lintr"
+LINTER_NAMES_ARRAY['RAKU']="raku"
+LINTER_NAMES_ARRAY['RUBY']="rubocop"
+LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
+LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
+LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
+LINTER_NAMES_ARRAY['STATES']="asl-validator"
+LINTER_NAMES_ARRAY['SQL']="sql-lint"
+LINTER_NAMES_ARRAY['TERRAFORM']="tflint"
+LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
+LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
+LINTER_NAMES_ARRAY['TSX']="eslint"
+LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
+LINTER_NAMES_ARRAY['TYPESCRIPT_STANDARD']="standard"
+LINTER_NAMES_ARRAY['XML']="xmllint"
+LINTER_NAMES_ARRAY['YAML']="yamllint"
 
 ############################################
 # Array for all languages that were linted #
@@ -559,7 +620,7 @@ DetectKubernetesFile() {
   FILE="${1}" # File that we need to validate
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
 
-  if grep -q -E '(apiVersion):' "${FILE}" >/dev/null; then
+  if grep -v 'kustomize.config.k8s.io' "${FILE}" | grep -q -E '(apiVersion):'; then
     debug "${FILE} is a Kubernetes descriptor"
     return 0
   fi
@@ -776,42 +837,6 @@ GetGitHubVars() {
     else
       info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
     fi
-  fi
-}
-################################################################################
-#### Function ValidatePowershellModules ########################################
-function ValidatePowershellModules() {
-  VALIDATE_PSSA_MODULE=$(pwsh -c "(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name" 2>&1)
-  # If module found, ensure Invoke-ScriptAnalyzer command is available
-  if [[ ${VALIDATE_PSSA_MODULE} == "PSScriptAnalyzer" ]]; then
-    VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
-  else
-    fatal "Failed to find module."
-  fi
-
-  #########################################
-  # validate we found the script analyzer #
-  #########################################
-  if [[ ${VALIDATE_PSSA_CMD} != "Invoke-ScriptAnalyzer" ]]; then
-    fatal "Failed to find module."
-  fi
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Failed
-    error "Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!"
-    fatal "[PSSA_MODULE ${VALIDATE_PSSA_MODULE}] [PSSA_CMD ${VALIDATE_PSSA_CMD}]"
-  else
-    # Success
-    debug "Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system"
-    debug "Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system"
   fi
 }
 ################################################################################
@@ -1058,10 +1083,11 @@ DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"          # Default Ansib
 export DEFAULT_ANSIBLE_DIRECTORY                                 # Workaround SC2034
 REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"      # Location for the report folder
 
-#########################################
-# Get the languages we need to validate #
-#########################################
+############################
+# Validate the environment #
+############################
 GetValidationInfo
+ValidatePowershellModules
 
 ########################
 # Get the linter rules #
@@ -1070,6 +1096,70 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Loading rules for ${LANGUAGE}..."
   eval "GetLinterRules ${LANGUAGE}"
 done
+
+# Load rules for a couple of special cases
+GetStandardRules "javascript"
+GetStandardRules "typescript"
+
+##########################
+# Define linter commands #
+##########################
+declare -A LINTER_COMMANDS_ARRAY
+LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
+LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
+LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
+LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['COFFEESCRIPT']="coffeelint -f ${COFFEESCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['CSHARP']="dotnet-format --folder --check --exclude / --include"
+LINTER_COMMANDS_ARRAY['CSS']="stylelint --config ${CSS_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['DART']="dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}"
+# NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
+LINTER_COMMANDS_ARRAY['DOCKERFILE']="dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})"
+LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
+LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning"
+LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
+LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
+LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
+LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['LUA']="luacheck --config ${LUA_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['MARKDOWN']="markdownlint -c ${MARKDOWN_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
+LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l"
+LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PHP_PHPSTAN']="phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PHP_PSALM']="psalm --config=${PHP_PSALM_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['POWERSHELL']="Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path"
+LINTER_COMMANDS_ARRAY['PROTOBUF']="protolint lint --config_path ${PROTOBUF_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PYTHON_BLACK']="black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check"
+LINTER_COMMANDS_ARRAY['PYTHON_PYLINT']="pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PYTHON_FLAKE8']="flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['R']="lintr"
+LINTER_COMMANDS_ARRAY['RAKU']="raku"
+LINTER_COMMANDS_ARRAY['RUBY']="rubocop -c ${RUBY_LINTER_RULES} --force-exclusion"
+LINTER_COMMANDS_ARRAY['SHELL_SHFMT']="shfmt -d"
+LINTER_COMMANDS_ARRAY['SNAKEMAKE_LINT']="snakemake --lint -s"
+LINTER_COMMANDS_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff"
+LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
+LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TERRAFORM']="tflint -c ${TERRAFORM_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f "
+LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file "
+LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['XML']="xmllint"
+LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES}"
+
 
 ##################################
 # Get and print all version info #
@@ -1098,577 +1188,68 @@ fi
 ###########################################
 BuildFileList "${VALIDATE_ALL_CODEBASE}"
 
-###################
-# ANSIBLE LINTING #
-###################
-if [ "${VALIDATE_ANSIBLE}" == "true" ]; then
-  ##########################
-  # Lint the Ansible files #
-  ##########################
-  # Due to the nature of how we want to validate Ansible, we cannot use the
-  # standard loop, since it looks for an ansible folder, excludes certain
-  # files, and looks for additional changes, it should be an outlier
-  LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
-fi
-
-########################
-# ARM Template LINTING #
-########################
-if [ "${VALIDATE_ARM}" == "true" ]; then
-  ###############################
-  # Lint the ARM Template files #
-  ###############################
-  LintCodebase "ARM" "arm-ttk" "Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ARM[@]}"
-fi
-
-################
-# BASH LINTING #
-################
-if [ "${VALIDATE_BASH}" == "true" ]; then
-  #######################
-  # Lint the bash files #
-  #######################
-  LintCodebase "BASH" "shellcheck" "shellcheck --color --external-sources" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
-fi
-
-#####################
-# BASH_EXEC LINTING #
-#####################
-if [ "${VALIDATE_BASH_EXEC}" == "true" ]; then
-  #######################
-  # Lint the bash files #
-  #######################
-  LintCodebase "BASH_EXEC" "bash-exec" "bash-exec" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_BASH[@]}"
-fi
-
-##########################
-# CLOUDFORMATION LINTING #
-##########################
-if [ "${VALIDATE_CLOUDFORMATION}" == "true" ]; then
-  #################################
-  # Lint the CloudFormation files #
-  #################################
-  LintCodebase "CLOUDFORMATION" "cfn-lint" "cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOUDFORMATION[@]}"
-fi
-
-###################
-# CLOJURE LINTING #
-###################
-if [ "${VALIDATE_CLOJURE}" == "true" ]; then
-  #################################
-  # Get Clojure standard rules #
-  #################################
-  GetStandardRules "clj-kondo"
-  #########################
-  # Lint the Clojure files #
-  #########################
-  LintCodebase "CLOJURE" "clj-kondo" "clj-kondo --config ${CLOJURE_LINTER_RULES} --lint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CLOJURE[@]}"
-fi
-
-########################
-# COFFEESCRIPT LINTING #
-########################
-if [ "${VALIDATE_COFFEE}" == "true" ]; then
-  #########################
-  # Lint the coffee files #
-  #########################
-  LintCodebase "COFFEESCRIPT" "coffeelint" "coffeelint -f ${COFFEESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_COFFEESCRIPT[@]}"
-fi
-
-##################
-# CSHARP LINTING #
-##################
-if [ "${VALIDATE_CSHARP}" == "true" ]; then
-  #########################
-  # Lint the C# files #
-  #########################
-  LintCodebase "CSHARP" "dotnet-format" "dotnet-format --folder --check --exclude / --include" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSHARP[@]}"
-fi
-
 ###############
-# CSS LINTING #
+# Run linters #
 ###############
-if [ "${VALIDATE_CSS}" == "true" ]; then
-  #################################
-  # Get CSS standard rules #
-  #################################
-  GetStandardRules "stylelint"
-  #############################
-  # Lint the CSS files #
-  #############################
-  LintCodebase "CSS" "stylelint" "stylelint --config ${CSS_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_CSS[@]}"
-fi
+EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
 
-################
-# DART LINTING #
-################
-if [ "${VALIDATE_DART}" == "true" ]; then
-  #######################
-  # Lint the Dart files #
-  #######################
-  LintCodebase "DART" "dart" "dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DART[@]}"
-fi
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  debug "Running linter for the ${LANGUAGE} language..."
+  VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
+  debug "Setting VALIDATE_LANGUAGE_VARIABLE_NAME to ${VALIDATE_LANGUAGE_VARIABLE_NAME}..."
+  VALIDATE_LANGUAGE_VARIABLE_VALUE="${!VALIDATE_LANGUAGE_VARIABLE_NAME}"
+  debug "Setting VALIDATE_LANGUAGE_VARIABLE_VALUE to ${VALIDATE_LANGUAGE_VARIABLE_VALUE}..."
 
-##################
-# DOCKER LINTING #
-##################
-if [ "${VALIDATE_DOCKERFILE}" == "true" ]; then
-  #########################
-  # Lint the docker files #
-  #########################
-  # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
-  LintCodebase "DOCKERFILE" "dockerfilelint" "dockerfilelint -c $(dirname ${DOCKERFILE_LINTER_RULES})" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE[@]}"
-fi
+  if [ "${VALIDATE_LANGUAGE_VARIABLE_VALUE}" = "true" ]; then
+    # Check if we need an .editorconfig file
+    # shellcheck disable=SC2153
+    if [ "${LANGUAGE}" = "EDITORCONFIG" ] || [ "${LANGUAGE}" = "SHELL_SHFMT" ]; then
+      if [ -e "${EDITORCONFIG_FILE_PATH}" ]; then
+        debug "Found an EditorConfig file at ${EDITORCONFIG_FILE_PATH}"
+      else
+        debug "No .editorconfig found at: $EDITORCONFIG_FILE_PATH. Skipping ${LANGUAGE} linting..."
+        continue
+      fi
+    elif [ "${LANGUAGE}" = "R" ] && [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && ((${#FILE_ARRAY_R[@]})); then
+        info "No .lintr configuration file found, using defaults."
+        cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
+    # Check if there's local configuration for the Raku linter
+    elif [ "${LANGUAGE}" = "RAKU" ] && [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
+      cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
+    fi
 
-###########################
-# DOCKER LINTING HADOLINT #
-###########################
-if [ "${VALIDATE_DOCKERFILE_HADOLINT}" == "true" ]; then
-  #########################
-  # Lint the docker files #
-  #########################
-  LintCodebase "DOCKERFILE_HADOLINT" "hadolint" "hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_DOCKERFILE_HADOLINT[@]}"
-fi
+    if [ "${LANGUAGE}" = "ANSIBLE" ]; then
+      # Due to the nature of how we want to validate Ansible, we cannot use the
+      # standard loop, since it looks for an ansible folder, excludes certain
+      # files, and looks for additional changes, it should be an outlier
+      LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
+    else
+      LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
+      if [ -z "${LINTER_NAME}" ];then
+        fatal "Cannot find the linter name for ${LANGUAGE} language."
+      else
+        debug "Setting LINTER_NAME to ${LINTER_NAME}..."
+      fi
 
-########################
-# EDITORCONFIG LINTING #
-########################
-if [ "${VALIDATE_EDITORCONFIG}" == "true" ]; then
-  ####################################
-  # Lint the files with editorconfig #
-  ####################################
-  LintCodebase "EDITORCONFIG" "editorconfig-checker" "editorconfig-checker" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_EDITORCONFIG[@]}"
-fi
+      LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
+      if [ -z "${LINTER_COMMAND}" ];then
+        fatal "Cannot find the linter command for ${LANGUAGE} language."
+      else
+        debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
+      fi
 
-###############
-# ENV LINTING #
-###############
-if [ "${VALIDATE_ENV}" == "true" ]; then
-  #######################
-  # Lint the env files #
-  #######################
-  LintCodebase "ENV" "dotenv-linter" "dotenv-linter" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_ENV[@]}"
-fi
+      FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
+      debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
 
-##################
-# GOLANG LINTING #
-##################
-if [ "${VALIDATE_GO}" == "true" ]; then
-  #########################
-  # Lint the golang files #
-  #########################
-  LintCodebase "GO" "golangci-lint" "golangci-lint run -c ${GO_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GO[@]}"
-fi
+      # shellcheck disable=SC2125
+      LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
+      debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
 
-##################
-# GROOVY LINTING #
-##################
-if [ "$VALIDATE_GROOVY" == "true" ]; then
-  #########################
-  # Lint the groovy files #
-  #########################
-  LintCodebase "GROOVY" "npm-groovy-lint" "npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_GROOVY[@]}"
-fi
-
-################
-# HTML LINTING #
-################
-if [ "${VALIDATE_HTML}" == "true" ]; then
-  ###########################
-  # Get HTML standard rules #
-  ###########################
-  GetStandardRules "htmlhint"
-  #######################
-  # Lint the HTML files #
-  #######################
-  LintCodebase "HTML" "htmlhint" "htmlhint --config ${HTML_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_HTML[@]}"
-fi
-
-################
-# JAVA LINTING #
-################
-if [ "$VALIDATE_JAVA" == "true" ]; then
-  #######################
-  # Lint the JAVA files #
-  #######################
-  LintCodebase "JAVA" "checkstyle" "java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVA[@]}"
-fi
-
-######################
-# JAVASCRIPT LINTING #
-######################
-if [ "${VALIDATE_JAVASCRIPT_ES}" == "true" ]; then
-  #############################
-  # Lint the Javascript files #
-  #############################
-  LintCodebase "JAVASCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_ES[@]}"
-fi
-
-######################
-# JAVASCRIPT LINTING #
-######################
-if [ "${VALIDATE_JAVASCRIPT_STANDARD}" == "true" ]; then
-  #################################
-  # Get Javascript standard rules #
-  #################################
-  GetStandardRules "javascript"
-  #############################
-  # Lint the Javascript files #
-  #############################
-  LintCodebase "JAVASCRIPT_STANDARD" "standard" "standard ${JAVASCRIPT_STANDARD_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JAVASCRIPT_STANDARD[@]}"
-fi
-
-################
-# JSON LINTING #
-################
-if [ "${VALIDATE_JSON}" == "true" ]; then
-  #######################
-  # Lint the json files #
-  #######################
-  LintCodebase "JSON" "jsonlint" "jsonlint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSON[@]}"
-fi
-
-###############
-# JSX LINTING #
-###############
-if [ "${VALIDATE_JSX}" == "true" ]; then
-  ######################
-  # Lint the JSX files #
-  ######################
-  LintCodebase "JSX" "eslint" "eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_JSX[@]}"
-fi
-
-##################
-# KOTLIN LINTING #
-##################
-if [ "${VALIDATE_KOTLIN}" == "true" ]; then
-  #########################
-  # Lint the Kotlin files #
-  #########################
-  LintCodebase "KOTLIN" "ktlint" "ktlint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KOTLIN[@]}"
-fi
-
-##############################
-# KUBERNETES Kubeval LINTING #
-##############################
-if [ "${VALIDATE_KUBERNETES_KUBEVAL}" == "true" ]; then
-  LintCodebase "KUBERNETES_KUBEVAL" "kubeval" "kubeval --strict" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_KUBERNETES_KUBEVAL[@]}"
-fi
-
-#################
-# LATEX LINTING #
-#################
-if [ "${VALIDATE_LATEX}" == "true" ]; then
-  ########################
-  # Lint the LATEX files #
-  ########################
-  LintCodebase "LATEX" "chktex" "chktex -q -l ${LATEX_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LATEX[@]}"
-fi
-
-###############
-# LUA LINTING #
-###############
-if [ "${VALIDATE_LUA}" == "true" ]; then
-  ######################
-  # Lint the Lua files #
-  ######################
-  LintCodebase "LUA" "lua" "luacheck --config ${LUA_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_LUA[@]}"
-fi
-
-####################
-# MARKDOWN LINTING #
-####################
-if [ "${VALIDATE_MARKDOWN}" == "true" ]; then
-  ###########################
-  # Lint the Markdown Files #
-  ###########################
-  LintCodebase "MARKDOWN" "markdownlint" "markdownlint -c ${MARKDOWN_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_MARKDOWN[@]}"
-fi
-
-###################
-# OPENAPI LINTING #
-###################
-if [ "${VALIDATE_OPENAPI}" == "true" ]; then
-  ##########################
-  # Lint the OpenAPI files #
-  ##########################
-  LintCodebase "OPENAPI" "spectral" "spectral lint -r ${OPENAPI_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_OPENAPI[@]}"
-fi
-
-################
-# PERL LINTING #
-################
-if [ "${VALIDATE_PERL}" == "true" ]; then
-  #######################
-  # Lint the perl files #
-  #######################
-  LintCodebase "PERL" "perl" "perlcritic" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PERL[@]}"
-fi
-
-################
-# PHP LINTING #
-################
-if [ "${VALIDATE_PHP_BUILTIN}" == "true" ]; then
-  ################################################
-  # Lint the PHP files using built-in PHP linter #
-  ################################################
-  LintCodebase "PHP_BUILTIN" "php" "php -l" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_BUILTIN[@]}"
-fi
-
-if [ "${VALIDATE_PHP_PHPCS}" == "true" ]; then
-  ############################################
-  # Lint the PHP files using PHP CodeSniffer #
-  ############################################
-  LintCodebase "PHP_PHPCS" "phpcs" "phpcs --standard=${PHP_PHPCS_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPCS[@]}"
-fi
-
-if [ "${VALIDATE_PHP_PHPSTAN}" == "true" ]; then
-  #######################
-  # Lint the PHP files using PHPStan #
-  #######################
-  LintCodebase "PHP_PHPSTAN" "phpstan" "phpstan analyse --no-progress --no-ansi -c ${PHP_PHPSTAN_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PHPSTAN[@]}"
-fi
-
-if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
-  ##################################
-  # Lint the PHP files using Psalm #
-  ##################################
-  LintCodebase "PHP_PSALM" "psalm" "psalm --config=${PHP_PSALM_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PHP_PSALM[@]}"
-fi
-
-######################
-# POWERSHELL LINTING #
-######################
-if [ "${VALIDATE_POWERSHELL}" == "true" ]; then
-  ###############################################################
-  # For POWERSHELL, ensure PSScriptAnalyzer module is available #
-  ###############################################################
-  ValidatePowershellModules
-
-  #############################
-  # Lint the powershell files #
-  #############################
-  LintCodebase "POWERSHELL" "pwsh" "Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_POWERSHELL[@]}"
-fi
-
-####################
-# PROTOBUF LINTING #
-####################
-if [ "${VALIDATE_PROTOBUF}" == "true" ]; then
-  #######################
-  # Lint the Protocol Buffers files #
-  #######################
-  LintCodebase "PROTOBUF" "protolint" "protolint lint --config_path ${PROTOBUF_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PROTOBUF[@]}"
-fi
-
-########################
-# PYTHON BLACK LINTING #
-########################
-if [ "${VALIDATE_PYTHON_BLACK}" == "true" ]; then
-  #########################
-  # Lint the python files #
-  #########################
-  LintCodebase "PYTHON_BLACK" "black" "black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_BLACK[@]}"
-fi
-
-#########################
-# PYTHON PYLINT LINTING #
-#########################
-if [ "${VALIDATE_PYTHON_PYLINT}" == "true" ]; then
-  #########################
-  # Lint the python files #
-  #########################
-  LintCodebase "PYTHON_PYLINT" "pylint" "pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_PYLINT[@]}"
-fi
-
-#########################
-# PYTHON FLAKE8 LINTING #
-#########################
-if [ "${VALIDATE_PYTHON_FLAKE8}" == "true" ]; then
-  #########################
-  # Lint the python files #
-  #########################
-  LintCodebase "PYTHON_FLAKE8" "flake8" "flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_PYTHON_FLAKE8[@]}"
-fi
-
-#############
-# R LINTING #
-#############
-if [ "${VALIDATE_R}" == "true" ]; then
-  ##########################
-  # Check for local config #
-  ##########################
-  # shellcheck disable=SC2153
-  if [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && ((${#FILE_ARRAY_R[@]})); then
-    info "No .lintr configuration file found, using defaults."
-    cp $R_LINTER_RULES "$GITHUB_WORKSPACE"
+      debug "Invoking ${LINTER_NAME} linter..."
+      LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${!LANGUAGE_FILE_ARRAY}"
+    fi
   fi
-
-  ######################
-  # Lint the R files   #
-  ######################
-  LintCodebase "R" "lintr" "lintr::lint(File)" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_R[@]}"
-fi
-
-################
-# RAKU LINTING #
-################
-if [ "${VALIDATE_RAKU}" == "true" ]; then
-  #######################
-  # Lint the raku files #
-  #######################
-  if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
-    cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
-  fi
-  LintCodebase "RAKU" "raku" "raku -I ${GITHUB_WORKSPACE}/lib -c" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RAKU[@]}"
-fi
-
-################
-# RUBY LINTING #
-################
-if [ "${VALIDATE_RUBY}" == "true" ]; then
-  #######################
-  # Lint the ruby files #
-  #######################
-  LintCodebase "RUBY" "rubocop" "rubocop -c ${RUBY_LINTER_RULES} --force-exclusion" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_RUBY[@]}"
-fi
-
-#################
-# SHFMT LINTING #
-#################
-if [ "${VALIDATE_SHELL_SHFMT}" == "true" ]; then
-  ####################################
-  # Lint the files with shfmt #
-  ####################################
-  EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
-  if [ -e "$EDITORCONFIG_FILE_PATH" ]; then
-    LintCodebase "SHELL_SHFMT" "shfmt" "shfmt -d" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SHELL_SHFMT[@]}"
-  else
-    ###############################
-    # No .editorconfig file found #
-    ###############################
-    warn "No .editorconfig found at:[$EDITORCONFIG_FILE_PATH]"
-    debug "skipping shfmt"
-  fi
-fi
-
-##################
-# SNAKEMAKE LINT #
-##################
-if [ "${VALIDATE_SNAKEMAKE_LINT}" == "true" ]; then
-  LintCodebase "SNAKEMAKE_LINT" "snakemake" "snakemake --lint -s" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_LINT[@]}"
-fi
-
-######################
-# SNAKEMAKE SNAKEFMT #
-######################
-if [ "${VALIDATE_SNAKEMAKE_SNAKEFMT}" == "true" ]; then
-  LintCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SNAKEMAKE_SNAKEFMT[@]}"
-fi
-
-######################
-# AWS STATES LINTING #
-######################
-if [ "${VALIDATE_STATES}" == "true" ]; then
-  #########################
-  # Lint the STATES files #
-  #########################
-  LintCodebase "STATES" "asl-validator" "asl-validator --json-path" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_STATES[@]}"
-fi
-
-###############
-# SQL LINTING #
-###############
-if [ "${VALIDATE_SQL}" == "true" ]; then
-  ######################
-  # Lint the SQL files #
-  ######################
-  LintCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_SQL[@]}"
-fi
-
-#####################
-# TERRAFORM LINTING #
-#####################
-if [ "${VALIDATE_TERRAFORM}" == "true" ]; then
-  ############################
-  # Lint the Terraform files #
-  ############################
-  LintCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM[@]}"
-fi
-
-###############################
-# TERRAFORM TERRASCAN LINTING #
-###############################
-if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ]; then
-  ############################
-  # Lint the Terraform files #
-  ############################
-  LintCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAFORM_TERRASCAN[@]}"
-fi
-
-################################
-# TERRAGRUNT TERRASCAN LINTING #
-################################
-if [ "${VALIDATE_TERRAGRUNT}" == "true" ]; then
-  #############################
-  # Lint the Terragrunt files #
-  #############################
-  LintCodebase "TERRAGRUNT" "terragrunt" "terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file " "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TERRAGRUNT[@]}"
-fi
-
-###############
-# TSX LINTING #
-###############
-if [ "${VALIDATE_TSX}" == "true" ]; then
-  ######################
-  # Lint the TSX files #
-  ######################
-  LintCodebase "TSX" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TSX[@]}"
-fi
-
-######################
-# TYPESCRIPT LINTING #
-######################
-if [ "${VALIDATE_TYPESCRIPT_ES}" == "true" ]; then
-  #############################
-  # Lint the Typescript files #
-  #############################
-  LintCodebase "TYPESCRIPT_ES" "eslint" "eslint --no-eslintrc -c ${TYPESCRIPT_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_ES[@]}"
-fi
-
-######################
-# TYPESCRIPT LINTING #
-######################
-if [ "${VALIDATE_TYPESCRIPT_STANDARD}" == "true" ]; then
-  #################################
-  # Get Typescript standard rules #
-  #################################
-  GetStandardRules "typescript"
-  #############################
-  # Lint the Typescript files #
-  #############################
-  LintCodebase "TYPESCRIPT_STANDARD" "standard" "standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_TYPESCRIPT_STANDARD[@]}"
-fi
-
-###############
-# XML LINTING #
-###############
-if [ "${VALIDATE_XML}" == "true" ]; then
-  ######################
-  # Lint the XML Files #
-  ######################
-  LintCodebase "XML" "xmllint" "xmllint" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_XML[@]}"
-fi
-
-################
-# YAML LINTING #
-################
-if [ "${VALIDATE_YAML}" == "true" ]; then
-  ######################
-  # Lint the Yml Files #
-  ######################
-  LintCodebase "YAML" "yamllint" "yamllint -c ${YAML_LINTER_RULES}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAY_YAML[@]}"
-fi
+done
 
 ###########
 # Reports #
