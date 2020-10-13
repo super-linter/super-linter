@@ -51,6 +51,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Shell](#shell)
   - [Snakemake](#snakemake)
   - [SQL](#sql)
+  - [Tekton](#tekton)
   - [Terraform](#terraform)
   - [Typescript eslint](#typescript-eslint)
   - [Typescript standard](#typescript-standard)
@@ -1172,6 +1173,28 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### SQL disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## Tekton
+
+- [Tekton](https://github.com/IBM/tekton-lint)
+
+### Tekton Config file
+
+- There is currently **No** Tekton format config rules file
+
+### Tekton disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Tekton disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### Tekton disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 
