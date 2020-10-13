@@ -25,7 +25,7 @@ LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-
   'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
   'hadolint' 'htmlhint' 'jsonlint' 'kubeval' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
-  'terrascan' 'tflint' 'xmllint' 'yamllint')
+  'tekton-lint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################

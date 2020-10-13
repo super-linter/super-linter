@@ -495,6 +495,16 @@ function BuildFileList() {
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
 
+      ########################################
+      # Check if the file is Tekton template #
+      ########################################
+      if DetectTektonFile "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_TEKTON+=("${FILE}")
+      fi
+
       ############################################
       # Check if the file is Kubernetes template #
       ############################################

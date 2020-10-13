@@ -692,6 +692,7 @@ function RunTestCases() {
   TestCodebase "SNAKEMAKE_SNAKEFMT" "snakefmt" "snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff" ".*\.\(smk\)\$" "snakemake"
   TestCodebase "STATES" "asl-validator" "asl-validator --json-path" ".*\.\(json\)\$" "states"
   TestCodebase "SQL" "sql-lint" "sql-lint --config ${SQL_LINTER_RULES}" ".*\.\(sql\)\$" "sql"
+  TestCodebase "TEKTON" "tekton-lint" "tekton-lint" ".*\.\(yml\|yaml\)\$" "tekton"
   TestCodebase "TERRAFORM" "tflint" "tflint -c ${TERRAFORM_LINTER_RULES}" ".*\.\(tf\)\$" "terraform"
   TestCodebase "TERRAFORM_TERRASCAN" "terrascan" "terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f " ".*\.\(tf\)\$" "terraform_terrascan"
   TestCodebase "TERRAGRUNT" "terragrunt" "terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file " ".*\.\(hcl\)\$" "terragrunt"
