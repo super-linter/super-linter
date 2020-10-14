@@ -89,6 +89,16 @@ function BuildFileList() {
     fatal "[${RAW_FILE_ARRAY[*]}]"
   fi
 
+  ##########################################################################
+  # Check to make sure the raw file array is not empty or throw a warning! #
+  ##########################################################################
+  if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
+    ###############################
+    # No files were found to lint #
+    ###############################
+    warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
+  fi
+  
   ################################################
   # Iterate through the array of all files found #
   ################################################
