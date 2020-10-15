@@ -417,6 +417,8 @@ GetLinterRules() {
     # Here we expect a rules file, so fail if not available.
     fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exists. Terminating..."
   fi
+
+  eval "export ${LANGUAGE_LINTER_RULES}"
 }
 ################################################################################
 #### Function GetStandardRules #################################################
@@ -1188,16 +1190,6 @@ if [[ ${TEST_CASE_RUN} != "false" ]]; then
   # Set the multi status to off for test runs #
   #############################################
   MULTI_STATUS='false'
-
-  #######################################
-  # Print ENV before running test cases #
-  #######################################
-  debug "--- ENV (before running test cases) ---"
-  debug "---------------------------------------"
-  PRINTENV=$(printenv | sort)
-  debug "ENV:"
-  debug "${PRINTENV}"
-  debug "---------------------------------------"
 
   ###########################
   # Run only the test cases #
