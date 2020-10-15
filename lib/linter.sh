@@ -409,6 +409,8 @@ GetLinterRules() {
     debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}], nor file:[${SECONDARY_LANGUAGE_FILE_PATH}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
   fi
 
+  debug "  -> Language rules file variable (${LANGUAGE_LINTER_RULES}) value is: ${!LANGUAGE_LINTER_RULES}"
+
   if [ -e "${!LANGUAGE_LINTER_RULES}" ]; then
     debug "  -> Rules file (${!LANGUAGE_LINTER_RULES}) exists."
   else
