@@ -2,6 +2,9 @@
 ##################################
 ### GitHub Super Linter Config ###
 ##################################
+#
+# NOTE: This file should be located in your repository at:
+# .github/super-linter-config.yml
 
 ################
 ## Debug Vars ##
