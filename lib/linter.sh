@@ -1176,6 +1176,14 @@ LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-esli
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
 LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES}"
 
+
+debug "--- Linter commands ---"
+debug "-----------------------"
+for i in "${!LINTER_COMMANDS_ARRAY[@]}"; do
+  debug "Linter key: $i, command: ${LINTER_COMMANDS_ARRAY[$i]}"
+done
+debug "---------------------------------------------"
+
 ##################################
 # Get and print all version info #
 ##################################
