@@ -1189,6 +1189,16 @@ if [[ ${TEST_CASE_RUN} != "false" ]]; then
   #############################################
   MULTI_STATUS='false'
 
+  #######################################
+  # Print ENV before running test cases #
+  #######################################
+  debug "--- ENV (before running test cases) ---"
+  debug "---------------------------------------"
+  PRINTENV=$(printenv | sort)
+  debug "ENV:"
+  debug "${PRINTENV}"
+  debug "---------------------------------------"
+
   ###########################
   # Run only the test cases #
   ###########################
@@ -1206,15 +1216,15 @@ BuildFileList "${VALIDATE_ALL_CODEBASE}"
 ###############
 EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
 
-##################################################
-# Print ENV before running linters or test cases #
-##################################################
-  debug "--- ENV (before running linters or test cases) ---"
-  debug "--------------------------------------------------"
-  PRINTENV=$(printenv | sort)
-  debug "ENV:"
-  debug "${PRINTENV}"
-  debug "---------------------------------------------"
+####################################
+# Print ENV before running linters #
+####################################
+debug "--- ENV (before running linters) ---"
+debug "------------------------------------"
+PRINTENV=$(printenv | sort)
+debug "ENV:"
+debug "${PRINTENV}"
+debug "------------------------------------"
 
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Running linter for the ${LANGUAGE} language..."
