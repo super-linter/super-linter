@@ -92,8 +92,8 @@ HTML_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${HTML_FILE_NAME}" # Path to the HT
 JAVA_FILE_NAME="sun_checks.xml"                                 # Name of the Java config file
 JAVA_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVA_FILE_NAME}" # Path to the Java lint rules
 # Javascript Vars
-JAVASCRIPT_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
-JAVASCRIPT_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_FILE_NAME}" # Path to the Javascript lint rules
+JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"          # Name of the file
+JAVASCRIPT_ES_LINTER_RULES="${DEFAULT_RULES_LOCATION}/${JAVASCRIPT_ES_FILE_NAME}" # Path to the Javascript lint rules
 JAVASCRIPT_STANDARD_LINTER_RULES=''                                         # ENV string to pass when running js standard
 # Default linter path
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
@@ -460,7 +460,7 @@ GetStandardRules() {
   # Only env vars that are marked as true
   GET_ENV_ARRAY=()
   if [[ ${LINTER} == "javascript" ]]; then
-    mapfile -t GET_ENV_ARRAY < <(yq .env "${JAVASCRIPT_LINTER_RULES}" | grep true)
+    mapfile -t GET_ENV_ARRAY < <(yq .env "${JAVASCRIPT_ES_LINTER_RULES}" | grep true)
   elif [[ ${LINTER} == "typescript" ]]; then
     mapfile -t GET_ENV_ARRAY < <(yq .env "${TYPESCRIPT_LINTER_RULES}" | grep true)
   fi
@@ -1156,10 +1156,10 @@ LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c $GROOVY_LINTER_RULES --failon warning"
 LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
-LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JAVASCRIPT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
 LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
 LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
