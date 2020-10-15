@@ -1,0 +1,329 @@
+---
+##################################
+### GitHub Super Linter Config ###
+##################################
+
+################
+## Debug Vars ##
+################
+DEBUG:
+  # Enable additional information about the linter, versions, and additional output.
+  ACTIONS_RUNNER_DEBUG: false
+
+#######################
+## Super-Linter Vars ##
+#######################
+SUPERLINTER:
+  # The name of the repository default branch that should be
+  # used to help build a diff of the files changed
+  DEFAULT_BRANCH: master
+
+  # The location containing files to lint if you are running locally ONLY.
+  DEFAULT_WORKSPACE: /tmp/lint
+
+  # linter will complete with exit code 0 even if errors were detected.
+  DISABLE_ERRORS: false
+
+  # Regular expression defining which files will be excluded from linting (ex: .*src/test.*)
+  FILTER_REGEX_EXCLUDE:
+
+  # Regular expression defining which files will be processed by linters (ex: .*src/.*)
+  FILTER_REGEX_INCLUDE:
+
+  # Directory for all linter configuration rules.
+  LINTER_RULES_PATH: .github/linters
+
+  # The file name for outputting logs. All output is sent to the log file regardless of LOG_LEVEL.
+  LOG_FILE: super-linter.log
+
+  # How much output the script will generate to the console. One of VERBOSE, DEBUG or TRACE.
+  LOG_LEVEL: VERBOSE
+
+  # A status API call is made for each language that is linted to make visual parsing easier.
+  MULTI_STATUS: true
+
+  # The report format to be generated, besides the stdout one.
+  # Output format of tap is currently using v13 of the specification. Supported formats: tap
+  OUTPUT_FORMAT: none
+
+  # The location where the output reporting will be generated to.
+  # Output folder must not previously exist.
+  OUTPUT_FOLDER: super-linter.report
+
+  # What level of details to be reported. Supported formats: simpler or detailed.
+  OUTPUT_DETAILS: simpler
+
+  # Will parse the entire repository and find all files to validate across all types.
+  # NOTE: When set to false, only new or edited files will be parsed for validation.
+  VALIDATE_ALL_CODEBASE: true
+
+############################
+## Language specific Vars ##
+############################
+LANGUAGES:
+  ANSIBLE:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_ANSIBLE: true
+
+    # Directory to look for Ansible playbooks and code and lint code base
+    ANSIBLE_DIRECTORY: /ansible
+
+  ARM: # Azure resource Manager (ARM) Vars
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_ARM: true
+
+  COFFEESCRIPT:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_COFFEE: true
+
+  CLOJURE:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_CLOJURE: true
+
+  CLOUDFORMATION:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_CLOUDFORMATION: true
+
+  CSHARP:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_CSHARP: true
+
+  CSS:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_CSS: true
+
+    # Filename for Stylelint configuration (ex: .stylelintrc.yml, .stylelintrc.yaml)
+    # https://github.com/stylelint/stylelint
+    CSS_FILE_NAME: .stylelintrc.json
+
+  DART:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_DART: true
+
+  DOCKER:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_DOCKERFILE: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_DOCKERFILE_HADOLINT: true
+
+    # Filename for hadolint configuration (ex: .hadolintlintrc.yaml)
+    # https://github.com/hadolint/hadolint
+    DOCKERFILE_HADOLINT_FILE_NAME: .hadolint.yml
+  EDITOR_CONFIG:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_EDITORCONFIG: true
+
+    # Filename for editorconfig-checker configuration
+    # https://github.com/editorconfig-checker/editorconfig-checker
+    EDITORCONFIG_FILE_NAME: .ecrc
+
+  ENV:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_ENV: true
+
+  GO:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_GO: true
+
+  GROOVY:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_GROOVY: true
+
+  HTML:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_HTML: true
+
+  JAVA:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_JAVA: true
+
+  JAVASCRIPT:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_JAVASCRIPT_ES: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_JAVASCRIPT_STANDARD: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_JSX: true
+
+    # Filename for eslint configuration (ex: .eslintrc.yml, .eslintrc.json)
+    # https://eslint.org/docs/user-guide/configuring#configuration-file-formats
+    JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.yml
+
+  JSON:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_JSON: true
+
+  KOTLIN:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_KOTLIN: true
+
+  KUBERNETES:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_KUBERNETES_KUBEVAL: true
+
+  LATEX:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_LATEX: true
+
+  LUA:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_LUA: true
+
+  MARKDOWN:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_MARKDOWN: true
+
+    # Filename for Markdownlint configuration (ex: .markdown-lint.yml, .markdownlint.json, .markdownlint.yaml)
+    # https://github.com/DavidAnson/markdownlint#optionsconfig
+    MARKDOWN_CONFIG_FILE: .markdown-lint.yml
+
+  OPENAPI:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_OPENAPI: true
+
+  PERL:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PERL: true
+
+  PHP:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PHP: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PHP_BUILTIN: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PHP_PHPCS: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PHP_PHPSTAN: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PHP_PSALM: true
+
+  POWERSHELL:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_POWERSHELL: true
+
+
+  PROTOBUFF: # Protocol Buffers (Protobuf) Vars
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PROTOBUF: true
+
+  PYTHON:
+    # Flag to enable or disable the linting process of the Python language.
+    # (Utilizing: pylint) (keep for backward compatibility)
+    VALIDATE_PYTHON: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PYTHON_PYLINT: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PYTHON_FLAKE8: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_PYTHON_BLACK: true
+
+    # Filename for pylint configuration (ex: .python-lint, .pylintrc)
+    # https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options
+    PYTHON_PYLINT_CONFIG_FILE: .python-lint
+
+    # Filename for flake8 configuration (ex: .flake8, tox.ini)
+    # https://flake8.pycqa.org/en/latest/user/configuration.html
+    PYTHON_FLAKE8_CONFIG_FILE: .flake8
+
+    #	Filename for black configuration (ex: .isort.cfg, pyproject.toml)
+    # https://github.com/psf/black/blob/master/docs/compatible_configs.md
+    PYTHON_BLACK_CONFIG_FILE: .python-black
+
+  R:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_R: true
+
+  RAKU:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_RAKU: true
+
+  RUBY:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_RUBY: true
+
+    # Filename for rubocop configuration (ex: .ruby-lint.yml, .rubocop.yml)
+    # https://docs.rubocop.org/rubocop/configuration.html
+    RUBY_CONFIG_FILE: .ruby-lint.yml
+
+  SHELL:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_BASH: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_BASH_EXEC: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_SHELL_SHFMT: true
+
+    # If set to false, the bash-exec linter will report a warning if a shell script is not executable.
+    # If set to true, the bash-exec linter will report an arror instead.
+    ERROR_ON_MISSING_EXEC_BIT: false
+
+  SNAKEMAKE:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_SNAKEMAKE_LINT: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_SNAKEMAKE_SNAKEFMT: true
+
+    # Filename for Snakemake configuration (ex: pyproject.toml, .snakefmt.toml)
+    # https://github.com/snakemake/snakefmt#configuration
+    SNAKEMAKE_SNAKEFMT_CONFIG_FILE: .snakefmt.toml
+
+  AWS_STATES:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_STATES: true
+
+  SQL:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_SQL: true
+
+  TEKTON:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TEKTON: true
+
+  TERRAFORM:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TERRAFORM: true
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TERRAFORM_TERRASCAN: true
+
+  TERRAGRUNT:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TERRAGRUNT: true
+
+  TYPESCRIPT:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TSX: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TYPESCRIPT_ES: true
+
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_TYPESCRIPT_STANDARD: true
+
+    # Filename for eslint configuration (ex: .eslintrc.yml, .eslintrc.json)
+    # https://eslint.org/docs/user-guide/configuring#configuration-file-formats
+    TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yml
+
+  XML:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_XML: true
+
+  YAML:
+    # Flag to enable or disable the linting process of the specified language.
+    VALIDATE_YAML: true
+
+    # Filename for Yamllint configuration (ex: .yaml-lint.yml, .yamllint.yml)
+    # https://yamllint.readthedocs.io/en/stable/configuration.html
+    YAML_CONFIG_FILE: .yaml-lint.yml
