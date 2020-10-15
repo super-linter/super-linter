@@ -187,9 +187,18 @@ Example:
 
 _Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
 
+## Configuration file
+
+You can add the file: `.github/.super-linter-config.yml` to your codebase if you need to *enable*, *configure*, or *disable* specific features of the **Github Super-Linter**.  
+A template file can be found at [.super-linter-config.yml](https://github.com/github/super-linter/blob/master/TEMPLATES/.super-linter-config.yml).
+*:warning:* **Note:** *:warning:* This will be mandatory in the next major release (**v4+**)
+*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yml`) will override any **Environment** variables that are passed
+
 ## Environment variables
 
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
+*:warning:* **Note:** *:warning:* Environment Variables will be deprecated in the next major release (**v4+**)
+*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yml`) will override any **Environment** variables that are passed
 
 _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
 
