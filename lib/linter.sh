@@ -412,10 +412,10 @@ GetLinterRules() {
   debug "  -> Language rules file variable (${LANGUAGE_LINTER_RULES}) value is: ${!LANGUAGE_LINTER_RULES}"
 
   if [ -e "${!LANGUAGE_LINTER_RULES}" ]; then
-    debug "  -> Rules file (${!LANGUAGE_LINTER_RULES}) exists."
+    debug "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) exists."
   else
     # Here we expect a rules file, so fail if not available.
-    fatal "  -> Rules file (${!LANGUAGE_LINTER_RULES}) doesn't exists. Terminating..."
+    fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exists. Terminating..."
   fi
 }
 ################################################################################
@@ -1205,6 +1205,16 @@ BuildFileList "${VALIDATE_ALL_CODEBASE}"
 # Run linters #
 ###############
 EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
+
+##################################################
+# Print ENV before running linters or test cases #
+##################################################
+  debug "--- ENV (before running linters or test cases) ---"
+  debug "--------------------------------------------------"
+  PRINTENV=$(printenv | sort)
+  debug "ENV:"
+  debug "${PRINTENV}"
+  debug "---------------------------------------------"
 
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Running linter for the ${LANGUAGE} language..."
