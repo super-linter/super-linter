@@ -718,6 +718,12 @@ foo() -- Warning is emitted.
 - You can pass multiple rules and overwrite default rules
 - File should be located at: `.github/linters/.markdown-lint.yml`
 
+For example, disable [MD013/line-length](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md013---line-length) rule using below configuration in `.github/linters/.markdown-lint.yml` file.
+
+```json
+{ "default": true, "MD013": null }
+```
+
 ### markdownlint disable single line
 
 ```markdown
