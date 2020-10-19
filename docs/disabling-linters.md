@@ -54,6 +54,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Tekton](#tekton)
   - [Terraform](#terraform)
   - [Terragrunt](#terragrunt)
+  - [TFsec](#tfsec)
   - [Typescript eslint](#typescript-eslint)
   - [Typescript standard](#typescript-standard)
   - [XML](#xml)
@@ -1248,6 +1249,28 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 - There is currently **No** way to disable rules inline of the file(s)
 
 ### Terragrunt disable entire file
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+##TFsec
+
+- [tfsec](https://github.com/tfsec/tfsec)
+
+### TFsec standard Config file
+
+- There is currently **No** Terragrunt format config rules file
+
+### TFsec disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### TFsec disable code block
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### TFsec disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
 
