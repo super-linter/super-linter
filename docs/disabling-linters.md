@@ -53,6 +53,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [SQL](#sql)
   - [Tekton](#tekton)
   - [Terraform](#terraform)
+  - [Terragrunt](#terragrunt)
   - [Typescript eslint](#typescript-eslint)
   - [Typescript standard](#typescript-standard)
   - [XML](#xml)
