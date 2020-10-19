@@ -14,6 +14,7 @@ FROM golangci/golangci-lint:v1.31.0 as golangci-lint
 FROM yoheimuta/protolint:v0.26.0 as protolint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.20.3 as tflint
+FROM liamg/tfsec:v0.30.1 as tfsec
 FROM alpine/terragrunt:0.13.4 as terragrunt
 FROM mvdan/shfmt:v3.1.2 as shfmt
 FROM accurics/terrascan:d182f1c as terrascan
@@ -205,6 +206,12 @@ COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 # Install TFLint #
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+
+##################
+# Install TFSec #
+##################
+COPY --from=tfsec /usr/bin/tfsec /usr/bin/
+RUN tfsec
 
 ##################
 # Install Terrascan #
