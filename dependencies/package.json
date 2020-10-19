@@ -24,6 +24,6 @@
     "stylelint": "^13.7.2",
     "stylelint-config-standard": "^20.0.0",
     "typescript": "^4.0.3",
-    "tekton-lint": "^0.4.3"
+    "tekton-lint": "^0.5.0"
   }
 }
