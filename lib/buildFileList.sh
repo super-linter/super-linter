@@ -65,7 +65,7 @@ function BuildFileList() {
     mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
-    if [ "${TEST_CASE_RUN}" != "true" ]; then
+    if [ "${TEST_CASE_RUN}" == "true" ]; then
         WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
 
