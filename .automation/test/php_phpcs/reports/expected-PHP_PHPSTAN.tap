@@ -1,0 +1,12 @@
+TAP version 13
+1..4
+not ok 1 - php_bad_1.php
+  ---
+  message:  ------ ---------------------------------------------- \n  Line   php_bad_1.php                                 \n ------ ---------------------------------------------- \n  3      Invalid numeric literal on line 3             \n  3      Invalid numeric literal on line 3             \n  3      Syntax error, unexpected '=' on line 3        \n  3      Syntax error, unexpected T_LNUMBER on line 3  \n  3      Syntax error, unexpected T_STRING on line 3   \n  3      Syntax error, unexpected T_STRING on line 3   \n ------ ---------------------------------------------- \n\n [ERROR] Found 6 errors                                                         \n
+  ...
+not ok 2 - php_bad_2.php
+  ---
+  message:  ------ ----------------------------------------- \n  Line   php_bad_2.php                            \n ------ ----------------------------------------- \n  15     Syntax error, unexpected '}' on line 15  \n ------ ----------------------------------------- \n\n [ERROR] Found 1 error                                                          \n
+  ...
+ok 3 - php_good_1.php
+ok 4 - php_good_2.php

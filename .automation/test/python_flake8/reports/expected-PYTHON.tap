@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - python_bad_1.py
+  ---
+  message: ************* Module python_bad_1\npython/python_bad_1.py 15 24  E0001  invalid syntax (<unknown>, line 15) (syntax-error)\n
+  ...
+ok 2 - python_good_1.py
