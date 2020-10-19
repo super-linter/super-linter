@@ -145,6 +145,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'C
 # Linter command names array #
 ##############################
 declare -A LINTER_NAMES_ARRAY
+LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
 LINTER_NAMES_ARRAY['ARM']="arm-ttk"
 LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
@@ -182,7 +183,7 @@ LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
 LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
 LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
 LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
-LINTER_NAMES_ARRAY['R']="lintr"
+LINTER_NAMES_ARRAY['R']="R"
 LINTER_NAMES_ARRAY['RAKU']="raku"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
 LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
@@ -260,6 +261,25 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Setting ${FILE_ARRAY_VARIABLE_NAME} variable..."
   eval "${FILE_ARRAY_VARIABLE_NAME}=()"
 done
+
+#####################################
+# Validate we have linter installed #
+#####################################
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
+  debug "Checking if linter with name ${LINTER_NAME} for the ${LANGUAGE} language is available..."
+
+  if ! command -v "${LINTER_NAME}" 1&>/dev/null 2>&1; then
+    # Failed
+    error "Failed to find [${LINTER_NAME}] in system!"
+    fatal "[${VALIDATE_INSTALL_CMD}]"
+  else
+    # Success
+    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
+  fi
+done
+
+
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -506,6 +526,7 @@ DetectOpenAPIFile() {
   # Pull in vars #
   ################
   FILE="${1}"
+  debug "Checking if ${FILE} is an OpenAPI file..."
 
   ###############################
   # Check the file for keywords #
@@ -539,6 +560,7 @@ DetectTektonFile() {
   # Pull in vars #
   ################
   FILE="${1}"
+  debug "Checking if ${FILE} is a Tekton file..."
 
   ###############################
   # Check the file for keywords #
@@ -572,6 +594,7 @@ DetectARMFile() {
   # Pull in vars #
   ################
   FILE="${1}" # Name of the file/path we are validating
+  debug "Checking if ${FILE} is an ARM file..."
 
   ###############################
   # Check the file for keywords #
@@ -605,6 +628,7 @@ DetectCloudFormationFile() {
   # Pull in Vars #
   ################
   FILE="${1}" # File that we need to validate
+  debug "Checking if ${FILE} is a Cloud Formation file..."
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
   # AWSTemplateFormatVersion is optional
@@ -653,6 +677,7 @@ DetectAWSStatesFIle() {
   # Pull in Vars #
   ################
   FILE="${1}" # File that we need to validate
+  debug "Checking if ${FILE} is a AWS states descriptor..."
 
   # https://states-language.net/spec.html#example
   ###############################
@@ -1192,26 +1217,9 @@ debug "---------------------------------------------"
 GetLinterVersions
 
 ###########################################
-# Check to see if this is a test case run #
-###########################################
-if [[ ${TEST_CASE_RUN} != "false" ]]; then
-
-  #############################################
-  # Set the multi status to off for test runs #
-  #############################################
-  MULTI_STATUS='false'
-
-  ###########################
-  # Run only the test cases #
-  ###########################
-  # Code will exit from inside this loop
-  RunTestCases
-fi
-
-###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
 
 ###############
 # Run linters #
@@ -1280,8 +1288,8 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
       LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
       debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
 
-      debug "Invoking ${LINTER_NAME} linter..."
-      LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${!LANGUAGE_FILE_ARRAY}"
+      debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+      LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
     fi
   fi
 done
