@@ -1254,7 +1254,7 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ---
 
-##TFsec
+## TFsec
 
 - [tfsec](https://github.com/tfsec/tfsec)
 
