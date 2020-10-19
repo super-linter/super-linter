@@ -42,6 +42,8 @@ source /action/lib/buildFileList.sh # Source the function script(s)
 source /action/lib/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/worker.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/loadConfig.sh
 
 ###########
 # GLOBALS #
