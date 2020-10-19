@@ -6,6 +6,14 @@
 ################################################################################
 ################################################################################
 
+# shellcheck source=/dev/null
+source /action/lib/loadConfig.sh
+
+#####################################################################
+# Need to load the config file first, so we can load all the values #
+#####################################################################
+LoadConfigFile
+
 ##################################################################
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
@@ -42,8 +50,7 @@ source /action/lib/buildFileList.sh # Source the function script(s)
 source /action/lib/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/worker.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/loadConfig.sh
+
 
 ###########
 # GLOBALS #

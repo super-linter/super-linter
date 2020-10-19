@@ -72,14 +72,6 @@ function GetConfigVars() {
   ########################################
   mapfile -t GET_ALL_VARS_CMD < <(yq -r ".${SECTION}" "${SUPER_LINTER_CONFIG_FILE}" 2>&1)
 
-  ###################
-  # Load error code #
-  ###################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    error "Failed to parse Section:[${SECTION}] of:[${SUPER_LINTER_CONFIG_FILE}]"
-  fi
-
   ##############################################
   # Check we have data to validate for section #
   ##############################################
@@ -91,6 +83,16 @@ function GetConfigVars() {
     # Need to Set the Vars #
     ########################
     mapfile -t CLEANED_VAR_ARRAY < <(CleanVarArray "${GET_ALL_VARS_CMD[@]}")
+
+    ##################################
+    # Set the ENV with the variables #
+    ##################################
+    for PAIR in "${CLEANED_VAR_ARRAY[@]}"; do
+      KEY=$(echo "${PAIR}" | cut -f1 -d '|')
+      VALUE=$(echo "${PAIR}" | cut -f2 -d '|')
+      info "Setting ENV with [${KEY}]:[${VALUE}]"
+      export "${KEY}=${VALUE}"
+    done
   fi
 }
 ################################################################################
@@ -100,7 +102,8 @@ function CleanVarArray() {
   #####################
   # Pull in the array #
   #####################
-  ARRAY=("$@")
+  ARRAY=("$@")      # Array that needs to be cleaned are parsed
+  CLEANED_ARRAY=()  # Array to return once cleaned
 
   ##########################################
   # Need to clean up the array for parsing #
@@ -109,7 +112,29 @@ function CleanVarArray() {
     ARRAY=("${ARRAY[@]:1}") #removed the 1st element
   fi
 
+  #####################################
+  # Remove the last "}" fro the array #
+  #####################################
+  unset 'ARRAY[${#ARRAY[@]}-1]'
 
+  ###############################################
+  # Go through the array and get the key values #
+  ###############################################
+  for PAIR in "${ARRAY[@]}"; do
+    #############################################
+    # Remove any leading or trailing whitespace #
+    #############################################
+    PAIR="$(echo -e "${PAIR}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    # Break apart and remove outside quotes
+    KEY=$(echo "${PAIR}" | cut -f1 -d':' | sed -e 's/^"//' -e 's/"$//')
+    VALUE=$(echo "${PAIR}" | cut -f2 -d':' | sed -e 's/^"//' -e 's/"$//')
+    CLEANED_ARRAY+=("${KEY}|${VALUE}")
+  done
+
+  ############################
+  # Return the cleaned array #
+  ############################
+  ARRAY=("${CLEANED_ARRAY[@]}")
 }
 ################################################################################
 ################################################################################
