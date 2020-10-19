@@ -435,7 +435,7 @@ GetLinterRules() {
     debug "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) exists."
   else
     # Here we expect a rules file, so fail if not available.
-    fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exists. Terminating..."
+    fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exist. Terminating..."
   fi
 
   eval "export ${LANGUAGE_LINTER_RULES}"
