@@ -4,8 +4,8 @@ This folder holds the test cases for **OpenAPI**.
 
 ## Additional Docs
 
-The `_bad_` tests are valid `.yml`/`.json` but invalid OpenAPI specs.
-The test extensions used are `.ymlopenapi`/`.jsonopenapi` instead of `.yml`/`.json`. This is to prevent the [YAML] and [JSON] tests from picking them up.
+The `_bad_` tests are valid `.yaml`/`.json` but invalid OpenAPI specs.
+The test extensions used are `.ymlopenapi`/`.jsonopenapi` instead of `.yaml`/`.json`. This is to prevent the [YAML] and [JSON] tests from picking them up.
 
 ## Good Test Cases
 

@@ -69,13 +69,13 @@ For some linters it is also possible to override rules on a case by case level w
 
 ### Ansible-lint Config file
 
-- `.github/linters/.ansible-lint.yml`
+- `.github/linters/.ansible-lint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.ansible-lint.yml`
+- File should be located at: `.github/linters/.ansible-lint.yaml`
 
 ### Ansible-lint disable single line
 
-```yml
+```yaml
 - name: this would typically fire GitHasVersionRule 401 and BecomeUserWithoutBecomeRule 501
   become_user: alice # noqa 401 501
   git: src=/path/to/git/repo dest=checkout
@@ -83,7 +83,7 @@ For some linters it is also possible to override rules on a case by case level w
 
 ### Ansible-lint disable code block
 
-```yml
+```yaml
 - name: this would typically fire GitHasVersionRule 401
   git: src=/path/to/git/repo dest=checkout
   tags:
@@ -92,7 +92,7 @@ For some linters it is also possible to override rules on a case by case level w
 
 ### Ansible-lint disable entire file
 
-```yml
+```yaml
 - name: this would typically fire GitHasVersionRule 401
   git: src=/path/to/git/repo dest=checkout
   tags:
@@ -107,9 +107,9 @@ For some linters it is also possible to override rules on a case by case level w
 
 ### cfn-lint Config file
 
-- `.github/linters/.cfnlintrc.yml`
+- `.github/linters/.cfnlintrc.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.cfnlintrc.yml`
+- File should be located at: `.github/linters/.cfnlintrc.yaml`
 
 ### cfn-lint disable single line
 
@@ -135,7 +135,7 @@ Resources:
 
 ### cfn-lint disable entire file
 
-If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yml` to ignore certain files and locations
+If you need to ignore an entire file, you can update the `.github/linters/.cfnlintrc.yaml` to ignore certain files and locations
 
 ```yaml
 ignore_templates:
@@ -175,9 +175,9 @@ ignore_templates:
 
 ### coffeelint Config file
 
-- `.github/linters/.coffee-lint.yml`
+- `.github/linters/.coffee-lint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.coffee.yml`
+- File should be located at: `.github/linters/.coffee.yaml`
 
 ### coffeelint disable single line
 
@@ -251,9 +251,9 @@ a {
 
 ### dartanalyzer standard Config file
 
-- `.github/linters/analysis_options.yml`
+- `.github/linters/analysis_options.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/analysis_options.yml`
+- File should be located at: `.github/linters/analysis_options.yaml`
 
 ### dartanalyzer disable single line
 
@@ -271,7 +271,7 @@ int x = ''; // ignore: invalid_assignment
 
 ### dartanalyzer disable entire file
 
-- You can disable entire files with the `analyzer.exclude` property in `analysis_options.yml`
+- You can disable entire files with the `analyzer.exclude` property in `analysis_options.yaml`
 
 ```dart
 analyzer:
@@ -311,9 +311,9 @@ analyzer:
 
 ### Hadolint standard Config file
 
-- `.github/linters/.hadolint.yml`
+- `.github/linters/.hadolint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.hadolint.yml`
+- File should be located at: `.github/linters/.hadolint.yaml`
 
 ### Hadolint disable single line
 
@@ -398,9 +398,9 @@ RUN cd /tmp && echo "hello!"
 
 ### golangci-lint standard Config file
 
-- `.github/linters/.golangci.yml`
+- `.github/linters/.golangci.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.golangci.yml`
+- File should be located at: `.github/linters/.golangci.yaml`
 
 ### golangci-lint disable single line
 
@@ -503,9 +503,9 @@ def variable = 1;
 
 ### JavaScript eslint Config file
 
-- `.github/linters/.eslintrc.yml`
+- `.github/linters/.eslintrc.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.eslintrc.yml`
+- File should be located at: `.github/linters/.eslintrc.yaml`
 
 ### JavaScript eslint disable single line
 
@@ -717,9 +717,9 @@ foo() -- Warning is emitted.
 ### markdownlint Config file
 
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.markdown-lint.yml`
+- File should be located at: `.github/linters/.markdown-lint.yaml`
 
-For example, disable [MD013/line-length](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md013---line-length) rule using below configuration in `.github/linters/.markdown-lint.yml` file.
+For example, disable [MD013/line-length](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md013---line-length) rule using below configuration in `.github/linters/.markdown-lint.yaml` file.
 
 ```json
 { "default": true, "MD013": null }
@@ -770,10 +770,10 @@ Here is more data
 
 ### OpenAPI Config file
 
-- `.github/linters/.openapirc.yml`
+- `.github/linters/.openapirc.yaml`
 - You can add, extend, and disable rules
 - Documentation at [Spectral Custom Rulesets](https://stoplight.io/p/docs/gh/stoplightio/spectral/docs/guides/4-custom-rulesets.md)
-- File should be located at: `.github/linters/.openapirc.yml`
+- File should be located at: `.github/linters/.openapirc.yaml`
 
 ### OpenAPI disable single line
 
@@ -840,7 +840,7 @@ Here is more data
 
 ### protolint Config file
 
-- `.github/linters/.protolintrc.yml`
+- `.github/linters/.protolintrc.yaml`
 - You can add, extend, and disable rules
 - Documentation at [Rules](https://github.com/yoheimuta/protolint#rules) and [Configuring](https://github.com/yoheimuta/protolint#configuring)
 
@@ -869,7 +869,7 @@ enum Foo {
 
 ### protolint disable entire file
 
-- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yml`
+- You can disable entire files with the `lint.files.exclude` property in `.protolintrc.yaml`
 
 ```yaml
 # Lint directives.
@@ -1056,9 +1056,9 @@ exclusions: list("inst/doc/creating_linters.R" = 1, "inst/example/bad.R", "tests
 
 ### RuboCop Config file
 
-- `.github/linters/.ruby-lint.yml`
+- `.github/linters/.ruby-lint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.ruby-lint.yml`
+- File should be located at: `.github/linters/.ruby-lint.yaml`
 - **Note:** We use the Default **GitHub** Rule set from [RuboCop-GitHub](https://github.com/github/rubocop-github)
 
 ### RuboCop disable single line
@@ -1078,12 +1078,12 @@ var="this is some other stuff"
 
 ### RuboCop disable entire file
 
-If you need to ignore an entire file, you can update the `.github/linters/.ruby-lint.yml` to ignore certain files and locations
+If you need to ignore an entire file, you can update the `.github/linters/.ruby-lint.yaml` to ignore certain files and locations
 
-```yml
+```yaml
 inherit_from:
-  - .rubocop_todo.yml
-  - .rubocop_app_overrides.yml
+  - .rubocop_todo.yaml
+  - .rubocop_app_overrides.yaml
 
 inherit_mode:
   merge:
@@ -1259,9 +1259,9 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ### Typescript eslint Config file
 
-- `.github/linters/.eslintrc.yml`
+- `.github/linters/.eslintrc.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.eslintrc.yml`
+- File should be located at: `.github/linters/.eslintrc.yaml`
 
 ### Typescript eslint disable single line
 
@@ -1345,19 +1345,19 @@ alert("foo");
 
 ### Yamllint Config file
 
-- `.github/linters/.yaml-lint.yml`
+- `.github/linters/.yaml-lint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.yaml-lint.yml`
+- File should be located at: `.github/linters/.yaml-lint.yaml`
 
 ### Yamllint disable single line
 
-```yml
+```yaml
 This line is waaaaaaaaaay too long # yamllint disable-line
 ```
 
 ### Yamllint disable code block
 
-```yml
+```yaml
 # yamllint disable rule:colons
 - Key: value
   dolor: sit,
@@ -1367,9 +1367,9 @@ This line is waaaaaaaaaay too long # yamllint disable-line
 
 ### Yamllint disable entire file
 
-If you need to ignore an entire file, you can update the `.github/linters/.yaml-lint.yml` to ignore certain files and locations
+If you need to ignore an entire file, you can update the `.github/linters/.yaml-lint.yaml` to ignore certain files and locations
 
-```yml
+```yaml
 # For all rules
 ignore: |
   *.dont-lint-me.yaml

@@ -92,7 +92,7 @@ More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) ava
 
 To use this **GitHub** Action you will need to complete the following:
 
-1. Create a new file in your repository called `.github/workflows/linter.yml`
+1. Create a new file in your repository called `.github/workflows/linter.yaml`
 2. Copy the example workflow from below into that new file, no extra configuration required
 3. Commit that file to a new branch
 4. Open up a pull request and observe the action working
@@ -105,11 +105,11 @@ To use this **GitHub** Action you will need to complete the following:
 
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
 
-- `.github/workflows/linter.yml`
+- `.github/workflows/linter.yaml`
 
 This file should have the following code:
 
-```yml
+```yaml
 ---
 ###########################
 ###########################
@@ -189,16 +189,16 @@ _Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [
 
 ## Configuration file
 
-You can add the file: `.github/.super-linter-config.yml` to your codebase if you need to *enable*, *configure*, or *disable* specific features of the **Github Super-Linter**.  
-A template file can be found at [.super-linter-config.yml](https://github.com/github/super-linter/blob/master/TEMPLATES/.super-linter-config.yml).
+You can add the file: `.github/.super-linter-config.yaml` to your codebase if you need to *enable*, *configure*, or *disable* specific features of the **Github Super-Linter**.  
+A template file can be found at [.super-linter-config.yaml](https://github.com/github/super-linter/blob/master/TEMPLATES/.super-linter-config.yaml).
 *:warning:* **Note:** *:warning:* This will be mandatory in the next major release (**v4+**)
-*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yml`) will override any **Environment** variables that are passed
+*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yaml`) will override any **Environment** variables that are passed
 
 ## Environment variables
 
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 *:warning:* **Note:** *:warning:* Environment Variables will be deprecated in the next major release (**v4+**)
-*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yml`) will override any **Environment** variables that are passed
+*:warning:* **Note:** *:warning:* The configuration file (`.github-super-linter.yaml`) will override any **Environment** variables that are passed
 
 _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
 
@@ -218,26 +218,26 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **DEFAULT_BRANCH**                | `master`              | The name of the repository default branch.                                                                                                                                       |
 | **DEFAULT_WORKSPACE**             | `/tmp/lint`           | The location containing files to lint if you are running locally.                                                                                                                |
 | **DISABLE_ERRORS**                | `false`               | Flag to have the linter complete with exit code 0 even if errors were detected.                                                                                                  |
-| **DOCKERFILE_HADOLINT_FILE_NAME** | `.hadolint.yml`       | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                         |
+| **DOCKERFILE_HADOLINT_FILE_NAME** | `.hadolint.yaml`       | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                        |
 | **EDITORCONFIG_FILE_NAME**        | `.ecrc`               | Filename for [editorconfig-checker configuration](https://github.com/editorconfig-checker/editorconfig-checker)                                                                  |
-| **ERROR_ON_MISSING_EXEC_BIT**     | `false`               | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an arror instead.      |
+| **ERROR_ON_MISSING_EXEC_BIT**     | `false`               | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an error instead.      |
 | **FILTER_REGEX_EXCLUDE**          | `none`                | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                      |
 | **FILTER_REGEX_INCLUDE**          | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                            |
-| **JAVASCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
+| **JAVASCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yaml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                          |
 | **LINTER_RULES_PATH**             | `.github/linters`     | Directory for all linter configuration rules.                                                                                                                                    |
 | **LOG_FILE**                      | `super-linter.log`    | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                 |
 | **LOG_LEVEL**                     | `VERBOSE`             | How much output the script will generate to the console. One of `VERBOSE`, `DEBUG` or `TRACE`.                                                                                   |
 | **MULTI_STATUS**                  | `true`                | A status API is made for each language that is linted to make visual parsing easier.                                                                                             |
-| **MARKDOWN_CONFIG_FILE**          | `.markdown-lint.yml`  | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)       |
+| **MARKDOWN_CONFIG_FILE**          | `.markdown-lint.yaml`  | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)      |
 | **OUTPUT_FORMAT**                 | `none`                | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap                              |
 | **OUTPUT_FOLDER**                 | `super-linter.report` | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                           |
 | **OUTPUT_DETAILS**                | `simpler`             | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                    |
-| **PYTHON_PYLINT_CONFIG_FILE**     | `.python-lint`        | Filename for [pylint configuration](https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)               |
+| **PYTHON_PYLINT_CONFIG_FILE**     | `.python-lint`        | Filename for [pylint configuration](https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)              |
 | **PYTHON_FLAKE8_CONFIG_FILE**     | `.flake8`             | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                       |
 | **PYTHON_BLACK_CONFIG_FILE**      | `.python-black`       | Filename for [black configuration](https://github.com/psf/black/blob/master/docs/compatible_configs.md) (ex: `.isort.cfg`, `pyproject.toml`)                                     |
-| **RUBY_CONFIG_FILE**              | `.ruby-lint.yml`      | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                 |
+| **RUBY_CONFIG_FILE**              | `.ruby-lint.yaml`      | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE**| `.snakefmt.toml`      | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                             |
-| **TYPESCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
+| **TYPESCRIPT_ES_CONFIG_FILE**     | `.eslintrc.yaml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                          |
 | **VALIDATE_ALL_CODEBASE**         | `true`                | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation. |
 | **VALIDATE_ANSIBLE**              | `true`                | Flag to enable or disable the linting process of the Ansible language.                                                                                                           |
 | **VALIDATE_ARM**                  | `true`                | Flag to enable or disable the linting process of the ARM language.                                                                                                               |
@@ -245,7 +245,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_BASH_EXEC**            | `true`                | Flag to enable or disable the linting process of the Bash language to validate if file is stored as executable.                                                                  |
 | **VALIDATE_CLOJURE**              | `true`                | Flag to enable or disable the linting process of the Clojure language.                                                                                                           |
 | **VALIDATE_CLOUDFORMATION**       | `true`                | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                               |
-| **VALIDATE_COFFEE**               | `true`                | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                     |
+| **VALIDATE_COFFEE**               | `true`                | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                      |
 | **VALIDATE_CSHARP**               | `true`                | Flag to enable or disable the linting process of the C# language.                                                                                                                |
 | **VALIDATE_CSS**                  | `true`                | Flag to enable or disable the linting process of the CSS language.                                                                                                               |
 | **VALIDATE_DART**                 | `true`                | Flag to enable or disable the linting process of the Dart language.                                                                                                              |
@@ -296,7 +296,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_TYPESCRIPT_STANDARD**  | `true`                | Flag to enable or disable the linting process of the Typescript language. (Utilizing: standard)                                                                                  |
 | **VALIDATE_XML**                  | `true`                | Flag to enable or disable the linting process of the XML language.                                                                                                               |
 | **VALIDATE_YAML**                 | `true`                | Flag to enable or disable the linting process of the YAML language.                                                                                                              |
-| **YAML_CONFIG_FILE**              | `.yaml-lint.yml`      | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                      |
+| **YAML_CONFIG_FILE**              | `.yaml-lint.yaml`      | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                     |
 
 ### Template rules files
 
