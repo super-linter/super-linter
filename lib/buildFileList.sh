@@ -80,7 +80,7 @@ function BuildFileList() {
     -path "*/.venv" -prune -o \
     -path "*/.rbenv" -prune -o \
     -path "*/.terragrunt-cache" -prune -o \
-    -type f 2>&1)
+    -type f 2>&1 | sort )
   fi
 
   #######################
@@ -555,6 +555,10 @@ function BuildFileList() {
       ##############################################
       CheckFileType "${FILE}"
     fi
+    ##########################################
+    # Print line break after each file debug #
+    ##########################################
+    debug ""
   done
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then

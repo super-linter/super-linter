@@ -16,7 +16,7 @@ not ok 4 - cloudformation_bad_4.yaml
   ---
   message: E3002 Invalid Property Resources/myDNSRecord/Properties/Ttl\n/tmp/lint/.automation/test/cloudformation/cloudformation_bad_4.yaml 9 7\n
   ...
-ok 5 - cloudformation_good_1.json
-ok 6 - cloudformation_good_2.yaml
-ok 7 - cloudformation_good_3.json
-ok 8 - cloudformation_good_4.yaml
+ok 5 - /tmp/lint/.automation/test/cloudformation/cloudformation_good_1.json
+ok 6 - /tmp/lint/.automation/test/cloudformation/cloudformation_good_2.yaml
+ok 7 - /tmp/lint/.automation/test/cloudformation/cloudformation_good_3.json
+ok 8 - /tmp/lint/.automation/test/cloudformation/cloudformation_good_4.yaml
