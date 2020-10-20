@@ -280,8 +280,8 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_SQL**                  | `true`                | Flag to enable or disable the linting process of the SQL language.                                                                                                               |
 | **VALIDATE_TEKTON**               | `true`                | Flag to enable or disable the linting process of the Tekton language.                                                                                                            |
 | **VALIDATE_TERRAFORM**            | `true`                | Flag to enable or disable the linting process of the Terraform language.
-| **VALIDATE_TERRAFORM_TFSEC**      | `true`                | Flag to enable or disable the linting process of the Terraform language for security related issues.
-| **VALIDATE_TERRAFORM_TERRASCAN**  | `true`                | Flag to enable or disable the linting process of the Terraform language for security related issues.                                                                             |
+| **VALIDATE_TERRAFORM_TERRASCAN**  | `true`                | Flag to enable or disable the linting process of the Terraform language for security related issues.
+| **VALIDATE_TERRAFORM_TFSEC**      | `true`                | Flag to enable or disable the linting process of the Terraform language for security related issues.|
 | **VALIDATE_TERRAGRUNT**           | `true`                | Flag to enable or disable the linting process for Terragrunt files.                                                                                                              |
 | **VALIDATE_TSX**                  | `true`                | Flag to enable or disable the linting process for tsx files (Utilizing: eslint)                                                                                                  |
 | **VALIDATE_TYPESCRIPT_ES**        | `true`                | Flag to enable or disable the linting process of the Typescript language. (Utilizing: eslint)                                                                                    |
