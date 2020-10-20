@@ -1264,11 +1264,20 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ### TFsec disable single line
 
-- There is currently **No** way to disable rules inline of the file(s)
+```resource "aws_security_group_rule" "my-rule" {
+    type = "ingress"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS006
+}
+```
 
 ### TFsec disable code block
 
-- There is currently **No** way to disable rules inline of the file(s)
+```resource "aws_security_group_rule" "my-rule" {
+    type = "ingress"
+    #tfsec:ignore:AWS006
+    cidr_blocks = ["0.0.0.0/0"]
+}
+```
 
 ### TFsec disable entire file
 
