@@ -1260,7 +1260,7 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 
 ### TFsec standard Config file
 
-- There is currently **No** Terragrunt format config rules file
+- There is currently **No** TFsec format config rules file
 
 ### TFsec disable single line
 
