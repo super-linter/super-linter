@@ -211,7 +211,6 @@ COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 # Install TFSec #
 ##################
 COPY --from=tfsec /usr/bin/tfsec /usr/bin/
-RUN tfsec
 
 ##################
 # Install Terrascan #
