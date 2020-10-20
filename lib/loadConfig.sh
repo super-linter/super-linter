@@ -91,7 +91,7 @@ function GetConfigVars() {
       KEY=$(echo "${PAIR}" | cut -f1 -d '|')
       VALUE=$(echo "${PAIR}" | cut -f2 -d '|')
       info "Setting ENV with [${KEY}]:[${VALUE}]"
-      export "${KEY}=${VALUE}"
+      eval "${KEY}=${VALUE}"
     done
   fi
 }
