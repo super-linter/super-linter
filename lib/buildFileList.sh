@@ -65,7 +65,7 @@ function BuildFileList() {
     mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
-    if [ "${TEST_CASE_RUN}" != "true" ]; then
+    if [ "${TEST_CASE_RUN}" == "true" ]; then
         WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
 
@@ -80,7 +80,7 @@ function BuildFileList() {
     -path "*/.venv" -prune -o \
     -path "*/.rbenv" -prune -o \
     -path "*/.terragrunt-cache" -prune -o \
-    -type f 2>&1)
+    -type f 2>&1 | sort )
   fi
 
   #######################
@@ -555,6 +555,10 @@ function BuildFileList() {
       ##############################################
       CheckFileType "${FILE}"
     fi
+    ##########################################
+    # Print line break after each file debug #
+    ##########################################
+    debug ""
   done
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
