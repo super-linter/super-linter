@@ -22,7 +22,7 @@ MD004: false                  # Unordered list style
 MD007:
   indent: 2                   # Unordered list indentation
 MD013:
-  line_length: 808            # Line length
+  line_length: 200            # Line length
 MD026:
   punctuation: ".,;:!。，；:"  # List of not allowed
 MD029: false                  # Ordered list item prefix
