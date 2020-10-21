@@ -4,7 +4,7 @@ This folder holds the test cases for **Kubeval**.
 
 ## Additional Docs
 
-No Additional information is needed for this test case.
+`kubeval_good_2.yaml` is a CRD and not part of the Kubernetes OpenAPI specification. It should be ignored by kubeval and therefore pass validation.
 
 ## Good Test Cases
 
