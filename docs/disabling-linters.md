@@ -1,6 +1,7 @@
 # Disabling linters and Rules
 
-Linters can often require additional configuration to ensure they work with your codebase and your team's coding style, to avoid flagging false-positives. The **GitHub Super-Linter** has set up some default configurations for each linter which should work reasonably well with common code bases, but many of the linters can be configured to disable certain rules or configure the rules to ignore certain pieces of codes.
+Linters can often require additional configuration to ensure they work with your codebase and your team's coding style, to avoid flagging false-positives.  
+The **GitHub Super-Linter** has set up some default configurations for each linter which should work reasonably well with common code bases, but many of the linters can be configured to disable certain rules or configure the rules to ignore certain pieces of codes.
 
 To run with your own configuration for a linter, copy the relevant [`TEMPLATE` configuration file for the linter you are using from this repo](https://github.com/github/super-linter/tree/master/TEMPLATES) into the `.github/linters` folder in your own repository, and then edit it to modify, disable - or even add - rules and configuration to suit how you want your code checked.
 
