@@ -61,12 +61,12 @@ function BuildFileList() {
       # print header #
       ################
       debug "----------------------------------------------"
-      debug "Generating Diff with:[git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}]"
+      debug "Generating Diff with:[git diff-tree --no-commit-id --name-only -r \"${GITHUB_SHA}]\""
 
       #################################################
       # Get the Array of files changed in the commits #
       #################################################
-      mapfile -t RAW_FILE_ARRAY < <(git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} 2>&1)
+      mapfile -t RAW_FILE_ARRAY < <(git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" 2>&1)
     else
       ################
       # PR event     #
