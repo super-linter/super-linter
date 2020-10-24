@@ -93,6 +93,7 @@ RUN apk add --no-cache \
     jq \
     krb5-libs \
     libc-dev libxml2-dev libxml2-utils libgcc \
+    lttng-ust-dev \
     libcurl libintl libssl1.1 libstdc++ \
     linux-headers \
     make \
@@ -103,9 +104,10 @@ RUN apk add --no-cache \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools \
-    R \
+    R R-dev R-doc \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc
+    ruby ruby-dev ruby-bundler ruby-rdoc \
+    zlib zlib-dev
 
 ########################################
 # Copy dependencies files to container #
