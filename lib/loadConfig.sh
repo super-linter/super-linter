@@ -10,11 +10,21 @@
 ################################################################################
 #### Function LoadConfigFile ###################################################
 function LoadConfigFile() {
+
   ############################################
   # Print headers for user provided env vars #
   ############################################
   info "--------------------------------------------"
   info "Validation and extraction of config file:[${SUPER_LINTER_CONFIG_FILE}]..."
+
+  #####################################
+  # Validate SUPER_LINTER_CONFIG_FILE #
+  #####################################
+  if [ -z "${SUPER_LINTER_CONFIG_FILE}" ]; then
+    fatal "Failed to get [SUPER_LINTER_CONFIG_FILE]!"
+  else
+    debug "Successfully found:[SUPER_LINTER_CONFIG_FILE], value:[${SUPER_LINTER_CONFIG_FILE}]"
+  fi
 
   ##################################
   # Check if file exists on system #
