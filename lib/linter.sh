@@ -6,6 +6,11 @@
 ################################################################################
 ################################################################################
 
+# Source log functions as soon as possible, so other scripts and functions can
+# properly log
+# shellcheck source=/dev/null
+source /action/lib/log.sh
+
 # shellcheck source=/dev/null
 source /action/lib/loadConfig.sh
 
@@ -43,14 +48,11 @@ export LOG_VERBOSE
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
-source /action/lib/log.sh # Source the function script(s)
+source /action/lib/buildFileList.sh
 # shellcheck source=/dev/null
-source /action/lib/buildFileList.sh # Source the function script(s)
+source /action/lib/validation.sh
 # shellcheck source=/dev/null
-source /action/lib/validation.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/worker.sh # Source the function script(s)
-
+source /action/lib/worker.sh
 
 ###########
 # GLOBALS #

@@ -51,3 +51,11 @@ fatal() {
   log "true" "${NC}$(date +"%F %T") ${B[R]}${F[W]}[FATAL ]${NC}   $*${NC}"
   exit 1
 }
+
+export -f trace
+export -f debug
+export -f info
+export -f notice
+export -f warn
+export -f error
+export -f fatal
