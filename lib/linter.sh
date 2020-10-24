@@ -17,6 +17,7 @@ source /action/lib/loadConfig.sh
 #####################################################################
 # Need to load the config file first, so we can load all the values #
 #####################################################################
+SUPER_LINTER_CONFIG_FILE_NAME=".super-linter-config.yaml"
 LoadConfigFile
 
 ##################################################################
