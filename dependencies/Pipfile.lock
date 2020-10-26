@@ -458,11 +458,11 @@
         },
         "snakefmt": {
             "hashes": [
-                "sha256:632ec6d1765e0eb7e3c4569d6cc0086207dae92c06d7ab379ff55f2ccbb8c6fd",
-                "sha256:e0a5df6cacc37899a5ed47d9e7e0dc39921923cb3f247226d63437df980df95b"
+                "sha256:c3839b73f0f8a2b923626d46258b09fca0a1c78319a3d5c51164cb3148aa3428",
+                "sha256:fa2909eb44aa31cf8bf63b9cbf6f17cab0650fc3b3b80d925b61d856d8013b4a"
             ],
             "index": "pypi",
-            "version": "==0.2.2"
+            "version": "==0.2.3"
         },
         "snakemake": {
             "hashes": [
