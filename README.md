@@ -21,6 +21,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Add Super-Linter badge in your repository README](#add-super-linter-badge-in-your-repository-readme)
   - [Environment variables](#environment-variables)
     - [Template rules files](#template-rules-files)
+    - [Using your own rules files](#using-your-own-rules-files)
   - [Disabling rules](#disabling-rules)
   - [Filter linted files](#filter-linted-files)
   - [Docker Hub](#docker-hub)
@@ -296,7 +297,11 @@ You can use the **GitHub** **Super-Linter** _with_ or _without_ your own persona
 - Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/` of your repository
   - If your repository does not have rules files, they will fall back to defaults in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES)
 
-## Disabling rules
+### Using your own rules files
+
+If your repository contains your own rules files that live outside of a ``.github/linters/`` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their file names are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
+
+### Disabling rules
 
 If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
