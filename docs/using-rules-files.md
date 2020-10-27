@@ -1,23 +1,8 @@
 # Using your own rules files
 
-If your repository contains your own rules files that live outside of a ``.github/linters/`` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their file names are.
+If your repository contains your own rules files that live outside of a ``.github/linters/`` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are.
 
-You can tell Super-Linter where your rules files are located with the ``LINTER_RULES_PATH`` ENV VAR, and you can tell Super-Linter what their file names are by using any of the ENV VARS from the table below. 
-
-| ENV VARS that can be used with LINTER_RULES_PATH |
-| --------------------------------- |
-| CSS_FILE_NAME                     |
-| DOCKERFILE_HADOLINT_FILE_NAME     |
-| EDITORCONFIG_FILE_NAME            |
-| JAVASCRIPT_ES_CONFIG_FILE         |
-| MARKDOWN_CONFIG_FILE              |
-| PYTHON_PYLINT_CONFIG_FILE         |
-| PYTHON_FLAKE8_CONFIG_FILE         |
-| PYTHON_BLACK_CONFIG_FILE          |
-| RUBY_CONFIG_FILE                  |
-| SNAKEMAKE_SNAKEFMT_CONFIG_FILE    |
-| TYPESCRIPT_ES_CONFIG_FILE         |
-| JAVASCRIPT_ES_LINTER_RULES        |
+You can tell Super-Linter where your rules files are located with the ``LINTER_RULES_PATH`` ENV VAR, and you can tell Super-Linter what their filenames are by using any of the filename ENV VARS listed in the [Environment variables table](/README.md#Environment-variables). You can determine which ENV VARS are filename ENV VARS by looking in the notes column for the term "filename."
 
 ### Here is an example
 
