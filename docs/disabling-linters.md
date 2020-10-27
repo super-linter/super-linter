@@ -351,11 +351,12 @@ RUN cd /tmp && echo "hello!"
 ### editorconfig-checker disable code block
 
 ```js
-<!-- editorconfig-checker-disable -->
-
-[somelink]:  http://www.some.super.long.url.well.larger.than.the.maximum.line.length/that-I-have-no-control-over.html
-
-<!-- editorconfig-checker-enable -->
+// editorconfig-checker-disable
+const myTemplateString = `
+  first line
+     wrongly indended line because it needs to be
+`
+// editorconfig-checker-enable
 ```
 
 ### editorconfig-checker disable entire file
