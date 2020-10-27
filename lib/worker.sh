@@ -21,14 +21,14 @@ function LintCodebase() {
   TEST_CASE_RUN="${1}" && shift
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
-  debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
-
   ################
   # print header #
   ################
   info ""
   info "----------------------------------------------"
   info "----------------------------------------------"
+
+  debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
 
   if [ "${TEST_CASE_RUN}" = "true" ]; then
     info "Testing Codebase [${FILE_TYPE}] files..."
@@ -106,6 +106,7 @@ function LintCodebase() {
     # Lint the files #
     ##################
     for FILE in "${LIST_FILES[@]}"; do
+      debug "Linting FILE: ${FILE}"
       ###################################
       # Get the file name and directory #
       ###################################
@@ -118,28 +119,32 @@ function LintCodebase() {
       # Example: markdown_good_1.md -> good
       FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
 
-      #########################################################
-      # If not found, assume it should be linted successfully #
-      #########################################################
-      if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
-        FILE_STATUS="good"
-      fi
-
-      #######################################
-      # Check if docker and get folder name #
-      #######################################
+      ###################
+      # Check if docker #
+      ###################
       if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to Docker: ${FILE_TYPE}"
         if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
           #############
           # Good file #
           #############
           FILE_STATUS='good'
-        else
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
           ############
           # Bad file #
           ############
           FILE_STATUS='bad'
         fi
+      fi
+
+      #########################################################
+      # If not found, assume it should be linted successfully #
+      #########################################################
+      if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
+        debug "FILE_STATUS (${FILE_STATUS}) is empty, or not set to 'good' or 'bad'. Assuming it should be linted correctly. Setting FILE_STATUS to 'good'..."
+        FILE_STATUS="good"
       fi
 
       INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
