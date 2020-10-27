@@ -53,16 +53,35 @@ function BuildFileList() {
       fatal "[${SWITCH_CMD}]"
     fi
 
-    ################
-    # print header #
-    ################
-    debug "----------------------------------------------"
-    debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+    if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
+      ################
+      # push event   #
+      ################
+      ################
+      # print header #
+      ################
+      debug "----------------------------------------------"
+      debug "Generating Diff with:[git diff-tree --no-commit-id --name-only -r \"${GITHUB_SHA}]\""
 
-    #################################################
-    # Get the Array of files changed in the commits #
-    #################################################
-    mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+      #################################################
+      # Get the Array of files changed in the commits #
+      #################################################
+      mapfile -t RAW_FILE_ARRAY < <(git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" 2>&1)
+    else
+      ################
+      # PR event     #
+      ################
+      ################
+      # print header #
+      ################
+      debug "----------------------------------------------"
+      debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+
+      #################################################
+      # Get the Array of files changed in the commits #
+      #################################################
+      mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+    fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
