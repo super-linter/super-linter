@@ -350,7 +350,13 @@ RUN cd /tmp && echo "hello!"
 
 ### editorconfig-checker disable code block
 
-- There is currently **No** way to disable rules inline of the file(s)
+```js
+<!-- editorconfig-checker-disable -->
+
+[somelink]:  http://www.some.super.long.url.well.larger.than.the.maximum.line.length/that-I-have-no-control-over.html
+
+<!-- editorconfig-checker-enable -->
+```
 
 ### editorconfig-checker disable entire file
 
