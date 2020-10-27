@@ -350,7 +350,14 @@ RUN cd /tmp && echo "hello!"
 
 ### editorconfig-checker disable code block
 
-- There is currently **No** way to disable rules inline of the file(s)
+```js
+// editorconfig-checker-disable
+const myTemplateString = `
+  first line
+     wrongly indended line because it needs to be
+`
+// editorconfig-checker-enable
+```
 
 ### editorconfig-checker disable entire file
 
