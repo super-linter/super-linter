@@ -1,4 +1,4 @@
-mport json
+import json
 import sys
 from os import getenv, path
 from pprint import pprint
