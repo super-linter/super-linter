@@ -1,11 +1,11 @@
 import json
+import sys
 from os import getenv, path
 from pprint import pprint
-import sys
 
 import click  # pylint: disable=import-error
-from dotenv import load_dotenv  # pylint: disable=import-error
 import requests  # pylint: disable=import-error
+from dotenv import load_dotenv  # pylint: disable=import-error
 
 env = load_dotenv()
 api_url = getenv("API_URL", default="https://api.github.com/graphql")
