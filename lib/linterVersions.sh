@@ -23,7 +23,7 @@ ARM_TTK_PSD1='/usr/bin/arm-ttk'                 # Powershell var
 #######################################
 LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
   'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
-  'hadolint' 'htmlhint' 'jsonlint' 'kubeval' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
+  'hadolint' 'htmlhint' 'isort' 'jsonlint' 'kubeval' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
   'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
   'tekton-lint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
 

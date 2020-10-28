@@ -431,6 +431,7 @@ function BuildFileList() {
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
+      FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
 
     ######################
     # Get the RAKU files #
