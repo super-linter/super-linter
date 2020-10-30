@@ -206,20 +206,3 @@ function GetValidationInfo() {
   debug "${PRINTENV}"
   debug "---------------------------------------------"
 }
-################################################################################
-#### Function ValidatePowershellModules ########################################
-function ValidatePowershellModules() {
-  VALIDATE_PSSA_MODULE=$(pwsh -c "(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name" 2>&1)
-  VALIDATE_PSSA_CMD=$(pwsh -c "(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name" 2>&1)
-  # If module found, ensure Invoke-ScriptAnalyzer command is available
-  if [[ ${VALIDATE_PSSA_MODULE} == "PSScriptAnalyzer" ]] && [[ ${VALIDATE_PSSA_CMD} == "Invoke-ScriptAnalyzer" ]]; then
-    # Success
-    debug "Successfully found module ${F[W]}[${VALIDATE_PSSA_MODULE}]${F[B]} in system"
-    debug "Successfully found command ${F[W]}[${VALIDATE_PSSA_CMD}]${F[B]} in system"
-  else
-    # Failed
-    error "Failed find module [PSScriptAnalyzer] for [${LINTER_NAME}] in system!"
-    fatal "[PSSA_MODULE: ${VALIDATE_PSSA_MODULE}] [PSSA_CMD: ${VALIDATE_PSSA_CMD}]"
-  fi
-}
-################################################################################

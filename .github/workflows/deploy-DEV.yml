@@ -63,6 +63,13 @@ jobs:
         shell: bash
         run: .automation/validate-docker-labels.sh
 
+      #########################################
+      # Validates the docker libs/executables #
+      #########################################
+      - name: Run Docker libs/executables test cases
+        shell: bash
+        run: .automation/validate-docker.sh
+
       #####################################
       # Run Linter against Test code base #
       #####################################
