@@ -41,13 +41,13 @@ log() {
     fi
   )
 }
-trace() { log "${LOG_TRACE:-}" "${NC}$(date +"%F %T") ${F[B]}[TRACE ]${NC}   $*${NC}"; }
-debug() { log "${LOG_DEBUG:-}" "${NC}$(date +"%F %T") ${F[B]}[DEBUG ]${NC}   $*${NC}"; }
-info() { log "${LOG_VERBOSE:-}" "${NC}$(date +"%F %T") ${F[B]}[INFO  ]${NC}   $*${NC}"; }
-notice() { log "true" "${NC}$(date +"%F %T") ${F[G]}[NOTICE]${NC}   $*${NC}"; }
-warn() { log "true" "${NC}$(date +"%F %T") ${F[Y]}[WARN  ]${NC}   $*${NC}"; }
-error() { log "true" "${NC}$(date +"%F %T") ${F[R]}[ERROR ]${NC}   $*${NC}"; }
+trace() { log "${LOG_TRACE:-}" "${NC}$(date +"%F %T") ${F[B]}[TRACE]${NC}   $*${NC}"; }
+debug() { log "${LOG_DEBUG:-}" "${NC}$(date +"%F %T") ${F[B]}[DEBUG]${NC}   $*${NC}"; }
+info() { log "${LOG_VERBOSE:-}" "${NC}$(date +"%F %T") ${F[B]}[INFO]${NC}   $*${NC}"; }
+notice() { log "${LOG_NOTICE:-}" "${NC}$(date +"%F %T") ${F[G]}[NOTICE]${NC}   $*${NC}"; }
+warn() { log "${LOG_WARN:-}" "${NC}$(date +"%F %T") ${F[Y]}[WARN]${NC}   $*${NC}"; }
+error() { log "${LOG_ERROR:-}" "${NC}$(date +"%F %T") ${F[R]}[ERROR]${NC}   $*${NC}"; }
 fatal() {
-  log "true" "${NC}$(date +"%F %T") ${B[R]}${F[W]}[FATAL ]${NC}   $*${NC}"
+  log "true" "${NC}$(date +"%F %T") ${B[R]}${F[W]}[FATAL]${NC}   $*${NC}"
   exit 1
 }
