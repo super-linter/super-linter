@@ -70,7 +70,7 @@ CSS_FILE_NAME="${CSS_FILE_NAME:-.stylelintrc.json}"
 DART_FILE_NAME="analysis_options.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 DOCKERFILE_FILE_NAME=".dockerfilelintrc"
-DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yml}"
+DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yaml}"
 EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 GO_FILE_NAME=".golangci.yml"
@@ -407,24 +407,23 @@ GetLinterRules() {
     # Update the path to the file location #
     ########################################
     eval "${LANGUAGE_LINTER_RULES}=${LANGUAGE_FILE_PATH}"
-  else
-    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}]"
-    # Check if we have secondary name to check
-    if [ -n "$SECONDARY_FILE_NAME" ]; then
-      SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
-      debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check (${SECONDARY_FILE_NAME}). Path: ${SECONDARY_LANGUAGE_FILE_PATH}"
 
-      if [ -f "${SECONDARY_LANGUAGE_FILE_PATH}" ]; then
-        info "----------------------------------------------"
-        info "User provided file:[${SECONDARY_LANGUAGE_FILE_PATH}] exists, setting rules file..."
+  # Check if we have secondary file name to look for
+  elif [ -n "$SECONDARY_FILE_NAME" ]; then
+    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}]."
+    SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
+    debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check (${SECONDARY_FILE_NAME}). Path: ${SECONDARY_LANGUAGE_FILE_PATH}"
 
-        ########################################
-        # Update the path to the file location #
-        ########################################
-        eval "${LANGUAGE_LINTER_RULES}=${SECONDARY_LANGUAGE_FILE_PATH}"
-      fi
+    if [ -f "${SECONDARY_LANGUAGE_FILE_PATH}" ]; then
+      info "----------------------------------------------"
+      info "User provided file:[${SECONDARY_LANGUAGE_FILE_PATH}] exists, setting rules file..."
+
+      ########################################
+      # Update the path to the file location #
+      ########################################
+      eval "${LANGUAGE_LINTER_RULES}=${SECONDARY_LANGUAGE_FILE_PATH}"
     fi
-
+  else
     ########################################################
     # No user default provided, using the template default #
     ########################################################
