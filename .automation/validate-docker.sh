@@ -7,10 +7,11 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
-GITHUB_SHA="${GITHUB_SHA}"              # Sha used to create this branch
-BUILD_DATE="${BUILD_DATE}"              # Date the container was built
-ERROR=0                                 # Error count
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                  # GitHub Workspace
+GITHUB_SHA="${GITHUB_SHA}"                                              # Sha used to create this branch
+BUILD_DATE="${BUILD_DATE}"                                              # Date the container was built
+let LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR=true  # Enable all loging
+ERROR=0                                                                 # Error count
 
 #########################
 # Source Function Files #
