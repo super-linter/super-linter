@@ -371,6 +371,9 @@ GetLinterRules() {
     return
   fi
 
+  debug "Initializing LANGUAGE_LINTER_RULES value to an empty string..."
+  eval "${LANGUAGE_LINTER_RULES}="
+
   ##########################
   # Get the file extension #
   ##########################
@@ -378,10 +381,12 @@ GetLinterRules() {
   FILE_NAME=$(basename "${!LANGUAGE_FILE_NAME}" ".${FILE_EXTENSION}")
   debug "${LANGUAGE_NAME} language rule file (${!LANGUAGE_FILE_NAME}) has ${FILE_NAME} name and ${FILE_EXTENSION} extension"
 
-  ###############################
-  # Set the secondary file name #
-  ###############################
+  ########################################
+  # Set the secondary file name and path #
+  ########################################
+  debug "Initializing SECONDARY_FILE_NAME and SECONDARY_LANGUAGE_FILE_PATH..."
   SECONDARY_FILE_NAME=''
+  SECONDARY_LANGUAGE_FILE_PATH=
 
   #################################
   # Check for secondary file name #
@@ -428,7 +433,7 @@ GetLinterRules() {
     # No user default provided, using the template default #
     ########################################################
     eval "${LANGUAGE_LINTER_RULES}=${DEFAULT_RULES_LOCATION}/${!LANGUAGE_FILE_NAME}"
-    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}], nor file:[${SECONDARY_LANGUAGE_FILE_PATH}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
+    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}], nor the file:[${SECONDARY_LANGUAGE_FILE_PATH}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
   fi
 
   debug "  -> Language rules file variable (${LANGUAGE_LINTER_RULES}) value is: ${!LANGUAGE_LINTER_RULES}"
