@@ -7,11 +7,12 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                  # GitHub Workspace
-GITHUB_SHA="${GITHUB_SHA}"                                              # Sha used to create this branch
-TEST_FOLDER='.automation/test'                                          # Folder where test are stored
-CLEAN_FOLDER='.automation/automation'                                   # Folder to rename to prevent skip
-let LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR=true  # Enable all loging
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                     # GitHub Workspace
+GITHUB_SHA="${GITHUB_SHA}"                                                 # Sha used to create this branch
+TEST_FOLDER='.automation/test'                                             # Folder where test are stored
+CLEAN_FOLDER='.automation/automation'                                      # Folder to rename to prevent skip
+(( LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR="true" )) # Enable all loging
+export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
 
 ############################
 # Source additonal scripts #

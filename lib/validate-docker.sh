@@ -7,8 +7,10 @@
 ###########
 # Globals #
 ###########
-let LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR=true  # Enable all loging
+(( LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR="true" )) # Enable all loging
 ERROR=0                                                                 # Error count
+
+export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
 
 #########################
 # Source Function Files #
