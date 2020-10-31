@@ -7,9 +7,6 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                  # GitHub Workspace
-GITHUB_SHA="${GITHUB_SHA}"                                              # Sha used to create this branch
-BUILD_DATE="${BUILD_DATE}"                                              # Date the container was built
 let LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR=true  # Enable all loging
 ERROR=0                                                                 # Error count
 
@@ -17,7 +14,7 @@ ERROR=0                                                                 # Error 
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
-source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
+source /action/lib/log.sh
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
@@ -25,9 +22,9 @@ source "${GITHUB_WORKSPACE}/lib/log.sh" # Source the function script(s)
 ################################################################################
 #### Function Header ###########################################################
 Header() {
-  info "-------------------------------------------"
-  info "----- GitHub Actions validate docker ------"
-  info "-------------------------------------------"
+  info "---------------------------------------"
+  info "----- Post-build validate docker ------"
+  info "---------------------------------------"
 }
 ################################################################################
 #### Function ValidatePowershellModules ########################################
@@ -68,6 +65,11 @@ Footer() {
 ################################################################################
 ################################## MAIN ########################################
 ################################################################################
+
+##########
+# Header #
+##########
+Header
 
 #################
 # Validate libs #

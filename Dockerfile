@@ -342,6 +342,11 @@ COPY TEMPLATES /action/lib/.automation
 ###################################
 RUN /action/lib/linterVersions.sh
 
+##################################4
+# Run validations of built image #
+##################################
+RUN /action/lib/validate-docker.sh
+
 ######################
 # Set the entrypoint #
 ######################
