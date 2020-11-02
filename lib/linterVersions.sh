@@ -4,7 +4,7 @@ BuildLinterVersions() {
   VERSION_FILE="${1}" && shift
   LINTER_ARRAY=("$@")
 
-  debug "Building linter version file ${VERSION_FILE} for the following linters: ${LINTER_ARRAY}..."
+  debug "Building linter version file ${VERSION_FILE} for the following linters: ${LINTER_ARRAY[*]}..."
 
   ##########################################################
   # Go through the array of linters and print version info #
