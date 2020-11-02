@@ -311,9 +311,9 @@ analyzer:
 
 ### Hadolint standard Config file
 
-- `.github/linters/.hadolint.yml`
+- `.github/linters/.hadolint.yaml`
 - You can pass multiple rules and overwrite default rules
-- File should be located at: `.github/linters/.hadolint.yml`
+- File should be located at: `.github/linters/.hadolint.yaml`
 
 ### Hadolint disable single line
 
@@ -1009,7 +1009,7 @@ var = "terrible code down here..."
 - `.github/linters/.lintr`
 - You can pass multiple rules and overwrite default rules
 - You can use either one `.lintr` file in the root of your repository and/or additonal `.lintr` files in subdirectories. When linting a file lintr will look for config files from the file location upwards and will use the closest one.
-- Absolute paths for exclusions will not work due to the code being linted within the docker environment. Use paths relative to the `.lintr` file in which youare adding them.  
+- Absolute paths for exclusions will not work due to the code being linted within the docker environment. Use paths relative to the `.lintr` file in which youare adding them.
 - **Note:** The defaults adhere to the [tidyverse styleguide](https://style.tidyverse.org/)
 
 ### lintr disable single line
