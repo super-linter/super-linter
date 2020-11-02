@@ -281,11 +281,10 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
 
   if ! command -v "${LINTER_NAME}" 1&>/dev/null 2>&1; then
     # Failed
-    error "Failed to find [${LINTER_NAME}] in system!"
-    fatal "[${VALIDATE_INSTALL_CMD}]"
+    fatal "Failed to find [${LINTER_NAME}] in system!"
   else
     # Success
-    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]} in system location: ${F[W]}[${VALIDATE_INSTALL_CMD}]"
+    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]}."
   fi
 done
 
