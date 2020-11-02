@@ -6,6 +6,12 @@
 ################################################################################
 ################################################################################
 
+###########
+# Globals #
+###########
+(( LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR="true" )) # Enable all loging
+export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
+
 #########################
 # Source Function Files #
 #########################
@@ -79,8 +85,8 @@ BuildLinterVersions() {
       # Check the shell for errors #
       ##############################
       if [ ${ERROR_CODE} -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-        warn "[${LINTER}]: Failed to get version info for:"
         WriteFile "${LINTER}" "Failed to get version info"
+        fatal "[${LINTER}]: Failed to get version info for:"
       else
         ##########################
         # Print the version info #

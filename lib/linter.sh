@@ -1139,7 +1139,6 @@ REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"      # Location for 
 # Validate the environment #
 ############################
 GetValidationInfo
-ValidatePowershellModules
 
 ########################
 # Get the linter rules #
