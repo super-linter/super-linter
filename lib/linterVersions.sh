@@ -55,25 +55,29 @@ BuildLinterVersions() {
       ####################
       if [[ ${LINTER} == "arm-ttk" ]]; then
         # Need specific command for ARM
-        mapfile -t GET_VERSION_CMD < <(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)
+        GET_VERSION_CMD="$(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)"
       elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]] || [[ ${LINTER} == "bash-exec" ]]; then
         # Need specific command for Protolint and editorconfig-checker
-        mapfile -t GET_VERSION_CMD < <(echo "--version not supported")
+        GET_VERSION_CMD="$(echo "--version not supported")"
+      elif [[ ${LINTER} == "jsonlint" ]]; then
+        # Workaround for https://github.com/zaach/jsonlint/issues/122
+        # Delete after that issue is resolved
+        GET_VERSION_CMD="$("${LINTER}" --version 2>&1 || true)"
       elif [[ ${LINTER} == "lintr" ]]; then
         # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
-        mapfile -t GET_VERSION_CMD < <(R --slave -e "r_ver <- R.Version()\$version.string; \
+        GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \
                     lintr_ver <- packageVersion('lintr'); \
-                    glue::glue('lintr { lintr_ver } on { r_ver }')")
+                    glue::glue('lintr { lintr_ver } on { r_ver }')")"
       elif [[ ${LINTER} == "lua" ]]; then
         # Semi standardversion command
-        mapfile -t GET_VERSION_CMD < <("${LINTER}" -v 2>&1)
+        GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
       elif [[ ${LINTER} == "terrascan" ]]; then
-        mapfile -t GET_VERSION_CMD < <("${LINTER}" version 2>&1)
+        GET_VERSION_CMD="$("${LINTER}" version 2>&1)"
       elif [[ ${LINTER} == "checkstyle" ]]; then
-        mapfile -t GET_VERSION_CMD < <("java -jar /usr/bin/${LINTER}" --version 2>&1)
+        GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
       else
         # Standard version command
-        mapfile -t GET_VERSION_CMD < <("${LINTER}" --version 2>&1)
+        GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
       fi
 
       #######################
@@ -84,15 +88,16 @@ BuildLinterVersions() {
       ##############################
       # Check the shell for errors #
       ##############################
-      if [ ${ERROR_CODE} -ne 0 ] || [ -z "${GET_VERSION_CMD[*]}" ]; then
-        WriteFile "${LINTER}" "Failed to get version info"
-        fatal "[${LINTER}]: Failed to get version info for:"
+      debug "Linter version for ${LINTER}: ${GET_VERSION_CMD}. Error code: ${ERROR_CODE}"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        WriteFile "${LINTER}" "Failed to get version info: ${GET_VERSION_CMD}"
+        fatal "[${LINTER}]: Failed to get version info: ${GET_VERSION_CMD}"
       else
         ##########################
         # Print the version info #
         ##########################
-        info "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD[*]}"
-        WriteFile "${LINTER}" "${GET_VERSION_CMD[*]}"
+        info "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD}"
+        WriteFile "${LINTER}" "${GET_VERSION_CMD}"
       fi
     fi
   done
