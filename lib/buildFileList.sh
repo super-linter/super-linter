@@ -99,7 +99,7 @@ function BuildFileList() {
     -path "*/.venv" -prune -o \
     -path "*/.rbenv" -prune -o \
     -path "*/.terragrunt-cache" -prune -o \
-    -type f 2>&1 | sort )
+    -type f 2>&1 |  grep -v -w '\.git' | sort )
   fi
 
   #######################
