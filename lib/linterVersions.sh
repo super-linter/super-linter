@@ -1,49 +1,10 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter (Get the linter versions) @admiralawkbar ##############
-################################################################################
-################################################################################
-
-###########
-# Globals #
-###########
-(( LOG_TRACE=LOG_DEBUG=LOG_VERBOSE=LOG_NOTICE=LOG_WARN=LOG_ERROR="true" )) # Enable all loging
-export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
-
-#########################
-# Source Function Files #
-#########################
-# shellcheck source=/dev/null
-source /action/lib/log.sh # Source the function script(s)
-
-###########
-# GLOBALS #
-###########
-VERSION_FILE='/action/lib/linter-versions.txt'  # File to store linter versions
-ARM_TTK_PSD1='/usr/bin/arm-ttk'                 # Powershell var
-
-#######################################
-# Linter array for information prints #
-#######################################
-LINTER_ARRAY=('ansible-lint' 'arm-ttk' 'asl-validator' 'bash-exec' 'black' 'cfn-lint' 'checkstyle' 'chktex' 'clj-kondo' 'coffeelint'
-  'dotnet-format' 'dart' 'dockerfilelint' 'dotenv-linter' 'editorconfig-checker' 'eslint' 'flake8' 'golangci-lint'
-  'hadolint' 'htmlhint' 'isort' 'jsonlint' 'kubeval' 'ktlint' 'lintr' 'lua' 'markdownlint' 'npm-groovy-lint' 'perl' 'protolint'
-  'pwsh' 'pylint' 'raku' 'rubocop' 'shellcheck' 'shfmt' 'spectral' 'standard' 'stylelint' 'sql-lint'
-  'tekton-lint' 'terrascan' 'tflint' 'xmllint' 'yamllint')
-
-################################################################################
-########################## FUNCTIONS BELOW #####################################
-################################################################################
-################################################################################
-#### Function BuildLinterVersions ##############################################
 BuildLinterVersions() {
-  #########################
-  # Print version headers #
-  #########################
-  info "---------------------------------------------"
-  info "Linter Version Info:"
+  VERSION_FILE="${1}" && shift
+  LINTER_ARRAY=("$@")
+
+  debug "Building linter version file ${VERSION_FILE} for the following linters: ${LINTER_ARRAY[*]}..."
 
   ##########################################################
   # Go through the array of linters and print version info #
@@ -55,7 +16,7 @@ BuildLinterVersions() {
       ####################
       if [[ ${LINTER} == "arm-ttk" ]]; then
         # Need specific command for ARM
-        GET_VERSION_CMD="$(grep -iE 'version' "${ARM_TTK_PSD1}" | xargs 2>&1)"
+        GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1)"
       elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "editorconfig-checker" ]] || [[ ${LINTER} == "bash-exec" ]]; then
         # Need specific command for Protolint and editorconfig-checker
         GET_VERSION_CMD="$(echo "--version not supported")"
@@ -90,31 +51,25 @@ BuildLinterVersions() {
       ##############################
       debug "Linter version for ${LINTER}: ${GET_VERSION_CMD}. Error code: ${ERROR_CODE}"
       if [ ${ERROR_CODE} -ne 0 ]; then
-        WriteFile "${LINTER}" "Failed to get version info: ${GET_VERSION_CMD}"
         fatal "[${LINTER}]: Failed to get version info: ${GET_VERSION_CMD}"
       else
         ##########################
         # Print the version info #
         ##########################
         info "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD}"
-        WriteFile "${LINTER}" "${GET_VERSION_CMD}"
+        WriteFile "${LINTER}" "${GET_VERSION_CMD}" "${VERSION_FILE}"
       fi
     fi
   done
-
-  #########################
-  # Print version footers #
-  #########################
-  info "---------------------------------------------"
 }
-################################################################################
-#### Function WriteFile ########################################################
+
 WriteFile() {
   ##############
   # Read Input #
   ##############
-  LINTER="$1"   # Name of the linter
-  VERSION="$2"  # Version returned from check
+  LINTER="$1"     # Name of the linter
+  VERSION="$2"    # Version returned from check
+  VERSION_FILE=$3 # Version file path
 
   #################################
   # Write the data to output file #
@@ -133,11 +88,3 @@ WriteFile() {
     fatal "Failed to write data to file!"
   fi
 }
-################################################################################
-############################### MAIN ###########################################
-################################################################################
-
-#######################
-# BuildLinterVersions #
-#######################
-BuildLinterVersions

@@ -340,7 +340,7 @@ COPY TEMPLATES /action/lib/.automation
 ###################################
 # Run to build file with versions #
 ###################################
-RUN /action/lib/linterVersions.sh
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
 
 ##################################4
 # Run validations of built image #
