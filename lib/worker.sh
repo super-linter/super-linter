@@ -281,7 +281,7 @@ function LintCodebase() {
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
-            error "Error code: ${ERROR_CODE}. Command run:${NC}[\$${LINT_CMD}]"
+            error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]"
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
@@ -319,7 +319,7 @@ function LintCodebase() {
           #########
           error "Found errors in [${LINTER_NAME}] linter!"
           error "This file should have failed test case!"
-          error "Error code: ${ERROR_CODE}. Command run:${NC}[\$${LINT_CMD}]."
+          error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
           # Increment the error count
           (("ERRORS_FOUND_${FILE_TYPE}++"))
         else
@@ -337,7 +337,7 @@ function LintCodebase() {
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
       fi
-      debug "Error code: ${ERROR_CODE}. Command run:${NC}[\$${LINT_CMD}]."
+      debug "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
     done
 
     #################################
