@@ -69,17 +69,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:ada5af5cd813997fa2fe30ee47460bbea253f5a728a5946916d44bb12370d6e9",
-                "sha256:b5537e814c7d3f6c7efbc26049a868f3bd5b60f3a3a86d5f2527f98fca6ed33f"
+                "sha256:07c61751a31a3f79fc6871648aaf9c62a7242c1e5f0777a71a4c36bdb4ff2642",
+                "sha256:fe5fbcf988e6f5b87a31ddd6ba92a6485d35f666d26b9c9750263aa8b0d33b60"
             ],
-            "version": "==1.16.10"
+            "version": "==1.16.11"
         },
         "botocore": {
             "hashes": [
-                "sha256:0391922fc6fc1f36a51b9eb8c54b1278c37d9df1a0c6e40361213680d180c358",
-                "sha256:d44ecd33311cf163aec2c033e8941ae11f3a34e278e4b59aa7ee29b7455a5e62"
+                "sha256:85c49ec723e86317af46594f9a1843c6d64ecc3ab43c6e0a58a57d9c7cbbebe5",
+                "sha256:ada6405f3ff3fcd83058aa5060553f3885aa831dcd385f0a89301b770a1c5dcc"
             ],
-            "version": "==1.19.10"
+            "version": "==1.19.11"
         },
         "certifi": {
             "hashes": [
@@ -90,11 +90,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:5f48c8be94f7b3575dad5a26138a0f2aaf310ce7c2378bfa4f23a36e1c761121",
-                "sha256:cd5e813aa6656caf3a1ff7fd6edb473463cd4242cbc96e87365cf3963fb8a078"
+                "sha256:2d330f38197d4b8b560905dcd421227394a3bcfb8cb0fb4c6b10410f233d6683",
+                "sha256:7440930c4851e4e0402c224f7da5a1804b0712df7fc31a030f5489a60867bfc9"
             ],
             "index": "pypi",
-            "version": "==0.39.0"
+            "version": "==0.40.0"
         },
         "chardet": {
             "hashes": [
