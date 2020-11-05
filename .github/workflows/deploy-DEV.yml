@@ -83,3 +83,22 @@ jobs:
       - name: Run against all code base
         shell: bash
         run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+
+      ####################################
+      # Run the Trivy vulnerability scan #
+      ####################################
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: github/super-linter:${GITHUB_SHA}
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+
+      ###################################
+      # Upload results to Security tab #
+      ##################################
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-results.sarif'
