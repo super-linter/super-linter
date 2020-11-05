@@ -52,7 +52,12 @@ jobs:
       #################################
       - name: Trivy Scan
         shell: bash
-        run: ${GITHUB_WORKSPACE}/trivy fs --format template --template @${GITHUB_WORKSPACE}/sarif.tpl -o report.sarif --exit-code 1 ${GITHUB_WORKSPACE}
+        run: |
+          ${GITHUB_WORKSPACE}/trivy fs --format template --template @${GITHUB_WORKSPACE}/sarif.tpl -o report.sarif --exit-code 1 ${GITHUB_WORKSPACE}
+          echo ""
+          echo "-------- [report.sarif] Results: --------"
+          cat report.sarif
+          echo "-----------------------------------------"
 
       ################################
       # Upload report to secrity tab #
