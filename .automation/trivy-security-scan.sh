@@ -91,3 +91,8 @@ RunScan
 # Output Report #
 #################
 OutputReport
+
+##########
+# Footer #
+##########
+Footer
