@@ -5,5 +5,5 @@ runs:
   using: 'docker'
   image: 'docker://ghcr.io/github/super-linter:v3'
 branding:
-  icon: 'check-square' 
+  icon: 'check-square'
   color: 'white'

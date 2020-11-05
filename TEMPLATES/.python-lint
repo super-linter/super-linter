@@ -324,11 +324,11 @@ function-naming-style=snake_case
 
 # Good variable names which should always be accepted, separated by a comma
 good-names=i,
-           j,
-           k,
-           ex,
-           Run,
-           _
+            j,
+            k,
+            ex,
+            Run,
+            _
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no
@@ -419,8 +419,7 @@ max-module-lines=1000
 # separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
 # `trailing-comma` allows a space between comma and closing bracket: (a, ).
 # `empty-line` allows space-only lines.
-no-space-check=trailing-comma,
-               dict-separator
+no-space-check=trailing-comma,dict-separator
 
 # Allow the body of a class to be on the same line as the declaration if body
 # contains single statement.
@@ -491,9 +490,9 @@ analyse-fallback-blocks=no
 
 # Deprecated modules which should not be used, separated by a comma
 deprecated-modules=regsub,
-                   TERMIOS,
-                   Bastion,
-                   rexec
+                  TERMIOS,
+                  Bastion,
+                  rexec
 
 # Create a graph of external dependencies in the given file (report RP0402 must
 # not be disabled)
