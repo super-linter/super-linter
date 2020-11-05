@@ -94,12 +94,14 @@ function BuildFileList() {
     debug "----------------------------------------------"
     debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace"
     mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
-    -path "*/node_modules" -prune -o \
-    -path "*/.git" -prune -o \
-    -path "*/.venv" -prune -o \
-    -path "*/.rbenv" -prune -o \
-    -path "*/.terragrunt-cache" -prune -o \
-    -type f 2>&1 |  grep -v -w '\.git' | sort )
+    -not \( -path '*/\.git' -prune \) \
+    -not \( -path '*/\.rbenv' -prune \) \
+    -not \( -path '*/\.terragrunt-cache' -prune \) \
+    -not \( -path '*/\.venv' -prune \) \
+    -type f \
+    2>&1 | sort)
+
+    debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
   fi
 
   #######################
@@ -111,9 +113,7 @@ function BuildFileList() {
   # Check the shell for errors #
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    error "Failed to gain a list of all files changed!"
-    fatal "[${RAW_FILE_ARRAY[*]}]"
+    fatal "Failed to gain a list of all files changed! Error code: ${ERROR_CODE}"
   fi
 
   ##########################################################################
