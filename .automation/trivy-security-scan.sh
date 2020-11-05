@@ -28,7 +28,7 @@ RunScan() {
   ###########################
   # Run the Trivy code scan #
   ###########################
-  RUN_CMD=$(${GITHUB_WORKSPACE}/trivy fs --format template --template @${GITHUB_WORKSPACE}/${TEMPLATE_NAME} -o ${REPORT_NAME} --exit-code 1 ${GITHUB_WORKSPACE} 2>&1)
+  RUN_CMD=$("${GITHUB_WORKSPACE}/trivy" fs --format template --template @"${GITHUB_WORKSPACE}/${TEMPLATE_NAME}" -o "${REPORT_NAME}" --exit-code 1 "${GITHUB_WORKSPACE}" 2>&1)
 
   #######################
   # Load the error code #
@@ -57,7 +57,7 @@ OutputReport() {
   ########################################
   echo ""
   echo "-------- [${REPORT_NAME}] Results: --------"
-  ${GITHUB_WORKSPACE}/trivy fs ${GITHUB_WORKSPACE} 2>&1
+  "${GITHUB_WORKSPACE}/trivy" fs "${GITHUB_WORKSPACE}" 2>&1
   echo "-----------------------------------------"
 }
 ################################################################################
