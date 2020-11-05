@@ -13,14 +13,9 @@
 #######################################
 # Start the job on all push to master #
 #######################################
-# on:
-#   push:
-#     branches:
-#       - 'master'
 on:
   push:
     branches-ignore: [master]
-
 
 ###############
 # Set the Job #
@@ -57,7 +52,7 @@ jobs:
       #################################
       - name: Trivy Scan
         shell: bash
-        run: ${GITHUB_WORKSPACE}/trivy fs --format template --template @${GITHUB_WORKSPACE}/sarif.tpl -o report.sarif ${GITHUB_WORKSPACE}
+        run: ${GITHUB_WORKSPACE}/trivy fs --format template --template @${GITHUB_WORKSPACE}/sarif.tpl -o report.sarif --exit-code 1 ${GITHUB_WORKSPACE}
 
       ################################
       # Upload report to secrity tab #
