@@ -94,6 +94,8 @@ jobs:
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
+        env:
+          TRIVY_TIMEOUT: 4m0s
 
       ###################################
       # Upload results to Security tab #
