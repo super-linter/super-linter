@@ -85,7 +85,7 @@ function BuildFileList() {
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
-        WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
+      WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
 
     ################
@@ -94,12 +94,12 @@ function BuildFileList() {
     debug "----------------------------------------------"
     debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace"
     mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
-    -not \( -path '*/\.git' -prune \) \
-    -not \( -path '*/\.rbenv' -prune \) \
-    -not \( -path '*/\.terragrunt-cache' -prune \) \
-    -not \( -path '*/\.venv' -prune \) \
-    -type f \
-    2>&1 | sort)
+      -not \( -path '*/\.git' -prune \) \
+      -not \( -path '*/\.rbenv' -prune \) \
+      -not \( -path '*/\.terragrunt-cache' -prune \) \
+      -not \( -path '*/\.venv' -prune \) \
+      -type f \
+      2>&1 | sort)
 
     debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
   fi
@@ -401,12 +401,12 @@ function BuildFileList() {
     # Get the Powershell files #
     ############################
     elif [ "${FILE_TYPE}" == "ps1" ] ||
-    [ "${FILE_TYPE}" == "psm1" ] ||
-    [ "${FILE_TYPE}" == "psd1" ] ||
-    [ "${FILE_TYPE}" == "ps1xml" ] ||
-    [ "${FILE_TYPE}" == "pssc" ] ||
-    [ "${FILE_TYPE}" == "psrc" ] ||
-    [ "${FILE_TYPE}" == "cdxml" ]; then
+      [ "${FILE_TYPE}" == "psm1" ] ||
+      [ "${FILE_TYPE}" == "psd1" ] ||
+      [ "${FILE_TYPE}" == "ps1xml" ] ||
+      [ "${FILE_TYPE}" == "pssc" ] ||
+      [ "${FILE_TYPE}" == "psrc" ] ||
+      [ "${FILE_TYPE}" == "cdxml" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -703,8 +703,8 @@ function IsValidShellScript() {
     [ "${FILE_EXTENSION}" == "bash" ] ||
     [ "${FILE_EXTENSION}" == "dash" ] ||
     [ "${FILE_EXTENSION}" == "ksh" ]; then
-      debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
-      return 0
+    debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
+    return 0
   fi
 
   if [[ "${GET_FILE_TYPE_CMD}" == *"POSIX shell script"* ]] ||
@@ -712,8 +712,8 @@ function IsValidShellScript() {
     [[ ${GET_FILE_TYPE_CMD} == *"dash script"* ]] ||
     [[ ${GET_FILE_TYPE_CMD} == *"ksh script"* ]] ||
     [[ ${GET_FILE_TYPE_CMD} == *"/usr/bin/env sh script"* ]]; then
-      debug "$FILE is a valid shell script (has a valid file type: ${GET_FILE_TYPE_CMD})"
-      return 0
+    debug "$FILE is a valid shell script (has a valid file type: ${GET_FILE_TYPE_CMD})"
+    return 0
   fi
 
   trace "$FILE is NOT a supported shell script. Skipping"

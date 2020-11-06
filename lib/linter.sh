@@ -17,8 +17,8 @@ ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more
 # Log Vars                                                       #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-LOG_FILE="${LOG_FILE:-super-linter.log}"                             # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"                                    # Default log level (VERBOSE, DEBUG, TRACE)
+LOG_FILE="${LOG_FILE:-super-linter.log}" # Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"        # Default log level (VERBOSE, DEBUG, TRACE)
 
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
 # Boolean to see trace logs
@@ -56,10 +56,10 @@ source /action/lib/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation' # Default rules files location
+DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
-GITHUB_API_URL='https://api.github.com'          # GitHub API root url
-VERSION_FILE='/action/lib/linter-versions.txt' # File to store linter versions
+GITHUB_API_URL='https://api.github.com'                   # GitHub API root url
+VERSION_FILE='/action/lib/linter-versions.txt'            # File to store linter versions
 
 ###############
 # Rules files #
@@ -219,20 +219,20 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"                             # Ansible Directory
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"                           # Default Git Branch to use (master by default)
-DISABLE_ERRORS="${DISABLE_ERRORS}"                                   # Boolean to enable warning-only output without throwing errors
-FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"                       # RegExp defining which files will be processed by linters (all by default)
-FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"                       # RegExp defining which files will be excluded from linting (none by default)
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"                             # Github Event Path
-GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"                             # GitHub Org/Repo passed from system
-GITHUB_RUN_ID="${GITHUB_RUN_ID}"                                     # GitHub RUn ID to point to logs
-GITHUB_SHA="${GITHUB_SHA}"                                           # GitHub sha from the commit
-GITHUB_TOKEN="${GITHUB_TOKEN}"                                       # GitHub Token passed from environment
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                               # Github Workspace
-MULTI_STATUS="${MULTI_STATUS:-true}"                                 # Multiple status are created for each check ran
-TEST_CASE_RUN="${TEST_CASE_RUN}"                                     # Boolean to validate only test cases
-VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}"                     # Boolean to validate all files
+ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"         # Ansible Directory
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"       # Default Git Branch to use (master by default)
+DISABLE_ERRORS="${DISABLE_ERRORS}"               # Boolean to enable warning-only output without throwing errors
+FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"   # RegExp defining which files will be processed by linters (all by default)
+FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"   # RegExp defining which files will be excluded from linting (none by default)
+GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"         # Github Event Path
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
+GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
+GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
+GITHUB_TOKEN="${GITHUB_TOKEN}"                   # GitHub Token passed from environment
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
+MULTI_STATUS="${MULTI_STATUS:-true}"             # Multiple status are created for each check ran
+TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
+VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
 
 ################
 # Default Vars #
@@ -245,23 +245,23 @@ DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run o
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
-DEFAULT_DISABLE_ERRORS='false'                          # Default to enabling errors
-export DEFAULT_DISABLE_ERRORS                           # Workaround SC2034
+DEFAULT_DISABLE_ERRORS='false'                                  # Default to enabling errors
+export DEFAULT_DISABLE_ERRORS                                   # Workaround SC2034
 ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
 export ERROR_ON_MISSING_EXEC_BIT
-RAW_FILE_ARRAY=()                                       # Array of all files that were changed
-export RAW_FILE_ARRAY                                   # Workaround SC2034
-TEST_CASE_FOLDER='.automation/test'                     # Folder for test cases we should always ignore
-export TEST_CASE_FOLDER                                 # Workaround SC2034
-WARNING_ARRAY_TEST=()                                   # Array of warning linters that did not have an expected test result.
-export WARNING_ARRAY_TEST                               # Workaround SC2034
+RAW_FILE_ARRAY=()                   # Array of all files that were changed
+export RAW_FILE_ARRAY               # Workaround SC2034
+TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
+export TEST_CASE_FOLDER             # Workaround SC2034
+WARNING_ARRAY_TEST=()               # Array of warning linters that did not have an expected test result.
+export WARNING_ARRAY_TEST           # Workaround SC2034
 
 ##############
 # Format     #
 ##############
-OUTPUT_FORMAT="${OUTPUT_FORMAT}"                            # Output format to be generated. Default none
-OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}"       # Folder where the reports are generated. Default super-linter.report
-OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"                 # What level of details. (simpler or detailed). Default simpler
+OUTPUT_FORMAT="${OUTPUT_FORMAT}"                      # Output format to be generated. Default none
+OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
+OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
 
 ##########################
 # Array of changed files #
@@ -279,7 +279,7 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
   debug "Checking if linter with name ${LINTER_NAME} for the ${LANGUAGE} language is available..."
 
-  if ! command -v "${LINTER_NAME}" 1&>/dev/null 2>&1; then
+  if ! command -v "${LINTER_NAME}" 1 &>/dev/null 2>&1; then
     # Failed
     fatal "Failed to find [${LINTER_NAME}] in system!"
   else
@@ -287,8 +287,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]}."
   fi
 done
-
-
 
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
@@ -1189,9 +1187,9 @@ GetGitHubVars
 ########################################################
 # Initialize variables that depend on GitHub variables #
 ########################################################
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"          # Default Ansible Directory
-export DEFAULT_ANSIBLE_DIRECTORY                                 # Workaround SC2034
-REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}"      # Location for the report folder
+DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"     # Default Ansible Directory
+export DEFAULT_ANSIBLE_DIRECTORY                            # Workaround SC2034
+REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
 
 ############################
 # Validate the environment #
@@ -1271,7 +1269,6 @@ LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-esli
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
 LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES}"
 
-
 debug "--- Linter commands ---"
 debug "-----------------------"
 for i in "${!LINTER_COMMANDS_ARRAY[@]}"; do
@@ -1317,8 +1314,8 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
         continue
       fi
     elif [ "${LANGUAGE}" = "R" ] && [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && ((${#FILE_ARRAY_R[@]})); then
-        info "No .lintr configuration file found, using defaults."
-        cp "$R_LINTER_RULES" "$GITHUB_WORKSPACE"
+      info "No .lintr configuration file found, using defaults."
+      cp "$R_LINTER_RULES" "$GITHUB_WORKSPACE"
     # Check if there's local configuration for the Raku linter
     elif [ "${LANGUAGE}" = "RAKU" ] && [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
       cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
@@ -1331,14 +1328,14 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
       LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
     else
       LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_NAME}" ];then
+      if [ -z "${LINTER_NAME}" ]; then
         fatal "Cannot find the linter name for ${LANGUAGE} language."
       else
         debug "Setting LINTER_NAME to ${LINTER_NAME}..."
       fi
 
       LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_COMMAND}" ];then
+      if [ -z "${LINTER_COMMAND}" ]; then
         fatal "Cannot find the linter command for ${LANGUAGE} language."
       else
         debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
