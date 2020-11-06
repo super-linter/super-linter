@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # editorconfig-checker-disable
 cat << EOF
 --------------------------------------------------------------------------------
