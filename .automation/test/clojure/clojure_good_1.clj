@@ -1,6 +1,6 @@
 (ns foo
   (:require
-   [clojure.string :as str]))
+    [clojure.string :as str]))
 
 (butlast [1 2 3])
 
@@ -11,8 +11,8 @@
         (y)))
 
 (letfn
- [(f [g] (h g))
-  (h [i] (f i))])
+  [(f [g] (h g))
+    (h [i] (f i))])
 
 (defn foo [] 1)
 (inc (foo))

@@ -11,4 +11,3 @@ function BadFunction {
         'Empty Catch Block' 
     } catch {}
 }
-

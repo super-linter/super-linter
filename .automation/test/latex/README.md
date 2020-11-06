@@ -1,5 +1,5 @@
 # LaTeX Test Cases
-This folder holds the test cases for **LaTeX**.  
+This folder holds the test cases for **LaTeX**.
 
 ## Additional Docs
 No Additional information is needed for this test case.
