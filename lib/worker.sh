@@ -10,6 +10,8 @@
 ################################################################################
 #### Function LintCodebase #####################################################
 function LintCodebase() {
+  # Call comes thorugh as:
+  # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   ####################
   # Pull in the vars #
   ####################
@@ -18,7 +20,7 @@ function LintCodebase() {
   LINTER_COMMAND="${1}" && shift       # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
   FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
   FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
-  TEST_CASE_RUN="${1}" && shift
+  TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
   ################
