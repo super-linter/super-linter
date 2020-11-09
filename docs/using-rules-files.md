@@ -6,7 +6,7 @@ You can tell Super-Linter where your rules files are located with the ``LINTER_R
 
 ## Here is an example
 
-Below is an example of how to configure the ``env`` section of Super-Linter's ``linter.yml`` to lint JavaScript and CSS code using ``eslint`` and ``stylelint`` with your own ``.eslintrc.json`` and ``.stylelintrc.json`` rules files that are located in the root directory of your repository.  
+Below is an example of how to configure the ``env`` section of Super-Linter's ``linter.yml`` to lint JavaScript and CSS code using ``eslint`` and ``stylelint`` with your own ``.eslintrc.json`` and ``.stylelintrc.json`` rules files that are located in the root directory of your repository.
 
 ``` yaml
         env:

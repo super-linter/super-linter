@@ -1,6 +1,6 @@
-# EDITORCONFIG_CHECKER Test Cases
+# EDITORCONFIG Test Cases
 
-This folder holds the test cases for **EDITORCONFIG_CHECKER**.
+This folder holds the test cases for **EDITORCONFIG**.
 
 ## Additional Docs
 

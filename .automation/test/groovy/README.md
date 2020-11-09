@@ -1,5 +1,5 @@
 # Groovy Test Cases
-This folder holds the test cases for **Groovy**.  
+This folder holds the test cases for **Groovy**.
 
 ## Additional Docs
 No Additional information is needed for this test case.

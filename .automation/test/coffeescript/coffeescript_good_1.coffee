@@ -62,8 +62,8 @@ module.exports = (robot) ->
   # Drop the hammer #
   ###################
   robot.respond /drop the hammer/i, (msg) ->
-     msg.send "Commencing the hammer dropping..."
-     msg.send msg.random dropHammer
+    msg.send "Commencing the hammer dropping..."
+    msg.send msg.random dropHammer
 
   ###############
   # Vape Nation #

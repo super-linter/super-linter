@@ -175,7 +175,7 @@ TabSize = 8
 
 CmdLine
 {
- -v2
+    -v2
 }
 
 #####################################################################
@@ -756,9 +756,9 @@ MathRoman
 
 Primitives
 {
-   \above \advance \catcode \chardef \closein \closeout \copy \count
-   \countdef \cr \crcr \csname \delcode \dimendef \dimen \divide
-   \expandafter \font \hskip \vskip \openout
+    \above \advance \catcode \chardef \closein \closeout \copy \count
+    \countdef \cr \crcr \csname \delcode \dimendef \dimen \divide
+    \expandafter \font \hskip \vskip \openout
 }
 
 #####################################################################
@@ -771,7 +771,7 @@ Primitives
 
 NoCharNext
 {
-   \left:{}$ \right:{}$
+    \left:{}$ \right:{}$
 }
 
 #####################################################################

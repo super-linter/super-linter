@@ -8,21 +8,20 @@
 ###########
 # Globals #
 ###########
-GHE_CONFIG_PID='/var/run/ghe-config.pid'  # PID file when a config is running
-GHE_APPLY_COMMAND='ghe-config-apply'      # Command running when a config run
-SLEEP_SECONDS=20                          # Seconds to sleep before next check
-PID_CHECK_LIMIT=15                        # How many times to check the pid before moving on
-PID_CHECK=0                               # Count of times to check the pid
-PROCESS_CHECK_LIMIT=15                    # How many times to check the process before moving on
-PROCESS_CHECK=0                           # Count of times to check the process
+GHE_CONFIG_PID='/var/run/ghe-config.pid' # PID file when a config is running
+GHE_APPLY_COMMAND='ghe-config-apply'     # Command running when a config run
+SLEEP_SECONDS=20                         # Seconds to sleep before next check
+PID_CHECK_LIMIT=15                       # How many times to check the pid before moving on
+PID_CHECK=0                              # Count of times to check the pid
+PROCESS_CHECK_LIMIT=15                   # How many times to check the process before moving on
+PROCESS_CHECK=0                          # Count of times to check the process
 
 ################################################################################
 ########################### SUB ROUTINES BELOW #################################
 ################################################################################
 ################################################################################
 #### Function CheckGHEPid ######################################################
-CheckGHEPid()
-{
+CheckGHEPid() {
   ##################################
   # Check to prevent infinite loop #
   ##################################
@@ -75,8 +74,7 @@ CheckGHEPid()
 }
 ################################################################################
 #### Function CheckGHEProcess ##################################################
-CheckGHEProcess()
-{
+CheckGHEProcess() {
   ##################################
   # Check to prevent infinite loop #
   ##################################
@@ -139,8 +137,7 @@ CheckGHEProcess()
 }
 ################################################################################
 #### Function RunConfigApply ###################################################
-RunConfigApply()
-{
+RunConfigApply() {
   ##########
   # Header #
   ##########

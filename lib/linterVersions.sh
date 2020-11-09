@@ -74,7 +74,7 @@ WriteFile() {
   #################################
   # Write the data to output file #
   #################################
-  echo "${LINTER}: ${VERSION}" >> "${VERSION_FILE}" 2>&1
+  echo "${LINTER}: ${VERSION}" >>"${VERSION_FILE}" 2>&1
 
   #######################
   # Load the error code #

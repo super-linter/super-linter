@@ -1,5 +1,5 @@
 # R Test Cases
-This folder holds the test cases for **R**.  
+This folder holds the test cases for **R**.
 
 ## Additional Docs
 No Additional information is needed for this test case.
