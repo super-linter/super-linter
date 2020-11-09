@@ -51,6 +51,7 @@ For some linters it is also possible to override rules on a case by case level w
   - [Shell](#shell)
   - [Snakemake](#snakemake)
   - [SQL](#sql)
+  - [TSQL](#ysql)
   - [Tekton](#tekton)
   - [Terraform](#terraform)
   - [Terragrunt](#terragrunt)
@@ -1189,6 +1190,41 @@ shfmt [supports EditorConfig files for configuration](https://github.com/mvdan/s
 ### SQL disable entire file
 
 - There is currently **No** way to disable rules inline of the file(s)
+
+---
+
+## TSQL
+
+- [TSQL](https://github.com/tsqllint/tsqllint)
+
+### TSQL Config file
+
+- `.github/linters/.tsqllintrc`
+- You can pass multiple rules and overwrite default rules
+- File should be located at: `.github/linters/.tsqllintrc`
+
+### TSQL disable single line
+
+- There is currently **No** way to disable rules inline of the file(s)
+
+### TSQL disable code block
+
+```tsql
+/* tsqllint-disable */
+
+SELECT * FROM FOO;
+
+/* tsqllint-enable */
+```
+
+
+### TSQL disable entire file
+
+```tsql
+/* tsqllint-disable */
+
+SELECT * FROM FOO;
+```
 
 ---
 

@@ -478,8 +478,9 @@ function BuildFileList() {
     elif [ "${FILE_TYPE}" == "sql" ]; then
       ################################
       # Append the file to the array #
-      ##############################p##
+      ################################
       FILE_ARRAY_SQL+=("${FILE}")
+      FILE_ARRAY_TSQL+=("${FILE}")
 
     ###########################
     # Get the Terraform files #
