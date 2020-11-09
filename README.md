@@ -5,7 +5,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
 
 **The end goal of this tool:**
 
-- Prevent broken code from being uploaded to the default branch (_Usually_ `master`)
+- Prevent broken code from being uploaded to the default branch (_Usually_ `master` or `main`)
 - Help establish coding best practices across multiple languages
 - Build guidelines for code layout and format
 - Automate the process to help streamline code reviews
