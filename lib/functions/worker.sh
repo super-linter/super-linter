@@ -292,7 +292,7 @@ function LintCodebase() {
           # Store the linting as a temporary file in TAP format #
           #######################################################
           if IsTAP; then
-            NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+            NotOkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
             AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
           fi
         else
@@ -305,7 +305,7 @@ function LintCodebase() {
           # Store the linting as a temporary file in TAP format #
           #######################################################
           if IsTAP; then
-            OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+            OkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
           fi
         fi
       else
@@ -361,21 +361,13 @@ function LintCodebase() {
             #############################################
             # We failed to compare the reporting output #
             #############################################
-            error "Failed to assert TAP output:[${LINTER_NAME}]"!
-            info "Please validate the asserts!"
             cat "${TMPFILE}"
-            exit 1
+            fatal "Failed to assert TAP output for ${LINTER_NAME} linter"
           else
-            # Success
-            info "Successfully validation in the expected TAP format for ${F[W]}[${LINTER_NAME}]"
+            info "TAP output validated successfully for ${LINTER_NAME}"
           fi
         else
-          warn "No TAP expected file found at:[${EXPECTED_FILE}]"
-          info "skipping report assertions"
-          #####################################
-          # Append the file type to the array #
-          #####################################
-          WARNING_ARRAY_TEST+=("${FILE_TYPE}")
+          fatal "No TAP expected file found at:[${EXPECTED_FILE}]"
         fi
       fi
     fi
@@ -512,7 +504,7 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP; then
-          NotOkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+          NotOkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
 
@@ -526,7 +518,7 @@ function LintAnsibleFiles() {
         # Store the linting as a temporary file in TAP format #
         #######################################################
         if IsTAP; then
-          OkTap "${INDEX}" "${FILE}" "${TMPFILE}"
+          OkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
         fi
       fi
     done
