@@ -143,6 +143,15 @@ function BuildFileList() {
     ##############
     debug "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
 
+    ##########################################################
+    # Check if the file exists on the filesystem, or skip it #
+    ##########################################################
+    if [ ! -f "${FILE}" ]; then
+      # File not found in workspace
+      debug "File:{$FILE} existed in commit data, but not found on file system, skipping..."
+      continue
+    fi
+
     ########################################################
     # Don't include test cases if not running in test mode #
     ########################################################
@@ -159,9 +168,9 @@ function BuildFileList() {
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
 
-    ######################
+    #######################
     # Get the shell files #
-    ######################
+    #######################
     if IsValidShellScript "${FILE}"; then
       ################################
       # Append the file to the array #
