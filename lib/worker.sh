@@ -210,7 +210,7 @@ function LintCodebase() {
         # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} ${FILE}; if (\${Error}.Count) { exit 1 }"
+          pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} \"${FILE}\"; if (\${Error}.Count) { exit 1 }"
           exit $? 2>&1
         )
       ###############################################################################
