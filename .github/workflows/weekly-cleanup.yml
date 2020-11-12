@@ -1,0 +1,40 @@
+---
+################################
+################################
+## Cleanup self hosted runner ##
+################################
+################################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+####################################
+# Start the job on Sunday at 12:00 #
+####################################
+on:
+  schedule:
+    - cron: "0 12 * * 0"
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Weekly cleanup of self-hosted runner
+    # Set the agent to run on
+    runs-on: self-hosted
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+
+      ######################################################
+      # Run Docker system prune to cleanup space on runner #
+      ######################################################
+      - name: Run docker cleanup
+        shell: bash
+        run: docker system prune -a
