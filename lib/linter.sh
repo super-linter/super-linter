@@ -68,6 +68,7 @@ DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files 
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
 GITHUB_API_URL='https://api.github.com'                   # GitHub API root url
 VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
+export VERSION_FILE                                       # Workaround SC2034
 
 ###############
 # Rules files #
@@ -586,6 +587,7 @@ Footer() {
   # Need to clean up the lanuage array of duplicates #
   ####################################################
   mapfile -t UNIQUE_LINTED_ARRAY < <(for LANG in "${LINTED_LANGUAGES_ARRAY[@]}"; do echo "${LANG}"; done | sort -u)
+  export UNIQUE_LINTED_ARRAY # Workaround SC2034
 
   ##############################
   # Prints for errors if found #
