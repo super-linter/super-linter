@@ -37,6 +37,13 @@ jobs:
     # Load all steps #
     ##################
     steps:
+
+      ##########################################
+      # Clean the self hosted runner workspace #
+      ##########################################
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1
+
       ##########################
       # Checkout the code base #
       ##########################
