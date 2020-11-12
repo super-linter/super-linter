@@ -30,7 +30,7 @@ jobs:
     # Name the Job
     name: Deploy Docker Image - DEV
     # Set the agent to run on
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # Prevent duplicate run from happening when a forked push is committed
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     ##################
@@ -54,7 +54,7 @@ jobs:
       ###################################
       - name: Build image
         shell: bash
-        run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" --no-cache -t github/super-linter:${GITHUB_SHA} .
+        run: docker build --build-arg "BUILD_DATE=${BUILD_DATE}" --build-arg "BUILD_REVISION=${GITHUB_SHA}" --build-arg "BUILD_VERSION=${GITHUB_SHA}" -t github/super-linter:${GITHUB_SHA} .
 
       ########################################
       # Validates the metadata docker labels #
