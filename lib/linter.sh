@@ -57,6 +57,8 @@ source /action/lib/functions/tapLibrary.sh # Source the function script(s)
 source /action/lib/functions/linterRules.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/detectFiles.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/linterVersions.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
@@ -65,7 +67,7 @@ source /action/lib/functions/detectFiles.sh # Source the function script(s)
 DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter Path Directory
 GITHUB_API_URL='https://api.github.com'                   # GitHub API root url
-VERSION_FILE='/action/lib/functions/linterVersions.txt'            # File to store linter versions
+VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
 
 ###############
 # Rules files #

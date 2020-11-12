@@ -15,8 +15,6 @@ GetLinterVersions() {
 
   if ! [ -e "${VERSION_FILE}" ] && [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
     debug "Building linter version file..."
-    # shellcheck source=/dev/null
-    source /action/lib/linterVersions.sh # Source the function script(s)
     if BuildLinterVersions "${VERSION_FILE}" "${LINTER_NAMES_ARRAY[@]}"; then
       info "Linter version file built correctly."
       exit
