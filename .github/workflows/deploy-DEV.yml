@@ -42,7 +42,8 @@ jobs:
       # Clean the self hosted runner workspace #
       ##########################################
       - name: Clean Workspace
-        uses: AutoModality/action-clean@v1
+        run: |
+          sudo rm -rf ${GITHUB_WORKSPACE}
 
       ##########################
       # Checkout the code base #
