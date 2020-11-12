@@ -43,7 +43,7 @@ jobs:
       ##########################################
       - name: Clean Workspace
         run: |
-          sudo rm -rf ${GITHUB_WORKSPACE}
+          sudo rm -rf ${GITHUB_WORKSPACE}/.automation
 
       ##########################
       # Checkout the code base #
