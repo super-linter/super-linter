@@ -1,5 +1,56 @@
 #!/usr/bin/env bash
 
+################################################################################
+################################################################################
+########### Super-Linter linting Functions @admiralawkbar ######################
+################################################################################
+################################################################################
+#### Function GetLinterVersions ################################################
+GetLinterVersions() {
+  #########################
+  # Print version headers #
+  #########################
+  debug "---------------------------------------------"
+  debug "Linter Version Info:"
+
+  if ! [ -e "${VERSION_FILE}" ] && [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
+    debug "Building linter version file..."
+    if BuildLinterVersions "${VERSION_FILE}" "${LINTER_NAMES_ARRAY[@]}"; then
+      info "Linter version file built correctly."
+      exit
+    else
+      fatal "Error while building the versions file."
+    fi
+  fi
+
+  ################################
+  # Cat the linter versions file #
+  ################################
+  CAT_CMD=$(cat "${VERSION_FILE}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Failure
+    fatal "Failed to view version file:[${VERSION_FILE}]"
+  else
+    # Success
+    debug "${CAT_CMD}"
+  fi
+
+  #########################
+  # Print version footers #
+  #########################
+  debug "---------------------------------------------"
+}
+################################################################################
+#### Function BuildLinterVersions ##############################################
 BuildLinterVersions() {
   VERSION_FILE="${1}" && shift
   LINTER_ARRAY=("$@")
@@ -62,7 +113,8 @@ BuildLinterVersions() {
     fi
   done
 }
-
+################################################################################
+#### Function WriteFile ########################################################
 WriteFile() {
   ##############
   # Read Input #
