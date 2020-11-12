@@ -45,7 +45,7 @@ jobs:
       # and it was owned by root from snakemake command...
       - name: Clean Workspace
         run: |
-          sudo rm -rf ${GITHUB_WORKSPACE}/.automation
+          sudo rm -rf ${GITHUB_WORKSPACE}/.automation ${GITHUB_WORKSPACE}/.snakemake
 
       ##########################
       # Checkout the code base #
