@@ -16,7 +16,7 @@ export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
-source /action/lib/log.sh
+source /action/lib/functions/log.sh
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################

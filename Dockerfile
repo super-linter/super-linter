@@ -345,7 +345,7 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter
 ##################################4
 # Run validations of built image #
 ##################################
-RUN /action/lib/validate-docker.sh
+RUN /action/lib/functions/validateDocker.sh
 
 ######################
 # Set the entrypoint #
