@@ -95,9 +95,11 @@ function BuildFileList() {
     debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace"
     mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
       -not \( -path '*/\.git' -prune \) \
+      -not \( -path '*/\.pytest_cache' -prune \) \
       -not \( -path '*/\.rbenv' -prune \) \
       -not \( -path '*/\.terragrunt-cache' -prune \) \
       -not \( -path '*/\.venv' -prune \) \
+      -not \( -path '*/\__pycache__' -prune \) \
       -type f \
       2>&1 | sort)
 
