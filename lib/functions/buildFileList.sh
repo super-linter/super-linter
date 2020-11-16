@@ -100,6 +100,8 @@ function BuildFileList() {
       -not \( -path '*/\.terragrunt-cache' -prune \) \
       -not \( -path '*/\.venv' -prune \) \
       -not \( -path '*/\__pycache__' -prune \) \
+      -not \( -path '*/\node_modules' -prune \) \
+      -not \( -path '*/\env' -prune \) \
       -type f \
       2>&1 | sort)
 
