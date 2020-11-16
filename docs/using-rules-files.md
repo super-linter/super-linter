@@ -15,7 +15,7 @@ Below is an example of how to configure the ``env`` section of Super-Linter's ``
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           LINTER_RULES_PATH: /
-          CSS_FILE_NAME: .styelintrc.json
+          CSS_FILE_NAME: .stylelintrc.json
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           VALIDATE_CSS: true
           VALIDATE_JAVASCRIPT_ES: true
