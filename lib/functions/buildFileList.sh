@@ -101,9 +101,6 @@ function BuildFileList() {
       -not \( -path '*/\.venv' -prune \) \
       -not \( -path '*/\__pycache__' -prune \) \
       -not \( -path '*/\node_modules' -prune \) \
-      -not \( -path '*/\env\/lib' -prune \) \
-      -not \( -path '*/\env\/bin' -prune \) \
-      -not \( -path '*/\env\/include' -prune \) \
       -not -name "*.jpg" \
       -not -name "*.jpeg" \
       -not -name "*.png" \
