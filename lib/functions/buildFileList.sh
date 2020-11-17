@@ -102,6 +102,17 @@ function BuildFileList() {
       -not \( -path '*/\__pycache__' -prune \) \
       -not \( -path '*/\node_modules' -prune \) \
       -not \( -path '*/\env' -prune \) \
+      -not -name "*.jpg" \
+      -not -name "*.jpeg" \
+      -not -name "*.png" \
+      -not -name "*.webp" \
+      -not -name "*.gif" \
+      -not -name "*.ico" \
+      -not -name "*.woff" \
+      -not -name "*.woff2" \
+      -not -name "*.pdf" \
+      -not -name ".DS_Store" \
+      -not -name "*.zip" \
       -type f \
       2>&1 | sort)
 
