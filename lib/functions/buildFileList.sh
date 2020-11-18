@@ -251,7 +251,7 @@ function BuildFileList() {
     #########################
     # Get the Gherkin files #
     #########################
-  elif [ "${FILE_TYPE}" == "feature" ]; then
+    elif [ "${FILE_TYPE}" == "feature" ]; then
       ################################
       # Append the file to the array #
       ################################
