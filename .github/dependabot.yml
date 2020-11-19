@@ -37,3 +37,9 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
 
+  # Maintain dependencies for Ruby
+  - package-ecosystem: "bundler"
+    directory: "/dependencies"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
