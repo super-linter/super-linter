@@ -260,6 +260,15 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_ENV+=("${FILE}")
 
+    #########################
+    # Get the Gherkin files #
+    #########################
+    elif [ "${FILE_TYPE}" == "feature" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_GHERKIN+=("${FILE}")
+
     ########################
     # Get the Golang files #
     ########################
