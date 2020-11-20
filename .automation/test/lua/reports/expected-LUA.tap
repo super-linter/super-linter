@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - lua_bad_1.lua
+  ---
+  message: Checking /tmp/lint/.automation/test/lua/lua_bad_1.lua 1 error\n\n    /tmp/lint/.automation/test/lua/lua_bad_1.lua 10 1  expected 'end' (to close 'function' on line 7) near <eof>\n\nTotal  0 warnings / 1 error in 1 file\n
+  ...
+ok 2 - lua_good_1.lua

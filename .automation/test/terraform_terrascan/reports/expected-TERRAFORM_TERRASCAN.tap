@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - terraform_bad_1.tf
+  ---
+  message: results \n  violations \n  - rule_name  instanceWithNoVpc\n    description  Instance should be configured in vpc. AWS VPCs provides the controls to facilitate a formal process for approving and testing all network connections and changes to the firewall and router configurations.\n    rule_id  AWS.Instance.NetworkSecurity.Medium.0506\n    severity  MEDIUM\n    category  Network Security\n    resource_name  instanceWithNoVpc\n    resource_type  aws_instance\n    file  terraform_bad_1.tf\n    line  1\n  count \n    low  0\n    medium  1\n    high  0\n    total  1\n
+  ...
+ok 2 - terraform_good_1.tf

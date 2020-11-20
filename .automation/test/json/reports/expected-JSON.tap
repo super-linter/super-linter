@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - json_bad_1.json
+  ---
+  message: Error  Parse error on line 6 \n...ng"  {    "level"  'ignore',    "space\n----------------------^\nExpecting 'STRING', 'NUMBER', 'NULL', 'TRUE', 'FALSE', '{', '[', got 'undefined'\n    at Object.parseError (/node_modules/jsonlint/lib/jsonlint.js)\n    at Object.parse (/node_modules/jsonlint/lib/jsonlint.js)\n    at parse (/node_modules/jsonlint/lib/cli.js)\n    at main (/node_modules/jsonlint/lib/cli.js)\n    at Object.<anonymous> (/node_modules/jsonlint/lib/cli.js)\n    at Module._compile (internal/modules/cjs/loader.js)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js)\n    at Module.load (internal/modules/cjs/loader.js)\n    at Function.Module._load (internal/modules/cjs/loader.js)\n    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js)\n
+  ...
+ok 2 - json_good_1.json
