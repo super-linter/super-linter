@@ -8,5 +8,5 @@ not ok 2 - php_bad_2.php
   ---
   message: PHP Parse error   syntax error, unexpected '}' in /tmp/lint/.automation/test/php_builtin/php_bad_2.php on line 15\nErrors parsing /tmp/lint/.automation/test/php_builtin/php_bad_2.php\n
   ...
-ok 3 - /tmp/lint/.automation/test/php_builtin/php_good_1.php
-ok 4 - /tmp/lint/.automation/test/php_builtin/php_good_2.php
+ok 3 - php_good_1.php
+ok 4 - php_good_2.php

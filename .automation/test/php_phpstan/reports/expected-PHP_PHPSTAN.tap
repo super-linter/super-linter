@@ -8,5 +8,5 @@ not ok 2 - php_bad_2.php
   ---
   message:  ------ ----------------------------------------- \n  Line   php_bad_2.php                            \n ------ ----------------------------------------- \n  15     Syntax error, unexpected '}' on line 15  \n ------ ----------------------------------------- \n\n [ERROR] Found 1 error                                                          \n
   ...
-ok 3 - /tmp/lint/.automation/test/php_phpstan/php_good_1.php
-ok 4 - /tmp/lint/.automation/test/php_phpstan/php_good_2.php
+ok 3 - php_good_1.php
+ok 4 - php_good_2.php

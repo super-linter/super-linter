@@ -265,8 +265,6 @@ RAW_FILE_ARRAY=()                   # Array of all files that were changed
 export RAW_FILE_ARRAY               # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER             # Workaround SC2034
-WARNING_ARRAY_TEST=()               # Array of warning linters that did not have an expected test result.
-export WARNING_ARRAY_TEST           # Workaround SC2034
 
 ##############
 # Format     #
