@@ -103,7 +103,7 @@ RUN apk add --no-cache \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
-    py3-setuptools \
+    py3-setuptools python3-dev\
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -118,7 +118,9 @@ COPY dependencies/* /
 # Installs python dependencies #
 ################################
 RUN pip3 install --no-cache-dir pipenv
-RUN pipenv install --system
+# Bug in hadolint thinks pipenv is pip
+# hadolint ignore=DL3042
+RUN pipenv install --clear --system
 
 ####################
 # Run NPM Installs #

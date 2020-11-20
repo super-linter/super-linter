@@ -21,10 +21,24 @@ function IsTAP() {
 function TransformTAPDetails() {
   DATA=${1}
   if [ -n "${DATA}" ] && [ "${OUTPUT_DETAILS}" == "detailed" ]; then
-    #########################################################
-    # Transform new lines to \\n, remove colours and colons #
-    #########################################################
-    echo "${DATA}" | awk 'BEGIN{RS="\n";ORS="\\n"}1' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" | tr ':' ' '
+    ############################################################
+    # Transform new lines to \\n, remove colours and colons.   #
+    # Additionally, remove some dynamic parts from generated   #
+    # reports.                                                 #
+    ############################################################
+    echo "${DATA}" |
+      awk 'BEGIN{RS="\n";ORS="\\n"}1' |
+      sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g" |
+      sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' |
+      sed -r "s/\s\([0-9]*\sms\)//g" |
+      sed -r "s/\s[0-9]*ms//g" |
+      sed -r "s/S[0-9]{4}//g" |
+      sed -r "s/js:[0-9]*:[0-9]*/js/g" |
+      sed -r "s/[.0-9]*\sseconds/seconds/g" |
+      sed -r "s/\[terragrunt\]\s[0-9]{4}\/[0-9]{2}\/[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}/[terragrunt]/g" |
+      sed -r "s/(after|before)\s[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{1,6}/before/g" |
+      sed -r "s/used\s[0-9]{1,}\.*[0-9]{0,}MB\sof\smemory/used/g" |
+      tr ':' ' '
   fi
 }
 ################################################################################
@@ -113,11 +127,5 @@ Reports() {
       warn "Report output folder (${REPORT_OUTPUT_FOLDER}) does NOT exist."
     fi
   fi
-
-  ################################
-  # Prints for warnings if found #
-  ################################
-  for TEST in "${WARNING_ARRAY_TEST[@]}"; do
-    warn "Expected file to compare with was not found for ${TEST}"
-  done
 }
+################################################################################

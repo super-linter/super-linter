@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - snakemake_bad_1.smk
+  ---
+  message: =====> Diff for /tmp/lint/.automation/test/snakemake_snakefmt/snakemake_bad_1.smk <=====\n\n--- original\n+++ new\n@@ -1,10 +1,11 @@\n rule all \n     input \n-        file1='result.txt',\n+        file1="result.txt",\n+\n \n rule simulation \n     output \n-        file1="result.txt"\n+        file1="result.txt",\n     shell \n         """\n         touch {output}\n\n[INFO] 1 file(s) would be changed 😬\n
+  ...
+ok 2 - snakemake_good_1.smk

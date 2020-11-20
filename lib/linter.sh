@@ -265,8 +265,6 @@ RAW_FILE_ARRAY=()                   # Array of all files that were changed
 export RAW_FILE_ARRAY               # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER             # Workaround SC2034
-WARNING_ARRAY_TEST=()               # Array of warning linters that did not have an expected test result.
-export WARNING_ARRAY_TEST           # Workaround SC2034
 
 ##############
 # Format     #
@@ -776,7 +774,7 @@ LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
 LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TEKTON']="tekton-lint"
 LINTER_COMMANDS_ARRAY['TERRAFORM']="tflint -c ${TERRAFORM_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -p /root/.terrascan/pkg/policies/opa/rego/ -t aws -f "
+LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -f "
 LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file "
 LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
