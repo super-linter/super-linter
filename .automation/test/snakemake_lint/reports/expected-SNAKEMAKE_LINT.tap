@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - snakemake_bad_1.smk
+  ---
+  message: Lints for rule simulation (line 11, /tmp/lint/.automation/test/snakemake_lint/snakemake_bad_1.smk) \n    * No log directive defined \n      Without a log directive, all output will be printed to the terminal. In\n      distributed environments, this means that errors are harder to discover.\n      In local environments, output of concurrent jobs will be mixed and become\n      unreadable.\n      Also see \n      https //snakemake.readthedocs.io/en/stable/snakefiles/rules.html#log-files\n    * Specify a conda environment or container for each rule. \n      This way, the used software for each specific step is documented, and the\n      workflow can be executed on any machine without prerequisites.\n      Also see \n      https //snakemake.readthedocs.io/en/latest/snakefiles/deployment.html#integrated-package-management\n      https //snakemake.readthedocs.io/en/latest/snakefiles/deployment.html#running-jobs-in-containers\n
+  ...
+ok 2 - snakemake_good_1.smk

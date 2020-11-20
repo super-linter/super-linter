@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - kubeval_bad_1.yaml
+  ---
+  message: WARN - /tmp/lint/.automation/test/kubernetes_kubeval/kubeval_bad_1.yaml contains an invalid Deployment (nginx-deployment) - image2  Additional property image2 is not allowed\n
+  ...
+ok 2 - kubeval_good_1.yaml

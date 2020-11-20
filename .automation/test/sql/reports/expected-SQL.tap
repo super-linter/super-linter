@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - sql_bad_1.sql
+  ---
+  message: /tmp/lint/.automation/test/sql/sql_bad_1.sql 1 [sql-lint  missing-where] DELETE statement missing WHERE clause.\n
+  ...
+ok 2 - sql_good_1.sql

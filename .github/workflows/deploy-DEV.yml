@@ -68,7 +68,7 @@ jobs:
       #####################################
       - name: Run Test Cases
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
 
       #########################################
       # Clean code base to run against it all #
@@ -82,4 +82,4 @@ jobs:
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}

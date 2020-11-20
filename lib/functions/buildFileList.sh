@@ -244,7 +244,7 @@ function BuildFileList() {
     # Get the DOCKER files #
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
-    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
+    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
       ################################
       # Append the file to the array #
       ################################
