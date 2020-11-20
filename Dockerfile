@@ -118,7 +118,7 @@ COPY dependencies/* /
 # Installs python dependencies #
 ################################
 RUN pip3 install --no-cache-dir pipenv
-RUN pipenv install --system
+RUN pipenv install --no-cache-dir --system
 
 ####################
 # Run NPM Installs #
