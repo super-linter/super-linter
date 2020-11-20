@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - terragrunt_bad_1.hcl
+  ---
+  message: [terragrunt] Formatting terragrunt.hcl file at  /tmp/lint/.automation/test/terragrunt/terragrunt_bad_1.hcl.\n[terragrunt] Formatting /tmp/lint/.automation/test/terragrunt/terragrunt_bad_1.hcl\n[terragrunt] Invalid file format /tmp/lint/.automation/test/terragrunt/terragrunt_bad_1.hcl\n[terragrunt] Unable to determine underlying exit code, so Terragrunt will exit with error code 1\n
+  ...
+ok 2 - terragrunt_good_1.hcl
