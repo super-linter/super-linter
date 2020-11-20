@@ -120,7 +120,7 @@ COPY dependencies/* /
 RUN pip3 install --no-cache-dir pipenv
 # Bug in hadolint thinks pipenv is pip
 # hadolint ignore=DL3042
-RUN pipenv install --clear
+RUN pipenv install --clear --system
 
 ####################
 # Run NPM Installs #
