@@ -6,8 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-black = ">=20"
+black = "*"
 cfn-lint = "*"
+cython = "*"
 flake8 = "*"
 pylint = "*"
 isort = "*"
