@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.20.3 as tflint
 FROM alpine/terragrunt:0.13.5 as terragrunt
 FROM mvdan/shfmt:v3.2.0 as shfmt
-FROM accurics/terrascan:d182f1c as terrascan
+FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
@@ -103,7 +103,7 @@ RUN apk add --no-cache \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
-    py3-setuptools \
+    py3-setuptools python3-dev\
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -118,7 +118,9 @@ COPY dependencies/* /
 # Installs python dependencies #
 ################################
 RUN pip3 install --no-cache-dir pipenv
-RUN pipenv install --system
+# Bug in hadolint thinks pipenv is pip
+# hadolint ignore=DL3042
+RUN pipenv install --clear --system
 
 ####################
 # Run NPM Installs #
