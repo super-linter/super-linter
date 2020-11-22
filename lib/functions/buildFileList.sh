@@ -184,7 +184,7 @@ function BuildFileList() {
     #################################################
     if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
       debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
-      continue;
+      continue
     fi
 
     #################################################
@@ -192,6 +192,7 @@ function BuildFileList() {
     #################################################
     if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
       debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
+      continue
     fi
 
     # Editorconfig-checker should check every file
