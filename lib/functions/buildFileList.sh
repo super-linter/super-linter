@@ -179,6 +179,21 @@ function BuildFileList() {
       debug "TEST_CASE_RUN (${TEST_CASE_RUN}) is true. Skipping ${FILE}..."
     fi
 
+    #################################################
+    # Filter files if FILTER_REGEX_INCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
+      debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
+      continue;
+    fi
+
+    #################################################
+    # Filter files if FILTER_REGEX_EXCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
+      debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
+    fi
+
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
 

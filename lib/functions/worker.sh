@@ -64,26 +64,6 @@ function LintCodebase() {
 
   debug "SKIP_FLAG: ${SKIP_FLAG}, list of files to lint: ${LIST_FILES[*]}"
 
-  #################################################
-  # Filter files if FILTER_REGEX_INCLUDE is set #
-  #################################################
-  if [[ -n "$FILTER_REGEX_INCLUDE" ]]; then
-    for index in "${!LIST_FILES[@]}"; do
-      [[ ! (${LIST_FILES[$index]} =~ $FILTER_REGEX_INCLUDE) ]] && unset -v 'LIST_FILES[$index]'
-    done
-    debug "List of files to lint after FILTER_REGEX_INCLUDE: ${LIST_FILES[*]}"
-  fi
-
-  #################################################
-  # Filter files if FILTER_REGEX_EXCLUDE is set #
-  #################################################
-  if [[ -n "$FILTER_REGEX_EXCLUDE" ]]; then
-    for index in "${!LIST_FILES[@]}"; do
-      [[ ${LIST_FILES[$index]} =~ $FILTER_REGEX_EXCLUDE ]] && unset -v 'LIST_FILES[$index]'
-    done
-    debug "List of files to lint after FILTER_REGEX_EXCLUDE: ${LIST_FILES[*]}"
-  fi
-
   ###############################
   # Check if any data was found #
   ###############################
