@@ -44,6 +44,7 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
+<<<<<<< HEAD
 | _Language_                       | _Linter_                                                                                                                                                                      |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                       |
@@ -53,6 +54,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                            |
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                            |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                   |
+| **Copy/paste detection**         | [jscpd]()                                                                                                                                                                     |
 | **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                             |
 | **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) / [hadolint](https://github.com/hadolint/hadolint)                                                       |
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                          |
@@ -218,6 +220,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **FILTER_REGEX_INCLUDE**           | `all`                 | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                            |
 | **JAVASCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`       | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                           |
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`            | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                        |
+| **JSCPD_CONFIG_FILE**              | `.jscpd.json`         | Filename for JSCPD configuration                                                                                                                                                 |
 | **LINTER_RULES_PATH**              | `.github/linters`     | Directory for all linter configuration rules.                                                                                                                                    |
 | **LOG_FILE**                       | `super-linter.log`    | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                 |
 | **LOG_LEVEL**                      | `VERBOSE`             | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `VERBOSE`, `DEBUG` or `TRACE`.                                                        |
@@ -255,6 +258,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_JAVA**                  | `true`                | Flag to enable or disable the linting process of the language.                                                                                                                   |
 | **VALIDATE_JAVASCRIPT_ES**         | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: eslint)                                                                                    |
 | **VALIDATE_JAVASCRIPT_STANDARD**   | `true`                | Flag to enable or disable the linting process of the Javascript language. (Utilizing: standard)                                                                                  |
+| **VALIDATE_JSCPD**                 | `true`                | Flag to enable or disable the JSCPD.                                                                                                                                             |
 | **VALIDATE_JSON**                  | `true`                | Flag to enable or disable the linting process of the JSON language.                                                                                                              |
 | **VALIDATE_JSX**                   | `true`                | Flag to enable or disable the linting process for jsx files (Utilizing: eslint)                                                                                                  |
 | **VALIDATE_KOTLIN**                | `true`                | Flag to enable or disable the linting process of the Kotlin language.                                                                                                            |
