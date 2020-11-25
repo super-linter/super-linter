@@ -23,24 +23,6 @@ function LintCodebase() {
   TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
-  ################
-  # print header #
-  ################
-  info ""
-  info "----------------------------------------------"
-  info "----------------------------------------------"
-
-  debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
-
-  if [ "${TEST_CASE_RUN}" = "true" ]; then
-    info "Testing Codebase [${FILE_TYPE}] files..."
-  else
-    info "Linting [${FILE_TYPE}] files..."
-  fi
-
-  info "----------------------------------------------"
-  info "----------------------------------------------"
-
   ##########################
   # Initialize empty Array #
   ##########################
@@ -103,6 +85,24 @@ function LintCodebase() {
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
     debug "Workspace path: ${WORKSPACE_PATH}"
+
+    ################
+    # print header #
+    ################
+    info ""
+    info "----------------------------------------------"
+    info "----------------------------------------------"
+
+    debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
+
+    if [ "${TEST_CASE_RUN}" = "true" ]; then
+      info "Testing Codebase [${FILE_TYPE}] files..."
+    else
+      info "Linting [${FILE_TYPE}] files..."
+    fi
+
+    info "----------------------------------------------"
+    info "----------------------------------------------"
 
     ##################
     # Lint the files #
