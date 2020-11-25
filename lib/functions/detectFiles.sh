@@ -249,6 +249,7 @@ function CheckFileType() {
     ################################
     # Append the file to the array #
     ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
     FILE_ARRAY_RUBY+=("${FILE}")
   else
     ############################

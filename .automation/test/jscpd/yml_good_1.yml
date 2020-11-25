@@ -1,0 +1,19 @@
+---
+
+#####################
+#####################
+## Heres some vars ##
+#####################
+#####################
+
+############
+# Env Vars #
+############
+env:
+  browser: true
+  es6: true
+  jest: true
+
+Here: there
+
+something: "For Nothing"
