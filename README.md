@@ -44,7 +44,6 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 Developers on **GitHub** can call the **GitHub Action** to lint their code base with the following list of linters:
 
-<<<<<<< HEAD
 | _Language_                       | _Linter_                                                                                                                                                                      |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                       |
@@ -54,7 +53,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                            |
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                            |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                   |
-| **Copy/paste detection**         | [jscpd]()                                                                                                                                                                     |
+| **Copy/paste detection**         | [jscpd](https://github.com/kucherenko/jscpd)                                                                                                                                  |
 | **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                             |
 | **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) / [hadolint](https://github.com/hadolint/hadolint)                                                       |
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                          |
