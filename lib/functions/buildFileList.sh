@@ -21,6 +21,9 @@ function BuildFileList() {
   TEST_CASE_RUN="${2}"
   debug "TEST_CASE_RUN: ${TEST_CASE_RUN}..."
 
+  ANSIBLE_DIRECTORY="${3}"
+  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -328,6 +331,16 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_JSON+=("${FILE}")
+
+      ############################
+      # Check if file is Ansible #
+      ############################
+      if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_ANSIBLE+=("${FILE}")
+      fi
       ############################
       # Check if file is OpenAPI #
       ############################
@@ -568,6 +581,20 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_YAML+=("${FILE}")
+
+      ############################
+      # Check if file is Ansible #
+      ############################
+      if [ -d "${ANSIBLE_DIRECTORY}" ]; then
+        if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
+          ################################
+          # Append the file to the array #
+          ################################
+          FILE_ARRAY_ANSIBLE+=("${FILE}")
+        fi
+      else
+        debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+      fi
 
       #####################################
       # Check if the file is CFN template #
