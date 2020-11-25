@@ -80,7 +80,6 @@ ARG GLIBC_VERSION='2.31-r0'
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    ansible-lint \
     bash \
     coreutils \
     curl \
@@ -92,10 +91,11 @@ RUN apk add --no-cache \
     icu-libs \
     jq \
     krb5-libs \
-    libc-dev libxml2-dev libxml2-utils libgcc \
-    lttng-ust-dev \
-    libcurl libintl libssl1.1 libstdc++ \
+    libc-dev libcurl libffi-dev libgcc \
+    libintl libssl1.1 libstdc++ \
+    libxml2-dev libxml2-utils \
     linux-headers \
+    lttng-ust-dev \
     make \
     musl-dev \
     npm nodejs-current \
