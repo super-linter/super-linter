@@ -273,7 +273,7 @@ function CheckFileType() {
     ############################
     # Extension was not found! #
     ############################
-    warn "Failed to get filetype for:[${FILE}]!"
+    debug "Failed to get filetype for:[${FILE}]!"
   fi
 }
 ################################################################################
