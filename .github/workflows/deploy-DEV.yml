@@ -62,6 +62,8 @@ jobs:
           image_tag: latest,v3
           dockerfile: Dockerfile
           build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA} -t github/super-linter:${GITHUB_SHA}"
+        env:
+          ACTIONS_RUNNER_DEBUG: true
 
       ########################################
       # Validates the metadata docker labels #
