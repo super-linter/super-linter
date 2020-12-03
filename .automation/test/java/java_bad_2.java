@@ -6,7 +6,7 @@ public class Application {
    * @param args
    */
   public static void main(final String[] args) {
-    System.out.println("hello");
+    SpringApplication.run(Application.class, args);
   }
 
 }
