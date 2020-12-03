@@ -55,6 +55,8 @@ jobs:
       - name: Build image
         uses: whoan/docker-build-with-cache-action@v5
         with:
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
           image_name: github/super-linter
           image_tag: latest
