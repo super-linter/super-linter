@@ -50,7 +50,7 @@ jobs:
           image_name: github/super-linter
           image_tag: ${{ github.event.release.tag_name }}
           dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA}"
+          build_extra_args: build_extra_args: "--build-arg=BUILD_DATE=${{ github.event.timestamp }}Z --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
           push_image_and_stages: true
 
       ###################################################
@@ -65,5 +65,5 @@ jobs:
           image_name: github/super-linter
           image_tag: ${{ github.event.release.tag_name }}
           dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA}"
+          build_extra_args: build_extra_args: "--build-arg=BUILD_DATE=${{ github.event.timestamp }}Z --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
           push_image_and_stages: true
