@@ -62,8 +62,6 @@ jobs:
           image_tag: ${GITHUB_SHA}
           dockerfile: Dockerfile
           build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA}"
-        env:
-          ACTIONS_RUNNER_DEBUG: true
 
       ########################################
       # Validates the metadata docker labels #
