@@ -6,7 +6,7 @@ not ok 1 - java_bad_1.java
   ...
 not ok 2 - java_bad_2.java
   ---
-  message: age: Starting audit...\n[ERROR] /tmp/lint/.automation/test/java/java_bad_2.java 1 1  Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]\nAudit done.\nCheckstyle ends with 1 errors.\n
+  message: Starting audit...\n[ERROR] /tmp/lint/.automation/test/java/java_bad_2.java 1 1  Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]\nAudit done.\nCheckstyle ends with 1 errors.\n
   ...
 ok 3 - java_good_1.java
 ok 4 - java_good_2.java
