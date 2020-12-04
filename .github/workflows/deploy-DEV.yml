@@ -62,7 +62,7 @@ jobs:
           image_tag: ${{ github.sha }}
           dockerfile: Dockerfile
           build_extra_args: "--build-arg=BUILD_DATE=${{ github.event.timestamp }}Z --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
- 
+
       ########################################
       # Validates the metadata docker labels #
       ########################################
