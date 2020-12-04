@@ -39,32 +39,37 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
 
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+
       ###################################
       # Run Deploy script for Dockerhub #
       ###################################
       - name: Deploy Release image to Dockerhub
-        env:
-          # Set the Env Vars
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${{ github.event.release.tag_name }}
-          DOCKERFILE_PATH: Dockerfile
-          REGISTRY: Docker
-        shell: bash
-        run: .automation/upload-docker.sh
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          image_name: github/super-linter
+          image_tag: ${{ github.event.release.tag_name }}
+          dockerfile: Dockerfile
+          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
+          push_image_and_stages: true
 
       ###################################################
       # Run Deploy script for GitHub Container Registry #
       ###################################################
       - name: Deploy Release image to GitHub Container Registry
-        env:
-          # Set the Env Vars
-          GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
-          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
-          IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${{ github.event.release.tag_name }}
-          DOCKERFILE_PATH: Dockerfile
-          REGISTRY: GCR
-        shell: bash
-        run: .automation/upload-docker.sh
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_PASSWORD }}
+          repository: ghcr.io
+          image_name: github/super-linter
+          image_tag: ${{ github.event.release.tag_name }}
+          dockerfile: Dockerfile
+          build_extra_args: "--build-arg=BUILD_DATE=${{ github.event.timestamp }}Z --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
+          push_image_and_stages: true
