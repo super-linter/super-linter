@@ -39,6 +39,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
 
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+
       #####################
       # Run Deploy script #
       #####################
@@ -50,7 +56,7 @@ jobs:
           image_name: github/super-linter
           image_tag: "latest,v3"
           dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA}"
+          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
           push_image_and_stages: true
 
       #############################
@@ -65,5 +71,5 @@ jobs:
           image_name: github/super-linter
           image_tag: "latest,v3"
           dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${BUILD_DATE} --build-arg=BUILD_REVISION=${GITHUB_SHA} --build-arg=BUILD_VERSION=${GITHUB_SHA}"
+          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=$${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
           push_image_and_stages: true
