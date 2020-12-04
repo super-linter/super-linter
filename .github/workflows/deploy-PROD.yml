@@ -45,31 +45,40 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
-      #####################
-      # Run Deploy script #
-      #####################
-      - name: Deploy latest image to DockerHub
-        uses: whoan/docker-build-with-cache-action@v5
+      ###############################
+      # Login to DockerHub registry #
+      ###############################
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          image_name: github/super-linter
-          image_tag: "latest,v3"
-          dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-          push_image_and_stages: true
 
-      #############################
-      # Run Deploy script for GPR #
-      #############################
-      - name: Deploy Latest image to GitHub Container Registry
-        uses: whoan/docker-build-with-cache-action@v5
+      ######################################
+      # Login to GitHub Container registry #
+      ######################################
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.GCR_USERNAME }}
-          password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
-          image_name: github/super-linter
-          image_tag: "latest,v3"
-          dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=$${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-          push_image_and_stages: true
+          username: ${{ github.GCR_USERNAME }}
+          password: ${{ secrets.GCR_TOKEN }}
+
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: true
+          tags: |
+            github/super-linter:latest
+            github/super-linter:v3
+            ghcr.io/github/super-linter:latest
+            ghcr.io/github/super-linter:v3
