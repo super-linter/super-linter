@@ -724,6 +724,7 @@ GetStandardRules "typescript"
 # Define linter commands #
 ##########################
 declare -A LINTER_COMMANDS_ARRAY
+LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -v -c ${ANSIBLE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
 LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
@@ -792,7 +793,7 @@ debug "---------------------------------------------"
 ###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
 
 ###############
 # Run linters #
@@ -834,36 +835,29 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
       cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
     fi
 
-    if [ "${LANGUAGE}" = "ANSIBLE" ]; then
-      # Due to the nature of how we want to validate Ansible, we cannot use the
-      # standard loop, since it looks for an ansible folder, excludes certain
-      # files, and looks for additional changes, it should be an outlier
-      LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
+    LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
+    if [ -z "${LINTER_NAME}" ]; then
+      fatal "Cannot find the linter name for ${LANGUAGE} language."
     else
-      LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_NAME}" ]; then
-        fatal "Cannot find the linter name for ${LANGUAGE} language."
-      else
-        debug "Setting LINTER_NAME to ${LINTER_NAME}..."
-      fi
-
-      LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_COMMAND}" ]; then
-        fatal "Cannot find the linter command for ${LANGUAGE} language."
-      else
-        debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
-      fi
-
-      FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
-      debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
-
-      # shellcheck disable=SC2125
-      LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
-      debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
-
-      debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-      LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
+      debug "Setting LINTER_NAME to ${LINTER_NAME}..."
     fi
+
+    LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
+    if [ -z "${LINTER_COMMAND}" ]; then
+      fatal "Cannot find the linter command for ${LANGUAGE} language."
+    else
+      debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
+    fi
+
+    FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
+    debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
+
+    # shellcheck disable=SC2125
+    LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
+    debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
+
+    debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   fi
 done
 
