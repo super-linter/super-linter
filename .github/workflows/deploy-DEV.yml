@@ -62,9 +62,6 @@ jobs:
           image_tag: ${{ github.sha }}
           dockerfile: Dockerfile
           build_extra_args: "--build-arg=BUILD_DATE=${{ github.event.timestamp }}Z --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-
-      - name: show containers
-        run: docker images
  
       ########################################
       # Validates the metadata docker labels #
@@ -78,7 +75,7 @@ jobs:
       #####################################
       - name: Run Test Cases
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint ghcr.io/github/super-linter:${GITHUB_SHA}
 
       #########################################
       # Clean code base to run against it all #
@@ -92,4 +89,4 @@ jobs:
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint ghcr.io/github/super-linter:${GITHUB_SHA}
