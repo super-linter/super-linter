@@ -1,0 +1,2 @@
+- name: Super-Linter
+  uses: github/super-linter@v3.14.0
