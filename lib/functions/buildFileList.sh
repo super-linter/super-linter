@@ -624,6 +624,16 @@ function BuildFileList() {
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
 
+      ############################
+      # Check if file is OpenAPI #
+      ############################
+      if DetectOpenAPIFile "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_OPENAPI+=("${FILE}")
+      fi
+
       ########################################
       # Check if the file is Tekton template #
       ########################################
