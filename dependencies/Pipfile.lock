@@ -717,11 +717,11 @@
         },
         "snakefmt": {
             "hashes": [
-                "sha256:68512f252829306de33216453d7f098a28b27c0e645fb5d26d5db704f567c6d4",
-                "sha256:6b80508ff0607f3c88e84b966570a19ae2da3a628c57319308cfec9364399532"
+                "sha256:9d4f2730212e23de2fb39c3dedfca5b4a73a39b00c09d1ad742eb49d06f729cd",
+                "sha256:d9bff919a9779effd36393238dbcb8cb9e7b5766c097d68080acd7d154d7a73c"
             ],
             "index": "pypi",
-            "version": "==0.2.4"
+            "version": "==0.2.5"
         },
         "snakemake": {
             "hashes": [
