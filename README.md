@@ -338,6 +338,7 @@ Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-lint
 ### GitLab
 
 Check out this [snippet](https://gitlab.com/snippets/1988376)
+And this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
 
 ### Visual Studio Code
 
