@@ -140,15 +140,11 @@ function GetValidationInfo() {
       ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY:1}"
     fi
 
-    # Check if user is explicitly referring to the workspace dir
-    if [[ ${ANSIBLE_DIRECTORY} == "." ]]; then
-      ANSIBLE_DIRECTORY=""
-    fi
-
-    # Need to give it full path
-    if [ -z "${ANSIBLE_DIRECTORY}" ]; then
+    if [ -z "${ANSIBLE_DIRECTORY}" ] || [[ ${ANSIBLE_DIRECTORY} == "." ]]; then
+      # Catches the case where ANSIBLE_DIRECTORY="/" or ANSIBLE_DIRECTORY="."
       TEMP_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}"
     else
+      # Need to give it full path
       TEMP_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${ANSIBLE_DIRECTORY}"
     fi
 
