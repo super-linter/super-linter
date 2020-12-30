@@ -139,7 +139,7 @@ function GetValidationInfo() {
       # Remove first char
       ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY:1}"
     fi
-    
+
     # Check if user is explicitly referring to the workspace dir
     if [[ ${ANSIBLE_DIRECTORY} == "." ]] || [[ ${ANSIBLE_DIRECTORY} == "${GITHUB_WORKSPACE}" ]]; then
       ANSIBLE_DIRECTORY=""
