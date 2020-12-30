@@ -141,7 +141,7 @@ function GetValidationInfo() {
     fi
 
     # Check if user is explicitly referring to the workspace dir
-    if [[ ${ANSIBLE_DIRECTORY} == "." ]] || [[ ${ANSIBLE_DIRECTORY} == "${GITHUB_WORKSPACE}" ]]; then
+    if [[ ${ANSIBLE_DIRECTORY} == "." ]]; then
       ANSIBLE_DIRECTORY=""
     fi
 
