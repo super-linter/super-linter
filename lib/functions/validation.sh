@@ -139,8 +139,19 @@ function GetValidationInfo() {
       # Remove first char
       ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY:1}"
     fi
+    
+    # Check if user is explicitly referring to the workspace dir
+    if [[ ${ANSIBLE_DIRECTORY} == "." ]] || [[ ${ANSIBLE_DIRECTORY} == "${GITHUB_WORKSPACE}" ]]; then
+      ANSIBLE_DIRECTORY=""
+    fi
+
     # Need to give it full path
-    TEMP_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${ANSIBLE_DIRECTORY}"
+    if [ -z "${ANSIBLE_DIRECTORY}" ]; then
+      TEMP_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}"
+    else
+      TEMP_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${ANSIBLE_DIRECTORY}"
+    fi
+
     # Set the value
     ANSIBLE_DIRECTORY="${TEMP_ANSIBLE_DIRECTORY}"
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
