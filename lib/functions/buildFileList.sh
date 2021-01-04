@@ -336,10 +336,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
-
-    #####################
-    # Get the JSX files #
-    #####################
+      FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
 
     ######################
     # Get the JSON files #
@@ -368,9 +365,9 @@ function BuildFileList() {
         ################################
         FILE_ARRAY_OPENAPI+=("${FILE}")
       fi
-      ############################
+      ########################
       # Check if file is ARM #
-      ############################
+      ########################
       if DetectARMFile "${FILE}"; then
         ################################
         # Append the file to the array #
@@ -396,6 +393,9 @@ function BuildFileList() {
         FILE_ARRAY_STATES+=("${FILE}")
       fi
 
+    #####################
+    # Get the JSX files #
+    #####################
     elif [ "${FILE_TYPE}" == "jsx" ]; then
       ################################
       # Append the file to the array #
