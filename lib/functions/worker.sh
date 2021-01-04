@@ -195,7 +195,7 @@ function LintCodebase() {
         # Lint the file with the rules #
         ################################
         LINT_CMD=$(
-          cd "${WORKSPACE_PATH}/ansible" || exit
+          cd "${ANSIBLE_DIRECTORY}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
