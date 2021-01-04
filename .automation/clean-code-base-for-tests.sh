@@ -41,7 +41,7 @@ CleanTestFiles() {
   ##################
   mapfile -t FIND_CMD < <(
     cd "${GITHUB_WORKSPACE}" || exit 1
-    find "${GITHUB_WORKSPACE}" -type f -name "*_bad_*" 2>&1
+    find "${GITHUB_WORKSPACE}" -type f -name "*_bad_*" -o -path "*javascript_prettier*" -name "*javascript_good*" 2>&1
   )
 
   #######################
