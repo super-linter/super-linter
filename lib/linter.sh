@@ -103,6 +103,10 @@ JAVA_FILE_NAME="sun_checks.xml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+JAVASCRIPT_DEFAULT_STYLE="${JAVASCRIPT_DEFAULT_STYLE:-standard}"
+JAVASCRIPT_STYLE_NAME='' # Variable for the style
+JAVASCRIPT_STYLE=''      # Variable for the style
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_STANDARD_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSX_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
@@ -151,12 +155,30 @@ TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 
+#################################################
+# Parse if we are using JS standard or prettier #
+#################################################
+# Remove spaces
+JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr -d ' ')
+# lowercase
+JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '[:lower:]')
+# Check and set
+if [ "${JAVASCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
+  # Set to prettier
+  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_PRETTIER'
+  JAVASCRIPT_STYLE='prettier'
+else
+  # Default to standard
+  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_STANDARD'
+  JAVASCRIPT_STYLE='standard'
+fi
+
 ##################
 # Language array #
 ##################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GHERKIN' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
+  'JAVA' 'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL'
   'TEKTON' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
@@ -185,7 +207,7 @@ LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
 LINTER_NAMES_ARRAY['HTML']="htmlhint"
 LINTER_NAMES_ARRAY['JAVA']="checkstyle"
 LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY['JAVASCRIPT_STANDARD']="standard"
+LINTER_NAMES_ARRAY["${JAVASCRIPT_STYLE_NAME}"]="${JAVASCRIPT_STYLE}"
 LINTER_NAMES_ARRAY['JSON']="jsonlint"
 LINTER_NAMES_ARRAY['JSX']="eslint"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
@@ -746,6 +768,7 @@ LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVASCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
