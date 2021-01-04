@@ -2,7 +2,7 @@
 
 If your repository contains your own rules files that live outside of a ``.github/linters/`` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are.
 
-You can tell Super-Linter where your rules files are located with the ``LINTER_RULES_PATH`` ENV VAR, and you can tell Super-Linter what their filenames are by using any of the filename ENV VARS listed in the [Environment variables table](/README.md#Environment-variables). You can determine which ENV VARS are filename ENV VARS by looking in the notes column for the term "filename."
+You can tell Super-Linter where your rules files are located with the ``LINTER_RULES_PATH`` ENV VAR (this is relative to the ``DEFAULT_WORKSPACE``), and you can tell Super-Linter what their filenames are by using any of the filename ENV VARS listed in the [Environment variables table](/README.md#Environment-variables). You can determine which ENV VARS are filename ENV VARS by looking in the notes column for the term "filename."
 
 ## Here is an example
 
