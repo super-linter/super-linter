@@ -89,17 +89,16 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:197926eaf0065c2c503914a15edc75f4ac259c1e5ae6d17eabd1ba5d8ebd1554",
-                "sha256:d6991e6fd7d0f63bf94282687700a91f5299b807e544cb3367e9b2faeeaf8c62"
+                "sha256:e6915ac164a05367787db2416eeaa8662ae5e0b9c53902dbf23b407686ef5028"
             ],
-            "version": "==1.16.46"
+            "version": "==1.16.48"
         },
         "botocore": {
             "hashes": [
-                "sha256:85ca6915ad5471e7f6cd1b00610b74601d2970cbf8e9b1bf255697154cf621a3",
-                "sha256:f7d365c689070368a5a0857aa35a81d7c950556189f23065f42798f810a59cae"
+                "sha256:549aa9619b51c5b103c7bb906497f60824576366aa4e3642b4e57f9f53a06f7d",
+                "sha256:b954c596f8bdf31d5fdf1eff8a2296bde8094e1e22961a79b83bb62ddeba8a49"
             ],
-            "version": "==1.19.46"
+            "version": "==1.19.48"
         },
         "certifi": {
             "hashes": [
@@ -151,11 +150,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:81a6b135cde112a192ca4c246aa2ce7e3aee6cef8b2f525eb8c3568aa88dd3fd",
-                "sha256:87869944c66046466090c66bea75355506422b65e1ccd9bffcde35c6dc82c933"
+                "sha256:d429fe5552d9afdd19f9bbaddfeaeef881c14301ae20c63b3abb2cf6934a00dc",
+                "sha256:eb14a690cbf04ed05cf7e35bfdf35e3fdfdd1938a29706c3d37bc44283b12d3a"
             ],
             "index": "pypi",
-            "version": "==0.44.0"
+            "version": "==0.44.2"
         },
         "chardet": {
             "hashes": [
@@ -661,10 +660,10 @@
         },
         "rich": {
             "hashes": [
-                "sha256:85d9d67f25ab2d676666c9895bdbfa064f9e68791977637f03b49b290cf4e3ac",
-                "sha256:ae7f5f24fc90c76ccb54883f4bd633cbd146e0bbe3e070275ca97038ce53cf2f"
+                "sha256:064814e6cfbc61ff1f82b1e950667c5dc3bf3ec3ed9ca6f62a29007d1bc5ed4c",
+                "sha256:5ac9f4f7f6b0e32e7e412de127f15b94144e22c9a7896551474d640143bbaa7b"
             ],
-            "version": "==9.6.0"
+            "version": "==9.6.1"
         },
         "ruamel.yaml": {
             "hashes": [
