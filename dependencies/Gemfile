@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
+gem "activesupport", "6.0.3.1"
 gem "rubocop", "~> 0.82.0"
 gem "rubocop-github", "~> 0.16.0"
 gem "rubocop-performance", "~>1.7.1"
