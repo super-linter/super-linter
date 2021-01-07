@@ -762,7 +762,13 @@ LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_
 LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES}"
+# For GO we need to lint packages not individual files, if linting only the newest
+# changes then use only the changes in the patch we are looking at via new-from-rev
+if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
+  LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES} --new-from-rev=${GITHUB_SHA}~"
+else
+  LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES}"
+fi
 LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c ${GROOVY_LINTER_RULES} --failon warning"
 LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"

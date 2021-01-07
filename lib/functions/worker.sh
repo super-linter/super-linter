@@ -249,6 +249,15 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
         )
+      ##################################################
+      # Corner case for GO as it needs to run from the #
+      # directory of the file                          #
+      ##################################################
+      elif [[ ${FILE_TYPE} == "GO" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
