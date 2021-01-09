@@ -22,7 +22,7 @@
     github_host: "{{ hostvars['github_primary'].ansible_host }}"
     probot_server_ip: "{{ hostvars['backup-utils'].ansible_host }}"
   roles:
-    - role: ghe-initialize
+    - role: ghe_initialize
 
 ##########################################
 ## Run ghe-config-apply for all changes ##
@@ -36,7 +36,7 @@
     - block:
         - name: GHE-Config-Apply
           include_role:
-            name: ghe-initialize
+            name: ghe_initialize
             tasks_from: ghe-config-apply.yml
       tags:
         - github
