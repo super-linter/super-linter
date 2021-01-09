@@ -296,12 +296,9 @@ function BuildFileList() {
     ########################
     elif [ "${FILE_TYPE}" == "go" ]; then
       ################################
-      # If there are any files, we lint
-      # the whole project, linting for
-      # changed files is done via the
-      # LINTER_COMMANDS_ARRAY
+      # Append the file to the array #
       ################################
-      FILE_ARRAY_GO=("${WORKSPACE_PATH}/...")
+      FILE_ARRAY_GO+=("${FILE}")
 
     ########################
     # Get the GROOVY files #
