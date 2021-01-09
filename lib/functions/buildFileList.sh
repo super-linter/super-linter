@@ -370,8 +370,8 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
+      FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
       FILE_ARRAY_JSCPD+=("${FILE}")
-
 
     ######################
     # Get the JSON files #
@@ -383,6 +383,15 @@ function BuildFileList() {
       FILE_ARRAY_JSON+=("${FILE}")
       FILE_ARRAY_JSCPD+=("${FILE}")
 
+      ############################
+      # Check if file is Ansible #
+      ############################
+      if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_ANSIBLE+=("${FILE}")
+      fi
       ############################
       # Check if file is OpenAPI #
       ############################
