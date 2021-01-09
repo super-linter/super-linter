@@ -104,6 +104,10 @@ function LintCodebase() {
     info "----------------------------------------------"
     info "----------------------------------------------"
 
+
+    # Keep track of Go file directories to avoid relinting
+    declare -A FILE_DIRS_GO
+
     ##################
     # Lint the files #
     ##################
@@ -249,15 +253,28 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
         )
-      ##################################################
-      # Corner case for GO as it needs to run from the #
-      # directory of the file                          #
-      ##################################################
+      ###################################################
+      # Corner case for GO as it needs to run from the  #
+      # directory of the file and so must also include  #
+      # the filter regex in case a non-excluded file is #
+      # in the same directory as an excluded one        #
+      ###################################################
       elif [[ ${FILE_TYPE} == "GO" ]]; then
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} 2>&1
-        )
+        if [ ! ${FILE_DIRS_GO[$DIR_NAME]+_} ]; then
+          FILE_DIRS_GO[$DIR_NAME]=1
+          if [[ -n "$FILTER_REGEX_EXCLUDE" ]]; then
+            LINT_CMD=$(
+              cd "${DIR_NAME}" || exit
+              ${LINTER_COMMAND} --skip-files ${FILTER_REGEX_EXCLUDE} 2>&1
+            )
+          else
+            LINT_CMD=$(
+              cd "${DIR_NAME}" || exit
+              ${LINTER_COMMAND} 2>&1
+            )
+        else
+            info "${FILE} already linted via ${DIR_NAME}"
+        fi
       else
         ################################
         # Lint the file with the rules #
