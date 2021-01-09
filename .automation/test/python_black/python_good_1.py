@@ -26,6 +26,12 @@ headers = {
 }
 
 
+def make_request(query, query_variables):
+    payload = {"query": query, "variables": query_variables}
+    response = requests.post(api_url, data=json.dumps(payload), headers=headers)
+    return response
+
+
 def create_label(repo_id, label):
     """
     Create label in the supplied repo.
@@ -51,8 +57,7 @@ def create_label(repo_id, label):
     ) as query_file:
         query = "".join(query_file.readlines())
 
-    payload = {"query": query, "variables": query_variables}
-    response = requests.post(api_url, data=json.dumps(payload), headers=headers).json()
+    response = make_request(query, query_variables).json()
     print("Created label {label}".format(label=label["name"]))
 
     return response
@@ -78,8 +83,7 @@ def get_labels(owner, repo):
     ) as query_file:
         query = "".join(query_file.readlines())
 
-    payload = {"query": query, "variables": query_variables}
-    response = requests.post(api_url, data=json.dumps(payload), headers=headers)
+    response = make_request(query, query_variables)
 
     status_code = response.status_code
     result = response.json()
