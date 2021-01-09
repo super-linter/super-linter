@@ -2,7 +2,7 @@
   "name": "super-linter",
   "dependencies": {
     "@coffeelint/cli": "^4.1.2",
-    "@stoplight/spectral": "^5.7.2",
+    "@stoplight/spectral": "^5.8.0",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.10.1",
     "asl-validator": "^1.9.3",
@@ -12,7 +12,7 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-jest": "^24.1.3",
-    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "gherkin-lint": "^4.1.3",
     "htmlhint": "^0.14.2",
     "jsonlint": "^1.6.3",
