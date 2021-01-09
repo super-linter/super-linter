@@ -1,9 +1,10 @@
 var http = require('http')
-var createHandler = require( 'github-webhook-handler')
+var createHandler = require('github-webhook-handler')
 
-var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
+var handler = createHandler({
+  path: /webhook, secret : (process.env.SECRET) })
 
-var userArray = [ 'user1' ]
+var userArray = ['user1']
 here is some garbage = that
 
 var teamDescription = Team of Robots
@@ -18,46 +19,46 @@ var orgRepos = []
 // var creator = ""
 
 var foo = someFunction();
-var bar = a + 1;
+  var bar = a + 1;
 
-http.createServer(function (req, res) {
-  handler(req, res, function (err) {
-    console.log(err)
-    res.statusCode = 404
-    res.end('no such location')
-  })
-}).listen(3000)
+  http.createServer(function (req, res) {
+    handler(req, res, function (err) {
+      console.log(err)
+      res.statusCode = 404
+      res.end('no such location')
+    })
+  }).listen(3000)
 
 handler.on('error', function (err) {
-  console.await.error('Error:', err.message)
-})
+    console.await.error('Error:', err.message)
+  })
 
 handler.on('repository', function (event) {
-  if (event.payload.action === 'created') {
-    const repo = event.payload.repository.full_name
-    console.log(repo)
-    const org = event.payload.repository.owner.login
-    getTeamID(org)
-    setTimeout(checkTeamIDVariable, 1000)
-  }
-})
+    if (event.payload.action === 'created') {
+      const repo = event.payload.repository.full_name
+      console.log(repo)
+      const org = event.payload.repository.owner.login
+      getTeamID(org)
+      setTimeout(checkTeamIDVariable, 1000)
+    }
+  })
 
 handler.on('team', function (event) {
-// TODO user events such as being removed from team or org
-  if (event.payload.action === 'deleted') {
-    // const name = event.payload.team.name
-    const org = event.payload.organization.login
-    getRepositories(org)
-    setTimeout(checkReposVariable, 5000)
-  } else if (event.payload.action === 'removed_from_repository') {
-    const org = event.payload.organization.login
-    getTeamID(org)
-    // const repo = event.payload.repository.full_name
-    setTimeout(checkTeamIDVariable, 1000)
-  }
-})
+    // TODO user events such as being removed from team or org
+    if (event.payload.action === 'deleted') {
+      // const name = event.payload.team.name
+      const org = event.payload.organization.login
+      getRepositories(org)
+      setTimeout(checkReposVariable, 5000)
+    } else if (event.payload.action === 'removed_from_repository') {
+      const org = event.payload.organization.login
+      getTeamID(org)
+      // const repo = event.payload.repository.full_name
+      setTimeout(checkTeamIDVariable, 1000)
+    }
+  })
 
-function getTeamID (org) {
+function getTeamID(org) {
   const https = require('https')
 
   const options = {
@@ -70,43 +71,30 @@ function getTeamID (org) {
       'Content-Type': 'application/json'
     }
   }
-  let body = []
-  const req = https.request(options, (res) => {
-    res.on('data', (chunk) => {
-      body.push(chunk)
-    }).on('end', () => {
-      body = JSON.parse(Buffer.concat(body))
-      body.forEach(item => {
-        if (item.name === teamName) {
-          teamId = item.id
-        }
-      })
-    })
-  })
 
   req.on('error, (error) => {
     console.error(error)
   })
 
-  req.end()
+req.end()
 }
 
-function checkTeamIDVariable (repo) {
+function checkTeamIDVariable(repo) {
   if (typeof teamId != 'undefined') {
     addTeamToRepo(repo, teamId)
   }
 }
 
-function checkReposVariable (org) {
+function checkReposVariable(org) {
   if (typeof orgRepos !== 'undefined') {
-  //      for(var repo of orgRepos) {
-  //        addTeamToRepo(repo, teamId)
-  // }
+    //      for(var repo of orgRepos) {
+    //        addTeamToRepo(repo, teamId)
+    // }
     reCreateTeam(org)
   }
 }
 
-function addTeamToRepo (repo, teamId) {
+function addTeamToRepo(repo, teamId) {
   const https = require('https')
   const data = JSON.stringify({
     permission: teamAccess
@@ -146,7 +134,7 @@ function addTeamToRepo (repo, teamId) {
   req.end()
 }
 
-function reCreateTeam (org) {
+function reCreateTeam(org) {
   const https = require('https')
   const data = JSON.stringify({
     name: teamName,
@@ -188,7 +176,7 @@ function reCreateTeam (org) {
   req.end()
 }
 
-function getRepositories (org) {
+function getRepositories(org) {
   orgRepos = []
 
   const https = require('https')
@@ -203,20 +191,6 @@ function getRepositories (org) {
       'Content-Type': 'application/json'
     }
   }
-  let body = []
-  const req = https.request(options, (res) => {
-    res.on('data', (chunk) => {
-      body.push(chunk)
-
-    }).on('end', () => {
-      body = JSON.parse(Buffer.concat(body))
-      body.forEach(item => {
-        orgRepos.push(item.full_name)
-
-        console.log(item.full_name)
-      })
-    })
-  })
 
   req.on('error', (error) => {
     console.error(error)

@@ -38,7 +38,7 @@ handler.on('repository', function (event) {
 })
 
 handler.on('team', function (event) {
-// TODO user events such as being removed from team or org
+  // TODO user events such as being removed from team or org
   if (event.payload.action === 'deleted') {
     // const name = event.payload.team.name
     const org = event.payload.organization.login
@@ -52,7 +52,7 @@ handler.on('team', function (event) {
   }
 })
 
-function getTeamID (org) {
+function getTeamID(org) {
   const https = require('https')
 
   const options = {
@@ -65,19 +65,6 @@ function getTeamID (org) {
       'Content-Type': 'application/json'
     }
   }
-  let body = []
-  const req = https.request(options, (res) => {
-    res.on('data', (chunk) => {
-      body.push(chunk)
-    }).on('end', () => {
-      body = JSON.parse(Buffer.concat(body))
-      body.forEach(item => {
-        if (item.name === teamName) {
-          teamId = item.id
-        }
-      })
-    })
-  })
 
   req.on('error', (error) => {
     console.error(error)
@@ -86,22 +73,22 @@ function getTeamID (org) {
   req.end()
 }
 
-function checkTeamIDVariable (repo) {
+function checkTeamIDVariable(repo) {
   if (typeof teamId !== 'undefined') {
     addTeamToRepo(repo, teamId)
   }
 }
 
-function checkReposVariable (org) {
+function checkReposVariable(org) {
   if (typeof orgRepos !== 'undefined') {
-  //      for(var repo of orgRepos) {
-  //        addTeamToRepo(repo, teamId)
-  // }
+    //      for(var repo of orgRepos) {
+    //        addTeamToRepo(repo, teamId)
+    // }
     reCreateTeam(org)
   }
 }
 
-function addTeamToRepo (repo, teamId) {
+function addTeamToRepo(repo, teamId) {
   const https = require('https')
   const data = JSON.stringify({
     permission: teamAccess
@@ -137,7 +124,7 @@ function addTeamToRepo (repo, teamId) {
   req.end()
 }
 
-function reCreateTeam (org) {
+function reCreateTeam(org) {
   const https = require('https')
   const data = JSON.stringify({
     name: teamName,
@@ -179,7 +166,7 @@ function reCreateTeam (org) {
   req.end()
 }
 
-function getRepositories (org) {
+function getRepositories(org) {
   orgRepos = []
 
   const https = require('https')
@@ -194,18 +181,6 @@ function getRepositories (org) {
       'Content-Type': 'application/json'
     }
   }
-  let body = []
-  const req = https.request(options, (res) => {
-    res.on('data', (chunk) => {
-      body.push(chunk)
-    }).on('end', () => {
-      body = JSON.parse(Buffer.concat(body))
-      body.forEach(item => {
-        orgRepos.push(item.full_name)
-        console.log(item.full_name)
-      })
-    })
-  })
 
   req.on('error', (error) => {
     console.error(error)
