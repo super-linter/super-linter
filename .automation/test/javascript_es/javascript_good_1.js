@@ -1,17 +1,15 @@
-var http = require('http')
-var createHandler = require('github-webhook-handler')
-var handler = createHandler({ path: '/webhook', secret: (process.env.SECRET) })
+const http = require('http')
+const createHandler = require('github-webhook-handler')
+const handler = createHandler({ path: '/webhook', secret: (process.env.SECRET) })
 
-var userArray = ['user1']
+const userArray = ['user1']
 
-var teamDescription = 'Team of Robots'
-var teamPrivacy = 'closed' // closed (visible) / secret (hidden) are options here
+const teamDescription = 'Team of Robots'
+const teamPrivacy = 'closed' // closed (visible) / secret (hidden) are options here
 
-var teamName = process.env.GHES_TEAM_NAME
-var teamAccess = 'pull' // pull,push,admin options here
-var teamId = ''
-
-var orgRepos = []
+const teamName = process.env.GHES_TEAM_NAME
+const teamAccess = 'pull' // pull,push,admin options here
+const teamId = ''
 
 // var creator = ""
 
@@ -31,8 +29,6 @@ handler.on('repository', function (event) {
   if (event.payload.action === 'created') {
     const repo = event.payload.repository.full_name
     console.log(repo)
-    const org = event.payload.repository.owner.login
-    getTeamID(org)
     setTimeout(checkTeamIDVariable, 1000)
   }
 })
@@ -41,45 +37,20 @@ handler.on('team', function (event) {
   // TODO user events such as being removed from team or org
   if (event.payload.action === 'deleted') {
     // const name = event.payload.team.name
-    const org = event.payload.organization.login
-    getRepositories(org)
     setTimeout(checkReposVariable, 5000)
   } else if (event.payload.action === 'removed_from_repository') {
-    const org = event.payload.organization.login
-    getTeamID(org)
     // const repo = event.payload.repository.full_name
     setTimeout(checkTeamIDVariable, 1000)
   }
 })
 
-function getTeamID(org) {
-  const https = require('https')
-
-  const options = {
-    hostname: (process.env.GHE_HOST),
-    port: 443,
-    path: '/api/v3/orgs/' + org + '/teams',
-    method: 'GET',
-    headers: {
-      Authorization: 'token ' + (process.env.GHE_TOKEN),
-      'Content-Type': 'application/json'
-    }
-  }
-
-  req.on('error', (error) => {
-    console.error(error)
-  })
-
-  req.end()
-}
-
-function checkTeamIDVariable(repo) {
+function checkTeamIDVariable (repo) {
   if (typeof teamId !== 'undefined') {
     addTeamToRepo(repo, teamId)
   }
 }
 
-function checkReposVariable(org) {
+function checkReposVariable (org) {
   if (typeof orgRepos !== 'undefined') {
     //      for(var repo of orgRepos) {
     //        addTeamToRepo(repo, teamId)
@@ -88,7 +59,7 @@ function checkReposVariable(org) {
   }
 }
 
-function addTeamToRepo(repo, teamId) {
+function addTeamToRepo (repo, teamId) {
   const https = require('https')
   const data = JSON.stringify({
     permission: teamAccess
@@ -124,14 +95,13 @@ function addTeamToRepo(repo, teamId) {
   req.end()
 }
 
-function reCreateTeam(org) {
+function reCreateTeam (org) {
   const https = require('https')
   const data = JSON.stringify({
     name: teamName,
     description: teamDescription,
     privacy: teamPrivacy,
-    maintainers: userArray,
-    repo_names: orgRepos
+    maintainers: userArray
   })
 
   const options = {
@@ -163,28 +133,5 @@ function reCreateTeam(org) {
   })
 
   req.write(data)
-  req.end()
-}
-
-function getRepositories(org) {
-  orgRepos = []
-
-  const https = require('https')
-
-  const options = {
-    hostname: (process.env.GHE_HOST),
-    port: 443,
-    path: '/api/v3/orgs/' + org + '/repos',
-    method: 'GET',
-    headers: {
-      Authorization: 'token ' + (process.env.GHE_TOKEN),
-      'Content-Type': 'application/json'
-    }
-  }
-
-  req.on('error', (error) => {
-    console.error(error)
-  })
-
   req.end()
 }
