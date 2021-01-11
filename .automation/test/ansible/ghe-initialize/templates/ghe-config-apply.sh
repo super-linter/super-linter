@@ -22,10 +22,11 @@ PROCESS_CHECK=0                          # Count of times to check the process
 ################################################################################
 #### Function CheckShellErrors #################################################
 CheckShellErrors() {
+  COUNTER=$1
   ##############################
   # Check the shell for errors #
   ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
+  if [ "${ERROR_CODE}" -ne 0 ]; then
     error "Failed to sleep!"
     error "[${SLEEP_CMD}]"
     info "Will try to call apply as last effort..."
@@ -37,12 +38,13 @@ CheckShellErrors() {
     #####################
     # Increment counter #
     #####################
-    (($1++))
+    ((COUNTER++))
     ##########################################
     # Try to check for the pid/process again #
     ##########################################
     $2
   fi
+  return "$COUNTER"
 }
 ################################################################################
 #### Function CheckGHEPid ######################################################
@@ -73,7 +75,7 @@ CheckGHEPid() {
       #######################
       ERROR_CODE=$?
 
-      CheckShellErrors "PID_CHECK" "CheckGHEPid"
+      PID_CHECK=CheckShellErrors "PID_CHECK" "CheckGHEPid"
     fi
   fi
 }
@@ -116,7 +118,7 @@ CheckGHEProcess() {
       #######################
       ERROR_CODE=$?
 
-      CheckShellErrors "PROCESS_CHECK" "CheckGHEProcess"
+      PROCESS_CHECK=CheckShellErrors "PROCESS_CHECK" "CheckGHEProcess"
     fi
   fi
 }

@@ -42,8 +42,8 @@ CheckShellErrors() {
   # Check the shell for errors #
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
-    error $1
-    fatal $2
+    error "$1"
+    fatal "$2"
   fi
 }
 ################################################################################
