@@ -25,9 +25,9 @@
         },
         "ansible": {
             "hashes": [
-                "sha256:98e718aea82199be62db7731373d660627aa1e938d34446588f2f49c228638ee"
+                "sha256:9775229aae31336a624ca5afe5533fea5e49ef4daa96a96791dd9871b2d8b8d1"
             ],
-            "version": "==2.10.4"
+            "version": "==2.10.5"
         },
         "ansible-base": {
             "hashes": [
@@ -89,16 +89,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:e6915ac164a05367787db2416eeaa8662ae5e0b9c53902dbf23b407686ef5028"
+                "sha256:11dc492682cf2a4f8ff397b0a109837340ef93e77ca2e65715ce24ecf043717c",
+                "sha256:ca97e1d591fe4214bac09cf347a8425061d9eecc456c147692749e383a0f3dfe"
             ],
-            "version": "==1.16.48"
+            "version": "==1.16.51"
         },
         "botocore": {
             "hashes": [
-                "sha256:549aa9619b51c5b103c7bb906497f60824576366aa4e3642b4e57f9f53a06f7d",
-                "sha256:b954c596f8bdf31d5fdf1eff8a2296bde8094e1e22961a79b83bb62ddeba8a49"
+                "sha256:76c0ce78fd2a7e9e08d038f2bba2ce10bee08e04546c7812a9654edb2dc4d496",
+                "sha256:b204c5b477b043c7f61cba5db479c6b25f684f7409b71a8ecdb5a6b3f57b5cb4"
             ],
-            "version": "==1.19.48"
+            "version": "==1.19.51"
         },
         "certifi": {
             "hashes": [
@@ -150,11 +151,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:d429fe5552d9afdd19f9bbaddfeaeef881c14301ae20c63b3abb2cf6934a00dc",
-                "sha256:eb14a690cbf04ed05cf7e35bfdf35e3fdfdd1938a29706c3d37bc44283b12d3a"
+                "sha256:ab8d7e7b90cd324e392ec6db13676a5ac7c43315ab6e332d6b5ebb4f1d6b0b56",
+                "sha256:de9df9830f5d5b26cb3a263bedf2ffbe3eaeb99e21a2b077c0860bafb1cd0204"
             ],
             "index": "pypi",
-            "version": "==0.44.2"
+            "version": "==0.44.3"
         },
         "chardet": {
             "hashes": [
@@ -311,10 +312,10 @@
         },
         "gitpython": {
             "hashes": [
-                "sha256:6eea89b655917b500437e9668e4a12eabdcf00229a0df1762aabd692ef9b746b",
-                "sha256:befa4d101f91bad1b632df4308ec64555db684c360bd7d2130b4807d49ce86b8"
+                "sha256:42dbefd8d9e2576c496ed0059f3103dcef7125b9ce16f9d5f9c834aed44a1dac",
+                "sha256:867ec3dfb126aac0f8296b19fb63b8c4a399f32b4b6fafe84c4b10af5fa9f7b5"
             ],
-            "version": "==3.1.11"
+            "version": "==3.1.12"
         },
         "idna": {
             "hashes": [
@@ -660,10 +661,10 @@
         },
         "rich": {
             "hashes": [
-                "sha256:064814e6cfbc61ff1f82b1e950667c5dc3bf3ec3ed9ca6f62a29007d1bc5ed4c",
-                "sha256:5ac9f4f7f6b0e32e7e412de127f15b94144e22c9a7896551474d640143bbaa7b"
+                "sha256:25583ce533afae71de086ca97cf0aa883a5e1a220dfcc6049a2809a74bc79ca0",
+                "sha256:f1967aa6c91dc700c322b54165b35a38785e0e666c1522f9f9a876073b68831b"
             ],
-            "version": "==9.6.1"
+            "version": "==9.7.0"
         },
         "ruamel.yaml": {
             "hashes": [
