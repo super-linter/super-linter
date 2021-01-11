@@ -30,10 +30,11 @@ not ok 23 - python_bad_1.py
   message: Clone found (python) \n - /tmp/lint/.automation/test/jscpd/python_bad_1.py [77 70 - 84 16] (7 lines, 77 tokens)\n   /tmp/lint/.automation/test/jscpd/python_bad_1.py [50 69 - 55 82]\n\nClone found (python) \n - /tmp/lint/.automation/test/jscpd/python_bad_1.py [77 70 - 84 16] (7 lines, 77 tokens)\n   /tmp/lint/.automation/test/jscpd/python_bad_1.py [50 69 - 55 82]\n\n 77 │ 50 │ ), "r"                                                                           \n 78 │ 51 │     ) as query_file                                                              \n 79 │ 52 │         query = "".join(query_file.readlines())                                  \n 80 │ 53 │                                                                                  \n 81 │ 54 │     payload = {"query"  query, "variables"  query_variables}                     \n 82 │ 55 │     response = requests.post(api_url, data=json.dumps(payload), headers=headers) \n 83 │ 56 │                                                                                  \n 84 │ 57 │     status_code                                                                  \n\nFound 1 clones.\nERROR  jscpd found too many duplicates (3.61%) over threshold (0%)\nError  ERROR  jscpd found too many duplicates (3.61%) over threshold (0%)\n    at ThresholdReporter.report (/node_modules/@jscpd/finder/dist/reporters/threshold.js)\n    at /node_modules/@jscpd/finder/dist/in-files-detector.js\n    at Array.forEach (<anonymous>)\n    at /node_modules/@jscpd/finder/dist/in-files-detector.js\n
   ...
 ok 24 - r_good_1.r
-ok 25 - ruby_good_1.rb
-ok 26 - shell_good_1.sh
-ok 27 - sql_good_1.sql
-ok 28 - typescript_good_1 copy.ts
-ok 29 - typescript_good_1.ts
-ok 30 - xml_good_1.xml
-ok 31 - yml_good_1.yml
+ok 25 - expected-JSCPD.tap
+ok 26 - ruby_good_1.rb
+ok 27 - shell_good_1.sh
+ok 28 - sql_good_1.sql
+ok 29 - typescript_good_1 copy.ts
+ok 30 - typescript_good_1.ts
+ok 31 - xml_good_1.xml
+ok 32 - yml_good_1.yml
