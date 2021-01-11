@@ -9,7 +9,7 @@
 #########################################
 FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
 FROM dotenvlinter/dotenv-linter:2.2.1 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.2.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
 FROM yoheimuta/protolint:v0.27.0 as protolint
 FROM golangci/golangci-lint:v1.35.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
