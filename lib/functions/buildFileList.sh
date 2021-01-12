@@ -161,6 +161,27 @@ function BuildFileList() {
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
   fi
 
+  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
+    #########################################
+    # Need to switch back to branch of code #
+    #########################################
+    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # Error
+      error "Failed to switch back to branch!"
+      fatal "[${SWITCH2_CMD}]"
+    fi
+  fi
+
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -183,7 +204,7 @@ function BuildFileList() {
     ##########################################################
     if [ ! -f "${FILE}" ]; then
       # File not found in workspace
-      debug "File:{$FILE} existed in commit data, but not found on file system, skipping..."
+      warn "File:{$FILE} existed in commit data, but not found on file system, skipping..."
       continue
     fi
 
@@ -668,27 +689,6 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
-
-  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    #########################################
-    # Need to switch back to branch of code #
-    #########################################
-    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ]; then
-      # Error
-      error "Failed to switch back to branch!"
-      fatal "[${SWITCH2_CMD}]"
-    fi
-  fi
 
   ################
   # Footer print #
