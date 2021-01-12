@@ -1,5 +1,5 @@
 TAP version 13
-1..31
+1..32
 ok 1 - clojure_good_1.clj
 ok 2 - coffeescript_good_1.coffee
 ok 3 - csharp_good_01.cs
