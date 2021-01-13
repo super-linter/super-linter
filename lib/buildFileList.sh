@@ -468,6 +468,12 @@ function BuildFileList() {
       ##########################################################
       READ_ONLY_CHANGE_FLAG=1
 
+    #####################
+    # Get the TAP files #
+    #####################
+    elif [ "${FILE_TYPE}" == "tap" ]; then
+      debug "Tap File:[${FILE}] found, ignoring..."
+
     ###########################
     # Get the Terraform files #
     ###########################
@@ -561,25 +567,6 @@ function BuildFileList() {
   done
 
   export READ_ONLY_CHANGE_FLAG # Workaround SC2034
-
-  #########################################
-  # Need to switch back to branch of code #
-  #########################################
-  SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    error "Failed to switch back to branch!"
-    fatal "[${SWITCH2_CMD}]"
-  fi
 
   ################
   # Footer print #
@@ -806,6 +793,25 @@ function GetModifiedFileList() {
     # Error
     error "Failed to gain a list of all files changed!"
     fatal "[${RAW_FILE_ARRAY[*]}]"
+  fi
+
+  #########################################
+  # Need to switch back to branch of code #
+  #########################################
+  SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Error
+    error "Failed to switch back to branch!"
+    fatal "[${SWITCH2_CMD}]"
   fi
 
   ################################################
