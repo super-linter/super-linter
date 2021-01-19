@@ -49,20 +49,25 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
+      - name: Set Docker Action cache
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
       ###################################
       # Build image locally for testing #
       ###################################
       - name: Build image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ secrets.GCR_USERNAME }}
-          password: ${{ secrets.GCR_TOKEN }}
-          registry: ghcr.io
-          image_name: github/super-linter
-          image_tag: ${{ github.sha }}
-          dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-          push_image_and_stages: false
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: false
+          tags: github/super-linter:${{ github.sha }}
 
       ########################################
       # Validates the metadata docker labels #
