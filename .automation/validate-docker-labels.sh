@@ -13,7 +13,6 @@ BUILD_DATE="${BUILD_DATE}"                                                      
 BUILD_REVISION="${GITHUB_SHA}"                                                       # GitHub Sha
 BUILD_VERSION="${GITHUB_SHA}"                                                        # Version of the container
 ORG_REPO="github/super-linter"                                                       # Org/repo
-REGISTRY='ghcr.io'                                                                   # Docker Registry
 ((LOG_TRACE = LOG_DEBUG = LOG_VERBOSE = LOG_NOTICE = LOG_WARN = LOG_ERROR = "true")) # Enable all loging
 ERROR=0                                                                              # Error count
 export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
@@ -46,7 +45,7 @@ ValidateLabel() {
   ########################
   # Get the docker label #
   ########################
-  LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${REGISTRY}/${ORG_REPO}:${GITHUB_SHA}")
+  LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${ORG_REPO}:${GITHUB_SHA}")
 
   ###################
   # Check the value #
