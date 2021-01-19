@@ -143,6 +143,8 @@ RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME=".sql-config.json"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TERRAFORM_FILE_NAME=".tflint.hcl"
@@ -329,7 +331,9 @@ Header() {
   ###############################
   # Give them the possum action #
   ###############################
-  /bin/bash /action/lib/functions/possum.sh
+  if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
+    /bin/bash /action/lib/functions/possum.sh
+  fi
 
   ##########
   # Prints #
