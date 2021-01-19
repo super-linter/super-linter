@@ -49,6 +49,9 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
+      ########################################
+      # Set the container to store the cache #
+      ########################################
       - name: Set Docker Action cache
         uses: satackey/action-docker-layer-caching@v0.0.11
         # Ignore the failure of a step and avoid terminating the job.
@@ -67,7 +70,9 @@ jobs:
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
           push: false
-          tags: github/super-linter:${{ github.sha }}
+          tags: |
+            github/super-linter:${{ github.sha }}
+            ghcr.io/github/super-linter:${{ github.sha }}
 
       ########################################
       # Validates the metadata docker labels #
