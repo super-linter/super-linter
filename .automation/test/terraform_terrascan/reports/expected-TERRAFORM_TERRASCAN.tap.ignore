@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - terraform-terrascan_bad_1.tf
-  ---
-  message: 2021-01-25T15 47 40.480Z	warn	v12/load-file.go 27	There may be a few breaking changes while working with terraform v0.12 files. For further information, refer to https //github.com/accurics/terrascan/releases/v1.3.0\n\n\nViolation Details -\n    \n	Description     	Instance should be configured in vpc. AWS VPCs provides the controls to facilitate a formal process for approving and testing all network connections and changes to the firewall and router configurations.\n	File            	terraform-terrascan_bad_1.tf\n	Line            	1\n	Severity        	MEDIUM\n	\n	-----------------------------------------------------------------------\n	\n\nScan Summary -\n\n	File/Folder          	/tmp/lint/.automation/test/terraform_terrascan/bad/terraform-terrascan_bad_1.tf\n	IaC Type             	terraform\n	Scanned At           	2021-01-25 15 47 40.513757072 +0000 UTC\n	Policies Validated   	552\n	Violated Policies    	1\n	Low                  	0\n	Medium               	1\n	High                 	0\n	\n
-  ...
-ok 2 - terraform-terrascan_good_1.tf
