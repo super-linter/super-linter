@@ -7,11 +7,11 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
+FROM cljkondo/clj-kondo:2021.01.20-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
-FROM yoheimuta/protolint:v0.27.0 as protolint
-FROM golangci/golangci-lint:v1.35.2 as golangci-lint
+FROM yoheimuta/protolint:v0.28.0 as protolint
+FROM golangci/golangci-lint:v1.36.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.23.1 as tflint
 FROM alpine/terragrunt:0.14.5 as terragrunt
@@ -237,7 +237,7 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
 ################################
 # Install editorconfig-checker #
