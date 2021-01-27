@@ -49,14 +49,10 @@ DetectOpenAPIFile() {
   # Check the shell for errors #
   ##############################
   if [ ${ERROR_CODE} -eq 0 ]; then
-    ########################
-    # Found string in file #
-    ########################
+    debug "${FILE} is an OpenAPI descriptor"
     return 0
   else
-    ###################
-    # No string match #
-    ###################
+    debug "${FILE} is NOT an OpenAPI descriptor"
     return 1
   fi
 }
@@ -268,6 +264,7 @@ function CheckFileType() {
     ################################
     # Append the file to the array #
     ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
     FILE_ARRAY_RUBY+=("${FILE}")
   else
     ############################

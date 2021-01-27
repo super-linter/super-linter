@@ -223,6 +223,8 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+    # jscpd also runs an all files
+    FILE_ARRAY_JSCPD+=("${FILE}")
 
     #######################
     # Get the shell files #
@@ -514,9 +516,9 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
-      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
+      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -563,7 +565,7 @@ function BuildFileList() {
     elif [ "${FILE_TYPE}" == "sql" ]; then
       ################################
       # Append the file to the array #
-      ##############################p##
+      ################################
       FILE_ARRAY_SQL+=("${FILE}")
 
     ###########################
