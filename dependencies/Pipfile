@@ -17,6 +17,7 @@ snakemake = "*"
 yamllint = "*"
 typing_extensions = "*"
 yq = "*"
+ansible-lint = "*"
 
 [requires]
 python_version = "3.8"

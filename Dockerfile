@@ -7,15 +7,15 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.09.09 as clj-kondo
-FROM dotenvlinter/dotenv-linter:2.2.1 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.2.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.32.2 as golangci-lint
-FROM yoheimuta/protolint:v0.26.0 as protolint
+FROM cljkondo/clj-kondo:2021.01.20-alpine as clj-kondo
+FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
+FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
+FROM yoheimuta/protolint:v0.28.0 as protolint
+FROM golangci/golangci-lint:v1.36.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.20.3 as tflint
-FROM alpine/terragrunt:0.13.5 as terragrunt
-FROM mvdan/shfmt:v3.2.0 as shfmt
+FROM wata727/tflint:0.23.1 as tflint
+FROM alpine/terragrunt:0.14.5 as terragrunt
+FROM mvdan/shfmt:v3.2.1 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
@@ -38,19 +38,19 @@ ARG BUILD_VERSION
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your code base with GitHub Actions" \
-      com.github.actions.icon="code" \
-      com.github.actions.color="red" \
-      maintainer="GitHub DevOps <github_devops@github.com>" \
-      org.opencontainers.image.created=$BUILD_DATE \
-      org.opencontainers.image.revision=$BUILD_REVISION \
-      org.opencontainers.image.version=$BUILD_VERSION \
-      org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-      org.opencontainers.image.url="https://github.com/github/super-linter" \
-      org.opencontainers.image.source="https://github.com/github/super-linter" \
-      org.opencontainers.image.documentation="https://github.com/github/super-linter" \
-      org.opencontainers.image.vendor="GitHub" \
-      org.opencontainers.image.description="Lint your code base with GitHub Actions"
+    com.github.actions.description="Lint your code base with GitHub Actions" \
+    com.github.actions.icon="code" \
+    com.github.actions.color="red" \
+    maintainer="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION \
+    org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.url="https://github.com/github/super-linter" \
+    org.opencontainers.image.source="https://github.com/github/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.vendor="GitHub" \
+    org.opencontainers.image.description="Lint your code base with GitHub Actions"
 
 #################################################
 # Set ENV values used for debugging the version #
@@ -80,7 +80,6 @@ ARG GLIBC_VERSION='2.31-r0'
 # Run APK installs #
 ####################
 RUN apk add --no-cache \
-    ansible-lint \
     bash \
     coreutils \
     curl \
@@ -92,10 +91,11 @@ RUN apk add --no-cache \
     icu-libs \
     jq \
     krb5-libs \
-    libc-dev libxml2-dev libxml2-utils libgcc \
-    lttng-ust-dev \
-    libcurl libintl libssl1.1 libstdc++ \
+    libc-dev libcurl libffi-dev libgcc \
+    libintl libssl1.1 libstdc++ \
+    libxml2-dev libxml2-utils \
     linux-headers \
+    lttng-ust-dev \
     make \
     musl-dev \
     npm nodejs-current \
@@ -237,7 +237,7 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
 ################################
 # Install editorconfig-checker #
@@ -276,7 +276,7 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 # Install Raku and additional Edge dependencies #
 #################################################
 # Basic setup, programs and init
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
     && apk add --no-cache rakudo zef
 
 ######################

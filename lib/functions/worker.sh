@@ -23,24 +23,6 @@ function LintCodebase() {
   TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
-  ################
-  # print header #
-  ################
-  info ""
-  info "----------------------------------------------"
-  info "----------------------------------------------"
-
-  debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
-
-  if [ "${TEST_CASE_RUN}" = "true" ]; then
-    info "Testing Codebase [${FILE_TYPE}] files..."
-  else
-    info "Linting [${FILE_TYPE}] files..."
-  fi
-
-  info "----------------------------------------------"
-  info "----------------------------------------------"
-
   ##########################
   # Initialize empty Array #
   ##########################
@@ -50,6 +32,7 @@ function LintCodebase() {
   # Set the flag #
   ################
   SKIP_FLAG=0
+  INDEX=0
 
   ############################################################
   # Check to see if we need to go through array or all files #
@@ -73,7 +56,6 @@ function LintCodebase() {
     ########################################
     if IsTAP; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
-      INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
       REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
     fi
@@ -83,6 +65,24 @@ function LintCodebase() {
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
     debug "Workspace path: ${WORKSPACE_PATH}"
+
+    ################
+    # print header #
+    ################
+    info ""
+    info "----------------------------------------------"
+    info "----------------------------------------------"
+
+    debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
+
+    if [ "${TEST_CASE_RUN}" = "true" ]; then
+      info "Testing Codebase [${FILE_TYPE}] files..."
+    else
+      info "Linting [${FILE_TYPE}] files..."
+    fi
+
+    info "----------------------------------------------"
+    info "----------------------------------------------"
 
     ##################
     # Lint the files #
@@ -175,7 +175,7 @@ function LintCodebase() {
         # Lint the file with the rules #
         ################################
         LINT_CMD=$(
-          cd "${WORKSPACE_PATH}/ansible" || exit
+          cd "${ANSIBLE_DIRECTORY}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
@@ -263,7 +263,7 @@ function LintCodebase() {
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
-            error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]"
+            error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
@@ -301,7 +301,7 @@ function LintCodebase() {
           #########
           error "Found errors in [${LINTER_NAME}] linter!"
           error "This file should have failed test case!"
-          error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
+          error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
           # Increment the error count
           (("ERRORS_FOUND_${FILE_TYPE}++"))
         else
@@ -319,7 +319,7 @@ function LintCodebase() {
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
       fi
-      debug "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
+      debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
     done
 
     #################################
@@ -351,170 +351,16 @@ function LintCodebase() {
         fi
       fi
     fi
-
-    ##############################
-    # Validate we ran some tests #
-    ##############################
-    if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
-      #################################################
-      # We failed to find files and no tests were ran #
-      #################################################
-      error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
-      fatal "Please validate logic or that tests exist!"
-    fi
   fi
-}
-################################################################################
-#### Function LintAnsibleFiles #################################################
-function LintAnsibleFiles() {
-  ######################
-  # Create Print Array #
-  ######################
-  PRINT_ARRAY=()
 
-  ################
-  # print header #
-  ################
-  PRINT_ARRAY+=("")
-  PRINT_ARRAY+=("----------------------------------------------")
-  PRINT_ARRAY+=("----------------------------------------------")
-  PRINT_ARRAY+=("Linting [Ansible] files...")
-  PRINT_ARRAY+=("----------------------------------------------")
-  PRINT_ARRAY+=("----------------------------------------------")
-
-  ######################
-  # Name of the linter #
-  ######################
-  LINTER_NAME="ansible-lint"
-
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  #######################
-  # Create flag to skip #
-  #######################
-  SKIP_FLAG=0
-
-  ######################################################
-  # Only go into ansible linter if we have base folder #
-  ######################################################
-  if [ -d "${ANSIBLE_DIRECTORY}" ]; then
-
-    #################################
-    # Get list of all files to lint #
-    #################################
-    mapfile -t LIST_FILES < <(find "${ANSIBLE_DIRECTORY}" -path "*/node_modules" -prune -o -type f -regex ".*\.\(yml\|yaml\|json\)\$" 2>&1)
-
-    ####################################
-    # Check if we have data to look at #
-    ####################################
-    if [ ${SKIP_FLAG} -eq 0 ]; then
-      for LINE in "${PRINT_ARRAY[@]}"; do
-        #########################
-        # Print the header line #
-        #########################
-        info "${LINE}"
-      done
-    fi
-
-    ########################################
-    # Prepare context if TAP output format #
-    ########################################
-    if IsTAP; then
-      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
-      INDEX=0
-      mkdir -p "${REPORT_OUTPUT_FOLDER}"
-      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
-    fi
-
-    ##################
-    # Lint the files #
-    ##################
-    for FILE in "${LIST_FILES[@]}"; do
-
-      ########################################
-      # Make sure we dont lint certain files #
-      ########################################
-      if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]] || [[ ${FILE} == *"vault.yaml"* ]] || [[ ${FILE} == *"galaxy.yaml"* ]]; then
-        # This is a file we dont look at
-        continue
-      fi
-
-      ##################################
-      # Increase the linted file index #
-      ##################################
-      (("INDEX++"))
-
-      ####################
-      # Get the filename #
-      ####################
-      FILE_NAME=$(basename "${ANSIBLE_DIRECTORY}/${FILE}" 2>&1)
-
-      ##############
-      # File print #
-      ##############
-      info "---------------------------"
-      info "File:[${FILE}]"
-
-      ################################
-      # Lint the file with the rules #
-      ################################
-      LINT_CMD=$("${LINTER_NAME}" -v -c "${ANSIBLE_LINTER_RULES}" "${ANSIBLE_DIRECTORY}/${FILE}" 2>&1)
-
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        #########
-        # Error #
-        #########
-        error "Found errors in [${LINTER_NAME}] linter!"
-        error "[${LINT_CMD}]"
-        # Increment error count
-        ((ERRORS_FOUND_ANSIBLE++))
-
-        #######################################################
-        # Store the linting as a temporary file in TAP format #
-        #######################################################
-        if IsTAP; then
-          NotOkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
-          AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
-        fi
-
-      else
-        ###########
-        # Success #
-        ###########
-        info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
-
-        #######################################################
-        # Store the linting as a temporary file in TAP format #
-        #######################################################
-        if IsTAP; then
-          OkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
-        fi
-      fi
-    done
-
-    #################################
-    # Generate report in TAP format #
-    #################################
-    if IsTAP && [ ${INDEX} -gt 0 ]; then
-      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
-      cat "${TMPFILE}" >>"${REPORT_OUTPUT_FILE}"
-    fi
-  else
-    ########################
-    # No Ansible dir found #
-    ########################
-    warn "No Ansible base directory found at:[${ANSIBLE_DIRECTORY}]"
-    debug "skipping ansible lint"
+  ##############################
+  # Validate we ran some tests #
+  ##############################
+  if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
+    #################################################
+    # We failed to find files and no tests were ran #
+    #################################################
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
+    fatal "Please validate logic or that tests exist!"
   fi
 }

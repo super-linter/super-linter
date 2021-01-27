@@ -4,6 +4,9 @@ resource "aws_instance" "good" {
   associate_public_ip_address = false
 
   vpc_security_group_ids = ["sg-12345678901234567"]
+  metadata_options {
+    http_endpoint = "disabled"
+  }
 
   ebs_block_device {
     encrypted = true

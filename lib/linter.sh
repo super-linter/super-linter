@@ -103,7 +103,13 @@ JAVA_FILE_NAME="sun_checks.xml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+JAVASCRIPT_DEFAULT_STYLE="${JAVASCRIPT_DEFAULT_STYLE:-standard}"
+JAVASCRIPT_STYLE_NAME='' # Variable for the style
+JAVASCRIPT_STYLE=''      # Variable for the style
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_STANDARD_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JSCPD_FILE_NAME="${JSCPD_CONFIG_FILE:-.jscpd.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSX_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -139,6 +145,8 @@ RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME=".sql-config.json"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TERRAFORM_FILE_NAME=".tflint.hcl"
@@ -151,12 +159,30 @@ TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 
+#################################################
+# Parse if we are using JS standard or prettier #
+#################################################
+# Remove spaces
+JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr -d ' ')
+# lowercase
+JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '[:lower:]')
+# Check and set
+if [ "${JAVASCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
+  # Set to prettier
+  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_PRETTIER'
+  JAVASCRIPT_STYLE='prettier'
+else
+  # Default to standard
+  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_STANDARD'
+  JAVASCRIPT_STYLE='standard'
+fi
+
 ##################
 # Language array #
 ##################
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GHERKIN' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' 'JAVASCRIPT_STANDARD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
+  'JAVA' 'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
   'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL'
   'TEKTON' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
@@ -185,7 +211,8 @@ LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
 LINTER_NAMES_ARRAY['HTML']="htmlhint"
 LINTER_NAMES_ARRAY['JAVA']="checkstyle"
 LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY['JAVASCRIPT_STANDARD']="standard"
+LINTER_NAMES_ARRAY["${JAVASCRIPT_STYLE_NAME}"]="${JAVASCRIPT_STYLE}"
+LINTER_NAMES_ARRAY['JSCPD']="jscpd"
 LINTER_NAMES_ARRAY['JSON']="jsonlint"
 LINTER_NAMES_ARRAY['JSX']="eslint"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
@@ -307,7 +334,9 @@ Header() {
   ###############################
   # Give them the possum action #
   ###############################
-  /bin/bash /action/lib/functions/possum.sh
+  if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
+    /bin/bash /action/lib/functions/possum.sh
+  fi
 
   ##########
   # Prints #
@@ -724,6 +753,7 @@ GetStandardRules "typescript"
 # Define linter commands #
 ##########################
 declare -A LINTER_COMMANDS_ARRAY
+LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -v -c ${ANSIBLE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
 LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
@@ -745,6 +775,8 @@ LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['JAVASCRIPT_PRETTIER']="prettier --check"
+LINTER_COMMANDS_ARRAY['JSCPD']="jscpd --config ${JSCPD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
@@ -792,7 +824,7 @@ debug "---------------------------------------------"
 ###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
 
 ###############
 # Run linters #
@@ -834,36 +866,29 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
       cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
     fi
 
-    if [ "${LANGUAGE}" = "ANSIBLE" ]; then
-      # Due to the nature of how we want to validate Ansible, we cannot use the
-      # standard loop, since it looks for an ansible folder, excludes certain
-      # files, and looks for additional changes, it should be an outlier
-      LintAnsibleFiles "${ANSIBLE_LINTER_RULES}" # Passing rules but not needed, dont want to exclude unused var
+    LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
+    if [ -z "${LINTER_NAME}" ]; then
+      fatal "Cannot find the linter name for ${LANGUAGE} language."
     else
-      LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_NAME}" ]; then
-        fatal "Cannot find the linter name for ${LANGUAGE} language."
-      else
-        debug "Setting LINTER_NAME to ${LINTER_NAME}..."
-      fi
-
-      LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
-      if [ -z "${LINTER_COMMAND}" ]; then
-        fatal "Cannot find the linter command for ${LANGUAGE} language."
-      else
-        debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
-      fi
-
-      FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
-      debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
-
-      # shellcheck disable=SC2125
-      LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
-      debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
-
-      debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-      LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
+      debug "Setting LINTER_NAME to ${LINTER_NAME}..."
     fi
+
+    LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
+    if [ -z "${LINTER_COMMAND}" ]; then
+      fatal "Cannot find the linter command for ${LANGUAGE} language."
+    else
+      debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
+    fi
+
+    FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
+    debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
+
+    # shellcheck disable=SC2125
+    LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
+    debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
+
+    debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   fi
 done
 
