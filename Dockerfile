@@ -237,7 +237,7 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
 ################################
 # Install editorconfig-checker #
