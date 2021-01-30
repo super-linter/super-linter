@@ -49,7 +49,7 @@ The **Super-Linter** has _CI/CT/CD_ configured utilizing **GitHub** Actions.
 If you are the current maintainer of this action:
 
 1. If a major version number change: Update `README.md` and the wiki to reflect new version number in the example workflow file sections
-2. Draft [Releases](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) are created automatically. They just need to be checked over for accuracy before making it official.
+2. Edit the `action.yml` file to reflect the new version number. See [here](https://github.com/github/super-linter/blob/master/action.yml#L6)
 3. Ensure you check the box for [publishing to the marketplace](https://help.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace#publishing-an-action)
 4. A GitHub Action will Publish the Docker image to GitHub Package Registry once a Release is created
 5. A GitHub Action will Publish the Docker image to Docker Hub once a Release is created
