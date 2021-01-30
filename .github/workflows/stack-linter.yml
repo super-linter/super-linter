@@ -45,7 +45,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v3.14.4
+        uses: docker://ghcr.io/github/super-linter:latest
         env:
           ACTIONS_RUNNER_DEBUG: true
           ERROR_ON_MISSING_EXEC_BIT: true
