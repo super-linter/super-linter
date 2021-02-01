@@ -20,6 +20,33 @@ PROCESS_CHECK=0                          # Count of times to check the process
 ########################### SUB ROUTINES BELOW #################################
 ################################################################################
 ################################################################################
+#### Function CheckShellErrors #################################################
+CheckShellErrors() {
+  COUNTER=$1
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ "${ERROR_CODE}" -ne 0 ]; then
+    error "Failed to sleep!"
+    error "[${SLEEP_CMD}]"
+    info "Will try to call apply as last effort..."
+    ####################################
+    # Call config apply as last effort #
+    ####################################
+    RunConfigApply
+  else
+    #####################
+    # Increment counter #
+    #####################
+    ((COUNTER++))
+    ##########################################
+    # Try to check for the pid/process again #
+    ##########################################
+    $2
+  fi
+  return "$COUNTER"
+}
+################################################################################
 #### Function CheckGHEPid ######################################################
 CheckGHEPid() {
   ##################################
@@ -48,27 +75,7 @@ CheckGHEPid() {
       #######################
       ERROR_CODE=$?
 
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to sleep!"
-        error "[${SLEEP_CMD}]"
-        info "Will try to call apply as last effort..."
-        ####################################
-        # Call config apply as last effort #
-        ####################################
-        RunConfigApply
-      else
-        #####################
-        # Increment counter #
-        #####################
-        ((PID_CHECK++))
-        ##################################
-        # Try to check for the pid again #
-        ##################################
-        CheckGHEPid
-      fi
+      PID_CHECK=CheckShellErrors "PID_CHECK" "CheckGHEPid"
     fi
   fi
 }
@@ -111,27 +118,7 @@ CheckGHEProcess() {
       #######################
       ERROR_CODE=$?
 
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to sleep!"
-        error "[${SLEEP_CMD}]"
-        info "Will try to call apply as last effort..."
-        ####################################
-        # Call config apply as last effort #
-        ####################################
-        RunConfigApply
-      else
-        #####################
-        # Increment counter #
-        #####################
-        ((PROCESS_CHECK++))
-        ######################################
-        # Try to check for the process again #
-        ######################################
-        CheckGHEProcess
-      fi
+      PROCESS_CHECK=CheckShellErrors "PROCESS_CHECK" "CheckGHEProcess"
     fi
   fi
 }

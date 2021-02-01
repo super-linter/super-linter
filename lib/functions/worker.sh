@@ -32,6 +32,7 @@ function LintCodebase() {
   # Set the flag #
   ################
   SKIP_FLAG=0
+  INDEX=0
 
   ############################################################
   # Check to see if we need to go through array or all files #
@@ -75,7 +76,6 @@ function LintCodebase() {
     ########################################
     if IsTAP; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
-      INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
       REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
     fi
@@ -195,7 +195,7 @@ function LintCodebase() {
         # Lint the file with the rules #
         ################################
         LINT_CMD=$(
-          cd "${WORKSPACE_PATH}/ansible" || exit
+          cd "${ANSIBLE_DIRECTORY}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
@@ -283,7 +283,7 @@ function LintCodebase() {
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
-            error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]"
+            error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
@@ -321,7 +321,7 @@ function LintCodebase() {
           #########
           error "Found errors in [${LINTER_NAME}] linter!"
           error "This file should have failed test case!"
-          error "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
+          error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
           # Increment the error count
           (("ERRORS_FOUND_${FILE_TYPE}++"))
         else
@@ -339,7 +339,7 @@ function LintCodebase() {
           AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
         fi
       fi
-      debug "Error code: ${ERROR_CODE}. Command output:${NC}[${LINT_CMD}]."
+      debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
     done
 
     #################################
@@ -371,16 +371,16 @@ function LintCodebase() {
         fi
       fi
     fi
+  fi
 
-    ##############################
-    # Validate we ran some tests #
-    ##############################
-    if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
-      #################################################
-      # We failed to find files and no tests were ran #
-      #################################################
-      error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
-      fatal "Please validate logic or that tests exist!"
-    fi
+  ##############################
+  # Validate we ran some tests #
+  ##############################
+  if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
+    #################################################
+    # We failed to find files and no tests were ran #
+    #################################################
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
+    fatal "Please validate logic or that tests exist!"
   fi
 }

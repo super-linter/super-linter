@@ -31,6 +31,22 @@ Header() {
   info "-------------------------------------------------------"
 }
 ################################################################################
+#### Function CheckShellErrors #################################################
+CheckShellErrors() {
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ $ERROR_CODE -ne 0 ]; then
+    error "$1"
+    fatal "$2"
+  fi
+}
+################################################################################
 #### Function CleanTestFiles ###################################################
 CleanTestFiles() {
   info "-------------------------------------------------------"
@@ -41,21 +57,10 @@ CleanTestFiles() {
   ##################
   mapfile -t FIND_CMD < <(
     cd "${GITHUB_WORKSPACE}" || exit 1
-    find "${GITHUB_WORKSPACE}" -type f -name "*_bad_*" 2>&1
+    find "${GITHUB_WORKSPACE}" -type f -name "*_bad_*" -o -path "*javascript_prettier*" -name "*javascript_good*" 2>&1
   )
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    error "ERROR! failed to get list of all files!"
-    fatal "ERROR:[${FIND_CMD[*]}]"
-  fi
+  CheckShellErrors "ERROR! failed to get list of all files!" "ERROR:[${FIND_CMD[*]}]"
 
   ############################################################
   # Get the directory and validate it came from tests folder #
@@ -78,18 +83,7 @@ CleanTestFiles() {
         rm -f "$FILE" 2>&1
       )
 
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
-        error "ERROR! failed to remove file:[${FILE}]!"
-        fatal "ERROR:[${REMOVE_FILE_CMD[*]}]"
-      fi
+      CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"
     fi
   done
 }
@@ -107,18 +101,7 @@ CleanTestDockerFiles() {
     find "${GITHUB_WORKSPACE}" -type f -name "*Dockerfile" 2>&1
   )
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    error "ERROR! failed to get list of all file for Docker!"
-    fatal "ERROR:[${FIND_CMD[*]}]"
-  fi
+  CheckShellErrors "ERROR! failed to get list of all file for Docker!" "ERROR:[${FIND_CMD[*]}]"
 
   ############################################################
   # Get the directory and validate it came from tests folder #
@@ -141,18 +124,7 @@ CleanTestDockerFiles() {
         rm -f "$FILE" 2>&1
       )
 
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
-        error "ERROR! failed to remove file:[${FILE}]!"
-        fatal "ERROR:[${REMOVE_FILE_CMD[*]}]"
-      fi
+      CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"
     fi
   done
 }
@@ -170,19 +142,7 @@ CleanSHAFolder() {
     sudo rm -rf "${GITHUB_SHA}" 2>&1
   )
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    # Error
-    error "ERROR! Failed to remove folder:[${GITHUB_SHA}]!"
-    fatal "ERROR:[${REMOVE_CMD}]"
-  fi
+  CheckShellErrors "ERROR! Failed to remove folder:[${GITHUB_SHA}]!" "ERROR:[${REMOVE_CMD}]"
 }
 ################################################################################
 #### Function RenameTestFolder #################################################
@@ -198,18 +158,7 @@ RenameTestFolder() {
     mv "${TEST_FOLDER}" "${CLEAN_FOLDER}" 2>&1
   )
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    error "ERROR! failed to move test folder!"
-    fatal "ERROR:[${RENAME_FOLDER_CMD[*]}]"
-  fi
+  CheckShellErrors "ERROR! failed to move test folder!" "ERROR:[${RENAME_FOLDER_CMD[*]}]"
 }
 ################################################################################
 #### Function CleanPowershell ##################################################
@@ -228,18 +177,7 @@ CleanPowershell() {
     find "${GITHUB_WORKSPACE}" -type f -name "*.psd1" 2>&1
   )
 
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    error "ERROR! failed to get list of all file for *.psd1!"
-    fatal "ERROR:[${FIND_CMD[*]}]"
-  fi
+  CheckShellErrors "ERROR! failed to get list of all file for *.psd1!" "ERROR:[${FIND_CMD[*]}]"
 
   ############################################################
   # Get the directory and validate it came from tests folder #
@@ -262,18 +200,7 @@ CleanPowershell() {
         rm -f "$FILE" 2>&1
       )
 
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ $ERROR_CODE -ne 0 ]; then
-        error "ERROR! failed to remove file:[${FILE}]!"
-        fatal "ERROR:[${REMOVE_FILE_CMD[*]}]"
-      fi
+      CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"
     fi
   done
 }

@@ -161,6 +161,27 @@ function BuildFileList() {
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
   fi
 
+  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
+    #########################################
+    # Need to switch back to branch of code #
+    #########################################
+    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # Error
+      error "Failed to switch back to branch!"
+      fatal "[${SWITCH2_CMD}]"
+    fi
+  fi
+
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -183,7 +204,7 @@ function BuildFileList() {
     ##########################################################
     if [ ! -f "${FILE}" ]; then
       # File not found in workspace
-      debug "File:{$FILE} existed in commit data, but not found on file system, skipping..."
+      warn "File:{$FILE} existed in commit data, but not found on file system, skipping..."
       continue
     fi
 
@@ -202,6 +223,8 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+    # jscpd also runs an all files
+    FILE_ARRAY_JSCPD+=("${FILE}")
 
     #######################
     # Get the shell files #
@@ -265,7 +288,8 @@ function BuildFileList() {
     # Get the DOCKER files #
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
-    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
+    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
+      [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -336,10 +360,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
-
-    #####################
-    # Get the JSX files #
-    #####################
+      FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
 
     ######################
     # Get the JSON files #
@@ -368,9 +389,9 @@ function BuildFileList() {
         ################################
         FILE_ARRAY_OPENAPI+=("${FILE}")
       fi
-      ############################
+      ########################
       # Check if file is ARM #
-      ############################
+      ########################
       if DetectARMFile "${FILE}"; then
         ################################
         # Append the file to the array #
@@ -396,6 +417,9 @@ function BuildFileList() {
         FILE_ARRAY_STATES+=("${FILE}")
       fi
 
+    #####################
+    # Get the JSX files #
+    #####################
     elif [ "${FILE_TYPE}" == "jsx" ]; then
       ################################
       # Append the file to the array #
@@ -492,9 +516,9 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
-      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
+      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -541,7 +565,7 @@ function BuildFileList() {
     elif [ "${FILE_TYPE}" == "sql" ]; then
       ################################
       # Append the file to the array #
-      ##############################p##
+      ################################
       FILE_ARRAY_SQL+=("${FILE}")
 
     ###########################
@@ -624,6 +648,16 @@ function BuildFileList() {
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
 
+      ############################
+      # Check if file is OpenAPI #
+      ############################
+      if DetectOpenAPIFile "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_OPENAPI+=("${FILE}")
+      fi
+
       ########################################
       # Check if the file is Tekton template #
       ########################################
@@ -657,27 +691,6 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
-
-  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    #########################################
-    # Need to switch back to branch of code #
-    #########################################
-    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ]; then
-      # Error
-      error "Failed to switch back to branch!"
-      fatal "[${SWITCH2_CMD}]"
-    fi
-  fi
 
   ################
   # Footer print #
