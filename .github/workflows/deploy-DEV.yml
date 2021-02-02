@@ -72,7 +72,7 @@ jobs:
             BUILD_VERSION=${{ github.sha }}
           push: false
           tags: |
-            ghcr.io/github/super-linter:${GITHUB_SHA}
+            ghcr.io/github/super-linter:${{ github.sha }}
 
       ########################################
       # Validates the metadata docker labels #
