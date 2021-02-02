@@ -49,12 +49,6 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
-      #######################
-      # Setup Docker build X #
-      ########################
-      - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1
-
       ###################################
       # Build image locally for testing #
       ###################################
@@ -62,7 +56,8 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build Docker image
-        run: docker build \
+        run: |
+          docker build \
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
           --build-arg BUILD_REVISION=${{ github.sha }} \
           --buils-arg BUILD_VERSION=${{ github.sha }} \
