@@ -49,20 +49,30 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
+      #######################
+      # Setup Docker build X #
+      ########################
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v1
+
       ###################################
       # Build image locally for testing #
       ###################################
-      - name: Build image
-        uses: whoan/docker-build-with-cache-action@v5
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ secrets.GCR_USERNAME }}
-          password: ${{ secrets.GCR_TOKEN }}
-          registry: ghcr.io
-          image_name: github/super-linter
-          image_tag: ${{ github.sha }}
-          dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-          push_image_and_stages: false
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: false
+          tags: |
+            ghcr.io/github/super-linter:${GITHUB_SHA}
 
       ########################################
       # Validates the metadata docker labels #
