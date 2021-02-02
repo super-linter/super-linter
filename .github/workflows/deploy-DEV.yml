@@ -61,19 +61,16 @@ jobs:
       ###########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          push: false
-          tags: |
-            ghcr.io/github/super-linter:${{ github.sha }}
+      - name: Build Docker image
+        run: docker build \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --buils-arg BUILD_VERSION=${{ github.sha }} \
+          -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
 
+      ##############
+      # Print info #
+      ##############
       - name: Get Docker info
         run: docker images
 
