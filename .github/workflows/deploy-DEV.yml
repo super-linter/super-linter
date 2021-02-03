@@ -52,17 +52,22 @@ jobs:
       ###################################
       # Build image locally for testing #
       ###################################
-      - name: Build image
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ secrets.GCR_USERNAME }}
-          password: ${{ secrets.GCR_TOKEN }}
-          registry: ghcr.io
-          image_name: github/super-linter
-          image_tag: ${{ github.sha }}
-          dockerfile: Dockerfile
-          build_extra_args: "--build-arg=BUILD_DATE=${{ env.BUILD_DATE }} --build-arg=BUILD_REVISION=${{ github.sha }} --build-arg=BUILD_VERSION=${{ github.sha }}"
-          push_image_and_stages: false
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build Docker image
+        run: |
+          docker build \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --build-arg BUILD_VERSION=${{ github.sha }} \
+          -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
+
+      ##############
+      # Print info #
+      ##############
+      - name: Get Docker info
+        run: docker images
 
       ########################################
       # Validates the metadata docker labels #
