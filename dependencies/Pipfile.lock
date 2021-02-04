@@ -507,11 +507,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:6e9ba39038c0d64a6bba492e1646dda10f4826bd905a8b2aa93b18a6793b098b",
-                "sha256:b3060be5a7a88bf9e1b39e62315e8c06a831706f1a8a8883f83a49de0ab2c767"
+                "sha256:793a6ccf54461078fd79849702a5338f5ace533bac32b2f4088e5b5da2f10567"
             ],
             "index": "pypi",
-            "version": "==5.25.0"
+            "version": "==5.32.0"
         },
         "toml": {
             "hashes": [
