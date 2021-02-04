@@ -13,7 +13,7 @@
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-jest": "^24.0.2",
     "eslint-plugin-prettier": "^3.1.4",
-    "htmlhint": "^0.14.1",
+    "htmlhint": "^0.14.2",
     "jsonlint": "^1.6.3",
     "markdownlint-cli": "^0.23.2",
     "npm-groovy-lint": "^7.6.3",
