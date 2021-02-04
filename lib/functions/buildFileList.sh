@@ -186,15 +186,7 @@ function BuildFileList() {
   # Load the ignored files list #
   ###############################
   debug "Loading the files list that Git ignores..."
-  mapfile -t GIT_IGNORED_FILES < <(git -C "${GITHUB_WORKSPACE}" status \
-    --ignored \
-    --porcelain=v1 \
-    --short \
-    --untracked-files=normal | \
-    grep '!!' | \
-    awk -F ' ' '{print $2}' | \
-    sed -e 's#^#'"${GITHUB_WORKSPACE}"/'#' | \
-    sort)
+  mapfile -t GIT_IGNORED_FILES < <(git -C "${GITHUB_WORKSPACE}" status --ignored --porcelain=v1 --short --untracked-files=normal | grep '!!' | awk -F ' ' '{print $2}' | sed -e 's#^#'"${GITHUB_WORKSPACE}"/'#' | sort)
   debug "GIT_IGNORED_FILES contents: ${GIT_IGNORED_FILES[*]}"
 
   # Build an associative array to avoid looping throug the ignored files list
