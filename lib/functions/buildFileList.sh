@@ -267,6 +267,7 @@ function BuildFileList() {
 
     if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ]; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
+      continue
     fi
 
     # Editorconfig-checker should check every file
