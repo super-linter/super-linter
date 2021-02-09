@@ -273,6 +273,8 @@ MULTI_STATUS="${MULTI_STATUS:-true}"             # Multiple status are created f
 TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
 VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
 
+IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+
 ################
 # Default Vars #
 ################

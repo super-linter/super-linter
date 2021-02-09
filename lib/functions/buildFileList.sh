@@ -24,6 +24,8 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
 
+  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -257,7 +259,7 @@ function BuildFileList() {
       continue
     fi
 
-    if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ]; then
+    if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ] && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi
