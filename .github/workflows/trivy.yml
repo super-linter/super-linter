@@ -1,3 +1,4 @@
+---
 name: Container Security Scan with Trivy
 on:
   push:
@@ -28,3 +29,18 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: rahul2393/trivy-action@scan-type
+        with:
+          scan-type: fs
+          scan-ref: '.'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results-fs.sarif'
+          severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-results-fs.sarif'
