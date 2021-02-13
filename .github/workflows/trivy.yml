@@ -1,11 +1,11 @@
-name: build
+name: Container Security Scan with Trivy
 on:
   push:
     branches:
       - master
   pull_request:
 jobs:
-  build:
+  scan-container:
     name: Build
     runs-on: ubuntu-18.04
     steps:
