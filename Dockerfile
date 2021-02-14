@@ -81,6 +81,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    cargo \
     coreutils \
     curl \
     file \
@@ -100,6 +101,7 @@ RUN apk add --no-cache \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
+    openssl-dev \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
