@@ -32,6 +32,7 @@ function TransformTAPDetails() {
       sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' |
       sed -r "s/\s\([0-9]*\sms\)//g" |
       sed -r "s/\s[0-9]*ms//g" |
+      sed -r "s/\s[0-9]*\.[0-9]*//g" |
       sed -r "s/S[0-9]{4}//g" |
       sed -r "s/js:[0-9]*:[0-9]*/js/g" |
       sed -r "s/[.0-9]*\sseconds/seconds/g" |
