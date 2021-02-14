@@ -17,10 +17,10 @@ snakemake = "*"
 yamllint = "*"
 typing_extensions = "*"
 yq = "*"
-ansible-lint[core] = "*"
+ansible-lint = {extras = ["core"], version = "*"}
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
 
 [pipenv]
 allow_prereleases = true
