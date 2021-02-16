@@ -40,8 +40,9 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 0.87.0)
-    rubocop-rspec (1.41.0)
-      rubocop (>= 0.68.1)
+    rubocop-rspec (2.2.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -56,7 +57,7 @@ DEPENDENCIES
   rubocop-github (~> 0.16.1)
   rubocop-performance (~> 1.7.1)
   rubocop-rails (~> 2.7)
-  rubocop-rspec (~> 1.41.0)
+  rubocop-rspec (~> 2.2.0)
 
 BUNDLED WITH
    2.1.4
