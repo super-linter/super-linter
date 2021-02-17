@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: example-task-name
+spec:
+  params:
+    - name: pathToDockerFile
+      type: string
+      description: The path to the dockerfile to build
+      default: /workspace/workspace/Dockerfile
+  resources:
+    inputs:
+      - name: workspace
+        type: git
+    outputs:
+      - name: builtImage
+        type: image
+  steps:
+    - name: ubuntu-example
+      image: ubuntu
+      args: ["ubuntu-build-example", "SECRETS-example.md"]
+    - image: gcr.io/example-builders/build-example
+      command: ["echo"]
+      args: ["$(params.pathToDockerFile)"]
+    - name: dockerfile-pushexample
+      image: gcr.io/example-builders/push-example
+      args: ["push", "$(resources.outputs.builtImage.url)"]
+      volumeMounts:
+        - name: example-volume
+          mountPath: /var/run/docker.sock
+  volumes:
+    - name: example-volume
+      emptyDir: {}

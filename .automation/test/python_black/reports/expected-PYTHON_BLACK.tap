@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - python_bad_1.py
+  ---
+  message: error  cannot format /tmp/lint/.automation/test/python_black/python_bad_1.py  Cannot parse  15 23  if github_token is None\nOh no! 💥 💔 💥\n1 file would fail to reformat.\n
+  ...
+ok 2 - python_good_1.py

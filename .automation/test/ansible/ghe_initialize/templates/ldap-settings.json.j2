@@ -1,0 +1,35 @@
+{
+  "auth_mode": "ldap",
+  "ldap": {
+    "host": "{{ ldap_host }}",
+    "port": {{ ldap_port }},
+    "base": [
+      "{{ ldap_base_dn }}"
+    ],
+    "uid": null,
+    "bind_dn": "{{ ldap_bind_dn }}",
+    "password": "{{ ldap_password }}",
+    "method": "{{ ldap_method }}",
+    "search_strategy": "detect",
+    "user_groups": [],
+    "admin_group": "{{ ldap_admin_group }}",
+    "virtual_attribute_enabled": false,
+    "recursive_group_search": false,
+    "posix_support": true,
+    "user_sync_emails": {{ ldap_user_sync_emails }},
+    "user_sync_keys": {{ ldap_user_sync_keys }},
+    "user_sync_gpg_keys": {{ ldap_user_sync_gpg_keys }},
+    "user_sync_interval": {{ ldap_user_sync_interval }},
+    "team_sync_interval": {{ ldap_team_sync_interval }},
+    "sync_enabled": {{ ldap_sync_enabled }},
+    "external_auth_token_required": false,
+    "verify_certificate": false,
+    "reconciliation.user": null,
+    "reconciliation.org": null,
+    "profile.uid": "{{ ldap_profile_uid }}",
+    "profile.name": "{{ ldap_profile_name }}",
+    "profile.mail": "{{ ldap_profile_mail }}",
+    "profile.key": {{ ldap_profile_key }},
+    "profile.gpg_key": {{ ldap_profile_gpg_key }}
+  }
+}

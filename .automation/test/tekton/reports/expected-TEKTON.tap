@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - tekton_bad_1.yml
+  ---
+  message: /tmp/lint/.automation/test/tekton/bad/tekton_bad_1.yml \nwarning (20,14,20,20)  Invalid image  'ubuntu'. Specify the image tag instead of using ' latest'\nwarning (22,14,22,51)  Invalid image  'gcr.io/example-builders/build-example'. Specify the image tag instead of using ' latest'\nwarning (26,14,26,50)  Invalid image  'gcr.io/example-builders/push-example'. Specify the image tag instead of using ' latest'\nerror   (29,17,29,31)  Task 'example-task-name' wants to mount volume 'example-volume' in step 'dockerfile-pushexample', but this volume is not defined.\n
+  ...
+ok 2 - tekton_good_1.yml

@@ -1,0 +1,11 @@
+---
+##########################
+## Hadolint config file ##
+##########################
+ignored:
+  - DL4001 # Ignore wget and curl in same file
+  - DL4006 # ignore pipefail as we dont want to add layers
+  - DL3018 # We do pin version in pipfile.lock
+  - DL3013 # We do pin version in pipfile.lock
+  - DL3003 # Ignore workdir so we dont add layers
+  - SC2016 # ignore as its intepreted later

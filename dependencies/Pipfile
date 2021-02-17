@@ -8,13 +8,19 @@ verify_ssl = true
 [packages]
 black = "*"
 cfn-lint = "*"
+cython = "*"
 flake8 = "*"
 pylint = "*"
+isort = "*"
+snakefmt = "*"
+snakemake = "*"
 yamllint = "*"
+typing_extensions = "*"
 yq = "*"
+ansible-lint = {extras = ["core"], version = "*"}
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
 
 [pipenv]
 allow_prereleases = true

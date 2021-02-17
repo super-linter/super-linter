@@ -6,9 +6,4 @@ function BadFunction {
     )
     $Username
     $Password
-    $VariableThatIsNotUsedLater = '5'
-    try {
-        'Empty Catch Block' 
-    } catch {}
 }
-

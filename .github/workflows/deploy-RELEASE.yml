@@ -37,34 +37,56 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.2
+        uses: actions/checkout@v2.3.4
 
-      ###################################
-      # Run Deploy script for Dockerhub #
-      ###################################
-      - name: Deploy Release image to Dockerhub
-        env:
-          # Set the Env Vars
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${{ github.event.release.tag_name }}
-          DOCKERFILE_PATH: Dockerfile
-          REGISTRY: Docker
-        shell: bash
-        run: .automation/upload-docker.sh
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
-      ###################################################
-      # Run Deploy script for GitHub Container Registry #
-      ###################################################
-      - name: Deploy Release image to GitHub Container Registry
-        env:
-          # Set the Env Vars
-          GCR_USERNAME: ${{ secrets.GCR_USERNAME }}
-          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
-          IMAGE_REPO: github/super-linter
-          IMAGE_VERSION: ${{ github.event.release.tag_name }}
-          DOCKERFILE_PATH: Dockerfile
-          REGISTRY: GCR
-        shell: bash
-        run: .automation/upload-docker.sh
+      ########################
+      # Setup Docker build X #
+      ########################
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v1
+
+      ###############################
+      # Login to DockerHub registry #
+      ###############################
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      ######################################
+      # Login to GitHub Container registry #
+      ######################################
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_TOKEN }}
+          registry: ghcr.io
+
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: true
+          tags: |
+            github/super-linter:latest
+            github/super-linter:v3
+            github/super-linter:${{ github.event.release.tag_name }}
+            ghcr.io/github/super-linter:latest
+            ghcr.io/github/super-linter:v3
+            ghcr.io/github/super-linter:${{ github.event.release.tag_name }}

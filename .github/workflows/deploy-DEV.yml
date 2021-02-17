@@ -41,24 +41,50 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.2
+        uses: actions/checkout@v2.3.4
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
       ###################################
       # Build image locally for testing #
       ###################################
-      - name: Build image
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build Docker image
+        run: |
+          docker build \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --build-arg BUILD_VERSION=${{ github.sha }} \
+          -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
+
+      ##############
+      # Print info #
+      ##############
+      - name: Get Docker info
+        run: docker images
+
+      ########################################
+      # Validates the metadata docker labels #
+      ########################################
+      - name: Run Docker label test cases
         shell: bash
-        run: docker build --no-cache -t github/super-linter:${GITHUB_SHA} .
+        run: .automation/validate-docker-labels.sh
 
       #####################################
       # Run Linter against Test code base #
       #####################################
       - name: Run Test Cases
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e ANSIBLE_DIRECTORY=.automation/test/ansible -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint ghcr.io/github/super-linter:${GITHUB_SHA}
 
       #########################################
-      # Clean code base to run agaisnt it all #
+      # Clean code base to run against it all #
       #########################################
       - name: Clean Test code base for additional testing
         shell: bash
@@ -69,4 +95,4 @@ jobs:
       ############################################
       - name: Run against all code base
         shell: bash
-        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -v ${GITHUB_WORKSPACE}:/tmp/lint github/super-linter:${GITHUB_SHA}
+        run: docker run -e RUN_LOCAL=true -e OUTPUT_DETAILS=detailed -e ACTIONS_RUNNER_DEBUG=true -e ERROR_ON_MISSING_EXEC_BIT=true -v ${GITHUB_WORKSPACE}:/tmp/lint ghcr.io/github/super-linter:${GITHUB_SHA}

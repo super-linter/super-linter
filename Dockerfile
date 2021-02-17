@@ -7,44 +7,57 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM borkdude/clj-kondo:2020.07.29 as clj-kondo
-FROM dotenvlinter/dotenv-linter:2.1.0 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.1.0 as editorconfig-checker
-FROM golangci/golangci-lint:v1.30.0 as golangci-lint
-FROM yoheimuta/protolint:v0.26.0 as protolint
+FROM cljkondo/clj-kondo:2021.01.20-alpine as clj-kondo
+FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
+FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
+FROM yoheimuta/protolint:v0.28.2 as protolint
+FROM golangci/golangci-lint:v1.36.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.19.1 as tflint
-FROM accurics/terrascan:latest as terrascan
+FROM wata727/tflint:0.24.1 as tflint
+FROM alpine/terragrunt:0.14.5 as terragrunt
+FROM mvdan/shfmt:v3.2.2 as shfmt
+FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/lintr-lib:v0.1.0 as lintr-lib
-FROM assignuser/chktex-alpine:v0.1.0 as chktex
+FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
 # Get base image #
 ##################
-FROM python:alpine
+FROM python:3.9-alpine
 
 ############################
 # Get the build arguements #
 ############################
 ARG BUILD_DATE
+ARG BUILD_REVISION
 ARG BUILD_VERSION
 
 #########################################
 # Label the instance and set maintainer #
 #########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
-      com.github.actions.description="Lint your code base with GitHub Actions" \
-      com.github.actions.icon="code" \
-      com.github.actions.color="red" \
-      maintainer="GitHub DevOps <github_devops@github.com>" \
-      org.opencontainers.image.created=$BUILD_DATE \
-      org.opencontainers.image.version=$BUILD_VERSION \
-      org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-      org.opencontainers.image.url="https://github.com/github/super-linter" \
-      org.opencontainers.image.documentation="https://github.com/github/super-linter" \
-      org.opencontainers.image.vendor="GitHub" \
-      org.opencontainers.image.description="Lint your code base with GitHub Actions"
+    com.github.actions.description="Lint your code base with GitHub Actions" \
+    com.github.actions.icon="code" \
+    com.github.actions.color="red" \
+    maintainer="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION \
+    org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.url="https://github.com/github/super-linter" \
+    org.opencontainers.image.source="https://github.com/github/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.vendor="GitHub" \
+    org.opencontainers.image.description="Lint your code base with GitHub Actions"
+
+#################################################
+# Set ENV values used for debugging the version #
+#################################################
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
 
 ################################
 # Set ARG values used in Build #
@@ -66,9 +79,9 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 # Run APK installs #
 ####################
-RUN apk add --update --no-cache \
-    ansible-lint \
+RUN apk add --no-cache \
     bash \
+    cargo \
     coreutils \
     curl \
     file \
@@ -79,19 +92,24 @@ RUN apk add --update --no-cache \
     icu-libs \
     jq \
     krb5-libs \
-    libc-dev libxml2-dev libxml2-utils libgcc \
-    libcurl libintl libssl1.1 libstdc++ \
+    libc-dev libcurl libffi-dev libgcc \
+    libintl libssl1.1 libstdc++ \
+    libxml2-dev libxml2-utils \
+    linux-headers \
+    lttng-ust-dev \
     make \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
+    openssl-dev \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
-    py3-setuptools \
-    R \
+    py3-setuptools python3-dev\
+    R R-dev R-doc \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc
+    ruby ruby-dev ruby-bundler ruby-rdoc \
+    zlib zlib-dev
 
 ########################################
 # Copy dependencies files to container #
@@ -102,7 +120,9 @@ COPY dependencies/* /
 # Installs python dependencies #
 ################################
 RUN pip3 install --no-cache-dir pipenv
-RUN pipenv install --system
+# Bug in hadolint thinks pipenv is pip
+# hadolint ignore=DL3042
+RUN pipenv install --clear --system
 
 ####################
 # Run NPM Installs #
@@ -141,7 +161,10 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 ##############################
 RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
-    && gpg --keyserver pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79 \
+    && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
+    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
+    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
+    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
     && gpg --verify phive.phar.asc phive.phar \
     && chmod +x phive.phar \
     && mv phive.phar /usr/local/bin/phive \
@@ -198,6 +221,10 @@ COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
 RUN terrascan init
 
+######################
+# Install Terragrunt #
+######################
+COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 
 ######################
 # Install protolint #
@@ -212,7 +239,7 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 #####################
 # Install clj-kondo #
 #####################
-COPY --from=clj-kondo /usr/local/bin/clj-kondo /usr/bin/
+COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
 ################################
 # Install editorconfig-checker #
@@ -251,8 +278,8 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 # Install Raku and additional Edge dependencies #
 #################################################
 # Basic setup, programs and init
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
-    && apk add --update --no-cache rakudo zef
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+    && apk add --no-cache rakudo zef
 
 ######################
 # Install CheckStyle #
@@ -261,7 +288,7 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
     | grep browser_download_url \
     | grep ".jar" \
     | cut -d '"' -f 4) \
-    && curl --retry 5 --retry-delay 5 -sSL $CHECKSTYLE_LATEST \
+    && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
     --output /usr/bin/checkstyle
 
 ####################
@@ -294,91 +321,15 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 RUN cd ~ && touch .chktexrc
 
+###################
+# Install kubeval #
+###################
+COPY --from=kubeval /kubeval /usr/bin/
+
 #################
 # Install shfmt #
 #################
-ENV GO111MODULE=on \
-    GOROOT=/usr/lib/go \
-    GOPATH=/go
-
-ENV PATH="$PATH":"$GOROOT"/bin:"$GOPATH"/bin
-
-RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
-RUN go get mvdan.cc/sh/v3/cmd/shfmt
-
-###########################################
-# Load GitHub Env Vars for GitHub Actions #
-###########################################
-ENV ACTIONS_RUNNER_DEBUG=${ACTIONS_RUNNER_DEBUG} \
-    ANSIBLE_DIRECTORY=${ANSIBLE_DIRECTORY} \
-    CSS_FILE_NAME=${CSS_FILE_NAME} \
-    DEFAULT_BRANCH=${DEFAULT_BRANCH} \
-    DISABLE_ERRORS=${DISABLE_ERRORS} \
-    DOCKERFILE_HADOLINT_FILE_NAME=${DOCKERFILE_HADOLINT_FILE_NAME} \
-    GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH} \
-    GITHUB_SHA=${GITHUB_SHA} \
-    GITHUB_TOKEN=${GITHUB_TOKEN} \
-    GITHUB_WORKSPACE=${GITHUB_WORKSPACE} \
-    JAVASCRIPT_ES_CONFIG_FILE=${JAVASCRIPT_ES_CONFIG_FILE} \
-    LINTER_RULES_PATH=${LINTER_RULES_PATH} \
-    LOG_FILE=${LOG_FILE} \
-    LOG_LEVEL=${LOG_LEVEL} \
-    MULTI_STATUS=${MULTI_STATUS} \
-    OUTPUT_DETAILS=${OUTPUT_DETAILS} \
-    OUTPUT_FOLDER=${OUTPUT_FOLDER} \
-    OUTPUT_FORMAT=${OUTPUT_FORMAT} \
-    RUN_LOCAL=${RUN_LOCAL} \
-    TEST_CASE_RUN=${TEST_CASE_RUN} \
-    VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} \
-    VALIDATE_ANSIBLE=${VALIDATE_ANSIBLE} \
-    VALIDATE_ARM=${VALIDATE_ARM} \
-    VALIDATE_BASH=${VALIDATE_BASH} \
-    VALIDATE_BASH_EXEC=${VALIDATE_BASH_EXEC} \
-    VALIDATE_CLOJURE=${VALIDATE_CLOJURE} \
-    VALIDATE_CLOUDFORMATION=${VALIDATE_CLOUDFORMATION} \
-    VALIDATE_COFFEE=${VALIDATE_COFFEE} \
-    VALIDATE_CSHARP=${VALIDATE_CSHARP} \
-    VALIDATE_CSS=${VALIDATE_CSS} \
-    VALIDATE_DART=${VALIDATE_DART} \
-    VALIDATE_DOCKERFILE=${VALIDATE_DOCKERFILE} \
-    VALIDATE_DOCKERFILE_HADOLINT=${VALIDATE_DOCKERFILE_HADOLINT} \
-    VALIDATE_EDITORCONFIG=${VALIDATE_EDITORCONFIG} \
-    VALIDATE_ENV=${VALIDATE_ENV} \
-    VALIDATE_GO=${VALIDATE_GO} \
-    VALIDATE_HTML=${VALIDATE_HTML} \
-    VALIDATE_JAVA=${VALIDATE_JAVA} \
-    VALIDATE_JAVASCRIPT_ES=${VALIDATE_JAVASCRIPT_ES} \
-    VALIDATE_JAVASCRIPT_STANDARD=${VALIDATE_JAVASCRIPT_STANDARD} \
-    VALIDATE_JSON=${VALIDATE_JSON} \
-    VALIDATE_KOTLIN=${VALIDATE_KOTLIN} \
-    VALIDATE_LATEX=${VALIDATE_LATEX} \
-    VALIDATE_LUA=${VALIDATE_LUA} \
-    VALIDATE_MD=${VALIDATE_MD} \
-    VALIDATE_OPENAPI=${VALIDATE_OPENAPI} \
-    VALIDATE_PERL=${VALIDATE_PERL} \
-    VALIDATE_PHP=${VALIDATE_PHP} \
-    VALIDATE_PHP_BUILTIN=${VALIDATE_PHP_BUILTIN} \
-    VALIDATE_PHP_PHPCS=${VALIDATE_PHP_PHPCS} \
-    VALIDATE_PHP_PHPSTAN=${VALIDATE_PHP_PHPSTAN} \
-    VALIDATE_PHP_PSALM=${VALIDATE_PHP_PSALM} \
-    VALIDATE_POWERSHELL=${VALIDATE_POWERSHELL} \
-    VALIDATE_PROTOBUF=${VALIDATE_PROTOBUF} \
-    VALIDATE_PYTHON=${VALIDATE_PYTHON} \
-    VALIDATE_PYTHON_BLACK=${VALIDATE_PYTHON_BLACK} \
-    VALIDATE_PYTHON_FLAKE8=${VALIDATE_PYTHON_FLAKE8} \
-    VALIDATE_PYTHON_PYLINT=${VALIDATE_PYTHON_PYLINT} \
-    VALIDATE_R=${VALIDATE_R} \
-    VALIDATE_RAKU=${VALIDATE_RAKU} \
-    VALIDATE_RUBY=${VALIDATE_RUBY} \
-    VALIDATE_SHELL_SHFMT=${VALIDATE_SHELL_SHFMT} \
-    VALIDATE_STATES=${VALIDATE_STATES} \
-    VALIDATE_SQL=${VALIDATE_SQL} \
-    VALIDATE_TERRAFORM=${VALIDATE_TERRAFORM} \
-    VALIDATE_TERRAFORM_TERRASCAN=${VALIDATE_TERRAFORM_TERRASCAN} \
-    VALIDATE_TYPESCRIPT_ES=${VALIDATE_TYPESCRIPT_ES} \
-    VALIDATE_TYPESCRIPT_STANDARD=${VALIDATE_TYPESCRIPT_STANDARD} \
-    VALIDATE_XML=${VALIDATE_XML} \
-    VALIDATE_YAML=${VALIDATE_YAML}
+COPY --from=shfmt /bin/shfmt /usr/bin/
 
 #############################
 # Copy scripts to container #
@@ -393,7 +344,12 @@ COPY TEMPLATES /action/lib/.automation
 ###################################
 # Run to build file with versions #
 ###################################
-RUN /action/lib/linterVersions.sh
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
+
+##################################4
+# Run validations of built image #
+##################################
+RUN /action/lib/functions/validateDocker.sh
 
 ######################
 # Set the entrypoint #

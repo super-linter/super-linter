@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - shell-shfmt_bad_1.sh
+  ---
+  message: --- /tmp/lint/.automation/test/shell_shfmt/shell-shfmt_bad_1.sh.orig\n+++ /tmp/lint/.automation/test/shell_shfmt/shell-shfmt_bad_1.sh\n@@ -8,10 +8,10 @@\n \n # Check the shell\n if [ ${ERROR_CODE} -ne 0 ]; then\n-  echo "We did it!"\n-  exit 0\n+    echo "We did it!"\n+    exit 0\n else\n-  echo "We done goofed it..."\n-  echo "${HELLO_WORLD}"\n-  exit 1\n+    echo "We done goofed it..."\n+    echo "${HELLO_WORLD}"\n+    exit 1\n fi\n
+  ...
+ok 2 - shell-shfmt_good_1.sh
