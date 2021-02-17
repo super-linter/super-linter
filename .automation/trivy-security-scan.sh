@@ -28,6 +28,9 @@ RunScan() {
   ###########################
   # Run the Trivy code scan #
   ###########################
+  echo ""
+  echo "-------------------------------------------------------"
+  echo " Running scan on local code base..."
   RUN_CMD=$("${GITHUB_WORKSPACE}/trivy" fs --format template --template @"${GITHUB_WORKSPACE}/${TEMPLATE_NAME}" -o "${REPORT_NAME}" --exit-code 1 "${GITHUB_WORKSPACE}" 2>&1)
 
   #######################
@@ -39,13 +42,15 @@ RunScan() {
   # Check the shell for errors #
   ##############################
   if [ $ERROR_CODE -ne 0 ]; then
-    # Error
+    # Erro
+    echo "-------------------------------------------------------"r
     echo "ERRORS detected in scan!"
     echo "[${RUN_CMD}]"
     # bump the count
     ERRORS_FOUND=1
   else
     # Success
+    echo "-------------------------------------------------------"
     echo "Successfully scanned codebase!"
   fi
 }
