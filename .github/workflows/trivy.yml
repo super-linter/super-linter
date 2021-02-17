@@ -10,36 +10,46 @@ jobs:
     name: Build
     runs-on: ubuntu-18.04
     steps:
+      ######################
+      # Checkout code base #
+      ######################
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build an image from Dockerfile
+      # ##########################
+      # # Build the docker image #
+      # ##########################
+      # - name: Build an image from Dockerfile
+      #   run: |
+      #     docker build -t docker.io/github/super-linter:${{ github.sha }} .
+
+      ###########################################
+      # Download and install Trivy and template #
+      ###########################################
+      - name: Download and Install Trivy
+        shell: bash
         run: |
-          docker build -t docker.io/github/super-linter:${{ github.sha }} .
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b ${GITHUB_WORKSPACE}
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/sarif.tpl -o sarif.tpl
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'docker.io/github/super-linter:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
+      #################################
+      # Run Trivy Scan of source code #
+      #################################
+      - name: Trivy Scan
+        shell: bash
+        run: ./.automation/trivy-security-scan.sh
 
+      ################################
+      # Upload report to secrity tab #
+      ################################
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: 'report.sarif'
 
-      - name: Run Trivy vulnerability scanner in fs mode
-        uses: rahul2393/trivy-action@scan-type
-        with:
-          scan-type: fs
-          scan-ref: '.'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results-fs.sarif'
-          severity: 'CRITICAL'
-
+      #######################
+      # Upload scan results #
+      #######################
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
