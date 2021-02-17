@@ -10,7 +10,7 @@
 FROM cljkondo/clj-kondo:2021.01.20-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
-FROM yoheimuta/protolint:v0.28.1 as protolint
+FROM yoheimuta/protolint:v0.28.2 as protolint
 FROM golangci/golangci-lint:v1.36.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.24.1 as tflint
@@ -25,7 +25,7 @@ FROM garethr/kubeval:0.15.0 as kubeval
 ##################
 # Get base image #
 ##################
-FROM python:alpine
+FROM python:3.9-alpine
 
 ############################
 # Get the build arguements #
@@ -81,6 +81,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    cargo \
     coreutils \
     curl \
     file \
@@ -100,6 +101,7 @@ RUN apk add --no-cache \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
+    openssl-dev \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
