@@ -7,10 +7,10 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"  # GitHub Workspace
-REPORT_NAME='report.sarif'              # Name of the generated report
-TEMPLATE_NAME='sarif.tpl'               # Name of the template file
-ERRORS_FOUND=0                          # Flag for errors founsd in scan
+GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
+REPORT_NAME='report.sarif'             # Name of the generated report
+TEMPLATE_NAME='sarif.tpl'              # Name of the template file
+ERRORS_FOUND=0                         # Flag for errors founsd in scan
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
