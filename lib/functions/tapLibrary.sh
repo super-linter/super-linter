@@ -101,6 +101,9 @@ function AddDetailedMessageIfEnabled() {
   DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
   if [ -n "${DETAILED_MSG}" ]; then
     printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >>"${TEMP_FILE}"
+
+    # Need to update the temp file and remove any non ascii characters
+    REMOVE_NON_ASCII_CMD=$(cp "${TEMP_FILE}" "${TEMP_FILE}.tmp" && LC_ALL=C tr -dc '\0-\177' <"${TMPFILE}.tmp" >"${TEMP_FILE}" && rm "${TEMP_FILE}.tmp")ß
   fi
 }
 ################################################################################
