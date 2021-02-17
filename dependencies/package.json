@@ -23,7 +23,7 @@
     "lodash": "^4.17.19",
     "markdownlint-cli": "^0.26.0",
     "node-fetch": "^2.6.1",
-    "npm-groovy-lint": "^8.1.0",
+    "npm-groovy-lint": "^4.14.0",
     "prettier": "^2.2.1",
     "prettyjson": "^1.2.1",
     "sql-lint": "0.0.15",
