@@ -23,6 +23,12 @@
             ],
             "version": "==0.1.4"
         },
+        "ansible": {
+            "hashes": [
+                "sha256:a15dabde2d433766bbeede1435ec1bca7b7a44619b919ddb4e6f8a186053eb43"
+            ],
+            "version": "==3.0.0rc1"
+        },
         "ansible-base": {
             "hashes": [
                 "sha256:e93d292f29b36cd0f70402197fd6ece1dbd326589ee1c9dee87d0e8bfd4cf0c3"
@@ -728,11 +734,11 @@
         },
         "snakefmt": {
             "hashes": [
-                "sha256:910aeccdb4175753c02e540b14be0f9a83b8c81e320e882cae87d86930bcfa5a",
-                "sha256:937d6f1ea4da30615de69dba2e19a5cc99a4f58d54816ca50778c7bedc1605e1"
+                "sha256:37e1565140b72677e5dfc6b52a41720f00d95d606d0398a9cc5e51acfb1eba03",
+                "sha256:b8745ae8278070b7d05d700b09047ee3209d5a4f3802d708c756b558f3024455"
             ],
             "index": "pypi",
-            "version": "==0.3.0"
+            "version": "==0.3.1"
         },
         "snakemake": {
             "hashes": [
