@@ -9,8 +9,6 @@
 ###########
 GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                               # GitHub Workspace
 GITHUB_SHA="${GITHUB_SHA}"                                                           # Sha used to create this branch
-TEST_FOLDER='.automation/test'                                                       # Folder where test are stored
-CLEAN_FOLDER='.automation/automation'                                                # Folder to rename to prevent skip
 ((LOG_TRACE = LOG_DEBUG = LOG_VERBOSE = LOG_NOTICE = LOG_WARN = LOG_ERROR = "true")) # Enable all loging
 export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
 
@@ -145,22 +143,6 @@ CleanSHAFolder() {
   CheckShellErrors "ERROR! Failed to remove folder:[${GITHUB_SHA}]!" "ERROR:[${REMOVE_CMD}]"
 }
 ################################################################################
-#### Function RenameTestFolder #################################################
-RenameTestFolder() {
-  info "-------------------------------------------------------"
-  info "Need to rename [tests] folder as it will be ignored..."
-
-  #####################
-  # Rename the folder #
-  #####################
-  RENAME_FOLDER_CMD=$(
-    cd "${GITHUB_WORKSPACE}" || exit 1
-    mv "${TEST_FOLDER}" "${CLEAN_FOLDER}" 2>&1
-  )
-
-  CheckShellErrors "ERROR! failed to move test folder!" "ERROR:[${RENAME_FOLDER_CMD[*]}]"
-}
-################################################################################
 #### Function CleanPowershell ##################################################
 CleanPowershell() {
   # Need to remove the .psd1 templates as they are formally parsed,
@@ -227,11 +209,6 @@ CleanTestDockerFiles
 # Remove sha folder if exists #
 ###############################
 CleanSHAFolder
-
-##################
-# Re Name folder #
-##################
-RenameTestFolder
 
 ##############################
 # Clean Powershell templates #
