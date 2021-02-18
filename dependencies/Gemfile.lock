@@ -59,4 +59,4 @@ DEPENDENCIES
   rubocop-rspec (~> 1.41.0)
 
 BUNDLED WITH
-   2.2.11
+  2.2.11
