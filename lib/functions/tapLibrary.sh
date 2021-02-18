@@ -32,6 +32,7 @@ function TransformTAPDetails() {
       sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' |
       sed -r "s/\s\([0-9]*\sms\)//g" |
       sed -r "s/\s[0-9]*ms//g" |
+      sed -r "s/\([0-9\.]+s\)//g" |
       sed -r "s/S[0-9]{4}//g" |
       sed -r "s/js:[0-9]*:[0-9]*/js/g" |
       sed -r "s/[.0-9]*\sseconds/seconds/g" |
@@ -100,6 +101,9 @@ function AddDetailedMessageIfEnabled() {
   DETAILED_MSG=$(TransformTAPDetails "${LINT_CMD}")
   if [ -n "${DETAILED_MSG}" ]; then
     printf "  ---\n  message: %s\n  ...\n" "${DETAILED_MSG}" >>"${TEMP_FILE}"
+
+    # Need to update the temp file and remove any non ascii characters
+    cp "${TEMP_FILE}" "${TEMP_FILE}.tmp" && LC_ALL=C tr -dc '\0-\177' <"${TEMP_FILE}.tmp" >"${TEMP_FILE}" && rm "${TEMP_FILE}.tmp"
   fi
 }
 ################################################################################
