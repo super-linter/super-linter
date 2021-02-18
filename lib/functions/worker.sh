@@ -32,6 +32,7 @@ function LintCodebase() {
   # Set the flag #
   ################
   SKIP_FLAG=0
+  INDEX=0
 
   ############################################################
   # Check to see if we need to go through array or all files #
@@ -46,26 +47,6 @@ function LintCodebase() {
 
   debug "SKIP_FLAG: ${SKIP_FLAG}, list of files to lint: ${LIST_FILES[*]}"
 
-  #################################################
-  # Filter files if FILTER_REGEX_INCLUDE is set #
-  #################################################
-  if [[ -n "$FILTER_REGEX_INCLUDE" ]]; then
-    for index in "${!LIST_FILES[@]}"; do
-      [[ ! (${LIST_FILES[$index]} =~ $FILTER_REGEX_INCLUDE) ]] && unset -v 'LIST_FILES[$index]'
-    done
-    debug "List of files to lint after FILTER_REGEX_INCLUDE: ${LIST_FILES[*]}"
-  fi
-
-  #################################################
-  # Filter files if FILTER_REGEX_EXCLUDE is set #
-  #################################################
-  if [[ -n "$FILTER_REGEX_EXCLUDE" ]]; then
-    for index in "${!LIST_FILES[@]}"; do
-      [[ ${LIST_FILES[$index]} =~ $FILTER_REGEX_EXCLUDE ]] && unset -v 'LIST_FILES[$index]'
-    done
-    debug "List of files to lint after FILTER_REGEX_EXCLUDE: ${LIST_FILES[*]}"
-  fi
-
   ###############################
   # Check if any data was found #
   ###############################
@@ -75,7 +56,6 @@ function LintCodebase() {
     ########################################
     if IsTAP; then
       TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
-      INDEX=0
       mkdir -p "${REPORT_OUTPUT_FOLDER}"
       REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
     fi
@@ -371,16 +351,16 @@ function LintCodebase() {
         fi
       fi
     fi
+  fi
 
-    ##############################
-    # Validate we ran some tests #
-    ##############################
-    if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
-      #################################################
-      # We failed to find files and no tests were ran #
-      #################################################
-      error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
-      fatal "Please validate logic or that tests exist!"
-    fi
+  ##############################
+  # Validate we ran some tests #
+  ##############################
+  if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
+    #################################################
+    # We failed to find files and no tests were ran #
+    #################################################
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
+    fatal "Please validate logic or that tests exist!"
   fi
 }

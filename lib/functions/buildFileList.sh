@@ -221,8 +221,26 @@ function BuildFileList() {
       debug "TEST_CASE_RUN (${TEST_CASE_RUN}) is true. Skipping ${FILE}..."
     fi
 
+    #################################################
+    # Filter files if FILTER_REGEX_INCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
+      debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
+      continue
+    fi
+
+    #################################################
+    # Filter files if FILTER_REGEX_EXCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
+      debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
+      continue
+    fi
+
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+    # jscpd also runs an all files
+    FILE_ARRAY_JSCPD+=("${FILE}")
 
     #######################
     # Get the shell files #
@@ -514,9 +532,9 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
-      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
+      FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -563,7 +581,7 @@ function BuildFileList() {
     elif [ "${FILE_TYPE}" == "sql" ]; then
       ################################
       # Append the file to the array #
-      ##############################p##
+      ################################
       FILE_ARRAY_SQL+=("${FILE}")
 
     ###########################
