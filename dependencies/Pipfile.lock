@@ -25,11 +25,11 @@
         },
         "ansible-lint": {
             "hashes": [
-                "sha256:285af6c78c9a271f6afcaa0ce57d1eff8147c1621c9fc137ed1c59881b8da63d",
-                "sha256:9c9ef05d361c374097206d1df200ab01c9cd3feef42b55898b90b0a09fee88d4"
+                "sha256:809655a72960754bf9afb286b7089a7cd4e0a10b80382a56ff7ad42bf056c895",
+                "sha256:9d566ce02c5c23efd9bc0d2f24d69e54eb0ca6a0231b77d7dc1c255774e9d2f6"
             ],
             "index": "pypi",
-            "version": "==5.0.0"
+            "version": "==5.0.1"
         },
         "appdirs": {
             "hashes": [
@@ -77,16 +77,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:877f204dabe1bfa21aa9cfaacc72bd4b70a897d0fdcea799afa5c4743b6fc7ac"
+                "sha256:1709ff5feb363fee7fcaa2330e659fcbc2b4c03a14f75a884ed682ee66011fc4",
+                "sha256:80a761eff3b1cb0798d7e1a41b7c8e6d85c9647a8f7b6105335201a69404caa2"
             ],
-            "version": "==1.17.9"
+            "version": "==1.17.10"
         },
         "botocore": {
             "hashes": [
-                "sha256:c8614c230e7a8e042a8c07d47caea50ad21cb51415289bd34fa6d0382beddad7",
-                "sha256:d725840b881be62fc52e8e24a6ada651128cf7f1ed1639b87322a7a213ffdbad"
+                "sha256:8c84eac6daf38890714e005623083106d68e9b2088e62132fdbf7d2b1228ecbd",
+                "sha256:a601ee5a4ae66832f328ca362b5404d22b75f1c181f6cc0934f3cfca749eb27d"
             ],
-            "version": "==1.20.9"
+            "version": "==1.20.10"
         },
         "bracex": {
             "hashes": [
