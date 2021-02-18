@@ -32,6 +32,7 @@ RunScan() {
   echo ""
   echo "-------------------------------------------------------"
   echo " Running scan on local code base..."
+  echo "Running command:[\"${GITHUB_WORKSPACE}/trivy\" fs --format template --template @\"${GITHUB_WORKSPACE}/${TEMPLATE_NAME}\" -o \"${REPORT_NAME}\" --severity HIGH,CRITICAL --exit-code 1 \"${GITHUB_WORKSPACE}\" 2>&1]"
   RUN_CMD=$("${GITHUB_WORKSPACE}/trivy" fs --format template --template @"${GITHUB_WORKSPACE}/${TEMPLATE_NAME}" -o "${REPORT_NAME}" --severity HIGH,CRITICAL --exit-code 1 "${GITHUB_WORKSPACE}" 2>&1)
 
   #######################
