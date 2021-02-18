@@ -11,7 +11,7 @@ FROM borkdude/clj-kondo:2020.12.12 as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
 FROM yoheimuta/protolint:v0.28.2 as protolint
-FROM golangci/golangci-lint:v1.36.0 as golangci-lint
+FROM golangci/golangci-lint:v1.37.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.24.1 as tflint
 FROM alpine/terragrunt:0.14.6 as terragrunt
