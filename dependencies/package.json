@@ -2,10 +2,11 @@
   "name": "super-linter",
   "dependencies": {
     "@coffeelint/cli": "^4.1.3",
-    "@stoplight/spectral": "^5.8.0",
+    "@stoplight/spectral": "^5.8.1",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.10.1",
-    "asl-validator": "^1.9.3",
+    "asl-validator": "^1.9.4",
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "dockerfilelint": "^1.8.0",
     "eslint": "^7.20.0",
@@ -15,9 +16,13 @@
     "eslint-plugin-prettier": "^3.3.1",
     "gherkin-lint": "^4.1.3",
     "htmlhint": "^0.14.2",
+    "immer": "^8.0.1",
+    "ini": "^1.3.6",
     "jscpd": "^3.3.21",
     "jsonlint": "^1.6.3",
+    "lodash": "^4.17.19",
     "markdownlint-cli": "^0.26.0",
+    "node-fetch": "^2.6.1",
     "npm-groovy-lint": "^8.1.0",
     "prettier": "^2.2.1",
     "prettyjson": "^1.2.1",
@@ -26,8 +31,8 @@
     "stylelint": "^13.10.0",
     "stylelint-config-sass-guidelines": "^8.0.0",
     "stylelint-config-standard": "^20.0.0",
-    "stylelint-scss": "^3.18.0",
+    "stylelint-scss": "^3.19.0",
     "tekton-lint": "^0.5.2",
-    "typescript": "^4.1.3"
+    "typescript": "^4.1.5"
   }
 }
