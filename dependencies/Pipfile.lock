@@ -23,6 +23,12 @@
             ],
             "version": "==0.1.4"
         },
+        "ansible": {
+            "hashes": [
+                "sha256:a15dabde2d433766bbeede1435ec1bca7b7a44619b919ddb4e6f8a186053eb43"
+            ],
+            "version": "==3.0.0rc1"
+        },
         "ansible-base": {
             "hashes": [
                 "sha256:e93d292f29b36cd0f70402197fd6ece1dbd326589ee1c9dee87d0e8bfd4cf0c3"
