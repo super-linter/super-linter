@@ -129,10 +129,17 @@ function GetValidationInfo() {
   ##############################
   # Validate Ansible Directory #
   ##############################
+  # No Value, need to default
   if [ -z "${ANSIBLE_DIRECTORY}" ]; then
-    # No Value, need to default
-    ANSIBLE_DIRECTORY="${DEFAULT_ANSIBLE_DIRECTORY}"
-    debug "Setting Ansible directory to the default: ${DEFAULT_ANSIBLE_DIRECTORY}"
+
+    if [ "${TEST_CASE_RUN}" != "true" ]; then
+      ANSIBLE_DIRECTORY="${DEFAULT_ANSIBLE_DIRECTORY}"
+      debug "Setting Ansible directory to the default: ${DEFAULT_ANSIBLE_DIRECTORY}"
+    else
+      ANSIBLE_DIRECTORY="${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
+      debug "Setting Ansible directory to the default for test cases: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
+    fi
+    debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   else
     # Check if first char is '/'
     if [[ ${ANSIBLE_DIRECTORY:0:1} == "/" ]]; then
