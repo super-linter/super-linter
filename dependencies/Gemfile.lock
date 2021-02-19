@@ -36,10 +36,10 @@ GEM
       rubocop-rails (<= 2.7.1)
     rubocop-performance (1.7.1)
       rubocop (>= 0.82.0)
-    rubocop-rails (2.6.0)
+    rubocop-rails (2.7.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 0.82.0)
+      rubocop (>= 0.87.0)
     rubocop-rspec (1.41.0)
       rubocop (>= 0.68.1)
     ruby-progressbar (1.11.0)
@@ -55,7 +55,7 @@ DEPENDENCIES
   rubocop (~> 0.89.0)
   rubocop-github (~> 0.16.1)
   rubocop-performance (~> 1.7.1)
-  rubocop-rails (~> 2.5)
+  rubocop-rails (~> 2.7)
   rubocop-rspec (~> 1.41.0)
 
 BUNDLED WITH
