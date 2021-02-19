@@ -335,7 +335,10 @@ function LintCodebase() {
         ########################################################################
         TAP_SUCCESS=0
         TAP_ERROR_ARRAY=()
-        mapfile -t EXPECTED_FILES_ARRAY < <(cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1; find . -name '*.tap' 2>&1)
+        mapfile -t EXPECTED_FILES_ARRAY < <(
+          cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1
+          find . -name '*.tap' 2>&1
+        )
         for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"
         do
           # Remove the pathing to file name
