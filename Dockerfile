@@ -15,7 +15,7 @@ FROM golangci/golangci-lint:v1.37.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.24.1 as tflint
 FROM alpine/terragrunt:0.14.7 as terragrunt
-FROM mvdan/shfmt:v3.2.1 as shfmt
+FROM mvdan/shfmt:v3.2.2 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
