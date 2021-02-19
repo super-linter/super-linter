@@ -383,7 +383,7 @@ function LintCodebase() {
     #################################################
     # We failed to find files and no tests were ran #
     #################################################
-    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]"!
+    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
     fatal "Please validate logic or that tests exist!"
   fi
 }
