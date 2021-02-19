@@ -24,6 +24,8 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
 
+  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -182,6 +184,26 @@ function BuildFileList() {
     fi
   fi
 
+  ###############################
+  # Load the ignored files list #
+  ###############################
+  debug "Loading the files list that Git ignores..."
+  mapfile -t GIT_IGNORED_FILES < <(git -C "${GITHUB_WORKSPACE}" status --ignored --porcelain=v1 --short --untracked-files=normal | grep '!!' | awk -F ' ' '{print $2}' | sed -e 's#^#'"${GITHUB_WORKSPACE}"/'#' | sort)
+  debug "GIT_IGNORED_FILES contents: ${GIT_IGNORED_FILES[*]}"
+
+  # Build an associative array to avoid looping throug the ignored files list
+  local i
+  declare -g -A GIT_IGNORED_FILES_INDEX
+  for i in "${!GIT_IGNORED_FILES[@]}"; do
+    eval GIT_IGNORED_FILES_INDEX["${GIT_IGNORED_FILES[$i]}"]="$i"
+  done
+  debug "--- GIT_IGNORED_FILES_INDEX contents ---"
+  debug "-----------------------"
+  for i in "${!GIT_IGNORED_FILES_INDEX[@]}"; do
+    debug "key: $i, value: ${GIT_IGNORED_FILES_INDEX[$i]}"
+  done
+  debug "---------------------------------------------"
+
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -219,6 +241,27 @@ function BuildFileList() {
     ##################################################
     elif [[ ${FILE} != *"${TEST_CASE_FOLDER}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
       debug "TEST_CASE_RUN (${TEST_CASE_RUN}) is true. Skipping ${FILE}..."
+    fi
+
+    #################################################
+    # Filter files if FILTER_REGEX_INCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
+      debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
+      continue
+    fi
+
+    #################################################
+    # Filter files if FILTER_REGEX_EXCLUDE is set #
+    #################################################
+    if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
+      debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
+      continue
+    fi
+
+    if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ] && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
+      debug "${FILE} is ignored by Git. Skipping ${FILE}"
+      continue
     fi
 
     # Editorconfig-checker should check every file

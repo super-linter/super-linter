@@ -7,15 +7,15 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.01.20-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.02.13-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.3.1 as editorconfig-checker
-FROM yoheimuta/protolint:v0.28.1 as protolint
-FROM golangci/golangci-lint:v1.36.0 as golangci-lint
+FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
+FROM yoheimuta/protolint:v0.28.2 as protolint
+FROM golangci/golangci-lint:v1.37.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.23.1 as tflint
+FROM wata727/tflint:0.24.1 as tflint
 FROM alpine/terragrunt:0.14.5 as terragrunt
-FROM mvdan/shfmt:v3.2.1 as shfmt
+FROM mvdan/shfmt:v3.2.2 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
@@ -25,7 +25,7 @@ FROM garethr/kubeval:0.15.0 as kubeval
 ##################
 # Get base image #
 ##################
-FROM python:alpine
+FROM python:3.9-alpine
 
 ############################
 # Get the build arguements #
@@ -81,6 +81,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    cargo \
     coreutils \
     curl \
     file \
@@ -100,6 +101,7 @@ RUN apk add --no-cache \
     musl-dev \
     npm nodejs-current \
     openjdk8-jre \
+    openssl-dev \
     perl perl-dev \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
