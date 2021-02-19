@@ -363,6 +363,7 @@ function LintCodebase() {
             fatal "No TAP expected file found at:[${EXPECTED_FILE}]"
           fi
         done
+
         # Need to check if the TAP_SUCCESS was set to 1
         if [ "${TAP_SUCCESS}" -ne 1 ]; then
           # We failed on all tap outputs
@@ -372,6 +373,7 @@ function LintCodebase() {
             error "${LINE}"
           done
           fatal "Failed to assert TAP output!"
+        fi
       fi
     fi
   fi
