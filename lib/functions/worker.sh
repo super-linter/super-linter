@@ -334,7 +334,7 @@ function LintCodebase() {
         # If expected TAP report exists then compare with the generated report #
         ########################################################################
         TAP_SUCCESS=0
-        TAR_ERROR_ARRAY=()
+        TAP_ERROR_ARRAY=()
         mapfile -t EXPECTED_FILES_ARRAY < <(cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1; find . -name '*.tap' 2>&1)
         for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"
         do
