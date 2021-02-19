@@ -333,22 +333,45 @@ function LintCodebase() {
         ########################################################################
         # If expected TAP report exists then compare with the generated report #
         ########################################################################
-        EXPECTED_FILE="${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports/expected-${FILE_TYPE}.tap"
-        if [ -e "${EXPECTED_FILE}" ]; then
-          TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
-          ## Ignore white spaces, case sensitive
-          if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" >"${TMPFILE}" 2>&1; then
-            #############################################
-            # We failed to compare the reporting output #
-            #############################################
-            cat "${TMPFILE}"
-            fatal "Failed to assert TAP output for ${LINTER_NAME} linter"
+        TAP_SUCCESS=0
+        TAR_ERROR_ARRAY=()
+        mapfile -t EXPECTED_FILES_ARRAY < <(cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1; find . -name '*.tap' 2>&1)
+        for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"
+        do
+          # Remove the pathing to file name
+          EXPECTED_FILE_NAME="${EXPECTED_FILE:2}"
+          # Create full path
+          EXPECTED_FILE="${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports/${EXPECTED_FILE_NAME}"
+
+          # Check that file exists
+          if [ -e "${EXPECTED_FILE}" ]; then
+            TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
+            ## Ignore white spaces, case sensitive
+            if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" >"${TMPFILE}" 2>&1; then
+              #############################################
+              # We failed to compare the reporting output #
+              #############################################
+              STRING=$(cat "${TMPFILE}")
+              TAP_ERROR_ARRAY+=("${STRING}")
+              TAP_ERROR_ARRAY+=("Failed to assert TAP output for ${LINTER_NAME} linter")
+            else
+              info "TAP output validated successfully for ${LINTER_NAME}"
+              # Set flag for success
+              TAP_SUCCESS=1
+            fi
           else
-            info "TAP output validated successfully for ${LINTER_NAME}"
+            fatal "No TAP expected file found at:[${EXPECTED_FILE}]"
           fi
-        else
-          fatal "No TAP expected file found at:[${EXPECTED_FILE}]"
-        fi
+        done
+        # Need to check if the TAP_SUCCESS was set to 1
+        if [ "${TAP_SUCCESS}" -ne 1 ]; then
+          # We failed on all tap outputs
+          error "Failed to assert TAP output!"
+          for LINE in "${TAP_ERROR_ARRAY[@]}"
+          do
+            error "${LINE}"
+          done
+          fatal "Failed to assert TAP output!"
       fi
     fi
   fi
