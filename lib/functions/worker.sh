@@ -339,8 +339,7 @@ function LintCodebase() {
           cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1
           find . -name '*.tap' 2>&1
         )
-        for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"
-        do
+        for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"; do
           # Remove the pathing to file name
           EXPECTED_FILE_NAME="${EXPECTED_FILE:2}"
           # Create full path
@@ -371,8 +370,7 @@ function LintCodebase() {
         if [ "${TAP_SUCCESS}" -ne 1 ]; then
           # We failed on all tap outputs
           error "Failed to assert TAP output!"
-          for LINE in "${TAP_ERROR_ARRAY[@]}"
-          do
+          for LINE in "${TAP_ERROR_ARRAY[@]}"; do
             error "${LINE}"
           done
           fatal "Failed to assert TAP output!"
