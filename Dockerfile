@@ -359,4 +359,4 @@ ENTRYPOINT ["/action/lib/linter.sh"]
 ####################################
 # clean up dev packages and caches #
 ####################################
-RUN for i in $(apk info | grep -i dev | awk '{print $1}'); do apk -U del --purge $i; done && cd /; rm -rf /root/ /var/cache/apk/*
+RUN for i in $(apk info | grep -i dev | awk '{print $1}'); do apk -U del --purge "${i}"; done && cd /; rm -rf /root/ /var/cache/apk/*
