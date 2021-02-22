@@ -106,7 +106,12 @@ function AddDetailedMessageIfEnabled() {
     cp "${TEMP_FILE}" "${TEMP_FILE}.tmp" && LC_ALL=C tr -dc '\0-\177' <"${TEMP_FILE}.tmp" >"${TEMP_FILE}" && rm "${TEMP_FILE}.tmp"
 
     # Need to change all multi spaces to single space to prevent spacing inconsistancies
-    sed -i 's/ \{1,\}/ /g' "${TEMP_FILE}"pwd
+    sed -i 's/ \{1,\}/ /g' "${TEMP_FILE}"
+
+    # Need to fix the spacing on the file to meet editor config specs
+    sed -i 's/^\ ---/\ \ ---/g' "${TEMP_FILE}"
+    sed -i 's/^\ \.\.\./\ \ \.\.\./g' "${TEMP_FILE}"
+    sed -i 's/^\ message/\ \ message/g' "${TEMP_FILE}"
   fi
 }
 ################################################################################
