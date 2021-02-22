@@ -11,7 +11,7 @@
     "dockerfilelint": "^1.8.0",
     "eslint": "^7.20.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-jest": "^24.1.5",
     "eslint-plugin-prettier": "^3.3.1",
     "gherkin-lint": "^4.1.3",
