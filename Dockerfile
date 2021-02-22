@@ -147,7 +147,7 @@ RUN bundle install
 RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install -g --tool-path /var/cache/dotnet dotnet-format
+    && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet dotnet-format
 
 ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
 
