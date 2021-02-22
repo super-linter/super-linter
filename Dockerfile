@@ -147,9 +147,9 @@ RUN bundle install
 RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet dotnet-format
+    && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
 
-ENV PATH="${PATH}:/var/cache/dotnet/.dotnet/tools:/usr/share/dotnet"
+ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
 ##############################
 # Installs Perl dependencies #
