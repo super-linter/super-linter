@@ -109,6 +109,7 @@ RUN apk add --no-cache \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
+    rustup \
     zlib zlib-dev
 
 ########################################
@@ -140,6 +141,14 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install rustfmt            #
+##############################
+RUN ln -s /usr/bin/rustup-init /usr/bin/rustup
+RUN rustup toolchain install stable-x86_64-unknown-linux-musl
+RUN rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl
+RUN ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
 
 ###################################
 # Install DotNet and Dependencies #
