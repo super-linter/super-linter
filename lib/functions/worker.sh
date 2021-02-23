@@ -353,11 +353,7 @@ function LintCodebase() {
               #############################################
               # We failed to compare the reporting output #
               #############################################
-              warn "Expected File:"
-              cat "${EXPECTED_FILE}"
-              warn "Report Output File:"
-              cat "${REPORT_OUTPUT_FILE}"
-              warn "Tmp File:"
+              warn "Tap File difference:"
               cat "${TMPFILE}"
               STRING=$(cat "${TMPFILE}")
               TAP_ERROR_ARRAY+=("${STRING}")
