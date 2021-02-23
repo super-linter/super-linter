@@ -96,7 +96,7 @@ CleanTestDockerFiles() {
   ##################
   mapfile -t FIND_CMD < <(
     cd "${GITHUB_WORKSPACE}" || exit 1
-    find "${GITHUB_WORKSPACE}" -type f -name "*Dockerfile" 2>&1
+    find "${GITHUB_WORKSPACE}" -type f -name "*Dockerfile" -name ".dockerignore" 2>&1
   )
 
   CheckShellErrors "ERROR! failed to get list of all file for Docker!" "ERROR:[${FIND_CMD[*]}]"
