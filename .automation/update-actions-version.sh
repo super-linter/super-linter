@@ -19,11 +19,11 @@ ISSUE_BODY="${ISSUE_BODY}"                # Body of the issue
 ############
 # Defaults #
 ############\
-GITHUB_API='https://api.github.com'       # API url
-VERSION=''                                # Version of release pulled from api
-ACTION_FILE='action.yml'                  # Action file to update
-PR_ID=''                                  # PUll Request ID when created
-UPDATED_BODY_STRING=''                    # Issue body string converted
+GITHUB_API='https://api.github.com' # API url
+VERSION=''                          # Version of release pulled from api
+ACTION_FILE='action.yml'            # Action file to update
+PR_ID=''                            # PUll Request ID when created
+UPDATED_BODY_STRING=''              # Issue body string converted
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
