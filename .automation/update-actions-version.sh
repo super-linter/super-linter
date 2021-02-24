@@ -98,11 +98,13 @@ CommitAndPush() {
   echo "Creating commit, and pushing to PR..."
 
   # Commit the code to GitHub
-  COMMIT_CMD=$(git checkout -b "Automation-Release-${VERSION}"; \
+  COMMIT_CMD=$(
+    git checkout -b "Automation-Release-${VERSION}"; \
     git add "${ACTION_FILE}" ; \
     git config --global user.name "SuperLinter Automation"; \
     git config --global user.email "super_linter_automation@github.com"; \
-    git commit -m "Updating action.yml with new release version" 2>&1)
+    git commit -m "Updating action.yml with new release version" 2>&1
+  )
 
   # Load the error code
   ERROR_CODE=$?
@@ -119,8 +121,10 @@ CommitAndPush() {
 
   echo "-------------------------------------------------------"
   # Push the code to the branch and create PR
-  PUSH_CMD=$(git push --set-upstream origin "Automation-Release-${VERSION}"; \
-    gh pr create --title "Update-to-release-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1)
+  PUSH_CMD=$(
+    git push --set-upstream origin "Automation-Release-${VERSION}"; \
+    gh pr create --title "Update-to-release-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
+  )
 
   # Load the error code
   ERROR_CODE=$?
@@ -136,9 +140,8 @@ CommitAndPush() {
   fi
 
   # Get the pr number
-  for LINE in $PUSH_CMD
-  do
-    echo "Line:[${LINE}]"
+  for LINE in $PUSH_CMD; do
+    # echo "Line:[${LINE}]"
     if [[ "${LINE}" == *"github.com"* ]]; then
       # Getting the PR id
       PR_ID=$(echo "${LINE}" | rev | cut -d'/' -f1 | rev)
@@ -217,13 +220,13 @@ SetActionsVariables() {
   echo "Setting the variables back to GitHub Actions..."
 
   echo "Setting PR_ID:[${PR_ID}]"
-  echo "PR_ID=${PR_ID}" >> "${GITHUB_ENV}"
+  echo "PR_ID=${PR_ID}" >>"${GITHUB_ENV}"
 
   echo "Setting RELEASE_VERSION:[${VERSION}]"
-  echo "RELEASE_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+  echo "RELEASE_VERSION=${VERSION}" >>"${GITHUB_ENV}"
 
   echo "Setting PR_REF:[Automation-Release-${VERSION}]"
-  echo "PR_REF=Automation-Release-${VERSION}" >> "${GITHUB_ENV}"
+  echo "PR_REF=Automation-Release-${VERSION}" >>"${GITHUB_ENV}"
 }
 ################################################################################
 #### Function Footer ###########################################################
