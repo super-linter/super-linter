@@ -15,7 +15,6 @@ REPO=$(echo "${ORG_REPO}" |cut -d'/' -f2) # Name of the repository
 ISSUE_NUMBER="${ISSUE_NUMBER}"            # Number of the issue that kicked the automation
 ISSUE_TITLE="${ISSUE_TITLE}"              # Title of the issue
 ISSUE_BODY="${ISSUE_BODY}"                # Body of the issue
-RELEASE_BODY_STRING="${ISSUE_BODY}"       # Body of the issue
 
 ############
 # Defaults #
@@ -43,7 +42,7 @@ GetReleaseFromIssueTitle() {
   echo "Getting the latest Release version from GitHub Issue..."
 
   # Get the latest release on the Repository
-  GET_VERSION_CMD=$(echo "${ISSUE_TITLE}" | egrep -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)
+  GET_VERSION_CMD=$(echo "${ISSUE_TITLE}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)
 
   # Load the error code
   ERROR_CODE=$?
