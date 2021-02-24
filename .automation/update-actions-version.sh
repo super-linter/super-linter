@@ -7,14 +7,12 @@
 ###########
 # Globals #
 ###########
-GITHUB_TOKEN="${GITHUB_TOKEN}"            # Token for API CALLS
-DEPLOY_KEY="${DEPLOY_KEY}"                # Deploy key with write access
-ORG_REPO="${ORG_REPO}"                    # Name of ther GitHub Organization and repository
-ORG=$(echo "${ORG_REPO}" |cut -d'/' -f1)  # Name of the Org
-REPO=$(echo "${ORG_REPO}" |cut -d'/' -f2) # Name of the repository
-ISSUE_NUMBER="${ISSUE_NUMBER}"            # Number of the issue that kicked the automation
-ISSUE_TITLE="${ISSUE_TITLE}"              # Title of the issue
-ISSUE_BODY="${ISSUE_BODY}"                # Body of the issue
+GITHUB_TOKEN="${GITHUB_TOKEN}" # Token for API CALLS
+DEPLOY_KEY="${DEPLOY_KEY}"     # Deploy key with write access
+ORG_REPO="${ORG_REPO}"         # Name of ther GitHub Organization and repository
+ISSUE_NUMBER="${ISSUE_NUMBER}" # Number of the issue that kicked the automation
+ISSUE_TITLE="${ISSUE_TITLE}"   # Title of the issue
+ISSUE_BODY="${ISSUE_BODY}"     # Body of the issue
 
 ############
 # Defaults #
@@ -24,6 +22,12 @@ VERSION=''                          # Version of release pulled from api
 ACTION_FILE='action.yml'            # Action file to update
 PR_ID=''                            # PUll Request ID when created
 UPDATED_BODY_STRING=''              # Issue body string converted
+
+##############
+# Built Vars #
+##############
+ORG=$(echo "${ORG_REPO}" |cut -d'/' -f1)  # Name of the Org
+REPO=$(echo "${ORG_REPO}" |cut -d'/' -f2) # Name of the repository
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
@@ -99,10 +103,10 @@ CommitAndPush() {
 
   # Commit the code to GitHub
   COMMIT_CMD=$(
-    git checkout -b "Automation-Release-${VERSION}"; \
-    git add "${ACTION_FILE}" ; \
-    git config --global user.name "SuperLinter Automation"; \
-    git config --global user.email "super_linter_automation@github.com"; \
+    git checkout -b "Automation-Release-${VERSION}"
+    git add "${ACTION_FILE}"
+    git config --global user.name "SuperLinter Automation"
+    git config --global user.email "super_linter_automation@github.com"
     git commit -m "Updating action.yml with new release version" 2>&1
   )
 
@@ -122,7 +126,7 @@ CommitAndPush() {
   echo "-------------------------------------------------------"
   # Push the code to the branch and create PR
   PUSH_CMD=$(
-    git push --set-upstream origin "Automation-Release-${VERSION}"; \
+    git push --set-upstream origin "Automation-Release-${VERSION}"
     gh pr create --title "Update-to-release-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
   )
 
