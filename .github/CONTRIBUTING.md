@@ -46,7 +46,7 @@ The **Super-Linter** has _CI/CT/CD_ configured utilizing **GitHub** Actions.
 
 ## Releasing
 
-If you are the current maintainer of this action you can create releases from Issues in the repository.
+If you are the current maintainer of this action you can create releases from [a release issue](.github/ISSUE_TEMPLATE/CREATE_RELEASE.md) in the repository.
 
 - It will notify the issue it has seen the information and starts the Actions job
 - It will create a branch and update the `actions.yml` with the new version supplied to the issue
