@@ -353,6 +353,8 @@ function LintCodebase() {
               #############################################
               # We failed to compare the reporting output #
               #############################################
+              warn "Tap File difference:"
+              cat "${TMPFILE}"
               STRING=$(cat "${TMPFILE}")
               TAP_ERROR_ARRAY+=("${STRING}")
               TAP_ERROR_ARRAY+=("Failed to assert TAP output for ${LINTER_NAME} linter")
