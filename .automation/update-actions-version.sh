@@ -26,8 +26,8 @@ UPDATED_BODY_STRING=''              # Issue body string converted
 ##############
 # Built Vars #
 ##############
-ORG=$(echo "${ORG_REPO}" |cut -d'/' -f1)  # Name of the Org
-REPO=$(echo "${ORG_REPO}" |cut -d'/' -f2) # Name of the repository
+ORG=$(echo "${ORG_REPO}" | cut -d'/' -f1)  # Name of the Org
+REPO=$(echo "${ORG_REPO}" | cut -d'/' -f2) # Name of the repository
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
