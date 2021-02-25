@@ -11,7 +11,7 @@ FROM cljkondo/clj-kondo:2021.02.13-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
 FROM yoheimuta/protolint:v0.28.2 as protolint
-FROM golangci/golangci-lint:v1.37.0 as golangci-lint
+FROM golangci/golangci-lint:v1.37.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.24.1 as tflint
 FROM alpine/terragrunt:0.14.5 as terragrunt
@@ -147,9 +147,9 @@ RUN bundle install
 RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install -g dotnet-format
+    && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
 
-ENV PATH="${PATH}:/root/.dotnet/tools:/usr/share/dotnet"
+ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
 ##############################
 # Installs Perl dependencies #
