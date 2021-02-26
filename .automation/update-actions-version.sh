@@ -22,6 +22,7 @@ VERSION=''                          # Version of release pulled from api
 ACTION_FILE='action.yml'            # Action file to update
 PR_ID=''                            # PUll Request ID when created
 UPDATED_BODY_STRING=''              # Issue body string converted
+COMMIT_SHA=''                       # COmmit sha when PR is created
 
 ##############
 # Built Vars #
@@ -152,6 +153,22 @@ CommitAndPush() {
     fi
   done
 
+  # get the current commit sha
+  COMMIT_SHA=$(git rev-parse --short HEAD 2>&1)
+
+  # Load the error code
+  ERROR_CODE=$?
+
+  # Check the shell for errors
+  if [ "${ERROR_CODE}" -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to get comit sha!"
+    echo "ERROR:[$COMMIT_SHA]"
+    exit 1
+  else
+    echo "Successfully grabbed commit sha"
+  fi
+
 }
 ################################################################################
 #### Function UpdateBaseIssue ##################################################
@@ -256,6 +273,9 @@ SetActionsVariables() {
 
   echo "Setting PR_REF:[Automation-Release-${VERSION}]"
   echo "PR_REF=Automation-Release-${VERSION}" >>"${GITHUB_ENV}"
+
+  echo "Setting COMMIT_SHA:[${COMMIT_SHA}]"
+  echo "COMMIT_SHA=${COMMIT_SHA}" >>"${GITHUB_ENV}"
 }
 ################################################################################
 #### Function Footer ###########################################################
