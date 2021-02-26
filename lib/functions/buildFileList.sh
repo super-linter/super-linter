@@ -88,7 +88,7 @@ function BuildFileList() {
         info "Failed to get Diff with:[$DIFF_TREE_CMD]"
         info "Check that you have the full git history, the checkout is not shallow, etc"
         info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
-        fatal "[${DIFF_TREE_CMD}]"
+        fatal "[${DIFF_TREE_CMD_OUTPUT}]"
       fi
 
       ###################################################
@@ -131,7 +131,7 @@ function BuildFileList() {
           info "Failed to get Diff with:[$DIFF_CMD]"
           info "Check that you have the full git history, the checkout is not shallow, etc"
           info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
-          fatal "[${DIFF_CMD}]"
+          fatal "[${DIFF_CMD_OUTPUT}]"
         fi
 
         ###################################################
@@ -168,7 +168,9 @@ function BuildFileList() {
       if [ ${ERROR_CODE} -ne 0 ]; then
         # Error
         info "Failed to get Diff with:[$DIFF_CMD]"
-        fatal "[${DIFF_CMD}]"
+        info "Check that you have the full git history, the checkout is not shallow, etc"
+        info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+        fatal "[${DIFF_CMD_OUTPUT}]"
       fi
 
       ###################################################
