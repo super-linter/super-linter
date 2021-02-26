@@ -186,12 +186,14 @@ UpdatePRBody() {
   echo "Updating PR body with Release information and Issue linkage..."
 
   # Need to update the body of the PR with the information
-  UPDATE_PR_CMD=$(curl -s --fail -X PATCH \
+  UPDATE_PR_CMD=$(
+    curl -s --fail -X PATCH \
     --url "${GITHUB_API}/repos/${ORG}/${REPO}/pulls/${PR_ID}" \
     -H 'Accept: application/vnd.github.shadow-cat-preview+json,application/vnd.github.sailor-v-preview+json' \
     -H "Authorization: Bearer ${GITHUB_TOKEN}" \
     -H 'Content-Type: application/json' \
-    --data "{\"body\": \"Automation Creation of Super-Linter\n\nThis closes #${ISSUE_NUMBER}\n\n${UPDATED_BODY_STRING}\"}" 2>&1)
+    --data "{\"body\": \"Automation Creation of Super-Linter\n\nThis closes #${ISSUE_NUMBER}\n\n${UPDATED_BODY_STRING}\"}" 2>&1
+  )
 
   # Load the error code
   ERROR_CODE=$?
@@ -204,6 +206,29 @@ UpdatePRBody() {
     exit 1
   else
     echo "Successfully updated PR body"
+  fi
+
+  # Add the label for the release
+  UPDATE_LABEL_CMD=$(
+    curl -s --fail -X POST \
+    --url "${GITHUB_API}/repos/${ORG}/${REPO}/issues/${PR_ID}/labels" \
+    -H 'Accept: application/vnd.github.v3+json' \
+    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+    -H 'Content-Type: application/json' \
+    --data '{"labels":["Release"]}' 2>&1
+  )
+
+  # Load the error code
+  ERROR_CODE=$?
+
+  # Check the shell for errors
+  if [ "${ERROR_CODE}" -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to update PR label!"
+    echo "ERROR:[$UPDATE_LABEL_CMD]"
+    exit 1
+  else
+    echo "Successfully updated PR label"
   fi
 }
 ################################################################################
