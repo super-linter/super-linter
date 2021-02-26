@@ -145,10 +145,10 @@ RUN bundle install
 ##############################
 # Install rustfmt            #
 ##############################
-RUN ln -s /usr/bin/rustup-init /usr/bin/rustup
-RUN rustup toolchain install stable-x86_64-unknown-linux-musl
-RUN rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl
-RUN ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
+RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
+    && rustup toolchain install stable-x86_64-unknown-linux-musl \
+    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
 
 ###################################
 # Install DotNet and Dependencies #
