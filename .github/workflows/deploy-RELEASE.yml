@@ -158,6 +158,17 @@ jobs:
           draft: false
           prerelease: false
 
+      #####################################################
+      # Create the Required status check for Stack Linter #
+      #####################################################
+      - name: Create Stack Linter Status
+        if: success()
+        run: |
+          curl -X POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --data '{	"state": "success",	"context": "Stack linter" }'
+
       #################################
       # Close the opened Pull Request #
       #################################
@@ -180,4 +191,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: https://github.com/orgs/${{github.repository_owner}}/packages?repo_name=${{github.repository.name}}
+          env_url: https://github.com/orgs/${{github.repository_owner}}/container/package/${{github.repository.name}}
