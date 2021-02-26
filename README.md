@@ -110,6 +110,7 @@ To use this **GitHub** Action you will need to complete the following:
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
 
 - `.github/workflows/linter.yml`
+  - Example file can be found at `TEMPLATES/linter.yml`
 
 This file should have the following code:
 
