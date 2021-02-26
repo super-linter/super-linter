@@ -127,7 +127,7 @@ CommitAndPush() {
   # Push the code to the branch and create PR
   PUSH_CMD=$(
     git push --set-upstream origin "Automation-Release-${VERSION}"
-    gh pr create --title "Update-to-release-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
+    gh pr create --title "Release-update-to-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
   )
 
   # Load the error code
