@@ -62,16 +62,39 @@ function BuildFileList() {
       ################
       # push event   #
       ################
+      DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+
       ################
       # print header #
       ################
       debug "----------------------------------------------"
-      debug "Generating Diff with:[git diff-tree --no-commit-id --name-only -r \"${GITHUB_SHA}\"]"
+      debug "Generating Diff with:[$DIFF_TREE_CMD]"
 
       #################################################
       # Get the Array of files changed in the commits #
       #################################################
-      mapfile -t RAW_FILE_ARRAY < <(git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" 2>&1)
+      DIFF_TREE_CMD_OUTPUT=$($DIFF_TREE_CMD)
+
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
+
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        # Error
+        info "Failed to get Diff with:[$DIFF_TREE_CMD]"
+        info "Check that you have the full git history, the checkout is not shallow, etc"
+        info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+        fatal "[${DIFF_TREE_CMD}]"
+      fi
+
+      ###################################################
+      # Map command output to an array to proper handle #
+      ###################################################
+      mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_TREE_CMD_OUTPUT")
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
@@ -83,12 +106,37 @@ function BuildFileList() {
         ################
         debug "----------------------------------------------"
         debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
-        debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+
+        DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
+
+        debug "----------------------------------------------"
+        debug "Generating Diff with:[$DIFF_CMD]"
 
         #################################################
         # Get the Array of files changed in the commits #
         #################################################
-        mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+        DIFF_CMD_OUTPUT=$($DIFF_CMD)
+
+        #######################
+        # Load the error code #
+        #######################
+        ERROR_CODE=$?
+
+        ##############################
+        # Check the shell for errors #
+        ##############################
+        if [ ${ERROR_CODE} -ne 0 ]; then
+          # Error
+          info "Failed to get Diff with:[$DIFF_CMD]"
+          info "Check that you have the full git history, the checkout is not shallow, etc"
+          info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+          fatal "[${DIFF_CMD}]"
+        fi
+
+        ###################################################
+        # Map command output to an array to proper handle #
+        ###################################################
+        mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
       fi
     else
       ################
@@ -97,13 +145,34 @@ function BuildFileList() {
       ################
       # print header #
       ################
+      DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
+
       debug "----------------------------------------------"
-      debug "Generating Diff with:[git diff --name-only '${DEFAULT_BRANCH}...${GITHUB_SHA}' --diff-filter=d]"
+      debug "Generating Diff with:[$DIFF_CMD]"
 
       #################################################
       # Get the Array of files changed in the commits #
       #################################################
-      mapfile -t RAW_FILE_ARRAY < <(git -C "${GITHUB_WORKSPACE}" diff --name-only "${DEFAULT_BRANCH}...${GITHUB_SHA}" --diff-filter=d 2>&1)
+      DIFF_CMD_OUTPUT=$($DIFF_CMD)
+
+      #######################
+      # Load the error code #
+      #######################
+      ERROR_CODE=$?
+
+      ##############################
+      # Check the shell for errors #
+      ##############################
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        # Error
+        info "Failed to get Diff with:[$DIFF_CMD]"
+        fatal "[${DIFF_CMD}]"
+      fi
+
+      ###################################################
+      # Map command output to an array to proper handle #
+      ###################################################
+      mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
@@ -115,29 +184,8 @@ function BuildFileList() {
     # print header #
     ################
     debug "----------------------------------------------"
-    debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace"
-    mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
-      -not \( -path '*/\.git' -prune \) \
-      -not \( -path '*/\.pytest_cache' -prune \) \
-      -not \( -path '*/\.rbenv' -prune \) \
-      -not \( -path '*/\.terragrunt-cache' -prune \) \
-      -not \( -path '*/\.venv' -prune \) \
-      -not \( -path '*/\__pycache__' -prune \) \
-      -not \( -path '*/\node_modules' -prune \) \
-      -not -name ".DS_Store" \
-      -not -name "*.gif" \
-      -not -name "*.ico" \
-      -not -name "*.jpg" \
-      -not -name "*.jpeg" \
-      -not -name "*.pdf" \
-      -not -name "*.png" \
-      -not -name "*.webp" \
-      -not -name "*.woff" \
-      -not -name "*.woff2" \
-      -not -name "*.zip" \
-      -type f \
-      2>&1 | sort)
-
+    debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
+    mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
     debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
   fi
 
@@ -591,6 +639,16 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("${FILE}")
+
+    ######################
+    # Get the RUST files #
+    ######################
+    elif [ "${FILE_TYPE}" == "rs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RUST_2015+=("${FILE}")
+      FILE_ARRAY_RUST_2018+=("${FILE}")
 
     ###########################
     # Get the SNAKEMAKE files #

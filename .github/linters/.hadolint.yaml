@@ -9,3 +9,4 @@ ignored:
   - DL3013 # We do pin version in pipfile.lock
   - DL3003 # Ignore workdir so we dont add layers
   - SC2016 # ignore as its intepreted later
+  - DL3044 # Ignore using env in env

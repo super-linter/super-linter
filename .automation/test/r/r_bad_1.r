@@ -39,5 +39,8 @@ message('single_quotes')
 # trailing_whitespace
 y <- 2 +(1:10)
 
+# unexpected end of input
+{
+
 # trailing_blank_lines
 
