@@ -640,6 +640,16 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_RUBY+=("${FILE}")
 
+    ######################
+    # Get the RUST files #
+    ######################
+    elif [ "${FILE_TYPE}" == "rs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RUST_2015+=("${FILE}")
+      FILE_ARRAY_RUST_2018+=("${FILE}")
+
     ###########################
     # Get the SNAKEMAKE files #
     ###########################
