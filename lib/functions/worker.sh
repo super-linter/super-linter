@@ -121,6 +121,26 @@ function LintCodebase() {
         fi
       fi
 
+      #######################################
+      # Check if Cargo.toml for Rust Clippy #
+      #######################################
+      if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
+        if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+          #############
+          # Good file #
+          #############
+          FILE_STATUS='good'
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+          ############
+          # Bad file #
+          ############
+          FILE_STATUS='bad'
+        fi
+      fi
+
       #########################################################
       # If not found, assume it should be linted successfully #
       #########################################################

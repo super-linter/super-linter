@@ -601,6 +601,15 @@ function BuildFileList() {
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
 
+    #######################
+    # Get the RUST crates #
+    #######################
+    elif [ "${BASE_FILE}" == "cargo.toml" ]; then
+      ###############################################
+      # Append the crate manifest file to the array #
+      ###############################################
+      FILE_ARRAY_RUST_CLIPPY+=("${FILE}")
+
     ###########################
     # Get the SNAKEMAKE files #
     ###########################

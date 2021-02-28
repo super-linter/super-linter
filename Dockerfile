@@ -81,7 +81,6 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
-    cargo \
     coreutils \
     curl \
     file \
@@ -112,6 +111,26 @@ RUN apk add --no-cache \
     rustup \
     zlib zlib-dev
 
+##############################
+# Install rustfmt & clippy   #
+##############################
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
+    && rustup toolchain install stable-x86_64-unknown-linux-musl \
+    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
+    && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
+    && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
+    && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
+    && echo 'cargo-clippy' >> /usr/bin/clippy \
+    && echo 'rc=$?' >> /usr/bin/clippy \
+    && echo 'popd' >> /usr/bin/clippy \
+    && echo 'exit $rc' >> /usr/bin/clippy \
+    && chmod +x /usr/bin/clippy
+
 ########################################
 # Copy dependencies files to container #
 ########################################
@@ -141,14 +160,6 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
-
-##############################
-# Install rustfmt            #
-##############################
-RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
-    && rustup toolchain install stable-x86_64-unknown-linux-musl \
-    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
 
 ###################################
 # Install DotNet and Dependencies #
