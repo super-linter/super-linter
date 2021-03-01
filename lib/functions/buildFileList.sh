@@ -101,7 +101,7 @@ function BuildFileList() {
       # push event   #
       ################
       DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
-      GenerateFileDiff $DIFF_TREE_CMD
+      GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
@@ -115,7 +115,7 @@ function BuildFileList() {
         debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
 
         DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
-        GenerateFileDiff $DIFF_CMD
+        GenerateFileDiff "$DIFF_CMD"
 
       fi
     else
@@ -126,7 +126,7 @@ function BuildFileList() {
       # print header #
       ################
       DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
-      GenerateFileDiff $DIFF_CMD
+      GenerateFileDiff "$DIFF_CMD"
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
