@@ -43,19 +43,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
 
-      ############################
-      # Test action before build #
-      ############################
-      # Before building the image, we can directly test it, and also
-      # we test without the RUN_LOCAL=true to see the proper behavior
-      - name: Test the local action
-        uses: ./
-        env:
-          ACTIONS_RUNNER_DEBUG: true
-          ERROR_ON_MISSING_EXEC_BIT: true
-          VALIDATE_ALL_CODEBASE: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       ########################
       # Get the current date #
       ########################
@@ -88,6 +75,19 @@ jobs:
       - name: Run Docker label test cases
         shell: bash
         run: .automation/validate-docker-labels.sh
+
+      ##########################
+      # Test in action context #
+      ##########################
+      # Test the built image in the actions context.
+      # Not the container directly, and not using RUN_LOCAL=true
+      - name: Test the local action
+        uses: ./
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #####################################
       # Run Linter against Test code base #
