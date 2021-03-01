@@ -95,6 +95,7 @@ function BuildFileList() {
       # Map command output to an array to proper handle #
       ###################################################
       mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_TREE_CMD_OUTPUT")
+      debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
@@ -137,6 +138,7 @@ function BuildFileList() {
         # Map command output to an array to proper handle #
         ###################################################
         mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
+        debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
       fi
     else
       ################
@@ -173,6 +175,7 @@ function BuildFileList() {
       # Map command output to an array to proper handle #
       ###################################################
       mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
+      debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
