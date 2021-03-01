@@ -558,6 +558,8 @@ CallStatusAPI() {
   FAIL_MSG='Errors were detected, please view logs'
   MESSAGE='' # Message to send to status API
 
+  debug "Calling Multi-Status API for $LANGUAGE with status $STATUS"
+
   ######################################
   # Check the status to create message #
   ######################################
