@@ -233,6 +233,13 @@
             ],
             "version": "==1.2.6"
         },
+        "filelock": {
+            "hashes": [
+                "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59",
+                "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"
+            ],
+            "version": "==3.0.12"
+        },
         "flake8": {
             "hashes": [
                 "sha256:749dbbd6bfd0cf1318af27bf97a14e28e5ff548ef8e5b1566ccfb25a11e7c839",
@@ -633,6 +640,12 @@
             ],
             "version": "==1.15.0"
         },
+        "smart-open": {
+            "hashes": [
+                "sha256:d9f5a0f173ccb9bbae528db5a3804f57145815774f77ef755b9b0f3b4b2a9dcb"
+            ],
+            "version": "==4.2.0"
+        },
         "smmap": {
             "hashes": [
                 "sha256:7bfcf367828031dc893530a29cb35eb8c8f2d7c8f2d0989354d75d24c8573714",
@@ -650,10 +663,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:ff35f3c5d283c5b38a926b943f18aa732cc8af4bd1f59471907ef3adda1b018c"
+                "sha256:11ad688728332ff98653322385480143e31edf5d68685431b397d191beabf626"
             ],
             "index": "pypi",
-            "version": "==5.32.2"
+            "version": "==6.0.0"
         },
         "toml": {
             "hashes": [
