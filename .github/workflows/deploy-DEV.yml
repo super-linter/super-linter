@@ -76,6 +76,13 @@ jobs:
         shell: bash
         run: .automation/validate-docker-labels.sh
 
+      ########################################
+      # Edit action.yml for test local build #
+      ########################################
+      - name: Edit an action.yml file for test local build
+        run: |
+          sed -i "s/super-linter:.*/super-linter:${GITHUB_SHA}'/g" action.yml
+
       ##########################
       # Test in action context #
       ##########################
