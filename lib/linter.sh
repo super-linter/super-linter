@@ -558,6 +558,8 @@ CallStatusAPI() {
   FAIL_MSG='Errors were detected, please view logs'
   MESSAGE='' # Message to send to status API
 
+  debug "Calling Multi-Status API for $LANGUAGE with status $STATUS"
+
   ######################################
   # Check the status to create message #
   ######################################
@@ -579,6 +581,8 @@ CallStatusAPI() {
       STATUS="success"
     fi
 
+    debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+
     ##############################################
     # Call the status API to create status check #
     ##############################################
@@ -598,6 +602,8 @@ CallStatusAPI() {
     # Load the error code #
     #######################
     ERROR_CODE=$?
+
+    debug "Send status comd output: [$SEND_STATUS_CMD]"
 
     ##############################
     # Check the shell for errors #
