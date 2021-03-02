@@ -16,7 +16,7 @@
     "gherkin-lint": "^4.2.1",
     "htmlhint": "^0.14.2",
     "jsonlint": "^1.6.3",
-    "markdownlint-cli": "^0.26.0",
+    "markdownlint-cli": "^0.27.0",
     "npm-groovy-lint": "^8.1.0",
     "prettier": "^2.2.1",
     "prettyjson": "^1.2.1",
