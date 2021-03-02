@@ -7,10 +7,10 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.02.13-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.02.28-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
-FROM yoheimuta/protolint:v0.28.2 as protolint
+FROM yoheimuta/protolint:v0.30.0 as protolint
 FROM golangci/golangci-lint:v1.37.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
 FROM wata727/tflint:0.24.1 as tflint
@@ -18,7 +18,7 @@ FROM alpine/terragrunt:0.14.7 as terragrunt
 FROM mvdan/shfmt:v3.2.2 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM ghcr.io/assignuser/lintr-lib:0.1.2 as lintr-lib
+FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
 
@@ -109,6 +109,7 @@ RUN apk add --no-cache \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
+    rustup \
     zlib zlib-dev
 
 ########################################
@@ -140,6 +141,14 @@ ENV PATH="/node_modules/.bin:${PATH}"
 # Installs ruby dependencies #
 ##############################
 RUN bundle install
+
+##############################
+# Install rustfmt            #
+##############################
+RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
+    && rustup toolchain install stable-x86_64-unknown-linux-musl \
+    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
+    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
 
 ###################################
 # Install DotNet and Dependencies #

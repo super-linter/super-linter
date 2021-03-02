@@ -184,7 +184,9 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'C
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GHERKIN' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'R' 'RAKU' 'RUBY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL'
+  'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT'
+  'R' 'RAKU' 'RUBY' 'RUST_2015' 'RUST_2018'
+  'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL'
   'TEKTON' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ##############################
@@ -235,6 +237,8 @@ LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
 LINTER_NAMES_ARRAY['R']="R"
 LINTER_NAMES_ARRAY['RAKU']="raku"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
+LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
+LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
 LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
 LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
@@ -554,6 +558,8 @@ CallStatusAPI() {
   FAIL_MSG='Errors were detected, please view logs'
   MESSAGE='' # Message to send to status API
 
+  debug "Calling Multi-Status API for $LANGUAGE with status $STATUS"
+
   ######################################
   # Check the status to create message #
   ######################################
@@ -575,6 +581,8 @@ CallStatusAPI() {
       STATUS="success"
     fi
 
+    debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+
     ##############################################
     # Call the status API to create status check #
     ##############################################
@@ -594,6 +602,8 @@ CallStatusAPI() {
     # Load the error code #
     #######################
     ERROR_CODE=$?
+
+    debug "Send status comd output: [$SEND_STATUS_CMD]"
 
     ##############################
     # Check the shell for errors #
@@ -804,6 +814,8 @@ LINTER_COMMANDS_ARRAY['PYTHON_ISORT']="isort --check --diff --sp ${PYTHON_ISORT_
 LINTER_COMMANDS_ARRAY['R']="lintr"
 LINTER_COMMANDS_ARRAY['RAKU']="raku"
 LINTER_COMMANDS_ARRAY['RUBY']="rubocop -c ${RUBY_LINTER_RULES} --force-exclusion"
+LINTER_COMMANDS_ARRAY['RUST_2015']="rustfmt --check --edition 2015"
+LINTER_COMMANDS_ARRAY['RUST_2018']="rustfmt --check --edition 2018"
 LINTER_COMMANDS_ARRAY['SHELL_SHFMT']="shfmt -d"
 LINTER_COMMANDS_ARRAY['SNAKEMAKE_LINT']="snakemake --lint -s"
 LINTER_COMMANDS_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff"

@@ -218,7 +218,7 @@ function LintCodebase() {
         fi
         LINT_CMD=$(
           cd "$r_dir" || exit
-          R --slave -e "errors <- lintr::lint('$FILE');print(errors);quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
+          R --slave -e "lints <- lintr::lint('$FILE');print(lints);errors <- purrr::keep(lints, ~ .\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
         )
       #########################################################
       # Corner case for C# as it writes to tty and not stdout #
