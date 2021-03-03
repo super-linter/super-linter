@@ -21,7 +21,7 @@
     "jscpd": "^3.3.24",
     "jsonlint": "^1.6.3",
     "lodash": "^4.17.21",
-    "markdownlint-cli": "^0.26.0",
+    "markdownlint-cli": "^0.27.1",
     "node-fetch": "^2.6.1",
     "npm-groovy-lint": "^8.1.0",
     "prettier": "^2.2.1",
