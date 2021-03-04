@@ -77,17 +77,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:4523eab37ff005d5174083b59382cfd626b7890c08d56ce162a4bd92af7d44df",
-                "sha256:f3314c513077dd74329380449338b424cb6fe96fceceb436eabafb5586131cfc"
+                "sha256:2219f1ebe88d266afa5516f993983eba8742b957fa4fd6854f3c73aa3030e931",
+                "sha256:c0d51f344b71656c2d395d2168600d91bea252a64fb5d503a955ea96426cde8b"
             ],
-            "version": "==1.17.17"
+            "version": "==1.17.20"
         },
         "botocore": {
             "hashes": [
-                "sha256:178ce315d19fe0ef33e8ce6754a482d009e8d132c5adcc457f5cf1d99a98753b",
-                "sha256:931d16867dbb0fa60843204dc88ea01fd9d1ce8c28294ec4865fdf96adddbc29"
+                "sha256:80c32a81fb1ee8bdfa074a79bfb885bb2006e8a9782f2353c0c9f6392704e13a",
+                "sha256:e9e724b59278ebf5caf032be1e32bde0990d79e8052e3bbbb97b6c1d32feba28"
             ],
-            "version": "==1.20.17"
+            "version": "==1.20.20"
         },
         "bracex": {
             "hashes": [
@@ -300,11 +300,11 @@
         },
         "jsonpatch": {
             "hashes": [
-                "sha256:da3831be60919e8c98564acfc1fa918cb96e7c9750b0428388483f04d0d1c5a7",
-                "sha256:e930adc932e4d36087dbbf0f22e1ded32185dfb20662f2e3dd848677a5295a14"
+                "sha256:608c33104a51c96aa3e60b7512eae99e5b960b1c3efd67a798573d172d31f266",
+                "sha256:70f875ced7eb1fc1289860218b085403d075465c915ec45f368aa2da36f37c29"
             ],
             "markers": "python_version != '3.4'",
-            "version": "==1.28"
+            "version": "==1.30"
         },
         "jsonpointer": {
             "hashes": [
@@ -576,10 +576,10 @@
         },
         "rich": {
             "hashes": [
-                "sha256:77bd13c72350c4907540be33910c0ec13bebb68fba4986e055fb564338f9e94a",
-                "sha256:bc7087a7fcca8852784ccccc88d992c23efaf9d7e1dcca991a440d7a779352e2"
+                "sha256:1e000895221df23cd7f828a9511c15d10189850d4f923b6d8c3d29a32ca95265",
+                "sha256:4654e20bc44c0b21e387b58edaf073325e5d12f8e482b70db7d1dd7a4949f6f0"
             ],
-            "version": "==9.12.3"
+            "version": "==9.12.4"
         },
         "ruamel.yaml": {
             "hashes": [
@@ -663,10 +663,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:11ad688728332ff98653322385480143e31edf5d68685431b397d191beabf626"
+                "sha256:1fc6ae36615308fed8887844c10d576b39292c508775a0365d2d27a1bb958ee0"
             ],
             "index": "pypi",
-            "version": "==6.0.0"
+            "version": "==6.0.2"
         },
         "toml": {
             "hashes": [
