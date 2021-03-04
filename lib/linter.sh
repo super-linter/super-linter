@@ -474,6 +474,15 @@ GetGitHubVars() {
     ######################
     GITHUB_ORG=$(jq -r '.repository.owner.login' <"${GITHUB_EVENT_PATH}")
 
+    ########################
+    # Fix SHA for PR event #
+    ########################
+    # Github sha on PR events is not the latest commit.
+    # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
+    if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+      GITHUB_SHA=$(cat $GITHUB_EVENT_PATH | jq -r .pull_request.head.sha)
+    fi
+
     ############################
     # Validate we have a value #
     ############################
