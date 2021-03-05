@@ -41,7 +41,7 @@ function GenerateFileDiff() {
   ###################################################
   # Map command output to an array to proper handle #
   ###################################################
-  mapfile -t RAW_FILE_ARRAY < <(echo "$CMD_OUTPUT")
+  mapfile -t RAW_FILE_ARRAY < <(echo -n "$CMD_OUTPUT")
   debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
