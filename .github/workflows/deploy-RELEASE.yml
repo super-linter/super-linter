@@ -22,12 +22,70 @@ on:
 # Set the Job #
 ###############
 jobs:
-  build:
+  no-run:
     # Name the Job
     name: Deploy Docker Image - Release
     # Set the agent to run on
     runs-on: ubuntu-latest
-    # Only run if Admin start job and it was the Release Issue template
+
+    #########################################################
+    # Delete the created issue as it was created by someone #
+    # who is not authorized to create a release             #
+    #########################################################
+    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
+        github.actor != 'admiralawkbar' || github.actor != 'jwiebalk' ||
+        github.actor != 'IAmHughes' || github.actor != 'nemchik' ||
+        github.actor != 'Hanse00' || github.actor != 'github-actions' ||
+        github.actor != 'GaboFDC' || github.actor != 'ferrarimarco'
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ###########################
+      # Update the GitHub Issue #
+      ###########################
+      - name: Update GitHub Issue
+        uses: actions/github-script@v3.1.0
+        id: update-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ github.event.issue.number }}",
+              title: "You have no power here",
+              body: '![](https://media.giphy.com/media/RX3vhj311HKLe/giphy.gif)'
+            })
+
+      ##########################
+      # Close the GitHub Issue #
+      ##########################
+      - name: Close GitHub Issue
+        uses: actions/github-script@v3.1.0
+        id: close-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ github.event.issue.number }}",
+              state: 'closed'
+            })
+
+  deploy:
+    # Name the Job
+    name: Deploy Docker Image - Release
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    
+    #####################################################################
+    # Only run if Admin start job and it was the Release Issue template #
+    #####################################################################
     if: contains(github.event.issue.title, 'Super-Linter Release:') &&
         github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
         github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
@@ -110,7 +168,8 @@ jobs:
       - name: Update actions.yml with release version and create PR
         if: success()
         run: ./.automation/update-actions-version.sh
-        # Note: script creates variables: PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
+        # Note: script creates variables:
+        # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -148,7 +207,9 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          # This token is provided by Actions,
+          # you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commitish: ${{ env.PR_REF }}
           tag_name: ${{ env.RELEASE_VERSION }}
