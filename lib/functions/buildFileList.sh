@@ -68,6 +68,34 @@ function BuildFileList() {
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
 
+    ################
+    # print header #
+    ################
+    debug "----------------------------------------------"
+    debug "Pulling in code history and branches..."
+
+    #################################################################################
+    # Switch codebase back to the default branch to get a list of all files changed #
+    #################################################################################
+    SWITCH_CMD=$(
+      git -C "${GITHUB_WORKSPACE}" pull --quiet
+      git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
+    )
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ ${ERROR_CODE} -ne 0 ]; then
+      # Error
+      info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
+      fatal "[${SWITCH_CMD}]"
+    fi
+
     if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       ################
       # push event   #
