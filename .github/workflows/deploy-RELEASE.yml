@@ -82,7 +82,7 @@ jobs:
     name: Deploy Docker Image - Release
     # Set the agent to run on
     runs-on: ubuntu-latest
-    
+
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
