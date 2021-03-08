@@ -286,12 +286,22 @@ function LintCodebase() {
             ########
             warn "Warnings found in [${LINTER_NAME}] linter!"
             warn "${LINT_CMD}"
+
+            if SupportsLintly "${FILE_TYPE}"; then
+              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${LINT_CMD}"
+            fi
+
           else
             #########
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
             error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
+
+            if SupportsLintly "${FILE_TYPE}"; then
+              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${LINT_CMD}"
+            fi
+
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
