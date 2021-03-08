@@ -11,7 +11,7 @@
     "eslint": "^7.21.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-jest": "^24.1.5",
+    "eslint-plugin-jest": "^24.1.9",
     "eslint-plugin-prettier": "^3.3.1",
     "gherkin-lint": "^4.2.1",
     "htmlhint": "^0.14.2",
