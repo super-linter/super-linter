@@ -252,4 +252,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: https://github.com/orgs/${{github.repository_owner}}/container/package/${{github.repository.name}}
+          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
