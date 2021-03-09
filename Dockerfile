@@ -13,7 +13,7 @@ FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
 FROM yoheimuta/protolint:v0.30.0 as protolint
 FROM golangci/golangci-lint:v1.38.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.24.1 as tflint
+FROM wata727/tflint:0.25.0 as tflint
 FROM alpine/terragrunt:0.14.5 as terragrunt
 FROM mvdan/shfmt:v3.2.2 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
