@@ -81,25 +81,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: Production
 
-      #######################################################
-      # Create a GitHub Issue with the info from this build #
-      #######################################################
-      - name: Create GitHub Issue
-        uses: actions/github-script@v3.1.0
-        id: create-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const create = await github.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: "Deploying to production",
-              body: 'Currently deploying...'
-            })
-            console.log('create', create)
-            return create.data.number
-
       ###########################################
       # Build and Push containers to registries #
       ###########################################
@@ -119,59 +100,25 @@ jobs:
             ghcr.io/github/super-linter:latest
             ghcr.io/github/super-linter:v3
 
-      ########################################
-      # Update the issue with success status #
-      ########################################
-      - name: Update issue success
-        uses: actions/github-script@v3.1.0
-        if: success()
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ steps.create-issue.outputs.result }}",
-              title: "New issue created",
-              body: "Successfuly deployed to production"
-            })
-
-      ############################
-      # Close issue from success #
-      ############################
-      - name: Close issue success
-        uses: actions/github-script@v3.1.0
-        if: success()
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ steps.create-issue.outputs.result }}",
-              state: "closed"
-            })
-
-
-      ########################################
-      # Update the issue with failure status #
-      ########################################
-      - name: Update issue failure
-        uses: actions/github-script@v3.1.0
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Create GitHub Issue for failure
         if: failure()
+        uses: actions/github-script@v3.1.0
+        id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.createComment({
+            const create = await github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: "${{ steps.create-issue.outputs.result }}",
-              title: "New issue created",
-              body: "Failed to deploy to production"
+              title: "Failed to deploy to production",
+              body: 'Automation has failed us!'
             })
+            console.log('create', create)
+            return create.data.number
 
       ############################
       # Assign admins on failure #
