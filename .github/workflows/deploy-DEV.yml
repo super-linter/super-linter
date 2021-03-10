@@ -99,6 +99,10 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Run Test Cases and report test coverage
+        shell: bash
+        run: make test
+
       #####################################
       # Run Linter against Test code base #
       #####################################
