@@ -32,7 +32,8 @@ jobs:
     # Delete the created issue as it was created by someone #
     # who is not authorized to create a release             #
     #########################################################
-    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
+    if: contains(github.event.issue.title, 'Super-Linter') &&
+        contains(github.event.issue.title, 'Release:') &&
         github.actor != 'admiralawkbar' || github.actor != 'jwiebalk' ||
         github.actor != 'IAmHughes' || github.actor != 'nemchik' ||
         github.actor != 'Hanse00' || github.actor != 'github-actions' ||
