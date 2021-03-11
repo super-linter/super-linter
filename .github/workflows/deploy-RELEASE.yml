@@ -208,12 +208,12 @@ jobs:
         id: create_release
         run: |
           curl -X POST \
-            --url https://api.github.com/repos/github/super-linter/releases \
+            --url https://api.github.com/repos/${{ github.repository }}/releases \
             -H 'Accept: application/vnd.github.v3+json' \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H 'Content-Type: application/json' \
-            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\",
-              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false,
+            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
+              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
               \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
 
       #####################################################
