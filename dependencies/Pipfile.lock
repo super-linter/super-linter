@@ -34,11 +34,11 @@
                 "core"
             ],
             "hashes": [
-                "sha256:41a139ac50f9f60e92711b84f4be584aaf3e5d726004751640058423ef6af0c4",
-                "sha256:be0b7f2aa368cd33da38dfc8d7d4b26c166ea3b6db9770eeab97530533258f8e"
+                "sha256:9416eaa3080f4fa38228a3a8931a5481fe3bc5e1e3d074033a9b756325b920bd",
+                "sha256:b75163d290acfaef1e5d930ec68aebd383ccc2efafe4c5f0a8d65e8900aedfc2"
             ],
             "index": "pypi",
-            "version": "==5.0.2"
+            "version": "==5.0.3"
         },
         "appdirs": {
             "hashes": [
@@ -85,17 +85,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:7d1f30022f7e28e0907ea521dc84b04506f83cc6afc7c63225153bf3a35cf1b6",
-                "sha256:bf4a321da7dbe0c5a20380ff9f6a8a4e2e135e72a40348890122a197368b4421"
+                "sha256:273e96ae2b95a6036a4c3547e76a270b17ab761cc76053823c9e361d268213ef",
+                "sha256:399ccbd31b7aa09d53c4e449fe575803b033fcc23ed3a1d7ae2fe7a04727a562"
             ],
-            "version": "==1.17.24"
+            "version": "==1.17.25"
         },
         "botocore": {
             "hashes": [
-                "sha256:1aff3499bb6576e5836d5a8ed3e984c99bf04fb462d9f8fffa454131c1bc40cd",
-                "sha256:9398bcd9491442aa559a7c111b96004bb06af612e53baa7165b0a646bb43534d"
+                "sha256:b80b4efe5fafb29f24a3657d1f77aa170525c876b5fd9384d5e5859d0405206e",
+                "sha256:f1c04a5e96944b628ae98a2975829125c0e9b99f9be7b118d42fb82cef3c420a"
             ],
-            "version": "==1.20.24"
+            "version": "==1.20.25"
         },
         "bracex": {
             "hashes": [
