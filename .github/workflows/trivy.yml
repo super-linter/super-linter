@@ -23,25 +23,22 @@ jobs:
       #   run: |
       #     docker build -t docker.io/github/super-linter:${{ github.sha }} .
 
-      ###########################################
-      # Download and install Trivy and template #
-      ###########################################
-      - name: Download and Install Trivy
-        shell: bash
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b ${GITHUB_WORKSPACE}
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/sarif.tpl -o sarif.tpl
-
       #################################
       # Run Trivy Scan of source code #
       #################################
       - name: Trivy Scan
-        shell: bash
-        run: ./.automation/trivy-security-scan.sh
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'template'
+          exit-code: '1'
+          template: '@/contrib/sarif.tpl'
+          output: 'report.sarif'
+          severity: 'HIGH,CRITICAL'
 
-      ################################
-      # Upload report to secrity tab #
-      ################################
+      #################################
+      # Upload report to security tab #
+      #################################
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         if: always()
