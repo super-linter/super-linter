@@ -96,9 +96,7 @@ jobs:
           push: true
           tags: |
             github/super-linter:latest
-            github/super-linter:v3
             ghcr.io/github/super-linter:latest
-            ghcr.io/github/super-linter:v3
 
       #######################################################
       # Create a GitHub Issue with the info from this build #
