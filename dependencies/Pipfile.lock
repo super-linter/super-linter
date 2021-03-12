@@ -85,17 +85,16 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:273e96ae2b95a6036a4c3547e76a270b17ab761cc76053823c9e361d268213ef",
-                "sha256:399ccbd31b7aa09d53c4e449fe575803b033fcc23ed3a1d7ae2fe7a04727a562"
+                "sha256:64a8900b3a110e2d6ff4d87f4d8cd56f0c8527361d9fc9385fcb50efe7a4975a",
+                "sha256:8e9ff8006c41889ed8a11831dee62adf922e071f14d54c52946d1f7855ae7a8e"
             ],
-            "version": "==1.17.25"
+            "version": "==1.17.26"
         },
         "botocore": {
             "hashes": [
-                "sha256:b80b4efe5fafb29f24a3657d1f77aa170525c876b5fd9384d5e5859d0405206e",
-                "sha256:f1c04a5e96944b628ae98a2975829125c0e9b99f9be7b118d42fb82cef3c420a"
+                "sha256:4a785847a351e59f2329627fc9a19cf50f07644ea68996a1595d5a20487a423f"
             ],
-            "version": "==1.20.25"
+            "version": "==1.20.26"
         },
         "bracex": {
             "hashes": [
@@ -155,11 +154,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:700143d01342038b4b203f5f6c79d22e1c6b9e812b7db33ae66e4bb38bfa0883",
-                "sha256:92a8d6ec6bfbf5f258a5bad51d070fa8c84d8c65b94ea07cf6a3a79b326bcf07"
+                "sha256:ee2089f6e1669993ab4f7f48fab27662e4e3e56658e8ee10647d2152b131ba43",
+                "sha256:faf938aa7194529e921adb0a79adecb0b55a9687dbb3453202fbdbc5445280e6"
             ],
             "index": "pypi",
-            "version": "==0.47.0"
+            "version": "==0.47.1"
         },
         "chardet": {
             "hashes": [
