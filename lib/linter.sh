@@ -603,7 +603,7 @@ CallStatusAPI() {
         -H "authorization: Bearer ${GITHUB_TOKEN}" \
         -H 'content-type: application/json' \
         -d "{ \"state\": \"${STATUS}\",
-        \"target_url\": \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
+        \"target_url\": \"https://${GITHUB_DOMAIN:-github.com}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
         \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
       }" 2>&1
     )
