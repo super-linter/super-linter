@@ -154,7 +154,7 @@ CommitAndPush() {
   done
 
   # get the current commit sha
-  COMMIT_SHA=$(git rev-parse HEAD 2>&1)
+  COMMIT_SHA=$(git rev-parse --short HEAD 2>&1)
 
   # Load the error code
   ERROR_CODE=$?
