@@ -249,6 +249,14 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
         )
+      #######################################################
+      # Corner case for KTLINT as it cant use the full path #
+      #######################################################
+      elif [[ ${FILE_TYPE} == "KTLINT" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
