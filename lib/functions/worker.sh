@@ -252,7 +252,7 @@ function LintCodebase() {
       #######################################################
       # Corner case for KTLINT as it cant use the full path #
       #######################################################
-      elif [[ ${FILE_TYPE} == "KTLINT" ]]; then
+      elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
