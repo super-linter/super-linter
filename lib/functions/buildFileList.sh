@@ -341,7 +341,7 @@ function BuildFileList() {
     #####################
     # Get the ENV files #
     #####################
-    elif [ "${FILE_TYPE}" == "env" ]; then
+    elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       ################################
       # Append the file to the array #
       ################################

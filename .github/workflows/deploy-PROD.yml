@@ -70,6 +70,17 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
 
+      #########################
+      # Update deployment API #
+      #########################
+      - name: Start deployment
+        uses: bobheadxi/deployments@v0.5.2
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: Production
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
@@ -85,6 +96,62 @@ jobs:
           push: true
           tags: |
             github/super-linter:latest
-            github/super-linter:v3
             ghcr.io/github/super-linter:latest
-            ghcr.io/github/super-linter:v3
+
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Create GitHub Issue for failure
+        if: failure()
+        uses: actions/github-script@v3.1.0
+        id: create-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy to production",
+              body: 'Automation has failed us!'
+            })
+            console.log('create', create)
+            return create.data.number
+
+      ############################
+      # Assign admins on failure #
+      ############################
+      - name: Assign Admins on failure
+        uses: actions/github-script@v3.1.0
+        if: failure()
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.create-issue.outputs.result }}",
+              assignees: [
+                'admiralawkbar',
+                'jwiebalk',
+                'IAmHughes',
+                'nemchik',
+                'Hanse00',
+                'GaboFDC',
+                'ferrarimarco'
+              ]
+            })
+
+      #########################
+      # Update Deployment API #
+      #########################
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v0.5.2
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env_url: https://github.com/github/super-linter
