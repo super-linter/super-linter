@@ -119,10 +119,11 @@ RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
     && rustup toolchain install stable-x86_64-unknown-linux-musl \
     && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
     && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
+    && mv /root/.rustup /tmp/.rustup \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
     && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
     && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
     && echo 'cargo-clippy' >> /usr/bin/clippy \
