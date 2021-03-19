@@ -8,3 +8,5 @@ runs:
 branding:
   icon: 'check-square'
   color: 'white'
+# You can view https://github.com/github/super-linter#environment-variables
+# to see a comprehensive list of all environment variables that can be passed
