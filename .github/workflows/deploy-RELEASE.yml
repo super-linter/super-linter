@@ -22,62 +22,6 @@ on:
 # Set the Job #
 ###############
 jobs:
-  no-run:
-    # Name the Job
-    name: Deploy Docker Image - Release
-    # Set the agent to run on
-    runs-on: ubuntu-latest
-
-    #########################################################
-    # Delete the created issue as it was created by someone #
-    # who is not authorized to create a release             #
-    #########################################################
-    if: contains(github.event.issue.title, 'Super-Linter') &&
-        contains(github.event.issue.title, 'Release:') &&
-        github.actor != 'admiralawkbar' || github.actor != 'jwiebalk' ||
-        github.actor != 'IAmHughes' || github.actor != 'nemchik' ||
-        github.actor != 'Hanse00' || github.actor != 'github-actions' ||
-        github.actor != 'GaboFDC' || github.actor != 'ferrarimarco'
-
-    ##################
-    # Load all steps #
-    ##################
-    steps:
-      ###########################
-      # Update the GitHub Issue #
-      ###########################
-      - name: Update GitHub Issue
-        uses: actions/github-script@v3.1.0
-        id: update-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              title: "You have no power here",
-              body: '![](https://media.giphy.com/media/RX3vhj311HKLe/giphy.gif)'
-            })
-
-      ##########################
-      # Close the GitHub Issue #
-      ##########################
-      - name: Close GitHub Issue
-        uses: actions/github-script@v3.1.0
-        id: close-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              state: 'closed'
-            })
-
   deploy:
     # Name the Job
     name: Deploy Docker Image - Release
