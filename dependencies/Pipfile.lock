@@ -85,16 +85,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:ee999b46b2c630e50e7b052d6dfe224203a348d83b00e168ca50009af0f276c1"
+                "sha256:8544878fa8c9cad6972d9c9aae1db1d8fa7a3bb0adabe2fa39e4842d182bb4d7",
+                "sha256:d85b0e05d7de96169b0024b76b292be62b01ef6f5ca853a512506346b82d2abb"
             ],
-            "version": "==1.17.40"
+            "version": "==1.17.41"
         },
         "botocore": {
             "hashes": [
-                "sha256:6a35a9977cdbd7a839d948dd5f9e3d260c19b7dde74e0a844c97206884d3bba0",
-                "sha256:f2b68119050211139f21278166c9023d9251da84b500a4ccede4a4545d6a9514"
+                "sha256:5e88d19a1406ff92d52518ac70a1531582d7af537dc18c8ebc7ab54282c2fa23",
+                "sha256:63f650fc96bce141e8194a761e6890fea2fba6e01253aefa31ae69f145015c21"
             ],
-            "version": "==1.20.40"
+            "version": "==1.20.41"
         },
         "bracex": {
             "hashes": [
@@ -613,11 +614,11 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:466e067526b609c1f22b97895e2a64e5fc3d897016b91ef0f4f80480e89a1ef9",
-                "sha256:d29e1140d96362eb0b68fa0fb1a6192532f586886d6c52db79872a906a50be58"
+                "sha256:209d712ec870a0182df034ae19f347e725c1e615b2269519ab58a35b3fcbbe7a",
+                "sha256:bd38914c7731cdc518634a8d3c5585951302b6e2b6de60fbb3f7a0220e21eeee"
             ],
             "index": "pypi",
-            "version": "==2.7.3"
+            "version": "==2.7.4"
         },
         "pyparsing": {
             "hashes": [
@@ -736,10 +737,10 @@
         },
         "rich": {
             "hashes": [
-                "sha256:01b3fcc305ae71b9ade4a645b6e371d395c6cd9ba52dcf180bfba69ef05c13b5",
-                "sha256:4674bd3056a72bb282ad581e3f8092dc110cdcc456b5ba76e34965cb85a69724"
+                "sha256:bd13f71c32692d08489f1dd90993308f6ab10d24b1cd28a71db8af771d8ee9f9",
+                "sha256:d5f620a067e5d5f9c6e8039d9b09d8bb7b730bca5c696ca7e32788b37c0b9fa5"
             ],
-            "version": "==10.0.0"
+            "version": "==10.0.1"
         },
         "ruamel.yaml": {
             "hashes": [
@@ -802,9 +803,10 @@
         },
         "smart-open": {
             "hashes": [
-                "sha256:d9f5a0f173ccb9bbae528db5a3804f57145815774f77ef755b9b0f3b4b2a9dcb"
+                "sha256:02e5e02207d955a1f9fd924c37900ac272536bd24393ae731b6945d4f766015f",
+                "sha256:ed310ac51a797051b42f9437a566ac8149a3abf8c80ab994a8bd92d96fb7cf44"
             ],
-            "version": "==4.2.0"
+            "version": "==5.0.0"
         },
         "smmap": {
             "hashes": [
