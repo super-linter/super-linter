@@ -16,12 +16,13 @@ mypy = "*"
 pylint = "*"
 snakefmt = "*"
 snakemake = "*"
+ttam-lintly = "*"
 typing_extensions = "*"
 yamllint = "*"
 yq = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true

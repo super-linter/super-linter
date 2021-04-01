@@ -59,6 +59,8 @@ source /action/lib/functions/linterRules.sh # Source the function script(s)
 source /action/lib/functions/detectFiles.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/linterVersions.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/lintly.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
