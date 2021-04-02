@@ -29,6 +29,12 @@ export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
 ################################################################################
+#### Function AddLinterOptsForLintly ###########################################
+function AddLinterOptsForLintly() {
+  [[ ! "${LINTER_OPTS[PYTHON_PYLINT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_PYLINT]+=" --output-format=json"
+  [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
+}
+################################################################################
 #### Function InvokeLintly #####################################################
 function InvokeLintly() {
   # Call comes through as:
