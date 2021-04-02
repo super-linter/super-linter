@@ -39,6 +39,7 @@ function TransformTAPDetails() {
       sed -r "s/\[terragrunt\]\s[0-9]{4}\/[0-9]{2}\/[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}/[terragrunt]/g" |
       sed -r "s/(after|before)\s[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{1,6}/before/g" |
       sed -r "s/used\s[0-9]{1,}\.*[0-9]{0,}MB\sof\smemory/used/g" |
+      sed -r "s/\s+Scanned At\s+:\s+[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]+\s\+0{4}\sUTC//g" |
       tr ':' ' '
   fi
 }
