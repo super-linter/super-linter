@@ -306,8 +306,9 @@ TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ign
 export TEST_CASE_FOLDER             # Workaround SC2034
 
 ##############
-# Format     #
+# Output     #
 ##############
+OUTPUT_MODE="${OUTPUT_MODE}"
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                      # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
