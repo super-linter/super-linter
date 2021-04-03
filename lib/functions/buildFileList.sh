@@ -557,6 +557,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
+      FILE_ARRAY_PYTHON_BANDIT+=("${FILE}")
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
