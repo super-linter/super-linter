@@ -12,6 +12,7 @@
 ##################################
 declare -A LINTLY_SUPPORT_ARRAY
 LINTLY_SUPPORT_ARRAY['PYTHON_FLAKE8']="flake8"
+LINTLY_SUPPORT_ARRAY['PYTHON_BANDIT']="bandit-json"
 LINTLY_SUPPORT_ARRAY['PYTHON_BLACK']="black"
 LINTLY_SUPPORT_ARRAY['PYTHON_PYLINT']="pylint-json"
 LINTLY_SUPPORT_ARRAY['JAVASCRIPT_ES']="eslint"
@@ -22,7 +23,6 @@ LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
 export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
 
 # Not yet implemented by super-linter
-# LINTLY_SUPPORT_ARRAY['PYTHON_BANDIT']="bandit-json"
 # LINTLY_SUPPORT_ARRAY['ANY']="gitleaks"
 # LINTLY_SUPPORT_ARRAY['CLOUDFORMATION_CFNNAG']="cfn-nag"
 
@@ -31,6 +31,7 @@ export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
 ################################################################################
 #### Function AddLinterOptsForLintly ###########################################
 function AddLinterOptsForLintly() {
+  [[ ! "${LINTER_OPTS[PYTHON_BANDIT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_BANDIT]+=" --format=json --silent"
   [[ ! "${LINTER_OPTS[PYTHON_PYLINT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_PYLINT]+=" --output-format=json"
   [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
 }
