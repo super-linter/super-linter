@@ -40,6 +40,13 @@ export LOG_WARN
 LOG_ERROR=$(if [[ ${LOG_LEVEL} == "ERROR" || ${LOG_LEVEL} == "WARN" || ${LOG_LEVEL} == "NOTICE" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
 export LOG_ERROR
 
+###################################
+# Extra opts to pass to linters   #
+# Set by function files if needed #
+###################################
+declare -A LINTER_OPTS
+export LINTER_OPTS
+
 #########################
 # Source Function Files #
 #########################
@@ -306,8 +313,9 @@ TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ign
 export TEST_CASE_FOLDER             # Workaround SC2034
 
 ##############
-# Format     #
+# Output     #
 ##############
+OUTPUT_MODE="${OUTPUT_MODE}"
 OUTPUT_FORMAT="${OUTPUT_FORMAT}"                      # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
@@ -779,6 +787,16 @@ done
 GetStandardRules "javascript"
 GetStandardRules "typescript"
 
+#################################
+# Define extra opts for linters #
+#################################
+if IsLintly; then
+  AddLinterOptsForLintly
+fi
+for K in "${!LINTER_OPTS[@]}"; do
+  debug "LINTER_OPTS[${K}] = ${LINTER_OPTS[${K}]}"
+done
+
 ##########################
 # Define linter commands #
 ##########################
@@ -795,7 +813,7 @@ LINTER_COMMANDS_ARRAY['CSS']="stylelint --config ${CSS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['DART']="dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}"
 # NOTE: dockerfilelint's "-c" option expects the folder *containing* the DOCKER_LINTER_RULES file
 LINTER_COMMANDS_ARRAY['DOCKERFILE']="dockerfilelint -c $(dirname "${DOCKERFILE_LINTER_RULES}")"
-LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES} ${LINTER_OPTS[DOCKERFILE_HADOLINT]}"
 LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
@@ -829,7 +847,7 @@ LINTER_COMMANDS_ARRAY['PHP_PSALM']="psalm --config=${PHP_PSALM_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['POWERSHELL']="Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path"
 LINTER_COMMANDS_ARRAY['PROTOBUF']="protolint lint --config_path ${PROTOBUF_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PYTHON_BLACK']="black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check"
-LINTER_COMMANDS_ARRAY['PYTHON_PYLINT']="pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PYTHON_PYLINT']="pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES} ${LINTER_OPTS[PYTHON_PYLINT]}"
 LINTER_COMMANDS_ARRAY['PYTHON_FLAKE8']="flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PYTHON_ISORT']="isort --check --diff --sp ${PYTHON_ISORT_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PYTHON_MYPY']="mypy --config-file ${PYTHON_MYPY_LINTER_RULES}"

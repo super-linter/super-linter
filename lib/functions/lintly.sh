@@ -29,6 +29,12 @@ export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
 ################################################################################
+#### Function AddLinterOptsForLintly ###########################################
+function AddLinterOptsForLintly() {
+  [[ ! "${LINTER_OPTS[PYTHON_PYLINT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_PYLINT]+=" --output-format=json"
+  [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
+}
+################################################################################
 #### Function InvokeLintly #####################################################
 function InvokeLintly() {
   # Call comes through as:
@@ -40,19 +46,25 @@ function InvokeLintly() {
   LINTLY_FORMAT="${1}"
   LINTER_COMMAND_OUTPUT="${2}"
 
-  echo "----<<<<INVOKING Invokelintly>>>>----"
-  echo "FORMAT: ${LINTLY_FORMAT}"
-  echo "OUTPUT: ${LINTER_COMMAND_OUTPUT}"
-  echo ""
-  echo "DONE DISPLAYING ARGUMENTS"
+  debug "----<<<<INVOKING Invokelintly>>>>----"
+  debug "FORMAT: ${LINTLY_FORMAT}"
+  debug "OUTPUT: ${LINTER_COMMAND_OUTPUT}"
+  debug ""
+  debug "DONE DISPLAYING ARGUMENTS"
 
   # Lintly will comment on the PR
   echo "$LINTER_COMMAND_OUTPUT" | lintly --format="${LINTLY_FORMAT}"
 
-  echo "$?"
-  echo "^^ exit code ^^"
+  debug "$?"
+  debug "^^ exit code ^^"
 }
-
+################################################################################
+#### Function IsLintly #########################################################
+function IsLintly() {
+  [[ "${OUTPUT_MODE}" == lintly ]]
+}
+################################################################################
+#### Function SupportsLintly ###################################################
 function SupportsLintly() {
   # Call comes through as:
   # SupportsLintly "${LANGUAGE}"
@@ -61,20 +73,5 @@ function SupportsLintly() {
   # Pull in the vars #
   ####################
   LANGUAGE="${1}"
-
-  echo "----<<<<INVOKING SupportsLintly>>>>----"
-
-  if [[ -v LINTLY_SUPPORT_ARRAY["${LANGUAGE}"] ]]; then
-    echo "${LANGUAGE} found inside LINTLY_SUPPORT_ARRAY."
-    true
-  else
-    echo "${LANGUAGE} NOT found inside LINTLY_SUPPORT_ARRAY."
-    false
-  fi
+  [[ -v LINTLY_SUPPORT_ARRAY["${LANGUAGE}"] ]]
 }
-
-if SupportsLintly "PYTHON_FLAKE8"; then
-  echo "YES"
-else
-  echo "NO"
-fi
