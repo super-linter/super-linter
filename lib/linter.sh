@@ -74,7 +74,7 @@ export VERSION_FILE                                                 # Workaround
 # Rules files #
 ###############
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-ANSIBLE_FILE_NAME=".ansible-lint.yml"
+ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ARM_FILE_NAME=".arm-ttk.psd1"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
