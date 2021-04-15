@@ -72,3 +72,6 @@ super-linter.report
 
 # Code coverage data for tests
 .coverage
+
+# Test reports
+test/reports

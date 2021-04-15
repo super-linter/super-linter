@@ -48,15 +48,6 @@ jobs:
           # of changed files within `super-linter`
           fetch-depth: 0
 
-      ##########################
-      # Codacy Coverage Report #
-      ##########################
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          # coverage-reports: cobertura.xml
-
       ########################
       # Get the current date #
       ########################
@@ -110,9 +101,21 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Test Cases and report test coverage
+      ##################
+      # Run test cases #
+      ##################
+      - name: Run the test suite
         shell: bash
         run: make test
+
+      ##########################
+      # Codacy Coverage Report #
+      ##########################
+      - name: Upload the code coverage report
+        uses: codacy/codacy-coverage-reporter-action@0.2.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
 
       #####################################
       # Run Linter against Test code base #
