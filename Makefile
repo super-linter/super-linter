@@ -16,7 +16,7 @@ endif
 
 .PHONY: kcov
 kcov: ## Run kcov
-	docker run --rm -t $(DOCKER_FLAGS) \
+	docker run --rm $(DOCKER_FLAGS) \
 		-v "$(CURDIR)":/workspace \
 		-w="/workspace" \
 		kcov/kcov \
@@ -24,10 +24,9 @@ kcov: ## Run kcov
 		--bash-parse-files-in-dir=/workspace \
 		--clean \
 		--exclude-pattern=.coverage,.git \
-		--include-pattern=.sh  \
-		/workspace/test/.coverage \
+		--include-pattern=.sh \
+                /workspace/test/.coverage \
 		/workspace/test/runTests.sh
-
 COBERTURA_REPORTS := $(shell find $(CURDIR) -name 'cobertura.xml')
 COBERTURA_REPORTS_DIRECTORIES := $(dir $(COBERTURA_REPORTS))
 COBERTURA_REPORTS_DESTINATION_DIRECTORY := "test/reports/cobertura"

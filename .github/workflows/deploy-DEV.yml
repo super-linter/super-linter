@@ -106,7 +106,11 @@ jobs:
       ##################
       - name: Run the test suite
         shell: bash
-        run: make test
+        run: |
+        # Make the nested directory for output
+        mkdir -p test/reports/cobertura
+        # Make the tests happen
+        make test
 
       ##########################
       # Codacy Coverage Report #
