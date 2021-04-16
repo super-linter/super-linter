@@ -20,9 +20,9 @@ jobs:
       # ##########################
       # # Build the docker image #
       # ##########################
-      # - name: Build an image from Dockerfile
-      #   run: |
-      #     docker build -t docker.io/github/super-linter:${{ github.sha }} .
+      - name: Build an image from Dockerfile
+        run: |
+          docker build -t docker.io/github/super-linter:${{ github.sha }} .
 
       #################################
       # Run Trivy Scan of source code #
