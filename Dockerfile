@@ -87,6 +87,7 @@ RUN apk add --no-cache \
     gcc \
     git git-lfs\
     go \
+    netmask \
     gnupg \
     icu-libs \
     jq \
