@@ -1,47 +1,46 @@
 # Disabling trivy scans while they get troubleshooting for failures
-# ---
-# name: Container Security Scan with Trivy
-# on:
-#   push:
-#     branches:
-#       - master
-#   pull_request:
-# jobs:
-#   scan-container:
-#     name: Build
-#     runs-on: ubuntu-18.04
-#     steps:
-#       ######################
-#       # Checkout code base #
-#       ######################
-#       - name: Checkout code
-#         uses: actions/checkout@v2
+---
+name: Container Security Scan with Trivy
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  scan-container:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+      ######################
+      # Checkout code base #
+      ######################
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#       # ##########################
-#       # # Build the docker image #
-#       # ##########################
-#       # - name: Build an image from Dockerfile
-#       #   run: |
-#       #     docker build -t docker.io/github/super-linter:${{ github.sha }} .
+      # ##########################
+      # # Build the docker image #
+      # ##########################
+      - name: Build an image from Dockerfile
+        run: |
+          docker build -t docker.io/github/super-linter:${{ github.sha }} .
 
-#       #################################
-#       # Run Trivy Scan of source code #
-#       #################################
-#       - name: Trivy Scan
-#         uses: aquasecurity/trivy-action@master
-#         with:
-#           scan-type: 'fs'
-#           format: 'template'
-#           exit-code: '1'
-#           template: '@/contrib/sarif.tpl'
-#           output: 'report.sarif'
-#           severity: 'HIGH,CRITICAL'
+      #################################
+      # Run Trivy Scan of source code #
+      #################################
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'report.sarif'
+          severity: 'HIGH,CRITICAL'
 
-#       #################################
-#       # Upload report to security tab #
-#       #################################
-#       - name: Upload Trivy scan results to GitHub Security tab
-#         uses: github/codeql-action/upload-sarif@v1
-#         if: always()
-#         with:
-#           sarif_file: 'report.sarif'
+      #################################
+      # Upload report to security tab #
+      #################################
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        if: always()
+        with:
+          sarif_file: 'report.sarif'

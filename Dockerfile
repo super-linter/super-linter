@@ -150,7 +150,8 @@ RUN pipenv install --clear --system
 ####################
 RUN npm config set package-lock false \
     && npm config set loglevel error \
-    && npm --no-cache install
+    && npm --no-cache install \
+    && npm audit fix
 
 #############################
 # Add node packages to path #
