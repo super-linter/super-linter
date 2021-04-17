@@ -32,7 +32,6 @@ jobs:
         with:
           scan-type: 'fs'
           format: 'template'
-          exit-code: '1'
           template: '@/contrib/sarif.tpl'
           output: 'report.sarif'
           severity: 'HIGH,CRITICAL'
