@@ -51,7 +51,7 @@ jobs:
       # Create a GitHub Issue with the info from this build #
       #######################################################
       - name: Update GitHub Issue
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@v3.1.1
         id: update-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
