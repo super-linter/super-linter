@@ -356,13 +356,20 @@ FROM alpine:3.13.5 as final
 #################################
 # Copy the libraries into image #
 #################################
-COPY --from=base_image /usr/bin /usr/bin # Basic binaries
-COPY --from=base_image /usr/local/bin /usr/local/bin # Ansible binary
-COPY --from=base_image /usr/lib /usr/lib # Basic libs needed to run
-COPY --from=base_image /lib /lib # Basic libs needed to run
-COPY --from=base_image /bin /bin # Basic binaries
-COPY --from=base_image /opt/microsoft /opt/microsoft # ARM_TTK binaries
-COPY --from=base_image /node_modules /node_modules # coffeelint ,yq, etc
+# Basic binaries
+COPY --from=base_image /usr/bin /usr/bin
+# Ansible binary
+COPY --from=base_image /usr/local/bin /usr/local/bin
+# Basic libs needed to run
+COPY --from=base_image /usr/lib /usr/lib
+# Basic libs needed to run
+COPY --from=base_image /lib /lib
+# Basic binaries
+COPY --from=base_image /bin /bin
+# ARM_TTK binaries
+COPY --from=base_image /opt/microsoft /opt/microsoft
+# coffeelint ,yq, etc
+COPY --from=base_image /node_modules /node_modules
 
 #############################
 # Copy scripts to container #
