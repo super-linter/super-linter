@@ -140,10 +140,10 @@ COPY dependencies/* /
 ################################
 # Installs python dependencies #
 ################################
-RUN pip3 install --no-cache-dir pipenv
-# Bug in hadolint thinks pipenv is pip
-# hadolint ignore=DL3042
-RUN pipenv install --clear --system
+RUN pip3 install --no-cache-dir pipenv \
+    # Bug in hadolint thinks pipenv is pip
+    # hadolint ignore=DL3042
+    && pipenv install --clear --system
 
 ####################
 # Run NPM Installs #
@@ -283,10 +283,11 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 ####################
 # Install dart-sdk #
 ####################
-RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
-RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
-RUN wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
+    && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
+    && rm glibc-${GLIBC_VERSION}.apk \
+    && wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
@@ -314,23 +315,22 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
     && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
     --output /usr/bin/checkstyle
 
-####################
-# Install luacheck #
-####################
+#################################
+# Install luacheck and luarocks #
+#################################
 RUN wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
     && cd lua-5.3.5 \
     && make linux \
     && make install \
-    && cd .. && rm -r lua-5.3.5/
-
-RUN wget --tries=5 -q https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+    && cd .. && rm -r lua-5.3.5/ \
+    && wget --tries=5 -q https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
     && cd luarocks-3.3.1-super-linter \
     && ./configure --with-lua-include=/usr/local/include \
     && make \
     && make -b install \
-    && cd .. && rm -r luarocks-3.3.1-super-linter/
-
-RUN luarocks install luacheck
+    && cd .. \
+    && rm -r luarocks-3.3.1-super-linter/ \
+    && luarocks install luacheck
 
 #################
 # Install lintr #
@@ -342,7 +342,8 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 # Install chktex #
 ##################
 COPY --from=chktex /usr/bin/chktex /usr/bin/
-RUN cd ~ && touch .chktexrc
+RUN cd ~ \
+    && touch .chktexrc
 
 ###################
 # Install kubeval #
