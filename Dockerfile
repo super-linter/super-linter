@@ -276,7 +276,8 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 ##################
 # Install ktlint #
 ##################
-RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint && chmod a+x ktlint \
+RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
+    && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/
 
 ####################
