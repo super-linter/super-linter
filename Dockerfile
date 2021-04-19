@@ -25,7 +25,7 @@ FROM garethr/kubeval:0.15.0 as kubeval
 ##################
 # Get base image #
 ##################
-FROM python:3.9-alpine
+FROM python:3.9-alpine as base_image
 
 ############################
 # Get the build arguements #
@@ -354,6 +354,17 @@ COPY --from=kubeval /kubeval /usr/bin/
 # Install shfmt #
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
+
+##########################
+# Grab small clean image #
+##########################
+FROM alpine as final
+
+#################################
+# Copy the libraries into image #
+#################################
+COPY --from=base_image /usr/bin /usr/bin
+COPY --from=base_image /usr/lib /usr/lib
 
 #############################
 # Copy scripts to container #
