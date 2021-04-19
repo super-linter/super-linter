@@ -107,10 +107,6 @@ jobs:
       - name: Run the test suite
         shell: bash
         run: |
-          pwd
-          whoami
-          ls -la
-          sudo mkdir -p test/reports/cobertura
           make test
 
       ##########################
