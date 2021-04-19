@@ -143,12 +143,11 @@ COPY dependencies/* /
 RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
     # hadolint ignore=DL3042
-    && pipenv install --clear --system
-
+    && pipenv install --clear --system \
 ####################
 # Run NPM Installs #
 ####################
-RUN npm config set package-lock false \
+    && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
     && npm audit fix
@@ -161,12 +160,11 @@ ENV PATH="/node_modules/.bin:${PATH}"
 ##############################
 # Installs ruby dependencies #
 ##############################
-RUN bundle install
-
+RUN bundle install \
 ###################################
 # Install DotNet and Dependencies #
 ###################################
-RUN wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+    && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
     && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
@@ -176,12 +174,11 @@ ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 ##############################
 # Installs Perl dependencies #
 ##############################
-RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
-
+RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
 ##############################
 # Install Phive dependencies #
 ##############################
-RUN wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
     && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
@@ -191,16 +188,16 @@ RUN wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && chmod +x phive.phar \
     && mv phive.phar /usr/local/bin/phive \
     && rm phive.phar.asc \
-    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1
+    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1 \
 # Trusted GPG keys for PHP linters:   phpcs,           phpstan,         psalm
-
+#
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
 # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
 # Slightly modified to always retrieve latest stable Powershell version
 # If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
-RUN mkdir -p ${PWSH_DIRECTORY} \
+    && mkdir -p ${PWSH_DIRECTORY} \
     && curl --retry 5 --retry-delay 5 -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
     | grep browser_download_url \
     | grep linux-alpine-x64 \
@@ -278,24 +275,22 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 ##################
 RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
-    && mv "ktlint" /usr/bin/
-
+    && mv "ktlint" /usr/bin/ \
 ####################
 # Install dart-sdk #
 ####################
-RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+    && wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
-    && rm -r dart-sdk/
-
+    && rm -r dart-sdk/ \
 ################################
 # Create and install Bash-Exec #
 ################################
-RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
+    && printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
     && chmod +x /usr/bin/bash-exec
 
 #################################################
@@ -303,22 +298,20 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 #################################################
 # Basic setup, programs and init
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
-    && apk add --no-cache rakudo zef
-
+    && apk add --no-cache rakudo zef \
 ######################
 # Install CheckStyle #
 ######################
-RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
+    && CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
     | grep browser_download_url \
     | grep ".jar" \
     | cut -d '"' -f 4) \
     && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
-    --output /usr/bin/checkstyle
-
+    --output /usr/bin/checkstyle \
 #################################
 # Install luacheck and luarocks #
 #################################
-RUN wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+    && wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
     && cd lua-5.3.5 \
     && make linux \
     && make install \
@@ -379,12 +372,11 @@ COPY TEMPLATES /action/lib/.automation
 ###################################
 # Run to build file with versions #
 ###################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
-
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh \
 ##################################4
 # Run validations of built image #
 ##################################
-RUN /action/lib/functions/validateDocker.sh
+    && /action/lib/functions/validateDocker.sh
 
 ######################
 # Set the entrypoint #
