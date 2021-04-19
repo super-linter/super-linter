@@ -358,7 +358,7 @@ COPY --from=shfmt /bin/shfmt /usr/bin/
 ##########################
 # Grab small clean image #
 ##########################
-FROM alpine as final
+FROM alpine:3.13.5 as final
 
 #################################
 # Copy the libraries into image #
