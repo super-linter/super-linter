@@ -121,6 +121,26 @@ function LintCodebase() {
         fi
       fi
 
+      #######################################
+      # Check if Cargo.toml for Rust Clippy #
+      #######################################
+      if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
+        if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+          #############
+          # Good file #
+          #############
+          FILE_STATUS='good'
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+          ############
+          # Bad file #
+          ############
+          FILE_STATUS='bad'
+        fi
+      fi
+
       #########################################################
       # If not found, assume it should be linted successfully #
       #########################################################
@@ -228,6 +248,14 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
+        )
+      #######################################################
+      # Corner case for KTLINT as it cant use the full path #
+      #######################################################
+      elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
       else
         ################################

@@ -7,15 +7,15 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.02.13-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.03.22-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
-FROM yoheimuta/protolint:v0.29.0 as protolint
-FROM golangci/golangci-lint:v1.37.1 as golangci-lint
+FROM yoheimuta/protolint:v0.31.0 as protolint
+FROM golangci/golangci-lint:v1.39.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.24.1 as tflint
+FROM wata727/tflint:0.25.0 as tflint
 FROM alpine/terragrunt:0.14.5 as terragrunt
-FROM mvdan/shfmt:v3.2.2 as shfmt
+FROM mvdan/shfmt:v3.2.4 as shfmt
 FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
@@ -81,7 +81,6 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
-    cargo \
     coreutils \
     curl \
     file \
@@ -112,6 +111,27 @@ RUN apk add --no-cache \
     rustup \
     zlib zlib-dev
 
+##############################
+# Install rustfmt & clippy   #
+##############################
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
+    && rustup toolchain install stable-x86_64-unknown-linux-musl \
+    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
+    && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
+    && mv /root/.rustup /tmp/.rustup \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
+    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
+    && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
+    && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
+    && echo 'cargo-clippy' >> /usr/bin/clippy \
+    && echo 'rc=$?' >> /usr/bin/clippy \
+    && echo 'popd' >> /usr/bin/clippy \
+    && echo 'exit $rc' >> /usr/bin/clippy \
+    && chmod +x /usr/bin/clippy
+
 ########################################
 # Copy dependencies files to container #
 ########################################
@@ -130,7 +150,8 @@ RUN pipenv install --clear --system
 ####################
 RUN npm config set package-lock false \
     && npm config set loglevel error \
-    && npm --no-cache install
+    && npm --no-cache install \
+    && npm audit fix
 
 #############################
 # Add node packages to path #
@@ -142,18 +163,10 @@ ENV PATH="/node_modules/.bin:${PATH}"
 ##############################
 RUN bundle install
 
-##############################
-# Install rustfmt            #
-##############################
-RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
-    && rustup toolchain install stable-x86_64-unknown-linux-musl \
-    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
-    && ln -s /root/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt
-
 ###################################
 # Install DotNet and Dependencies #
 ###################################
-RUN wget --tries=5 -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+RUN wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
     && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
@@ -168,8 +181,8 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 ##############################
 # Install Phive dependencies #
 ##############################
-RUN wget --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-    && wget --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+RUN wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
     && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
     || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
@@ -192,7 +205,7 @@ RUN mkdir -p ${PWSH_DIRECTORY} \
     | grep browser_download_url \
     | grep linux-alpine-x64 \
     | cut -d '"' -f 4 \
-    | xargs -n 1 wget -O - \
+    | xargs -n 1 wget -q -O - \
     | tar -xzC ${PWSH_DIRECTORY} \
     && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
     && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
@@ -270,9 +283,9 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 # Install dart-sdk #
 ####################
 RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-RUN wget --tries=5 https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
+RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
 RUN apk add --no-cache glibc-${GLIBC_VERSION}.apk && rm glibc-${GLIBC_VERSION}.apk
-RUN wget --tries=5 https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
+RUN wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/
@@ -303,13 +316,13 @@ RUN CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checksty
 ####################
 # Install luacheck #
 ####################
-RUN wget --tries=5 https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
+RUN wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
     && cd lua-5.3.5 \
     && make linux \
     && make install \
     && cd .. && rm -r lua-5.3.5/
 
-RUN wget --tries=5 https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
+RUN wget --tries=5 -q https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
     && cd luarocks-3.3.1-super-linter \
     && ./configure --with-lua-include=/usr/local/include \
     && make \
