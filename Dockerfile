@@ -20,6 +20,8 @@ FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
+FROM ghcr.io/phpstan/phpstan:0.12.84 as phpstan
+FROM cytopia/phpcs:2-php7.3 as phpcs
 FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
@@ -152,11 +154,6 @@ RUN pip3 install --no-cache-dir pipenv \
     && npm --no-cache install \
     && npm audit fix
 
-#############################
-# Add node packages to path #
-#############################
-ENV PATH="/node_modules/.bin:${PATH}"
-
 ##############################
 # Installs ruby dependencies #
 ##############################
@@ -169,8 +166,6 @@ RUN bundle install \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
     && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
 
-ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
-
 ##############################
 # Installs Perl dependencies #
 ##############################
@@ -178,19 +173,18 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 ##############################
 # Install Phive dependencies #
 ##############################
-    && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-    && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
-    && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
-    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
-    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
-    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
-    && gpg --verify phive.phar.asc phive.phar \
-    && chmod +x phive.phar \
-    && mv phive.phar /usr/local/bin/phive \
-    && rm phive.phar.asc \
-    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1 \
-# Trusted GPG keys for PHP linters:   phpcs,           phpstan,         psalm
-#
+#    && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+#    && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+#    && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
+#    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
+#    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
+#    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
+#    && gpg --verify phive.phar.asc phive.phar \
+#    && chmod +x phive.phar \
+#    && mv phive.phar /usr/local/bin/phive \
+#    && rm phive.phar.asc \
+#    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1 \
+
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
@@ -348,6 +342,16 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
+###################
+# Install phpstan #
+###################
+COPY --from=phpstan /composer/vendor/phpstan/phpstan/ /usr/bin/
+
+#################
+# Install phpcs #
+#################
+COPY --from=phpcs /usr/bin/phpcs /usr/bin/phpcs
+
 ##########################
 # Grab small clean image #
 ##########################
@@ -360,6 +364,8 @@ FROM alpine:3.13.5 as final
 COPY --from=base_image /usr/bin /usr/bin
 # Ansible binary
 COPY --from=base_image /usr/local/bin /usr/local/bin
+# Ansible libs
+COPY --from=base_image /usr/local/lib /usr/local/lib
 # Basic libs needed to run
 COPY --from=base_image /usr/lib /usr/lib
 # Basic libs needed to run
@@ -370,6 +376,16 @@ COPY --from=base_image /bin /bin
 COPY --from=base_image /opt/microsoft /opt/microsoft
 # coffeelint ,yq, etc
 COPY --from=base_image /node_modules /node_modules
+# Dotnet format
+COPY --from=base_image /var/cache/dotnet/tools/dotnet-format /usr/bin
+# Rust
+COPY --from=base_image /tmp/.rustup /tmp/.rustup
+
+########################################
+# Add node packages to path and dotnet #
+########################################
+ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet:/node_modules/.bin"
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 
 #############################
 # Copy scripts to container #
@@ -381,13 +397,10 @@ COPY lib /action/lib
 ##################################
 COPY TEMPLATES /action/lib/.automation
 
-###################################
-# Run to build file with versions #
-###################################
+################################################
+# Run to build version file and validate image #
+################################################
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh \
-##################################4
-# Run validations of built image #
-##################################
     && /action/lib/functions/validateDocker.sh
 
 ######################
