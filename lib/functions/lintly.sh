@@ -17,6 +17,7 @@ LINTLY_SUPPORT_ARRAY['PYTHON_BLACK']="black"
 LINTLY_SUPPORT_ARRAY['PYTHON_PYLINT']="pylint-json"
 LINTLY_SUPPORT_ARRAY['JAVASCRIPT_ES']="eslint"
 LINTLY_SUPPORT_ARRAY['TYPESCRIPT_ES']="eslint"
+LINTLY_SUPPORT_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
 LINTLY_SUPPORT_ARRAY['CSS']="stylelint"
 LINTLY_SUPPORT_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
@@ -34,6 +35,7 @@ function AddLinterOptsForLintly() {
   [[ ! "${LINTER_OPTS[PYTHON_BANDIT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_BANDIT]+=" --format=json --silent"
   [[ ! "${LINTER_OPTS[PYTHON_PYLINT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_PYLINT]+=" --output-format=json"
   [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
+  [[ ! "${LINTER_OPTS[TERRAFORM_TERRASCAN]}" =~ "json" ]] && LINTER_OPTS[TERRAFORM_TERRASCAN]+=" -o json"
 }
 ################################################################################
 #### Function InvokeLintly #####################################################
@@ -45,7 +47,8 @@ function InvokeLintly() {
   # Pull in the vars #
   ####################
   LINTLY_FORMAT="${1}"
-  LINTER_COMMAND_OUTPUT="${2}"
+  LINTLY_FILE_OVERRIDE="${2}"
+  LINTER_COMMAND_OUTPUT="${3}"
 
   debug "----<<<<INVOKING Invokelintly>>>>----"
   debug "FORMAT: ${LINTLY_FORMAT}"
@@ -53,8 +56,12 @@ function InvokeLintly() {
   debug ""
   debug "DONE DISPLAYING ARGUMENTS"
 
+  LINTLY_LOG=""
+  if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LINTLY_LOG="--log"; fi
+
   # Lintly will comment on the PR
-  echo "$LINTER_COMMAND_OUTPUT" | lintly --format="${LINTLY_FORMAT}"
+  export LINTLY_FILE_OVERRIDE="${LINTLY_FILE_OVERRIDE}"
+  echo "$LINTER_COMMAND_OUTPUT" | lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}"
 
   debug "$?"
   debug "^^ exit code ^^"

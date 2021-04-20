@@ -288,7 +288,7 @@ function LintCodebase() {
             warn "${LINT_CMD}"
 
             if IsLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${LINT_CMD}"
+              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${FILE}" "${LINT_CMD}"
             fi
 
           else
@@ -299,7 +299,7 @@ function LintCodebase() {
             error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
 
             if IsLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${LINT_CMD}"
+              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${FILE}" "${LINT_CMD}"
             fi
 
             # Increment the error count
