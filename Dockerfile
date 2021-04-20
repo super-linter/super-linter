@@ -20,8 +20,9 @@ FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
-FROM ghcr.io/phpstan/phpstan:0.12.84 as phpstan
-FROM cytopia/phpcs:2-php7.3 as phpcs
+#FROM ghcr.io/phpstan/phpstan:0.12.84 as phpstan
+#FROM cytopia/phpcs:2-php7.3 as phpcs
+#FROM phpqa/psalm:3.4.2 as psalm
 FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
@@ -104,8 +105,6 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
-    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
-    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     py3-setuptools python3-dev\
     R R-dev R-doc \
     readline-dev \
@@ -164,27 +163,12 @@ RUN bundle install \
     && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /var/cache/dotnet/tools dotnet-format
+    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format
 
 ##############################
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-##############################
-# Install Phive dependencies #
-##############################
-#    && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
-#    && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
-#    && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
-#    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
-#    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
-#    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
-#    && gpg --verify phive.phar.asc phive.phar \
-#    && chmod +x phive.phar \
-#    && mv phive.phar /usr/local/bin/phive \
-#    && rm phive.phar.asc \
-#    && phive install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1 \
-
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
@@ -228,9 +212,9 @@ COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 
-##################
+#####################
 # Install Terrascan #
-##################
+#####################
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
 RUN terrascan init
 
@@ -263,6 +247,28 @@ COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 # Install hadolint dockerfile #
 ###############################
 COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
+
+#################
+# Install lintr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+
+##################
+# Install chktex #
+##################
+COPY --from=chktex /usr/bin/chktex /usr/bin/
+RUN cd ~ && touch .chktexrc
+
+###################
+# Install kubeval #
+###################
+COPY --from=kubeval /kubeval /usr/bin/
+
+#################
+# Install shfmt #
+#################
+COPY --from=shfmt /bin/shfmt /usr/bin/
 
 ##################
 # Install ktlint #
@@ -319,67 +325,44 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && rm -r luarocks-3.3.1-super-linter/ \
     && luarocks install luacheck
 
-#################
-# Install lintr #
-#################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
-
-##################
-# Install chktex #
-##################
-COPY --from=chktex /usr/bin/chktex /usr/bin/
-RUN cd ~ \
-    && touch .chktexrc
-
-###################
-# Install kubeval #
-###################
-COPY --from=kubeval /kubeval /usr/bin/
-
-#################
-# Install shfmt #
-#################
-COPY --from=shfmt /bin/shfmt /usr/bin/
-
-###################
-# Install phpstan #
-###################
-COPY --from=phpstan /composer/vendor/phpstan/phpstan/ /usr/bin/
-
-#################
-# Install phpcs #
-#################
-COPY --from=phpcs /usr/bin/phpcs /usr/bin/phpcs
-
-##########################
-# Grab small clean image #
-##########################
+################################################################################
+# Grab small clean image #######################################################
+################################################################################
 FROM alpine:3.13.5 as final
 
 #################################
 # Copy the libraries into image #
 #################################
-# Basic binaries
-COPY --from=base_image /usr/bin /usr/bin
-# Ansible binary
-COPY --from=base_image /usr/local/bin /usr/local/bin
-# Ansible libs
-COPY --from=base_image /usr/local/lib /usr/local/lib
-# Basic libs needed to run
-COPY --from=base_image /usr/lib /usr/lib
-# Basic libs needed to run
-COPY --from=base_image /lib /lib
-# Basic binaries
-COPY --from=base_image /bin /bin
-# ARM_TTK binaries
-COPY --from=base_image /opt/microsoft /opt/microsoft
-# coffeelint ,yq, etc
-COPY --from=base_image /node_modules /node_modules
-# Dotnet format
-COPY --from=base_image /var/cache/dotnet/tools/dotnet-format /usr/bin
-# Rust
-COPY --from=base_image /tmp/.rustup /tmp/.rustup
+COPY --from=base_image /usr/bin/ /usr/bin/
+COPY --from=base_image /usr/local/bin/ /usr/local/bin/
+COPY --from=base_image /usr/local/lib/ /usr/local/lib/
+COPY --from=base_image /usr/lib /usr/lib/
+COPY --from=base_image /lib/ /lib/
+COPY --from=base_image /bin/ /bin/
+COPY --from=base_image /opt/microsoft/ /opt/microsoft/
+COPY --from=base_image /node_modules/ /node_modules/
+COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
+
+##############################
+# Install Phive dependencies #
+##############################
+RUN apk add \
+    bash gnupg perl php7 php7-phar php7-json php7-mbstring php-xmlwriter \
+    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
+    && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
+    && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
+    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
+    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
+    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
+    && gpg --verify phive.phar.asc phive.phar \
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive \
+    && rm phive.phar.asc \
+    && phive --no-progress install --trust-gpg-keys \
+    31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
+    --target /usr/bin phpstan@^0.12.64 psalm@^3.18.2 phpcs@^3.5.8
+
 
 ########################################
 # Add node packages to path and dotnet #
