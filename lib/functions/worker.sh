@@ -265,10 +265,18 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
+      ################################################################
+      # Corner case for GITLEAKS as the path is passed inside a flag #
+      ################################################################
+      elif [[ ${FILE_TYPE} == "GITLEAKS" ]]; then
+        LINT_CMD=$(
+          cd "${WORKSPACE_PATH}" || exit
+          ${LINTER_COMMAND} --path="${FILE}" 2>&1
+        )
+      ################################
+      # Lint the file with the rules #
+      ################################
       else
-        ################################
-        # Lint the file with the rules #
-        ################################
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1

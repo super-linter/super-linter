@@ -267,6 +267,8 @@ function BuildFileList() {
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
     # jscpd also runs an all files
     FILE_ARRAY_JSCPD+=("${FILE}")
+    # gitleaks should also check all files
+    FILE_ARRAY_GITLEAKS+=("${FILE}")
 
     #######################
     # Get the shell files #
