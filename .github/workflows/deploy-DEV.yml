@@ -48,6 +48,14 @@ jobs:
           # of changed files within `super-linter`
           fetch-depth: 0
 
+      ######################
+      # Gather information #
+      ######################
+      - name: Gather information about the runtime environment
+        shell: bash
+        run: |
+          make info
+
       ########################
       # Get the current date #
       ########################
