@@ -23,6 +23,7 @@ info: ## Gather information about the runtime environment
 .PHONY: kcov
 kcov: ## Run kcov
 	docker run --rm $(DOCKER_FLAGS) \
+		--user "$$(id -u)":"$$(id -g)" \
 		-v "$(CURDIR)":/workspace \
 		-w="/workspace" \
 		kcov/kcov \
