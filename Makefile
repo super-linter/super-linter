@@ -1,10 +1,10 @@
 # Inspired by https://github.com/jessfraz/dotfiles
 
 .PHONY: all
-all: test ## Run all targets.
+all: info test ## Run all targets.
 
 .PHONY: test
-test: clean kcov prepare-test-reports ## Run tests
+test: info clean kcov prepare-test-reports ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -13,6 +13,12 @@ INTERACTIVE := $(shell [ -t 0 ] && echo 1 || echo 0)
 ifeq ($(INTERACTIVE), 1)
 	DOCKER_FLAGS += -t
 endif
+
+.PHONY: info
+info: ## Gather information about the runtime environment
+	echo "whoami: $$(whoami)"; \
+	echo "pwd: $$(pwd)"; \
+	echo "ls -ahl: $$(ls -ahl)"
 
 .PHONY: kcov
 kcov: ## Run kcov
