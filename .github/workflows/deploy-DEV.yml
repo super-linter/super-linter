@@ -68,14 +68,6 @@ jobs:
           --build-arg BUILD_VERSION=${{ github.sha }} \
           -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
 
-      ######################
-      # Gather information #
-      ######################
-      - name: Gather information about the runtime environment
-        shell: bash
-        run: |
-          make info
-
       ########################################
       # Validates the metadata docker labels #
       ########################################
@@ -89,6 +81,14 @@ jobs:
       - name: Edit an action.yml file for test local build
         run: |
           sed -i "s/super-linter:.*/super-linter:${GITHUB_SHA}'/g" action.yml
+
+      ######################
+      # Gather information #
+      ######################
+      - name: Gather information about the runtime environment
+        shell: bash
+        run: |
+          make info
 
       ##########################
       # Test in action context #
