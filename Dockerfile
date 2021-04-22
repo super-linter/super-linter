@@ -330,25 +330,18 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ################################################################################
 FROM alpine:3.13.5 as final
 
-#################################
-# Copy the libraries into image #
-#################################
-COPY --from=base_image /usr/bin/ /usr/bin/
-COPY --from=base_image /usr/local/bin/ /usr/local/bin/
-COPY --from=base_image /usr/local/lib/ /usr/local/lib/
-COPY --from=base_image /usr/lib /usr/lib/
-COPY --from=base_image /lib/ /lib/
-COPY --from=base_image /bin/ /bin/
-COPY --from=base_image /opt/microsoft/ /opt/microsoft/
-COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
-
 ##############################
 # Install Phive dependencies #
 ##############################
-RUN apk add \
-    bash gnupg perl php7 php7-phar php7-json php7-mbstring php-xmlwriter \
+RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk \
+    && apk add \
+    bash \
+    glibc-2.31-r0.apk \
+    gnupg \
+    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
+    && rm glibc-2.31-r0.apk \
     && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
@@ -363,6 +356,22 @@ RUN apk add \
     31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
     --target /usr/bin phpstan@^0.12.64 psalm@^3.18.2 phpcs@^3.5.8
 
+#################################
+# Copy the libraries into image #
+#################################
+COPY --from=base_image /usr/bin/ /usr/bin/
+COPY --from=base_image /usr/local/bin/ /usr/local/bin/
+COPY --from=base_image /usr/local/lib/ /usr/local/lib/
+COPY --from=base_image /usr/local/share/ /usr/local/share/
+COPY --from=base_image /usr/lib /usr/lib/
+COPY --from=base_image /usr/share/ /usr/share/
+COPY --from=base_image /usr/include/ /usr/include/
+COPY --from=base_image /lib/ /lib/
+COPY --from=base_image /bin/ /bin/
+COPY --from=base_image /opt/microsoft/ /opt/microsoft/
+COPY --from=base_image /node_modules/ /node_modules/
+COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
+COPY --from=base_image /etc/R/ /etc/R/
 
 ########################################
 # Add node packages to path and dotnet #
