@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.03.22-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.03.31-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
 FROM yoheimuta/protolint:v0.31.0 as protolint
