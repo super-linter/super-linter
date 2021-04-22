@@ -27,38 +27,6 @@ FROM garethr/kubeval:0.15.0 as kubeval
 ##################
 FROM python:3.9-alpine as base_image
 
-############################
-# Get the build arguements #
-############################
-ARG BUILD_DATE
-ARG BUILD_REVISION
-ARG BUILD_VERSION
-
-#########################################
-# Label the instance and set maintainer #
-#########################################
-LABEL com.github.actions.name="GitHub Super-Linter" \
-    com.github.actions.description="Lint your code base with GitHub Actions" \
-    com.github.actions.icon="code" \
-    com.github.actions.color="red" \
-    maintainer="GitHub DevOps <github_devops@github.com>" \
-    org.opencontainers.image.created=$BUILD_DATE \
-    org.opencontainers.image.revision=$BUILD_REVISION \
-    org.opencontainers.image.version=$BUILD_VERSION \
-    org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-    org.opencontainers.image.url="https://github.com/github/super-linter" \
-    org.opencontainers.image.source="https://github.com/github/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
-    org.opencontainers.image.vendor="GitHub" \
-    org.opencontainers.image.description="Lint your code base with GitHub Actions"
-
-#################################################
-# Set ENV values used for debugging the version #
-#################################################
-ENV BUILD_DATE=$BUILD_DATE
-ENV BUILD_REVISION=$BUILD_REVISION
-ENV BUILD_VERSION=$BUILD_VERSION
-
 ################################
 # Set ARG values used in Build #
 ################################
@@ -247,7 +215,6 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 # Install lintr #
 #################
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ##################
 # Install chktex #
@@ -272,6 +239,7 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && mv "ktlint" /usr/bin/ \
     && terrascan init \
     && cd ~ && touch .chktexrc \
+    && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')" \
 ####################
 # Install dart-sdk #
 ####################
@@ -326,18 +294,52 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ################################################################################
 FROM alpine:3.13.5 as final
 
+############################
+# Get the build arguements #
+############################
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
+ARG GLIBC_VERSION='2.31-r0'
+
+#########################################
+# Label the instance and set maintainer #
+#########################################
+LABEL com.github.actions.name="GitHub Super-Linter" \
+    com.github.actions.description="Lint your code base with GitHub Actions" \
+    com.github.actions.icon="code" \
+    com.github.actions.color="red" \
+    maintainer="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION \
+    org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
+    org.opencontainers.image.url="https://github.com/github/super-linter" \
+    org.opencontainers.image.source="https://github.com/github/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.vendor="GitHub" \
+    org.opencontainers.image.description="Lint your code base with GitHub Actions"
+
+#################################################
+# Set ENV values used for debugging the version #
+#################################################
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
+
 ##############################
 # Install Phive dependencies #
 ##############################
 RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk \
+    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache \
     bash \
-    glibc-2.31-r0.apk \
+    glibc-${GLIBC_VERSION}.apk \
     gnupg \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
-    && rm glibc-2.31-r0.apk \
+    && rm glibc-${GLIBC_VERSION}.apk \
     && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
