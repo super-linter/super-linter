@@ -69,3 +69,9 @@ super-linter.report
 
 # Git directory (useful for .dockerignore)
 .git
+
+# Code coverage data for tests
+.coverage
+
+# Test reports
+test/reports
