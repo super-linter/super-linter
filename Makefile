@@ -18,7 +18,8 @@ endif
 info: ## Gather information about the runtime environment
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
-	echo "ls -ahl: $$(ls -ahl)"
+	echo "ls -ahl: $$(ls -ahl)"; \
+	docker images
 
 .PHONY: kcov
 kcov: ## Run kcov

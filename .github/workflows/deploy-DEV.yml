@@ -48,14 +48,6 @@ jobs:
           # of changed files within `super-linter`
           fetch-depth: 0
 
-      ######################
-      # Gather information #
-      ######################
-      - name: Gather information about the runtime environment
-        shell: bash
-        run: |
-          make info
-
       ########################
       # Get the current date #
       ########################
@@ -76,11 +68,13 @@ jobs:
           --build-arg BUILD_VERSION=${{ github.sha }} \
           -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
 
-      ##############
-      # Print info #
-      ##############
-      - name: Get Docker info
-        run: docker images
+      ######################
+      # Gather information #
+      ######################
+      - name: Gather information about the runtime environment
+        shell: bash
+        run: |
+          make info
 
       ########################################
       # Validates the metadata docker labels #
