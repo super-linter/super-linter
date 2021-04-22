@@ -302,6 +302,7 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
+ARG ARM_TTK_DIRECTORY='/opt/microsoft'
 
 #########################################
 # Label the instance and set maintainer #
@@ -327,6 +328,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
+ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 
 ##############################
 # Install Phive dependencies #
