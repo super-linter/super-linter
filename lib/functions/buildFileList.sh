@@ -100,7 +100,7 @@ function BuildFileList() {
       ################
       # push event   #
       ################
-      DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
       GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
