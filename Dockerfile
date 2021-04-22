@@ -20,9 +20,6 @@ FROM accurics/terrascan:2d1374b as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
-#FROM ghcr.io/phpstan/phpstan:0.12.84 as phpstan
-#FROM cytopia/phpcs:2-php7.3 as phpcs
-#FROM phpqa/psalm:3.4.2 as psalm
 FROM garethr/kubeval:0.15.0 as kubeval
 
 ##################
@@ -151,12 +148,11 @@ RUN pip3 install --no-cache-dir pipenv \
     && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
-    && npm audit fix
-
+    && npm audit fix \
 ##############################
 # Installs ruby dependencies #
 ##############################
-RUN bundle install \
+    && bundle install \
 ###################################
 # Install DotNet and Dependencies #
 ###################################
@@ -216,7 +212,6 @@ COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 # Install Terrascan #
 #####################
 COPY --from=terrascan /go/bin/terrascan /usr/bin/
-RUN terrascan init
 
 ######################
 # Install Terragrunt #
@@ -258,7 +253,6 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 # Install chktex #
 ##################
 COPY --from=chktex /usr/bin/chktex /usr/bin/
-RUN cd ~ && touch .chktexrc
 
 ###################
 # Install kubeval #
@@ -276,6 +270,8 @@ COPY --from=shfmt /bin/shfmt /usr/bin/
 RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/ \
+    && terrascan init \
+    && cd ~ && touch .chktexrc \
 ####################
 # Install dart-sdk #
 ####################
