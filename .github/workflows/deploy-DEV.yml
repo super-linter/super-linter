@@ -103,6 +103,14 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      ###########################################################################################
+      # Fix file and dir ownership. Workaround for https://github.com/actions/runner/issues/434 #
+      ###########################################################################################
+      - name: Fix file and directory ownership
+        shell: bash
+        run: |
+          chown -R $(id -u)":"$(id -g)" "$(pwd)"
+
       ##################
       # Run test cases #
       ##################
