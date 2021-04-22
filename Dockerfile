@@ -335,7 +335,7 @@ FROM alpine:3.13.5 as final
 ##############################
 RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk \
-    && apk add \
+    && apk add --no-cache \
     bash \
     glibc-2.31-r0.apk \
     gnupg \
