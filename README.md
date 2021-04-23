@@ -373,6 +373,14 @@ We will also support [GitHub Codespaces](https://github.com/features/codespaces/
 If you need to inject a SSL cert into the trust store, you will need to first copy the cert to **GitHub Secrets**
 Once you have copied the plain text certificate into **GitHub Secrets**, you can use the variable `SSL_CERT_SECRET` to point the **Super-Linter** to the files contents.
 Once found, it will load the certificate contents to a file, and to the trust store.
+- Example workflow:
+```yml
+- name: Lint Code Base
+  uses: github/super-linter@v3
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+```
 
 ## Limitations
 
