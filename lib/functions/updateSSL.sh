@@ -53,7 +53,9 @@ function InstallSSLCert() {
   # Check the shell for errors #
   ##############################
   if [ "${ERROR_CODE}" -ne 0 ]; then
-  # ./mycert.crt /usr/local/share/ca-certificates/mycert.crt
+    error "ERROR! Failed to move cert into location!"
+    fatal "ERROR:[${COPY_CMD}]"
+  fi
 
   ##############################################
   # Update ca-certificates to pull in the cert #
