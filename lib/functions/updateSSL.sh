@@ -32,7 +32,7 @@ function InstallSSLCert() {
   #########################
   # Echo secret into file #
   #########################
-  echo "${SSL_CERT_SECRET}" >> "${CERT_FILE}"
+  echo "${SSL_CERT_SECRET}" >>"${CERT_FILE}"
 
   ########################################
   # Put the cert in the correct location #
