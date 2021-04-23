@@ -32,20 +32,7 @@ function InstallSSLCert() {
   #########################
   # Echo secret into file #
   #########################
-  ECHO_CMD=$(echo "${SSL_CERT_SECRET}" >> "${CERT_FILE}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ "${ERROR_CODE}" -ne 0 ]; then
-    error "ERROR! Failed to create cert file!"
-    fatal "ERROR:[${ECHO_CMD}]"
-  fi
+  echo "${SSL_CERT_SECRET}" >> "${CERT_FILE}"
 
   ########################################
   # Put the cert in the correct location #
