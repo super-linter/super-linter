@@ -368,6 +368,12 @@ You can checkout this repository using [Container Remote Development](https://co
 
 We will also support [GitHub Codespaces](https://github.com/features/codespaces/) once it becomes available
 
+### SSL Certs
+
+If you need to inject a SSL cert into the trust store, you will need to first copy the cert to your **GitHub Actions Workflow**.  
+Once you have copied the certificate to the runner, you can use the variable `SSL_CERT_FILE` to point the **Super-Linter** to the files location.  
+Once found, it will load the certificate to the trust store.
+
 ## Limitations
 
 Below are a list of the known limitations for the **GitHub Super-Linter**:
