@@ -9,3 +9,4 @@ gem "rubocop-github", "~> 0.16.1"
 gem "rubocop-performance", "~>1.7.1"
 gem "rubocop-rails", "~> 2.7"
 gem "rubocop-rspec", "~> 2.2.0"
+gem 'cfn-nag', '~> 0.7.12'

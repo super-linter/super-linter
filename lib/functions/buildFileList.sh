@@ -448,6 +448,8 @@ function BuildFileList() {
         # Append the file to the array #
         ################################
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION_CFN_NAG+=("${FILE}")
+
       fi
       ############################################
       # Check if the file is AWS States Language #
@@ -679,7 +681,7 @@ function BuildFileList() {
       FILE_ARRAY_XML+=("${FILE}")
 
     ################################
-    # Get the CLOUDFORMATION files #
+    # Get the YAML files #
     ################################
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       ################################
@@ -709,6 +711,7 @@ function BuildFileList() {
         # Append the file to the array #
         ################################
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
+        FILE_ARRAY_CLOUDFORMATION_CFN_NAG+=("${FILE}")
       fi
 
       ############################
