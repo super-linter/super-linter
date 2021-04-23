@@ -370,8 +370,8 @@ We will also support [GitHub Codespaces](https://github.com/features/codespaces/
 
 ### SSL Certs
 
-If you need to inject a SSL cert into the trust store, you will need to first copy the cert to your **GitHub Actions Workflow**.  
-Once you have copied the certificate to the runner, you can use the variable `SSL_CERT_FILE` to point the **Super-Linter** to the files location.  
+If you need to inject a SSL cert into the trust store, you will need to first copy the cert to your **GitHub Actions Workflow**
+Once you have copied the certificate to the runner, you can use the variable `SSL_CERT_FILE` to point the **Super-Linter** to the files location.
 Once found, it will load the certificate to the trust store.
 
 ## Limitations
