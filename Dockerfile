@@ -331,14 +331,15 @@ ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 
-##############################
-# Install Phive dependencies #
-##############################
+######################################
+# Install Phive dependencies and git #
+######################################
 RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache \
     bash \
     ca-certificates \
+    git git-lfs \
     glibc-${GLIBC_VERSION}.apk \
     gnupg \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
