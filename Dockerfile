@@ -287,7 +287,8 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && make -b install \
     && cd .. \
     && rm -r luarocks-3.3.1-super-linter/ \
-    && luarocks install luacheck
+    && luarocks install luacheck \
+    && mv /etc/R/* /usr/lib/R/etc/
 
 ################################################################################
 # Grab small clean image #######################################################
@@ -372,7 +373,7 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /opt/microsoft/ /opt/microsoft/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
-COPY --from=base_image /etc/R/ /etc/R/
+#COPY --from=base_image /etc/R/ /etc/R/
 
 ########################################
 # Add node packages to path and dotnet #
