@@ -85,11 +85,11 @@ RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
     && rustup toolchain install stable-x86_64-unknown-linux-musl \
     && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
     && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
-    && mv /root/.rustup /tmp/.rustup \
-    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
-    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
-    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
-    && ln -s /tmp/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
+    && mv /root/.rustup /usr/lib/.rustup \
+    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
+    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
+    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
+    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
     && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
     && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
     && echo 'cargo-clippy' >> /usr/bin/clippy \
@@ -373,7 +373,6 @@ COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /opt/microsoft/ /opt/microsoft/
 COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
 
 ########################################
 # Add node packages to path and dotnet #
