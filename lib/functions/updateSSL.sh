@@ -37,7 +37,7 @@ function InstallSSLCert() {
   ########################################
   # Put the cert in the correct location #
   ########################################
-  COPY_CMD=$(mv "${SSL_CERT_FILE}" "${CERT_ROOT}/${FILE_NAME}" 2>&1)
+  COPY_CMD=$(mv "${CERT_FILE}" "${CERT_ROOT}/${FILE_NAME}" 2>&1)
 
   #######################
   # Load the error code #
