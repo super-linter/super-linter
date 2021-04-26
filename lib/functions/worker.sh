@@ -265,13 +265,15 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
-      ################################################################
-      # Corner case for GITLEAKS as the path is passed inside a flag #
-      ################################################################
+      ######################################################
+      # Corner case for GITLEAKS:                          #
+      # - Path to the file to scan is passed inside a flag #
+      # - Output report is written to a file               #
+      ######################################################
       elif [[ ${FILE_TYPE} == "GITLEAKS" ]]; then
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} --path="${FILE}" 2>&1
+          ${LINTER_COMMAND} --path="${FILE}" --report="/dev/stdout"
         )
       ################################
       # Lint the file with the rules #
