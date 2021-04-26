@@ -57,7 +57,7 @@ function InstallSSLCert() {
   ##############################################
   # Update ca-certificates to pull in the cert #
   ##############################################
-  UPDATE_CMD=$(update ca-certificates 2>&1)
+  UPDATE_CMD=$(update-ca-certificates 2>&1)
 
   #######################
   # Load the error code #
