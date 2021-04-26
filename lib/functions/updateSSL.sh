@@ -50,6 +50,8 @@ function InstallSSLCert() {
   if [ "${ERROR_CODE}" -ne 0 ]; then
     error "ERROR! Failed to move cert into location!"
     fatal "ERROR:[${COPY_CMD}]"
+  else
+    info "Moved cert into location, adding to trust store..."
   fi
 
   ##############################################
