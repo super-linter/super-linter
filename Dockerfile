@@ -337,6 +337,7 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache \
     bash \
+    ca-certificates \
     glibc-${GLIBC_VERSION}.apk \
     gnupg \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \

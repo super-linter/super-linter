@@ -44,21 +44,23 @@ export LOG_ERROR
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
+source /action/lib/functions/buildFileList.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/detectFiles.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/linterRules.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/linterVersions.sh # Source the function script(s)
+# shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/buildFileList.sh # Source the function script(s)
+source /action/lib/functions/tapLibrary.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/updateSSL.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/worker.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/tapLibrary.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/linterRules.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/detectFiles.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/linterVersions.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
@@ -148,6 +150,8 @@ RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"
 SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+SSL_CERT_SECRET="${SSL_CERT_SECRET}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -858,6 +862,11 @@ for i in "${!LINTER_COMMANDS_ARRAY[@]}"; do
   debug "Linter key: $i, command: ${LINTER_COMMANDS_ARRAY[$i]}"
 done
 debug "---------------------------------------------"
+
+#################################
+# Check for SSL cert and update #
+#################################
+CheckSSLCert
 
 ###########################################
 # Build the list of files for each linter #
