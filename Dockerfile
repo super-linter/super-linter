@@ -32,12 +32,12 @@ FROM python:3.9-alpine as base_image
 ################################
 # PowerShell & PSScriptAnalyzer
 ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/opt/microsoft/powershell'
+ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='latest'
 # arm-ttk
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
-ARG ARM_TTK_DIRECTORY='/opt/microsoft'
+ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -303,7 +303,7 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
-ARG ARM_TTK_DIRECTORY='/opt/microsoft'
+ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 
 #########################################
 # Label the instance and set maintainer #
@@ -371,7 +371,6 @@ COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
-COPY --from=base_image /opt/microsoft/ /opt/microsoft/
 COPY --from=base_image /node_modules/ /node_modules/
 
 ########################################
