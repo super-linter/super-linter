@@ -373,7 +373,6 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /opt/microsoft/ /opt/microsoft/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /tmp/.rustup/ /tmp/.rustup/
-#COPY --from=base_image /etc/R/ /etc/R/
 
 ########################################
 # Add node packages to path and dotnet #
