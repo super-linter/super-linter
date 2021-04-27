@@ -288,7 +288,11 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && cd .. \
     && rm -r luarocks-3.3.1-super-linter/ \
     && luarocks install luacheck \
-    && mv /etc/R/* /usr/lib/R/etc/
+    && mv /etc/R/* /usr/lib/R/etc/ \
+    && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
+    && find /node_modules/ -type f -name '*.md' -exec rm {} + \
+    && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
+    && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
 # Grab small clean image #######################################################
