@@ -249,6 +249,14 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
         )
+      #########################################################
+      # Corner case for CFN_NAG as path is passed inside a flag #
+      #########################################################
+      elif [[ ${FILE_TYPE} == "CLOUDFORMATION_CFN_NAG" ]]; then
+        LINT_CMD=$(
+          cd "${WORKSPACE_PATH}" || exit
+          ${LINTER_COMMAND} --input-path="${FILE}" 2>&1
+        )
       #######################################################
       # Corner case for KTLINT as it cant use the full path #
       #######################################################

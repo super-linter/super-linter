@@ -91,6 +91,8 @@ CLOJURE_FILE_NAME=".clj-kondo/config.edn"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 CLOUDFORMATION_FILE_NAME=".cfnlintrc.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+CLOUDFORMATION_CFN_NAG_FILE_NAME=".cfnnag"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 COFFEESCRIPT_FILE_NAME=".coffee-lint.json"
 CSS_FILE_NAME="${CSS_FILE_NAME:-.stylelintrc.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -193,7 +195,7 @@ fi
 ##################
 # Language array #
 ##################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOUDFORMATION_CFN_NAG' 'CLOJURE' 'COFFEESCRIPT' 'CSHARP' 'CSS'
   'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GHERKIN' 'GO' 'GROOVY' 'HTML'
   'JAVA' 'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
@@ -212,6 +214,7 @@ LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
 LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
 LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
+LINTER_NAMES_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn_nag"
 LINTER_NAMES_ARRAY['COFFEESCRIPT']="coffeelint"
 LINTER_NAMES_ARRAY['CSHARP']="dotnet-format"
 LINTER_NAMES_ARRAY['CSS']="stylelint"
@@ -810,6 +813,7 @@ LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
 LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
 LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn_nag_scan --ignore-fatal --profile-path=${CLOUDFORMATION_CFN_NAG_LINTER_RULES} ${LINTER_OPTS[CLOUDFORMATION_CFN_NAG]}"
 LINTER_COMMANDS_ARRAY['COFFEESCRIPT']="coffeelint -f ${COFFEESCRIPT_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['CSHARP']="dotnet-format --folder --check --exclude / --include"
 LINTER_COMMANDS_ARRAY['CSS']="stylelint --config ${CSS_LINTER_RULES}"
