@@ -4,7 +4,7 @@
 all: info test ## Run all targets.
 
 .PHONY: test
-test: info clean kcov prepare-test-reports ## Run tests
+test: info clean inspec kcov prepare-test-reports ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -58,3 +58,11 @@ clean: ## Clean the workspace
 .PHONY: help
 help: ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: inspec
+inspec: ## Run InSpec tests
+	docker run $(DOCKER_FLAGS) \
+		--rm \
+		-v "$(CURDIR)":/workspace \
+		-w="/workspace" \
+		chef/inspec check --chef-license=accept test/inspec/super-linter

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
-name "super-linter"
-title "super-linter"
 
 control "super-linter-container-image" do
   impact 1
   title "Validate the super-linter container image"
+  desc "Check that the super-linter container image is valid."
 
   describe docker_image("super-linter:latest") do
     it { should exist }
@@ -16,6 +15,7 @@ end
 control "super-linter-installed-packages" do
   impact 1
   title "Check that packages needed by super-linter are installed"
+  desc "Check that packages that super-linter needs are installed."
 
   packages = [
     "bash",
