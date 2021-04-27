@@ -22,10 +22,8 @@ LINTLY_SUPPORT_ARRAY['CSS']="stylelint"
 LINTLY_SUPPORT_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn-nag"
+LINTLY_SUPPORT_ARRAY['GITLEAKS']="gitleaks"
 export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
-
-# Not yet implemented by super-linter
-# LINTLY_SUPPORT_ARRAY['ANY']="gitleaks"
 
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
@@ -37,6 +35,11 @@ function AddLinterOptsForLintly() {
   [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
   [[ ! "${LINTER_OPTS[TERRAFORM_TERRASCAN]}" =~ "json" ]] && LINTER_OPTS[TERRAFORM_TERRASCAN]+=" -o json"
   [[ ! "${LINTER_OPTS[CLOUDFORMATION_CFN_NAG]}" =~ "json" ]] && LINTER_OPTS[CLOUDFORMATION_CFN_NAG]+=" --output-format=json"
+  # gitleaks with either --verbose or --quiet will write extra logs to stdout and mess up our report; remove these
+  LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// --quiet/} && \
+      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// -q/} && \
+      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// --verbose/} && \
+      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// -v/}
 }
 ################################################################################
 #### Function InvokeLintly #####################################################

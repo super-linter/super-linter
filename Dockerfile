@@ -21,6 +21,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
+FROM zricethezav/gitleaks:v7.4.0 as gitleaks
 
 ##################
 # Get base image #
@@ -351,6 +352,11 @@ COPY --from=kubeval /kubeval /usr/bin/
 # Install shfmt #
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
+
+####################
+# Install gitleaks #
+####################
+COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 
 #############################
 # Copy scripts to container #
