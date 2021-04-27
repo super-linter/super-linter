@@ -6,10 +6,10 @@ control "super-linter-container-image" do
   impact 1
   title "Validate the super-linter container image"
 
-  describe docker_image('super-linter:latest') do
+  describe docker_image("super-linter:latest") do
     it { should exist }
-    its('repo') { should eq 'python' }
-    its('tag') { should eq '3.9-alpine' }
+    its("repo") { should eq "python" }
+    its("tag") { should eq "3.9-alpine" }
   end
 end
 
