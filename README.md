@@ -3,6 +3,8 @@
 This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/51071879604e4f319859d4daf91c68f5)](https://www.codacy.com/gh/github/super-linter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=github/super-linter&amp;utm_campaign=Badge_Grade)
+
 **The end goal of this tool:**
 
 - Prevent broken code from being uploaded to the default branch (_Usually_ `master` or `main`)
@@ -243,6 +245,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **RUBY_CONFIG_FILE**               | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
 | **SUPPRESS_POSSUM**                | `false`                         | If set to `true`, will hide the ASCII possum at top of log output. Default is `false`                                                                                                                                |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE** | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
+| **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
@@ -364,6 +367,20 @@ You can checkout this repository using [Container Remote Development](https://co
 ![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
 
 We will also support [GitHub Codespaces](https://github.com/features/codespaces/) once it becomes available
+
+### SSL Certs
+
+If you need to inject a SSL cert into the trust store, you will need to first copy the cert to **GitHub Secrets**
+Once you have copied the plain text certificate into **GitHub Secrets**, you can use the variable `SSL_CERT_SECRET` to point the **Super-Linter** to the files contents.
+Once found, it will load the certificate contents to a file, and to the trust store.
+- Example workflow:
+```yml
+- name: Lint Code Base
+  uses: github/super-linter@v3
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+```
 
 ## Limitations
 
