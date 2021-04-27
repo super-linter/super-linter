@@ -195,6 +195,14 @@
             ],
             "version": "==1.4"
         },
+        "cpplint": {
+            "hashes": [
+                "sha256:a4fb2df986485fbe82603ab9a2832f8668b7253956eac2bfafb1374950eed01f",
+                "sha256:c5d70711f06a7a8bfdc09bd7a19c13e114e009a70c8dc16caad1e5f0d2f3cc71"
+            ],
+            "index": "pypi",
+            "version": "==1.5.4"
+        },
         "cryptography": {
             "hashes": [
                 "sha256:0f1212a66329c80d68aeeb39b8a16d54ef57071bf22ff4e521657b27372e327d",
