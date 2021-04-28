@@ -143,8 +143,8 @@ control "super-linter-installed-binaries" do
   ]
 
   packages.each do |item|
-    describe command('command -v ' + item) do
-      its('exit_status') { should eq 0 }
+    describe command("command -v #{item}") do
+      its("exit_status") { should eq 0 }
     end
   end
 end
