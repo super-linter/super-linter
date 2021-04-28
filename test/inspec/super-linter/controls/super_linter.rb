@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+##################################################
+# Check to see all system packages are installed #
+##################################################
 control "super-linter-installed-packages" do
   impact 1
-  title "Super-linter installed packages check"
-  desc "Check that packages that super-linter needs are installed."
+  title "Super-Linter installed packages check"
+  desc "Check that packages that Super-Linter needs are installed."
 
   packages = [
     "bash",
@@ -69,4 +72,79 @@ control "super-linter-installed-packages" do
     end
   end
 
+end
+
+###########################################
+# Check to see all binaries are installed #
+###########################################
+control "super-linter-installed-binaries" do
+  impact 1
+  title "Super-Linter installed binaries check"
+  desc "Check that binaries that Super-Linter needs are installed."
+
+  packages = [
+    "ansible-lint",
+    "arm-ttk",
+    "shellcheck",
+    "bash-exec",
+    "clj-kondo",
+    "cfn-lint",
+    "coffeelint",
+    "dotnet-format",
+    "stylelint",
+    "dart",
+    "dockerfilelint",
+    "hadolint",
+    "editorconfig-checker",
+    "dotenv-linter",
+    "gherkin-lint",
+    "golangci-lint",
+    "npm-groovy-lint",
+    "htmlhint",
+    "checkstyle",
+    "jscpd",
+    "jsonlint",
+    "eslint",
+    "ktlint",
+    "kubeval",
+    "chktex",
+    "lua",
+    "markdownlint",
+    "spectral",
+    "perl",
+    "php",
+    "phpcs",
+    "phpstan",
+    "psalm",
+    "pwsh",
+    "protolint",
+    "black",
+    "pylint",
+    "flake8",
+    "isort",
+    "mypy",
+    "R",
+    "raku",
+    "rubocop",
+    "rustfmt",
+    "clippy",
+    "shfmt",
+    "snakemake",
+    "snakefmt",
+    "asl-validator",
+    "sql-lint",
+    "tekton-lint",
+    "tflint",
+    "terrascan",
+    "terragrunt",
+    "standard",
+    "xmllint",
+    "yamllint"
+  ]
+
+  packages.each do |item|
+    describe command('command -v ' + item) do
+      its('exit_status') { should eq 0 }
+    end
+  end
 end
