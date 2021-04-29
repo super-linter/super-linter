@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+##########################################################
+# Being able to run the command `linter --version` helps #
+# achieve that the linter is installed, pathed, and      #
+# has the libraries needed to be able to basically run   #
+##########################################################
+
 #################################################################
 # Check to see that version command works on installed commands #
 #################################################################
