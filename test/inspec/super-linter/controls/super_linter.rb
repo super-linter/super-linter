@@ -86,7 +86,7 @@ control "super-linter-installed-commands" do
     { linter_name: "cfn-lint"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
     { linter_name: "chktex"},
-    { linter_name: "clippy", :linter_command: "clippy", version_command: "cargo-clippy --version"},
+    { linter_name: "clippy", linter_command: "clippy", version_command: "cargo-clippy --version"},
     { linter_name: "clj-kondo"},
     { linter_name: "coffeelint"},
     { linter_name: "dart"},
@@ -102,7 +102,7 @@ control "super-linter-installed-commands" do
     { linter_name: "htmlhint"},
     { linter_name: "isort"},
     { linter_name: "jscpd"},
-    { linter_name: "jsonlint", expected_exit_status: 1, :expected_stdout_regex: /\d+\.\d+\.\d+/},
+    { linter_name: "jsonlint", expected_exit_status: 1, expected_stdout_regex: /\d+\.\d+\.\d+/},
     { linter_name: "ktlint"},
     { linter_name: "kubeval"},
     { linter_name: "lua", version_option: "-v"},
@@ -145,7 +145,7 @@ control "super-linter-installed-commands" do
     if(linter.key?(:linter_command))
       linter_command = linter[:linter_command]
     else
-      linter_command = linter[linter_name]
+      linter_command = linter[:linter_name]
     end
 
     describe command("command -v #{linter_command}") do
@@ -153,21 +153,21 @@ control "super-linter-installed-commands" do
     end
 
     # A few linters have a command that it's different than linter_command
-    if(linter.key?(version_command))
-      version_command = linter[version_command]
+    if(linter.key?(:version_command))
+      version_command = linter[:version_command]
     else
       # Check if the linter needs an option that is different from the one that
       # the vast majority of linters use to get the version
-      if(linter.key?(version_option))
-        version_option = linter[version_option]
+      if(linter.key?(:version_option))
+        version_option = linter[:version_option]
       else
         version_option = default_version_option
       end
 
       version_command = "#{linter_command} #{version_option}"
 
-      if(linter.key?(expected_exit_status))
-        expected_exit_status = linter[expected_exit_status]
+      if(linter.key?(:expected_exit_status))
+        expected_exit_status = linter[:expected_exit_status]
       else
         expected_exit_status = default_version_expected_exit_status
       end
