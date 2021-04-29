@@ -140,8 +140,6 @@ control "super-linter-installed-commands" do
   end
 end
 
-# frozen_string_literal: true
-
 ##########################################################
 # Being able to run the command `linter --version` helps #
 # achieve that the linter is installed, pathed, and      #
