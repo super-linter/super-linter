@@ -77,10 +77,10 @@ end
 ###########################################
 # Check to see all binaries are installed #
 ###########################################
-control "super-linter-installed-binaries" do
+control "super-linter-installed-commands" do
   impact 1
-  title "Super-Linter installed binaries check"
-  desc "Check that binaries that Super-Linter needs are installed."
+  title "Super-Linter installed commands check"
+  desc "Check that commands that Super-Linter needs are installed."
 
   packages = [
     "ansible-lint",
