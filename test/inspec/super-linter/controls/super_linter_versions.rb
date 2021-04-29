@@ -78,6 +78,15 @@ end
 # bash-exec gherkin-lint          #
 ###################################
 
+########################
+# jsonlint get version #
+########################
+# jsonlint exits with a 1, so need to check we get a version
+describe command("jsonlint --version") do
+  its("exit_status") { should eq 1 }
+  its('stdout') { should match (/\d+\.\d+\.\d+/) }
+end
+
 #######################
 # arm-ttk get version #
 #######################
@@ -89,8 +98,8 @@ end
 # lintr version command #
 #########################
 describe command("R --slave -e \"r_ver <- R.Version()\$version.string; \
-            lintr_ver <- packageVersion('lintr'); \
-            glue::glue('lintr { lintr_ver } on { r_ver }')\"") do
+                    lintr_ver <- packageVersion('lintr'); \
+                    glue::glue('lintr { lintr_ver } on { r_ver }')\"") do
   its("exit_status") { should eq 0 }
 end
 
@@ -111,6 +120,6 @@ end
 ##############################
 # checkstyle version command #
 ##############################
-describe command("java -jar '/usr/bin/checkstyle --version'") do
+describe command("java -jar /usr/bin/checkstyle --version") do
   its("exit_status") { should eq 0 }
 end
