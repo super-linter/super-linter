@@ -82,7 +82,7 @@ control "super-linter-installed-commands" do
   title "Super-Linter installed commands check"
   desc "Check that commands that Super-Linter needs are installed."
 
-  packages = [
+  commands = [
     "ansible-lint",
     "arm-ttk",
     "asl-validator",
@@ -142,7 +142,7 @@ control "super-linter-installed-commands" do
     "yamllint"
   ]
 
-  packages.each do |item|
+  commands.each do |item|
     describe command("command -v #{item}") do
       its("exit_status") { should eq 0 }
     end
