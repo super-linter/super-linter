@@ -176,7 +176,6 @@ control "super-linter-version-commands" do
     "htmlhint",
     "isort",
     "jscpd",
-    "jsonlint",
     "ktlint",
     "kubeval",
     "markdownlint",
@@ -239,9 +238,9 @@ end
 #########################
 # lintr version command #
 #########################
-describe command("R --slave -e \"r_ver <- R.Version()\$version.string; \
-                    lintr_ver <- packageVersion('lintr'); \
-                    glue::glue('lintr { lintr_ver } on { r_ver }')\"") do
+describe command("R --slave -e \"r_ver <- R.Version()\\$version.string; \
+            lintr_ver <- packageVersion('lintr'); \
+            glue::glue('lintr { lintr_ver } on { r_ver }')\"") do
   its("exit_status") { should eq 0 }
 end
 
