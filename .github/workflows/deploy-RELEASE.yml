@@ -22,61 +22,6 @@ on:
 # Set the Job #
 ###############
 jobs:
-  no-run:
-    # Name the Job
-    name: Deploy Docker Image - Release
-    # Set the agent to run on
-    runs-on: ubuntu-latest
-
-    #########################################################
-    # Delete the created issue as it was created by someone #
-    # who is not authorized to create a release             #
-    #########################################################
-    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
-        github.actor != 'admiralawkbar' || github.actor != 'jwiebalk' ||
-        github.actor != 'IAmHughes' || github.actor != 'nemchik' ||
-        github.actor != 'Hanse00' || github.actor != 'github-actions' ||
-        github.actor != 'GaboFDC' || github.actor != 'ferrarimarco'
-
-    ##################
-    # Load all steps #
-    ##################
-    steps:
-      ###########################
-      # Update the GitHub Issue #
-      ###########################
-      - name: Update GitHub Issue
-        uses: actions/github-script@v3.1.0
-        id: update-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              title: "You have no power here",
-              body: '![](https://media.giphy.com/media/RX3vhj311HKLe/giphy.gif)'
-            })
-
-      ##########################
-      # Close the GitHub Issue #
-      ##########################
-      - name: Close GitHub Issue
-        uses: actions/github-script@v3.1.0
-        id: close-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              state: 'closed'
-            })
-
   deploy:
     # Name the Job
     name: Deploy Docker Image - Release
@@ -124,7 +69,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.4.3
+        uses: bobheadxi/deployments@v0.5.2
         id: deployment
         with:
           step: start
@@ -205,19 +150,15 @@ jobs:
       - name: Create Release
         if: success()
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          # This token is provided by Actions,
-          # you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          commitish: ${{ env.PR_REF }}
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: Release ${{ env.RELEASE_VERSION }}
-          body: |
-            ${{ github.event.issue.body }}
-          draft: false
-          prerelease: false
+        run: |
+          curl -X POST \
+            --url https://api.github.com/repos/${{ github.repository }}/releases \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
+              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
+              \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
 
       #####################################################
       # Create the Required status check for Stack Linter #
@@ -245,11 +186,11 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.4.3
+        uses: bobheadxi/deployments@v0.5.2
         if: always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: https://github.com/orgs/${{github.repository_owner}}/container/package/${{github.repository.name}}
+          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}

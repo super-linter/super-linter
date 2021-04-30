@@ -78,7 +78,7 @@ CleanTestFiles() {
       ################################
       REMOVE_FILE_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit 1
-        rm -f "$FILE" 2>&1
+        sudo rm -f "$FILE" 2>&1
       )
 
       CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"
@@ -119,7 +119,7 @@ CleanTestDockerFiles() {
       ################################
       REMOVE_FILE_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit 1
-        rm -f "$FILE" 2>&1
+        sudo rm -f "$FILE" 2>&1
       )
 
       CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"
@@ -179,7 +179,7 @@ CleanPowershell() {
       ################################
       REMOVE_FILE_CMD=$(
         cd "${GITHUB_WORKSPACE}" || exit 1
-        rm -f "$FILE" 2>&1
+        sudo rm -f "$FILE" 2>&1
       )
 
       CheckShellErrors "ERROR! failed to remove file:[${FILE}]!" "ERROR:[${REMOVE_FILE_CMD[*]}]"

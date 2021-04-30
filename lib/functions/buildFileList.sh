@@ -100,7 +100,7 @@ function BuildFileList() {
       ################
       # push event   #
       ################
-      DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
       GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
@@ -341,7 +341,7 @@ function BuildFileList() {
     #####################
     # Get the ENV files #
     #####################
-    elif [ "${FILE_TYPE}" == "env" ]; then
+    elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -561,6 +561,7 @@ function BuildFileList() {
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
+      FILE_ARRAY_PYTHON_MYPY+=("${FILE}")
 
     ######################
     # Get the RAKU files #

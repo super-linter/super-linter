@@ -13,12 +13,12 @@ GEM
       concurrent-ruby (~> 1.0)
     minitest (5.14.3)
     parallel (1.20.1)
-    parser (3.0.0.0)
+    parser (3.0.1.0)
       ast (~> 2.4.1)
     rack (2.2.3)
     rainbow (3.0.0)
-    regexp_parser (2.1.0)
-    rexml (3.2.4)
+    regexp_parser (2.1.1)
+    rexml (3.2.5)
     rubocop (1.6.1)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
@@ -40,7 +40,7 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 0.87.0)
-    rubocop-rspec (2.2.0)
+    rubocop-rspec (2.3.0)
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
@@ -57,7 +57,7 @@ DEPENDENCIES
   rubocop-github (~> 0.16.1)
   rubocop-performance (~> 1.7.1)
   rubocop-rails (~> 2.7)
-  rubocop-rspec (~> 2.2.0)
+  rubocop-rspec (~> 2.3.0)
 
 BUNDLED WITH
   2.2.11

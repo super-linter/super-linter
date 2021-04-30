@@ -1,8 +1,0 @@
-TAP version 13
-1..3
-not ok 1 - Dockerfile
-  ---
-  message: /tmp/lint/.automation/test/dockerfile_hadolint/bad/Dockerfile 1 DL3007 warning Using latest is prone to errors if the image will ever update. Pin the version explicitly to a release tag\n/tmp/lint/.automation/test/dockerfile_hadolint/bad/Dockerfile 8 DL3021 error COPY with more than 2 arguments requires the last argument to end with /\n/tmp/lint/.automation/test/dockerfile_hadolint/bad/Dockerfile 9 DL3004 error Do not use sudo as it leads to unpredictable behavior. Use a tool like gosu to enforce root\n/tmp/lint/.automation/test/dockerfile_hadolint/bad/Dockerfile 11 DL3020 error Use COPY instead of ADD for files and folders\n/tmp/lint/.automation/test/dockerfile_hadolint/bad/Dockerfile 14 DL3025 warning Use arguments JSON notation for CMD and ENTRYPOINT arguments\n
-  ...
-ok 2 - Dockerfile
-ok 3 - Dockerfile.dev
