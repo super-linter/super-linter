@@ -34,11 +34,11 @@
                 "core"
             ],
             "hashes": [
-                "sha256:0de72ccaaf1531101651cb892ba0e721d70e30ad1d7c967ceeb586f55f6ddd92",
-                "sha256:e5104cb11c437aec7f51e05a07f8c68d7f9b7c4cc36afc52edd8b0f71d84d63a"
+                "sha256:5138c460eb4590e5d0d0a931bb4353e22f24921a6fdc275b2c0dc8708a7da3bc",
+                "sha256:d63b72df37000c72378cb1ae0f48a5ba6410ce650717d81d818e528208eecf91"
             ],
             "index": "pypi",
-            "version": "==5.0.6"
+            "version": "==5.0.7"
         },
         "appdirs": {
             "hashes": [
@@ -835,6 +835,13 @@
                 "sha256:f7f39c583fd92027bd9d06127b259aee7a5b7945c1f1fa56263811e1e766996d"
             ],
             "version": "==1.1.2"
+        },
+        "tenacity": {
+            "hashes": [
+                "sha256:5bd16ef5d3b985647fe28dfa6f695d343aa26479a04e8792b9d3c8f49e361ae1",
+                "sha256:a0ce48587271515db7d3a5e700df9ae69cce98c4b57c23a4886da15243603dd8"
+            ],
+            "version": "==7.0.0"
         },
         "toml": {
             "hashes": [
