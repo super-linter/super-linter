@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - golang_bad_01.go
-  ---
-  message: level=warningg="[runner] The linter 'maligned' is deprecated due to The repository of the linter has been archived by the owner. Use govet 'fieldalignment' instead."\nlevel=warningg="[runner] Can't run linter goanalysis_metalinter failed prerequisites [(buildir@command-line-arguments, inspect@command-line-arguments, isgenerated@command-line-arguments) analysis skipped errors in package [go/golang_bad_01.go 1 1 expected 'package', found 'if' /tmp/lint/.automation/test/go/golang_bad_01.go 1 1 expected 'package', found 'if']]"\nlevel=warningg="[runner] Can't run linter unused buildir analysis skipped errors in package [go/golang_bad_01.go 1 1 expected 'package', found 'if' /tmp/lint/.automation/test/go/golang_bad_01.go 1 1 expected 'package', found 'if' /tmp/lint/.automation/test/go/golang_bad_01.go 1 1 expected 'package', found 'if']"\nlevel=errorg="Running error buildir analysis skipped errors in package [go/golang_bad_01.go 1 1 expected 'package', found 'if' /tmp/lint/.automation/test/go/golang_bad_01.go 1 1 expected 'package', found 'if' /tmp/lint/.automation/test/go/golang_bad_01.go 1 1 expected 'package', found 'if']"\n
-  ...
-ok 2 - golang_good_01.go
