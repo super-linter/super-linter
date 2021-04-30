@@ -323,22 +323,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   eval "${FILE_ARRAY_VARIABLE_NAME}=()"
 done
 
-#####################################
-# Validate we have linter installed #
-#####################################
-for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-  debug "Checking if linter with name ${LINTER_NAME} for the ${LANGUAGE} language is available..."
-
-  if ! command -v "${LINTER_NAME}" 1 &>/dev/null 2>&1; then
-    # Failed
-    fatal "Failed to find [${LINTER_NAME}] in system!"
-  else
-    # Success
-    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]}."
-  fi
-done
-
 ################################################################################
 ########################## FUNCTIONS BELOW #####################################
 ################################################################################
@@ -938,11 +922,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   fi
 done
-
-###########
-# Reports #
-###########
-Reports
 
 ##########
 # Footer #
