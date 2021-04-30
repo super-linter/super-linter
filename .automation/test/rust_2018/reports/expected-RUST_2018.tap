@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - rust_bad_1.rs
-  ---
-  message: Diff in /tmp/lint/.automation/test/rust_2018/rust_bad_1.rs at line 1 \n // rustfmt-struct_field_align_threshold 50\n fn func() {\n- Ok(ServerInformation { name unwrap_message_string(items.get(0)),\n- vendor unwrap_message_string(items.get(1)),\n- version unwrap_message_string(items.get(2)),\n- spec_version unwrap_message_string(items.get(3)), });\n+ Ok(ServerInformation {\n+ name unwrap_message_string(items.get(0)),\n+ vendor unwrap_message_string(items.get(1)),\n+ version unwrap_message_string(items.get(2)),\n+ spec_version unwrap_message_string(items.get(3)),\n+ });\n }\n \n
-  ...
-ok 2 - rust_good_1.rs
