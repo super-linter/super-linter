@@ -3,6 +3,8 @@
 This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/51071879604e4f319859d4daf91c68f5)](https://www.codacy.com/gh/github/super-linter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=github/super-linter&amp;utm_campaign=Badge_Grade)
+
 **The end goal of this tool:**
 
 - Prevent broken code from being uploaded to the default branch (_Usually_ `master` or `main`)
@@ -209,6 +211,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ENV VAR**                        | **Default Value**               | **Notes**                                                                                                                                                                                                            |
 | ---------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ACTIONS_RUNNER_DEBUG**           | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
+| **ANSIBLE_CONFIG_FILE**            | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible-lint.readthedocs.io/en/latest/configuring.html#configuration-file) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                              |
 | **ANSIBLE_DIRECTORY**              | `/ansible`                      | Flag to set the root directory for Ansible file location(s), relative to `DEFAULT_WORKSPACE`. Set to `.` to use the top-level of the `DEFAULT_WORKSPACE`.                                                            |
 | **CSS_FILE_NAME**                  | `.stylelintrc.json`             | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                         |
 | **DEFAULT_BRANCH**                 | `master`                        | The name of the repository default branch.                                                                                                                                                                           |
@@ -219,8 +222,8 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ERROR_ON_MISSING_EXEC_BIT**      | `false`                         | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an error instead.                                          |
 | **FILTER_REGEX_EXCLUDE**           | `none`                          | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                                                          |
 | **FILTER_REGEX_INCLUDE**           | `all`                           | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                                                |
-| **GITHUB_DOMAIN**                  | `github.com`                    | Specify a custom Github domain in case Github Enterprise is used: e.g. `github.myenterprise.com` |
-| **GITHUB_CUSTOM_API_URL**          | `api.github.com`                | Specify a custom Github API URL in case Github Enterprise is used: e.g. `https://github.myenterprise.com/api/v3/`|
+| **GITHUB_DOMAIN**                  | `github.com`                    | Specify a custom Github domain in case Github Enterprise is used: e.g. `github.myenterprise.com`                                                                                                                     |
+| **GITHUB_CUSTOM_API_URL**          | `api.github.com`                | Specify a custom Github API URL in case Github Enterprise is used: e.g. `https://github.myenterprise.com/api/v3/`                                                                                                    |
 | **IGNORE_GITIGNORED_FILES**        | `false`                         | If set to `true`, super-linter will ignore all the files that are ignored by Git.                                                                                                                                    |
 | **JAVASCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`                      | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                                                            |
@@ -231,8 +234,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **MULTI_STATUS**                   | `true`                          | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                 |
 | **MARKDOWN_CONFIG_FILE**           | `.markdown-lint.yml`            | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                           |
 | **MARKDOWN_CUSTOM_RULE_GLOBS**     | `.markdown-lint/rules,rules/**` | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md). |
-| **OUTPUT_FORMAT**                  | `none`                          | The report format to be generated, besides the stdout one. Output format of tap is currently using v13 of the specification. Supported formats: tap                                                                  |
-| **OUTPUT_FOLDER**                  | `super-linter.report`           | The location where the output reporting will be generated to. Output folder must not previously exist.                                                                                                               |
 | **OUTPUT_DETAILS**                 | `simpler`                       | What level of details to be reported. Supported formats: simpler or detailed.                                                                                                                                        |
 | **PYTHON_BLACK_CONFIG_FILE**       | `.python-black`                 | Filename for [black configuration](https://github.com/psf/black/blob/master/docs/compatible_configs.md) (ex: `.isort.cfg`, `pyproject.toml`)                                                                         |
 | **PYTHON_FLAKE8_CONFIG_FILE**      | `.flake8`                       | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                                                           |
@@ -242,6 +243,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **RUBY_CONFIG_FILE**               | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
 | **SUPPRESS_POSSUM**                | `false`                         | If set to `true`, will hide the ASCII possum at top of log output. Default is `false`                                                                                                                                |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE** | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
+| **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
@@ -251,7 +253,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_BASH_EXEC**             | `true`                          | Flag to enable or disable the linting process of the Bash language to validate if file is stored as executable.                                                                                                      |
 | **VALIDATE_CLOJURE**               | `true`                          | Flag to enable or disable the linting process of the Clojure language.                                                                                                                                               |
 | **VALIDATE_CLOUDFORMATION**        | `true`                          | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                                                                   |
-| **VALIDATE_COFFEE**                | `true`                          | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                                                          |
+| **VALIDATE_COFFEESCRIPT**          | `true`                          | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                                                          |
 | **VALIDATE_CSHARP**                | `true`                          | Flag to enable or disable the linting process of the C# language.                                                                                                                                                    |
 | **VALIDATE_CSS**                   | `true`                          | Flag to enable or disable the linting process of the CSS language.                                                                                                                                                   |
 | **VALIDATE_DART**                  | `true`                          | Flag to enable or disable the linting process of the Dart language.                                                                                                                                                  |
@@ -363,6 +365,20 @@ You can checkout this repository using [Container Remote Development](https://co
 ![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
 
 We will also support [GitHub Codespaces](https://github.com/features/codespaces/) once it becomes available
+
+### SSL Certs
+
+If you need to inject a SSL cert into the trust store, you will need to first copy the cert to **GitHub Secrets**
+Once you have copied the plain text certificate into **GitHub Secrets**, you can use the variable `SSL_CERT_SECRET` to point the **Super-Linter** to the files contents.
+Once found, it will load the certificate contents to a file, and to the trust store.
+- Example workflow:
+```yml
+- name: Lint Code Base
+  uses: github/super-linter@v3
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+```
 
 ## Limitations
 
