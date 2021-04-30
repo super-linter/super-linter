@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - terraform-terrascan_bad_1.tf
-  ---
-  message: \n\nViolation Details -\n \n	Description 	Ensure that your AWS application is not deployed within the default Virtual Private Cloud in order to follow security best practices\n	File 	terraform-terrascan_bad_1.tf\n	Line 	1\n	Severity 	MEDIUM\n	\n	-----------------------------------------------------------------------\n	\n\nScan Summary -\n\n	File/Folder 	/tmp/lint/.automation/test/terraform_terrascan/bad/terraform-terrascan_bad_1.tf\n	IaC Type 	terraform\n\n	Policies Validated 	561\n	Violated Policies 	1\n	Low 	0\n	Medium 	1\n	High 	0\n	\n
-  ...
-ok 2 - terraform-terrascan_good_1.tf
