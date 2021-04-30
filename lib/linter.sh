@@ -923,11 +923,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   fi
 done
 
-###########
-# Reports #
-###########
-Reports
-
 ##########
 # Footer #
 ##########
