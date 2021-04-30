@@ -22,6 +22,7 @@ VERSION=''                          # Version of release pulled from api
 ACTION_FILE='action.yml'            # Action file to update
 PR_ID=''                            # PUll Request ID when created
 UPDATED_BODY_STRING=''              # Issue body string converted
+COMMIT_SHA=''                       # COmmit sha when PR is created
 
 ##############
 # Built Vars #
@@ -127,7 +128,7 @@ CommitAndPush() {
   # Push the code to the branch and create PR
   PUSH_CMD=$(
     git push --set-upstream origin "Automation-Release-${VERSION}"
-    gh pr create --title "Update-to-release-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
+    gh pr create --title "Release-update-to-${VERSION}" --body "Automation Upgrade version ${VERSION} to action.yml" 2>&1
   )
 
   # Load the error code
@@ -151,6 +152,22 @@ CommitAndPush() {
       PR_ID=$(echo "${LINE}" | rev | cut -d'/' -f1 | rev)
     fi
   done
+
+  # get the current commit sha
+  COMMIT_SHA=$(git rev-parse HEAD 2>&1)
+
+  # Load the error code
+  ERROR_CODE=$?
+
+  # Check the shell for errors
+  if [ "${ERROR_CODE}" -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to get comit sha!"
+    echo "ERROR:[$COMMIT_SHA]"
+    exit 1
+  else
+    echo "Successfully grabbed commit sha"
+  fi
 
 }
 ################################################################################
@@ -186,12 +203,14 @@ UpdatePRBody() {
   echo "Updating PR body with Release information and Issue linkage..."
 
   # Need to update the body of the PR with the information
-  UPDATE_PR_CMD=$(curl -s --fail -X PATCH \
-    --url "${GITHUB_API}/repos/${ORG}/${REPO}/pulls/${PR_ID}" \
-    -H 'Accept: application/vnd.github.shadow-cat-preview+json,application/vnd.github.sailor-v-preview+json' \
-    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-    -H 'Content-Type: application/json' \
-    --data "{\"body\": \"Automation Creation of Super-Linter\n\nThis closes #${ISSUE_NUMBER}\n\n${UPDATED_BODY_STRING}\"}" 2>&1)
+  UPDATE_PR_CMD=$(
+    curl -s --fail -X PATCH \
+      --url "${GITHUB_API}/repos/${ORG}/${REPO}/pulls/${PR_ID}" \
+      -H 'Accept: application/vnd.github.shadow-cat-preview+json,application/vnd.github.sailor-v-preview+json' \
+      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+      -H 'Content-Type: application/json' \
+      --data "{\"body\": \"Automation Creation of Super-Linter\n\nThis closes #${ISSUE_NUMBER}\n\n${UPDATED_BODY_STRING}\"}" 2>&1
+  )
 
   # Load the error code
   ERROR_CODE=$?
@@ -204,6 +223,29 @@ UpdatePRBody() {
     exit 1
   else
     echo "Successfully updated PR body"
+  fi
+
+  # Add the label for the release
+  UPDATE_LABEL_CMD=$(
+    curl -s --fail -X POST \
+      --url "${GITHUB_API}/repos/${ORG}/${REPO}/issues/${PR_ID}/labels" \
+      -H 'Accept: application/vnd.github.v3+json' \
+      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+      -H 'Content-Type: application/json' \
+      --data '{"labels":["Release"]}' 2>&1
+  )
+
+  # Load the error code
+  ERROR_CODE=$?
+
+  # Check the shell for errors
+  if [ "${ERROR_CODE}" -ne 0 ]; then
+    # ERROR
+    echo "ERROR! Failed to update PR label!"
+    echo "ERROR:[$UPDATE_LABEL_CMD]"
+    exit 1
+  else
+    echo "Successfully updated PR label"
   fi
 }
 ################################################################################
@@ -231,6 +273,9 @@ SetActionsVariables() {
 
   echo "Setting PR_REF:[Automation-Release-${VERSION}]"
   echo "PR_REF=Automation-Release-${VERSION}" >>"${GITHUB_ENV}"
+
+  echo "Setting COMMIT_SHA:[${COMMIT_SHA}]"
+  echo "COMMIT_SHA=${COMMIT_SHA}" >>"${GITHUB_ENV}"
 }
 ################################################################################
 #### Function Footer ###########################################################

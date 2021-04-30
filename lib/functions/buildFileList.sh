@@ -8,6 +8,44 @@
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
 ################################################################################
+#### Function GenerateFileDiff #################################################
+function GenerateFileDiff() {
+  CMD="${1}"
+  ################
+  # print header #
+  ################
+  debug "----------------------------------------------"
+  debug "Generating Diff with:[$CMD]"
+
+  #################################################
+  # Get the Array of files changed in the commits #
+  #################################################
+  CMD_OUTPUT=$($CMD)
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  ##############################
+  # Check the shell for errors #
+  ##############################
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    # Error
+    info "Failed to get Diff with:[$CMD]"
+    info "Check that you have the full git history, the checkout is not shallow, etc"
+    info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+    fatal "[${CMD_OUTPUT}]"
+  fi
+
+  ###################################################
+  # Map command output to an array to proper handle #
+  ###################################################
+  mapfile -t RAW_FILE_ARRAY < <(echo -n "$CMD_OUTPUT")
+  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+}
+
+################################################################################
 #### Function BuildFileList ####################################################
 function BuildFileList() {
   debug "Building file list..."
@@ -62,39 +100,8 @@ function BuildFileList() {
       ################
       # push event   #
       ################
-      DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
-
-      ################
-      # print header #
-      ################
-      debug "----------------------------------------------"
-      debug "Generating Diff with:[$DIFF_TREE_CMD]"
-
-      #################################################
-      # Get the Array of files changed in the commits #
-      #################################################
-      DIFF_TREE_CMD_OUTPUT=$($DIFF_TREE_CMD)
-
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        # Error
-        info "Failed to get Diff with:[$DIFF_TREE_CMD]"
-        info "Check that you have the full git history, the checkout is not shallow, etc"
-        info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
-        fatal "[${DIFF_TREE_CMD}]"
-      fi
-
-      ###################################################
-      # Map command output to an array to proper handle #
-      ###################################################
-      mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_TREE_CMD_OUTPUT")
+      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+      GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
@@ -108,71 +115,15 @@ function BuildFileList() {
         debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
 
         DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
+        GenerateFileDiff "$DIFF_CMD"
 
-        debug "----------------------------------------------"
-        debug "Generating Diff with:[$DIFF_CMD]"
-
-        #################################################
-        # Get the Array of files changed in the commits #
-        #################################################
-        DIFF_CMD_OUTPUT=$($DIFF_CMD)
-
-        #######################
-        # Load the error code #
-        #######################
-        ERROR_CODE=$?
-
-        ##############################
-        # Check the shell for errors #
-        ##############################
-        if [ ${ERROR_CODE} -ne 0 ]; then
-          # Error
-          info "Failed to get Diff with:[$DIFF_CMD]"
-          info "Check that you have the full git history, the checkout is not shallow, etc"
-          info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
-          fatal "[${DIFF_CMD}]"
-        fi
-
-        ###################################################
-        # Map command output to an array to proper handle #
-        ###################################################
-        mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
       fi
     else
       ################
       # PR event     #
       ################
-      ################
-      # print header #
-      ################
       DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
-
-      debug "----------------------------------------------"
-      debug "Generating Diff with:[$DIFF_CMD]"
-
-      #################################################
-      # Get the Array of files changed in the commits #
-      #################################################
-      DIFF_CMD_OUTPUT=$($DIFF_CMD)
-
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        # Error
-        info "Failed to get Diff with:[$DIFF_CMD]"
-        fatal "[${DIFF_CMD}]"
-      fi
-
-      ###################################################
-      # Map command output to an array to proper handle #
-      ###################################################
-      mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_CMD_OUTPUT")
+      GenerateFileDiff "$DIFF_CMD"
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
@@ -390,7 +341,7 @@ function BuildFileList() {
     #####################
     # Get the ENV files #
     #####################
-    elif [ "${FILE_TYPE}" == "env" ]; then
+    elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -610,6 +561,7 @@ function BuildFileList() {
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
+      FILE_ARRAY_PYTHON_MYPY+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -639,6 +591,25 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("${FILE}")
+
+    ######################
+    # Get the RUST files #
+    ######################
+    elif [ "${FILE_TYPE}" == "rs" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_RUST_2015+=("${FILE}")
+      FILE_ARRAY_RUST_2018+=("${FILE}")
+
+    #######################
+    # Get the RUST crates #
+    #######################
+    elif [ "${BASE_FILE}" == "cargo.toml" ]; then
+      ###############################################
+      # Append the crate manifest file to the array #
+      ###############################################
+      FILE_ARRAY_RUST_CLIPPY+=("${FILE}")
 
     ###########################
     # Get the SNAKEMAKE files #

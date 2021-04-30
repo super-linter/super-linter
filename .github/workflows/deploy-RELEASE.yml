@@ -22,12 +22,15 @@ on:
 # Set the Job #
 ###############
 jobs:
-  build:
+  deploy:
     # Name the Job
     name: Deploy Docker Image - Release
     # Set the agent to run on
     runs-on: ubuntu-latest
-    # Only run if Admin start job and it was the Release Issue template
+
+    #####################################################################
+    # Only run if Admin start job and it was the Release Issue template #
+    #####################################################################
     if: contains(github.event.issue.title, 'Super-Linter Release:') &&
         github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
         github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
@@ -66,7 +69,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.4.3
+        uses: bobheadxi/deployments@v0.5.2
         id: deployment
         with:
           step: start
@@ -110,7 +113,8 @@ jobs:
       - name: Update actions.yml with release version and create PR
         if: success()
         run: ./.automation/update-actions-version.sh
-        # Note: script creates variables: PR_ID PR_REF RELEASE_VERSION
+        # Note: script creates variables:
+        # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -146,17 +150,26 @@ jobs:
       - name: Create Release
         if: success()
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          commitish: ${{ env.PR_REF }}
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: Release ${{ env.RELEASE_VERSION }}
-          body: |
-            ${{ github.event.issue.body }}
-          draft: false
-          prerelease: false
+        run: |
+          curl -X POST \
+            --url https://api.github.com/repos/${{ github.repository }}/releases \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
+              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
+              \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
+
+      #####################################################
+      # Create the Required status check for Stack Linter #
+      #####################################################
+      - name: Create Stack Linter Status
+        if: success()
+        run: |
+          curl -X POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }} \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --data '{	"state": "success",	"context": "Stack linter" }'
 
       #################################
       # Close the opened Pull Request #
@@ -173,11 +186,11 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.4.3
+        uses: bobheadxi/deployments@v0.5.2
         if: always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: https://github.com/orgs/${{github.repository_owner}}/packages?repo_name=${{github.repository.name}}
+          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
