@@ -41,7 +41,7 @@ function GenerateFileDiff() {
   ###################################################
   # Map command output to an array to proper handle #
   ###################################################
-  mapfile -t RAW_FILE_ARRAY < <(echo "$DIFF_TREE_CMD_OUTPUT")
+  mapfile -t RAW_FILE_ARRAY < <(echo -n "$CMD_OUTPUT")
   debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
@@ -100,7 +100,7 @@ function BuildFileList() {
       ################
       # push event   #
       ################
-      DIFF_TREE_CMD="git diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
       GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
@@ -121,9 +121,6 @@ function BuildFileList() {
     else
       ################
       # PR event     #
-      ################
-      ################
-      # print header #
       ################
       DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
       GenerateFileDiff "$DIFF_CMD"
@@ -344,7 +341,7 @@ function BuildFileList() {
     #####################
     # Get the ENV files #
     #####################
-    elif [ "${FILE_TYPE}" == "env" ]; then
+    elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -564,6 +561,7 @@ function BuildFileList() {
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
+      FILE_ARRAY_PYTHON_MYPY+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -603,6 +601,15 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
+
+    #######################
+    # Get the RUST crates #
+    #######################
+    elif [ "${BASE_FILE}" == "cargo.toml" ]; then
+      ###############################################
+      # Append the crate manifest file to the array #
+      ###############################################
+      FILE_ARRAY_RUST_CLIPPY+=("${FILE}")
 
     ###########################
     # Get the SNAKEMAKE files #
