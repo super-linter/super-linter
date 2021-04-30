@@ -17,6 +17,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+test/.coverage/
 
 # nyc test coverage
 .nyc_output
@@ -69,3 +70,9 @@ super-linter.report
 
 # Git directory (useful for .dockerignore)
 .git
+
+# Code coverage data for tests
+.coverage
+
+# Test reports
+test/reports

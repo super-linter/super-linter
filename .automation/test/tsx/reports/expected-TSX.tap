@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - tsx_bad_1.tsx
-  ---
-  message: \n/tmp/lint/.automation/test/tsx/tsx_bad_1.tsx\n 1 16 error Parsing error Type expected\n\n 1 problem (1 error, 0 warnings)\n
-  ...
-ok 2 - tsx_good_1.tsx
