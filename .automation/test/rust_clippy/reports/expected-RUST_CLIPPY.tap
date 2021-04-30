@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - Cargo.toml
-  ---
-  message: /tmp/lint/.automation/test/rust_clippy/bad /tmp/lint/.automation/test\n Checking bad v0.1.0 (/tmp/lint/.automation/test/rust_clippy/bad)\nerror approximate value of `f{32, 64} consts PI` found. Consider using it directly\n --> src/main.rs 2 13\n |\n2 | let x = 3.14;\n | ^^^^\n |\n = note `#[deny(clippy approx_constant)]` on by default\n = help for further information visit https //rust-lang.github.io/rust-clippy/master/index.html#approx_constant\n\nerror aborting due to previous error\n\nerror could not compile `bad`\n\nTo learn more, run the command again with --verbose.\n/tmp/lint/.automation/test\n
-  ...
-ok 2 - Cargo.toml

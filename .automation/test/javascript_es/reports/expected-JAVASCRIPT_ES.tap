@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - javascript_bad_1.js
-  ---
-  message: \n/tmp/lint/.automation/test/javascript_es/javascript_bad_1.js\n 5 9 error Parsing error Unterminated regular expression literal\n\n 1 problem (1 error, 0 warnings)\n
-  ...
-ok 2 - javascript_good_1.js

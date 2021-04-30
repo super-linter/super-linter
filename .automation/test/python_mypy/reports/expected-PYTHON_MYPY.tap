@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - python_bad_1.py
-  ---
-  message: python_mypy/python_bad_1.py 15 error invalid syntax\nFound 1 error in 1 file (errors prevented further checking)\n
-  ...
-ok 2 - python_good_1.py

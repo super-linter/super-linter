@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - arm_bad_1.json
-  ---
-  message: \nValidating arm\arm_good_1.json\n deploymentTemplate\n [+] adminUsername Should Not Be A Literal\n [+] apiVersions Should Be Recent\n [+] artifacts parameter\n [+] CommandToExecute Must Use ProtectedSettings For Secrets\n [+] DependsOn Best Practices\n [+] Deployment Resources Must Not Be Debug\n [+] DeploymentTemplate Must Not Contain Hardcoded Uri\n [+] DeploymentTemplate Schema Is Correct\n [+] Dynamic Variable References Should Not Use Concat\n [+] IDs Should Be Derived From ResourceIDs\n [+] Location Should Not Be Hardcoded\n [+] ManagedIdentityExtension must not be used\n [+] Min And Max Value Are Numbers\n [+] Outputs Must Not Contain Secrets\n [+] Parameters Must Be Referenced\n [+] Parameters Property Must Exist\n [+] providers apiVersions Is Not Permitted\n [+] ResourceIds should not contain\n [+] Resources Should Have Location\n [-] Resources Should Not Be Ambiguous\n At least one parameter must preceed the resource type Index 2132\n\n [+] Secure String Parameters Cannot Have Default\n [+] Template Should Not Contain Blanks\n [+] Variables Must Be Referenced\n [+] Virtual Machines Should Not Be Preview\n [+] VM Images Should Use Latest Version\n [+] VM Size Should Be A Parameter\n \n
-  ...
-ok 2 - arm_good_1.json

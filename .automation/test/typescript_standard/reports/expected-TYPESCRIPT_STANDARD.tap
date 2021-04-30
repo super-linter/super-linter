@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - typescript_bad_1.ts
-  ---
-  message: standard Use JavaScript Standard Style (https //standardjs.com)\n /tmp/lint/.automation/test/typescript_standard/typescript_bad_1.ts 5 39 Parsing error Unterminated regular expression literal.\n
-  ...
-ok 2 - typescript_good_1.ts

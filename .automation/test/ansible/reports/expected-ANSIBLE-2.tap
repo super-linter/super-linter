@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - ansible_bad_1.yml
-  ---
-  message: WARNING Overriding detected file kind 'yaml' with 'playbook' for given positional argument /tmp/lint/.automation/test/ansible/ansible_bad_1.yml\nINFO Executing syntax check on ansible_bad_1.yml \nWARNING Listing 1 violation(s) that are fatal\nansible_bad_1.yml 24 7 internal-error\n
-  ...
-ok 2 - ansible_good_1.yml
