@@ -19,7 +19,7 @@ info: ## Gather information about the runtime environment
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
 	echo "ls -ahl: $$(ls -ahl)"; \
-	docker images;
+	docker images; \
 	docker ps
 
 .PHONY: kcov
@@ -74,7 +74,6 @@ SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
-	; \
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
 	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTAINER_NAME)" --rm -it --entrypoint /bin/ash ghcr.io/github/super-linter -c "while true; do sleep 1; done")" \
