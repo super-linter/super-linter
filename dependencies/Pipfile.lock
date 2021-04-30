@@ -85,17 +85,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:81208442ab55c5d96a39d3b4a018dc174949f800bc2c34efd7c32a75f6ad90c7",
-                "sha256:d072aa2559fa3b7af30287a417a659d2fb6d2b786f58bdbf19e61fffa12c9c40"
+                "sha256:35b099fa55f5db6e99a92855b9f320736121ae985340adfc73bc46fb443809e9",
+                "sha256:53fd4c7df86f78e51168f832b42ca1c284333b3f5af0266bf10d13af41aeff5c"
             ],
-            "version": "==1.17.59"
+            "version": "==1.17.61"
         },
         "botocore": {
             "hashes": [
-                "sha256:0a930847caea829f84dfca798764504be2e1fde3637e06a533001ec95b921d19",
-                "sha256:c392944132ae03610777d0a764bbf47a169e442b93cfa7e64cb7b9ea578c773b"
+                "sha256:c765ddd0648e32b375ced8b82bfcc3f8437107278b2d2c73b7da7f41297b5388",
+                "sha256:d48f94573c75a6c1d6d0152b9e21432083a1b0a0fc39b41f57128464982cb0a0"
             ],
-            "version": "==1.20.59"
+            "version": "==1.20.61"
         },
         "bracex": {
             "hashes": [
@@ -825,10 +825,16 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:9441169034cce46086a8b45486d75175db645b932e766d28fed312ec837792d3"
+                "sha256:eb6a59c7cfe847333d792fad8ef04a478bed8f2184f0f447c011b15dfbc20a49"
             ],
             "index": "pypi",
-            "version": "==6.0.5"
+            "version": "==6.3.0"
+        },
+        "stopit": {
+            "hashes": [
+                "sha256:f7f39c583fd92027bd9d06127b259aee7a5b7945c1f1fa56263811e1e766996d"
+            ],
+            "version": "==1.1.2"
         },
         "toml": {
             "hashes": [
