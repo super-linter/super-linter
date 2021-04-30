@@ -88,4 +88,4 @@ inspec: inspec-check ## Run InSpec tests
 		--log-level=debug \
 		-t "docker://$${SUPER_LINTER_TEST_CONTAINER_ID}" \
 	&& docker ps \
-	&& docker kill "$${SUPER_LINTER_TEST_CONTAINER_NAME}"
+	&& docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"
