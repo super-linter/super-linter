@@ -196,3 +196,113 @@ end
 # protolint editorconfig-checker  #
 # bash-exec gherkin-lint          #
 ###################################
+
+############################################
+# Check to see all Ruby Gems are installed #
+############################################
+control "super-linter-installed-ruby-gems" do
+  impact 1
+  title "Super-Linter installed Ruby gems check"
+  desc "Check that Ruby gems that Super-Linter needs are installed."
+
+  gems = [
+    "rubocop",
+    "rubocop-github",
+    "rubocop-performance",
+    "rubocop-rails",
+    "rubocop-rspec"
+  ]
+
+  gems.each do |item|
+    describe gem(item) do
+      it { should be_installed }
+    end
+  end
+
+end
+
+###############################################
+# Check to see all PIP packages are installed #
+###############################################
+control "super-linter-installed-pip-packages" do
+  impact 1
+  title "Super-Linter installed PIP packages check"
+  desc "Check that PIP packages that Super-Linter needs are installed."
+
+  packages = [
+    "ansible-lint",
+    "black",
+    "cfn-lint",
+    "cython",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "snakefmt",
+    "snakemake",
+    "typing_extensions",
+    "yamllint",
+    "yq"
+  ]
+
+  packages.each do |item|
+    describe pip(item) do
+      it { should be_installed }
+    end
+  end
+
+end
+
+###############################################
+# Check to see all NPM packages are installed #
+###############################################
+control "super-linter-installed-npm-packages" do
+  impact 1
+  title "Super-Linter installed NPM packages check"
+  desc "Check that NPM packages that Super-Linter needs are installed."
+
+  packages = [
+    "@coffeelint/cli",
+    "@stoplight/spectral",
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "asl-validator",
+    "axios",
+    "babel-eslint",
+    "dockerfilelint",
+    "eslint",
+    "eslint-config-airbnb",
+    "eslint-config-prettier",
+    "eslint-plugin-jest",
+    "eslint-plugin-jsx-a11y",
+    "eslint-plugin-prettier",
+    "gherkin-lint",
+    "htmlhint",
+    "immer",
+    "ini",
+    "jscpd",
+    "jsonlint",
+    "lodash",
+    "markdownlint-cli",
+    "node-fetch",
+    "npm-groovy-lint",
+    "prettier",
+    "prettyjson",
+    "pug",
+    "sql-lint",
+    "standard",
+    "stylelint",
+    "stylelint-config-sass-guidelines",
+    "stylelint-config-standard",
+    "stylelint-scss",
+    "tekton-lint",
+    "typescript"
+  ]
+
+  packages.each do |item|
+    describe npm(item, path: "/") do
+      it { should be_installed }
+    end
+  end
+
+end
