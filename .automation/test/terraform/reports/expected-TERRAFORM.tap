@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - terraform_bad_1.tf
-  ---
-  message: Failed to load configurations. 1 error(s) occurred \n\nError Invalid expression\n\n on /tmp/lint/.automation/test/terraform/bad/terraform_bad_1.tf line 3, in resource "aws_instance" "bad" \n 3 instance_type = # invalid type!\n 4 }\n\nExpected the start of an expression, but found an invalid expression token.\n
-  ...
-ok 2 - terraform_good_1.tf

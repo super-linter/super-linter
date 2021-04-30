@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - states_bad_1.json
-  ---
-  message: State machine definition is invalid \n \ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should have required property 'Type'\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should NOT have additional properties\ndata.States['Hello World'] should match exactly one schema in oneOf\n
-  ...
-ok 2 - states_good_1.json

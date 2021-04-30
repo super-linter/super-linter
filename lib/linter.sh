@@ -44,21 +44,23 @@ export LOG_ERROR
 # Source Function Files #
 #########################
 # shellcheck source=/dev/null
+source /action/lib/functions/buildFileList.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/detectFiles.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/linterRules.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/linterVersions.sh # Source the function script(s)
+# shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/buildFileList.sh # Source the function script(s)
+source /action/lib/functions/tapLibrary.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/updateSSL.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/worker.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/tapLibrary.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/linterRules.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/detectFiles.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/linterVersions.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
@@ -74,7 +76,7 @@ export VERSION_FILE                                                 # Workaround
 # Rules files #
 ###############
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-ANSIBLE_FILE_NAME=".ansible-lint.yml"
+ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ARM_FILE_NAME=".arm-ttk.psd1"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -148,6 +150,8 @@ RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"
 SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+SSL_CERT_SECRET="${SSL_CERT_SECRET}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -317,22 +321,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
   debug "Setting ${FILE_ARRAY_VARIABLE_NAME} variable..."
   eval "${FILE_ARRAY_VARIABLE_NAME}=()"
-done
-
-#####################################
-# Validate we have linter installed #
-#####################################
-for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-  debug "Checking if linter with name ${LINTER_NAME} for the ${LANGUAGE} language is available..."
-
-  if ! command -v "${LINTER_NAME}" 1 &>/dev/null 2>&1; then
-    # Failed
-    fatal "Failed to find [${LINTER_NAME}] in system!"
-  else
-    # Success
-    debug "Successfully found binary for ${F[W]}[${LINTER_NAME}]${F[B]}."
-  fi
 done
 
 ################################################################################
@@ -859,6 +847,11 @@ for i in "${!LINTER_COMMANDS_ARRAY[@]}"; do
 done
 debug "---------------------------------------------"
 
+#################################
+# Check for SSL cert and update #
+#################################
+CheckSSLCert
+
 ###########################################
 # Build the list of files for each linter #
 ###########################################
@@ -929,11 +922,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   fi
 done
-
-###########
-# Reports #
-###########
-Reports
 
 ##########
 # Footer #

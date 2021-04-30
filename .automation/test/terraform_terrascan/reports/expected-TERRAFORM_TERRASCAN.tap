@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - terraform-terrascan_bad_1.tf
-  ---
-  message: results \n violations \n - rule_name instanceWithNoVpc\n description Ensure that your AWS application is not deployed within the default Virtual Private Cloud in order to follow security best practices\n rule_id AC-AW-IS-IN-M-0144\n severity MEDIUM\n category Infrastructure Security\n resource_name instanceWithNoVpc\n resource_type aws_instance\n file terraform-terrascan_bad_1.tf\n line 1\n count \n low 0\n medium 1\n high 0\n total 1\n
-  ...
-ok 2 - terraform-terrascan_good_1.tf

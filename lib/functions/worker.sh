@@ -51,15 +51,6 @@ function LintCodebase() {
   # Check if any data was found #
   ###############################
   if [ ${SKIP_FLAG} -eq 0 ]; then
-    ########################################
-    # Prepare context if TAP format output #
-    ########################################
-    if IsTAP; then
-      TMPFILE=$(mktemp -q "/tmp/super-linter-${FILE_TYPE}.XXXXXX")
-      mkdir -p "${REPORT_OUTPUT_FOLDER}"
-      REPORT_OUTPUT_FILE="${REPORT_OUTPUT_FOLDER}/super-linter-${FILE_TYPE}.${OUTPUT_FORMAT}"
-    fi
-
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
@@ -295,26 +286,11 @@ function LintCodebase() {
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
-
-          #######################################################
-          # Store the linting as a temporary file in TAP format #
-          #######################################################
-          if IsTAP; then
-            NotOkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
-            AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
-          fi
         else
           ###########
           # Success #
           ###########
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
-
-          #######################################################
-          # Store the linting as a temporary file in TAP format #
-          #######################################################
-          if IsTAP; then
-            OkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
-          fi
         fi
       else
         #######################################
@@ -338,75 +314,9 @@ function LintCodebase() {
           ###########
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
         fi
-
-        #######################################################
-        # Store the linting as a temporary file in TAP format #
-        #######################################################
-        if IsTAP; then
-          NotOkTap "${INDEX}" "${FILE_NAME}" "${TMPFILE}"
-          AddDetailedMessageIfEnabled "${LINT_CMD}" "${TMPFILE}"
-        fi
       fi
       debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
     done
-
-    #################################
-    # Generate report in TAP format #
-    #################################
-    if IsTAP && [ ${INDEX} -gt 0 ]; then
-      HeaderTap "${INDEX}" "${REPORT_OUTPUT_FILE}"
-      cat "${TMPFILE}" >>"${REPORT_OUTPUT_FILE}"
-
-      if [ "${TEST_CASE_RUN}" = "true" ]; then
-        ########################################################################
-        # If expected TAP report exists then compare with the generated report #
-        ########################################################################
-        TAP_SUCCESS=0
-        TAP_ERROR_ARRAY=()
-        mapfile -t EXPECTED_FILES_ARRAY < <(
-          cd "${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports" || exit 1
-          find . -name '*.tap' 2>&1
-        )
-        for EXPECTED_FILE in "${EXPECTED_FILES_ARRAY[@]}"; do
-          # Remove the pathing to file name
-          EXPECTED_FILE_NAME="${EXPECTED_FILE:2}"
-          # Create full path
-          EXPECTED_FILE="${WORKSPACE_PATH}/${INDIVIDUAL_TEST_FOLDER}/reports/${EXPECTED_FILE_NAME}"
-
-          # Check that file exists
-          if [ -e "${EXPECTED_FILE}" ]; then
-            TMPFILE=$(mktemp -q "/tmp/diff-${FILE_TYPE}.XXXXXX")
-            ## Ignore white spaces, case sensitive
-            if ! diff -a -w -i "${EXPECTED_FILE}" "${REPORT_OUTPUT_FILE}" >"${TMPFILE}" 2>&1; then
-              #############################################
-              # We failed to compare the reporting output #
-              #############################################
-              warn "Tap File difference:"
-              cat "${TMPFILE}"
-              STRING=$(cat "${TMPFILE}")
-              TAP_ERROR_ARRAY+=("${STRING}")
-              TAP_ERROR_ARRAY+=("Failed to assert TAP output for ${LINTER_NAME} linter")
-            else
-              info "TAP output validated successfully for ${LINTER_NAME}"
-              # Set flag for success
-              TAP_SUCCESS=1
-            fi
-          else
-            fatal "No TAP expected file found at:[${EXPECTED_FILE}]"
-          fi
-        done
-
-        # Need to check if the TAP_SUCCESS was set to 1
-        if [ "${TAP_SUCCESS}" -ne 1 ]; then
-          # We failed on all tap outputs
-          error "Failed to assert TAP output!"
-          for LINE in "${TAP_ERROR_ARRAY[@]}"; do
-            error "${LINE}"
-          done
-          fatal "Failed to assert TAP output!"
-        fi
-      fi
-    fi
   fi
 
   ##############################
