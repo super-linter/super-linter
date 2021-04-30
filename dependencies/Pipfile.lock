@@ -25,9 +25,9 @@
         },
         "ansible-base": {
             "hashes": [
-                "sha256:f45df824051339d8bec32d7ab4e9e676498c05e2d9cfce6d54c9698a577e15e2"
+                "sha256:e2982666dba520333f20efef808751a7dd623b955ebde46db0f945cac47e2b12"
             ],
-            "version": "==2.10.8"
+            "version": "==2.10.9rc1"
         },
         "ansible-lint": {
             "extras": [
@@ -85,17 +85,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:4caf01511a07e229855b964d43ddbc6b3db1fd88a3747a4a7ca6d398ce04f3d3",
-                "sha256:fcd1a0318919bddf4efd0a8858214ed07d08a870d79d20f9b2d6df5d3092b8d8"
+                "sha256:35b099fa55f5db6e99a92855b9f320736121ae985340adfc73bc46fb443809e9",
+                "sha256:53fd4c7df86f78e51168f832b42ca1c284333b3f5af0266bf10d13af41aeff5c"
             ],
-            "version": "==1.17.58"
+            "version": "==1.17.61"
         },
         "botocore": {
             "hashes": [
-                "sha256:0de54af6af58d59237377f1bbe43edc4395d88848cddbe00f546703d4026c638",
-                "sha256:2830596e0d92d82abaf78a7926e49a3b7a80c93cdc75e95717a1dd4ea9027283"
+                "sha256:c765ddd0648e32b375ced8b82bfcc3f8437107278b2d2c73b7da7f41297b5388",
+                "sha256:d48f94573c75a6c1d6d0152b9e21432083a1b0a0fc39b41f57128464982cb0a0"
             ],
-            "version": "==1.20.58"
+            "version": "==1.20.61"
         },
         "bracex": {
             "hashes": [
@@ -155,11 +155,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:23a37385a780126648687d40c99fd7c3f18c5ef8f2e1ce404c4a92b13c506d24",
-                "sha256:251ac66365ccdc736994111c8b77bda5ed89466527e3e00d460899a4019985a1"
+                "sha256:1d003e10084b56dede14d3e1acc1f4a793646dcc01318dee2f209d35c1a9fb50",
+                "sha256:e7724220951b4056dc2c55aa24fc3967bc5ffe525ccf1094e9926aba3a46d9b9"
             ],
             "index": "pypi",
-            "version": "==0.48.1"
+            "version": "==0.49.0"
         },
         "chardet": {
             "hashes": [
@@ -672,7 +672,7 @@
                 "sha256:fdc842473cd33f45ff6bce46aea678a54e3d21f1b61a7750ce3c498eedfe25d6",
                 "sha256:fe69978f3f768926cfa37b867e3843918e012cf83f680806599ddce33c2c68b0"
             ],
-            "markers": "python_version != '3.4'",
+            "markers": "python_version != '3.4' and python_version != '3.5'",
             "version": "==5.4.1"
         },
         "ratelimiter": {
@@ -825,10 +825,16 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:9441169034cce46086a8b45486d75175db645b932e766d28fed312ec837792d3"
+                "sha256:eb6a59c7cfe847333d792fad8ef04a478bed8f2184f0f447c011b15dfbc20a49"
             ],
             "index": "pypi",
-            "version": "==6.0.5"
+            "version": "==6.3.0"
+        },
+        "stopit": {
+            "hashes": [
+                "sha256:f7f39c583fd92027bd9d06127b259aee7a5b7945c1f1fa56263811e1e766996d"
+            ],
+            "version": "==1.1.2"
         },
         "toml": {
             "hashes": [
