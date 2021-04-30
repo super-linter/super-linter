@@ -3,9 +3,9 @@ import public "other.proto";
 option java_package = "com.example.foo";
 enum EnumAllowingAlias {
   option allow_alias = true;
-  ALLOWING_UNSPECIFIED = 0;
-  STARTED = 1;
-  RUNNING = 2 [(custom_option) = "hello world"];
+  ENUM_ALLOWING_ALIAS_ALLOWING_UNSPECIFIED = 0;
+  ENUM_ALLOWING_ALIAS_STARTED = 1;
+  ENUM_ALLOWING_ALIAS_RUNNING = 2 [(custom_option) = "hello world"];
 }
 message Outer {
   option (my_option).a = true;

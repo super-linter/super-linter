@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - groovy_bad_01.groovy
-  ---
-  message: GroovyLint Started CodeNarc Server\n/tmp/lint/.automation/test/groovy/groovy_bad_01.groovy\n 4 error Unexpected input '$' @ line 4, column 16. NglParseError \n\n\nnpm-groovy-lint results in 0 linted files \n\n (index) Severity Total found \n\n 0 'Error' 1 \n 1 'Warning' 0 \n 2 'Info' 0 \n\nFailure 1 error(s) have been found \n 0 warning(s) have been found\n
-  ...
-ok 2 - groovy_good_01.groovy
