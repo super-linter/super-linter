@@ -17,7 +17,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "gherkin-lint": "^4.2.1",
     "htmlhint": "^0.14.2",
-    "immer": "^9.0.1",
+    "immer": "^9.0.2",
     "ini": "^2.0.0",
     "jscpd": "^3.3.25",
     "jsonlint": "^1.6.3",
