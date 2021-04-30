@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - gherkin_bad_01.feature
-  ---
-  message: /tmp/lint/.automation/test/gherkin/gherkin_bad_01.feature\n 8 Scenario name is already used in /tmp/lint/.automation/test/gherkin/gherkin_bad_01.feature 4 no-dupe-scenario-names\n 11 Trailing spaces are not allowed no-trailing-spaces\n 12 Multiple empty lines are not allowed no-multiple-empty-lines\n
-  ...
-ok 2 - gherkin_good_01.feature

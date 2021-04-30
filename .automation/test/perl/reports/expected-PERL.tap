@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - perl_bad_1.pl
-  ---
-  message: Code before strictures are enabled at line 14, column 1. See page 429 of PBP. (Severity 5)\n
-  ...
-ok 2 - perl_good_1.pl
