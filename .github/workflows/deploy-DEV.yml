@@ -123,7 +123,7 @@ jobs:
       # Codacy Coverage Report #
       ##########################
       - name: Upload the code coverage report
-        uses: codacy/codacy-coverage-reporter-action@0.2.0
+        uses: codacy/codacy-coverage-reporter-action@1.0.1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
