@@ -4,7 +4,7 @@
 all: info test ## Run all targets.
 
 .PHONY: test
-test: info clean kcov prepare-test-reports ## Run tests
+test: info clean inspec kcov prepare-test-reports ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -19,7 +19,8 @@ info: ## Gather information about the runtime environment
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
 	echo "ls -ahl: $$(ls -ahl)"; \
-	docker images
+	docker images; \
+	docker ps
 
 .PHONY: kcov
 kcov: ## Run kcov
@@ -58,3 +59,33 @@ clean: ## Clean the workspace
 .PHONY: help
 help: ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: inspec-check
+inspec-check: ## Validate inspec profiles
+	docker run $(DOCKER_FLAGS) \
+		--rm \
+		-v "$(CURDIR)":/workspace \
+		-w="/workspace" \
+		chef/inspec check \
+		--chef-license=accept \
+		test/inspec/super-linter
+
+SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
+
+.PHONY: inspec
+inspec: inspec-check ## Run InSpec tests
+	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
+	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
+	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTAINER_NAME)" --rm -it --entrypoint /bin/ash ghcr.io/github/super-linter -c "while true; do sleep 1; done")" \
+	&& docker run $(DOCKER_FLAGS) \
+		--rm \
+		-v "$(CURDIR)":/workspace \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-w="/workspace" \
+		chef/inspec exec test/inspec/super-linter\
+		--chef-license=accept \
+		--diagnose \
+		--log-level=debug \
+		-t "docker://$${SUPER_LINTER_TEST_CONTAINER_ID}" \
+	&& docker ps \
+	&& docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"
