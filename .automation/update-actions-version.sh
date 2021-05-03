@@ -4,16 +4,6 @@
 ############# Update the actions.yml with version @admiralawkbar ###############
 ################################################################################
 
-###########
-# Globals #
-###########
-GITHUB_TOKEN="${GITHUB_TOKEN}" # Token for API CALLS
-DEPLOY_KEY="${DEPLOY_KEY}"     # Deploy key with write access
-ORG_REPO="${ORG_REPO}"         # Name of ther GitHub Organization and repository
-ISSUE_NUMBER="${ISSUE_NUMBER}" # Number of the issue that kicked the automation
-ISSUE_TITLE="${ISSUE_TITLE}"   # Title of the issue
-ISSUE_BODY="${ISSUE_BODY}"     # Body of the issue
-
 ############
 # Defaults #
 ############\
