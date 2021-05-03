@@ -397,8 +397,7 @@ COPY TEMPLATES /action/lib/.automation
 ################################################
 # Run to build version file and validate image #
 ################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh \
-    && /action/lib/functions/validateDocker.sh
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
 
 ######################
 # Set the entrypoint #
