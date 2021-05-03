@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - golang_bad_01.go
+  ---
+  message: level=warningg="[runner] The linter 'maligned' is deprecated (since v1.38.0) due to The repository of the linter has been archived by the owner. Replaced by govet 'fieldalignment'."\ngo/golang_bad_01.go 1 1 expected 'package', found 'if' (typecheck)\nif len(in) == 0 {\n^\n
+  ...
+ok 2 - golang_good_01.go

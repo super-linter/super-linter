@@ -37,7 +37,7 @@ jobs:
       ######################
       # Run the tag action #
       ######################
-      - uses: Actions-R-Us/actions-tagger@v2.0.1
+      - uses: Actions-R-Us/actions-tagger@v2.0.2
         with:
           publish_latest_tag: true
         env:
