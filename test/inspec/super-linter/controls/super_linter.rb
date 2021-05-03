@@ -323,6 +323,7 @@ control "super-linter-validate-directories" do
     "/action/.automation",
     "/usr/local/lib/",
     "/usr/local/share/"
+  ]
 
   dirs.each do |item|
     describe directory(item) do
@@ -392,6 +393,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",
     "/action/lib/.automation/sun_checks.xml"
+  ]
 
   files.each do |item|
     describe file(item) do
