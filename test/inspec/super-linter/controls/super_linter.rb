@@ -316,7 +316,7 @@ control "super-linter-R-language-libraries" do
   desc "Check that R Libraries that Super-Linter needs are installed."
 
   describe directory("/home/r-library") do
-    it 'This directory should exist and be a directory.' do
+    it "This directory should exist and be a directory." do
       expect(subject).to(exist)
       expect(subject).to(be_directory)
     end
