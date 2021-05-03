@@ -196,3 +196,226 @@ end
 # protolint editorconfig-checker  #
 # bash-exec gherkin-lint          #
 ###################################
+
+############################################
+# Check to see all Ruby Gems are installed #
+############################################
+control "super-linter-installed-ruby-gems" do
+  impact 1
+  title "Super-Linter installed Ruby gems check"
+  desc "Check that Ruby gems that Super-Linter needs are installed."
+
+  gems = [
+    "rubocop",
+    "rubocop-github",
+    "rubocop-performance",
+    "rubocop-rails",
+    "rubocop-rspec"
+  ]
+
+  gems.each do |item|
+    describe gem(item) do
+      it { should be_installed }
+    end
+  end
+
+end
+
+###############################################
+# Check to see all PIP packages are installed #
+###############################################
+control "super-linter-installed-pip-packages" do
+  impact 1
+  title "Super-Linter installed PIP packages check"
+  desc "Check that PIP packages that Super-Linter needs are installed."
+
+  packages = [
+    "ansible-lint",
+    "black",
+    "cfn-lint",
+    "cython",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "snakefmt",
+    "snakemake",
+    "typing_extensions",
+    "yamllint",
+    "yq"
+  ]
+
+  packages.each do |item|
+    describe pip(item) do
+      it { should be_installed }
+    end
+  end
+
+end
+
+###############################################
+# Check to see all NPM packages are installed #
+###############################################
+control "super-linter-installed-npm-packages" do
+  impact 1
+  title "Super-Linter installed NPM packages check"
+  desc "Check that NPM packages that Super-Linter needs are installed."
+
+  packages = [
+    "@coffeelint/cli",
+    "@stoplight/spectral",
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "asl-validator",
+    #"axios",
+    "babel-eslint",
+    "dockerfilelint",
+    #"eslint",
+    "eslint-config-airbnb",
+    "eslint-config-prettier",
+    "eslint-plugin-jest",
+    "eslint-plugin-jsx-a11y",
+    "eslint-plugin-prettier",
+    "gherkin-lint",
+    "htmlhint",
+    #"immer",
+    #"ini",
+    "jscpd",
+    "jsonlint",
+    #"lodash",
+    "markdownlint-cli",
+    #"node-fetch",
+    "npm-groovy-lint",
+    "prettier",
+    "prettyjson",
+    #"pug",
+    "sql-lint",
+    "standard",
+    "stylelint",
+    "stylelint-config-sass-guidelines",
+    "stylelint-config-standard",
+    #"stylelint-scss",
+    "tekton-lint",
+    "typescript"
+  ]
+
+  packages.each do |item|
+    describe npm(item, path: "/") do
+      it { should be_installed }
+    end
+  end
+
+end
+
+#####################################
+# Check to see if directories exist #
+#####################################
+control "super-linter-validate-directories" do
+  impact 1
+  title "Super-Linter check for directories"
+  desc "Check that directories that Super-Linter needs are installed."
+
+  dirs = [
+    "/home/r-library",
+    "/node_modules",
+    "/action/lib",
+    "/action/lib/functions",
+    "/action/lib/.automation",
+    "/usr/local/lib/",
+    "/usr/local/share/"
+  ]
+
+  dirs.each do |item|
+    describe directory(item) do
+      it { should exist }
+      it { should be_directory }
+    end
+  end
+end
+
+###############################
+# Check to see if files exist #
+###############################
+control "super-linter-validate-files" do
+  impact 1
+  title "Super-Linter check for files"
+  desc "Check that files that Super-Linter needs are installed."
+
+  files = [
+    "/action/lib/linter.sh",
+    "/action/lib/functions/buildFileList.sh",
+    "/action/lib/functions/detectFiles.sh",
+    "/action/lib/functions/linterRules.sh",
+    "/action/lib/functions/linterVersions.sh",
+    "/action/lib/functions/linterVersions.txt",
+    "/action/lib/functions/log.sh",
+    "/action/lib/functions/possum.sh",
+    "/action/lib/functions/updateSSL.sh",
+    "/action/lib/functions/validation.sh",
+    "/action/lib/functions/worker.sh",
+    "/action/lib/.automation/.ansible-lint.yml",
+    "/action/lib/.automation/.arm-ttk.psd1",
+    "/action/lib/.automation/.cfnlintrc.yml",
+    "/action/lib/.automation/.chktexrc",
+    "/action/lib/.automation/.clj-kondo",
+    "/action/lib/.automation/.coffee-lint.json",
+    "/action/lib/.automation/.dockerfilelintrc",
+    "/action/lib/.automation/.ecrc",
+    "/action/lib/.automation/.eslintrc.yml",
+    "/action/lib/.automation/.flake8",
+    "/action/lib/.automation/.gherkin-lintrc",
+    "/action/lib/.automation/.golangci.yml",
+    "/action/lib/.automation/.groovylintrc.json",
+    "/action/lib/.automation/.hadolint.yaml",
+    "/action/lib/.automation/.htmlhintrc",
+    "/action/lib/.automation/.isort.cfg",
+    "/action/lib/.automation/.jscpd.json",
+    "/action/lib/.automation/.lintr",
+    "/action/lib/.automation/.luacheckrc",
+    "/action/lib/.automation/.markdown-lint.yml",
+    "/action/lib/.automation/.mypy.ini",
+    "/action/lib/.automation/.openapirc.yml",
+    "/action/lib/.automation/.perlcriticrc",
+    "/action/lib/.automation/.powershell-psscriptanalyzer.psd1",
+    "/action/lib/.automation/.protolintrc.yml",
+    "/action/lib/.automation/.python-black",
+    "/action/lib/.automation/.python-lint",
+    "/action/lib/.automation/.ruby-lint.yml",
+    "/action/lib/.automation/.snakefmt.toml",
+    "/action/lib/.automation/.sql-config.json",
+    "/action/lib/.automation/.stylelintrc.json",
+    "/action/lib/.automation/.tflint.hcl",
+    "/action/lib/.automation/.yaml-lint.yml",
+    "/action/lib/.automation/analysis_options.yml",
+    "/action/lib/.automation/linter.yml",
+    "/action/lib/.automation/phpcs.xml",
+    "/action/lib/.automation/phpstan.neon",
+    "/action/lib/.automation/psalm.xml",
+    "/action/lib/.automation/sun_checks.xml"
+  ]
+
+  files.each do |item|
+    describe file(item) do
+      it { should exist }
+    end
+  end
+end
+
+###############################
+# Validate powershell modules #
+###############################
+control "super-linter-validate-powershell-modules" do
+  impact 1
+  title "Super-Linter validate Powershell Modules"
+  desc "Check that Powershell modules that Super-Linter needs are installed."
+
+  describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
+    its("exit_status") { should eq 0 }
+    its("stdout") { should eq "PSScriptAnalyzer\n" }
+  end
+
+  describe command("pwsh -c \"(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name\" 2>&1") do
+    its("exit_status") { should eq 0 }
+    its("stdout") { should eq "Invoke-ScriptAnalyzer\n" }
+  end
+end
