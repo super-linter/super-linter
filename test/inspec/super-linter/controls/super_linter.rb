@@ -306,3 +306,18 @@ control "super-linter-installed-npm-packages" do
   end
 
 end
+
+#################################################
+# Check to see R language libraries are present #
+#################################################
+control "super-linter-R-language-libraries" do
+  impact 1
+  title "Super-Linter check for R language libraries"
+
+  describe directory('/home/r-library') do
+    it 'This directory should exist and be a directory.' do
+      expect(subject).to(exist)
+      expect(subject).to(be_directory)
+    end
+  end
+end
