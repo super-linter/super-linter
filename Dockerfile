@@ -214,7 +214,7 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 #################
 # Install lintr #
 #################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+COPY --from=lintr-lib /usr/lib/R/library/ /usr/lib/r-library
 
 ##################
 # Install chktex #
