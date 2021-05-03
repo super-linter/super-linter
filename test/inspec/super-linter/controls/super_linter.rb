@@ -313,8 +313,9 @@ end
 control "super-linter-R-language-libraries" do
   impact 1
   title "Super-Linter check for R language libraries"
+  desc "Check that R Libraries that Super-Linter needs are installed."
 
-  describe directory('/home/r-library') do
+  describe directory("/home/r-library") do
     it 'This directory should exist and be a directory.' do
       expect(subject).to(exist)
       expect(subject).to(be_directory)
