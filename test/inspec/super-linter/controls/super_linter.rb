@@ -320,7 +320,7 @@ control "super-linter-validate-directories" do
     "/node_modules",
     "/action/lib",
     "/action/lib/functions",
-    "/action/.automation",
+    "/action/lib/.automation",
     "/usr/local/lib/",
     "/usr/local/share/"
   ]
@@ -345,13 +345,12 @@ control "super-linter-validate-files" do
     "/action/lib/linter.sh",
     "/action/lib/functions/buildFileList.sh",
     "/action/lib/functions/detectFiles.sh",
-    "/action/lib/functionslinterRules.sh",
+    "/action/lib/functions/linterRules.sh",
     "/action/lib/functions/linterVersions.sh",
     "/action/lib/functions/linterVersions.txt",
     "/action/lib/functions/log.sh",
     "/action/lib/functions/possum.sh",
     "/action/lib/functions/updateSSL.sh",
-    "/action/lib/functions/validateDocker.sh",
     "/action/lib/functions/validation.sh",
     "/action/lib/functions/worker.sh",
     "/action/lib/.automation/.ansible-lint.yml",
@@ -399,5 +398,24 @@ control "super-linter-validate-files" do
     describe file(item) do
       it { should exist }
     end
+  end
+end
+
+###############################
+# Validate powershell modules #
+###############################
+control "super-linter-validate-powershell-modules" do
+  impact 1
+  title "Super-Linter validate Powershell Modules"
+  desc "Check that Powershell modules that Super-Linter needs are installed."
+
+  describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
+    its("exit_status") { should eq 0 }
+    its("stdout") { should eq "PSScriptAnalyzer\n" }
+  end
+
+  describe command("pwsh -c \"(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name\" 2>&1") do
+    its("exit_status") { should eq 0 }
+    its("stdout") { should eq "Invoke-ScriptAnalyzer\n" }
   end
 end
