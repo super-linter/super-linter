@@ -1,15 +1,24 @@
-# We have this file on hold as its an Action that would trigger another action, and not currently supported.
-# This then causes the deployRelease action to never fun, which is far more important than auto drafting
-# Until we have a better solution, this needs to remain on hold
-
+---
+###########################################
+###########################################
+## Draft releases on Push to master/main ##
+###########################################
+###########################################
 name: Release Drafter
 
+###########################
+# Start on push to master #
+###########################
 on:
   push:
     # branches to consider in the event; optional, defaults to all
     branches:
       - master
+      - main
 
+#################
+# Start the job #
+#################
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest

@@ -103,9 +103,10 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      ###########################################################################################
-      # Fix file and dir ownership. Workaround for https://github.com/actions/runner/issues/434 #
-      ###########################################################################################
+      ###############################################################
+      # Fix file and dir ownership.                                 #
+      # Workaround for https://github.com/actions/runner/issues/434 #
+      ###############################################################
       - name: Fix file and directory ownership
         shell: bash
         run: |
@@ -124,6 +125,9 @@ jobs:
       ##########################
       - name: Upload the code coverage report
         uses: codacy/codacy-coverage-reporter-action@1.0.1
+        # Dependabot does not have priv to see the secret, so will
+        # fail opn bump jobs...
+        continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml

@@ -17,6 +17,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'main'
 
 ###############
 # Set the Job #

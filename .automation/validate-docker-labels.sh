@@ -7,9 +7,9 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                               # GitHub Workspace
-GITHUB_SHA="${GITHUB_SHA}"                                                           # Sha used to create this branch
-BUILD_DATE="${BUILD_DATE}"                                                           # Date the container was built
+# GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
+# GITHUB_SHA="${GITHUB_SHA}"   # Sha used to create this branch
+# BUILD_DATE="${BUILD_DATE}"   # Date the container was built
 BUILD_REVISION="${GITHUB_SHA}"                                                       # GitHub Sha
 BUILD_VERSION="${GITHUB_SHA}"                                                        # Version of the container
 ORG_REPO="github/super-linter"                                                       # Org/repo
