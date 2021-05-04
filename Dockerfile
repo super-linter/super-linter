@@ -18,9 +18,9 @@ FROM wata727/tflint:0.28.0 as tflint
 FROM mvdan/shfmt:v3.2.4 as shfmt
 FROM accurics/terrascan:1.5.1 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
+FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 
 ##################
 # Get base image #
@@ -226,6 +226,11 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
+#################
+# Install Litnr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+
 ##################
 # Install ktlint #
 ##################
@@ -371,11 +376,7 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
-
-#################
-# Install lintr #
-#################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library/
+COPY --from=base_image /home/r-library /home/r-library
 
 ########################################
 # Add node packages to path and dotnet #
@@ -396,7 +397,7 @@ COPY TEMPLATES /action/lib/.automation
 ################################################
 # Run to build version file and validate image #
 ################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
+#RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
 
 ######################
 # Set the entrypoint #
