@@ -1,6 +1,8 @@
+// Copyright 2021 GitHub
+
 #include <iostream>
 #include <fstream>
-using namespace std;
+using std::string;
 
 int main() {
   // Create and open a text file
