@@ -17,23 +17,23 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"   # GitHub Workspace
-GITHUB_REPOSITORY="${GITHUB_REPOSITORY}" # GitHub Org/Repo passed from system
-DOCKER_USERNAME="${DOCKER_USERNAME}"     # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"     # Password to login to DockerHub
-GCR_USERNAME="${GCR_USERNAME}"           # Username to login to GitHub package registry
-GCR_TOKEN="${GCR_TOKEN}"                 # Password to login to GitHub package registry
-REGISTRY="${REGISTRY}"                   # What registry to upload | <GCR> or <Docker>
-IMAGE_REPO="${IMAGE_REPO}"               # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"         # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"     # Path to the Dockerfile to be uploaded
-MAJOR_TAG=''                             # Major tag version if we need to update it
-UPDATE_MAJOR_TAG=0                       # Flag to deploy the major tag version as well
-GCR_URL='ghcr.io'                        # URL to Github Container Registry
-DOCKER_IMAGE_REPO=''                     # Docker tag for the image when created
-GCR_IMAGE_REPO=''                        # Docker tag for the image when created
-FOUND_IMAGE=0                            # Flag for if the image has already been built
-CONTAINER_URL=''                         # Final URL to upload
+# GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"   # GitHub Workspace
+# GITHUB_REPOSITORY="${GITHUB_REPOSITORY}" # GitHub Org/Repo passed from system
+# DOCKER_USERNAME="${DOCKER_USERNAME}"     # Username to login to DockerHub
+# DOCKER_PASSWORD="${DOCKER_PASSWORD}"     # Password to login to DockerHub
+# GCR_USERNAME="${GCR_USERNAME}"           # Username to login to GitHub package registry
+# GCR_TOKEN="${GCR_TOKEN}"                 # Password to login to GitHub package registry
+# REGISTRY="${REGISTRY}"                   # What registry to upload | <GCR> or <Docker>
+# IMAGE_REPO="${IMAGE_REPO}"               # Image repo to upload the image
+# IMAGE_VERSION="${IMAGE_VERSION}"         # Version to tag the image
+# DOCKERFILE_PATH="${DOCKERFILE_PATH}"     # Path to the Dockerfile to be uploaded
+MAJOR_TAG=''         # Major tag version if we need to update it
+UPDATE_MAJOR_TAG=0   # Flag to deploy the major tag version as well
+GCR_URL='ghcr.io'    # URL to Github Container Registry
+DOCKER_IMAGE_REPO='' # Docker tag for the image when created
+GCR_IMAGE_REPO=''    # Docker tag for the image when created
+FOUND_IMAGE=0        # Flag for if the image has already been built
+CONTAINER_URL=''     # Final URL to upload
 
 ###########################################################
 # Dynamic build variables to pass to container when built #

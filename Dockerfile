@@ -7,20 +7,20 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.03.22-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.04.23-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.3.3 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.31.0 as protolint
 FROM golangci/golangci-lint:v1.39.0 as golangci-lint
-FROM koalaman/shellcheck:v0.7.1 as shellcheck
-FROM wata727/tflint:0.25.0 as tflint
-FROM alpine/terragrunt:0.14.5 as terragrunt
+FROM koalaman/shellcheck:v0.7.2 as shellcheck
+FROM alpine/terragrunt:0.15.0 as terragrunt
+FROM wata727/tflint:0.28.0 as tflint
 FROM mvdan/shfmt:v3.2.4 as shfmt
-FROM accurics/terrascan:2d1374b as terrascan
+FROM accurics/terrascan:1.5.1 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM ghcr.io/assignuser/chktex-alpine:0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
+FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 
 ##################
 # Get base image #
@@ -211,11 +211,6 @@ COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 ###############################
 COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 
-#################
-# Install lintr #
-#################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-
 ##################
 # Install chktex #
 ##################
@@ -230,6 +225,11 @@ COPY --from=kubeval /kubeval /usr/bin/
 # Install shfmt #
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
+
+#################
+# Install Litnr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 
 ##################
 # Install ktlint #
@@ -370,12 +370,13 @@ COPY --from=base_image /usr/bin/ /usr/bin/
 COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
-COPY --from=base_image /usr/lib /usr/lib/
+COPY --from=base_image /usr/lib/ /usr/lib/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
+COPY --from=base_image /home/r-library /home/r-library
 
 ########################################
 # Add node packages to path and dotnet #
@@ -396,8 +397,7 @@ COPY TEMPLATES /action/lib/.automation
 ################################################
 # Run to build version file and validate image #
 ################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh \
-    && /action/lib/functions/validateDocker.sh
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
 
 ######################
 # Set the entrypoint #

@@ -10,7 +10,7 @@
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-RUN_LOCAL="${RUN_LOCAL}"                              # Boolean to see if we are running locally
+# RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
 
 ##################################################################
@@ -151,7 +151,7 @@ SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-SSL_CERT_SECRET="${SSL_CERT_SECRET}"
+# SSL_CERT_SECRET="${SSL_CERT_SECRET}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -271,20 +271,20 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"         # Ansible Directory
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"       # Default Git Branch to use (master by default)
-DISABLE_ERRORS="${DISABLE_ERRORS}"               # Boolean to enable warning-only output without throwing errors
-FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"   # RegExp defining which files will be processed by linters (all by default)
-FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"   # RegExp defining which files will be excluded from linting (none by default)
-GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"         # Github Event Path
-GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
-GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
-GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
-GITHUB_TOKEN="${GITHUB_TOKEN}"                   # GitHub Token passed from environment
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
-MULTI_STATUS="${MULTI_STATUS:-true}"             # Multiple status are created for each check ran
-TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
-VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
+# ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"         # Ansible Directory
+MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
+# DISABLE_ERRORS="${DISABLE_ERRORS}"               # Boolean to enable warning-only output without throwing errors
+# FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"   # RegExp defining which files will be processed by linters (all by default)
+# FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"   # RegExp defining which files will be excluded from linting (none by default)
+# GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"         # Github Event Path
+# GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
+# GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
+# GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
+# GITHUB_TOKEN="${GITHUB_TOKEN}"                   # GitHub Token passed from environment
+# GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
+# TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
+# VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
 
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 
@@ -311,7 +311,7 @@ export TEST_CASE_FOLDER             # Workaround SC2034
 ##############
 # Format     #
 ##############
-OUTPUT_FORMAT="${OUTPUT_FORMAT}"                      # Output format to be generated. Default none
+# OUTPUT_FORMAT="${OUTPUT_FORMAT}"                    # Output format to be generated. Default none
 OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
 OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
 
@@ -834,8 +834,8 @@ LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
 LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TEKTON']="tekton-lint"
 LINTER_COMMANDS_ARRAY['TERRAFORM']="tflint -c ${TERRAFORM_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -f "
-LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-hclfmt-file "
+LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -f"
+LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-log-level error --terragrunt-hclfmt-file"
 LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
