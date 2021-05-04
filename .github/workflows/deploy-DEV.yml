@@ -124,6 +124,9 @@ jobs:
       ##########################
       - name: Upload the code coverage report
         uses: codacy/codacy-coverage-reporter-action@1.0.1
+        # Dependabot does not have priv to see the secret, so will
+        # fail opn bump jobs...
+        continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
