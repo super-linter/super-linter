@@ -66,7 +66,8 @@ jobs:
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
           --build-arg BUILD_REVISION=${{ github.sha }} \
           --build-arg BUILD_VERSION=${{ github.sha }} \
-          -t ghcr.io/github/super-linter:${{ github.sha }} -f Dockerfile .
+          -t ghcr.io/github/super-linter:${{ github.sha }} \
+          -t ghcr.io/github/super-linter:test -f Dockerfile .
 
       ########################################
       # Validates the metadata docker labels #
