@@ -9,6 +9,7 @@ verify_ssl = true
 ansible-lint = {extras = ["core"], version = "*"}
 black = "*"
 cfn-lint = "*"
+cpplint = "*"
 cython = "*"
 flake8 = "*"
 isort = "*"
