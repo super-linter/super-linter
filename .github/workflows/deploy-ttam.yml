@@ -67,4 +67,4 @@ jobs:
             BUILD_VERSION=${{ github.sha }}
           push: true
           tags: |
-            ghcr.io/23andMe/super-linter:latest
+            ghcr.io/23andme/super-linter:latest
