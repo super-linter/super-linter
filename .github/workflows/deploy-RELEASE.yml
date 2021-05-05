@@ -158,6 +158,7 @@ jobs:
             -H 'Content-Type: application/json' \
             --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
               \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
+              \"body\": \"${{ github.event.issue.body }}\" \
               \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
 
       #####################################################
