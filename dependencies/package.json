@@ -1,8 +1,8 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@stoplight/spectral": "^5.9.1",
     "@coffeelint/cli": "^5.0.0",
+    "@stoplight/spectral": "^5.9.1",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
     "asl-validator": "^1.9.8",
@@ -11,8 +11,9 @@
     "dockerfilelint": "^1.8.0",
     "eslint": "^7.25.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-plugin-jest": "^24.3.6",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jsonc": "^1.2.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "gherkin-lint": "^4.2.1",
@@ -20,7 +21,6 @@
     "immer": "^9.0.2",
     "ini": "^2.0.0",
     "jscpd": "^3.3.25",
-    "jsonlint": "^1.6.3",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.27.1",
     "node-fetch": "^2.6.1",

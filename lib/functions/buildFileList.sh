@@ -419,7 +419,8 @@ function BuildFileList() {
     ######################
     # Get the JSON files #
     ######################
-    elif [ "${FILE_TYPE}" == "json" ]; then
+    elif [ "${FILE_TYPE}" == "json" ] || [ "$FILE_TYPE" == "jsonc" ] ||
+      [ "$FILE_TYPE" == "json5" ]; then
       ################################
       # Append the file to the array #
       ################################
