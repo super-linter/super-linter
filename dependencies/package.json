@@ -21,6 +21,7 @@
     "immer": "^9.0.2",
     "ini": "^2.0.0",
     "jscpd": "^3.3.25",
+    "jsonlint": "^1.6.3",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.27.1",
     "node-fetch": "^2.6.1",
