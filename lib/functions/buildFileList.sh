@@ -416,14 +416,14 @@ function BuildFileList() {
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
 
-    ######################
+    #######################
     # Get the JSONC files #
-    ######################
+    #######################
     elif [ "$FILE_TYPE" == "jsonc" ] || [ "$FILE_TYPE" == "json5" ]; then
-    ################################
-    # Append the file to the array #
-    ################################
-    FILE_ARRAY_JSONC+=("${FILE}")
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_JSONC+=("${FILE}")
 
     ######################
     # Get the JSON files #
