@@ -54,8 +54,6 @@ source /action/lib/functions/linterVersions.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/tapLibrary.sh # Source the function script(s)
-# shellcheck source=/dev/null
 source /action/lib/functions/updateSSL.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/validation.sh # Source the function script(s)
@@ -307,13 +305,6 @@ RAW_FILE_ARRAY=()                   # Array of all files that were changed
 export RAW_FILE_ARRAY               # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER             # Workaround SC2034
-
-##############
-# Format     #
-##############
-# OUTPUT_FORMAT="${OUTPUT_FORMAT}"                    # Output format to be generated. Default none
-OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
-OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
 
 ##########################
 # Array of changed files #
@@ -716,16 +707,6 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
-
-##############################################################
-# check flag for validating the report folder does not exist #
-##############################################################
-if [ -n "${OUTPUT_FORMAT}" ]; then
-  if [ -d "${REPORT_OUTPUT_FOLDER}" ]; then
-    error "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
-    fatal "Please remove the folder and try again."
-  fi
-fi
 
 ##################################
 # Get and print all version info #
