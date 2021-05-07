@@ -728,8 +728,6 @@ export DEFAULT_ANSIBLE_DIRECTORY                                                
 DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
 export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
 
-REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
-
 ############################
 # Validate the environment #
 ############################
