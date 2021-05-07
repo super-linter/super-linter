@@ -402,11 +402,6 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
-    ################################
-    # Set the report output folder #
-    ################################
-    REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
-
     info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
 
     # No need to touch or set the GITHUB_SHA
