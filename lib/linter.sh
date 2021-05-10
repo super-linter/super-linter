@@ -54,8 +54,6 @@ source /action/lib/functions/linterVersions.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/tapLibrary.sh # Source the function script(s)
-# shellcheck source=/dev/null
 source /action/lib/functions/updateSSL.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/validation.sh # Source the function script(s)
@@ -308,13 +306,6 @@ export RAW_FILE_ARRAY               # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER             # Workaround SC2034
 
-##############
-# Format     #
-##############
-# OUTPUT_FORMAT="${OUTPUT_FORMAT}"                    # Output format to be generated. Default none
-OUTPUT_FOLDER="${OUTPUT_FOLDER:-super-linter.report}" # Folder where the reports are generated. Default super-linter.report
-OUTPUT_DETAILS="${OUTPUT_DETAILS:-simpler}"           # What level of details. (simpler or detailed). Default simpler
-
 ##########################
 # Array of changed files #
 ##########################
@@ -410,11 +401,6 @@ GetGitHubVars() {
     if [ ! -d "${GITHUB_WORKSPACE}" ]; then
       fatal "Provided volume is not a directory!"
     fi
-
-    ################################
-    # Set the report output folder #
-    ################################
-    REPORT_OUTPUT_FOLDER="${DEFAULT_WORKSPACE}/${OUTPUT_FOLDER}"
 
     info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
 
@@ -717,16 +703,6 @@ trap 'cleanup' 0 1 2 3 6 14 15
 ##########
 Header
 
-##############################################################
-# check flag for validating the report folder does not exist #
-##############################################################
-if [ -n "${OUTPUT_FORMAT}" ]; then
-  if [ -d "${REPORT_OUTPUT_FOLDER}" ]; then
-    error "ERROR! Found ${REPORT_OUTPUT_FOLDER}"
-    fatal "Please remove the folder and try again."
-  fi
-fi
-
 ##################################
 # Get and print all version info #
 ##################################
@@ -746,8 +722,6 @@ DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"                         
 export DEFAULT_ANSIBLE_DIRECTORY                                                      # Workaround SC2034
 DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
 export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
-
-REPORT_OUTPUT_FOLDER="${GITHUB_WORKSPACE}/${OUTPUT_FOLDER}" # Location for the report folder
 
 ############################
 # Validate the environment #
