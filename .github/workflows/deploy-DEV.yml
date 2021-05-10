@@ -143,8 +143,6 @@ jobs:
           -e RUN_LOCAL=true \
           -e TEST_CASE_RUN=true \
           -e ANSIBLE_DIRECTORY=.automation/test/ansible \
-          -e OUTPUT_FORMAT=tap -e OUTPUT_FOLDER=${GITHUB_SHA} \
-          -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v ${GITHUB_WORKSPACE}:/tmp/lint \
