@@ -25,7 +25,7 @@
     "markdownlint-cli": "^0.27.1",
     "node-fetch": "^2.6.1",
     "npm-groovy-lint": "^8.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "prettyjson": "^1.2.1",
     "pug": "^3.0.1",
     "sql-lint": "0.0.16",
