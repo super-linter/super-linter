@@ -68,6 +68,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Java**                         | [checkstyle](https://checkstyle.org)                                                                                                                                          |
 | **JavaScript**                   | [eslint](https://eslint.org/) / [standard js](https://standardjs.com/)                                                                                                        |
 | **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                                                                                                                 |
+| **JSONC**                        | [eslint-plugin-jsonc](https://www.npmjs.com/package/eslint-plugin-jsonc)                                                                                                      |
 | **Kubeval**                      | [kubeval](https://github.com/instrumenta/kubeval)                                                                                                                             |
 | **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                                                                                                 |
 | **LaTeX**                        | [ChkTex](https://www.nongnu.org/chktex/)                                                                                                                                      |

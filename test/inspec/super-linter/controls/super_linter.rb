@@ -276,6 +276,7 @@ control "super-linter-installed-npm-packages" do
     "eslint-config-airbnb",
     "eslint-config-prettier",
     "eslint-plugin-jest",
+    "eslint-plugin-jsonc",
     "eslint-plugin-jsx-a11y",
     "eslint-plugin-prettier",
     "gherkin-lint",
