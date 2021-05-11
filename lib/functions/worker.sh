@@ -249,9 +249,19 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
         )
-      #########################################################
+      ############################################################################
+      # Overwrite CLOUDFORMATION exit code to not fail on informational findings #
+      ############################################################################
+      elif [[ ${FILE_TYPE} == "CLOUDFORMATION" ]]; then
+        LINT_CMD=$(
+          cd "${WORKSPACE_PATH}" || exit
+          ${LINTER_COMMAND} "${FILE}" 2>&1
+          # Clear the 'informational' bit in cfn-lint's exit status.
+          exit $(($? & ~0x100))
+        )
+      ###########################################################
       # Corner case for CFN_NAG as path is passed inside a flag #
-      #########################################################
+      ###########################################################
       elif [[ ${FILE_TYPE} == "CLOUDFORMATION_CFN_NAG" ]]; then
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit

@@ -1,2 +1,4 @@
 include_checks:
-- I
+  - I
+ignore_checks:
+  - W2001
