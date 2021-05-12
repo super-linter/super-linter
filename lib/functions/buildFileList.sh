@@ -20,7 +20,7 @@ function GenerateFileDiff() {
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  CMD_OUTPUT=$(eval $CMD)
+  CMD_OUTPUT=$(eval "$CMD")
 
   #######################
   # Load the error code #
