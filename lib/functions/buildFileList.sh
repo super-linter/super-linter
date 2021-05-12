@@ -20,7 +20,7 @@ function GenerateFileDiff() {
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  CMD_OUTPUT=$($CMD)
+  CMD_OUTPUT=$(eval "$CMD")
 
   #######################
   # Load the error code #
@@ -100,7 +100,7 @@ function BuildFileList() {
       ################
       # push event   #
       ################
-      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA}"
+      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
       GenerateFileDiff "$DIFF_TREE_CMD"
 
       ###############################################################
@@ -114,7 +114,7 @@ function BuildFileList() {
         debug "----------------------------------------------"
         debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
 
-        DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
+        DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
         GenerateFileDiff "$DIFF_CMD"
 
       fi
@@ -122,7 +122,7 @@ function BuildFileList() {
       ################
       # PR event     #
       ################
-      DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d"
+      DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
       GenerateFileDiff "$DIFF_CMD"
     fi
   else
