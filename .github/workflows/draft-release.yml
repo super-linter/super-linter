@@ -1,0 +1,29 @@
+---
+###########################################
+###########################################
+## Draft releases on Push to master/main ##
+###########################################
+###########################################
+name: Release Drafter
+
+###########################
+# Start on push to master #
+###########################
+on:
+  push:
+    # branches to consider in the event; optional, defaults to all
+    branches:
+      - master
+      - main
+
+#################
+# Start the job #
+#################
+jobs:
+  update_release_draft:
+    runs-on: ubuntu-latest
+    steps:
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

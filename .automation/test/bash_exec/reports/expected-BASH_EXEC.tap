@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - shell_bad_1.sh
-  ---
-  message: Error File [/tmp/lint/.automation/test/bash_exec/shell_bad_1.sh] is not executable\n
-  ...
-ok 2 - shell_good_1.sh

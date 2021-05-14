@@ -10,6 +10,7 @@ ansible-lint = {extras = ["core"], version = "*"}
 bandit = "*"
 black = "*"
 cfn-lint = "*"
+cpplint = "*"
 cython = "*"
 flake8 = "*"
 isort = "*"

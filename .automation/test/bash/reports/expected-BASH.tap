@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - shell_bad_1.sh
-  ---
-  message: \nIn /tmp/lint/.automation/test/bash/shell_bad_1.sh line 10 \nif [ $ERROR_CODE -ne 0]; then\n^-- SC1009 The mentioned syntax error was in this if expression.\n ^-- SC1073 Couldn't parse this test expression. Fix to allow more checks.\n ^-- SC1020 You need a space before the ].\n ^-- SC1072 Missing space before ]. Fix any mentioned problems and try again.\n\nFor more information \n https //www.shellcheck.net/wiki/SC1020 -- You need a space before the ].\n https //www.shellcheck.net/wiki/SC1072 -- Missing space before ]. Fix any m...\n https //www.shellcheck.net/wiki/SC1073 -- Couldn't parse this test expressi...\n
-  ...
-ok 2 - shell_good_1.sh

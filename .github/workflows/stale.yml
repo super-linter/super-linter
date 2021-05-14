@@ -50,7 +50,7 @@ jobs:
     if: "github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot'"
     steps:
       - name: Mark issue not stale
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.0.2
         with:
           script: |
             github.issues.removeLabel({

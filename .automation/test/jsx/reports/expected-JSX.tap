@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - jsx_bad_1.jsx
-  ---
-  message: \n/tmp/lint/.automation/test/jsx/jsx_bad_1.jsx\n 1 17 error Parsing error JSX element 'h1' has no corresponding closing tag\n\n 1 problem (1 error, 0 warnings)\n
-  ...
-ok 2 - jsx_good_1.jsx

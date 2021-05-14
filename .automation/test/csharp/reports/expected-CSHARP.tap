@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - csharp_bad_01.cs
-  ---
-  message: Formatting code files in workspace '/tmp/lint/.automation/test/csharp'.\n csharp/csharp_bad_01.cs(3,21) Fix whitespace formatting.\n csharp/csharp_bad_01.cs(4,16) Fix whitespace formatting.\n csharp/csharp_bad_01.cs(5,36) Fix whitespace formatting.\n Formatted code file '/tmp/lint/.automation/test/csharp/csharp_bad_01.cs'.\n Format complete in.\n
-  ...
-ok 2 - csharp_good_01.cs
