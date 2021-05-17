@@ -20,7 +20,8 @@ declare -Agr F=(
   [W]=$(echo -e "\e[0;37m")
   [Y]=$(echo -e "\e[0;33m")
 )
-readonly NC=$(echo -e "\e[0m")
+NC=$(echo -e "\e[0m")
+readonly NC
 
 export B
 export F

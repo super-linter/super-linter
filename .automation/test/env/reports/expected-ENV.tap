@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - env_bad_1.env
-  ---
-  message: Checking env/env_bad_1.env\nenv/env_bad_1.env 1 LeadingCharacter Invalid leading character detected\nenv/env_bad_1.env 2 KeyWithoutValue The MY_ENV key should be with a value or have an equal sign\nenv/env_bad_1.env 3 IncorrectDelimiter The DB-NAME key has incorrect delimiter\nenv/env_bad_1.env 3 UnorderedKey The DB-NAME key should go before the LOGGER_LEVEL key\nenv/env_bad_1.env 4 LowercaseKey The DEbUG_hTTP key should be in uppercase\nenv/env_bad_1.env 4 UnorderedKey The DEbUG_hTTP key should go before the LOGGER_LEVEL key\nenv/env_bad_1.env 5 UnorderedKey The DB_NAME key should go before the DEbUG_hTTP key\n\nFound 7 problems\n
-  ...
-ok 2 - env_good_1.env

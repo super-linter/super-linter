@@ -1,7 +1,0 @@
-TAP version 13
-1..2
-not ok 1 - python_bad_1.py
-  ---
-  message: ERROR /tmp/lint/.automation/test/python_isort/python_bad_1.py Imports are incorrectly sorted and/or formatted.\n--- /tmp/lint/.automation/test/python_isort/python_bad_1.py before\n+++ /tmp/lint/.automation/test/python_isort/python_bad_1.py before\n@@ -1,11 +1,11 @@\n import json\n+import sys\n from os import getenv, path\n from pprint import pprint\n-import sys\n \n import click # pylint disable=import-error\n+import requests # pylint disable=import-error\n from dotenv import load_dotenv # pylint disable=import-error\n-import requests # pylint disable=import-error\n \n env = load_dotenv()\n api_url = getenv("API_URL", default="https //api.github.com/graphql")\n
-  ...
-ok 2 - python_good_1.py

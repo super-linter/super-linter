@@ -1,0 +1,11 @@
+---
+name: super-linter
+title: super-linter InSpec Profile
+maintainer: GitHub DevOps
+copyright: GitHub
+copyright_email: github_devops@github.com
+license: Apache-2.0
+summary: InSpec profile to validate super-linter
+version: 1.0.0
+supports:
+  platform: linux

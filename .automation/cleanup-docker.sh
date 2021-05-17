@@ -16,12 +16,6 @@
 ###########
 # Globals #
 ###########
-GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"                                               # GitHub Workspace
-DOCKER_USERNAME="${DOCKER_USERNAME}"                                                 # Username to login to DockerHub
-DOCKER_PASSWORD="${DOCKER_PASSWORD}"                                                 # Password to login to DockerHub
-IMAGE_REPO="${IMAGE_REPO}"                                                           # Image repo to upload the image
-IMAGE_VERSION="${IMAGE_VERSION}"                                                     # Version to tag the image
-DOCKERFILE_PATH="${DOCKERFILE_PATH}"                                                 # Path to the Dockerfile to be uploaded
 ((LOG_TRACE = LOG_DEBUG = LOG_VERBOSE = LOG_NOTICE = LOG_WARN = LOG_ERROR = "true")) # Enable all loging
 export LOG_TRACE LOG_DEBUG LOG_VERBOSE LOG_NOTICE LOG_WARN LOG_ERROR
 
