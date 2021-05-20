@@ -92,18 +92,18 @@ jobs:
         run: |
           make info
 
-      ##########################
-      # Test in action context #
-      ##########################
-      # Test the built image in the actions context.
-      # Not the container directly, and not using RUN_LOCAL=true
-      - name: Test the local action
-        uses: ./
-        env:
-          ACTIONS_RUNNER_DEBUG: true
-          ERROR_ON_MISSING_EXEC_BIT: true
-          VALIDATE_ALL_CODEBASE: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # ##########################
+      # # Test in action context #
+      # ##########################
+      # # Test the built image in the actions context.
+      # # Not the container directly, and not using RUN_LOCAL=true
+      # - name: Test the local action
+      #   uses: ./
+      #   env:
+      #     ACTIONS_RUNNER_DEBUG: true
+      #     ERROR_ON_MISSING_EXEC_BIT: true
+      #     VALIDATE_ALL_CODEBASE: false
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       ###############################################################
       # Fix file and dir ownership.                                 #
