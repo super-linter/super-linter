@@ -700,13 +700,15 @@ UpdateLoopsForImage() {
 
     # Remove from LANGUAGE_ARRAY
     for REMOVE_LANGUAGE in "${REMOVE_LANGUAGE_ARRAY[@]}"; do
-      LANGUAGE_ARRAY=("${LANGUAGE_ARRAY[@]/$REMOVE_LANGUAGE}")
+      #shellcheck disable=SC2190
+      LANGUAGE_ARRAY=("${LANGUAGE_ARRAY[@]/$REMOVE_LANGUAGE/}")
       echo "Removing Language:[${REMOVE_LANGUAGE}] from [LANGUAGE_ARRAY]"
     done
 
     # Remove from LINTER_NAMES_ARRAY
     for REMOVE_LINTER in "${REMOVE_LINTER_ARRAY[@]}"; do
-      LINTER_NAMES_ARRAY=("${LINTER_NAMES_ARRAY[@]/$REMOVE_LINTER}")
+      #shellcheck disable=SC2190
+      LINTER_NAMES_ARRAY=("${LINTER_NAMES_ARRAY[@]/$REMOVE_LINTER/}")
       echo "Removing Language:[${REMOVE_LINTER}] from [LINTER_NAMES_ARRAY]"
     done
   fi
