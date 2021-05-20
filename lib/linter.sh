@@ -12,6 +12,7 @@
 ##################################################################
 # RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
+IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
 
 ##################################################################
 # Log Vars                                                       #
@@ -685,6 +686,32 @@ Footer() {
   exit 0
 }
 ################################################################################
+#### Function UpdateLoopsForImage ##############################################
+UpdateLoopsForImage() {
+  ######################################################################
+  # Need to clean the array lists of the linters removed for the image #
+  ######################################################################
+  if [[ "${IMAGE}" == "slim" ]]; then
+    #############################################
+    # Need to remove linters for the slim image #
+    #############################################
+    REMOVE_LANGUAGE_ARRAY=("ARM" "ENV" "RUST_2015" "RUST_2018" "RUST_CLIPPY")
+    REMOVE_LINTER_ARRAY=("arm-ttk" "dotenv-linter" "rustfmt" "clippy")
+
+    # Remove from LANGUAGE_ARRAY
+    for REMOVE_LANGUAGE in "${REMOVE_LANGUAGE_ARRAY[@]}"; do
+      LANGUAGE_ARRAY=("${LANGUAGE_ARRAY[@]/$REMOVE_LANGUAGE}")
+      echo "Removing Language:[${REMOVE_LANGUAGE}] from [LANGUAGE_ARRAY]"
+    done
+
+    # Remove from LINTER_NAMES_ARRAY
+    for REMOVE_LINTER in "${REMOVE_LINTER_ARRAY[@]}"; do
+      LINTER_NAMES_ARRAY=("${LINTER_NAMES_ARRAY[@]/$REMOVE_LINTER}")
+      echo "Removing Language:[${REMOVE_LINTER}] from [LINTER_NAMES_ARRAY]"
+    done
+  fi
+}
+################################################################################
 #### Function Cleanup ##########################################################
 cleanup() {
   local -ri EXIT_CODE=$?
@@ -703,6 +730,11 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
+
+################################################
+# Need to update the loops for the image style #
+################################################
+UpdateLoopsForImage
 
 ##################################
 # Get and print all version info #
