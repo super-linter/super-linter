@@ -57,10 +57,23 @@ jobs:
       ###################################
       # Build image locally for testing #
       ###################################
+
+      ##########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build Docker slim image
+        run: |
+          docker build \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --build-arg BUILD_VERSION=${{ github.sha }} \
+          -t ghcr.io/github/super-linter:${{ github.sha }}-slim \
+          -t ghcr.io/github/super-linter:test-slim -f Dockerfile-slim .
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build Docker image
+      - name: Build Docker standard image
         run: |
           docker build \
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
@@ -136,7 +149,7 @@ jobs:
       #####################################
       # Run Linter against Test code base #
       #####################################
-      - name: Run Test Cases
+      - name: Run Test Cases - standard
         shell: bash
         run: |
           docker run \
@@ -147,6 +160,21 @@ jobs:
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v ${GITHUB_WORKSPACE}:/tmp/lint \
           ghcr.io/github/super-linter:${GITHUB_SHA}
+
+      #####################################
+      # Run Linter against Test code base #
+      #####################################
+      - name: Run Test Cases - slim
+        shell: bash
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e TEST_CASE_RUN=true \
+          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v ${GITHUB_WORKSPACE}:/tmp/lint \
+          ghcr.io/github/super-linter:${GITHUB_SHA}-slim
 
       #########################################
       # Clean code base to run against it all #
@@ -168,3 +196,17 @@ jobs:
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v ${GITHUB_WORKSPACE}:/tmp/lint \
           ghcr.io/github/super-linter:${GITHUB_SHA}
+
+      ############################################
+      # Run Linter against ALL cleaned code base #
+      ############################################
+      - name: Run against all code base - slim
+        shell: bash
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e OUTPUT_DETAILS=detailed \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v ${GITHUB_WORKSPACE}:/tmp/lint \
+          ghcr.io/github/super-linter:${GITHUB_SHA}-slim
