@@ -144,6 +144,12 @@ jobs:
             ghcr.io/github/super-linter:v3
             ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
 
+      ########################
+      # Get the current date #
+      ########################
+      - name: Update Release Body String
+        run: echo "UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')" >> ${GITHUB_ENV}
+
       #############################
       # Create the GitHub Release #
       #############################
@@ -159,7 +165,7 @@ jobs:
             -H 'Content-Type: application/json' \
             --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
               \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
-              \"body\": \"${UPDATED_BODY_STRING}\" \
+              \"body\": \"${{ env.UPDATED_BODY_STRING }}\" \
               \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
 
       #####################################################
