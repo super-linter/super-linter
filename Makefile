@@ -71,7 +71,12 @@ inspec-check: ## Validate inspec profiles
 		test/inspec/super-linter
 
 SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
-SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:test"
+SUPER_LINTER_TEST_CONTINER_URL := ''
+ifeq ($(IMAGE),slim)
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim-test"
+else
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:test"
+endif
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests

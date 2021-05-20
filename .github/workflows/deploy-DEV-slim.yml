@@ -75,7 +75,7 @@ jobs:
       ########################################
       - name: Run Docker label test cases
         shell: bash
-        run: .automation/validate-docker-labels.sh
+        run: .automation/validate-docker-labels.sh "slim"
 
       ########################################
       # Edit action.yml for test local build #
@@ -120,7 +120,7 @@ jobs:
       - name: Run the test suite
         shell: bash
         run: |
-          make test
+          make IMAGE=slim test
 
       ##########################
       # Codacy Coverage Report #
