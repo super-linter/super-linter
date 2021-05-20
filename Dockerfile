@@ -11,7 +11,7 @@ FROM cljkondo/clj-kondo:2021.04.23-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.31.0 as protolint
-FROM golangci/golangci-lint:v1.40.0 as golangci-lint
+FROM golangci/golangci-lint:v1.40.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM wata727/tflint:0.28.1 as tflint
 FROM alpine/terragrunt:0.15.3 as terragrunt
@@ -371,6 +371,7 @@ COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
 COPY --from=base_image /usr/lib/ /usr/lib/
+COPY --from=base_image /usr/libexec/ /usr/libexec/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
