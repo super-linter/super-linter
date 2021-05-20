@@ -695,21 +695,28 @@ UpdateLoopsForImage() {
     #############################################
     # Need to remove linters for the slim image #
     #############################################
-    REMOVE_LANGUAGE_ARRAY=("ARM" "ENV" "RUST_2015" "RUST_2018" "RUST_CLIPPY")
-    REMOVE_LINTER_ARRAY=("arm-ttk" "dotenv-linter" "rustfmt" "clippy")
+    REMOVE_ARRAY=("ARM" "CSHARP" "ENV" "POWERSHELL" "RUST_2015" "RUST_2018" "RUST_CLIPPY")
 
     # Remove from LANGUAGE_ARRAY
-    for REMOVE_LANGUAGE in "${REMOVE_LANGUAGE_ARRAY[@]}"; do
-      #shellcheck disable=SC2190
-      LANGUAGE_ARRAY=("${LANGUAGE_ARRAY[@]/$REMOVE_LANGUAGE//}")
-      echo "Removing Language:[${REMOVE_LANGUAGE}] from [LANGUAGE_ARRAY]"
+    echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
+    for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
+        if [[ ${LANGUAGE_ARRAY[INDEX]} = ${REMOVE_LANGUAGE} ]]; then
+          echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
+          unset 'LANGUAGE_ARRAY[INDEX]'
+        fi
+      done
     done
 
     # Remove from LINTER_NAMES_ARRAY
-    for REMOVE_LINTER in "${REMOVE_LINTER_ARRAY[@]}"; do
-      #shellcheck disable=SC2190
-      LINTER_NAMES_ARRAY=("${LINTER_NAMES_ARRAY[@]/$REMOVE_LINTER//}")
-      echo "Removing Language:[${REMOVE_LINTER}] from [LINTER_NAMES_ARRAY]"
+    echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
+    for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
+        if [[ ${INDEX} = ${REMOVE_LINTER} ]]; then
+          echo "found item:[${REMOVE_LINTER}], removing linter..."
+          unset 'LINTER_NAMES_ARRAY[$INDEX]'
+        fi
+      done
     done
   fi
 }

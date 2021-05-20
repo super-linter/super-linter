@@ -9,6 +9,7 @@
 # - rust
 # - dotenv
 # - armttk
+# - pwsh
 
 #########################################
 # Get dependency images as build stages #
