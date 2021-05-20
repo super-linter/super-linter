@@ -701,7 +701,7 @@ UpdateLoopsForImage() {
     echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
     for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
-        if [[ ${LANGUAGE_ARRAY[INDEX]} = ${REMOVE_LANGUAGE} ]]; then
+        if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
           echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
           unset 'LANGUAGE_ARRAY[INDEX]'
         fi
@@ -712,7 +712,7 @@ UpdateLoopsForImage() {
     echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
     for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
-        if [[ ${INDEX} = ${REMOVE_LINTER} ]]; then
+        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
           echo "found item:[${REMOVE_LINTER}], removing linter..."
           unset 'LINTER_NAMES_ARRAY[$INDEX]'
         fi
