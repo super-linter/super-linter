@@ -73,12 +73,15 @@ inspec-check: ## Validate inspec profiles
 SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
 SUPER_LINTER_TEST_CONTINER_URL := ''
 DOCKERFILE := ''
+IMAGE := ''
 ifeq ($(IMAGE),slim)
 	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim-test"
 	DOCKERFILE := "Dockerfile-slim"
+	IMAGE := "slim"
 else
 	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:test"
 	DOCKERFILE := "Dockerfile"
+	IMAGE := "standard"
 endif
 
 .PHONY: inspec
@@ -91,6 +94,7 @@ inspec: inspec-check ## Run InSpec tests
 		--rm \
 		-v "$(CURDIR)":/workspace \
 		-v /var/run/docker.sock:/var/run/docker.sock \
+		-e IMAGE=$(IMAGE)
 		-w="/workspace" \
 		chef/inspec exec test/inspec/super-linter\
 		--chef-license=accept \
