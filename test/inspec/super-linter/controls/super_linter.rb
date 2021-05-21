@@ -351,7 +351,7 @@ control "super-linter-validate-directories" do
     /home/r-library
   )
 
-  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item)
+  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
     continue
   else
     dirs.each do |item|
@@ -439,7 +439,7 @@ control "super-linter-validate-powershell-modules" do
   title "Super-Linter validate Powershell Modules"
   desc "Check that Powershell modules that Super-Linter needs are installed."
 
-  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item)
+  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
     continue
   else
     describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
