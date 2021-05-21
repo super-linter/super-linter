@@ -60,9 +60,18 @@ control "super-linter-installed-packages" do
     "zlib"
   ]
 
+  # Removed linters from slim image
+  SLIM_IMAGE_REMOVED_PACKAGES=%w(
+    rustup
+  )
+
   packages.each do |item|
-    describe package(item) do
-      it { should be_installed }
+    if(image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
+      next
+    else
+      describe package(item) do
+        it { should be_installed }
+      end
     end
   end
 end
@@ -158,7 +167,7 @@ control "super-linter-installed-commands" do
     linter_command = ""
 
     if(image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
-      continue
+      next
     else
       if(linter.key?(:linter_command))
         linter_command = linter[:linter_command]
@@ -351,10 +360,10 @@ control "super-linter-validate-directories" do
     /home/r-library
   )
 
-  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
-    continue
-  else
-    dirs.each do |item|
+  dirs.each do |item|
+    if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
+      next
+    else
       describe directory(item) do
         it { should exist }
         it { should be_directory }
@@ -439,8 +448,8 @@ control "super-linter-validate-powershell-modules" do
   title "Super-Linter validate Powershell Modules"
   desc "Check that Powershell modules that Super-Linter needs are installed."
 
-  if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
-    continue
+  if(image == "slim")
+    next
   else
     describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
       its("exit_status") { should eq 0 }
