@@ -94,7 +94,7 @@ inspec: inspec-check ## Run InSpec tests
 		--rm \
 		-v "$(CURDIR)":/workspace \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-e IMAGE=$(IMAGE)
+		-e IMAGE=$(IMAGE) \
 		-w="/workspace" \
 		chef/inspec exec test/inspec/super-linter\
 		--chef-license=accept \
