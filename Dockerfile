@@ -233,7 +233,6 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && mv "ktlint" /usr/bin/ \
     && terrascan init \
     && cd ~ && touch .chktexrc \
-    && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')" \
 ####################
 # Install dart-sdk #
 ####################
@@ -377,6 +376,7 @@ COPY --from=base_image /node_modules/ /node_modules/
 # Install Litnr #
 #################
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ########################################
 # Add node packages to path and dotnet #
