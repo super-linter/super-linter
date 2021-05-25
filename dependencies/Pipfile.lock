@@ -210,11 +210,11 @@
         },
         "cpplint": {
             "hashes": [
-                "sha256:a4fb2df986485fbe82603ab9a2832f8668b7253956eac2bfafb1374950eed01f",
-                "sha256:c5d70711f06a7a8bfdc09bd7a19c13e114e009a70c8dc16caad1e5f0d2f3cc71"
+                "sha256:18e768d8a4e0c329d88f1272b0283bbc3beafce76f48ee0caeb44ddbf505bba5",
+                "sha256:e740888c383cf9a05950eb49c4c6e5b8a085fb7d04e71a449d66ed8247b5da22"
             ],
             "index": "pypi",
-            "version": "==1.5.4"
+            "version": "==1.5.5"
         },
         "cryptography": {
             "hashes": [
