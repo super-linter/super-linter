@@ -201,16 +201,16 @@ _Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [
 
 ### Images
 
-The **GitHub Super-Linter** now builds and supports `multiple` images. We have found as we added more linters, the image size expanded drastically.  
-After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.  
-This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.  
+The **GitHub Super-Linter** now builds and supports `multiple` images. We have found as we added more linters, the image size expanded drastically.
+After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.
+This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
 The available images:
 - `github/super-linter:v4`
 - `github/super-linter:slim-v4`
 
 #### Standard Image
 
-The standard `github/super-linter:v4` comes with all supported linters.  
+The standard `github/super-linter:v4` comes with all supported linters.
 Example usage:
 ```yml
 ################################
@@ -231,8 +231,8 @@ The slim `github/super-linter:slim-v4` comes with all supported linters but remo
 - `dotenv` linters
 - `armttk` linters
 - `pwsh` linters
-By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.  
-The behavior will be the same for non-supported languages, and will skip languages at run time.  
+By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
+The behavior will be the same for non-supported languages, and will skip languages at run time.
 Example usage:
 ```yml
 ################################
