@@ -1,0 +1,158 @@
+---
+#########################
+#########################
+## Deploy Docker Image ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Deploy Docker Image - PROD - slim
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    # Only run this on the main repo
+    if: github.repository == 'github/super-linter'
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2.3.4
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+
+      ########################
+      # Setup Docker build X #
+      ########################
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v1.3.0
+
+      ###############################
+      # Login to DockerHub registry #
+      ###############################
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.9.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      ######################################
+      # Login to GitHub Container registry #
+      ######################################
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.9.0
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_TOKEN }}
+
+      #########################
+      # Update deployment API #
+      #########################
+      - name: Start deployment
+        uses: bobheadxi/deployments@v0.5.2
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: Production-SLIM
+
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push - SLIM
+        uses: docker/build-push-action@v2.4.0
+        with:
+          context: .
+          file: ./Dockerfile-slim
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: true
+          tags: |
+            github/super-linter:slim-latest
+            ghcr.io/github/super-linter:slim-latest
+
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Create GitHub Issue for failure
+        if: failure()
+        uses: actions/github-script@v4.0.2
+        id: create-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy to production",
+              body: 'Automation has failed us!'
+            })
+            console.log('create', create)
+            return create.data.number
+
+      ############################
+      # Assign admins on failure #
+      ############################
+      - name: Assign Admins on failure
+        uses: actions/github-script@v4.0.2
+        if: failure()
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.create-issue.outputs.result }}",
+              assignees: [
+                'admiralawkbar',
+                'jwiebalk',
+                'IAmHughes',
+                'nemchik',
+                'Hanse00',
+                'GaboFDC',
+                'ferrarimarco'
+              ]
+            })
+
+      #########################
+      # Update Deployment API #
+      #########################
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v0.5.2
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env_url: https://github.com/github/super-linter

@@ -25,7 +25,7 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Deploy Docker Image - PROD
+    name: Deploy Docker Image - PROD - standard
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Only run this on the main repo
@@ -98,34 +98,6 @@ jobs:
           tags: |
             github/super-linter:latest
             ghcr.io/github/super-linter:latest
-
-      ###########################
-      # Clean the docker daemon #
-      ###########################
-      - name: Docker cleanup
-        run: |
-          docker images -f dangling=true | \
-          tr '[:upper:]' '[:lower:]' | \
-          awk '{print $3}' | \
-          xargs docker rmi -f
-          exit 0
-
-      ###########################################
-      # Build and Push containers to registries #
-      ###########################################
-      - name: Build and push - SLIM
-        uses: docker/build-push-action@v2.4.0
-        with:
-          context: .
-          file: ./Dockerfile-slim
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          push: true
-          tags: |
-            github/super-linter:slim-latest
-            ghcr.io/github/super-linter:slim-latest
 
       #######################################################
       # Create a GitHub Issue with the info from this build #
