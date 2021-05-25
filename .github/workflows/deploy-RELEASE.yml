@@ -144,6 +144,17 @@ jobs:
             ghcr.io/github/super-linter:v4
             ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
 
+      ###########################
+      # Clean the docker daemon #
+      ###########################
+      - name: Docker cleanup
+        run: |
+          docker images -f dangling=true | \
+          tr '[:upper:]' '[:lower:]' | \
+          awk '{print $3}' | \
+          xargs docker rmi -f
+          exit 0
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
