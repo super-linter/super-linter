@@ -126,7 +126,7 @@ jobs:
       ###########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build and push
+      - name: Build and push - Standard
         uses: docker/build-push-action@v2.4.0
         with:
           context: .
@@ -144,6 +144,35 @@ jobs:
             ghcr.io/github/super-linter:v3
             ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
 
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push - SLIM
+        uses: docker/build-push-action@v2.4.0
+        with:
+          context: .
+          file: ./Dockerfile-slim
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: true
+          tags: |
+            github/super-linter:slim-latest
+            github/super-linter:slim-v3
+            github/super-linter:slim-${{ env.RELEASE_VERSION }}
+            ghcr.io/github/super-linter:slim-latest
+            ghcr.io/github/super-linter:slim-v3
+            ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Update Release Body String
+        run: |
+          echo "UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
+          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')" >> ${GITHUB_ENV}
+
       #############################
       # Create the GitHub Release #
       #############################
@@ -151,16 +180,20 @@ jobs:
         if: success()
         id: create_release
         run: |
-          UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
+          UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
+          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
           curl --fail -X POST \
             --url https://api.github.com/repos/${{ github.repository }}/releases \
             -H 'Accept: application/vnd.github.v3+json' \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H 'Content-Type: application/json' \
-            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \"target_commitish\": \"${{ env.PR_REF }}\", \
-              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \"draft\": false, \"prerelease\": false, \
-              \"body\": \"${UPDATED_BODY_STRING}\" \
-              \"repository_action_release_attributes\": { \"published_on_marketplace\": true }}"
+            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \
+              \"target_commitish\": \"${{ env.PR_REF }}\", \
+              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \
+              \"draft\": false, \"prerelease\": false, \
+              \"body\": \"${{ env.UPDATED_BODY_STRING }}\" \
+              \"repository_action_release_attributes\": \
+              { \"published_on_marketplace\": true }}"
 
       #####################################################
       # Create the Required status check for Stack Linter #

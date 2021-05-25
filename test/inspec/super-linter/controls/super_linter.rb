@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# PUll in env vars passed
+image = ENV["IMAGE"]
+
 ##################################################
 # Check to see all system packages are installed #
 ##################################################
@@ -57,12 +60,20 @@ control "super-linter-installed-packages" do
     "zlib"
   ]
 
+  # Removed linters from slim image
+  SLIM_IMAGE_REMOVED_PACKAGES=%w(
+    rustup
+  )
+
   packages.each do |item|
-    describe package(item) do
-      it { should be_installed }
+    if(image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
+      next
+    else
+      describe package(item) do
+        it { should be_installed }
+      end
     end
   end
-
 end
 
 ###########################################
@@ -140,53 +151,69 @@ control "super-linter-installed-commands" do
     { linter_name: "yamllint"},
   ]
 
+  # Removed linters from slim image
+  SLIM_IMAGE_REMOVED_LINTERS=%w(
+    arm-ttk
+    clippy
+    dotnet-format
+    dotenv-linter
+    pwsh
+    rustfmt
+  )
+
   linters.each do |linter|
     # If we didn't specify a linter command, use the linter name as a linter
     # command because the vast majority of linters have name == command
-    if(linter.key?(:linter_command))
-      linter_command = linter[:linter_command]
+    linter_command = ""
+
+    if(image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
+      next
     else
-      linter_command = linter[:linter_name]
-    end
-
-    describe command("command -v #{linter_command}") do
-      its("exit_status") { should eq 0 }
-    end
-
-    # A few linters have a command that it's different than linter_command
-    if(linter.key?(:version_command))
-      version_command = linter[:version_command]
-    else
-      # Check if the linter needs an option that is different from the one that
-      # the vast majority of linters use to get the version
-      if(linter.key?(:version_option))
-        version_option = linter[:version_option]
+      if(linter.key?(:linter_command))
+        linter_command = linter[:linter_command]
       else
-        version_option = default_version_option
+        linter_command = linter[:linter_name]
       end
 
-      version_command = "#{linter_command} #{version_option}"
-
-      if(linter.key?(:expected_exit_status))
-        expected_exit_status = linter[:expected_exit_status]
-      else
-        expected_exit_status = default_version_expected_exit_status
+      describe command("command -v #{linter_command}") do
+        its("exit_status") { should eq 0 }
       end
 
-      if(linter.key?(:expected_stdout_regex))
-        expected_stdout_regex = linter[:expected_stdout_regex]
+      # A few linters have a command that it's different than linter_command
+      if(linter.key?(:version_command))
+        version_command = linter[:version_command]
       else
-        expected_stdout_regex = default_expected_stdout_regex
-      end
+        # Check if the linter needs an option that is different from the one that
+        # the vast majority of linters use to get the version
+        if(linter.key?(:version_option))
+          version_option = linter[:version_option]
+        else
+          version_option = default_version_option
+        end
 
-      ##########################################################
-      # Being able to run the command `linter --version` helps #
-      # achieve that the linter is installed, ini PATH, and    #
-      # has the libraries needed to be able to basically run   #
-      ##########################################################
-      describe command(version_command) do
-        its("exit_status") { should eq expected_exit_status }
-        its("stdout") { should match (expected_stdout_regex) }
+        version_command = "#{linter_command} #{version_option}"
+
+        if(linter.key?(:expected_exit_status))
+          expected_exit_status = linter[:expected_exit_status]
+        else
+          expected_exit_status = default_version_expected_exit_status
+        end
+
+        if(linter.key?(:expected_stdout_regex))
+          expected_stdout_regex = linter[:expected_stdout_regex]
+        else
+          expected_stdout_regex = default_expected_stdout_regex
+        end
+
+        ##########################################################
+        # Being able to run the command `linter --version` helps #
+        # achieve that the linter is installed, ini PATH, and    #
+        # has the libraries needed to be able to basically run   #
+        ##########################################################
+        describe command(version_command) do
+          its("exit_status") { should eq expected_exit_status }
+          its("stdout") { should match (expected_stdout_regex) }
+        end
       end
     end
   end
@@ -328,10 +355,19 @@ control "super-linter-validate-directories" do
     "/usr/local/share/"
   ]
 
+  # Removed linters from slim image
+  SLIM_IMAGE_REMOVED_DIRS=%w(
+    /home/r-library
+  )
+
   dirs.each do |item|
-    describe directory(item) do
-      it { should exist }
-      it { should be_directory }
+    if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
+      next
+    else
+      describe directory(item) do
+        it { should exist }
+        it { should be_directory }
+      end
     end
   end
 end
@@ -412,13 +448,17 @@ control "super-linter-validate-powershell-modules" do
   title "Super-Linter validate Powershell Modules"
   desc "Check that Powershell modules that Super-Linter needs are installed."
 
-  describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
-    its("exit_status") { should eq 0 }
-    its("stdout") { should eq "PSScriptAnalyzer\n" }
-  end
+  if(image == "slim")
+    next
+  else
+    describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
+      its("exit_status") { should eq 0 }
+      its("stdout") { should eq "PSScriptAnalyzer\n" }
+    end
 
-  describe command("pwsh -c \"(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name\" 2>&1") do
-    its("exit_status") { should eq 0 }
-    its("stdout") { should eq "Invoke-ScriptAnalyzer\n" }
+    describe command("pwsh -c \"(Get-Command Invoke-ScriptAnalyzer | Select-Object -First 1).Name\" 2>&1") do
+      its("exit_status") { should eq 0 }
+      its("stdout") { should eq "Invoke-ScriptAnalyzer\n" }
+    end
   end
 end

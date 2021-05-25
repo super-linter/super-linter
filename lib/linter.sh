@@ -12,6 +12,7 @@
 ##################################################################
 # RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
+IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
 
 ##################################################################
 # Log Vars                                                       #
@@ -685,6 +686,41 @@ Footer() {
   exit 0
 }
 ################################################################################
+#### Function UpdateLoopsForImage ##############################################
+UpdateLoopsForImage() {
+  ######################################################################
+  # Need to clean the array lists of the linters removed for the image #
+  ######################################################################
+  if [[ "${IMAGE}" == "slim" ]]; then
+    #############################################
+    # Need to remove linters for the slim image #
+    #############################################
+    REMOVE_ARRAY=("ARM" "CSHARP" "ENV" "POWERSHELL" "RUST_2015" "RUST_2018" "RUST_CLIPPY")
+
+    # Remove from LANGUAGE_ARRAY
+    echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
+    for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
+        if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
+          echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
+          unset 'LANGUAGE_ARRAY[INDEX]'
+        fi
+      done
+    done
+
+    # Remove from LINTER_NAMES_ARRAY
+    echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
+    for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
+        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
+          echo "found item:[${REMOVE_LINTER}], removing linter..."
+          unset 'LINTER_NAMES_ARRAY[$INDEX]'
+        fi
+      done
+    done
+  fi
+}
+################################################################################
 #### Function Cleanup ##########################################################
 cleanup() {
   local -ri EXIT_CODE=$?
@@ -703,6 +739,11 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
+
+################################################
+# Need to update the loops for the image style #
+################################################
+UpdateLoopsForImage
 
 ##################################
 # Get and print all version info #

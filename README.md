@@ -21,6 +21,9 @@ It is a simple combination of various linters, written in `bash`, to help valida
   - [How to use](#how-to-use)
     - [Example connecting GitHub Action Workflow](#example-connecting-github-action-workflow)
     - [Add Super-Linter badge in your repository README](#add-super-linter-badge-in-your-repository-readme)
+    - [Images](#images)
+      - [Standard Image](#standard-image)
+      - [Slim Image](#slim-image)
   - [Environment variables](#environment-variables)
     - [Template rules files](#template-rules-files)
     - [Using your own rules files](#using-your-own-rules-files)
@@ -195,6 +198,53 @@ Example:
 ```
 
 _Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
+
+### Images
+
+The **GitHub Super-Linter** now builds and supports `multiple` images. We have found as we added more linters, the image size expanded drastically.
+After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.
+This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
+The available images:
+- `github/super-linter:v4`
+- `github/super-linter:slim-v4`
+
+#### Standard Image
+
+The standard `github/super-linter:v4` comes with all supported linters.
+Example usage:
+```yml
+################################
+# Run Linter against code base #
+################################
+- name: Lint Code Base
+  uses: github/super-linter@v4
+  env:
+    VALIDATE_ALL_CODEBASE: false
+    DEFAULT_BRANCH: master
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### Slim Image
+
+The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
+- `rust` linters
+- `dotenv` linters
+- `armttk` linters
+- `pwsh` linters
+By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
+The behavior will be the same for non-supported languages, and will skip languages at run time.
+Example usage:
+```yml
+################################
+# Run Linter against code base #
+################################
+- name: Lint Code Base
+  uses: ghcr.io://github/super-linter@slim-v4
+  env:
+    VALIDATE_ALL_CODEBASE: false
+    DEFAULT_BRANCH: master
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Environment variables
 

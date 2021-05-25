@@ -1,0 +1,170 @@
+---
+#########################
+#########################
+## Deploy Docker Image ##
+#########################
+#########################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches-ignore: [master]
+  pull_request:
+    branches-ignore: [ ]
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Deploy Docker Image - DEV
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    # Prevent duplicate run from happening when a forked push is committed
+    if: github.event_name == 'push' ||
+        github.event.pull_request.head.repo.full_name != github.repository
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2.3.4
+        with:
+          # Full git history is needed to get a proper list
+          # of changed files within `super-linter`
+          fetch-depth: 0
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+
+      ###################################
+      # Build image locally for testing #
+      ###################################
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build Docker standard image
+        run: |
+          docker build \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --build-arg BUILD_VERSION=${{ github.sha }} \
+          -t ghcr.io/github/super-linter:${{ github.sha }} \
+          -t ghcr.io/github/super-linter:test -f Dockerfile .
+
+      ########################################
+      # Validates the metadata docker labels #
+      ########################################
+      - name: Run Docker label test cases
+        shell: bash
+        run: .automation/validate-docker-labels.sh
+
+      ########################################
+      # Edit action.yml for test local build #
+      ########################################
+      - name: Edit an action.yml file for test local build
+        run: |
+          sed -i "s/super-linter:.*/super-linter:${GITHUB_SHA}'/g" action.yml
+
+      ######################
+      # Gather information #
+      ######################
+      - name: Gather information about the runtime environment
+        shell: bash
+        run: |
+          make info
+
+      ##########################
+      # Test in action context #
+      ##########################
+      # Test the built image in the actions context.
+      # Not the container directly, and not using RUN_LOCAL=true
+      - name: Test the local action
+        uses: ./
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      ###############################################################
+      # Fix file and dir ownership.                                 #
+      # Workaround for https://github.com/actions/runner/issues/434 #
+      ###############################################################
+      - name: Fix file and directory ownership
+        shell: bash
+        run: |
+          sudo chown -R "$(id -u)":"$(id -g)" "$(pwd)"
+
+      ##################
+      # Run test cases #
+      ##################
+      - name: Run the test suite
+        shell: bash
+        run: |
+          make test
+
+      ##########################
+      # Codacy Coverage Report #
+      ##########################
+      - name: Upload the code coverage report
+        uses: codacy/codacy-coverage-reporter-action@1.0.1
+        # Dependabot does not have priv to see the secret, so will
+        # fail opn bump jobs...
+        continue-on-error: true
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
+
+      #####################################
+      # Run Linter against Test code base #
+      #####################################
+      - name: Run Test Cases - standard
+        shell: bash
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e TEST_CASE_RUN=true \
+          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v ${GITHUB_WORKSPACE}:/tmp/lint \
+          ghcr.io/github/super-linter:${GITHUB_SHA}
+
+      #########################################
+      # Clean code base to run against it all #
+      #########################################
+      - name: Clean Test code base for additional testing
+        shell: bash
+        run: .automation/clean-code-base-for-tests.sh
+
+      ############################################
+      # Run Linter against ALL cleaned code base #
+      ############################################
+      - name: Run against all code base
+        shell: bash
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e OUTPUT_DETAILS=detailed \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v ${GITHUB_WORKSPACE}:/tmp/lint \
+          ghcr.io/github/super-linter:${GITHUB_SHA}
