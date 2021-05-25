@@ -1,0 +1,210 @@
+---
+#################################
+#################################
+## Deploy Release Docker Image ##
+#################################
+#################################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#######################################
+# Start the job on all push to master #
+#######################################
+on:
+  # Start when a pull request is opened
+  issues:
+    types: ['opened']
+
+###############
+# Set the Job #
+###############
+jobs:
+  deploy:
+    # Name the Job
+    name: Deploy Docker Image - Release - standard
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    #####################################################################
+    # Only run if Admin start job and it was the Release Issue template #
+    #####################################################################
+    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
+        github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
+        github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
+        github.actor == 'Hanse00' || github.actor == 'github-actions' ||
+        github.actor == 'GaboFDC' || github.actor == 'ferrarimarco'
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2.3.4
+
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Update GitHub Issue
+        uses: actions/github-script@v4.0.2
+        id: update-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ github.event.issue.number }}",
+              title: "Deploying Super-Linter standard Release to Production",
+              body: 'Currently deploying the Release...'
+            })
+
+      #########################
+      # Update deployment API #
+      #########################
+      - name: Start deployment
+        uses: bobheadxi/deployments@v0.5.2
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: Release
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Get current date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+
+      ########################
+      # Setup Docker build X #
+      ########################
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v1.3.0
+
+      ###############################
+      # Login to DockerHub registry #
+      ###############################
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.9.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      ######################################
+      # Login to GitHub Container registry #
+      ######################################
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.9.0
+        with:
+          username: ${{ secrets.GCR_USERNAME }}
+          password: ${{ secrets.GCR_TOKEN }}
+          registry: ghcr.io
+
+      #######################################
+      # Update actions.yml with new version #
+      #######################################
+      - name: Update actions.yml with release version and create PR
+        if: success()
+        run: ./.automation/update-actions-version.sh
+        # Note: script creates variables:
+        # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push - Standard
+        uses: docker/build-push-action@v2.4.0
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          push: true
+          tags: |
+            github/super-linter:latest
+            github/super-linter:v4
+            github/super-linter:${{ env.RELEASE_VERSION }}
+            ghcr.io/github/super-linter:latest
+            ghcr.io/github/super-linter:v4
+            ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
+
+      ########################
+      # Get the current date #
+      ########################
+      - name: Update Release Body String
+        run: |
+          echo "UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
+          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')" >> ${GITHUB_ENV}
+
+      #############################
+      # Create the GitHub Release #
+      #############################
+      - name: Create Release
+        if: success()
+        id: create_release
+        run: |
+          UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
+          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
+          curl --fail -X POST \
+            --url https://api.github.com/repos/${{ github.repository }}/releases \
+            -H 'Accept: application/vnd.github.v3+json' \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \
+              \"target_commitish\": \"${{ env.PR_REF }}\", \
+              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \
+              \"draft\": false, \"prerelease\": false, \
+              \"body\": \"${{ env.UPDATED_BODY_STRING }}\" \
+              \"repository_action_release_attributes\": \
+              { \"published_on_marketplace\": true }}"
+
+      #####################################################
+      # Create the Required status check for Stack Linter #
+      #####################################################
+      - name: Create Stack Linter Status
+        if: success()
+        run: |
+          curl -X POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }} \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --data '{	"state": "success",	"context": "Stack linter" }'
+
+      #################################
+      # Close the opened Pull Request #
+      #################################
+      - name: Close PR
+        if: success()
+        run: |
+          curl -X PUT --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_ID }}/merge \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --data '{ "merge_method": "squash" }'
+
+      #########################
+      # Update Deployment API #
+      #########################
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v0.5.2
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
