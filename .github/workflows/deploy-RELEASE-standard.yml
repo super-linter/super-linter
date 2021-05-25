@@ -144,35 +144,25 @@ jobs:
             ghcr.io/github/super-linter:v4
             ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
 
-      ########################
-      # Get the current date #
-      ########################
-      - name: Update Release Body String
-        run: |
-          echo "UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
-          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')" >> ${GITHUB_ENV}
-
       #############################
       # Create the GitHub Release #
       #############################
       - name: Create Release
         if: success()
         id: create_release
-        run: |
-          UPDATED_BODY_STRING=$(echo "${{ github.event.issue.body }}" | \
-          sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
-          curl --fail -X POST \
-            --url https://api.github.com/repos/${{ github.repository }}/releases \
-            -H 'Accept: application/vnd.github.v3+json' \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H 'Content-Type: application/json' \
-            --data "{ \"tag_name\": \"${{ env.RELEASE_VERSION }}\", \
-              \"target_commitish\": \"${{ env.PR_REF }}\", \
-              \"name\": \"Release ${{ env.RELEASE_VERSION }}\", \
-              \"draft\": false, \"prerelease\": false, \
-              \"body\": \"${{ env.UPDATED_BODY_STRING }}\" \
-              \"repository_action_release_attributes\": \
-              { \"published_on_marketplace\": true }}"
+        uses: actions/create-release@v1
+        env:
+          # This token is provided by Actions,
+          # you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commitish: ${{ env.PR_REF }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          body: |
+            ${{ github.event.issue.body }}
+          draft: false
+          prerelease: false
 
       #####################################################
       # Create the Required status check for Stack Linter #
