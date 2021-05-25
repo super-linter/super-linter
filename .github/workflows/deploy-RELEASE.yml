@@ -138,10 +138,10 @@ jobs:
           push: true
           tags: |
             github/super-linter:latest
-            github/super-linter:v3
+            github/super-linter:v4
             github/super-linter:${{ env.RELEASE_VERSION }}
             ghcr.io/github/super-linter:latest
-            ghcr.io/github/super-linter:v3
+            ghcr.io/github/super-linter:v4
             ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
 
       ###########################################
@@ -159,10 +159,10 @@ jobs:
           push: true
           tags: |
             github/super-linter:slim-latest
-            github/super-linter:slim-v3
+            github/super-linter:slim-v4
             github/super-linter:slim-${{ env.RELEASE_VERSION }}
             ghcr.io/github/super-linter:slim-latest
-            ghcr.io/github/super-linter:slim-v3
+            ghcr.io/github/super-linter:slim-v4
             ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}
 
       ########################
