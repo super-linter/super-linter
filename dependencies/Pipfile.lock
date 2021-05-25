@@ -208,6 +208,12 @@
             ],
             "version": "==1.4.1"
         },
+        "connection-pool": {
+            "hashes": [
+                "sha256:bf429e7aef65921c69b4ed48f3d48d3eac1383b05d2df91884705842d974d0dc"
+            ],
+            "version": "==0.0.3"
+        },
         "cpplint": {
             "hashes": [
                 "sha256:18e768d8a4e0c329d88f1272b0283bbc3beafce76f48ee0caeb44ddbf505bba5",
@@ -850,10 +856,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:eb6a59c7cfe847333d792fad8ef04a478bed8f2184f0f447c011b15dfbc20a49"
+                "sha256:829df4f09352d6a79056e42ed6e89d5ba8f7d7fe1b341ba1ec065212447eeeef"
             ],
             "index": "pypi",
-            "version": "==6.3.0"
+            "version": "==6.4.0"
         },
         "stopit": {
             "hashes": [
