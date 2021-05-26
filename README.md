@@ -231,6 +231,7 @@ The slim `github/super-linter:slim-v4` comes with all supported linters but remo
 - `dotenv` linters
 - `armttk` linters
 - `pwsh` linters
+- `c#` linters
 By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
 The behavior will be the same for non-supported languages, and will skip languages at run time.
 Example usage:
