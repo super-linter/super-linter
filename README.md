@@ -172,7 +172,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v3
+        uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -427,7 +427,7 @@ Once found, it will load the certificate contents to a file, and to the trust st
 - Example workflow:
 ```yml
 - name: Lint Code Base
-  uses: github/super-linter@v3
+  uses: github/super-linter@v4
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
