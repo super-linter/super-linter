@@ -86,7 +86,7 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - Standard
-        uses: docker/build-push-action@v2.4.0
+        uses: docker/build-push-action@v2.5.0
         with:
           context: .
           file: ./Dockerfile
