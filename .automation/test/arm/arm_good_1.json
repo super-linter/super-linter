@@ -22,7 +22,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2019-06-01",
+      "apiVersion": "2021-05-01",
       "name": "[concat('store', uniquestring(resourceGroup().id))]",
       "location": "[parameters('location')]",
       "kind": "StorageV2",
