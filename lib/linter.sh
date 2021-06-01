@@ -114,6 +114,8 @@ JSCPD_FILE_NAME="${JSCPD_CONFIG_FILE:-.jscpd.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSX_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+KUBERNETES_KUBEVAL_OPTIONS="${KUBERNETES_KUBEVAL_OPTIONS:-null}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 LATEX_FILE_NAME=".chktexrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 LUA_FILE_NAME=".luacheckrc"
@@ -815,7 +817,11 @@ LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
 LINTER_COMMANDS_ARRAY['JSONC']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json5,.jsonc"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
-LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
+if [ "${KUBERNETES_KUBEVAL_OPTIONS}" == "null" ] || [ -z "${KUBERNETES_KUBEVAL_OPTIONS}" ]; then
+  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
+else
+  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict ${KUBERNETES_KUBEVAL_OPTIONS}"
+fi
 LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['LUA']="luacheck --config ${LUA_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['MARKDOWN']="markdownlint -c ${MARKDOWN_LINTER_RULES}"
