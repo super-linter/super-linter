@@ -114,6 +114,8 @@ JSCPD_FILE_NAME="${JSCPD_CONFIG_FILE:-.jscpd.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSX_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+KUBERNETES_KUBEVAL_OPTIONS="${KUBERNETES_KUBEVAL_OPTIONS:-null}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 LATEX_FILE_NAME=".chktexrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 LUA_FILE_NAME=".luacheckrc"
@@ -161,8 +163,6 @@ TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-VALIDATE_KUBERNETES_KUBEVAL_OPTIONS="${VALIDATE_KUBERNETES_KUBEVAL_OPTIONS:-null}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 
@@ -817,10 +817,10 @@ LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
 LINTER_COMMANDS_ARRAY['JSONC']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json5,.jsonc"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
-if [ "${VALIDATE_KUBERNETES_KUBEVAL_OPTIONS}" == "null" ] || [ -z "${VALIDATE_KUBERNETES_KUBEVAL_OPTIONS}" ]; then
+if [ "${KUBERNETES_KUBEVAL_OPTIONS}" == "null" ] || [ -z "${KUBERNETES_KUBEVAL_OPTIONS}" ]; then
   LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
 else
-  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict ${VALIDATE_KUBERNETES_KUBEVAL_OPTIONS}"
+  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict ${KUBERNETES_KUBEVAL_OPTIONS}"
 fi
 LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['LUA']="luacheck --config ${LUA_LINTER_RULES}"
