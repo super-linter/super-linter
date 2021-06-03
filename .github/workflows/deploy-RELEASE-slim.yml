@@ -107,6 +107,15 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
 
+      ###########################
+      # Get the current release #
+      ###########################
+      - name: Get current Release number
+        run: |
+          echo "RELEASE_VERSION=$(echo "${{ github.event.issue.title }}" \
+          | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
+          >> ${GITHUB_ENV}
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
