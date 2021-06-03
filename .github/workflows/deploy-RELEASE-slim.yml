@@ -106,7 +106,7 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
-      
+
       ###########################
       # Get the current release #
       ###########################
