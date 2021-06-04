@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ################################################################################
 ################################################################################
 ########### Super-Linter lintly Function(s) @scriptsrc #########################
@@ -23,7 +22,7 @@ LINTLY_SUPPORT_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn-nag"
 LINTLY_SUPPORT_ARRAY['GITLEAKS']="gitleaks"
-export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
+export LINTLY_SUPPORT_ARRAY # Workaround SC2034
 
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
@@ -52,7 +51,7 @@ function InvokeLintly() {
 
   debug "----<<<<INVOKING Invokelintly>>>>----"
   debug "FORMAT: ${LINTLY_FORMAT}"
-  debug "OUTPUT: $(<${LINTER_COMMAND_OUTPUT_FILE})"
+  debug "OUTPUT: $(<"${LINTER_COMMAND_OUTPUT_FILE}")"
   debug ""
   debug "DONE DISPLAYING ARGUMENTS"
 
@@ -63,7 +62,7 @@ function InvokeLintly() {
   # what the repo-relative path should be.
   export LINTLY_FILE_OVERRIDE="${FILE}"
   # Lintly will comment on the PR
-  lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}" < "${LINTER_COMMAND_OUTPUT_FILE}"
+  lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}" <"${LINTER_COMMAND_OUTPUT_FILE}"
 
   debug "$?"
   debug "^^ exit code ^^"

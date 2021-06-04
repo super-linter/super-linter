@@ -104,7 +104,7 @@ EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 GHERKIN_FILE_NAME=".gherkin-lintrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-[[ ! -z ${GITLEAKS_CONFIG_FILE} ]] && GITLEAKS_FILE_NAME=${GITLEAKS_CONFIG_FILE}    # Use built-in default rules if none were provided
+[[ -n ${GITLEAKS_CONFIG_FILE} ]] && GITLEAKS_FILE_NAME=${GITLEAKS_CONFIG_FILE} # Use built-in default rules if none were provided
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 GO_FILE_NAME=".golangci.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -324,11 +324,6 @@ RAW_FILE_ARRAY=()                   # Array of all files that were changed
 export RAW_FILE_ARRAY               # Workaround SC2034
 TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
 export TEST_CASE_FOLDER             # Workaround SC2034
-
-##############
-# Output     #
-##############
-OUTPUT_MODE="${OUTPUT_MODE}"
 
 ##########################
 # Array of changed files #
