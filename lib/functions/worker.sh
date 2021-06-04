@@ -168,7 +168,10 @@ function LintCodebase() {
       ####################
       # Set the base Var #
       ####################
+      # LINT_CMD contains both stderr and stdout.
+      # LINT_OUTPUT_ONLY_FILE is a *file* containing stdout only, for downstream utilities.
       LINT_CMD=''
+      LINT_OUTPUT_ONLY_FILE=$(mktemp) || echo "Failed to create temp file to capture linter output."
 
       #####################
       # Check for ansible #
@@ -246,7 +249,7 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "CLOUDFORMATION" ]]; then
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          ${LINTER_COMMAND} "${FILE}" 2>&1 > >(tee "${LINT_OUTPUT_ONLY_FILE}")
           # Clear the 'informational' bit in cfn-lint's exit status.
           exit $(($? & ~0x100))
         )
@@ -256,7 +259,7 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "CLOUDFORMATION_CFN_NAG" ]]; then
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} --input-path="${FILE}" 2>&1
+          ${LINTER_COMMAND} --input-path="${FILE}" 2>&1 > >(tee "${LINT_OUTPUT_ONLY_FILE}")
         )
       #######################################################
       # Corner case for KTLINT as it cant use the full path #
@@ -274,7 +277,7 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "GITLEAKS" ]]; then
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} --path="${FILE}" --report="/dev/stdout"
+          ${LINTER_COMMAND} --path="${FILE}" --report="${LINT_OUTPUT_ONLY_FILE}" 2>&1
         )
       ################################
       # Lint the file with the rules #
@@ -282,7 +285,7 @@ function LintCodebase() {
       else
         LINT_CMD=$(
           cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          ${LINTER_COMMAND} "${FILE}" 2>&1 > >(tee "${LINT_OUTPUT_ONLY_FILE}")
         )
       fi
       #######################
@@ -306,8 +309,8 @@ function LintCodebase() {
             warn "Warnings found in [${LINTER_NAME}] linter!"
             warn "${LINT_CMD}"
 
-            if IsLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${FILE}" "${LINT_CMD}"
+            if OutputToLintly && SupportsLintly "${FILE_TYPE}"; then
+              InvokeLintly "${FILE_TYPE}" "${FILE}" "${LINT_OUTPUT_ONLY_FILE}"
             fi
 
           else
@@ -317,8 +320,8 @@ function LintCodebase() {
             error "Found errors in [${LINTER_NAME}] linter!"
             error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
 
-            if IsLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}" "${FILE}" "${LINT_CMD}"
+            if OutputToLintly && SupportsLintly "${FILE_TYPE}"; then
+              InvokeLintly "${FILE_TYPE}" "${FILE}" "${LINT_OUTPUT_ONLY_FILE}"
             fi
 
             # Increment the error count
@@ -353,6 +356,11 @@ function LintCodebase() {
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
         fi
       fi
+      #######################
+      # Clean up temp files #
+      #######################
+      rm "${LINT_OUTPUT_ONLY_FILE}"
+
       debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
     done
   fi
