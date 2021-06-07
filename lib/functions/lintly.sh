@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ################################################################################
 ################################################################################
 ########### Super-Linter lintly Function(s) @scriptsrc #########################
@@ -23,7 +22,7 @@ LINTLY_SUPPORT_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn-nag"
 LINTLY_SUPPORT_ARRAY['GITLEAKS']="gitleaks"
-export LINTLY_SUPPORT_ARRAY                      # Workaround SC2034
+export LINTLY_SUPPORT_ARRAY # Workaround SC2034
 
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
@@ -35,44 +34,42 @@ function AddLinterOptsForLintly() {
   [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
   [[ ! "${LINTER_OPTS[TERRAFORM_TERRASCAN]}" =~ "json" ]] && LINTER_OPTS[TERRAFORM_TERRASCAN]+=" -o json"
   [[ ! "${LINTER_OPTS[CLOUDFORMATION_CFN_NAG]}" =~ "json" ]] && LINTER_OPTS[CLOUDFORMATION_CFN_NAG]+=" --output-format=json"
-  # gitleaks with either --verbose or --quiet will write extra logs to stdout and mess up our report; remove these
-  LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// --quiet/} && \
-      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// -q/} && \
-      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// --verbose/} && \
-      LINTER_OPTS[GITLEAKS]=${LINTER_OPTS[GITLEAKS]// -v/}
 }
 ################################################################################
 #### Function InvokeLintly #####################################################
 function InvokeLintly() {
   # Call comes through as:
-  # InvokeLintly "${LINTLY_FORMAT}" "${LINTER_COMMAND_OUTPUT}"
+  # InvokeLintly "${FILE_TYPE}" ${FILE} "${LINTER_COMMAND_OUTPUT_FILE}"
 
   ####################
   # Pull in the vars #
   ####################
-  LINTLY_FORMAT="${1}"
-  LINTLY_FILE_OVERRIDE="${2}"
-  LINTER_COMMAND_OUTPUT="${3}"
+  FILE_TYPE="${1}"
+  FILE="${2}"
+  LINTER_COMMAND_OUTPUT_FILE="${3}"
+  LINTLY_FORMAT="${LINTLY_SUPPORT_ARRAY[${FILE_TYPE}]}"
 
   debug "----<<<<INVOKING Invokelintly>>>>----"
   debug "FORMAT: ${LINTLY_FORMAT}"
-  debug "OUTPUT: ${LINTER_COMMAND_OUTPUT}"
+  debug "OUTPUT: $(<"${LINTER_COMMAND_OUTPUT_FILE}")"
   debug ""
   debug "DONE DISPLAYING ARGUMENTS"
 
   LINTLY_LOG=""
-  if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LINTLY_LOG="--log"; fi
+  if [[ ${ACTIONS_RUNNER_DEBUG} ]]; then LINTLY_LOG="--log"; fi
 
+  # Some linter tools may not provide a full path and filename. Use env var to "hint" to Lintly
+  # what the repo-relative path should be.
+  export LINTLY_FILE_OVERRIDE="${FILE}"
   # Lintly will comment on the PR
-  export LINTLY_FILE_OVERRIDE="${LINTLY_FILE_OVERRIDE}"
-  echo "$LINTER_COMMAND_OUTPUT" | lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}"
+  lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}" <"${LINTER_COMMAND_OUTPUT_FILE}"
 
   debug "$?"
   debug "^^ exit code ^^"
 }
 ################################################################################
-#### Function IsLintly #########################################################
-function IsLintly() {
+#### Function OutputToLintly ###################################################
+function OutputToLintly() {
   [[ "${OUTPUT_MODE}" == lintly ]]
 }
 ################################################################################
