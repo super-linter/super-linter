@@ -51,6 +51,7 @@ RUN apk add --no-cache \
     coreutils \
     curl \
     file \
+    g++ \
     gcc \
     git git-lfs\
     go \
