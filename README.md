@@ -21,6 +21,9 @@ It is a simple combination of various linters, written in `bash`, to help valida
   - [How to use](#how-to-use)
     - [Example connecting GitHub Action Workflow](#example-connecting-github-action-workflow)
     - [Add Super-Linter badge in your repository README](#add-super-linter-badge-in-your-repository-readme)
+    - [Images](#images)
+      - [Standard Image](#standard-image)
+      - [Slim Image](#slim-image)
   - [Environment variables](#environment-variables)
     - [Template rules files](#template-rules-files)
     - [Using your own rules files](#using-your-own-rules-files)
@@ -33,6 +36,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [GitLab](#gitlab)
     - [Visual Studio Code](#visual-studio-code)
   - [Limitations](#limitations)
+  - [Community Activity](#community-activity)
   - [How to contribute](#how-to-contribute)
     - [License](#license)
 
@@ -178,7 +182,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v3
+        uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -204,6 +208,54 @@ Example:
 ```
 
 _Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
+
+### Images
+
+The **GitHub Super-Linter** now builds and supports `multiple` images. We have found as we added more linters, the image size expanded drastically.
+After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.
+This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
+The available images:
+- `github/super-linter:v4`
+- `github/super-linter:slim-v4`
+
+#### Standard Image
+
+The standard `github/super-linter:v4` comes with all supported linters.
+Example usage:
+```yml
+################################
+# Run Linter against code base #
+################################
+- name: Lint Code Base
+  uses: github/super-linter@v4
+  env:
+    VALIDATE_ALL_CODEBASE: false
+    DEFAULT_BRANCH: master
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### Slim Image
+
+The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
+- `rust` linters
+- `dotenv` linters
+- `armttk` linters
+- `pwsh` linters
+- `c#` linters
+By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
+The behavior will be the same for non-supported languages, and will skip languages at run time.
+Example usage:
+```yml
+################################
+# Run Linter against code base #
+################################
+- name: Lint Code Base
+  uses: docker://ghcr.io/github/super-linter:slim-v4
+  env:
+    VALIDATE_ALL_CODEBASE: false
+    DEFAULT_BRANCH: master
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Environment variables
 
@@ -239,6 +291,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **JAVASCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`                      | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                                                            |
 | **JSCPD_CONFIG_FILE**              | `.jscpd.json`                   | Filename for JSCPD configuration                                                                                                                                                                                     |
+| **KUBERNETES_KUBEVAL_OPTIONS**     | `null`                          | Additional arguments to pass to the command line when running **Kubernetes Kubeval** (Example: --ignore-missing-schemas)                                                                                             |
 | **LINTER_RULES_PATH**              | `.github/linters`               | Directory for all linter configuration rules.                                                                                                                                                                        |
 | **LOG_FILE**                       | `super-linter.log`              | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                                                     |
 | **LOG_LEVEL**                      | `VERBOSE`                       | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `VERBOSE`, `DEBUG` or `TRACE`.                                                                                            |
@@ -396,11 +449,15 @@ Once found, it will load the certificate contents to a file, and to the trust st
 - Example workflow:
 ```yml
 - name: Lint Code Base
-  uses: github/super-linter@v3
+  uses: github/super-linter@v4
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
 ```
+
+## Community Activity
+
+<img src="https://cauldron.io/project/2083/stats.svg" >
 
 ## Limitations
 

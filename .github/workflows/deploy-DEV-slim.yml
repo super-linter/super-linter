@@ -28,7 +28,7 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Deploy Docker Image - DEV
+    name: Deploy Docker Image - DEV - SLIM
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
@@ -57,31 +57,32 @@ jobs:
       ###################################
       # Build image locally for testing #
       ###################################
-      ###########################################
+
+      ##########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build Docker image
+      - name: Build Docker image - SLIM
         run: |
           docker build \
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
           --build-arg BUILD_REVISION=${{ github.sha }} \
           --build-arg BUILD_VERSION=${{ github.sha }} \
-          -t ghcr.io/github/super-linter:${{ github.sha }} \
-          -t ghcr.io/github/super-linter:test -f Dockerfile .
+          -t ghcr.io/github/super-linter:slim-${{ github.sha }} \
+          -t ghcr.io/github/super-linter:slim-test -f Dockerfile-slim .
 
       ########################################
       # Validates the metadata docker labels #
       ########################################
       - name: Run Docker label test cases
         shell: bash
-        run: .automation/validate-docker-labels.sh
+        run: .automation/validate-docker-labels.sh "slim"
 
       ########################################
       # Edit action.yml for test local build #
       ########################################
       - name: Edit an action.yml file for test local build
         run: |
-          sed -i "s/super-linter:.*/super-linter:${GITHUB_SHA}'/g" action.yml
+          sed -i "s/super-linter:.*/super-linter:slim-${GITHUB_SHA}'/g" action.yml
 
       ######################
       # Gather information #
@@ -119,7 +120,7 @@ jobs:
       - name: Run the test suite
         shell: bash
         run: |
-          make test
+          make IMAGE=slim test
 
       ##########################
       # Codacy Coverage Report #
@@ -136,7 +137,7 @@ jobs:
       #####################################
       # Run Linter against Test code base #
       #####################################
-      - name: Run Test Cases
+      - name: Run Test Cases - SLIM
         shell: bash
         run: |
           docker run \
@@ -146,7 +147,7 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v ${GITHUB_WORKSPACE}:/tmp/lint \
-          ghcr.io/github/super-linter:${GITHUB_SHA}
+          ghcr.io/github/super-linter:slim-${GITHUB_SHA}
 
       #########################################
       # Clean code base to run against it all #
@@ -158,7 +159,7 @@ jobs:
       ############################################
       # Run Linter against ALL cleaned code base #
       ############################################
-      - name: Run against all code base
+      - name: Run against all code base - SLIM
         shell: bash
         run: |
           docker run \
@@ -167,4 +168,4 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v ${GITHUB_WORKSPACE}:/tmp/lint \
-          ghcr.io/github/super-linter:${GITHUB_SHA}
+          ghcr.io/github/super-linter:slim-${GITHUB_SHA}
