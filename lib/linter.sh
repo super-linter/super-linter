@@ -12,6 +12,7 @@
 ##################################################################
 # RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
+IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
 
 ##################################################################
 # Log Vars                                                       #
@@ -125,6 +126,8 @@ JAVASCRIPT_STANDARD_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 JSCPD_FILE_NAME="${JSCPD_CONFIG_FILE:-.jscpd.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSX_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+KUBERNETES_KUBEVAL_OPTIONS="${KUBERNETES_KUBEVAL_OPTIONS:-null}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 LATEX_FILE_NAME=".chktexrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -708,6 +711,41 @@ Footer() {
   exit 0
 }
 ################################################################################
+#### Function UpdateLoopsForImage ##############################################
+UpdateLoopsForImage() {
+  ######################################################################
+  # Need to clean the array lists of the linters removed for the image #
+  ######################################################################
+  if [[ "${IMAGE}" == "slim" ]]; then
+    #############################################
+    # Need to remove linters for the slim image #
+    #############################################
+    REMOVE_ARRAY=("ARM" "CSHARP" "ENV" "POWERSHELL" "RUST_2015" "RUST_2018" "RUST_CLIPPY")
+
+    # Remove from LANGUAGE_ARRAY
+    echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
+    for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
+        if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
+          echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
+          unset 'LANGUAGE_ARRAY[INDEX]'
+        fi
+      done
+    done
+
+    # Remove from LINTER_NAMES_ARRAY
+    echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
+    for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
+      for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
+        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
+          echo "found item:[${REMOVE_LINTER}], removing linter..."
+          unset 'LINTER_NAMES_ARRAY[$INDEX]'
+        fi
+      done
+    done
+  fi
+}
+################################################################################
 #### Function Cleanup ##########################################################
 cleanup() {
   local -ri EXIT_CODE=$?
@@ -726,6 +764,11 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
+
+################################################
+# Need to update the loops for the image style #
+################################################
+UpdateLoopsForImage
 
 ##################################
 # Get and print all version info #
@@ -810,7 +853,11 @@ LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
 LINTER_COMMANDS_ARRAY['JSONC']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json5,.jsonc"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
-LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
+if [ "${KUBERNETES_KUBEVAL_OPTIONS}" == "null" ] || [ -z "${KUBERNETES_KUBEVAL_OPTIONS}" ]; then
+  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict"
+else
+  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBEVAL']="kubeval --strict ${KUBERNETES_KUBEVAL_OPTIONS}"
+fi
 LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['LUA']="luacheck --config ${LUA_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['MARKDOWN']="markdownlint -c ${MARKDOWN_LINTER_RULES}"

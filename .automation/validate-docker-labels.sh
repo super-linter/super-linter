@@ -10,6 +10,7 @@
 # GITHUB_WORKSPACE="${GITHUB_WORKSPACE}" # GitHub Workspace
 # GITHUB_SHA="${GITHUB_SHA}"   # Sha used to create this branch
 # BUILD_DATE="${BUILD_DATE}"   # Date the container was built
+IMAGE="${1}"                                                                         # Image of the super-linter we build
 BUILD_REVISION="${GITHUB_SHA}"                                                       # GitHub Sha
 BUILD_VERSION="${GITHUB_SHA}"                                                        # Version of the container
 ORG_REPO="github/super-linter"                                                       # Org/repo
@@ -46,7 +47,12 @@ ValidateLabel() {
   ########################
   # Get the docker label #
   ########################
-  LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${REGISTRY}/${ORG_REPO}:${GITHUB_SHA}")
+  LABEL=''
+  if [[ "${IMAGE}" == "slim" ]]; then
+    LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${REGISTRY}/${ORG_REPO}:slim-${GITHUB_SHA}")
+  else
+    LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${REGISTRY}/${ORG_REPO}:${GITHUB_SHA}")
+  fi
 
   ###################
   # Check the value #

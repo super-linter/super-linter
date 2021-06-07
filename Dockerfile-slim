@@ -1,17 +1,23 @@
 ###########################################
 ###########################################
 ## Dockerfile to run GitHub Super-Linter ##
+##              SLIM IMAGE               ##
 ###########################################
 ###########################################
+
+# Removed Linters:
+# - rust
+# - dotenv
+# - armttk
+# - pwsh
 
 #########################################
 # Get dependency images as build stages #
 #########################################
 FROM cljkondo/clj-kondo:2021.04.23-alpine as clj-kondo
-FROM dotenvlinter/dotenv-linter:3.0.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.32.0 as protolint
-FROM golangci/golangci-lint:v1.40.1 as golangci-lint
+FROM golangci/golangci-lint:v1.40.0 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM wata727/tflint:0.29.0 as tflint
 FROM alpine/terragrunt:0.15.5 as terragrunt
@@ -20,7 +26,6 @@ FROM accurics/terrascan:1.6.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
-FROM zricethezav/gitleaks:v7.4.0 as gitleaks
 
 ##################
 # Get base image #
@@ -30,14 +35,6 @@ FROM python:3.9-alpine as base_image
 ################################
 # Set ARG values used in Build #
 ################################
-# PowerShell & PSScriptAnalyzer
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='latest'
-# arm-ttk
-ARG ARM_TTK_NAME='master.zip'
-ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -49,6 +46,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    cargo \
     coreutils \
     curl \
     file \
@@ -70,33 +68,11 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
-    py3-setuptools python3-dev\
+    py3-setuptools python3-dev \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
-    rustup \
     zlib zlib-dev
-
-##############################
-# Install rustfmt & clippy   #
-##############################
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
-RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
-    && rustup toolchain install stable-x86_64-unknown-linux-musl \
-    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
-    && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
-    && mv /root/.rustup /usr/lib/.rustup \
-    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
-    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
-    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
-    && ln -s /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
-    && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
-    && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
-    && echo 'cargo-clippy' >> /usr/bin/clippy \
-    && echo 'rc=$?' >> /usr/bin/clippy \
-    && echo 'popd' >> /usr/bin/clippy \
-    && echo 'exit $rc' >> /usr/bin/clippy \
-    && chmod +x /usr/bin/clippy
 
 ########################################
 # Copy dependencies files to container #
@@ -120,46 +96,12 @@ RUN pip3 install --no-cache-dir pipenv \
 ##############################
 # Installs ruby dependencies #
 ##############################
-    && bundle install \
-###################################
-# Install DotNet and Dependencies #
-###################################
-    && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
-    && chmod +x dotnet-install.sh \
-    && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103
+    && bundle install
 
 ##############################
 # Installs Perl dependencies #
 ##############################
-RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-#########################################
-# Install Powershell + PSScriptAnalyzer #
-#########################################
-# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
-# Slightly modified to always retrieve latest stable Powershell version
-# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
-    && mkdir -p ${PWSH_DIRECTORY} \
-    && curl --retry 5 --retry-delay 5 -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
-    | grep browser_download_url \
-    | grep linux-alpine-x64 \
-    | cut -d '"' -f 4 \
-    | xargs -n 1 wget -q -O - \
-    | tar -xzC ${PWSH_DIRECTORY} \
-    && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
-    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
-
-#############################################################
-# Install Azure Resource Manager Template Toolkit (arm-ttk) #
-#############################################################
-# Depends on PowerShell
-# Reference https://github.com/Azure/arm-ttk
-# Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
-RUN curl --retry 5 --retry-delay 5 -sLO "${ARM_TTK_URI}" \
-    && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
-    && rm "${ARM_TTK_NAME}" \
-    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
+RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic
 
 ######################
 # Install shellcheck #
@@ -191,11 +133,6 @@ COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 ######################
 COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 
-#########################
-# Install dotenv-linter #
-#########################
-COPY --from=dotenv-linter /dotenv-linter /usr/bin/
-
 #####################
 # Install clj-kondo #
 #####################
@@ -225,11 +162,6 @@ COPY --from=kubeval /kubeval /usr/bin/
 # Install shfmt #
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
-
-####################
-# Install gitleaks #
-####################
-COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 
 ##################
 # Install ktlint #
@@ -307,7 +239,6 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 
 #########################################
 # Label the instance and set maintainer #
@@ -333,7 +264,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
+ENV IMAGE="slim"
 
 ######################################
 # Install Phive dependencies and git #
@@ -371,7 +302,6 @@ COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
 COPY --from=base_image /usr/lib/ /usr/lib/
-COPY --from=base_image /usr/libexec/ /usr/libexec/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
@@ -387,8 +317,7 @@ RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos
 ########################################
 # Add node packages to path and dotnet #
 ########################################
-ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet:/node_modules/.bin"
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
+ENV PATH="${PATH}:/node_modules/.bin"
 
 #############################
 # Copy scripts to container #
@@ -403,7 +332,7 @@ COPY TEMPLATES /action/lib/.automation
 ################################################
 # Run to build version file and validate image #
 ################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE=slim /action/lib/linter.sh
 
 ######################
 # Set the entrypoint #
