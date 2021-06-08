@@ -58,8 +58,10 @@ RUN apk add --no-cache \
     gnupg \
     icu-libs \
     jq \
+    jpeg-dev \
     krb5-libs \
-    libc-dev libcurl libffi-dev libgcc \
+    libc-dev libcurl libffi-dev libgcc \'
+    libjpeg \
     libintl libssl1.1 libstdc++ \
     libxml2-dev libxml2-utils \
     linux-headers \
