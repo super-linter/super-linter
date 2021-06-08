@@ -72,7 +72,7 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
-    py3-setuptools python3-dev\
+    py3-setuptools py3-scipy python3-dev\
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
