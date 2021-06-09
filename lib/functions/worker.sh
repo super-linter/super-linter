@@ -251,7 +251,7 @@ function LintCodebase() {
           cd "${WORKSPACE_PATH}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1 > >(tee "${LINT_OUTPUT_ONLY_FILE}")
           # Clear the 'informational' bit in cfn-lint's exit status.
-          exit $(($? & ~0x100))
+          exit $(($? & ~0x8))
         )
       ###########################################################
       # Corner case for CFN_NAG as path is passed inside a flag #
