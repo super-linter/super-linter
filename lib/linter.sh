@@ -124,6 +124,8 @@ MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 OPENAPI_FILE_NAME=".openapirc.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+PHP_BUILTIN_FILE_NAME="${PHP_CONFIG_FILE:-php.ini}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_PHPCS_FILE_NAME="phpcs.xml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_PHPSTAN_FILE_NAME="phpstan.neon"
@@ -835,7 +837,7 @@ if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
 fi
 LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
-LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l"
+LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l -c ${PHP_BUILTIN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPSTAN']="phpstan analyse --no-progress --no-ansi --memory-limit 1G -c ${PHP_PHPSTAN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PSALM']="psalm --config=${PHP_PSALM_LINTER_RULES}"
