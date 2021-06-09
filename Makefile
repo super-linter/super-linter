@@ -70,6 +70,7 @@ inspec-check: ## Validate inspec profiles
 		--chef-license=accept \
 		test/inspec/super-linter
 
+SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
 SUPER_LINTER_TEST_CONTINER_URL := ''
 DOCKERFILE := ''
 IMAGE := ''
@@ -85,9 +86,12 @@ endif
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
-	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTINER_URL)" 2>/dev/null || echo "")"; \
-	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTINER_URL)"; fi && \
-	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTINER_URL)" --rm -it --entrypoint /bin/ash "$(SUPER_LINTER_TEST_CONTINER_URL)" -c "while true; do sleep 1; done")" \
+	LOCAL_IMAGE="$$(docker images $(SUPER_LINTER_TEST_CONTINER_URL) |grep 'ghcr.io/github/super-linter')"; \
+	if [ "$$?" -ne 0 ]; then docker build -t $(SUPER_LINTER_TEST_CONTINER_URL) -f Dockerfile .; fi && \
+	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
+	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
+	docker tag $(SUPER_LINTER_TEST_CONTINER_URL) $(SUPER_LINTER_TEST_CONTAINER_NAME) && \
+	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTAINER_NAME)" --rm -it --entrypoint /bin/ash "$(SUPER_LINTER_TEST_CONTAINER_NAME)" -c "while true; do sleep 1; done")" \
 	&& docker run $(DOCKER_FLAGS) \
 		--rm \
 		-v "$(CURDIR)":/workspace \
@@ -100,4 +104,4 @@ inspec: inspec-check ## Run InSpec tests
 		--log-level=debug \
 		-t "docker://$${SUPER_LINTER_TEST_CONTAINER_ID}" \
 	&& docker ps \
-	&& docker kill "$(SUPER_LINTER_TEST_CONTINER_URL)"
+	&& docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"
