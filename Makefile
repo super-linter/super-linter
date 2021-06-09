@@ -88,6 +88,7 @@ endif
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
+	docker image prune -a --force && \
 	docker build -t $(SUPER_LINTER_TEST_CONTAINER_NAME) -f $(DOCKERFILE) . && \
 	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTAINER_NAME)" --rm -it --entrypoint /bin/ash "$(SUPER_LINTER_TEST_CONTAINER_NAME)" -c "while true; do sleep 1; done")" \
 	&& docker run $(DOCKER_FLAGS) \
