@@ -283,7 +283,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`                      | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                                                            |
 | **JSCPD_CONFIG_FILE**              | `.jscpd.json`                   | Filename for JSCPD configuration                                                                                                                                                                                     |
 | **KUBERNETES_KUBEVAL_OPTIONS**     | `null`                          | Additional arguments to pass to the command line when running **Kubernetes Kubeval** (Example: --ignore-missing-schemas)                                                                                             |
-| **LINTER_RULES_PATH**              | `.github/linters`               | Directory for all linter configuration rules.                                                                                                                                                                        |
+| **LINTER_RULES_PATH**              | `/`                             | Directory for all linter configuration rules. Defaults to the root of your repository.                                                                                                                               |
 | **LOG_FILE**                       | `super-linter.log`              | The file name for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                                                     |
 | **LOG_LEVEL**                      | `VERBOSE`                       | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `VERBOSE`, `DEBUG` or `TRACE`.                                                                                            |
 | **MULTI_STATUS**                   | `true`                          | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                 |
@@ -374,12 +374,12 @@ But if you wish to select or exclude specific linters, we give you full control 
 
 You can use the **GitHub** **Super-Linter** _with_ or _without_ your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 
-- Copy **any** or **all** template rules files from `TEMPLATES/` into the `.github/linters/` directory of your repository, and modify them to suit your needs.
+- Copy **any** or **all** template rules files from `TEMPLATES/` into the root of your repository, and modify them to suit your needs.
   - The rules files in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES) will be used as defaults should any be omitted.
 
 ### Using your own rules files
 
-If your repository contains your own rules files that live outside of a `.github/linters/` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
+If your repository contains your own rules files that live outside of the root directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
 
 ### Disabling rules
 
