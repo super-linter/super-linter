@@ -384,6 +384,7 @@ control "super-linter-validate-files" do
     "/action/lib/linter.sh",
     "/action/lib/functions/buildFileList.sh",
     "/action/lib/functions/detectFiles.sh",
+    "/action/lib/functions/linterCommands.sh",
     "/action/lib/functions/linterRules.sh",
     "/action/lib/functions/linterVersions.sh",
     "/action/lib/functions/linterVersions.txt",
