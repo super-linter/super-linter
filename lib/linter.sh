@@ -137,6 +137,8 @@ MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 OPENAPI_FILE_NAME=".openapirc.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+PHP_BUILTIN_FILE_NAME="${PHP_CONFIG_FILE:-php.ini}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_PHPCS_FILE_NAME="phpcs.xml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_PHPSTAN_FILE_NAME="phpstan.neon"
@@ -178,6 +180,8 @@ TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 
@@ -790,6 +794,11 @@ export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                      
 ############################
 GetValidationInfo
 
+#################################
+# Get the linter rules location #
+#################################
+LinterRulesLocation
+
 ########################
 # Get the linter rules #
 ########################
@@ -859,12 +868,16 @@ LINTER_COMMANDS_ARRAY['MARKDOWN']="markdownlint -c ${MARKDOWN_LINTER_RULES}"
 if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
   IFS="," read -r -a MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY <<<"${MARKDOWN_CUSTOM_RULE_GLOBS}"
   for glob in "${MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY[@]}"; do
-    LINTER_COMMANDS_ARRAY['MARKDOWN']="${LINTER_COMMANDS_ARRAY['MARKDOWN']} -r ${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${glob}"
+    if [ -z "${LINTER_RULES_PATH}" ]; then
+      LINTER_COMMANDS_ARRAY['MARKDOWN']="${LINTER_COMMANDS_ARRAY['MARKDOWN']} -r ${GITHUB_WORKSPACE}/${glob}"
+    else
+      LINTER_COMMANDS_ARRAY['MARKDOWN']="${LINTER_COMMANDS_ARRAY['MARKDOWN']} -r ${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${glob}"
+    fi
   done
 fi
 LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
-LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l"
+LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l -c ${PHP_BUILTIN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPSTAN']="phpstan analyse --no-progress --no-ansi --memory-limit 1G -c ${PHP_PHPSTAN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PSALM']="psalm --config=${PHP_PSALM_LINTER_RULES}"

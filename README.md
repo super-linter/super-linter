@@ -222,6 +222,7 @@ The available images:
 
 The standard `github/super-linter:v4` comes with all supported linters.
 Example usage:
+
 ```yml
 ################################
 # Run Linter against code base #
@@ -237,14 +238,17 @@ Example usage:
 #### Slim Image
 
 The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
+
 - `rust` linters
 - `dotenv` linters
 - `armttk` linters
 - `pwsh` linters
 - `c#` linters
+
 By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
 The behavior will be the same for non-supported languages, and will skip languages at run time.
 Example usage:
+
 ```yml
 ################################
 # Run Linter against code base #
@@ -298,6 +302,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **MULTI_STATUS**                   | `true`                          | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                 |
 | **MARKDOWN_CONFIG_FILE**           | `.markdown-lint.yml`            | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                           |
 | **MARKDOWN_CUSTOM_RULE_GLOBS**     | `.markdown-lint/rules,rules/**` | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md). |
+| **PHP_CONFIG_FILE**                | `php.ini`                       | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                               |
 | **PYTHON_BLACK_CONFIG_FILE**       | `.python-black`                 | Filename for [black configuration](https://github.com/psf/black/blob/master/docs/compatible_configs.md) (ex: `.isort.cfg`, `pyproject.toml`)                                                                         |
 | **PYTHON_FLAKE8_CONFIG_FILE**      | `.flake8`                       | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                                                           |
 | **PYTHON_ISORT_CONFIG_FILE**       | `.isort.cfg`                    | Filename for [isort configuration](https://pycqa.github.io/isort/docs/configuration/config_files/) (ex: `.isort.cfg`, `pyproject.toml`)                                                                              |
@@ -309,6 +314,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
+| **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
 | **VALIDATE_ANSIBLE**               | `true`                          | Flag to enable or disable the linting process of the Ansible language.                                                                                                                                               |
 | **VALIDATE_ARM**                   | `true`                          | Flag to enable or disable the linting process of the ARM language.                                                                                                                                                   |
@@ -446,7 +452,9 @@ We will also support [GitHub Codespaces](https://github.com/features/codespaces/
 If you need to inject a SSL cert into the trust store, you will need to first copy the cert to **GitHub Secrets**
 Once you have copied the plain text certificate into **GitHub Secrets**, you can use the variable `SSL_CERT_SECRET` to point the **Super-Linter** to the files contents.
 Once found, it will load the certificate contents to a file, and to the trust store.
+
 - Example workflow:
+
 ```yml
 - name: Lint Code Base
   uses: github/super-linter@v4
@@ -457,7 +465,7 @@ Once found, it will load the certificate contents to a file, and to the trust st
 
 ## Community Activity
 
-<img src="https://cauldron.io/project/2083/stats.svg" >
+![super-linter stats](https://cauldron.io/project/2083/stats.svg)
 
 ## Limitations
 

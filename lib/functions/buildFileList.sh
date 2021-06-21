@@ -64,6 +64,8 @@ function BuildFileList() {
 
   debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
 
+  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}..."
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -116,7 +118,6 @@ function BuildFileList() {
 
         DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
         GenerateFileDiff "$DIFF_CMD"
-
       fi
     else
       ################
@@ -131,13 +132,48 @@ function BuildFileList() {
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
 
-    ################
-    # print header #
-    ################
-    debug "----------------------------------------------"
-    debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
-    mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
-    debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+    #############################
+    # Use the find on all files #
+    #############################
+    if [ "${USE_FIND_ALGORITHM}" == 'true' ]; then
+      ################
+      # print header #
+      ################
+      debug "----------------------------------------------"
+      debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace using FIND algorithm"
+      mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
+        -not \( -path '*/\.git' -prune \) \
+        -not \( -path '*/\.pytest_cache' -prune \) \
+        -not \( -path '*/\.rbenv' -prune \) \
+        -not \( -path '*/\.terragrunt-cache' -prune \) \
+        -not \( -path '*/\.venv' -prune \) \
+        -not \( -path '*/\__pycache__' -prune \) \
+        -not \( -path '*/\node_modules' -prune \) \
+        -not -name ".DS_Store" \
+        -not -name "*.gif" \
+        -not -name "*.ico" \
+        -not -name "*.jpg" \
+        -not -name "*.jpeg" \
+        -not -name "*.pdf" \
+        -not -name "*.png" \
+        -not -name "*.webp" \
+        -not -name "*.woff" \
+        -not -name "*.woff2" \
+        -not -name "*.zip" \
+        -type f \
+        2>&1 | sort)
+    else
+      ##############################
+      # use the standard mechinism #
+      ##############################
+      ################
+      # print header #
+      ################
+      debug "----------------------------------------------"
+      debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
+      mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
+      debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+    fi
   fi
 
   #######################
