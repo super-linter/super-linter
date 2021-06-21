@@ -8,6 +8,15 @@
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
 ################################################################################
+#### Function LinterRulesLocation ##############################################
+LinterRulesLocation() {
+  # We need to see if the user has set the rules location to the root
+  # directory, or to some nested folder
+  if [ "${LINTER_RULES_PATH}" == '.' ] || [ "${LINTER_RULES_PATH}" == '/' ]; then
+    LINTER_RULES_PATH=''
+  fi
+}
+################################################################################
 #### Function GetLinterRules ###################################################
 GetLinterRules() {
   # Need to validate the rules files exist
@@ -72,7 +81,13 @@ GetLinterRules() {
   #####################################
   # Validate we have the linter rules #
   #####################################
-  LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}"
+  LANGUAGE_FILE_PATH=''
+  if [ -z "${LINTER_RULES_PATH}" ]; then
+    LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${!LANGUAGE_FILE_NAME}"
+  else
+    LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}"
+  fi
+
   debug "Checking if the user-provided:[${!LANGUAGE_FILE_NAME}] and exists at:[${LANGUAGE_FILE_PATH}]"
   if [ -f "${LANGUAGE_FILE_PATH}" ]; then
     info "----------------------------------------------"
@@ -96,7 +111,12 @@ GetLinterRules() {
   ####################################################
   if [ -n "$SECONDARY_FILE_NAME" ] && [ "${SET_RULES}" -eq 0 ]; then
     # Set the path
-    SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
+    SECONDARY_LANGUAGE_FILE_PATH=''
+    if [ -z "${LINTER_RULES_PATH}" ]; then
+      SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${!LANGUAGE_FILE_NAME}"
+    else
+      SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${!LANGUAGE_FILE_NAME}"
+    fi
     debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check (${SECONDARY_FILE_NAME}). Path:[${SECONDARY_LANGUAGE_FILE_PATH}]"
 
     if [ -f "${SECONDARY_LANGUAGE_FILE_PATH}" ]; then
