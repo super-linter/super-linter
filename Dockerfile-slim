@@ -229,7 +229,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 # Grab small clean image #######################################################
 ################################################################################
 FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
-FROM alpine:3.13.5 as final
+FROM alpine:3.14.0 as final
 
 ############################
 # Get the build arguements #
