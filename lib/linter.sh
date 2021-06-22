@@ -294,6 +294,9 @@ DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master b
 
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 
+# Do not ignore generated files by default for backwards compatibility
+IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
+
 ################
 # Default Vars #
 ################
