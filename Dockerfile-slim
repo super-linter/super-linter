@@ -240,6 +240,14 @@ ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
 
+#################################################
+# Set ENV values used for debugging the version #
+#################################################
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
+ENV IMAGE="slim"
+
 #########################################
 # Label the instance and set maintainer #
 #########################################
@@ -257,14 +265,6 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
     org.opencontainers.image.documentation="https://github.com/github/super-linter" \
     org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="Lint your code base with GitHub Actions"
-
-#################################################
-# Set ENV values used for debugging the version #
-#################################################
-ENV BUILD_DATE=$BUILD_DATE
-ENV BUILD_REVISION=$BUILD_REVISION
-ENV BUILD_VERSION=$BUILD_VERSION
-ENV IMAGE="slim"
 
 ######################################
 # Install Phive dependencies and git #
