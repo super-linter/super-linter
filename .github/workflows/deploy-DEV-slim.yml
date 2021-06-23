@@ -76,7 +76,7 @@ jobs:
       ###########################################
       - name: Build Docker image - SLIM
         run: |
-          docker buildx \
+          docker buildx build \
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
           --build-arg BUILD_REVISION=${{ github.sha }} \
           --build-arg BUILD_VERSION=${{ github.sha }} \
