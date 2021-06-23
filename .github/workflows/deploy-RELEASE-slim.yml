@@ -24,7 +24,7 @@ on:
 jobs:
   deploy:
     # Name the Job
-    name: Deploy Docker Image - Release - slim
+    name: Deploy Docker Image - Release - SLIM
     # Set the agent to run on
     runs-on: ubuntu-latest
 

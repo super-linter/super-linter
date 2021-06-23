@@ -74,21 +74,16 @@ jobs:
       ###########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build Docker image - SLIM
-        uses: docker/build-push-action@v2.5.0
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          push: false
-          tags: |
-            ghcr.io/github/super-linter:${{ github.sha }}
-            ghcr.io/github/super-linter:test
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      - name: Build Docker image - Standard
+        run: |
+          docker buildx \
+          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
+          --build-arg BUILD_REVISION=${{ github.sha }} \
+          --build-arg BUILD_VERSION=${{ github.sha }} \
+          --cache-from type=local,src=/tmp/.buildx-cache
+          --cache-to type=local,dest=/tmp/.buildx-cache-new
+          -t ghcr.io/github/super-linter:${{ github.sha }} \
+          -t ghcr.io/github/super-linter:test -f Dockerfile-slim .
 
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
