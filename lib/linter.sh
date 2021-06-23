@@ -865,46 +865,15 @@ LINTER_DEFAULT_OPTIONS_ARRAY['YAML']="-c ${YAML_LINTER_RULES}"
 
 # Some linters don't support options
 if [ -n "${BASH_EXEC_LINTER_COMMAND_OPTIONS}" ]; then
-  warn "bash-exec doesn't support options. You specified the following options with the BASH_EXEC_LINTER_COMMAND_OPTIONS variable: ${BASH_EXEC_LINTER_COMMAND_OPTIONS}. Don't set the BASH_EXEC_LINTER_COMMAND_OPTIONS variable."
+  fatal "bash-exec doesn't support options. You specified the following options with the BASH_EXEC_LINTER_COMMAND_OPTIONS variable: ${BASH_EXEC_LINTER_COMMAND_OPTIONS}. super-linter ignores these options. Don't set the BASH_EXEC_LINTER_COMMAND_OPTIONS variable."
 fi
 
-# Don't break compatibility with KUBERNETES_KUBEVAL_OPTIONS
+# Explicitly break if user set options using deprecated variables KUBERNETES_KUBEVAL_OPTIONS
 if [ -n "${KUBERNETES_KUBEVAL_OPTIONS}" ]; then
-  warn "The KUBERNETES_KUBEVAL_OPTIONS variable is deprecated, and will be removed in a next release. Use KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS instead."
-
-  if [ -n "${KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS}" ]; then
-    error "You specified both KUBERNETES_KUBEVAL_OPTIONS and KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS. This is not supported. KUBERNETES_KUBEVAL_OPTIONS is deprecated, don't use it. Use KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS only."
-    fatal "[KUBERNETES_KUBEVAL_OPTIONS: ${KUBERNETES_KUBEVAL_OPTIONS}, KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS: ${KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS}]"
-  fi
-
-  # Add the default values to ensure backward compatibility
-  warn "Setting KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS for you to the default options for Kubeval (${LINTER_DEFAULT_OPTIONS_ARRAY["KUBERNETES_KUBEVAL"]}), plus the options you provided with KUBERNETES_KUBEVAL_OPTIONS (${KUBERNETES_KUBEVAL_OPTIONS}), to ensure full backward compatibility."
-  KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS="${LINTER_DEFAULT_OPTIONS_ARRAY["KUBERNETES_KUBEVAL"]} ${KUBERNETES_KUBEVAL_OPTIONS}"
-  export KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS
-  unset KUBERNETES_KUBEVAL_OPTIONS
+  fatal "The KUBERNETES_KUBEVAL_OPTIONS variable is deprecated, and not supported anymore. Use KUBERNETES_KUBEVAL_LINTER_COMMAND_OPTIONS instead."
 fi
-
-# Special case for markdownlint
 if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
-  warn "The MARKDOWN_CUSTOM_RULE_GLOBS variable is deprecated, and will be removed in a next release. Use MARKDOWN_LINTER_COMMAND_OPTIONS instead."
-
-  if [ -n "${MARKDOWN_LINTER_COMMAND_OPTIONS}" ]; then
-    error "You specified both MARKDOWN_CUSTOM_RULE_GLOBS and MARKDOWN_LINTER_COMMAND_OPTIONS. This is not supported. MARKDOWN_CUSTOM_RULE_GLOBS is deprecated, don't use it. Use MARKDOWN_LINTER_COMMAND_OPTIONS only."
-    fatal "[MARKDOWN_CUSTOM_RULE_GLOBS: ${MARKDOWN_CUSTOM_RULE_GLOBS}, MARKDOWN_LINTER_COMMAND_OPTIONS: ${MARKDOWN_LINTER_COMMAND_OPTIONS}]"
-  fi
-
-  MARKDOWN_LINTER_COMMAND_OPTIONS=
-  warn "super-linter parses the value of MARKDOWN_CUSTOM_RULE_GLOBS to build the options list for markdownlint, adding the necessary command switches (such as -r). When you migrate to MARKDOWN_LINTER_COMMAND_OPTIONS, it's YOUR responsibility to correctly build the options list."
-  IFS="," read -r -a MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY <<<"${MARKDOWN_CUSTOM_RULE_GLOBS}"
-  for glob in "${MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY[@]}"; do
-    if [ -z "${LINTER_RULES_PATH}" ]; then
-      MARKDOWN_LINTER_COMMAND_OPTIONS="${MARKDOWN_LINTER_COMMAND_OPTIONS} -r ${GITHUB_WORKSPACE}/${glob}"
-    else
-      MARKDOWN_LINTER_COMMAND_OPTIONS="${MARKDOWN_LINTER_COMMAND_OPTIONS} -r ${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${glob}"
-    fi
-  done
-  export MARKDOWN_LINTER_COMMAND_OPTIONS
-  unset MARKDOWN_CUSTOM_RULE_GLOBS
+  fatal "The MARKDOWN_CUSTOM_RULE_GLOBS variable is deprecated, and not supported anymore. Use MARKDOWN_LINTER_COMMAND_OPTIONS instead."
 fi
 
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
