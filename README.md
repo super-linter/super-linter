@@ -454,6 +454,13 @@ If your repository contains your own rules files that live outside of a ``.githu
 
 If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 
+### Customizing command-line options when running linters
+
+super-linter provides what we think to be sensible defaults when setting the command line options for each supported linter.
+When doing so, super-linter invokes the linters with a set of options that we validated and tested. If you choose to customize
+these options, super-linter will *NOT* perform any validation, so it is *YOUR* responsibility to correctly configure the
+linters for which you're customizing the command-line options.
+
 ## Filter linted files
 
 If you need to lint only a folder or exclude some files from linting, you can use optional environment parameters `FILTER_REGEX_INCLUDE` and `FILTER_REGEX_EXCLUDE`
