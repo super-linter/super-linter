@@ -80,8 +80,8 @@ jobs:
           --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
           --build-arg BUILD_REVISION=${{ github.sha }} \
           --build-arg BUILD_VERSION=${{ github.sha }} \
-          --cache-from type=local,src=/tmp/.buildx-cache
-          --cache-to type=local,dest=/tmp/.buildx-cache-new
+          --cache-from type=local,src=/tmp/.buildx-cache \
+          --cache-to type=local,dest=/tmp/.buildx-cache-new \
           -t ghcr.io/github/super-linter:${{ github.sha }} \
           -t ghcr.io/github/super-linter:test -f Dockerfile-slim .
 
