@@ -24,7 +24,7 @@ on:
 jobs:
   deploy:
     # Name the Job
-    name: Deploy Docker Image - Release - slim
+    name: Deploy Docker Image - Release - SLIM
     # Set the agent to run on
     runs-on: ubuntu-latest
 
@@ -116,6 +116,17 @@ jobs:
           | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
           >> ${GITHUB_ENV}
 
+      ################
+      # Docker cache #
+      ################
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-slim
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
@@ -128,6 +139,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
+          load: true
           push: true
           tags: |
             github/super-linter:slim-latest
@@ -136,6 +148,19 @@ jobs:
             ghcr.io/github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-v4
             ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      #############
+      # Fix Cache #
+      #############
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       #########################
       # Update Deployment API #
