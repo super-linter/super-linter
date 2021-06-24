@@ -82,7 +82,7 @@ jobs:
           --build-arg BUILD_VERSION=${{ github.sha }} \
           --cache-from type=local,src=/tmp/.buildx-cache \
           --cache-to type=local,dest=/tmp/.buildx-cache-new \
-          --push \
+          --load \
           -t ghcr.io/github/super-linter:slim-${{ github.sha }} \
           -t ghcr.io/github/super-linter:slim-test -f Dockerfile-slim .
 
