@@ -408,14 +408,14 @@ also has `@not-generated` marker. `@generated` marker is
 and some other projects to mark generated files. For example, this
 file is considered generated:
 
-```
+```bash
 #!/bin/sh
 echo "@generated"
 ```
 
 And this file is considered not generated:
 
-```
+```bash
 #!/bin/sh
 echo "@generated" # @not-generated
 ```

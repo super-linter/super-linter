@@ -280,31 +280,34 @@ function BuildFileList() {
       debug "TEST_CASE_RUN (${TEST_CASE_RUN}) is true. Skipping ${FILE}..."
     fi
 
-    #################################################
+    ###############################################
     # Filter files if FILTER_REGEX_INCLUDE is set #
-    #################################################
+    ###############################################
     if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
       debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
       continue
     fi
 
-    #################################################
+    ###############################################
     # Filter files if FILTER_REGEX_EXCLUDE is set #
-    #################################################
+    ###############################################
     if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
       debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
       continue
     fi
 
+    ###################################################
+    # Filter files if FILTER_REGEX_EXCLUDE is not set #
+    ###################################################
     if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ] && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi
 
 
-    #################################################
-    # Filter files with at-generated marker         #
-    #################################################
+    #########################################
+    # Filter files with at-generated marker #
+    #########################################
     if [ "${IGNORE_GENERATED_FILES}" == "true" ] && IsGenerated "$FILE"; then
       debug "${FILE} is generated. Skipping ${FILE}"
       continue
