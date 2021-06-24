@@ -54,21 +54,53 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
-      ###################################
-      # Build image locally for testing #
-      ###################################
+      ########################
+      # Setup Docker build X #
+      ########################
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v1.3.0
 
-      ##########################################
+      ################
+      # Docker cache #
+      ################
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-slim
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
+      ###########################################
       # Build and Push containers to registries #
       ###########################################
       - name: Build Docker image - SLIM
+        uses: docker/build-push-action@v2.5.0
+        with:
+          context: .
+          file: ./Dockerfile-slim
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          load: true
+          push: false
+          tags: |
+            ghcr.io/github/super-linter:slim-${{ github.sha }}
+            ghcr.io/github/super-linter:slim-test
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      #############
+      # Fix Cache #
+      #############
+      - name: Move cache
         run: |
-          docker build \
-          --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
-          --build-arg BUILD_REVISION=${{ github.sha }} \
-          --build-arg BUILD_VERSION=${{ github.sha }} \
-          -t ghcr.io/github/super-linter:slim-${{ github.sha }} \
-          -t ghcr.io/github/super-linter:slim-test -f Dockerfile-slim .
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       ########################################
       # Validates the metadata docker labels #
