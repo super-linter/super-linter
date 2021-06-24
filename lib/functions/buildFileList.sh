@@ -304,7 +304,6 @@ function BuildFileList() {
       continue
     fi
 
-
     #########################################
     # Filter files with at-generated marker #
     #########################################
