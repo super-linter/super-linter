@@ -105,7 +105,6 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          load: true
           push: true
           tags: |
             github/super-linter:slim-latest
