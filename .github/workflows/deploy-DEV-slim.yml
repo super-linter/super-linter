@@ -67,24 +67,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-single-buildx-slim
           restore-keys: |
             ${{ runner.os }}-single-buildx
-
-      # ###########################################
-      # # Build and Push containers to registries #
-      # ###########################################
-      # - name: Build Docker image - SLIM
-      #   run: |
-      #     docker buildx build \
-      #     --build-arg BUILD_DATE=${{ env.BUILD_DATE }} \
-      #     --build-arg BUILD_REVISION=${{ github.sha }} \
-      #     --build-arg BUILD_VERSION=${{ github.sha }} \
-      #     --cache-from type=local,src=/tmp/.buildx-cache \
-      #     --cache-to type=local,dest=/tmp/.buildx-cache-new \
-      #     --load \
-      #     -t ghcr.io/github/super-linter:slim-${{ github.sha }} \
-      #     -t ghcr.io/github/super-linter:slim-test -f Dockerfile-slim .
 
       ###########################################
       # Build and Push containers to registries #

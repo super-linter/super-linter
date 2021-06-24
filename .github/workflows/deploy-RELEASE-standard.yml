@@ -130,7 +130,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-single-buildx-standard
           restore-keys: |
             ${{ runner.os }}-single-buildx
 
@@ -146,6 +146,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
+          load: true
           push: true
           tags: |
             github/super-linter:latest
