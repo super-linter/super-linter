@@ -700,7 +700,7 @@ function BuildFileList() {
     ############################
     # Get the Terragrunt files #
     ############################
-    elif [ "${FILE_TYPE}" == "hcl" ] && [[ ${FILE} != *".tflint.hcl"* ]]; then
+    elif [ "${FILE_TYPE}" == "hcl" ] && [[ ${FILE} != *".tflint.hcl"* ]] && [[ ${FILE} != *".pkr.hcl"* ]]; then
       ################################
       # Append the file to the array #
       ################################
