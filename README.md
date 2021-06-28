@@ -282,6 +282,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **FILTER_REGEX_INCLUDE**           | `all`                           | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                                                |
 | **GITHUB_DOMAIN**                  | `github.com`                    | Specify a custom Github domain in case Github Enterprise is used: e.g. `github.myenterprise.com`                                                                                                                     |
 | **GITHUB_CUSTOM_API_URL**          | `api.github.com`                | Specify a custom Github API URL in case Github Enterprise is used: e.g. `https://github.myenterprise.com/api/v3/`                                                                                                    |
+| **IGNORE_GENERATED_FILES**         | `false`                          | If set to `true`, super-linter will ignore all the files with `@generated` marker but without `@not-generated` marker.                                                                                               |
 | **IGNORE_GITIGNORED_FILES**        | `false`                         | If set to `true`, super-linter will ignore all the files that are ignored by Git.                                                                                                                                    |
 | **JAVASCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`                      | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                                                            |
@@ -398,6 +399,26 @@ Examples:
 - Lint only src folder: `FILTER_REGEX_INCLUDE: .*src/.*`
 - Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
 - Do not lint javascript files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*.js`
+
+<!-- This `README.md` has both markers in the text, so it is considered not generated. -->
+Additionally when `IGNORE_GENERATED_FILES=true`, super-linter
+ignores any file with `@generated` marker in it unless the file
+also has `@not-generated` marker. `@generated` marker is
+[used by Facebook](https://engineering.fb.com/2015/08/20/open-source/writing-code-that-writes-code-with-hack-codegen/)
+and some other projects to mark generated files. For example, this
+file is considered generated:
+
+```bash
+#!/bin/sh
+echo "@generated"
+```
+
+And this file is considered not generated:
+
+```bash
+#!/bin/sh
+echo "@generated" # @not-generated
+```
 
 ## Docker Hub
 
