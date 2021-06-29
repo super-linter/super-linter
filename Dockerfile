@@ -52,6 +52,7 @@ RUN apk add --no-cache \
     curl \
     file \
     gcc \
+    g++ \
     git git-lfs\
     go \
     gnupg \
