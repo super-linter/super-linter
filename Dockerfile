@@ -116,7 +116,7 @@ RUN pip3 install --no-cache-dir pipenv \
     && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
-    && npm audit fix --force\
+    && npm audit fix --force \
 ##############################
 # Installs ruby dependencies #
 ##############################
