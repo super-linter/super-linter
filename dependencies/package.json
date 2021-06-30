@@ -1,8 +1,8 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@stoplight/spectral": "^5.9.1",
     "@coffeelint/cli": "^5.0.1",
+    "@stoplight/spectral": "^5.3.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.1",
     "asl-validator": "^1.10.0",
@@ -17,7 +17,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "gherkin-lint": "^4.2.2",
-    "htmlhint": "^0.15.1",
+    "htmlhint": "^0.9.9",
     "immer": "^9.0.3",
     "ini": "^2.0.0",
     "jscpd": "^3.3.26",
