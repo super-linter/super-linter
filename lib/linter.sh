@@ -304,9 +304,12 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 # Linter packs #
 ################
 LINTER_PACKS=('SECURITY_TOOLS' 'CODE_QUALITY_TOOLS')
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 SECURITY_TOOLS=('CLOUDFORMATION_CFN_NAG' 'DOCKERFILE_HADOLINT' 'GITLEAKS' 'PYTHON_BANDIT' 'TERRAFORM_TERRASCAN')
 # CODE_QUALITY_TOOLS are all tools (i.e., items in LANGUAGE_ARRAY) that are not in SECURITY_TOOLS
-CODE_QUALITY_TOOLS=($(printf '%s\n' "${LANGUAGE_ARRAY[@]}" "${SECURITY_TOOLS[@]}" | sort | uniq -u))
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+mapfile -t CODE_QUALITY_TOOLS < <(printf '%s\n' "${LANGUAGE_ARRAY[@]}" "${SECURITY_TOOLS[@]}" | sort | uniq -u)
+export LINTER_PACKS
 
 ###################
 # GitHub ENV Vars #

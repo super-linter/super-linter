@@ -54,10 +54,10 @@ function GetValidationInfo() {
   done
 
   # Loop through linter packs to turn on any linters in those packs.
-  for LINTER_PACK in "${LINTER_PACKS[@]}"; do
-    LINTERS="${LINTER_PACK}[@]"
+  for PACK in "${LINTER_PACKS[@]}"; do
+    LINTERS="${PACK}[@]"
     # Build the RUN_*_TOOLS variable
-    RUN_LINTER_PACK="RUN_${LINTER_PACK}"
+    RUN_LINTER_PACK="RUN_${PACK}"
 
     for LANGUAGE in "${!LINTERS}"; do
       # Build the VALIDATE_* variable
