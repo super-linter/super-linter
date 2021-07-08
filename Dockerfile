@@ -374,8 +374,8 @@ COPY --from=base_image /node_modules/ /node_modules/
 #################
 # Install Litnr #
 #################
-COPY --from=lintr-lib /usr/lib/R/library/ /usr/lib/R/library/
-RUN R -e "install.packages(list.dirs('/usr/lib/R/library/',recursive = FALSE), repos = NULL, type = 'source')"
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ########################################
 # Add node packages to path and dotnet #
