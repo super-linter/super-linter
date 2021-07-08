@@ -71,6 +71,7 @@ RUN apk add --no-cache \
     openssl-dev \
     perl perl-dev \
     py3-setuptools python3-dev \
+    R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     rustup \
@@ -342,7 +343,6 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     gnupg \
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
-    R R-dev R-doc \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
@@ -374,8 +374,8 @@ COPY --from=base_image /node_modules/ /node_modules/
 #################
 # Install Litnr #
 #################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+COPY --from=lintr-lib /usr/lib/R/library/ /usr/lib/R/library/
+RUN R -e "install.packages(list.dirs('/usr/lib/R/library/',recursive = FALSE), repos = NULL, type = 'source')"
 
 ########################################
 # Add node packages to path and dotnet #
