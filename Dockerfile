@@ -14,12 +14,13 @@ FROM yoheimuta/protolint:v0.32.0 as protolint
 FROM golangci/golangci-lint:v1.41.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM wata727/tflint:0.29.1 as tflint
-FROM alpine/terragrunt:1.0.0 as terragrunt
+FROM alpine/terragrunt:1.0.1 as terragrunt
 FROM mvdan/shfmt:v3.3.0 as shfmt
 FROM accurics/terrascan:1.7.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
+FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 
 ##################
 # Get base image #
@@ -52,6 +53,7 @@ RUN apk add --no-cache \
     curl \
     file \
     gcc \
+    g++ \
     git git-lfs\
     go \
     gnupg \
@@ -69,7 +71,7 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
-    py3-setuptools python3-dev\
+    py3-setuptools python3-dev \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -115,7 +117,7 @@ RUN pip3 install --no-cache-dir pipenv \
     && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
-    && npm audit fix \
+    && npm audit fix --audit-level=critical \
 ##############################
 # Installs ruby dependencies #
 ##############################
@@ -225,6 +227,12 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
+#################
+# Install Litnr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+
 ##################
 # Install ktlint #
 ##################
@@ -290,7 +298,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ################################################################################
 # Grab small clean image #######################################################
 ################################################################################
-FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
 FROM alpine:3.14.0 as final
 
 ############################
@@ -369,12 +376,7 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
-
-#################
-# Install Litnr #
-#################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+COPY --from=base_image /home/r-library /home/r-library
 
 ########################################
 # Add node packages to path and dotnet #

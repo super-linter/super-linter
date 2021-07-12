@@ -1,10 +1,10 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@stoplight/spectral": "^5.9.1",
     "@coffeelint/cli": "^5.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.27.0",
-    "@typescript-eslint/parser": "^4.27.0",
+    "@stoplight/spectral": "^5.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.1",
     "asl-validator": "^1.10.0",
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
@@ -26,7 +26,7 @@
     "markdownlint-cli": "^0.27.1",
     "node-fetch": "^2.6.1",
     "npm-groovy-lint": "^8.2.0",
-    "prettier": "^2.3.1",
+    "prettier": "^2.3.2",
     "prettyjson": "^1.2.1",
     "pug": "^3.0.1",
     "sql-lint": "0.0.18",

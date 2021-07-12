@@ -334,3 +334,43 @@ function IsValidShellScript() {
   trace "$FILE is NOT a supported shell script. Skipping"
   return 1
 }
+################################################################################
+#### Function IsGenerated ######################################################
+function IsGenerated() {
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  ##############################
+  # Check the file for keyword #
+  ##############################
+  grep -q "@generated" "$FILE"
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    trace "File:[${FILE}] is not generated, because it doesn't have @generated marker"
+    return 1
+  fi
+
+  ##############################
+  # Check the file for keyword #
+  ##############################
+  grep -q "@not-generated" "$FILE"
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  if [ ${ERROR_CODE} -eq 0 ]; then
+    trace "File:[${FILE}] is not-generated because it has @not-generated marker"
+    return 1
+  else
+    trace "File:[${FILE}] is generated because it has @generated marker"
+    return 0
+  fi
+}
