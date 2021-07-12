@@ -376,6 +376,7 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
+COPY --from=base_image /home/r-library/ /home/r-library/
 
 ########################################
 # Add node packages to path and dotnet #
