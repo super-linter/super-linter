@@ -31,7 +31,7 @@ FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 ##################
 # Get base image #
 ##################
-FROM python:3.9-alpine as base_image
+FROM python:3.9.6-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
