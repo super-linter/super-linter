@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM wata727/tflint:0.29.1 as tflint
 FROM alpine/terragrunt:1.0.1 as terragrunt
 FROM mvdan/shfmt:v3.3.0 as shfmt
-FROM accurics/terrascan:1.7.0 as terrascan
+FROM accurics/terrascan:1.8.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
