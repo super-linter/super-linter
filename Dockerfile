@@ -230,8 +230,8 @@ COPY --from=shfmt /bin/shfmt /usr/bin/
 #################
 # Install Litnr #
 #################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+COPY --from=lintr-lib /usr/lib/R/ /usr/lib/R/
+RUN R -e "install.packages(list.dirs('/usr/lib/R/library/',recursive = FALSE), repos = NULL, type = 'source')"
 
 ##################
 # Install ktlint #
@@ -376,7 +376,6 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /home/r-library/ /home/r-library/
 
 ########################################
 # Add node packages to path and dotnet #
