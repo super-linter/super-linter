@@ -7,18 +7,10 @@
 ############
 # Defaults #
 ############\
-GITHUB_API='https://api.github.com' # API url
-VERSION=''                          # Version of release pulled from api
-ACTION_FILE='action.yml'            # Action file to update
-PR_ID=''                            # PUll Request ID when created
-UPDATED_BODY_STRING=''              # Issue body string converted
-COMMIT_SHA=''                       # COmmit sha when PR is created
-
-##############
-# Built Vars #
-##############
-ORG=$(echo "${ORG_REPO}" | cut -d'/' -f1)  # Name of the Org
-REPO=$(echo "${ORG_REPO}" | cut -d'/' -f2) # Name of the repository
+ACTION_FILE='action.yml' # Action file to update
+COMMIT_SHA=''            # Commit sha when PR is created
+PR_ID=''                 # Pull Request NUmber when generated
+VERSION=''               # Version of release pulled from api
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
@@ -31,13 +23,13 @@ Header() {
   echo "-------------------------------------------------------"
 }
 ################################################################################
-#### Function GetReleaseFromIssueTitle #########################################
-GetReleaseFromIssueTitle() {
+#### Function GetReleaseVersion #########################################
+GetReleaseVersion() {
   echo "-------------------------------------------------------"
-  echo "Getting the latest Release version from GitHub Issue..."
+  echo "Getting the latest Release version from GitHub ..."
 
   # Get the latest release on the Repository
-  GET_VERSION_CMD=$(echo "${ISSUE_TITLE}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)
+  GET_VERSION_CMD=$(echo "${RELEASE_NAME}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)
 
   # Load the error code
   ERROR_CODE=$?
@@ -160,94 +152,7 @@ CommitAndPush() {
   fi
 
 }
-################################################################################
-#### Function UpdateBaseIssue ##################################################
-UpdateBaseIssue() {
-  echo "-------------------------------------------------------"
-  echo "Updating Original Issue:[$ISSUE_NUMBER] with Release information..."
 
-  # Update the issue to point to new created Pull Request
-  UPDATE_ISSUE_CMD=$(curl -s --fail -X POST \
-    --url "${GITHUB_API}/repos/${ORG}/${REPO}/issues/${ISSUE_NUMBER}/comments" \
-    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-    -H 'Content-Type: application/json' \
-    --data "{ \"body\": \"This Issue is being resolved on in the Pull Request #${PR_ID}\"}" 2>&1)
-
-  # Load the error code
-  ERROR_CODE=$?
-
-  # Check the shell for errors
-  if [ "${ERROR_CODE}" -ne 0 ]; then
-    # ERROR
-    echo "ERROR! Failed to update base issue!"
-    echo "ERROR:[$UPDATE_ISSUE_CMD]"
-    exit 1
-  else
-    echo "Successfully updated base Issue"
-  fi
-}
-################################################################################
-#### Function UpdatePRBody #####################################################
-UpdatePRBody() {
-  echo "-------------------------------------------------------"
-  echo "Updating PR body with Release information and Issue linkage..."
-
-  # Need to update the body of the PR with the information
-  UPDATE_PR_CMD=$(
-    curl -s --fail -X PATCH \
-      --url "${GITHUB_API}/repos/${ORG}/${REPO}/pulls/${PR_ID}" \
-      -H 'Accept: application/vnd.github.shadow-cat-preview+json,application/vnd.github.sailor-v-preview+json' \
-      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-      -H 'Content-Type: application/json' \
-      --data "{\"body\": \"Automation Creation of Super-Linter\n\nThis closes #${ISSUE_NUMBER}\n\n${UPDATED_BODY_STRING}\"}" 2>&1
-  )
-
-  # Load the error code
-  ERROR_CODE=$?
-
-  # Check the shell for errors
-  if [ "${ERROR_CODE}" -ne 0 ]; then
-    # ERROR
-    echo "ERROR! Failed to update PR body!"
-    echo "ERROR:[$UPDATE_PR_CMD]"
-    exit 1
-  else
-    echo "Successfully updated PR body"
-  fi
-
-  # Add the label for the release
-  UPDATE_LABEL_CMD=$(
-    curl -s --fail -X POST \
-      --url "${GITHUB_API}/repos/${ORG}/${REPO}/issues/${PR_ID}/labels" \
-      -H 'Accept: application/vnd.github.v3+json' \
-      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-      -H 'Content-Type: application/json' \
-      --data '{"labels":["Release"]}' 2>&1
-  )
-
-  # Load the error code
-  ERROR_CODE=$?
-
-  # Check the shell for errors
-  if [ "${ERROR_CODE}" -ne 0 ]; then
-    # ERROR
-    echo "ERROR! Failed to update PR label!"
-    echo "ERROR:[$UPDATE_LABEL_CMD]"
-    exit 1
-  else
-    echo "Successfully updated PR label"
-  fi
-}
-################################################################################
-#### Function UpdateReleaseBodyString ##########################################
-UpdateReleaseBodyString() {
-  # Need to convert the string newlines to literal newlines
-  UPDATED_BODY_STRING=$(echo "${ISSUE_BODY}" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
-
-  echo "-------------------------------------------------------"
-  echo "The updated body string is:[${UPDATED_BODY_STRING}]"
-  echo "-------------------------------------------------------"
-}
 ################################################################################
 #### Function SetActionsVariables ##############################################
 SetActionsVariables() {
@@ -255,14 +160,11 @@ SetActionsVariables() {
   echo "-------------------------------------------------------"
   echo "Setting the variables back to GitHub Actions..."
 
-  echo "Setting PR_ID:[${PR_ID}]"
-  echo "PR_ID=${PR_ID}" >>"${GITHUB_ENV}"
-
   echo "Setting RELEASE_VERSION:[${VERSION}]"
   echo "RELEASE_VERSION=${VERSION}" >>"${GITHUB_ENV}"
 
-  echo "Setting PR_REF:[Automation-Release-${VERSION}]"
-  echo "PR_REF=Automation-Release-${VERSION}" >>"${GITHUB_ENV}"
+  echo "Setting PR_ID:[${PR_ID}]"
+  echo "PR_ID=${PR_ID}" >>"${GITHUB_ENV}"
 
   echo "Setting COMMIT_SHA:[${COMMIT_SHA}]"
   echo "COMMIT_SHA=${COMMIT_SHA}" >>"${GITHUB_ENV}"
@@ -286,12 +188,7 @@ Header
 ##########################
 # Get the latest version #
 ##########################
-GetReleaseFromIssueTitle
-
-##########################
-# Get the latest version #
-##########################
-UpdateReleaseBodyString
+GetReleaseVersion
 
 ##########################
 # Update the action file #
@@ -302,16 +199,6 @@ UpdateActionFile
 # Commit and push file #
 ########################
 CommitAndPush
-
-####################
-# Update the Issue #
-####################
-UpdateBaseIssue
-
-####################
-# Update the Issue #
-####################
-UpdatePRBody
 
 #####################################
 # Set the variables back to Actions #
