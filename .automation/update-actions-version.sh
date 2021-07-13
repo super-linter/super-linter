@@ -7,9 +7,10 @@
 ############
 # Defaults #
 ############\
-VERSION=''                          # Version of release pulled from api
-ACTION_FILE='action.yml'            # Action file to update
-COMMIT_SHA=''                       # COmmit sha when PR is created
+ACTION_FILE='action.yml' # Action file to update
+COMMIT_SHA=''            # Commit sha when PR is created
+PR_ID=''                 # Pull Request NUmber when generated
+VERSION=''               # Version of release pulled from api
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
@@ -161,6 +162,9 @@ SetActionsVariables() {
 
   echo "Setting RELEASE_VERSION:[${VERSION}]"
   echo "RELEASE_VERSION=${VERSION}" >>"${GITHUB_ENV}"
+
+  echo "Setting PR_ID:[${PR_ID}]"
+  echo "PR_ID=${PR_ID}" >>"${GITHUB_ENV}"
 
   echo "Setting COMMIT_SHA:[${COMMIT_SHA}]"
   echo "COMMIT_SHA=${COMMIT_SHA}" >>"${GITHUB_ENV}"
