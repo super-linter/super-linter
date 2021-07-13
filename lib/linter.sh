@@ -203,6 +203,14 @@ else
   JAVASCRIPT_STYLE='standard'
 fi
 
+#########################
+# Language pack toggles #
+#########################
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+RUN_SECURITY_TOOLS="${RUN_SECURITY_TOOLS:-true}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+RUN_CODE_QUALITY_TOOLS="${RUN_CODE_QUALITY_TOOLS:-false}"
+
 ##################
 # Language array #
 ##################
@@ -291,6 +299,17 @@ LINTER_NAMES_ARRAY['YAML']="yamllint"
 # Array for all languages that were linted #
 ############################################
 LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that were linted
+
+##################
+# Language packs #
+##################
+LANGUAGE_PACKS=('SECURITY_TOOLS' 'CODE_QUALITY_TOOLS')
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+SECURITY_TOOLS=('CLOUDFORMATION_CFN_NAG' 'DOCKERFILE_HADOLINT' 'GITLEAKS' 'PYTHON_BANDIT' 'TERRAFORM_TERRASCAN')
+# CODE_QUALITY_TOOLS are all tools (i.e., items in LANGUAGE_ARRAY) that are not in SECURITY_TOOLS
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+mapfile -t CODE_QUALITY_TOOLS < <(printf '%s\n' "${LANGUAGE_ARRAY[@]}" "${SECURITY_TOOLS[@]}" | sort | uniq -u)
+export LANGUAGE_PACKS
 
 ###################
 # GitHub ENV Vars #

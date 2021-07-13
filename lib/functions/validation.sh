@@ -53,53 +53,39 @@ function GetValidationInfo() {
     eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
   done
 
-  ################################################
-  # Determine if any linters were explicitly set #
-  ################################################
-  ANY_SET="false"
-  ANY_TRUE="false"
-  ANY_FALSE="false"
-  # Loop through all languages
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
-    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    # Check to see if the variable was set
-    if [ -n "${!VALIDATE_LANGUAGE}" ]; then
-      # It was set, need to set flag
-      ANY_SET="true"
-      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
-        ANY_TRUE="true"
-      elif [ "${!VALIDATE_LANGUAGE}" == "false" ]; then
-        ANY_FALSE="true"
+  # Loop through language packs to turn on any linters in those packs.
+  for PACK in "${LANGUAGE_PACKS[@]}"; do
+    LANGUAGES="${PACK}[@]"
+    # Build the RUN_*_TOOLS variable
+    RUN_LANGUAGE_PACK="RUN_${PACK}"
+
+    for LANGUAGE in "${!LANGUAGES}"; do
+      # Build the VALIDATE_* variable
+      VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+      SHOULD_VALIDATE_LANGUAGE="SHOULD_${VALIDATE_LANGUAGE}"
+      if [[ -n "${!VALIDATE_LANGUAGE}" ]]; then
+        # If variable is explicitly set, that will override any language pack settings.
+        continue
       fi
-    fi
+      # Should run current linter if *any* language pack flips it to true.
+      if [[ "${!SHOULD_VALIDATE_LANGUAGE}" != "true" ]]; then
+        eval "${SHOULD_VALIDATE_LANGUAGE}='${!RUN_LANGUAGE_PACK}'"
+      fi
+    done
   done
 
-  if [ $ANY_TRUE == "true" ] && [ $ANY_FALSE == "true" ]; then
-    fatal "Behavior not supported, please either only include (VALIDATE=true) or exclude (VALIDATE=false) linters, but not both"
-  fi
-
-  #########################################################
-  # Validate if we should check/omit individual languages #
-  #########################################################
-  # Loop through all languages
+  # Loop through all languages.
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # build the variable
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    # Check if ANY_SET was set
-    if [[ ${ANY_SET} == "true" ]]; then
-      # Check to see if the variable was set
-      if [ -z "${!VALIDATE_LANGUAGE}" ]; then
-        # Flag was not set, default to:
-        # if ANY_TRUE then set to false
-        # if ANY_FALSE then set to true
-        eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
-      fi
+    SHOULD_VALIDATE_LANGUAGE="SHOULD_${VALIDATE_LANGUAGE}"
+    if [ -n "${!VALIDATE_LANGUAGE}" ]; then
+      # If variable was explicitly set, honor that.
+      continue
     else
-      # No linter flags were set - default all to true
-      eval "${VALIDATE_LANGUAGE}='true'"
+      # Else use language pack settings to determine whether it should run.
+      eval "${VALIDATE_LANGUAGE}='${!SHOULD_VALIDATE_LANGUAGE:-false}'; export ${VALIDATE_LANGUAGE}"
     fi
-    eval "export ${VALIDATE_LANGUAGE}"
   done
 
   #######################################

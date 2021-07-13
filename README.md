@@ -265,6 +265,9 @@ Example usage:
 
 The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
 
+<details>
+  <summary>The behavior in this section has changed with 23andMe's custom logic (see next section). Expand to see original.</summary>
+
 _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
 
 - If none of them are passed, then they all default to true.
@@ -274,6 +277,7 @@ _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
 
 This means that if you run the linter "out of the box", all languages will be checked.
 But if you wish to select or exclude specific linters, we give you full control to choose which linters are run, and won't run anything unexpected.
+</details>
 
 | **ENV VAR**                        | **Default Value**               | **Notes**                                                                                                                                                                                                            |
 | ---------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -383,16 +387,33 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_YAML**                  | `true`                          | Flag to enable or disable the linting process of the YAML language.                                                                                                                                                  |
 | **YAML_CONFIG_FILE**               | `.yaml-lint.yml`                | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                                                          |
 
-### 23andMe Custom Environment Variables
+### 23andMe Custom Behavior and Environment Variables
+
+23andMe's custom super-linter introduced the ability to group linters into language packs, which can then be toggled on or off as a group.
+As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those in the base super-linter:
+
+- **All variables default to `false`, unless explicitly toggled to true.**
+- A single linter/language can appear in multiple linter packs. Its `VALIDATE_[LANGUAGE]` variable will be set to `true` if *any* of the language packs containing it are marked `true`, *except*...
+- If there is an explicit `VALIDATE_[LANGUAGE]` variable for that specific linter/language, the variable will override all language pack settings.
+
 | **ENV VAR**                            | **Default Value**               | **Notes**                                                                                                                                                                                                                                                 |
 | -------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **CLOUDFORMATION_CFN_NAG_CONFIG_FILE** | `.cfnnag`                       | Filename for [cfn-nag configuration](https://github.com/stelligent/cfn_nag#profiles)                                                                                                                                                                      |
 | **GITLEAKS_CONFIG_FILE**               | `none`                          | Filename for optional [gitleaks configuration](https://github.com/zricethezav/gitleaks#configuration) (ex: `simple_regex_config.toml`). Uses the [gitleaks default](https://github.com/zricethezav/gitleaks/blob/master/config/default.go) if unspecified |
 | **OUTPUT_MODE**                        | `none`                          | Additional means for outputting findings, other than writing to stdout. Supported modes: lintly                                                                                                                                                           |
 | **PYTHON_BANDIT_CONFIG_FILE**          | `.bandit`                       | Filename for [bandit configuration](https://bandit.readthedocs.io/en/latest/config.html) (ex: `.bandit`, `tox.ini`)                                                                                                                                       |
-| **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`                          |  Flag to enable or disable the security linting process of the AWS CloudFormation language.                                                                                                                                                               |
+| **RUN_CODE_QUALITY_TOOLS**             | `false  `                       | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack.                                                                                                                                 |
+| **RUN_SECURITY_TOOLS**                 | `true   `                       | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                                                                                                                                                 |
+| **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`                          | Flag to enable or disable the security linting process of the AWS CloudFormation language.                                                                                                                                                                |
 | **VALIDATE_GITLEAKS**                  | `true`                          | Flag to enable or disable the linting process of potentially leaked secrets across all files and languages.                                                                                                                                               |
 | **VALIDATE_PYTHON_BANDIT**             | `true`                          | Flag to enable or disable the linting process of the Python language. (Utilizing: bandit)                                                                                                                                                                 |
+
+The following is a list of supported language packs.
+
+| **Language pack**            | **Included Tools**                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`TERRAFORM_TERRASCAN` |
+| **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                           |
 
 ### Template rules files
 
