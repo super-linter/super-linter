@@ -98,8 +98,6 @@ jobs:
         # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ORG_REPO: ${{ github.repository }}
           RELEASE_NAME: ${{ github.event.release.name }}
 
       ################

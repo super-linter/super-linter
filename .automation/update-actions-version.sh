@@ -7,18 +7,9 @@
 ############
 # Defaults #
 ############\
-GITHUB_API='https://api.github.com' # API url
 VERSION=''                          # Version of release pulled from api
 ACTION_FILE='action.yml'            # Action file to update
-PR_ID=''                            # PUll Request ID when created
-UPDATED_BODY_STRING=''              # Issue body string converted
 COMMIT_SHA=''                       # COmmit sha when PR is created
-
-##############
-# Built Vars #
-##############
-ORG=$(echo "${ORG_REPO}" | cut -d'/' -f1)  # Name of the Org
-REPO=$(echo "${ORG_REPO}" | cut -d'/' -f2) # Name of the repository
 
 ################################################################################
 ############################ FUNCTIONS BELOW ###################################
