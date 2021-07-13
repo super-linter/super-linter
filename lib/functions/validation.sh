@@ -53,23 +53,23 @@ function GetValidationInfo() {
     eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
   done
 
-  # Loop through linter packs to turn on any linters in those packs.
-  for PACK in "${LINTER_PACKS[@]}"; do
-    LINTERS="${PACK}[@]"
+  # Loop through language packs to turn on any linters in those packs.
+  for PACK in "${LANGUAGE_PACKS[@]}"; do
+    LANGUAGES="${PACK}[@]"
     # Build the RUN_*_TOOLS variable
-    RUN_LINTER_PACK="RUN_${PACK}"
+    RUN_LANGUAGE_PACK="RUN_${PACK}"
 
-    for LANGUAGE in "${!LINTERS}"; do
+    for LANGUAGE in "${!LANGUAGES}"; do
       # Build the VALIDATE_* variable
       VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
       SHOULD_VALIDATE_LANGUAGE="SHOULD_${VALIDATE_LANGUAGE}"
       if [[ -n "${!VALIDATE_LANGUAGE}" ]]; then
-        # If variable is explicitly set, that will override any linter pack settings.
+        # If variable is explicitly set, that will override any language pack settings.
         continue
       fi
-      # Should run current linter if *any* linter pack flips it to true.
+      # Should run current linter if *any* language pack flips it to true.
       if [[ "${!SHOULD_VALIDATE_LANGUAGE}" != "true" ]]; then
-        eval "${SHOULD_VALIDATE_LANGUAGE}='${!RUN_LINTER_PACK}'"
+        eval "${SHOULD_VALIDATE_LANGUAGE}='${!RUN_LANGUAGE_PACK}'"
       fi
     done
   done
@@ -83,7 +83,7 @@ function GetValidationInfo() {
       # If variable was explicitly set, honor that.
       continue
     else
-      # Else use linter pack settings to determine whether it should run.
+      # Else use language pack settings to determine whether it should run.
       eval "${VALIDATE_LANGUAGE}='${!SHOULD_VALIDATE_LANGUAGE:-false}'; export ${VALIDATE_LANGUAGE}"
     fi
   done

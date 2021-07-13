@@ -389,12 +389,12 @@ But if you wish to select or exclude specific linters, we give you full control 
 
 ### 23andMe Custom Behavior and Environment Variables
 
-23andMe's custom super-linter introduced the ability to group linters into linter packs, which can then be toggled on or off as a group.
+23andMe's custom super-linter introduced the ability to group linters into language packs, which can then be toggled on or off as a group.
 As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those in the base super-linter:
 
 - **All variables default to `false`, unless explicitly toggled to true.**
-- A single linter/language can appear in multiple linter packs. Its `VALIDATE_[LANGUAGE]` variable will be set to `true` if *any* of the linter packs containing it are marked `true`, *except*...
-- If there is an explicit `VALIDATE_[LANGUAGE]` variable for that specific linter/language, the variable will override all linter pack settings.
+- A single linter/language can appear in multiple linter packs. Its `VALIDATE_[LANGUAGE]` variable will be set to `true` if *any* of the language packs containing it are marked `true`, *except*...
+- If there is an explicit `VALIDATE_[LANGUAGE]` variable for that specific linter/language, the variable will override all language pack settings.
 
 | **ENV VAR**                            | **Default Value**               | **Notes**                                                                                                                                                                                                                                                 |
 | -------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -408,9 +408,9 @@ As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those i
 | **VALIDATE_GITLEAKS**                  | `true`                          | Flag to enable or disable the linting process of potentially leaked secrets across all files and languages.                                                                                                                                               |
 | **VALIDATE_PYTHON_BANDIT**             | `true`                          | Flag to enable or disable the linting process of the Python language. (Utilizing: bandit)                                                                                                                                                                 |
 
-The following is a list of supported linter packs.
+The following is a list of supported language packs.
 
-| **Linter pack**            | **Included Tools**                                                                                                  |
+| **Language pack**            | **Included Tools**                                                                                                |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`TERRAFORM_TERRASCAN` |
 | **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                           |
