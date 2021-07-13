@@ -99,6 +99,7 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           RELEASE_NAME: ${{ github.event.release.name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       ################
       # Docker cache #
