@@ -14,9 +14,9 @@
 # Start the job on all push to master #
 #######################################
 on:
-  # Start when a pull request is opened
-  issues:
-    types: ['opened']
+  # Start when a release is published
+  release:
+    types: ['published']
 
 ###############
 # Set the Job #
@@ -31,8 +31,7 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
-        github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
+    if: github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
         github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
         github.actor == 'Hanse00' || github.actor == 'github-actions' ||
         github.actor == 'GaboFDC' || github.actor == 'ferrarimarco'
@@ -46,24 +45,6 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
-
-      #######################################################
-      # Create a GitHub Issue with the info from this build #
-      #######################################################
-      - name: Update GitHub Issue
-        uses: actions/github-script@v4.0.2
-        id: update-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              title: "Deploying slim Super-Linter Release to Production",
-              body: 'Currently deploying the Release...'
-            })
 
       #########################
       # Update deployment API #
@@ -112,7 +93,7 @@ jobs:
       ###########################
       - name: Get current Release number
         run: |
-          echo "RELEASE_VERSION=$(echo "${{ github.event.issue.title }}" \
+          echo "RELEASE_VERSION=$(echo "${{ github.event.release.name }}" \
           | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
           >> ${GITHUB_ENV}
 
@@ -173,3 +154,48 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
+
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Create GitHub Issue for failure
+        if: failure()
+        uses: actions/github-script@v4.0.2
+        id: create-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy release to production",
+              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}"
+            })
+            console.log('create', create)
+            return create.data.number
+
+      ############################
+      # Assign admins on failure #
+      ############################
+      - name: Assign Admins on failure
+        uses: actions/github-script@v4.0.2
+        if: failure()
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.create-issue.outputs.result }}",
+              assignees: [
+                'admiralawkbar',
+                'jwiebalk',
+                'IAmHughes',
+                'nemchik',
+                'Hanse00',
+                'GaboFDC',
+                'ferrarimarco'
+              ]
+            })
