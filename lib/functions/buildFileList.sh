@@ -350,6 +350,8 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_CPP+=("${FILE}")
+      FILE_ARRAY_CLANG_FORMAT+=("${FILE}")
+
     ########################
     # Get the COFFEE files #
     ########################
