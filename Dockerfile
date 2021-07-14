@@ -320,15 +320,17 @@ ENV LLVM_TAG llvmorg-12.0.1
 ######################
 # Download and setup #
 ######################
-WORKDIR /build
+WORKDIR /tmp
 RUN git clone --branch ${LLVM_TAG} --depth 1 https://github.com/llvm/llvm-project.git
-WORKDIR /build/llvm-project
+WORKDIR /tmp/llvm-project
 
 #########
 # Build #
 #########
-WORKDIR llvm/build
-RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ .. \
+WORKDIR /tmp/llvm-project/llvm/build
+RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
+    -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ .. \
     && ninja clang-format
 
 ################################################################################
@@ -413,7 +415,7 @@ COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
-COPY --from=clang-format-build /build/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
+COPY --from=clang-format-build /tmp/build/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
 
 ########################################
 # Add node packages to path and dotnet #
