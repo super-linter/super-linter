@@ -296,7 +296,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
-# Build the clang binary #######################################################
+# Build the clang-format binary ################################################
 ################################################################################
 FROM alpine:3.14.0 as clang-format-build
 
