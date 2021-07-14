@@ -35,8 +35,9 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Azure](#azure)
     - [GitLab](#gitlab)
     - [Visual Studio Code](#visual-studio-code)
-  - [Limitations](#limitations)
+    - [SSL Certs](#ssl-certs)
   - [Community Activity](#community-activity)
+  - [Limitations](#limitations)
   - [How to contribute](#how-to-contribute)
     - [License](#license)
 
@@ -306,6 +307,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **TERRAFORM_CONFIG_FILE**          | `.tflint.hcl`                   | Filename for [tfLint configuration](https://github.com/terraform-linters/tflint) (ex: `.tflint.hcl`)                                                                                                                 |
+| **TERRAFORM_TERRASCAN_CONFIG_FILE**| `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`) |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
