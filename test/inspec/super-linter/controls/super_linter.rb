@@ -13,6 +13,7 @@ control "super-linter-installed-packages" do
 
   packages = [
     "bash",
+    "clang",
     "coreutils",
     "curl",
     "gcc",
@@ -94,6 +95,7 @@ control "super-linter-installed-commands" do
     { linter_name: "asl-validator"},
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "black"},
+    { linter_name: "clang"},
     { linter_name: "cfn-lint"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
     { linter_name: "chktex"},
