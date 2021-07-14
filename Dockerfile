@@ -415,7 +415,7 @@ COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
-COPY --from=clang-format-build /tmp/build/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
+COPY --from=clang-format-build /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
 
 ########################################
 # Add node packages to path and dotnet #
