@@ -13,7 +13,6 @@ control "super-linter-installed-packages" do
 
   packages = [
     "bash",
-    "clang",
     "coreutils",
     "curl",
     "gcc",
