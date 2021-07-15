@@ -257,7 +257,7 @@ function LintCodebase() {
           if
             ! clang-format --Werror --dry-run "${FILE_NAME}" |
               tee /dev/null 2>&1
-              exit "${PIPESTATUS[0]}"
+            exit "${PIPESTATUS[0]}"
           then
             diff -u --label "${LABEL}" "${FILE_NAME}" --label "${LABEL}.expected" -
             exit 1
