@@ -254,7 +254,7 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "CLANG_FORMAT" ]]; then
         LINT_CMD=$(
           LABEL=$(realpath --relative-to . "${FILE_NAME}")
-          clang-format "${FILE_NAME}"; if [ $? -ne 0 ] then diff -u --label "${LABEL}" "${FILE_NAME}" --label "${LABEL}.expected" - ; exit 1; fi
+          if ! clang-format "${FILE_NAME}"; then diff -u --label "${LABEL}" "${FILE_NAME}" --label "${LABEL}.expected" - ; exit 1; fi
         )
       else
         ################################
