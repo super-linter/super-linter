@@ -32,8 +32,8 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
-    if: github.event_name == 'push' ||
-        github.event.pull_request.head.repo.full_name != github.repository
+    if: ${{ github.event_name }} == 'push' ||
+        ${{ github.event.pull_request.head.repo.full_name }} != ${{ github.repository }}
     ##################
     # Load all steps #
     ##################
@@ -52,7 +52,7 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -86,7 +86,7 @@ jobs:
           load: true
           push: false
           tags: |
-            ghcr.io/github/super-linter:${{ github.sha }}
+            "ghcr.io/github/super-linter:${{ github.sha }}"
             ghcr.io/github/super-linter:test
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -178,8 +178,8 @@ jobs:
           -e ANSIBLE_DIRECTORY=.automation/test/ansible \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
-          -v ${GITHUB_WORKSPACE}:/tmp/lint \
-          ghcr.io/github/super-linter:${GITHUB_SHA}
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${GITHUB_SHA}"
 
       #########################################
       # Clean code base to run against it all #
@@ -199,5 +199,5 @@ jobs:
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
-          -v ${GITHUB_WORKSPACE}:/tmp/lint \
-          ghcr.io/github/super-linter:${GITHUB_SHA}
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${GITHUB_SHA}"
