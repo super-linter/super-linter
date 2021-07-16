@@ -919,6 +919,9 @@ PRINTENV=$(printenv | sort)
 debug "ENV:"
 debug "${PRINTENV}"
 debug "------------------------------------"
+debug " Output of test folder!!!"
+ls -la "/tmp/lint/.automation/test
+debug "------------------------------------"
 debug " Output of clang folder!!!"
 ls -la "/tmp/lint/.automation/test/clang_format"
 debug "------------------------------------"
