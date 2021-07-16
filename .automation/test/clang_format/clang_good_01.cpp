@@ -11,6 +11,6 @@ int main() {
   // Write to the file
   MyFile << "Files can be tricky, but it is fun enough!";
 
-  // Close the file
+  // Close the file handle
   MyFile.close();
 }
