@@ -765,7 +765,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_ACTIONS+=("${FILE}")
+        FILE_ARRAY_GITHUB_ACTIONS+=("${FILE}")
       fi
       ############################
       # Check if file is Ansible #
