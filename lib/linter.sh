@@ -75,7 +75,7 @@ export VERSION_FILE                                                 # Workaround
 # Rules files #
 ###############
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-ACTIONS_FILE_NAME="${ACTIONS_CONFIG_FILE:-actionslint.yml}"
+ACTIONS_FILE_NAME="${ACTIONS_CONFIG_FILE:-actionlint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
