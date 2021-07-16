@@ -28,6 +28,21 @@ DetectAnsibleFile() {
   fi
 }
 ################################################################################
+#### Function DetectActions ####################################################
+DetectActions() {
+  FILE="${1}"
+
+  debug "Checking if ${FILE} is a GitHub Actions file..."
+
+  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]]; then
+    debug "${FILE} is GitHub Actions file."
+    return 0
+  else
+    debug "${FILE} is NOT GitHub Actions file."
+    return 1
+  fi
+}
+################################################################################
 #### Function DetectOpenAPIFile ################################################
 DetectOpenAPIFile() {
   ################

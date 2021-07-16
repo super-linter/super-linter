@@ -134,6 +134,13 @@ RUN pip3 install --no-cache-dir pipenv \
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
+#######################
+# Installs ActionLint #
+#######################
+    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+    && chmod +x download-actionlint.bash \
+    && ./download-actionlint.bash \
+    && mv actionlint /usr/bin/actionlint \
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
