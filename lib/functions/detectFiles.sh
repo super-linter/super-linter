@@ -316,6 +316,7 @@ function IsValidShellScript() {
 
   if [ "${FILE_EXTENSION}" == "sh" ] ||
     [ "${FILE_EXTENSION}" == "bash" ] ||
+    [ "${FILE_EXTENSION}" == "bats" ] ||
     [ "${FILE_EXTENSION}" == "dash" ] ||
     [ "${FILE_EXTENSION}" == "ksh" ]; then
     debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
