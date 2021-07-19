@@ -19,8 +19,6 @@
 on:
   push:
     branches-ignore: [master]
-  pull_request:
-    branches-ignore: [ ]
 
 ###############
 # Set the Job #
