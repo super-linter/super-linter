@@ -59,6 +59,7 @@ RUN apk add --no-cache \
     gnupg \
     icu-libs \
     jq \
+    jpeg-dev \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
     libintl libssl1.1 libstdc++ \
@@ -71,6 +72,7 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
+    py3-pybind11 py3-pybind11-dev \
     py3-setuptools python3-dev \
     R R-dev R-doc \
     readline-dev \
