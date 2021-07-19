@@ -31,10 +31,10 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
-        github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
-        github.actor == 'Hanse00' || github.actor == 'github-actions' ||
-        github.actor == 'GaboFDC' || github.actor == 'ferrarimarco'
+    if: ${{ github.actor }} == 'admiralawkbar' || ${{ github.actor }} == 'jwiebalk' ||
+        ${{ github.actor }} == 'IAmHughes' || ${{ github.actor }} == 'nemchik' ||
+        ${{ github.actor }} == 'Hanse00' || ${{ github.actor }} == 'github-actions' ||
+        ${{ github.actor }} == 'GaboFDC' || ${{ github.actor }} == 'ferrarimarco'
 
     ##################
     # Load all steps #
@@ -61,7 +61,7 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -128,10 +128,10 @@ jobs:
           tags: |
             github/super-linter:latest
             github/super-linter:v4
-            github/super-linter:${{ env.RELEASE_VERSION }}
+            "github/super-linter:${{ env.RELEASE_VERSION }}"
             ghcr.io/github/super-linter:latest
             ghcr.io/github/super-linter:v4
-            ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}
+            "ghcr.io/github/super-linter:${{ env.RELEASE_VERSION }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -152,7 +152,7 @@ jobs:
       - name: Create Stack Linter Status
         if: success()
         run: |
-          curl -X POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }} \
+          curl -X POST --url "https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --data '{	"state": "success",	"context": "Stack linter" }'
@@ -163,7 +163,7 @@ jobs:
       - name: Close PR
         if: success()
         run: |
-          curl -X PUT --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_ID }}/merge \
+          curl -X PUT --url "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_ID }}/merge" \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --data '{ "merge_method": "squash" }'

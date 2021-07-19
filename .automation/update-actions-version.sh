@@ -29,7 +29,7 @@ GetReleaseVersion() {
   echo "Getting the latest Release version from GitHub ..."
 
   # Get the latest release on the Repository
-  GET_VERSION_CMD=$(echo "${RELEASE_NAME}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)
+  GET_VERSION_CMD="$(echo "${RELEASE_NAME}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 2>&1)"
 
   # Load the error code
   ERROR_CODE=$?

@@ -31,10 +31,10 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
-        github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
-        github.actor == 'Hanse00' || github.actor == 'github-actions' ||
-        github.actor == 'GaboFDC' || github.actor == 'ferrarimarco'
+    if: ${{ github.actor }} == 'admiralawkbar' || ${{ github.actor }} == 'jwiebalk' ||
+        ${{ github.actor }} == 'IAmHughes' || ${{ github.actor }} == 'nemchik' ||
+        ${{ github.actor }} == 'Hanse00' || ${{ github.actor }} == 'github-actions' ||
+        ${{ github.actor }} == 'GaboFDC' || ${{ github.actor }} == 'ferrarimarco'
 
     ##################
     # Load all steps #
@@ -61,7 +61,7 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -92,10 +92,11 @@ jobs:
       # Get the current release #
       ###########################
       - name: Get current Release number
+        # shellcheck disable=SC2062
         run: |
-          echo "RELEASE_VERSION=$(echo "${{ github.event.release.name }}" \
+          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
           | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
-          >> ${GITHUB_ENV}
+          >> "${GITHUB_ENV}"
 
       ################
       # Docker cache #
@@ -124,10 +125,10 @@ jobs:
           tags: |
             github/super-linter:slim-latest
             github/super-linter:slim-v4
-            github/super-linter:slim-${{ env.RELEASE_VERSION }}
+            "github/super-linter:slim-${{ env.RELEASE_VERSION }}"
             ghcr.io/github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-v4
-            ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}
+            "ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 

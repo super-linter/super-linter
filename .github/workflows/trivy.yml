@@ -22,7 +22,7 @@ jobs:
       # ##########################
       - name: Build an image from Dockerfile
         run: |
-          docker build -t docker.io/github/super-linter:${{ github.sha }} .
+          docker build -t "docker.io/github/super-linter:${{ github.sha }}" .
 
       #################################
       # Run Trivy Scan of source code #

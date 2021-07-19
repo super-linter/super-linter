@@ -758,6 +758,15 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_YAML+=("${FILE}")
 
+      ###################################
+      # Check if file is GitHub Actions #
+      ###################################
+      if DetectActions "${FILE}"; then
+        ################################
+        # Append the file to the array #
+        ################################
+        FILE_ARRAY_GITHUB_ACTIONS+=("${FILE}")
+      fi
       ############################
       # Check if file is Ansible #
       ############################

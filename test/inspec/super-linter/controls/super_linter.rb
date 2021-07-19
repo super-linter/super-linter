@@ -89,6 +89,7 @@ control "super-linter-installed-commands" do
   default_expected_stdout_regex = /(.*?)/s
 
   linters = [
+    { linter_name: "actionlint"},
     { linter_name: "ansible-lint"},
     { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs"},
     { linter_name: "asl-validator"},
@@ -392,6 +393,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/updateSSL.sh",
     "/action/lib/functions/validation.sh",
     "/action/lib/functions/worker.sh",
+    "/action/lib/.automation/actionlint.yml",
     "/action/lib/.automation/.ansible-lint.yml",
     "/action/lib/.automation/.arm-ttk.psd1",
     "/action/lib/.automation/.cfnlintrc.yml",
