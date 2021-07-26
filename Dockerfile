@@ -58,6 +58,7 @@ RUN apk add --no-cache \
     go \
     gnupg \
     icu-libs \
+    jpeg-dev \
     jq \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
