@@ -9,4 +9,6 @@
     # ]
 
     # skip rules (list of rules to skip)
-    skip-rules = []
+    skip-rules = [
+        "AC_AWS_0320"
+    ]
