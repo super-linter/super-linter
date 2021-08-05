@@ -129,7 +129,12 @@ RUN pip3 install --no-cache-dir pipenv \
     && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103
+    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103 \
+########################
+# Install Python Black #
+########################
+    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.7b0/black_linux \
+    && chmod +x /usr/local/bin/black \
 ##############################
 # Installs Perl dependencies #
 ##############################
