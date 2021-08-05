@@ -701,6 +701,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_SQL+=("${FILE}")
+      FILE_ARRAY_SQLFLUFF+=("${FILE}")
 
     ###########################
     # Get the Terraform files #
