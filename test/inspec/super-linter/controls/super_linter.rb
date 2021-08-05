@@ -142,6 +142,7 @@ control "super-linter-installed-commands" do
     { linter_name: "snakemake"},
     { linter_name: "spectral"},
     { linter_name: "sql-lint"},
+    { linter_name: "sqlfluff"},
     { linter_name: "standard"},
     { linter_name: "stylelint"},
     { linter_name: "tekton-lint"},
@@ -260,7 +261,6 @@ control "super-linter-installed-pip-packages" do
 
   packages = [
     "ansible-lint",
-    "black",
     "cfn-lint",
     "cpplint",
     "cython",
@@ -270,6 +270,7 @@ control "super-linter-installed-pip-packages" do
     "pylint",
     "snakefmt",
     "snakemake",
+    "sqlfluff",
     "typing_extensions",
     "yamllint",
     "yq"
