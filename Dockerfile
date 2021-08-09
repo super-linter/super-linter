@@ -129,7 +129,12 @@ RUN pip3 install --no-cache-dir pipenv \
     && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103
+    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103 \
+########################
+# Install Python Black #
+########################
+    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.7b0/black_linux \
+    && chmod +x /usr/local/bin/black \
 ##############################
 # Installs Perl dependencies #
 ##############################
@@ -397,6 +402,11 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     && rm glibc-${GLIBC_VERSION}.apk \
+    && wget -q --tries=5 -O /tmp/libz.tar.xz https://www.archlinux.org/packages/core/x86_64/zlib/download \
+    && mkdir /tmp/libz \
+    && tar -xf /tmp/libz.tar.xz -C /tmp/libz \
+    && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
+    && rm -rf /tmp/libz /tmp/libz.tar.xz \
     && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
