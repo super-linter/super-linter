@@ -4,7 +4,7 @@
     "@coffeelint/cli": "^5.0.1",
     "@stoplight/spectral": "^5.9.2",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
-    "@typescript-eslint/parser": "^4.28.5",
+    "@typescript-eslint/parser": "^4.29.0",
     "asl-validator": "^1.10.0",
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
