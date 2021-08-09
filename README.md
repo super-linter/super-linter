@@ -35,8 +35,9 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Azure](#azure)
     - [GitLab](#gitlab)
     - [Visual Studio Code](#visual-studio-code)
-  - [Limitations](#limitations)
+    - [SSL Certs](#ssl-certs)
   - [Community Activity](#community-activity)
+  - [Limitations](#limitations)
   - [How to contribute](#how-to-contribute)
     - [License](#license)
 
@@ -317,6 +318,8 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE** | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
+| **TERRAFORM_CONFIG_FILE**          | `.tflint.hcl`                   | Filename for [tfLint configuration](https://github.com/terraform-linters/tflint) (ex: `.tflint.hcl`)                                                                                                                 |
+| **TERRAFORM_TERRASCAN_CONFIG_FILE**| `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`) |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
@@ -402,8 +405,8 @@ As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those i
 | **GITLEAKS_CONFIG_FILE**               | `none`                          | Filename for optional [gitleaks configuration](https://github.com/zricethezav/gitleaks#configuration) (ex: `simple_regex_config.toml`). Uses the [gitleaks default](https://github.com/zricethezav/gitleaks/blob/master/config/default.go) if unspecified |
 | **OUTPUT_MODE**                        | `none`                          | Additional means for outputting findings, other than writing to stdout. Supported modes: lintly                                                                                                                                                           |
 | **PYTHON_BANDIT_CONFIG_FILE**          | `.bandit`                       | Filename for [bandit configuration](https://bandit.readthedocs.io/en/latest/config.html) (ex: `.bandit`, `tox.ini`)                                                                                                                                       |
-| **RUN_CODE_QUALITY_TOOLS**             | `false  `                       | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack.                                                                                                                                 |
-| **RUN_SECURITY_TOOLS**                 | `true   `                       | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                                                                                                                                                 |
+| **RUN_CODE_QUALITY_TOOLS**             | `false`                         | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack.                                                                                                                                 |
+| **RUN_SECURITY_TOOLS**                 | `true`                          | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                                                                                                                                                 |
 | **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`                          | Flag to enable or disable the security linting process of the AWS CloudFormation language.                                                                                                                                                                |
 | **VALIDATE_GITLEAKS**                  | `true`                          | Flag to enable or disable the linting process of potentially leaked secrets across all files and languages.                                                                                                                                               |
 | **VALIDATE_PYTHON_BANDIT**             | `true`                          | Flag to enable or disable the linting process of the Python language. (Utilizing: bandit)                                                                                                                                                                 |
