@@ -307,7 +307,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ################################################################################
 # Build the clang-format binary ################################################
 ################################################################################
-FROM alpine:3.14.0 as clang-format-build
+FROM alpine:3.14.1 as clang-format-build
 
 ######################
 # Build dependencies #
@@ -345,7 +345,7 @@ RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
 ################################################################################
 # Grab small clean image #######################################################
 ################################################################################
-FROM alpine:3.14.0 as final
+FROM alpine:3.14.1 as final
 
 ############################
 # Get the build arguements #
