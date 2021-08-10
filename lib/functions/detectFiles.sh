@@ -28,6 +28,22 @@ DetectAnsibleFile() {
   fi
 }
 ################################################################################
+#### Function DetectActions ####################################################
+DetectActions() {
+  FILE="${1}"
+
+  debug "Checking if ${FILE} is a GitHub Actions file..."
+
+  # Check if in the users .github, or the super linter test suite
+  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] || [[ "$(dirname "${FILE}")" == *".automation/test/github_actions"* ]]; then
+    debug "${FILE} is GitHub Actions file."
+    return 0
+  else
+    debug "${FILE} is NOT GitHub Actions file."
+    return 1
+  fi
+}
+################################################################################
 #### Function DetectOpenAPIFile ################################################
 DetectOpenAPIFile() {
   ################
@@ -316,6 +332,7 @@ function IsValidShellScript() {
 
   if [ "${FILE_EXTENSION}" == "sh" ] ||
     [ "${FILE_EXTENSION}" == "bash" ] ||
+    [ "${FILE_EXTENSION}" == "bats" ] ||
     [ "${FILE_EXTENSION}" == "dash" ] ||
     [ "${FILE_EXTENSION}" == "ksh" ]; then
     debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
@@ -333,4 +350,44 @@ function IsValidShellScript() {
 
   trace "$FILE is NOT a supported shell script. Skipping"
   return 1
+}
+################################################################################
+#### Function IsGenerated ######################################################
+function IsGenerated() {
+  # Pull in Vars #
+  ################
+  FILE="$1"
+
+  ##############################
+  # Check the file for keyword #
+  ##############################
+  grep -q "@generated" "$FILE"
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  if [ ${ERROR_CODE} -ne 0 ]; then
+    trace "File:[${FILE}] is not generated, because it doesn't have @generated marker"
+    return 1
+  fi
+
+  ##############################
+  # Check the file for keyword #
+  ##############################
+  grep -q "@not-generated" "$FILE"
+
+  #######################
+  # Load the error code #
+  #######################
+  ERROR_CODE=$?
+
+  if [ ${ERROR_CODE} -eq 0 ]; then
+    trace "File:[${FILE}] is not-generated because it has @not-generated marker"
+    return 1
+  else
+    trace "File:[${FILE}] is generated because it has @generated marker"
+    return 0
+  fi
 }

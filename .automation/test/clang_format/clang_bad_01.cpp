@@ -1,8 +1,6 @@
-// Copyright 2021 GitHub
-
-#include <fstream>
 #include <iostream>
-using std::string;
+#include <fstream>
+using namespace std;
 
 int main() {
   // Create and open a text file
@@ -12,5 +10,5 @@ int main() {
   MyFile << "Files can be tricky, but it is fun enough!";
 
   // Close the file
-  MyFile.close();
+  //MyFile.close();
 }
