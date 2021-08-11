@@ -812,7 +812,7 @@ GetStandardRules "typescript"
 declare -A LINTER_DEFAULT_OPTIONS_ARRAY
 LINTER_DEFAULT_OPTIONS_ARRAY['ANSIBLE']="-v -c ${ANSIBLE_LINTER_RULES}"
 # shellcheck disable=SC2016  # Don't expand variables that PowerShell will handle
-LINTER_DEFAULT_OPTIONS_ARRAY['ARM']="\${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
+LINTER_DEFAULT_OPTIONS_ARRAY['ARM']="\\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
 LINTER_DEFAULT_OPTIONS_ARRAY['BASH']="--color --external-sources"
 LINTER_DEFAULT_OPTIONS_ARRAY['CLANG_FORMAT']="--Werror --dry-run"
 LINTER_DEFAULT_OPTIONS_ARRAY['CLOJURE']="--config ${CLOJURE_LINTER_RULES} --lint"
