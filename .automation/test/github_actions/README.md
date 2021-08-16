@@ -1,6 +1,6 @@
-# Clang Test Cases
+# GitHub Actions Test Cases
 
-This folder holds the test cases for **C/C++**.
+This folder holds the test cases for **Github Actions**.
 
 ## Additional Docs
 
@@ -17,3 +17,4 @@ The test cases denoted: `LANGUAGE_good_FILE.EXTENSION` are all valid, and should
 The test cases denoted: `LANGUAGE_bad_FILE.EXTENSION` are **NOT** valid, and should trigger errors when linted.
 
 - **Note:** They are linted utilizing the default linter rules.
+{"mode":"full","isActive":false}

@@ -4,3 +4,6 @@ config {
   force = false
 }
 
+plugin "aws" {
+  enabled = true
+}

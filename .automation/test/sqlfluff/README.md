@@ -1,6 +1,6 @@
-# Clang Test Cases
+# SQL Fluff Test Cases
 
-This folder holds the test cases for **C/C++**.
+This folder holds the test cases for **SQL**.
 
 ## Additional Docs
 

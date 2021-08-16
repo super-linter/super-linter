@@ -14,9 +14,9 @@
 # Start the job on all push to master #
 #######################################
 on:
-  # Start when a pull request is opened
-  issues:
-    types: ['opened']
+  # Start when a release is published
+  release:
+    types: ['published']
 
 ###############
 # Set the Job #
@@ -24,18 +24,17 @@ on:
 jobs:
   deploy:
     # Name the Job
-    name: Deploy Docker Image - Release - slim
+    name: Deploy Docker Image - Release - SLIM
     # Set the agent to run on
     runs-on: ubuntu-latest
 
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: contains(github.event.issue.title, 'Super-Linter Release:') &&
-        github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
-        github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
-        github.actor == 'Hanse00' || github.actor == 'github-actions' ||
-        github.actor == 'GaboFDC' || github.actor == 'ferrarimarco'
+    if: ${{ github.actor }} == 'admiralawkbar' || ${{ github.actor }} == 'jwiebalk' ||
+        ${{ github.actor }} == 'IAmHughes' || ${{ github.actor }} == 'nemchik' ||
+        ${{ github.actor }} == 'Hanse00' || ${{ github.actor }} == 'github-actions' ||
+        ${{ github.actor }} == 'GaboFDC' || ${{ github.actor }} == 'ferrarimarco'
 
     ##################
     # Load all steps #
@@ -46,24 +45,6 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
-
-      #######################################################
-      # Create a GitHub Issue with the info from this build #
-      #######################################################
-      - name: Update GitHub Issue
-        uses: actions/github-script@v4.0.2
-        id: update-issue
-        with:
-          # https://octokit.github.io/rest.js/v18#issues-create
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: "${{ github.event.issue.number }}",
-              title: "Deploying slim Super-Linter Release to Production",
-              body: 'Currently deploying the Release...'
-            })
 
       #########################
       # Update deployment API #
@@ -80,19 +61,19 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.3.0
+        uses: docker/setup-buildx-action@v1.5.1
 
       ###############################
       # Login to DockerHub registry #
       ###############################
       - name: Login to DockerHub
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1.10.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -101,7 +82,7 @@ jobs:
       # Login to GitHub Container registry #
       ######################################
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1.10.0
         with:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
@@ -111,16 +92,28 @@ jobs:
       # Get the current release #
       ###########################
       - name: Get current Release number
+        # shellcheck disable=SC2062
         run: |
-          echo "RELEASE_VERSION=$(echo "${{ github.event.issue.title }}" \
+          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
           | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
-          >> ${GITHUB_ENV}
+          >> "${GITHUB_ENV}"
+
+      ################
+      # Docker cache #
+      ################
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-slim
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
 
       ###########################################
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - SLIM
-        uses: docker/build-push-action@v2.5.0
+        uses: docker/build-push-action@v2.6.1
         with:
           context: .
           file: ./Dockerfile-slim
@@ -132,10 +125,23 @@ jobs:
           tags: |
             github/super-linter:slim-latest
             github/super-linter:slim-v4
-            github/super-linter:slim-${{ env.RELEASE_VERSION }}
+            "github/super-linter:slim-${{ env.RELEASE_VERSION }}"
             ghcr.io/github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-v4
-            ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}
+            "ghcr.io/github/super-linter:slim-${{ env.RELEASE_VERSION }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      #############
+      # Fix Cache #
+      #############
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       #########################
       # Update Deployment API #
@@ -149,3 +155,48 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
+
+      #######################################################
+      # Create a GitHub Issue with the info from this build #
+      #######################################################
+      - name: Create GitHub Issue for failure
+        if: failure()
+        uses: actions/github-script@v4.0.2
+        id: create-issue
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy release to production",
+              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}"
+            })
+            console.log('create', create)
+            return create.data.number
+
+      ############################
+      # Assign admins on failure #
+      ############################
+      - name: Assign Admins on failure
+        uses: actions/github-script@v4.0.2
+        if: failure()
+        with:
+          # https://octokit.github.io/rest.js/v18#issues-create
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.create-issue.outputs.result }}",
+              assignees: [
+                'admiralawkbar',
+                'jwiebalk',
+                'IAmHughes',
+                'nemchik',
+                'Hanse00',
+                'GaboFDC',
+                'ferrarimarco'
+              ]
+            })

@@ -46,12 +46,12 @@ The **Super-Linter** has _CI/CT/CD_ configured utilizing **GitHub** Actions.
 
 ## Releasing
 
-If you are the current maintainer of this action you can create releases from [a release issue](.github/ISSUE_TEMPLATE/CREATE_RELEASE.md) in the repository.
+If you are the current maintainer of this action you can create releases from the `Release` page  of the repository.
 
 - It will notify the issue it has seen the information and starts the Actions job
 - It will create a branch and update the `actions.yml` with the new version supplied to the issue
 - It will then create a PR with the updated code
-- It will then create the release and build the artifacts needed
+- It will then create the build the artifacts needed
 - it will then publish the release and merge the PR
 - A GitHub Action will Publish the Docker image to GitHub Package Registry once a Release is created
 - A GitHub Action will Publish the Docker image to Docker Hub once a Release is created

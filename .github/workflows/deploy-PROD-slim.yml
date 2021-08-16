@@ -29,7 +29,7 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Only run this on the main repo
-    if: github.repository == 'github/super-linter'
+    if: ${{ github.repository }} == 'github/super-linter'
     ##################
     # Load all steps #
     ##################
@@ -44,19 +44,19 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.3.0
+        uses: docker/setup-buildx-action@v1.5.1
 
       ###############################
       # Login to DockerHub registry #
       ###############################
       - name: Login to DockerHub
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1.10.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -65,7 +65,7 @@ jobs:
       # Login to GitHub Container registry #
       ######################################
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.9.0
+        uses: docker/login-action@v1.10.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GCR_USERNAME }}
@@ -82,11 +82,22 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: Production-SLIM
 
+      ################
+      # Docker cache #
+      ################
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-slim
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - SLIM
-        uses: docker/build-push-action@v2.5.0
+        uses: docker/build-push-action@v2.6.1
         with:
           context: .
           file: ./Dockerfile-slim
@@ -98,6 +109,19 @@ jobs:
           tags: |
             github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      #############
+      # Fix Cache #
+      #############
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       #######################################################
       # Create a GitHub Issue with the info from this build #

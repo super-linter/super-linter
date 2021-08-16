@@ -7,25 +7,26 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.06.01-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.08.06-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.0 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.32.0 as protolint
-FROM golangci/golangci-lint:v1.40.1 as golangci-lint
+FROM golangci/golangci-lint:v1.41.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
-FROM wata727/tflint:0.29.1 as tflint
-FROM alpine/terragrunt:1.0.0 as terragrunt
-FROM mvdan/shfmt:v3.3.0 as shfmt
-FROM accurics/terrascan:1.7.0 as terrascan
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.31.0 as tflint
+FROM alpine/terragrunt:1.0.4 as terragrunt
+FROM mvdan/shfmt:v3.3.1 as shfmt
+FROM accurics/terrascan:1.9.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
+FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM zricethezav/gitleaks:v7.4.0 as gitleaks
 
 ##################
 # Get base image #
 ##################
-FROM python:3.9-alpine as base_image
+FROM python:3.9.6-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -53,10 +54,12 @@ RUN apk add --no-cache \
     curl \
     file \
     gcc \
+    g++ \
     git git-lfs\
     go \
     gnupg \
     icu-libs \
+    jpeg-dev \
     jq \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
@@ -70,7 +73,7 @@ RUN apk add --no-cache \
     openjdk8-jre \
     openssl-dev \
     perl perl-dev \
-    py3-setuptools python3-dev\
+    py3-setuptools python3-dev \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -116,7 +119,7 @@ RUN pip3 install --no-cache-dir pipenv \
     && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
-    && npm audit fix \
+    && npm audit fix --audit-level=critical \
 ##############################
 # Installs ruby dependencies #
 ##############################
@@ -127,12 +130,24 @@ RUN pip3 install --no-cache-dir pipenv \
     && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103
-
+    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103 \
+########################
+# Install Python Black #
+########################
+    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.7b0/black_linux \
+    && chmod +x /usr/local/bin/black \
 ##############################
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
+#######################
+# Installs ActionLint #
+#######################
+    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+    && chmod +x download-actionlint.bash \
+    && ./download-actionlint.bash \
+    && rm download-actionlint.bash \
+    && mv actionlint /usr/bin/actionlint \
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
@@ -175,6 +190,7 @@ COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 # Install TFLint #
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+COPY --from=tflint /root/.tflint.d /root/.tflint.d
 
 #####################
 # Install Terrascan #
@@ -225,6 +241,12 @@ COPY --from=kubeval /kubeval /usr/bin/
 # Install shfmt #
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
+
+#################
+# Install Litnr #
+#################
+COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
+RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ####################
 # Install gitleaks #
@@ -294,10 +316,47 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
+# Build the clang-format binary ################################################
+################################################################################
+FROM alpine:3.14.1 as clang-format-build
+
+######################
+# Build dependencies #
+######################
+RUN apk add --no-cache \
+    build-base \
+    clang \
+    cmake \
+    git \
+    ninja \
+    python3
+
+#############################################################
+# Pass `--build-arg LLVM_TAG=master` for latest llvm commit #
+#############################################################
+ARG LLVM_TAG
+ENV LLVM_TAG llvmorg-12.0.1
+
+######################
+# Download and setup #
+######################
+WORKDIR /tmp
+RUN git clone --branch ${LLVM_TAG} --depth 1 https://github.com/llvm/llvm-project.git
+WORKDIR /tmp/llvm-project
+
+#########
+# Build #
+#########
+WORKDIR /tmp/llvm-project/llvm/build
+RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
+    -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ .. \
+    && ninja clang-format
+
+################################################################################
 # Grab small clean image #######################################################
 ################################################################################
-FROM ghcr.io/assignuser/lintr-lib:0.2.0 as lintr-lib
-FROM alpine:3.14.0 as final
+FROM alpine:3.14.1 as final
 
 ############################
 # Get the build arguements #
@@ -349,12 +408,15 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     php7 php7-phar php7-json php7-mbstring php-xmlwriter \
     php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
     && rm glibc-${GLIBC_VERSION}.apk \
+    && wget -q --tries=5 -O /tmp/libz.tar.xz https://www.archlinux.org/packages/core/x86_64/zlib/download \
+    && mkdir /tmp/libz \
+    && tar -xf /tmp/libz.tar.xz -C /tmp/libz \
+    && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
+    && rm -rf /tmp/libz /tmp/libz.tar.xz \
     && wget -q --tries=5 -O phive.phar https://phar.io/releases/phive.phar \
     && wget -q --tries=5 -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && PHAR_KEY_ID="0x9D8A98B29B2D5D79" \
-    && ( gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$PHAR_KEY_ID" \
-    || gpg --keyserver pgp.mit.edu --recv-keys "$PHAR_KEY_ID" \
-    || gpg --keyserver keyserver.pgp.com --recv-keys "$PHAR_KEY_ID" ) \
+    && gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$PHAR_KEY_ID" \
     && gpg --verify phive.phar.asc phive.phar \
     && chmod +x phive.phar \
     && mv phive.phar /usr/local/bin/phive \
@@ -377,12 +439,9 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
-
-#################
-# Install Litnr #
-#################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+COPY --from=base_image /home/r-library /home/r-library
+COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
+COPY --from=clang-format-build /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
 
 ########################################
 # Add node packages to path and dotnet #

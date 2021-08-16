@@ -103,6 +103,8 @@ DOCKERFILE_FILE_NAME=".dockerfilelintrc"
 DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yaml}"
 EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+GITHUB_ACTIONS_FILE_NAME="${GITHUB_ACTIONS_CONFIG_FILE:-actionlint.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 GHERKIN_FILE_NAME=".gherkin-lintrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 [[ -n ${GITLEAKS_CONFIG_FILE} ]] && GITLEAKS_FILE_NAME=${GITLEAKS_CONFIG_FILE} # Use built-in default rules if none were provided
@@ -113,7 +115,7 @@ GROOVY_FILE_NAME=".groovylintrc.json"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 HTML_FILE_NAME=".htmlhintrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-JAVA_FILE_NAME="sun_checks.xml"
+JAVA_FILE_NAME="${JAVA_FILE_NAME:-sun_checks.xml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -173,7 +175,9 @@ SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-TERRAFORM_FILE_NAME=".tflint.hcl"
+TERRAFORM_FILE_NAME="${TERRAFORM_CONFIG_FILE:-.tflint.hcl}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+TERRAFORM_TERRASCAN_FILE_NAME="${TERRAFORM_TERRASCAN_CONFIG_FILE:-terrascan.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TERRAFORM_TERRASCAN_FILE_NAME="${TERRAFORM_TERRASCAN_CONFIG_FILE:-terrascan.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -216,14 +220,18 @@ RUN_CODE_QUALITY_TOOLS="${RUN_CODE_QUALITY_TOOLS:-false}"
 ##################
 # Language array #
 ##################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLOUDFORMATION' 'CLOUDFORMATION_CFN_NAG' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS'
-  'DART' 'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GHERKIN' 'GITLEAKS' 'GO' 'GROOVY' 'HTML'
-  'JAVA' 'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX' 'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
-  'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL'
-  'PROTOBUF' 'PYTHON_BANDIT' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'PYTHON_MYPY'
-  'R' 'RAKU' 'RUBY' 'RUST_2015' 'RUST_2018' 'RUST_CLIPPY'
-  'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL'
-  'TEKTON' 'TERRAFORM' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
+  'CLOUDFORMATION' 'CLOUDFORMATION_CFN_NAG' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS' 'DART'
+  'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GITHUB_ACTIONS'
+  'GHERKIN' 'GITLEAKS' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES'
+  "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX' 'KUBERNETES_KUBEVAL'
+  'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
+  'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_BANDIT' 'PYTHON_BLACK'
+  'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RUBY'
+  'RUST_2015' 'RUST_2018' 'RUST_CLIPPY' 'SHELL_SHFMT' 'SNAKEMAKE_LINT'
+  'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'SQLFLUFF' 'TEKTON' 'TERRAFORM'
+  'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD'
+  'XML' 'YAML')
 
 ##############################
 # Linter command names array #
@@ -233,6 +241,7 @@ LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
 LINTER_NAMES_ARRAY['ARM']="arm-ttk"
 LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_NAMES_ARRAY['CLANG_FORMAT']="clang-format"
 LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
 LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTER_NAMES_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn_nag"
@@ -245,6 +254,7 @@ LINTER_NAMES_ARRAY['DOCKERFILE']="dockerfilelint"
 LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
 LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
+LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
 LINTER_NAMES_ARRAY['GHERKIN']="gherkin-lint"
 LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
 LINTER_NAMES_ARRAY['GO']="golangci-lint"
@@ -254,7 +264,7 @@ LINTER_NAMES_ARRAY['JAVA']="checkstyle"
 LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
 LINTER_NAMES_ARRAY["${JAVASCRIPT_STYLE_NAME}"]="${JAVASCRIPT_STYLE}"
 LINTER_NAMES_ARRAY['JSCPD']="jscpd"
-LINTER_NAMES_ARRAY['JSON']="jsonlint"
+LINTER_NAMES_ARRAY['JSON']="eslint"
 LINTER_NAMES_ARRAY['JSONC']="eslint"
 LINTER_NAMES_ARRAY['JSX']="eslint"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
@@ -287,6 +297,7 @@ LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
 LINTER_NAMES_ARRAY['STATES']="asl-validator"
 LINTER_NAMES_ARRAY['SQL']="sql-lint"
+LINTER_NAMES_ARRAY['SQLFLUFF']="sqlfluff"
 LINTER_NAMES_ARRAY['TEKTON']="tekton-lint"
 LINTER_NAMES_ARRAY['TERRAFORM']="tflint"
 LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
@@ -332,6 +343,9 @@ DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master b
 # VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
 
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+
+# Do not ignore generated files by default for backwards compatibility
+IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
 
 ################
 # Default Vars #
@@ -850,6 +864,7 @@ LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -v -c ${ANSIBLE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
 LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_COMMANDS_ARRAY['CLANG_FORMAT']="clang-format --Werror --dry-run"
 LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
 LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn_nag_scan --ignore-fatal --profile-path=${CLOUDFORMATION_CFN_NAG_LINTER_RULES} ${LINTER_OPTS[CLOUDFORMATION_CFN_NAG]}"
@@ -863,6 +878,7 @@ LINTER_COMMANDS_ARRAY['DOCKERFILE']="dockerfilelint -c $(dirname "${DOCKERFILE_L
 LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES} ${LINTER_OPTS[DOCKERFILE_HADOLINT]}"
 LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
+LINTER_COMMANDS_ARRAY['GITHUB_ACTIONS']="actionlint -config-file ${GITHUB_ACTIONS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
 # Need --no-git to scan an individual file rather than scanning commit histories.
 LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks --config-path=${GITLEAKS_LINTER_RULES} --verbose --redact --no-git ${LINTER_OPTS[GITLEAKS]}"
@@ -874,7 +890,7 @@ LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVASCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['JSCPD']="jscpd --config ${JSCPD_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JSON']="jsonlint"
+LINTER_COMMANDS_ARRAY['JSON']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json"
 LINTER_COMMANDS_ARRAY['JSONC']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json5,.jsonc"
 LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
@@ -921,6 +937,7 @@ LINTER_COMMANDS_ARRAY['SNAKEMAKE_LINT']="snakemake --lint -s"
 LINTER_COMMANDS_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff"
 LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
 LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['SQLFLUFF']="sqlfluff lint"
 LINTER_COMMANDS_ARRAY['TEKTON']="tekton-lint"
 LINTER_COMMANDS_ARRAY['TERRAFORM']="tflint -c ${TERRAFORM_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -c ${TERRAFORM_TERRASCAN_LINTER_RULES} ${LINTER_OPTS[TERRAFORM_TERRASCAN]} -f"
@@ -929,7 +946,7 @@ LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
-LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES} -f parsable"
 
 debug "--- Linter commands ---"
 debug "-----------------------"
