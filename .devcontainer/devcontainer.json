@@ -1,12 +1,10 @@
 {
-  "name": "SUPER-LINTER",
+  "name": "Super-Linter",
   "context": "..",
-  "dockerFile": "..//Dockerfile",
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
-  },
+  "dockerFile": "../Dockerfile",
   "extensions": [
     "github.vscode-pull-request-github",
-    "rogalmic.bash-debug"
+    "rogalmic.bash-debug",
+    "EditorConfig.EditorConfig"
   ]
 }
