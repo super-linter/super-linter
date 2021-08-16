@@ -156,7 +156,7 @@ jobs:
       # Codacy Coverage Report #
       ##########################
       - name: Upload the code coverage report
-        uses: codacy/codacy-coverage-reporter-action@1.0.1
+        uses: codacy/codacy-coverage-reporter-action@v1.1
         # Dependabot does not have priv to see the secret, so will
         # fail opn bump jobs...
         continue-on-error: true
