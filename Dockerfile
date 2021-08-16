@@ -458,11 +458,14 @@ COPY TEMPLATES /action/lib/.automation
 ################################################
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true /action/lib/linter.sh
 
+############
+# Set user #
+############
+RUN addgroup -g 1000 superlinter && \
+    adduser -u 1000 -D -G superlinter superlinter
+USER superlinter
+
 ######################
 # Set the entrypoint #
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
-
-RUN addgroup -g 1000 superlinter && \
-    adduser -u 1000 -D -G superlinter superlinter
-USER superlinter
