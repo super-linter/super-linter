@@ -56,8 +56,8 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                       |
 | **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                   |
 | **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                            |
-| **C++**                          | [cpp-lint](https://github.com/cpplint/cpplint)                                                                                                                                |
-| **C#**                           | [dotnet-format](https://github.com/dotnet/format)                                                                                                                             |
+| **C++**                          | [cpp-lint](https://github.com/cpplint/cpplint) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                     |
+| **C#**                           | [dotnet-format](https://github.com/dotnet/format) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                  |
 | **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                            |
 | **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                            |
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                   |
@@ -66,13 +66,14 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) / [hadolint](https://github.com/hadolint/hadolint)                                                       |
 | **EDITORCONFIG**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                          |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                               |
+| **GitHub Actions**               | [actionlint](https://github.com/rhysd/actionlint)                                                                                                                             |
 | **Gherkin**                      | [gherkin-lint](https://github.com/vsiakka/gherkin-lint)                                                                                                                       |
 | **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                                                                                                    |
 | **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                                                                                                                |
 | **HTML**                         | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                                                                                                              |
 | **Java**                         | [checkstyle](https://checkstyle.org)                                                                                                                                          |
 | **JavaScript**                   | [eslint](https://eslint.org/) / [standard js](https://standardjs.com/)                                                                                                        |
-| **JSON**                         | [jsonlint](https://github.com/zaach/jsonlint)                                                                                                                                 |
+| **JSON**                         | [eslint-plugin-json](https://www.npmjs.com/package/eslint-plugin-json)                                                                                                        |
 | **JSONC**                        | [eslint-plugin-jsonc](https://www.npmjs.com/package/eslint-plugin-jsonc)                                                                                                      |
 | **Kubeval**                      | [kubeval](https://github.com/instrumenta/kubeval)                                                                                                                             |
 | **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                                                                                                 |
@@ -91,7 +92,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Rust**                         | [Rustfmt](https://github.com/rust-lang/rustfmt) / [Clippy](https://github.com/rust-lang/rust-clippy)                                                                          |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck) / [executable bit check] / [shfmt](https://github.com/mvdan/sh)                                                          |
 | **Snakemake**                    | [snakefmt](https://github.com/snakemake/snakefmt/) / [snakemake --lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)         |
-| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint)                                                                                                                           |
+| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint) / [slqfluff](https://github.com/sqlfluff/sqlfluff)                                                                        |
 | **Tekton**                       | [tekton-lint](https://github.com/IBM/tekton-lint)                                                                                                                             |
 | **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) / [terrascan](https://github.com/accurics/terrascan)                                                                    |
 | **Terragrunt**                   | [terragrunt](https://github.com/gruntwork-io/terragrunt)                                                                                                                      |
@@ -294,9 +295,12 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ERROR_ON_MISSING_EXEC_BIT**      | `false`                         | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an error instead.                                          |
 | **FILTER_REGEX_EXCLUDE**           | `none`                          | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                                                          |
 | **FILTER_REGEX_INCLUDE**           | `all`                           | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                                                |
+| **GITHUB_ACTIONS_CONFIG_FILE**     | `actionlint.yml`                | Filename for [Actionlint configuration](https://github.com/rhysd/actionlint#configuration-file) (ex: `actionlint.yml`)                                                                                               |
 | **GITHUB_DOMAIN**                  | `github.com`                    | Specify a custom Github domain in case Github Enterprise is used: e.g. `github.myenterprise.com`                                                                                                                     |
 | **GITHUB_CUSTOM_API_URL**          | `api.github.com`                | Specify a custom Github API URL in case Github Enterprise is used: e.g. `https://github.myenterprise.com/api/v3/`                                                                                                    |
+| **IGNORE_GENERATED_FILES**         | `false`                         | If set to `true`, super-linter will ignore all the files with `@generated` marker but without `@not-generated` marker.                                                                                               |
 | **IGNORE_GITIGNORED_FILES**        | `false`                         | If set to `true`, super-linter will ignore all the files that are ignored by Git.                                                                                                                                    |
+| **JAVA_FILE_NAME**                 | `sun-checks.xml`                | Filename for [Checkstyle configuration](https://checkstyle.sourceforge.io/config.html) (ex: `checkstyle.xml`)                                                                                                        |
 | **JAVASCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **JAVASCRIPT_DEFAULT_STYLE**       | `standard`                      | Flag to set the default style of javascript. Available options: **standard**/**prettier**                                                                                                                            |
 | **JSCPD_CONFIG_FILE**              | `.jscpd.json`                   | Filename for JSCPD configuration                                                                                                                                                                                     |
@@ -319,7 +323,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **TERRAFORM_CONFIG_FILE**          | `.tflint.hcl`                   | Filename for [tfLint configuration](https://github.com/terraform-linters/tflint) (ex: `.tflint.hcl`)                                                                                                                 |
-| **TERRAFORM_TERRASCAN_CONFIG_FILE**| `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`) |
+| **TERRAFORM_TERRASCAN_CONFIG_FILE**| `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`)                                                                                                                 |
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [eslint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
@@ -328,6 +332,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_BASH**                  | `true`                          | Flag to enable or disable the linting process of the Bash language.                                                                                                                                                  |
 | **VALIDATE_BASH_EXEC**             | `true`                          | Flag to enable or disable the linting process of the Bash language to validate if file is stored as executable.                                                                                                      |
 | **VALIDATE_CPP**                   | `true`                          | Flag to enable or disable the linting process of the C++ language.                                                                                                                                                   |
+| **VALIDATE_CLANG_FORMAT**          | `true`                          | Flag to enable or disable the linting process of the C++/C language with clang-format.                                                                                                                               |
 | **VALIDATE_CLOJURE**               | `true`                          | Flag to enable or disable the linting process of the Clojure language.                                                                                                                                               |
 | **VALIDATE_CLOUDFORMATION**        | `true`                          | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                                                                   |
 | **VALIDATE_COFFEESCRIPT**          | `true`                          | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                                                          |
@@ -338,6 +343,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_DOCKERFILE_HADOLINT**   | `true`                          | Flag to enable or disable the linting process of the Docker language.                                                                                                                                                |
 | **VALIDATE_EDITORCONFIG**          | `true`                          | Flag to enable or disable the linting process with the editorconfig.                                                                                                                                                 |
 | **VALIDATE_ENV**                   | `true`                          | Flag to enable or disable the linting process of the ENV language.                                                                                                                                                   |
+| **VALIDATE_GITHUB_ACTIONS**        | `true`                          | Flag to enable or disable the linting process of the GitHub Actions.                                                                                                                                                 |
 | **VALIDATE_GHERKIN**               | `true`                          | Flag to enable or disable the linting process of the Gherkin language.                                                                                                                                               |
 | **VALIDATE_GO**                    | `true`                          | Flag to enable or disable the linting process of the Golang language.                                                                                                                                                |
 | **VALIDATE_GROOVY**                | `true`                          | Flag to enable or disable the linting process of the language.                                                                                                                                                       |
@@ -379,6 +385,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_SNAKEMAKE_SNAKEFMT**    | `true`                          | Flag to enable or disable the linting process of Snakefiles. (Utilizing: snakefmt)                                                                                                                                   |
 | **VALIDATE_STATES**                | `true`                          | Flag to enable or disable the linting process for AWS States Language.                                                                                                                                               |
 | **VALIDATE_SQL**                   | `true`                          | Flag to enable or disable the linting process of the SQL language.                                                                                                                                                   |
+| **VALIDATE_SQLFLUFF**              | `true`                          | Flag to enable or disable the linting process of the SQL language. (Utilizing: sqlfuff)                                                                                                                              |
 | **VALIDATE_TEKTON**                | `true`                          | Flag to enable or disable the linting process of the Tekton language.                                                                                                                                                |
 | **VALIDATE_TERRAFORM**             | `true`                          | Flag to enable or disable the linting process of the Terraform language.                                                                                                                                             |
 | **VALIDATE_TERRAFORM_TERRASCAN**   | `true`                          | Flag to enable or disable the linting process of the Terraform language for security related issues.                                                                                                                 |
@@ -442,6 +449,26 @@ Examples:
 - Lint only src folder: `FILTER_REGEX_INCLUDE: .*src/.*`
 - Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
 - Do not lint javascript files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*.js`
+
+<!-- This `README.md` has both markers in the text, so it is considered not generated. -->
+Additionally when `IGNORE_GENERATED_FILES=true`, super-linter
+ignores any file with `@generated` marker in it unless the file
+also has `@not-generated` marker. `@generated` marker is
+[used by Facebook](https://engineering.fb.com/2015/08/20/open-source/writing-code-that-writes-code-with-hack-codegen/)
+and some other projects to mark generated files. For example, this
+file is considered generated:
+
+```bash
+#!/bin/sh
+echo "@generated"
+```
+
+And this file is considered not generated:
+
+```bash
+#!/bin/sh
+echo "@generated" # @not-generated
+```
 
 ## Docker Hub
 

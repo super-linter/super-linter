@@ -71,10 +71,6 @@ BuildLinterVersions() {
       elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
         # Need specific command for Protolint and editorconfig-checker
         GET_VERSION_CMD="$(echo "--version not supported")"
-      elif [[ ${LINTER} == "jsonlint" ]]; then
-        # Workaround for https://github.com/zaach/jsonlint/issues/122
-        # Delete after that issue is resolved
-        GET_VERSION_CMD="$("${LINTER}" --version 2>&1 || true)"
       elif [[ ${LINTER} == "lintr" ]]; then
         # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
         GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \
