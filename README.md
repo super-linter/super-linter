@@ -120,17 +120,17 @@ To use this **GitHub** Action you will need to complete the following:
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
 
 - `.github/workflows/linter.yml`
-  - Example file can be found at `TEMPLATES/linter.yml`
+  - Example file can be found at [`TEMPLATES/linter.yml`](/TEMPLATES/linter.yml)
 
 This file should have the following code:
 
 ```yml
 ---
-###########################
-###########################
-## Linter GitHub Actions ##
-###########################
-###########################
+#################################
+#################################
+## Super Linter GitHub Actions ##
+#################################
+#################################
 name: Lint Code Base
 
 #
@@ -143,10 +143,10 @@ name: Lint Code Base
 #############################
 on:
   push:
-    branches-ignore: [master]
+    branches-ignore: [master, main]
     # Remove the line above to run when pushing to master
   pull_request:
-    branches: [master]
+    branches: [master, main]
 
 ###############
 # Set the Job #
