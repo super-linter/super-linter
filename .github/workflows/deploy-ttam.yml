@@ -55,12 +55,20 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      ###################################################################
+      # Checkout the code base (required for docker path context below) #
+      ###################################################################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       ###########################################
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
+          context: .
+          file: ./Dockerfile-slim
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}

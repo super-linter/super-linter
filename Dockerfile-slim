@@ -27,6 +27,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
+FROM zricethezav/gitleaks:v7.4.0 as gitleaks
 
 ##################
 # Get base image #
@@ -184,6 +185,11 @@ COPY --from=shfmt /bin/shfmt /usr/bin/
 #################
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+
+####################
+# Install gitleaks #
+####################
+COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 
 ##################
 # Install ktlint #
