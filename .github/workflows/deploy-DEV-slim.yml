@@ -73,7 +73,7 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build Docker image - SLIM
-        uses: docker/build-push-action@v2.6.1
+        uses: docker/build-push-action@v2.7.0
         with:
           context: .
           file: ./Dockerfile-slim
