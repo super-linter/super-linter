@@ -21,8 +21,8 @@ linters:
     - gocyclo
     - goconst
     - goimports
-    - fieldalignment
     - gocritic
+    - govet
     - fieldalignment
     - revive
 linters-settings:
