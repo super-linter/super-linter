@@ -23,7 +23,6 @@ linters:
     - goimports
     - gocritic
     - govet
-    - fieldalignment
     - revive
 linters-settings:
   errcheck:
