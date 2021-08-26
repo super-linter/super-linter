@@ -29,5 +29,6 @@ if [[ -v ERROR_CODES["${FILE_NAME}"] ]] && [[ -z "${POINTER_FILES}" ]]; then
   NON_COMPLIANT_FILES="$(grep -Li "$COMPLIANT_FILTER" "$FILE_PATH")"
   if [[ -n "${NON_COMPLIANT_FILES}" ]]; then
     format_output_for_lintly
+    exit 1
   fi
 fi
