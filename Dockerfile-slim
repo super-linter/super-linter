@@ -389,6 +389,11 @@ ENV PATH="${PATH}:/node_modules/.bin"
 #############################
 COPY lib /action/lib
 
+####################################
+# Copy custom linters to container #
+####################################
+COPY ttam-linters /action/ttam-linters
+
 ##################################
 # Copy linter rules to container #
 ##################################
