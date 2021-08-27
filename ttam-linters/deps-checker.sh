@@ -20,7 +20,7 @@ POINTER_FILES="$(grep -iE "^-r " "${FILE_PATH}")"
 
 format_output_for_lintly() {
 
-  output=${FILE_PATH}":1:1:${ERROR_CODES[${FILE_NAME}]} does not explicitly point to an approved dependencies repository sources"
+  output=${FILE_PATH}":1:1: ${ERROR_CODES[${FILE_NAME}]} does not explicitly point to an approved artifact repository manager."
   echo "${output}"
 
 }
