@@ -388,12 +388,12 @@ But if you wish to select or exclude specific linters, we give you full control 
 
 You can use the **GitHub** **Super-Linter** _with_ or _without_ your own personal rules sets. This allows for greater flexibility for each individual code base. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 
-- Copy **any** or **all** template rules files from `TEMPLATES/` into your repository in the location: `.github/linters/` of your repository
-  - If your repository does not have rules files, they will fall back to defaults in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES)
+- Copy **any** or **all** template rules files from `TEMPLATES/` into the `.github/linters/` directory of your repository, and modify them to suit your needs.
+  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES) will be used as defaults should any be omitted.
 
 ### Using your own rules files
 
-If your repository contains your own rules files that live outside of a ``.github/linters/`` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their file names are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
+If your repository contains your own rules files that live outside of a `.github/linters/` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
 
 ### Disabling rules
 
