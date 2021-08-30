@@ -710,7 +710,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_TERRAFORM+=("${FILE}")
+      FILE_ARRAY_TERRAFORM_TFLINT+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
 
     ############################

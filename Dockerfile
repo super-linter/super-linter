@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM cljkondo/clj-kondo:2021.08.06-alpine as clj-kondo
-FROM dotenvlinter/dotenv-linter:3.1.0 as dotenv-linter
+FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.32.0 as protolint
 FROM golangci/golangci-lint:v1.42.0 as golangci-lint
@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.31.0 as tflint
 FROM alpine/terragrunt:1.0.5 as terragrunt
 FROM mvdan/shfmt:v3.3.1 as shfmt
-FROM accurics/terrascan:1.9.0 as terrascan
+FROM accurics/terrascan:1.10.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
@@ -312,7 +312,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ################################################################################
 # Build the clang-format binary ################################################
 ################################################################################
-FROM alpine:3.14.1 as clang-format-build
+FROM alpine:3.14.2 as clang-format-build
 
 ######################
 # Build dependencies #
@@ -350,7 +350,7 @@ RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
 ################################################################################
 # Grab small clean image #######################################################
 ################################################################################
-FROM alpine:3.14.1 as final
+FROM alpine:3.14.2 as final
 
 ############################
 # Get the build arguements #
