@@ -88,6 +88,16 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
 
+      ###########################
+      # Get the current release #
+      ###########################
+      - name: Get current Release number
+        # shellcheck disable=SC2062
+        run: |
+          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
+          | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
+          >> "${GITHUB_ENV}"
+
       ################
       # Docker cache #
       ################
