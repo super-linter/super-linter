@@ -88,19 +88,6 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
 
-      #######################################
-      # Update actions.yml with new version #
-      #######################################
-      - name: Update actions.yml with release version and create PR
-        if: success()
-        run: ./.automation/update-actions-version.sh
-        # Note: script creates variables:
-        # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          RELEASE_NAME: ${{ github.event.release.name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       ################
       # Docker cache #
       ################
@@ -145,28 +132,6 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      #####################################################
-      # Create the Required status check for Stack Linter #
-      #####################################################
-      - name: Create Stack Linter Status
-        if: success()
-        run: |
-          curl -X POST --url "https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --data '{	"state": "success",	"context": "Stack linter" }'
-
-      #################################
-      # Close the opened Pull Request #
-      #################################
-      - name: Close PR
-        if: success()
-        run: |
-          curl -X PUT --url "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_ID }}/merge" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --data '{ "merge_method": "squash" }'
 
       #########################
       # Update Deployment API #
