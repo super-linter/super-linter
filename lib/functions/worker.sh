@@ -10,7 +10,7 @@
 ################################################################################
 #### Function LintCodebase #####################################################
 function LintCodebase() {
-  # Call comes thorugh as:
+  # Call comes through as:
   # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   ####################
   # Pull in the vars #
@@ -74,6 +74,17 @@ function LintCodebase() {
 
     info "----------------------------------------------"
     info "----------------------------------------------"
+
+    ###############################################
+    # Try installing the package if language is R #
+    ###############################################
+    if [ "${FILE_TYPE}" = "R" ]; then
+      info ""
+      info "Trying to install the R package inside ${WORKSPACE_PATH}"
+      R CMD build ${WORKSPACE_PATH}
+      BUILD_PKG=$(echo *.tar.gz)
+      R CMD INSTALL ${BUILD_PKG}
+    fi
 
     ##################
     # Lint the files #
