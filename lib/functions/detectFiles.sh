@@ -273,11 +273,13 @@ function CheckFileType() {
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
   if [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
-    #######################
-    # It is a Ruby script #
-    #######################
-    warn "Found ruby script without extension:[.rb]"
-    info "Please update file with proper extensions."
+    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+      #######################
+      # It is a Ruby script #
+      #######################
+      warn "Found ruby script without extension:[.rb]"
+      info "Please update file with proper extensions."
+    fi
     ################################
     # Append the file to the array #
     ################################
