@@ -22,7 +22,7 @@
     "eslint-plugin-vue": "^7.17.0",
     "gherkin-lint": "^4.2.2",
     "htmlhint": "^0.15.1",
-    "immer": "^9.0.5",
+    "immer": "^9.0.6",
     "ini": "^2.0.0",
     "jscpd": "^3.3.26",
     "lodash": "^4.17.21",
