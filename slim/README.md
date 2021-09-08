@@ -7,7 +7,7 @@ The **GitHub Super-Linter** maintains `two` major images:
 
 In order to help users pull this image more naturally, the `action.yml` in this directory can help users pull the `slim image`.
 
-#### Slim Image
+## Slim Image
 
 The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
 
