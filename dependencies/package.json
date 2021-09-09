@@ -2,6 +2,7 @@
   "name": "super-linter",
   "dependencies": {
     "@coffeelint/cli": "^5.0.2",
+    "@secretlint/secretlint-rule-preset-recommend": "^3.3.0",
     "@stoplight/spectral": "^5.9.2",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
@@ -32,6 +33,7 @@
     "prettier": "^2.3.2",
     "prettyjson": "^1.2.1",
     "pug": "^3.0.1",
+    "secretlint": "^3.3.0",
     "sql-lint": "0.0.19",
     "standard": "^16.0.3",
     "stylelint": "^13.13.1",
