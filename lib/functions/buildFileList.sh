@@ -588,28 +588,6 @@ function BuildFileList() {
       FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
       FILE_ARRAY_PHP_PSALM+=("${FILE}")
 
-      if [ "${VALIDATE_PHP_PSALM}" == "true" ]; then
-        # found PHP and were validating it, need to composer install
-        info "Found PHP files to validate, and [VALIDATE_PHP_PSALM] set to true, need to run composer install"
-        COMPOSER_CMD=$(composer install 2>&1)
-
-        ##############
-        # Error code #
-        ##############
-        ERROR_CODE=$?
-
-        ##############################
-        # Check the shell for errors #
-        ##############################
-        if [ "${ERROR_CODE}" -ne 0 ]; then
-          # Error
-          error "ERROR! Failed to run composer install"
-          fatal "ERROR:[${COMPOSER_CMD}]"
-        else
-          # Success
-          info "Successfulyl ran;[composer install] for PHP validation"
-        fi
-      fi
     ######################
     # Get the PERL files #
     ######################

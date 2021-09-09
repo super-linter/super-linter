@@ -914,6 +914,11 @@ CheckSSLCert
 ###########################################
 BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
 
+#####################################
+# Run additional Installs as needed #
+#####################################
+RunAdditionalInstalls
+
 ###############
 # Run linters #
 ###############
