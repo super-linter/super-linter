@@ -204,7 +204,8 @@ DetectAWSStatesFIle() {
   # check if file has resources #
   ###############################
   if grep -q '"Resource": *"arn' "${FILE}" &&
-     grep -q '"States"' "${FILE}"; then    # Found it
+     grep -q '"States"' "${FILE}"; then
+    # Found it
     return 0
   fi
 
