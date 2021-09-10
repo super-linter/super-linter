@@ -413,7 +413,10 @@ function RunAdditionalInstalls() {
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
         PATH=$(dirname "${LINE}" 2>&1)
         info "Found [composer.json] at:[${LINE}]"
-        COMPOSER_CMD=$(cd "${PATH}" || exit 1; composer install 2>&1)
+        COMPOSER_CMD=$(
+          cd "${PATH}" || exit 1
+          composer install 2>&1
+        )
 
         ##############
         # Error code #
