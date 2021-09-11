@@ -247,7 +247,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: docker://ghcr.io/github/super-linter:slim-v4
+  uses: github/super-linter/slim@v4
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master

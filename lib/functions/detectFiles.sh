@@ -203,7 +203,8 @@ DetectAWSStatesFIle() {
   ###############################
   # check if file has resources #
   ###############################
-  if grep -q '"Resource": *"arn"*' "${FILE}"; then
+  if grep -q '"Resource": *"arn' "${FILE}" &&
+    grep -q '"States"' "${FILE}"; then
     # Found it
     return 0
   fi
@@ -391,5 +392,49 @@ function IsGenerated() {
   else
     trace "File:[${FILE}] is generated because it has @generated marker"
     return 0
+  fi
+}
+################################################################################
+#### Function RunAdditionalInstalls ############################################
+function RunAdditionalInstalls() {
+  ##################################
+  # Run installs for Psalm and PHP #
+  ##################################
+  if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ "${#FILE_ARRAY_PHP_PSALM[@]}" -ne 0 ]; then
+    # found PHP files and were validating it, need to composer install
+    info "Found PHP files to validate, and [VALIDATE_PHP_PSALM] set to true, need to run composer install"
+    info "looking for composer.json in the users repository..."
+    mapfile -t COMPOSER_FILE_ARRAY < <(find / -name composer.json 2>&1)
+    debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
+    ############################################
+    # Check if we found the file in the system #
+    ############################################
+    if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
+      for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
+        PATH=$(dirname "${LINE}" 2>&1)
+        info "Found [composer.json] at:[${LINE}]"
+        COMPOSER_CMD=$(
+          cd "${PATH}" || exit 1
+          composer install 2>&1
+        )
+
+        ##############
+        # Error code #
+        ##############
+        ERROR_CODE=$?
+
+        ##############################
+        # Check the shell for errors #
+        ##############################
+        if [ "${ERROR_CODE}" -ne 0 ]; then
+          # Error
+          error "ERROR! Failed to run composer install at location:[${PATH}]"
+          fatal "ERROR:[${COMPOSER_CMD}]"
+        else
+          # Success
+          info "Successfully ran:[composer install] for PHP validation"
+        fi
+      done
+    fi
   fi
 }

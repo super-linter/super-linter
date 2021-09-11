@@ -336,8 +336,8 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     git git-lfs \
     glibc-${GLIBC_VERSION}.apk \
     gnupg \
-    php7 php7-phar php7-json php7-mbstring php-xmlwriter \
-    php7-tokenizer php7-ctype php7-curl php7-dom php7-simplexml \
+    php7 php7-curl php7-ctype php7-dom php7-iconv php7-json php7-mbstring \
+    php7-openssl php7-phar php7-simplexml php7-tokenizer php-xmlwriter \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget -q --tries=5 -O /tmp/libz.tar.xz https://www.archlinux.org/packages/core/x86_64/zlib/download \
     && mkdir /tmp/libz \
@@ -372,6 +372,11 @@ COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
 COPY --from=clang-format-build /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
+
+####################################################
+# Install Composer after all Libs have been copied #
+####################################################
+RUN sh -c 'curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer'
 
 ########################################
 # Add node packages to path and dotnet #

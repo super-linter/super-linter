@@ -1,10 +1,10 @@
 ---
-name: 'Super-Linter'
+name: 'Super-Linter slim'
 author: 'GitHub'
 description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/github/super-linter:v4.7.3'
+  image: 'docker://ghcr.io/github/super-linter:slim-v4'
 branding:
   icon: 'check-square'
   color: 'white'
