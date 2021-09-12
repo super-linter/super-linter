@@ -1,0 +1,17 @@
+@media (max-width: 850px) {
+.at-chart table.google-visualization-table-table>tbody>tr {
+width: calc(100% / 3 - 16px);
+}
+}
+
+@media (max-width: 675px) {
+.at-chart table.google-visualization-table-table>tbody>tr {
+width: calc(100% / 2 - 16px);
+}
+}
+
+@media (max-width: 350px) {
+.at-chart table.google-visualization-table-table>tbody>tr {
+width: calc(100% - 16px);
+}
+}
