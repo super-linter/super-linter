@@ -30,8 +30,8 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
-    if: ${{ github.event_name }} == 'push' ||
-        ${{ github.event.pull_request.head.repo.full_name }} != ${{ github.repository }}
+    if: ${{ github.event_name == 'push' ||
+            github.event.pull_request.head.repo.full_name != github.repository }}
     ##################
     # Load all steps #
     ##################
