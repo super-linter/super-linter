@@ -1067,10 +1067,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:6f53d54044c5d1718c7858f45286beeffb220c794fe5f602a5c20bf0caf8ec07"
+                "sha256:152b791eef62955d8cdd6132b7a1af9b3d3b35cbf371d9cfb6926cd6c4ff4f00"
             ],
             "index": "pypi",
-            "version": "==6.7.0"
+            "version": "==6.8.0"
         },
         "sqlfluff": {
             "hashes": [
