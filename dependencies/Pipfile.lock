@@ -1074,11 +1074,11 @@
         },
         "sqlfluff": {
             "hashes": [
-                "sha256:923ac29b3c11857be73271c2c43f1306506752e9f6be0497ac26069d898f74c4",
-                "sha256:d265f334e1290d24aba5be88e880c016419f226eefda93fcdf361521fffcd089"
+                "sha256:5fe37965af4fee38ab0d38cbb42c6be134a7462b27b3ce3eb5ee2fbb261b05ef",
+                "sha256:a44a406495522d8dc8b3550f96b9fa570316e23512faa3f9e95bfe3a4a810558"
             ],
             "index": "pypi",
-            "version": "==0.6.4"
+            "version": "==0.6.5"
         },
         "stopit": {
             "hashes": [
