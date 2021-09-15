@@ -113,6 +113,7 @@ jobs:
       - name: Edit an action.yml file for test local build
         run: |
           sed -i "s/super-linter:.*/super-linter:${GITHUB_SHA}'/g" action.yml
+          sed -i "s/23andme/github/g" action.yml
 
       ######################
       # Gather information #
