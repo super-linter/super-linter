@@ -104,7 +104,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | _Language_                       | _Linter_                                            |
 | -------------------------------- | ----------------------------------------------------|
 | _(All files)_                    | [gitleaks](https://github.com/zricethezav/gitleaks) |
-| _(Dependancy files)              | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh)                                                                         |
+| _(Dependency files)_             | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh)                                                                         |
 | **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)    |
 | **Python3**                      | [bandit](https://github.com/PyCQA/bandit)           |
 

@@ -1,0 +1,2 @@
+# Requirements files referring to other requirements are ignored for now.
+-r subdir/production.txt

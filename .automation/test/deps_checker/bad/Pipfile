@@ -1,0 +1,9 @@
+[dev-packages]
+flake8 = "*"
+pytest = "<5.4.0"
+
+[packages]
+requests = "==2.22.0"
+
+[requires]
+python_version = "3.7"
