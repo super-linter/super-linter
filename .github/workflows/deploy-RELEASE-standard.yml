@@ -67,7 +67,7 @@ jobs:
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.5.1
+        uses: docker/setup-buildx-action@v1.6.0
 
       ###############################
       # Login to DockerHub registry #
