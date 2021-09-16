@@ -47,7 +47,7 @@ jobs:
   marknotstale:
     runs-on: ubuntu-latest
     # do not run on schedule
-    if: "${{ github.event_name == 'issue_comment' }} && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && ${{ github.event.issue.user.type != 'Bot' }}"
+    if: "${{ github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot' }}"
     steps:
       - name: Mark issue not stale
         uses: actions/github-script@v4.1
