@@ -54,8 +54,11 @@ function LintCodebase() {
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
+      COMPLIANT_FILTER="localhost:8080/repo"
+      export COMPLIANT_FILTER
     fi
     debug "Workspace path: ${WORKSPACE_PATH}"
+    debug "COMPLIANT_FILTER: ${COMPLIANT_FILTER}"
 
     ################
     # print header #
@@ -117,6 +120,26 @@ function LintCodebase() {
       #######################################
       if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
         debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
+        if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+          #############
+          # Good file #
+          #############
+          FILE_STATUS='good'
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+          ############
+          # Bad file #
+          ############
+          FILE_STATUS='bad'
+        fi
+      fi
+
+      #####################################
+      # Check if it's a dependencies file #
+      #####################################
+      if [[ ${FILE_TYPE} == *"DEPS_CHECKER"* ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to deps-checker: ${FILE_TYPE}"
         if [[ ${FILE} == *"good"* ]]; then
           debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
           #############

@@ -1,0 +1,10 @@
+---
+Resources:
+  IAMUser:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - somegroupname
+      LoginProfile:
+        Password: '{{resolve:ssm-secure:user-password:2}}'
+        PasswordResetRequired: True
