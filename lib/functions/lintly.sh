@@ -23,6 +23,7 @@ LINTLY_SUPPORT_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTLY_SUPPORT_ARRAY['CLOUDFORMATION_CFN_NAG']="cfn-nag"
 LINTLY_SUPPORT_ARRAY['GITLEAKS']="gitleaks"
 LINTLY_SUPPORT_ARRAY['DEPS_CHECKER']='deps-checker'
+LINTLY_SUPPORT_ARRAY['SEMGREP']='semgrep'
 export LINTLY_SUPPORT_ARRAY # Workaround SC2034
 
 ########################## FUNCTION CALLS BELOW ################################
@@ -33,6 +34,7 @@ function AddLinterOptsForLintly() {
   [[ ! "${LINTER_OPTS[PYTHON_BANDIT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_BANDIT]+=" --format=json --silent"
   [[ ! "${LINTER_OPTS[PYTHON_PYLINT]}" =~ "json" ]] && LINTER_OPTS[PYTHON_PYLINT]+=" --output-format=json"
   [[ ! "${LINTER_OPTS[DOCKERFILE_HADOLINT]}" =~ "json" ]] && LINTER_OPTS[DOCKERFILE_HADOLINT]+=" --format json"
+  [[ ! "${LINTER_OPTS[SEMGREP]}" =~ "json" ]] && LINTER_OPTS[SEMGREP]+=" --json"
   [[ ! "${LINTER_OPTS[TERRAFORM_TERRASCAN]}" =~ "json" ]] && LINTER_OPTS[TERRAFORM_TERRASCAN]+=" -o json"
   [[ ! "${LINTER_OPTS[CLOUDFORMATION_CFN_NAG]}" =~ "json" ]] && LINTER_OPTS[CLOUDFORMATION_CFN_NAG]+=" --output-format=json"
 }

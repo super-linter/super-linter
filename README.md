@@ -102,8 +102,9 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 ### 23andMe Custom Linters
 | _Language_                       | _Linter_                                            |
 | -------------------------------- | ----------------------------------------------------|
-| _(All files)_                    | [gitleaks](https://github.com/zricethezav/gitleaks) |
-| _(Dependency files)_             | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh)                                                                         |
+| _(All files)_                    | [gitleaks](https://github.com/zricethezav/gitleaks) / [semgrep](https://github.com/returntocorp/semgrep)                                                        |
+| _(Dependancy files)              | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh)                                                                         |
+|
 | **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)    |
 | **Python3**                      | [bandit](https://github.com/PyCQA/bandit)           |
 
@@ -378,6 +379,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_RUST_2015**             | `true`                          | Flag to enable or disable the linting process of the Rust language. (edition: 2015)                                                                                                                                  |
 | **VALIDATE_RUST_2018**             | `true`                          | Flag to enable or disable the linting process of Rust language. (edition: 2018)                                                                                                                                      |
 | **VALIDATE_RUST_CLIPPY**           | `true`                          | Flag to enable or disable the clippy linting process of Rust language.                                                                                                                                               |
+| **VALIDATE_SEMGREP**           | `true`                          | Flag to enable or disable the linting process of potentially all files and languages.                          |
 | **VALIDATE_SHELL_SHFMT**           | `true`                          | Flag to enable or disable the linting process of Shell scripts. (Utilizing: shfmt)                                                                                                                                   |
 | **VALIDATE_SNAKEMAKE_LINT**        | `true`                          | Flag to enable or disable the linting process of Snakefiles. (Utilizing: snakemake --lint)                                                                                                                           |
 | **VALIDATE_STATES**                | `true`                          | Flag to enable or disable the linting process for AWS States Language.                                                                                                                                               |
@@ -421,7 +423,7 @@ The following is a list of supported language packs.
 
 | **Language pack**            | **Included Tools**                                                                                                |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DEPS_CHECKER`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`TERRAFORM_TERRASCAN` |
+| **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DEPS_CHECKER`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`SEMGREP`<br />`TERRAFORM_TERRASCAN` |
 | **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                           |
 
 ### Template rules files
