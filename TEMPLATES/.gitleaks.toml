@@ -1,0 +1,7 @@
+[[rules]]
+  description = "entropy and regex example"
+  regex = '''secret(.{0,20})['|"]([0-9a-zA-Z-._{}$\/\+=]{20,120})['|"]'''
+  [[rules.Entropies]]
+    Min = "4.5"
+    Max = "4.7"
+    Group = "2"

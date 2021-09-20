@@ -1,6 +1,6 @@
-# Secret Test Cases
+# GitLeaks Test Cases
 
-This folder holds the test cases for **secret**.
+This folder holds the test cases for **GitLeaks**.
 
 ## Additional Docs
 

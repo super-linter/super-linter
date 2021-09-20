@@ -307,7 +307,13 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
-    && find /usr/ -type f -name '*.md' -exec rm {} +
+    && find /usr/ -type f -name '*.md' -exec rm {} + \
+####################
+# Install GitLeaks #
+####################
+    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
+    && mv /root/go/bin/gitleaks /usr/bin
+
 
 ################################################################################
 # Build the clang-format binary ################################################
