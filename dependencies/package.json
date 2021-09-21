@@ -1,7 +1,7 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@coffeelint/cli": "^5.0.2",
+    "@coffeelint/cli": "^5.0.3",
     "@stoplight/spectral": "^5.9.2",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
