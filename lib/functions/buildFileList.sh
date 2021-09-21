@@ -455,6 +455,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_JAVA+=("${FILE}")
+      FILE_ARRAY_GOOGLE_JAVA_FORMAT+=("${FILE}")
 
     ############################
     # Get the JavaScript files #
