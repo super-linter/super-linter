@@ -1128,14 +1128,6 @@
             "markers": "python_version >= '3.5'",
             "version": "==4.0.0"
         },
-        "snakefmt": {
-            "hashes": [
-                "sha256:6dc37e36091dfacac7b9682576422fdc4ed75b099a19165933fd2317927a0669",
-                "sha256:906739b3084f7040d7272ee778441046c64818763c93dfc1238722cc14175fb6"
-            ],
-            "index": "pypi",
-            "version": "==0.4.2"
-        },
         "snakemake": {
             "hashes": [
                 "sha256:6f53d54044c5d1718c7858f45286beeffb220c794fe5f602a5c20bf0caf8ec07"
