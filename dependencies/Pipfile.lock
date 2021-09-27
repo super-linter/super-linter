@@ -354,7 +354,7 @@
                 "sha256:0aa34983401d42f6f69a9c9be0fa5fe6f0cb9fa8ada4cca3a0145d6d8dd9bf74",
                 "sha256:9d0296e25ca21b2235e70a0001acda498f52896b3453ea44d04cf53ceeb5ef72"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.2'",
+            "markers": "python_full_version >= '3.6.2' and python_full_version < '4.0.0'",
             "version": "==6.4.1"
         },
         "docutils": {
@@ -995,7 +995,7 @@
                 "sha256:016fa105f34b69c434e7f908bb5bd7fefa9616efdb218a2917117683a6394ce5",
                 "sha256:44bb3f9553d00b3c8938abf89828df870322b9ba43caf3b12bb7758debdc6dec"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4'",
+            "markers": "python_version >= '3.6' and python_full_version < '4.0.0'",
             "version": "==10.11.0"
         },
         "ruamel.yaml": {
@@ -1177,11 +1177,11 @@
         },
         "types-requests": {
             "hashes": [
-                "sha256:a5a305b43ea57bf64d6731f89816946a405b591eff6de28d4c0fd58422cee779",
-                "sha256:e21541c0f55c066c491a639309159556dd8c5833e49fcde929c4c47bdb0002ee"
+                "sha256:4ec8b71da73e5344adb9bee725a74ec8598e7286f9bcb17500d627f259fe4fb9",
+                "sha256:543ba8b3b23e38ac028da1d163aecbbc27d3cc8f654ae64339da539a191a2b1c"
             ],
             "index": "pypi",
-            "version": "==2.25.6"
+            "version": "==2.25.9"
         },
         "typing-extensions": {
             "hashes": [
@@ -1197,7 +1197,7 @@
                 "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece",
                 "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_full_version < '4.0.0'",
             "version": "==1.26.7"
         },
         "wcmatch": {
