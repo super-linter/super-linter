@@ -173,11 +173,11 @@
         },
         "cfn-lint": {
             "hashes": [
-                "sha256:845b09aa5954f62f0a9d91f49ab44b6f08c17418b26f3f9812349dd55386c13c",
-                "sha256:cab1d292668bcb1dd3f7e9b87965d4059d32a038dc5833b823cf6e25820b8181"
+                "sha256:82a2cc7d6fa3bbdc303bf1eb87f92ba6b3c552d8aef31918b47b69648ce262d3",
+                "sha256:f1502fd39b0fcc7bf3a646ee8599329441da73f46db44f2d87dafd9cc7ccb6be"
             ],
             "index": "pypi",
-            "version": "==0.54.1"
+            "version": "==0.54.2"
         },
         "chardet": {
             "hashes": [
@@ -1054,7 +1054,7 @@
                 "sha256:71d14489da58b60ce12fc3ecb823facc59a8b23cd1b58edb97175640350d3a62",
                 "sha256:75abf758717a92a8f53aa96953f0c245c8cedf8e1e4184903db3659b419d4c17"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==5.2.1"
         },
         "smmap": {
@@ -1082,11 +1082,11 @@
         },
         "sqlfluff": {
             "hashes": [
-                "sha256:5fe37965af4fee38ab0d38cbb42c6be134a7462b27b3ce3eb5ee2fbb261b05ef",
-                "sha256:a44a406495522d8dc8b3550f96b9fa570316e23512faa3f9e95bfe3a4a810558"
+                "sha256:c35c7c425b614093c8fdde006419f647db28aa3b39ac946419be07dacd1ac48e",
+                "sha256:cbd53bae00ea677185cff77d51337b47eb4c747ef462883efe1325fe58d9bb07"
             ],
             "index": "pypi",
-            "version": "==0.6.5"
+            "version": "==0.6.6"
         },
         "stopit": {
             "hashes": [
