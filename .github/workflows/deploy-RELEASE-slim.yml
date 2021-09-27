@@ -31,10 +31,10 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: ${{ github.actor }} == 'admiralawkbar' || ${{ github.actor }} == 'jwiebalk' ||
-        ${{ github.actor }} == 'IAmHughes' || ${{ github.actor }} == 'nemchik' ||
-        ${{ github.actor }} == 'Hanse00' || ${{ github.actor }} == 'github-actions' ||
-        ${{ github.actor }} == 'GaboFDC' || ${{ github.actor }} == 'ferrarimarco'
+    if: ${{ github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
+            github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
+            github.actor == 'Hanse00' || github.actor == 'github-actions' ||
+            github.actor == 'GaboFDC' || github.actor == 'ferrarimarco' }}
 
     ##################
     # Load all steps #
@@ -67,7 +67,7 @@ jobs:
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.5.1
+        uses: docker/setup-buildx-action@v1.6.0
 
       ###############################
       # Login to DockerHub registry #

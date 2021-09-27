@@ -92,7 +92,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their code base 
 | **Rust**                         | [Rustfmt](https://github.com/rust-lang/rustfmt) / [Clippy](https://github.com/rust-lang/rust-clippy)                                                                          |
 | **Shell**                        | [Shellcheck](https://github.com/koalaman/shellcheck) / [executable bit check] / [shfmt](https://github.com/mvdan/sh)                                                          |
 | **Snakemake**                    | [snakefmt](https://github.com/snakemake/snakefmt/) / [snakemake --lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)         |
-| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint) / [slqfluff](https://github.com/sqlfluff/sqlfluff)                                                                        |
+| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint) / [sqlfluff](https://github.com/sqlfluff/sqlfluff)                                                                        |
 | **Tekton**                       | [tekton-lint](https://github.com/IBM/tekton-lint)                                                                                                                             |
 | **Terraform**                    | [tflint](https://github.com/terraform-linters/tflint) / [terrascan](https://github.com/accurics/terrascan)                                                                    |
 | **Terragrunt**                   | [terragrunt](https://github.com/gruntwork-io/terragrunt)                                                                                                                      |
@@ -247,7 +247,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: docker://ghcr.io/github/super-linter:slim-v4
+  uses: github/super-linter/slim@v4
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -305,6 +305,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **PYTHON_MYPY_CONFIG_FILE**        | `.mypy.ini`                     | Filename for [mypy configuration](https://mypy.readthedocs.io/en/stable/config_file.html) (ex: `.mypi.ini`, `setup.config`)                                                                                          |
 | **PYTHON_PYLINT_CONFIG_FILE**      | `.python-lint`                  | Filename for [pylint configuration](https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)                                                  |
 | **RUBY_CONFIG_FILE**               | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
+| **SUPPRESS_FILE_TYPE_WARN**        | `false`                         | If set to `true`, will hide warning messages about files without their proper extensions. Default is `false`                                                                                                         |
 | **SUPPRESS_POSSUM**                | `false`                         | If set to `true`, will hide the ASCII possum at top of log output. Default is `false`                                                                                                                                |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE** | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
