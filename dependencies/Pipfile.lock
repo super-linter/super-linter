@@ -354,7 +354,7 @@
                 "sha256:0aa34983401d42f6f69a9c9be0fa5fe6f0cb9fa8ada4cca3a0145d6d8dd9bf74",
                 "sha256:9d0296e25ca21b2235e70a0001acda498f52896b3453ea44d04cf53ceeb5ef72"
             ],
-            "markers": "python_full_version >= '3.6.2' and python_full_version < '4.0.0'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.2'",
             "version": "==6.4.1"
         },
         "docutils": {
@@ -995,7 +995,7 @@
                 "sha256:016fa105f34b69c434e7f908bb5bd7fefa9616efdb218a2917117683a6394ce5",
                 "sha256:44bb3f9553d00b3c8938abf89828df870322b9ba43caf3b12bb7758debdc6dec"
             ],
-            "markers": "python_version >= '3.6' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.6' and python_version < '4.0'",
             "version": "==10.11.0"
         },
         "ruamel.yaml": {
@@ -1054,7 +1054,7 @@
                 "sha256:71d14489da58b60ce12fc3ecb823facc59a8b23cd1b58edb97175640350d3a62",
                 "sha256:75abf758717a92a8f53aa96953f0c245c8cedf8e1e4184903db3659b419d4c17"
             ],
-            "markers": "python_version >= '3.6' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.6' and python_version < '4.0'",
             "version": "==5.2.1"
         },
         "smmap": {
@@ -1075,10 +1075,10 @@
         },
         "snakemake": {
             "hashes": [
-                "sha256:152b791eef62955d8cdd6132b7a1af9b3d3b35cbf371d9cfb6926cd6c4ff4f00"
+                "sha256:3f1dd331d8162ebde78e41290f6a51204caa4ffe77b619b4847809b9dc8c3cd0"
             ],
             "index": "pypi",
-            "version": "==6.8.0"
+            "version": "==6.8.1"
         },
         "sqlfluff": {
             "hashes": [
@@ -1197,7 +1197,7 @@
                 "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece",
                 "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
             "version": "==1.26.7"
         },
         "wcmatch": {
