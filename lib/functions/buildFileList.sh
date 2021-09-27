@@ -698,7 +698,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_SNAKEMAKE_LINT+=("${FILE}")
-      FILE_ARRAY_SNAKEMAKE_SNAKEFMT+=("${FILE}")
 
     #####################
     # Get the SQL files #
