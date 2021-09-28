@@ -75,17 +75,6 @@ function LintCodebase() {
     info "----------------------------------------------"
     info "----------------------------------------------"
 
-    ###############################################
-    # Try installing the package if language is R #
-    ###############################################
-    if [ "${FILE_TYPE}" = "R" ]; then
-      info ""
-      info "Trying to install the R package inside ${WORKSPACE_PATH}"
-      R CMD build ${WORKSPACE_PATH}
-      BUILD_PKG=$(echo *.tar.gz)
-      R CMD INSTALL ${BUILD_PKG}
-    fi
-
     ##################
     # Lint the files #
     ##################
