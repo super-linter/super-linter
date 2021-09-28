@@ -7,10 +7,10 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.09.15-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.09.25-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
-FROM yoheimuta/protolint:v0.34.1 as protolint
+FROM yoheimuta/protolint:v0.35.1 as protolint
 FROM golangci/golangci-lint:v1.42.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
@@ -307,7 +307,13 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
-    && find /usr/ -type f -name '*.md' -exec rm {} +
+    && find /usr/ -type f -name '*.md' -exec rm {} + \
+####################
+# Install GitLeaks #
+####################
+    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
+    && mv /root/go/bin/gitleaks /usr/bin
+
 
 ################################################################################
 # Build the clang-format binary ################################################
