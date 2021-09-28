@@ -98,6 +98,7 @@ control "super-linter-installed-commands" do
     { linter_name: "clang-format"},
     { linter_name: "cfn-lint"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
+    { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
     { linter_name: "chktex"},
     { linter_name: "clippy", linter_command: "clippy", version_command: "cargo-clippy --version"},
     { linter_name: "clj-kondo"},
