@@ -81,9 +81,7 @@ BuildLinterVersions() {
         GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
       elif [[ ${LINTER} == "terrascan" ]]; then
         GET_VERSION_CMD="$("${LINTER}" version 2>&1)"
-      elif [[ ${LINTER} == "checkstyle" ]]; then
-        GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
-      elif [[ ${LINTER} == "google-java-format" ]]; then
+      elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
         GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
       elif [[ ${LINTER} == "clippy" ]]; then
         GET_VERSION_CMD="$(cargo-clippy --version 2>&1)"

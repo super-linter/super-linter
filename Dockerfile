@@ -69,7 +69,7 @@ RUN apk add --no-cache \
     make \
     musl-dev \
     npm nodejs-current \
-    openjdk8-jre \
+    openjdk11-jre \
     openssl-dev \
     perl perl-dev \
     py3-setuptools python3-dev \
