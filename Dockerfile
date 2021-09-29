@@ -21,6 +21,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
+FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 
 ##################
 # Get base image #
@@ -241,6 +242,11 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
+########################
+# Install clang-format #
+########################
+COPY --from=clang-format /usr/bin/clang-format /usr/bin/
+
 #################
 # Install Litnr #
 #################
@@ -321,45 +327,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
 ####################
     && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
     && mv /root/go/bin/gitleaks /usr/bin
-
-
-################################################################################
-# Build the clang-format binary ################################################
-################################################################################
-FROM alpine:3.14.2 as clang-format-build
-
-######################
-# Build dependencies #
-######################
-RUN apk add --no-cache \
-    build-base \
-    clang \
-    cmake \
-    git \
-    ninja \
-    python3
-
-#############################################################
-# Pass `--build-arg LLVM_TAG=master` for latest llvm commit #
-#############################################################
-ARG LLVM_TAG
-ENV LLVM_TAG llvmorg-12.0.1
-
-######################
-# Download and setup #
-######################
-WORKDIR /tmp
-RUN git clone --branch ${LLVM_TAG} --depth 1 https://github.com/llvm/llvm-project.git
-WORKDIR /tmp/llvm-project
-
-#########
-# Build #
-#########
-WORKDIR /tmp/llvm-project/llvm/build
-RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
-    -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ .. \
-    && ninja clang-format
 
 ################################################################################
 # Grab small clean image #######################################################
@@ -449,7 +416,6 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
-COPY --from=clang-format-build /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
 
 ####################################################
 # Install Composer after all Libs have been copied #
