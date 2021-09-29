@@ -21,7 +21,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
-FROM ghcr.io/lukaspersonal/clang-format:1.0.0 as clang-format
+FROM ghcr.io/awkbar-devops/clang-format:1.0.2 as clang-format
 
 ##################
 # Get base image #
