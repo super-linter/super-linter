@@ -318,8 +318,6 @@ function BuildFileList() {
     FILE_ARRAY_JSCPD+=("${FILE}")
     # GitLeaks also runs an all files
     FILE_ARRAY_GITLEAKS+=("${FILE}")
-    # textlint also runs an all files
-    FILE_ARRAY_TEXTLINT+=("${FILE}")
 
     #######################
     # Get the shell files #
@@ -580,6 +578,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
+      FILE_ARRAY_TEXTLINT+=("${FILE}")
 
     ######################
     # Get the PHP files #
