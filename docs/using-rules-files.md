@@ -11,7 +11,7 @@ Below is an example of how to configure the ``env`` section of Super-Linter's ``
 ``` yaml
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           LINTER_RULES_PATH: /
