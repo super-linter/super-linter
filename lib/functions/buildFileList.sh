@@ -578,7 +578,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
-      FILE_ARRAY_TEXTLINT+=("${FILE}")
 
     ######################
     # Get the PHP files #
