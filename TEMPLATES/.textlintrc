@@ -1,5 +1,0 @@
-filters: {}
-rules:
-  no-dead-link:
-    ignoreRedirects: true
-    severity: warning
