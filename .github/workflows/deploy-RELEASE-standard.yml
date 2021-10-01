@@ -10,9 +10,9 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+##########################################
+# Start the job upon a published release #
+##########################################
 on:
   # Start when a release is published
   release:
