@@ -2,7 +2,7 @@
 
 This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
-<!-- textlint-disable -->
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/51071879604e4f319859d4daf91c68f5)](https://app.codacy.com/gh/github/super-linter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=github/super-linter&amp;utm_campaign=Badge_Grade)
 
 **The end goal of this tool:**
@@ -502,4 +502,3 @@ If you would like to help contribute to this **GitHub** Action, please see [CONT
 ### License
 
 - [MIT License](https://github.com/github/super-linter/blob/master/LICENSE)
-<!-- textlint-enable -->

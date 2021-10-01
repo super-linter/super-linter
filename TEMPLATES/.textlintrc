@@ -1,6 +1,4 @@
-{
-  "filters": {},
-  "rules": {
-    "no-dead-link": true
-  }
-}
+filters: {}
+rules:
+  no-dead-link:
+    ignoreRedirects: true
