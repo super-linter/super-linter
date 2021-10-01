@@ -10,13 +10,12 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+#####################################
+# Start the job on all push to main #
+#####################################
 on:
   push:
     branches:
-      - 'master'
       - 'main'
 
 ###############

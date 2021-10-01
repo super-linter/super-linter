@@ -10,15 +10,15 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+#####################################
+# Start the job on all push to main #
+#####################################
 #############################
 # Start the job on all push #
 #############################
 on:
   push:
-    branches-ignore: [master]
+    branches-ignore: [main]
 
 ###############
 # Set the Job #
