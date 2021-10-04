@@ -59,6 +59,7 @@ RUN apk add --no-cache \
     git git-lfs\
     go \
     gnupg \
+    go \
     icu-libs \
     jpeg-dev \
     jq \
