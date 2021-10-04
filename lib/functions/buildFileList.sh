@@ -320,6 +320,8 @@ function BuildFileList() {
     FILE_ARRAY_GITLEAKS+=("${FILE}")
     # deps-checker should also check all the files
     FILE_ARRAY_DEPS_CHECKER+=("${FILE}") # Deps-checker will filter for appropriate files
+    # semgrep should also check all the files
+    FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #######################
     # Get the shell files #
