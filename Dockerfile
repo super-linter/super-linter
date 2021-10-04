@@ -56,6 +56,7 @@ RUN apk add --no-cache \
     file \
     gcc \
     g++ \
+    go \
     git git-lfs\
     gnupg \
     icu-libs \
