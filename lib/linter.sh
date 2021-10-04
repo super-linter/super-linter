@@ -65,7 +65,7 @@ source /action/lib/functions/worker.sh # Source the function script(s)
 # GLOBALS #
 ###########
 # GitHub API root url
-if [ ! -z "$GITHUB_CUSTOM_API_URL" ]; then
+if [ -n "$GITHUB_CUSTOM_API_URL" ]; then
   GITHUB_API_URL="${GITHUB_CUSTOM_API_URL}"
 elif [ -z "$GITHUB_API_URL" ]; then
   GITHUB_API_URL="https://api.github.com"
