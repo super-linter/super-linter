@@ -74,10 +74,10 @@ fi
 GITHUB_API_URL="${GITHUB_API_URL%/}"
 
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"           # Linter rules directory
-VERSION_FILE='/action/lib/functions/linterVersions.txt'             # File to store linter versions
-export VERSION_FILE                                                 # Workaround SC2034
+DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
+VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
+export VERSION_FILE                                       # Workaround SC2034
 
 ###############
 # Rules files #
