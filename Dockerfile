@@ -15,10 +15,11 @@ FROM golangci/golangci-lint:v1.42.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
 FROM alpine/terragrunt:1.0.7 as terragrunt
-FROM mvdan/shfmt:v3.3.1 as shfmt
+FROM mvdan/shfmt:v3.4.0 as shfmt
 FROM accurics/terrascan:1.10.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
+FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
@@ -56,7 +57,6 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     git git-lfs\
-    go \
     gnupg \
     icu-libs \
     jpeg-dev \
@@ -247,6 +247,11 @@ COPY --from=shfmt /bin/shfmt /usr/bin/
 ########################
 COPY --from=clang-format /usr/bin/clang-format /usr/bin/
 
+####################
+# Install GitLeaks #
+####################
+COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
+
 #################
 # Install Litnr #
 #################
@@ -321,12 +326,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
-    && find /usr/ -type f -name '*.md' -exec rm {} + \
-####################
-# Install GitLeaks #
-####################
-    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
-    && mv /root/go/bin/gitleaks /usr/bin
+    && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
 # Grab small clean image #######################################################

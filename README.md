@@ -302,9 +302,9 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **MARKDOWN_CONFIG_FILE**           | `.markdown-lint.yml`            | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                           |
 | **MARKDOWN_CUSTOM_RULE_GLOBS**     | `.markdown-lint/rules,rules/**` | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md). |
 | **PHP_CONFIG_FILE**                | `php.ini`                       | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                               |
-| **PYTHON_BLACK_CONFIG_FILE**       | `.python-black`                 | Filename for [black configuration](https://github.com/psf/black/blob/master/docs/compatible_configs.md) (ex: `.isort.cfg`, `pyproject.toml`)                                                                         |
+| **PYTHON_BLACK_CONFIG_FILE**       | `.python-black`                 | Filename for [black configuration](https://github.com/psf/black/blob/main/docs/guides/using_black_with_other_tools.md#black-compatible-configurations) (ex: `.isort.cfg`, `pyproject.toml`)                                                                         |
 | **PYTHON_FLAKE8_CONFIG_FILE**      | `.flake8`                       | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                                                           |
-| **PYTHON_ISORT_CONFIG_FILE**       | `.isort.cfg`                    | Filename for [isort configuration](https://pycqa.github.io/isort/docs/configuration/config_files/) (ex: `.isort.cfg`, `pyproject.toml`)                                                                              |
+| **PYTHON_ISORT_CONFIG_FILE**       | `.isort.cfg`                    | Filename for [isort configuration](https://pycqa.github.io/isort/docs/configuration/config_files.html) (ex: `.isort.cfg`, `pyproject.toml`)                                                                              |
 | **PYTHON_MYPY_CONFIG_FILE**        | `.mypy.ini`                     | Filename for [mypy configuration](https://mypy.readthedocs.io/en/stable/config_file.html) (ex: `.mypi.ini`, `setup.config`)                                                                                          |
 | **PYTHON_PYLINT_CONFIG_FILE**      | `.python-lint`                  | Filename for [pylint configuration](https://pylint.pycqa.org/en/latest/user_guide/run.html?highlight=rcfile#command-line-options) (ex: `.python-lint`, `.pylintrc`)                                                  |
 | **RUBY_CONFIG_FILE**               | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
@@ -397,7 +397,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 You can use the **GitHub** **Super-Linter** _with_ or _without_ your own personal rules sets. This allows for greater flexibility for each individual codebase. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 
 - Copy **any** or **all** template rules files from `TEMPLATES/` into the `.github/linters/` directory of your repository, and modify them to suit your needs.
-  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/master/TEMPLATES) will be used as defaults should any be omitted.
+  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/main/TEMPLATES) will be used as defaults should any be omitted.
 
 ### Using your own rules files
 
@@ -405,7 +405,7 @@ If your repository contains your own rules files that live outside of a `.github
 
 ### Disabling rules
 
-If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
+If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/main/docs/disabling-linters.md)
 
 ## Filter linted files
 
@@ -445,7 +445,7 @@ The **Docker** container that is built from this repository is located at [githu
 
 ### Local (troubleshooting/debugging/enhancements)
 
-If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md)
+If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/main/docs/run-linter-locally.md)
 
 Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
 
@@ -494,10 +494,10 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 
-If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/main/.github/CONTRIBUTING.md)
 
 ---
 
 ### License
 
-- [MIT License](https://github.com/github/super-linter/blob/master/LICENSE)
+- [MIT License](https://github.com/github/super-linter/blob/main/LICENSE)
