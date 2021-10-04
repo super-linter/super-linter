@@ -33,7 +33,7 @@
     "prettyjson": "^1.2.1",
     "pug": "^3.0.1",
     "sql-lint": "0.0.19",
-    "standard": "^16.0.3",
+    "standard": "^16.0.4",
     "stylelint": "^13.13.1",
     "stylelint-config-sass-guidelines": "^8.0.0",
     "stylelint-config-standard": "^22.0.0",
