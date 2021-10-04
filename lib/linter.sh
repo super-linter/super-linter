@@ -64,10 +64,16 @@ source /action/lib/functions/worker.sh # Source the function script(s)
 ###########
 # GLOBALS #
 ###########
+# GitHub API root url
+if [ ! -z "$GITHUB_CUSTOM_API_URL" ]; then
+  GITHUB_API_URL=$GITHUB_CUSTOM_API_URL
+elif [ -z "$GITHUB_API_URL" ]; then
+  GITHUB_API_URL="https://api.github.com"
+fi
+
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"           # Linter rules directory
-GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.github.com"}" # GitHub API root url
 VERSION_FILE='/action/lib/functions/linterVersions.txt'             # File to store linter versions
 export VERSION_FILE                                                 # Workaround SC2034
 
