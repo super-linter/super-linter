@@ -447,7 +447,7 @@ function RunAdditionalInstalls() {
     #########################
     # Run the build command #
     #########################
-    R CMD build "${WORKSPACE_PATH}" 2>&1
+    BUILD_CMD=$(R CMD build "${WORKSPACE_PATH}" 2>&1)
 
     ##############
     # Error code #
@@ -460,13 +460,14 @@ function RunAdditionalInstalls() {
     if [ "${ERROR_CODE}" -ne 0 ]; then
       # Error
       warn "ERROR! Failed to run:[R CMD build] at location:[${WORKSPACE_PATH}]"
+      warn "BUILD_CMD:[${BUILD_CMD}]"
     else
       # Get the build package
-      BUILD_PKG=$(echo *.tar.gz)
+      BUILD_PKG=$(cd "${WORKSPACE_PATH}" || exit 0; echo *.tar.gz 2>&1)
       ##############################
       # Install the build packages #
       ##############################
-      R CMD INSTALL "${BUILD_PKG}" 2>&1
+      INSTALL_CMD=$(cd "${WORKSPACE_PATH}" || exit 0; R CMD INSTALL "${BUILD_PKG}" 2>&1)
 
       ##############
       # Error code #
@@ -479,6 +480,7 @@ function RunAdditionalInstalls() {
       if [ "${ERROR_CODE}" -ne 0 ]; then
         # Error
         warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
+        warn "INSTALL_CMD:[${INSTALL_CMD}]"
       fi
     fi
   fi
