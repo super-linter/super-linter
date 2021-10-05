@@ -463,11 +463,17 @@ function RunAdditionalInstalls() {
       warn "BUILD_CMD:[${BUILD_CMD}]"
     else
       # Get the build package
-      BUILD_PKG=$(cd "${WORKSPACE_PATH}" || exit 0; echo *.tar.gz 2>&1)
+      BUILD_PKG=$(
+        cd "${WORKSPACE_PATH}" || exit 0
+        echo *.tar.gz 2>&1
+      )
       ##############################
       # Install the build packages #
       ##############################
-      INSTALL_CMD=$(cd "${WORKSPACE_PATH}" || exit 0; R CMD INSTALL "${BUILD_PKG}" 2>&1)
+      INSTALL_CMD=$(
+        cd "${WORKSPACE_PATH}" || exit 0
+        R CMD INSTALL "${BUILD_PKG}" 2>&1
+       )
 
       ##############
       # Error code #
