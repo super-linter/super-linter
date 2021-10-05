@@ -10,7 +10,7 @@
 ################################################################################
 #### Function LintCodebase #####################################################
 function LintCodebase() {
-  # Call comes thorugh as:
+  # Call comes through as:
   # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   ####################
   # Pull in the vars #
