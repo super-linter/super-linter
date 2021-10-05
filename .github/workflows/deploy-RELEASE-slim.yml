@@ -10,9 +10,9 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+###########################################
+# Start the job upon publishing a release #
+###########################################
 on:
   # Start when a release is published
   release:
@@ -167,7 +167,7 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const create = await github.issues.create({
+            const create = await github.api.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy release to production",
@@ -186,7 +186,7 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addAssignees({
+            github.apiissues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",

@@ -405,7 +405,7 @@ function RunAdditionalInstalls() {
     info "Found PHP files to validate, and [VALIDATE_PHP_PSALM] set to true, need to run composer install"
     info "looking for composer.json in the users repository..."
     mapfile -t COMPOSER_FILE_ARRAY < <(find / -name composer.json 2>&1)
-    debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
+    debug "COMPOSER_FILE_ARRAY contents:[${COMPOSER_FILE_ARRAY[*]}]"
     ############################################
     # Check if we found the file in the system #
     ############################################
@@ -415,7 +415,7 @@ function RunAdditionalInstalls() {
         info "Found [composer.json] at:[${LINE}]"
         COMPOSER_CMD=$(
           cd "${PATH}" || exit 1
-          composer install 2>&1
+          composer install --no-progress -q 2>&1
         )
 
         ##############
