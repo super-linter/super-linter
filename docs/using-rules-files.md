@@ -11,7 +11,7 @@ Below is an example of how to configure the ``env`` section of Super-Linter's ``
 ``` yaml
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           LINTER_RULES_PATH: /
@@ -25,6 +25,6 @@ The above example tells Super-Linter:
 
 a) Your rules files are located in your repository's root directory using the ``LINTER_RULES_PATH: /`` ENV VAR.
 
-b) Your eslint and stylelint rules files are named ``.stylelintrc.json`` and ``.eslintrc.json`` using the ``CSS_FILE_NAME: .styelintrc.json`` and ``JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json`` ENV VARS.
+b) Your ESLint and stylelint rules files are named ``.stylelintrc.json`` and ``.eslintrc.json`` using the ``CSS_FILE_NAME: .styelintrc.json`` and ``JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json`` ENV VARS.
 
 c) To use ``stylelint`` and ``eslint`` to lint all CSS and JavaScript code using the ``VALIDATE_CSS: true`` and ``VALIDATE_JAVASCRIPT_ES: true`` ENV VARS.

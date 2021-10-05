@@ -14,13 +14,15 @@ FROM yoheimuta/protolint:v0.35.1 as protolint
 FROM golangci/golangci-lint:v1.42.1 as golangci-lint
 FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
-FROM alpine/terragrunt:1.0.7 as terragrunt
-FROM mvdan/shfmt:v3.3.1 as shfmt
+FROM alpine/terragrunt:1.0.8 as terragrunt
+FROM mvdan/shfmt:v3.4.0 as shfmt
 FROM accurics/terrascan:1.10.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
+FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
+FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 
 ##################
 # Get base image #
@@ -55,8 +57,8 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     git git-lfs\
-    go \
     gnupg \
+    go \
     icu-libs \
     jpeg-dev \
     jq \
@@ -69,7 +71,7 @@ RUN apk add --no-cache \
     make \
     musl-dev \
     npm nodejs-current \
-    openjdk8-jre \
+    openjdk11-jre \
     openssl-dev \
     perl perl-dev \
     py3-setuptools python3-dev \
@@ -241,6 +243,16 @@ COPY --from=kubeval /kubeval /usr/bin/
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
+########################
+# Install clang-format #
+########################
+COPY --from=clang-format /usr/bin/clang-format /usr/bin/
+
+####################
+# Install GitLeaks #
+####################
+COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
+
 #################
 # Install Litnr #
 #################
@@ -287,6 +299,14 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     | cut -d '"' -f 4) \
     && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
     --output /usr/bin/checkstyle \
+##############################
+# Install google-java-format #
+##############################
+    && GOOGLE_JAVA_FORMAT_VERSION=$(curl -s https://github.com/google/google-java-format/releases/latest \
+    | cut -d '"' -f 2 | cut -d '/' -f 8 | sed -e 's/v//g') \
+    && curl --retry 5 --retry-delay 5 -sSL \
+    "https://github.com/google/google-java-format/releases/download/v$GOOGLE_JAVA_FORMAT_VERSION/google-java-format-$GOOGLE_JAVA_FORMAT_VERSION-all-deps.jar" \
+    --output /usr/bin/google-java-format \
 #################################
 # Install luacheck and luarocks #
 #################################
@@ -307,51 +327,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
-    && find /usr/ -type f -name '*.md' -exec rm {} + \
-####################
-# Install GitLeaks #
-####################
-    && GO111MODULE=on go get github.com/zricethezav/gitleaks/v7 \
-    && mv /root/go/bin/gitleaks /usr/bin
-
-
-################################################################################
-# Build the clang-format binary ################################################
-################################################################################
-FROM alpine:3.14.2 as clang-format-build
-
-######################
-# Build dependencies #
-######################
-RUN apk add --no-cache \
-    build-base \
-    clang \
-    cmake \
-    git \
-    ninja \
-    python3
-
-#############################################################
-# Pass `--build-arg LLVM_TAG=master` for latest llvm commit #
-#############################################################
-ARG LLVM_TAG
-ENV LLVM_TAG llvmorg-12.0.1
-
-######################
-# Download and setup #
-######################
-WORKDIR /tmp
-RUN git clone --branch ${LLVM_TAG} --depth 1 https://github.com/llvm/llvm-project.git
-WORKDIR /tmp/llvm-project
-
-#########
-# Build #
-#########
-WORKDIR /tmp/llvm-project/llvm/build
-RUN cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=ON \
-    -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ .. \
-    && ninja clang-format
+    && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
 # Grab small clean image #######################################################
@@ -441,7 +417,6 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
-COPY --from=clang-format-build /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin/clang-format
 
 ####################################################
 # Install Composer after all Libs have been copied #

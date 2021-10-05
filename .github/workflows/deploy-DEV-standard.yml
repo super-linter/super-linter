@@ -10,15 +10,15 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+#####################################
+# Start the job on all push to main #
+#####################################
 #############################
 # Start the job on all push #
 #############################
 on:
   push:
-    branches-ignore: [master]
+    branches-ignore: [main]
 
 ###############
 # Set the Job #
@@ -134,6 +134,7 @@ jobs:
           ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
 
       ###############################################################
       # Fix file and dir ownership.                                 #

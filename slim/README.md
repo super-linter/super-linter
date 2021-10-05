@@ -29,5 +29,5 @@ Example usage:
   uses: github/super-linter/slim@v4
   env:
     VALIDATE_ALL_CODEBASE: false
-    DEFAULT_BRANCH: master
+    DEFAULT_BRANCH: main
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
