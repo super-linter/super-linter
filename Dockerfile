@@ -16,7 +16,7 @@ FROM koalaman/shellcheck:v0.7.2 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
 FROM alpine/terragrunt:1.0.8 as terragrunt
 FROM mvdan/shfmt:v3.4.0 as shfmt
-FROM accurics/terrascan:1.10.0 as terrascan
+FROM accurics/terrascan:1.11.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM zricethezav/gitleaks:v7.6.1 as gitleaks
