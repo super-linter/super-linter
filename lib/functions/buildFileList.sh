@@ -688,6 +688,15 @@ function BuildFileList() {
       FILE_ARRAY_RUST_CLIPPY+=("${FILE}")
 
     ###########################
+    # Get the SCALA files #
+    ###########################
+    elif [ "${FILE_TYPE}" == "scala" ] || [ "${BASE_FILE}" == "??????" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_SCALAFMT+=("${FILE}")
+
+    ###########################
     # Get the SNAKEMAKE files #
     ###########################
     elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "snakefile" ]; then
