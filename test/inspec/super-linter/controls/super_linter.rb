@@ -272,6 +272,8 @@ control "super-linter-installed-pip-packages" do
     "snakefmt",
     "snakemake",
     "sqlfluff",
+    "sqlfluff",
+    "sqlfluff-templater-dbt",
     "typing_extensions",
     "yamllint",
     "yq"
