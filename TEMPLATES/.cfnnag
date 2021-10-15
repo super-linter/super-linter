@@ -1,0 +1,4 @@
+---
+RulesToSuppress:
+- id: W28
+  reason: (Resource found with an explicit name) Warning is noisy and low impact.

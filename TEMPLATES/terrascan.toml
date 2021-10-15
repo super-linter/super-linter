@@ -10,5 +10,6 @@
 
     # skip rules (list of rules to skip)
     skip-rules = [
-        "AC_AWS_0320"
+        "AC_AWS_0320",
+        "AC_AWS_0336"
     ]
