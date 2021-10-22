@@ -1209,6 +1209,7 @@
             ],
             "index": "pypi",
             "version": "==0.66.0"
+        },
         "sarif-om": {
             "hashes": [
                 "sha256:539ef47a662329b1c8502388ad92457425e95dc0aaaf995fe46f4984c4771911",

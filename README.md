@@ -104,13 +104,12 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                           |
 
 ### 23andMe Custom Linters
-| _Language_                       | _Linter_                                            |
-| -------------------------------- | ----------------------------------------------------|
-| _(All files)_                    | [gitleaks](https://github.com/zricethezav/gitleaks) / [semgrep](https://github.com/returntocorp/semgrep)                                                        |
-| _(Dependancy files)              | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh)                                                                         |
-|
-| **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)    |
-| **Python3**                      | [bandit](https://github.com/PyCQA/bandit)           |
+| _Language_                       | _Linter_                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| _(All files)_                    | [semgrep](https://github.com/returntocorp/semgrep)                                               |
+| _(Dependency files)_             | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh) |
+| **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)                                                 |
+| **Python3**                      | [bandit](https://github.com/PyCQA/bandit)                                                        |
 
 
 ## How to use
@@ -391,7 +390,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_RUST_2015**             | `true`                          | Flag to enable or disable the linting process of the Rust language. (edition: 2015)                                                                                                                                  |
 | **VALIDATE_RUST_2018**             | `true`                          | Flag to enable or disable the linting process of Rust language. (edition: 2018)                                                                                                                                      |
 | **VALIDATE_RUST_CLIPPY**           | `true`                          | Flag to enable or disable the clippy linting process of Rust language.                                                                                                                                               |
-| **VALIDATE_SEMGREP**           | `true`                          | Flag to enable or disable the linting process of potentially all files and languages.                          |
 | **VALIDATE_SCALAFMT_LINT**         | `true`                          | Flag to enable or disable the linting process of Scala language. (Utilizing: scalafmt --test)                                                                                                                        |
 | **VALIDATE_SHELL_SHFMT**           | `true`                          | Flag to enable or disable the linting process of Shell scripts. (Utilizing: shfmt)                                                                                                                                   |
 | **VALIDATE_SNAKEMAKE_LINT**        | `true`                          | Flag to enable or disable the linting process of Snakefiles. (Utilizing: snakemake --lint)                                                                                                                           |
@@ -418,26 +416,25 @@ As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those i
 - A single linter/language can appear in multiple linter packs. Its `VALIDATE_[LANGUAGE]` variable will be set to `true` if *any* of the language packs containing it are marked `true`, *except*...
 - If there is an explicit `VALIDATE_[LANGUAGE]` variable for that specific linter/language, the variable will override all language pack settings.
 
-| **ENV VAR**                            | **Default Value**               | **Notes**                                                                                                                                                                                                                                                 |
-| -------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **CLOUDFORMATION_CFN_NAG_CONFIG_FILE** | `.cfnnag`                       | Filename for [cfn-nag configuration](https://github.com/stelligent/cfn_nag#profiles)                                                                                                                                                                      |
-| **GITLEAKS_CONFIG_FILE**               | `none`                          | Filename for optional [gitleaks configuration](https://github.com/zricethezav/gitleaks#configuration) (ex: `simple_regex_config.toml`). Uses the [gitleaks default](https://github.com/zricethezav/gitleaks/blob/master/config/default.go) if unspecified |
-| **OUTPUT_MODE**                        | `none`                          | Additional means for outputting findings, other than writing to stdout. Supported modes: lintly                                                                                                                                                           |
-| **PYTHON_BANDIT_CONFIG_FILE**          | `.bandit`                       | Filename for [bandit configuration](https://bandit.readthedocs.io/en/latest/config.html) (ex: `.bandit`, `tox.ini`)                                                                                                                                       |
-| **RUN_CODE_QUALITY_TOOLS**             | `false`                         | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack.                                                                                                                                 |
-| **RUN_SECURITY_TOOLS**                 | `true`                          | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                                                                                                                                                 |
-| **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`                          | Flag to enable or disable the security linting process of the AWS CloudFormation language.                                                                                                                                                                |
-| **VALIDATE_DEPS_CHECKER**              | `true`                          | Flag to enable or disable the validation of pulling dependencies from approved sources.    |
-| **COMPLIANT_FILTER**                   | `none`                          | URLs to approved dependencies repository sources.                                          |
-| **VALIDATE_GITLEAKS**                  | `true`                          | Flag to enable or disable the linting process of potentially leaked secrets across all files and languages.                                                                                                                                               |
-| **VALIDATE_PYTHON_BANDIT**             | `true`                          | Flag to enable or disable the linting process of the Python language. (Utilizing: bandit)                                                                                                                                                                 |
+| **ENV VAR**                            | **Default Value** | **Notes**                                                                                                                 |
+| -------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **CLOUDFORMATION_CFN_NAG_CONFIG_FILE** | `.cfnnag`         | Filename for [cfn-nag configuration](https://github.com/stelligent/cfn_nag#profiles)                                      |
+| **OUTPUT_MODE**                        | `none`            | Additional means for outputting findings, other than writing to stdout. Supported modes: lintly.                          |
+| **PYTHON_BANDIT_CONFIG_FILE**          | `.bandit`         | Filename for [bandit configuration](https://bandit.readthedocs.io/en/latest/config.html) (ex: `.bandit`, `tox.ini`).      |
+| **RUN_CODE_QUALITY_TOOLS**             | `false`           | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack. |
+| **RUN_SECURITY_TOOLS**                 | `true`            | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                 |
+| **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`            | Flag to enable or disable the security linting process of AWS CloudFormation templates.                                   |
+| **VALIDATE_DEPS_CHECKER**              | `true`            | Flag to enable or disable the validation of pulling dependencies from approved sources.                                   |
+| **COMPLIANT_FILTER**                   | `none`            | URLs to approved dependencies repository sources.                                                                         |
+| **VALIDATE_PYTHON_BANDIT**             | `true`            | Flag to enable or disable the linting process of the Python with bandit.                                                  |
+| **VALIDATE_SEMGREP**                   | `true`            | Flag to enable or disable the using semgrep to check potentially all files of all languages.                              |
 
 The following is a list of supported language packs.
 
-| **Language pack**            | **Included Tools**                                                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Language pack**            | **Included Tools**                                                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DEPS_CHECKER`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`SEMGREP`<br />`TERRAFORM_TERRASCAN` |
-| **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                           |
+| **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                                                              |
 
 ### Template rules files
 

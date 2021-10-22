@@ -22,7 +22,6 @@ FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
-FROM zricethezav/gitleaks:v7.4.0 as gitleaks
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM scalameta/scalafmt:v2.7.5 as scalafmt
 
@@ -265,11 +264,6 @@ COPY --from=scalafmt /bin/scalafmt /usr/bin/
 #################
 COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
 RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
-
-####################
-# Install gitleaks #
-####################
-COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 
 ##################
 # Install ktlint #
