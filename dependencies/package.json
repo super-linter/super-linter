@@ -38,7 +38,7 @@
     "stylelint-config-sass-guidelines": "^8.0.0",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-scss": "^3.21.0",
-    "tekton-lint": "^0.5.2",
+    "tekton-lint": "^0.6.0",
     "textlint": "^12.0.2",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^2.1.5",
