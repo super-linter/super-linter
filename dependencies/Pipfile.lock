@@ -1090,19 +1090,19 @@
         },
         "sqlfluff": {
             "hashes": [
-                "sha256:06f997587406ba63ed07f290be6bc5bc0f461c4738ff1ab1c645a52720aa534a",
-                "sha256:2c597a2c8dbe50893dc2364ebf0338b0847cd4137ef6798c1529f23c63219f58"
+                "sha256:e43c4581ab8355abe942829a59516ea150227d8c5de1ad9d03c9c2c032535762",
+                "sha256:ee836d41c6e6da4a6476dcb1d107a30c135886842ed6ec44d94f5a3f50e4624b"
             ],
             "index": "pypi",
-            "version": "==0.7.1"
+            "version": "==0.8.0"
         },
         "sqlfluff-templater-dbt": {
             "hashes": [
-                "sha256:acff252da595a85083a538b8a8f551a205e9496536880b2dfcad963c862a7389",
-                "sha256:b81ff363c3b42f8f50cb53f645d32e2e580fa7c711b827dd0f61f5768c3c9afd"
+                "sha256:14dfe5f0f7095bb1bb0dde3f2464bbad6841568928892a379d70c6022bd92777",
+                "sha256:f36eef92e52383704e51782061c97df6f8c8d3b177798f43aeda5713a997f6f4"
             ],
             "index": "pypi",
-            "version": "==0.7.1"
+            "version": "==0.8.0"
         },
         "stopit": {
             "hashes": [
