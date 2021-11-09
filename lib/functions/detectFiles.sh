@@ -473,7 +473,7 @@ function RunAdditionalInstalls() {
       INSTALL_CMD=$(
         cd "${WORKSPACE_PATH}" || exit 0
         R CMD INSTALL "${BUILD_PKG}" 2>&1
-       )
+      )
 
       ##############
       # Error code #
