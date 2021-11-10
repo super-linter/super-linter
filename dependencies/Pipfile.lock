@@ -27,11 +27,11 @@
                 "core"
             ],
             "hashes": [
-                "sha256:79020356d93f503d2cc869a7270e3c04316d510e33b6264edc08c7d0db0e8061",
-                "sha256:9423ba4bfc81bf86c34705d8008b5f074202139ff18d1d0722e5906f7d59f4ea"
+                "sha256:92a6d3eda27691d1c8c8787bc6cc3fab76fe070ccd369b4a6fc187d93eab867f",
+                "sha256:d64aca59c8d896541d379b9205b2126b851088aab0a2c2cab19ff74b184cdf1c"
             ],
             "index": "pypi",
-            "version": "==5.2.0"
+            "version": "==5.2.1"
         },
         "appdirs": {
             "hashes": [
