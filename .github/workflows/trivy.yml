@@ -15,7 +15,7 @@ jobs:
       # Checkout code base #
       ######################
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
 
       # ##########################
       # # Build the docker image #
