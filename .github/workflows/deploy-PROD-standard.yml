@@ -133,7 +133,7 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const create = await github.api.issues.create({
+            const create = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy to production",
@@ -152,7 +152,7 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.api.issues.addAssignees({
+            github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",
