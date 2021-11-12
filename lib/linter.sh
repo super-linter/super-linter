@@ -182,6 +182,10 @@ NATURAL_LANGUAGE_FILE_NAME="${NATURAL_LANGUAGE_CONFIG_FILE:-.textlintrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-standard}"
+TYPESCRIPT_STYLE_NAME='' # Variable for the style
+TYPESCRIPT_STYLE=''      # Variable for the style
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
@@ -208,6 +212,24 @@ else
   JAVASCRIPT_STYLE='standard'
 fi
 
+#################################################
+# Parse if we are using JS standard or prettier #
+#################################################
+# Remove spaces
+TYPESCRIPT_DEFAULT_STYLE=$(echo "${TYPESCRIPT_DEFAULT_STYLE}" | tr -d ' ')
+# lowercase
+TYPESCRIPT_DEFAULT_STYLE=$(echo "${TYPESCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '[:lower:]')
+# Check and set
+if [ "${TYPESCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
+  # Set to prettier
+  TYPESCRIPT_STYLE_NAME='TYPESCRIPT_PRETTIER'
+  TYPESCRIPT_STYLE='prettier'
+else
+  # Default to standard
+  TYPESCRIPT_STYLE_NAME='TYPESCRIPT_STANDARD'
+  TYPESCRIPT_STYLE='standard'
+fi
+
 ##################
 # Language array #
 ##################
@@ -222,7 +244,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
   'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RUBY' 'RUST_2015' 'RUST_2018'
   'RUST_CLIPPY' 'SCALAFMT' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT'
   'STATES' 'SQL' 'SQLFLUFF' 'TEKTON' 'TERRAFORM_TFLINT' 'TERRAFORM_TERRASCAN'
-  'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
+  'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' "${TYPESCRIPT_STYLE_NAME}" 'XML' 'YAML')
 
 ##############################
 # Linter command names array #
@@ -296,7 +318,7 @@ LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
 LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
 LINTER_NAMES_ARRAY['TSX']="eslint"
 LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY['TYPESCRIPT_STANDARD']="standard"
+LINTER_NAMES_ARRAY["${TYPESCRIPT_STYLE_NAME}"]="${TYPESCRIPT_STYLE}"
 LINTER_NAMES_ARRAY['XML']="xmllint"
 LINTER_NAMES_ARRAY['YAML']="yamllint"
 
@@ -916,6 +938,7 @@ LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terr
 LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TYPESCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
 LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES} -f parsable"
 

@@ -744,6 +744,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
+      FILE_ARRAY_TYPESCRIPT_PRETTIER+=("${FILE}")
 
     #####################
     # Get the TSX files #
