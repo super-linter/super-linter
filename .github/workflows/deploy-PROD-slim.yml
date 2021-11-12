@@ -137,7 +137,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy to production",
-              body: 'Automation has failed us!'
+              body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
             console.log('create', create)
             return create.data.number
