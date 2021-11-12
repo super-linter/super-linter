@@ -73,12 +73,20 @@ source /action/lib/functions/lintly.sh # Source the function script(s)
 ###########
 # GLOBALS #
 ###########
+# GitHub API root url
+if [ -n "$GITHUB_CUSTOM_API_URL" ]; then
+  GITHUB_API_URL="${GITHUB_CUSTOM_API_URL}"
+elif [ -z "$GITHUB_API_URL" ]; then
+  GITHUB_API_URL="https://api.github.com"
+fi
+# Remove trailing slash if present
+GITHUB_API_URL="${GITHUB_API_URL%/}"
+
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                    # Default rules files location
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}"           # Linter Path Directory
-GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.github.com"}" # GitHub API root url
-VERSION_FILE='/action/lib/functions/linterVersions.txt'             # File to store linter versions
-export VERSION_FILE                                                 # Workaround SC2034
+DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
+VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
+export VERSION_FILE                                       # Workaround SC2034
 
 ###############
 # Rules files #
@@ -104,6 +112,8 @@ DOCKERFILE_HADOLINT_FILE_NAME="${DOCKERFILE_HADOLINT_FILE_NAME:-.hadolint.yaml}"
 EDITORCONFIG_FILE_NAME="${EDITORCONFIG_FILE_NAME:-.ecrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 GITHUB_ACTIONS_FILE_NAME="${GITHUB_ACTIONS_CONFIG_FILE:-actionlint.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+GITLEAKS_FILE_NAME="${GITLEAKS_CONFIG_FILE:-.gitleaks.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 GHERKIN_FILE_NAME=".gherkin-lintrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -168,6 +178,11 @@ R_FILE_NAME=".lintr"
 RUBY_FILE_NAME="${RUBY_CONFIG_FILE:-.ruby-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SEMGREP_FILE_NAME="${SEMGREP_CONFIG_FILE:-semgrep.yml}"
+SCALAFMT_FILE_NAME="${SCALAFMT_CONFIG_FILE:-.scalafmt.conf}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+SUPPRESS_FILE_TYPE_WARN="${SUPPRESS_FILE_TYPE_WARN:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -175,11 +190,13 @@ SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-TERRAFORM_FILE_NAME="${TERRAFORM_CONFIG_FILE:-.tflint.hcl}"
+TERRAFORM_TFLINT_FILE_NAME="${TERRAFORM_TFLINT_CONFIG_FILE:-.tflint.hcl}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TERRAFORM_TERRASCAN_FILE_NAME="${TERRAFORM_TERRASCAN_CONFIG_FILE:-terrascan.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TERRAFORM_TERRASCAN_FILE_NAME="${TERRAFORM_TERRASCAN_CONFIG_FILE:-terrascan.toml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+NATURAL_LANGUAGE_FILE_NAME="${NATURAL_LANGUAGE_CONFIG_FILE:-.textlintrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -223,15 +240,15 @@ RUN_CODE_QUALITY_TOOLS="${RUN_CODE_QUALITY_TOOLS:-false}"
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
   'CLOUDFORMATION' 'CLOUDFORMATION_CFN_NAG' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS' 'DART' 'DEPS_CHECKER'
   'DOCKERFILE' 'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GITHUB_ACTIONS'
-  'GHERKIN' 'GITLEAKS' 'GO' 'GROOVY' 'HTML' 'JAVA' 'JAVASCRIPT_ES'
-  "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX' 'KUBERNETES_KUBEVAL'
-  'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS'
-  'PHP_PHPSTAN' 'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_BANDIT' 'PYTHON_BLACK'
-  'PYTHON_PYLINT' 'PYTHON_FLAKE8' 'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RUBY'
-  'RUST_2015' 'RUST_2018' 'RUST_CLIPPY' 'SEMGREP' 'SHELL_SHFMT' 'SNAKEMAKE_LINT'
-  'STATES' 'SQL' 'SQLFLUFF' 'TEKTON' 'TERRAFORM'
-  'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD'
-  'XML' 'YAML')
+  'GITLEAKS' 'GHERKIN' 'GO' 'GOOGLE_JAVA_FORMAT' 'GROOVY' 'HTML' 'JAVA'
+  'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX'
+  'KUBERNETES_KUBEVAL' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN' 'NATURAL_LANGUAGE'
+  'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN' 'PHP_PSALM'
+  'POWERSHELL' 'PROTOBUF' 'PYTHON_BANDIT' 'PYTHON_BLACK' 'PYTHON_PYLINT' 'PYTHON_FLAKE8'
+  'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RUBY' 'RUST_2015' 'RUST_2018'
+  'RUST_CLIPPY' 'SCALAFMT' 'SEMGREP' 'SHELL_SHFMT' 'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT'
+  'STATES' 'SQL' 'SQLFLUFF' 'TEKTON' 'TERRAFORM_TFLINT' 'TERRAFORM_TERRASCAN'
+  'TERRAGRUNT' 'TSX' 'TYPESCRIPT_ES' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ##############################
 # Linter command names array #
@@ -256,9 +273,11 @@ LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
 LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
 LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
+LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
 LINTER_NAMES_ARRAY['GHERKIN']="gherkin-lint"
 LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
 LINTER_NAMES_ARRAY['GO']="golangci-lint"
+LINTER_NAMES_ARRAY['GOOGLE_JAVA_FORMAT']="google-java-format"
 LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
 LINTER_NAMES_ARRAY['HTML']="htmlhint"
 LINTER_NAMES_ARRAY['JAVA']="checkstyle"
@@ -273,6 +292,7 @@ LINTER_NAMES_ARRAY['KUBERNETES_KUBEVAL']="kubeval"
 LINTER_NAMES_ARRAY['LATEX']="chktex"
 LINTER_NAMES_ARRAY['LUA']="lua"
 LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
+LINTER_NAMES_ARRAY['NATURAL_LANGUAGE']="textlint"
 LINTER_NAMES_ARRAY['OPENAPI']="spectral"
 LINTER_NAMES_ARRAY['PERL']="perl"
 LINTER_NAMES_ARRAY['PHP_BUILTIN']="php"
@@ -294,13 +314,14 @@ LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
 LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
 LINTER_NAMES_ARRAY['RUST_CLIPPY']="clippy"
 LINTER_NAMES_ARRAY['SEMGREP']="semgrep"
+LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
 LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
 LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['STATES']="asl-validator"
 LINTER_NAMES_ARRAY['SQL']="sql-lint"
 LINTER_NAMES_ARRAY['SQLFLUFF']="sqlfluff"
 LINTER_NAMES_ARRAY['TEKTON']="tekton-lint"
-LINTER_NAMES_ARRAY['TERRAFORM']="tflint"
+LINTER_NAMES_ARRAY['TERRAFORM_TFLINT']="tflint"
 LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
 LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
 LINTER_NAMES_ARRAY['TSX']="eslint"
@@ -881,10 +902,12 @@ LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_
 LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
 LINTER_COMMANDS_ARRAY['GITHUB_ACTIONS']="actionlint -config-file ${GITHUB_ACTIONS_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks -q -c ${GITLEAKS_LINTER_RULES} --no-git -p"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
 # Need --no-git to scan an individual file rather than scanning commit histories.
 LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks --config-path=${GITLEAKS_LINTER_RULES} --verbose --redact --no-git ${LINTER_OPTS[GITLEAKS]}"
 LINTER_COMMANDS_ARRAY['GO']="golangci-lint run -c ${GO_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['GOOGLE_JAVA_FORMAT']="java -jar /usr/bin/google-java-format"
 LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c ${GROOVY_LINTER_RULES} --failon warning"
 LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
@@ -914,7 +937,8 @@ if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
     fi
   done
 fi
-LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['NATURAL_LANGUAGE']="textlint -c ${NATURAL_LANGUAGE_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES} -D"
 LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
 LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l -c ${PHP_BUILTIN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
@@ -927,7 +951,7 @@ LINTER_COMMANDS_ARRAY['PYTHON_BLACK']="black --config ${PYTHON_BLACK_LINTER_RULE
 LINTER_COMMANDS_ARRAY['PYTHON_PYLINT']="pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES} ${LINTER_OPTS[PYTHON_PYLINT]}"
 LINTER_COMMANDS_ARRAY['PYTHON_FLAKE8']="flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PYTHON_ISORT']="isort --check --diff --sp ${PYTHON_ISORT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PYTHON_MYPY']="mypy --config-file ${PYTHON_MYPY_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['PYTHON_MYPY']="mypy --config-file ${PYTHON_MYPY_LINTER_RULES} --install-types --non-interactive"
 LINTER_COMMANDS_ARRAY['R']="lintr"
 LINTER_COMMANDS_ARRAY['RAKU']="raku"
 LINTER_COMMANDS_ARRAY['RUBY']="rubocop -c ${RUBY_LINTER_RULES} --force-exclusion"
@@ -935,13 +959,14 @@ LINTER_COMMANDS_ARRAY['RUST_2015']="rustfmt --check --edition 2015"
 LINTER_COMMANDS_ARRAY['RUST_2018']="rustfmt --check --edition 2018"
 LINTER_COMMANDS_ARRAY['RUST_CLIPPY']="clippy"
 LINTER_COMMANDS_ARRAY['SEMGREP']="semgrep --config=p/r2c-security-audit --config=${SEMGREP_LINTER_RULES} --json"
+LINTER_COMMANDS_ARRAY['SCALAFMT']="scalafmt --config ${SCALAFMT_LINTER_RULES} --test"
 LINTER_COMMANDS_ARRAY['SHELL_SHFMT']="shfmt -d"
 LINTER_COMMANDS_ARRAY['SNAKEMAKE_LINT']="snakemake --lint -s"
 LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
 LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['SQLFLUFF']="sqlfluff lint"
 LINTER_COMMANDS_ARRAY['TEKTON']="tekton-lint"
-LINTER_COMMANDS_ARRAY['TERRAFORM']="tflint -c ${TERRAFORM_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TERRAFORM_TFLINT']="tflint -c ${TERRAFORM_TFLINT_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -c ${TERRAFORM_TERRASCAN_LINTER_RULES} ${LINTER_OPTS[TERRAFORM_TERRASCAN]} -f"
 LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-log-level error --terragrunt-hclfmt-file"
 LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
@@ -966,6 +991,11 @@ CheckSSLCert
 # Build the list of files for each linter #
 ###########################################
 BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
+
+#####################################
+# Run additional Installs as needed #
+#####################################
+RunAdditionalInstalls
 
 ###############
 # Run linters #

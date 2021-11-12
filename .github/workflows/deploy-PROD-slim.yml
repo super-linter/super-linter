@@ -10,13 +10,12 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+#####################################
+# Start the job on all push to main #
+#####################################
 on:
   push:
     branches:
-      - 'master'
       - 'main'
 
 ###############
@@ -29,7 +28,7 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
     # Only run this on the main repo
-    if: ${{ github.repository }} == 'github/super-linter'
+    if: ${{ github.repository == 'github/super-linter' }}
     ##################
     # Load all steps #
     ##################
@@ -38,7 +37,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
 
       ########################
       # Get the current date #
@@ -50,7 +49,7 @@ jobs:
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.5.1
+        uses: docker/setup-buildx-action@v1.6.0
 
       ###############################
       # Login to DockerHub registry #
@@ -75,7 +74,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.1
         id: deployment
         with:
           step: start
@@ -97,7 +96,7 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - SLIM
-        uses: docker/build-push-action@v2.6.1
+        uses: docker/build-push-action@v2.7.0
         with:
           context: .
           file: ./Dockerfile-slim
@@ -128,13 +127,13 @@ jobs:
       #######################################################
       - name: Create GitHub Issue for failure
         if: failure()
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v5
         id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const create = await github.issues.create({
+            const create = await github.api.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy to production",
@@ -147,13 +146,13 @@ jobs:
       # Assign admins on failure #
       ############################
       - name: Assign Admins on failure
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v5
         if: failure()
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addAssignees({
+            github.api.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",
@@ -172,7 +171,7 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.1
         if: always()
         with:
           step: finish

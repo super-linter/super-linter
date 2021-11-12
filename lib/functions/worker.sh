@@ -10,7 +10,7 @@
 ################################################################################
 #### Function LintCodebase #####################################################
 function LintCodebase() {
-  # Call comes thorugh as:
+  # Call comes through as:
   # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   ####################
   # Pull in the vars #
@@ -94,6 +94,15 @@ function LintCodebase() {
       ############################
       # Example: markdown_good_1.md -> good
       FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
+      # Example: clan_format_good_1.md -> good
+      SECONDARY_STATUS=$(echo "${FILE_NAME}" | cut -f3 -d'_')
+
+      ####################################
+      # Catch edge cases of double names #
+      ####################################
+      if [ "${SECONDARY_STATUS}" == 'good' ] || [ "${SECONDARY_STATUS}" == 'bad' ]; then
+        FILE_STATUS="${SECONDARY_STATUS}"
+      fi
 
       ###################
       # Check if docker #

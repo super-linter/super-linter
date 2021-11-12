@@ -15,7 +15,7 @@ This script uses **GitHub Actions** so that when a push to the repository is com
 - Build the **Docker** container for **Super-Linter** using that source code
 - Upload the container to **DockerHub**
 
-When the script is triggered on master, it will push with the tag:**latest** which is used by all scripting for general availability.
+When the script is triggered on the main branch, it will push with the tag:**latest** which is used by all scripting for general availability.
 When the script is triggered in a branch, it will push with the tag:**NameOfBranch** which can be used for:
 
 - _testing_
