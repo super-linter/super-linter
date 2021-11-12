@@ -33,6 +33,8 @@ FROM python:3.10.0-alpine as base_image
 ################################
 # Set ARG values used in Build #
 ################################
+# actionlint
+ARG ACTIONLINT_VERSION='1.6.7'
 # PowerShell & PSScriptAnalyzer
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
@@ -145,7 +147,7 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 #######################
 # Installs ActionLint #
 #######################
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash \
     && chmod +x download-actionlint.bash \
     && ./download-actionlint.bash \
     && rm download-actionlint.bash \
