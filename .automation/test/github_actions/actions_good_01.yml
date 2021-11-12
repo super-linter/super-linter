@@ -6,6 +6,8 @@ on:
 jobs:
   github_actions_good:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v2
       - if: ${{ github.actor == 'dependabot[bot]' }}
