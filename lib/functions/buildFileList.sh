@@ -316,7 +316,7 @@ function BuildFileList() {
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
     # jscpd also runs an all files
     FILE_ARRAY_JSCPD+=("${FILE}")
-    # gitleaks should also check all files
+    # GitLeaks also runs an all files
     FILE_ARRAY_GITLEAKS+=("${FILE}")
     # deps-checker should also check all the files
     FILE_ARRAY_DEPS_CHECKER+=("${FILE}") # Deps-checker will filter for appropriate files
@@ -400,7 +400,7 @@ function BuildFileList() {
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
-      [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" == *"dockerfile"* ]]; then
+      [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" =~ .*(contain|dock)erfile.* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -461,6 +461,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_JAVA+=("${FILE}")
+      FILE_ARRAY_GOOGLE_JAVA_FORMAT+=("${FILE}")
 
     ############################
     # Get the JavaScript files #
@@ -583,6 +584,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
+      FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     ######################
     # Get the PHP files #
@@ -693,6 +695,15 @@ function BuildFileList() {
       FILE_ARRAY_RUST_CLIPPY+=("${FILE}")
 
     ###########################
+    # Get the SCALA files #
+    ###########################
+    elif [ "${FILE_TYPE}" == "scala" ] || [ "${BASE_FILE}" == "??????" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_SCALAFMT+=("${FILE}")
+
+    ###########################
     # Get the SNAKEMAKE files #
     ###########################
     elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "snakefile" ]; then
@@ -718,7 +729,7 @@ function BuildFileList() {
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_TERRAFORM+=("${FILE}")
+      FILE_ARRAY_TERRAFORM_TFLINT+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
 
     ############################

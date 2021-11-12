@@ -15,7 +15,7 @@
 #############################
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
     branches-ignore: []
 
@@ -36,7 +36,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
@@ -51,3 +51,4 @@ jobs:
           ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main

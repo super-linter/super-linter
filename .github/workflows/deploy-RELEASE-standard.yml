@@ -10,9 +10,9 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+##########################################
+# Start the job upon a published release #
+##########################################
 on:
   # Start when a release is published
   release:
@@ -31,10 +31,10 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: ${{ github.actor }} == 'admiralawkbar' || ${{ github.actor }} == 'jwiebalk' ||
-        ${{ github.actor }} == 'IAmHughes' || ${{ github.actor }} == 'nemchik' ||
-        ${{ github.actor }} == 'Hanse00' || ${{ github.actor }} == 'github-actions' ||
-        ${{ github.actor }} == 'GaboFDC' || ${{ github.actor }} == 'ferrarimarco'
+    if: ${{ github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
+            github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
+            github.actor == 'Hanse00' || github.actor == 'github-actions' ||
+            github.actor == 'GaboFDC' || github.actor == 'ferrarimarco' }}
 
     ##################
     # Load all steps #
@@ -44,13 +44,13 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
 
       #########################
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.1
         id: deployment
         with:
           step: start
@@ -67,7 +67,7 @@ jobs:
       # Setup Docker build X #
       ########################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.5.1
+        uses: docker/setup-buildx-action@v1.6.0
 
       ###############################
       # Login to DockerHub registry #
@@ -88,18 +88,15 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
           registry: ghcr.io
 
-      #######################################
-      # Update actions.yml with new version #
-      #######################################
-      - name: Update actions.yml with release version and create PR
-        if: success()
-        run: ./.automation/update-actions-version.sh
-        # Note: script creates variables:
-        # PR_ID PR_REF RELEASE_VERSION COMMIT_SHA
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          RELEASE_NAME: ${{ github.event.release.name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ###########################
+      # Get the current release #
+      ###########################
+      - name: Get current Release number
+        # shellcheck disable=SC2062
+        run: |
+          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
+          | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
+          >> "${GITHUB_ENV}"
 
       ################
       # Docker cache #
@@ -116,7 +113,7 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - Standard
-        uses: docker/build-push-action@v2.6.1
+        uses: docker/build-push-action@v2.7.0
         with:
           context: .
           file: ./Dockerfile
@@ -146,33 +143,11 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      #####################################################
-      # Create the Required status check for Stack Linter #
-      #####################################################
-      - name: Create Stack Linter Status
-        if: success()
-        run: |
-          curl -X POST --url "https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.COMMIT_SHA }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --data '{	"state": "success",	"context": "Stack linter" }'
-
-      #################################
-      # Close the opened Pull Request #
-      #################################
-      - name: Close PR
-        if: success()
-        run: |
-          curl -X PUT --url "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_ID }}/merge" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --data '{ "merge_method": "squash" }'
-
       #########################
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.1
         if: always()
         with:
           step: finish
@@ -186,13 +161,13 @@ jobs:
       #######################################################
       - name: Create GitHub Issue for failure
         if: failure()
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v5
         id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const create = await github.issues.create({
+            const create = await github.api.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy release to production",
@@ -205,13 +180,13 @@ jobs:
       # Assign admins on failure #
       ############################
       - name: Assign Admins on failure
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v5
         if: failure()
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addAssignees({
+            github.api.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",

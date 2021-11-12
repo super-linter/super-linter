@@ -35,12 +35,12 @@ You can add as many **Additional** flags as needed, documented in [README.md](..
 
 ## Troubleshooting
 
-### Run container and gain access to the command line
+### Run container and gain access to the command-line
 
 If you need to run the container locally and gain access to its command line, you can run the following command:
 
 - `docker run -it --entrypoint /bin/bash github/super-linter`
-- This will drop you in the command line of the docker container for any testing or troubleshooting that may be needed.
+- This will drop you in the command-line of the docker container for any testing or troubleshooting that may be needed.
 
 ### Found issues
 
