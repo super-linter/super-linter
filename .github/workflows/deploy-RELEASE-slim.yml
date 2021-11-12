@@ -171,7 +171,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy release to production",
-              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}"
+              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
             console.log('create', create)
             return create.data.number
