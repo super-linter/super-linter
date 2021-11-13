@@ -36,6 +36,8 @@ jobs:
             github.actor == 'Hanse00' || github.actor == 'github-actions' ||
             github.actor == 'GaboFDC' || github.actor == 'ferrarimarco' }}
 
+    timeout-minutes: 60
+
     ##################
     # Load all steps #
     ##################

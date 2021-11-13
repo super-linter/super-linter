@@ -10,6 +10,7 @@ jobs:
   scan-container:
     name: Build
     runs-on: ubuntu-18.04
+    timeout-minutes: 60
     steps:
       ######################
       # Checkout code base #
