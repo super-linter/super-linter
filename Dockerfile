@@ -328,6 +328,8 @@ RUN apk add --no-cache rakudo zef \
     && cd .. \
     && rm -r luarocks-3.3.1-super-linter/ \
     && luarocks install luacheck \
+    && luarocks install argparse \
+    && luarocks install luafilesystem \
     && mv /etc/R/* /usr/lib/R/etc/ \
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
