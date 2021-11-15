@@ -28,6 +28,7 @@ on:
 jobs:
   actions-tagger:
     runs-on: windows-latest
+    timeout-minutes: 60
     steps:
       #############################
       # Check out the latest code #
