@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run this on the main repo
     if: ${{ github.repository == 'github/super-linter' }}
+    timeout-minutes: 60
     ##################
     # Load all steps #
     ##################
