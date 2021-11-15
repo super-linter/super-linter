@@ -23,7 +23,7 @@ FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM scalameta/scalafmt:v2.7.5 as scalafmt
+FROM scalameta/scalafmt:v3.1.0 as scalafmt
 
 ##################
 # Get base image #
