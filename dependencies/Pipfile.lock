@@ -1394,18 +1394,10 @@
         },
         "typing-extensions": {
             "hashes": [
-                "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e",
-                "sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b"
+                "sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9"
             ],
             "index": "pypi",
-            "version": "==4.0.1"
-        },
-        "unidiff": {
-            "hashes": [
-                "sha256:90c5214e9a357ff4b2fee19d91e77706638e3e00592a732d9405ea4e93da981f",
-                "sha256:e1dd956a492ccc4351e24931b2f2d29c79e3be17a99dd8f14e95324321d93a88"
-            ],
-            "version": "==0.6.0"
+            "version": "==4.0.0"
         },
         "urllib3": {
             "hashes": [
