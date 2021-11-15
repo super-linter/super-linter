@@ -136,7 +136,7 @@ RUN pip3 install --no-cache-dir pipenv \
 ########################
 # Install Python Black #
 ########################
-    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.9b0/black_linux \
+    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.10b0/black_linux \
     && chmod +x /usr/local/bin/black
 ##############################
 # Installs Perl dependencies #
