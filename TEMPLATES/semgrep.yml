@@ -1,0 +1,10 @@
+#This is just an dummy rule to avoid empty file issue
+
+rules:
+- id: eqeq-is-bad
+  pattern: $X == $X
+  message: $X == $X is a useless equality check
+  languages:
+  - python
+  severity: ERROR
+
