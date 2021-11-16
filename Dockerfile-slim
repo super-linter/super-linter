@@ -70,6 +70,7 @@ RUN apk add --no-cache \
     lttng-ust-dev \
     make \
     musl-dev \
+    net-snmp-dev \
     npm nodejs-current \
     openjdk11-jre \
     openssl-dev \
