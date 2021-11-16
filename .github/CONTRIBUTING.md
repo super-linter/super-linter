@@ -1,4 +1,81 @@
 # Contributing
+Skip to content
+Your account has been flagged.
+Because of that, your profile is hidden from the public. If you believe this is a mistake, contact support to have your account status reviewed.
+github
+/
+super-linter
+Public
+Code
+Issues
+41
+Pull requests
+1
+Discussions
+Actions
+Projects
+1
+Wiki
+Security
+Insights
+Upgrade SQLFluff to 0.8.1 and add new SQLFluff DBT Templator dependency
+.github/workflows/stack-linter.yml #5435
+Workflow file
+.github/workflows/stack-linter.yml at 3cb88d5
+---
+############################
+############################
+## Preflight Stack Linter ##
+############################
+############################
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches-ignore: []
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Stack linter
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2.4.0
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Lint Code Base
+        uses: docker://ghcr.io/github/super-linter:latest
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
 
 :wave: Hi there!
 We're thrilled that you'd like to contribute to this project. Your help is essential for keeping it great.
