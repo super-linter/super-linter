@@ -30,6 +30,7 @@ FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM scalameta/scalafmt:v3.1.0 as scalafmt
+FROM rhysd/actionlint:1.6.8 as actionlint
 
 ##################
 # Get base image #
@@ -113,14 +114,7 @@ RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wge
 # Install Python Black #
 ########################
     && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.11b1/black_linux \
-    && chmod +x /usr/local/bin/black \
-#######################
-# Installs ActionLint #
-#######################
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
-    && chmod +x download-actionlint.bash \
-    && ./download-actionlint.bash \
-    && mv actionlint /usr/bin/actionlint
+    && chmod +x /usr/local/bin/black
 
 ######################
 # Install shellcheck #
@@ -197,6 +191,11 @@ COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 # Install scalafmt #
 ####################
 COPY --from=scalafmt /bin/scalafmt /usr/bin/
+
+######################
+# Install actionlint #
+######################
+COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
 #################
 # Install Litnr #
