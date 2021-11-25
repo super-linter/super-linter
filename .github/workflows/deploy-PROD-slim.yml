@@ -109,6 +109,7 @@ jobs:
           tags: |
             github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-latest
+          target: final_slim
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
