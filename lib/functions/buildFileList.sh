@@ -54,19 +54,19 @@ function BuildFileList() {
   # Pull in vars #
   ################
   VALIDATE_ALL_CODEBASE="${1}"
-  debug "Validate all code base: ${VALIDATE_ALL_CODEBASE}..."
+  debug "VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
 
   TEST_CASE_RUN="${2}"
-  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}..."
+  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
   ANSIBLE_DIRECTORY="${3}"
-  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
+  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
+  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
-  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}..."
+  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
-  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}..."
+  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
@@ -849,6 +849,11 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
+
+  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+    debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
+    FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
+  fi
 
   ################
   # Footer print #
