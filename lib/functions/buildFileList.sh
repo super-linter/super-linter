@@ -320,8 +320,6 @@ function BuildFileList() {
     FILE_ARRAY_GITLEAKS+=("${FILE}")
     # deps-checker should also check all the files
     FILE_ARRAY_DEPS_CHECKER+=("${FILE}") # Deps-checker will filter for appropriate files
-    # semgrep should also check all the files
-    FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #######################
     # Get the shell files #
@@ -406,6 +404,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_DOCKERFILE+=("${FILE}")
       FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
     # Get the ENV files #
@@ -433,6 +432,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_GO+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ########################
     # Get the GROOVY files #
@@ -452,6 +452,7 @@ function BuildFileList() {
       # Append the file to the array #
       ##############################p##
       FILE_ARRAY_HTML+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ######################
     # Get the Java files #
@@ -462,6 +463,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JAVA+=("${FILE}")
       FILE_ARRAY_GOOGLE_JAVA_FORMAT+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ############################
     # Get the JavaScript files #
@@ -473,6 +475,7 @@ function BuildFileList() {
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #######################
     # Get the JSONC files #
@@ -557,6 +560,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_KOTLIN+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
     # Get the LUA files #
@@ -597,6 +601,7 @@ function BuildFileList() {
       FILE_ARRAY_PHP_PHPCS+=("${FILE}")
       FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
       FILE_ARRAY_PHP_PSALM+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ######################
     # Get the PERL files #
@@ -645,6 +650,7 @@ function BuildFileList() {
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
       FILE_ARRAY_PYTHON_PYLINT+=("${FILE}")
       FILE_ARRAY_PYTHON_MYPY+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ######################
     # Get the RAKU files #
@@ -674,6 +680,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_RUBY+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ######################
     # Get the RUST files #
@@ -740,6 +747,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_TERRAGRUNT+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     ############################
     # Get the TypeScript files #
@@ -750,6 +758,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
+      FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
     # Get the TSX files #
