@@ -53,6 +53,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    ca-certificates \
     coreutils \
     curl \
     file \
