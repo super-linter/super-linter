@@ -260,7 +260,8 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 #################
 # Install Litnr #
 #################
-RUN Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
+RUN mv /etc/R/* /usr/lib/R/etc/ \
+    && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/usr/lib/R/library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ##################
@@ -328,7 +329,6 @@ RUN apk add --no-cache rakudo zef \
     && luarocks install luacheck \
     && luarocks install argparse \
     && luarocks install luafilesystem \
-    && mv /etc/R/* /usr/lib/R/etc/ \
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
