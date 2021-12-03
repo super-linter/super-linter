@@ -81,8 +81,7 @@ RUN apk add --no-cache \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     rustup \
-    zlib zlib-dev \
-    zip
+    zlib zlib-dev
 
 ##############################
 # Install rustfmt & clippy   #
