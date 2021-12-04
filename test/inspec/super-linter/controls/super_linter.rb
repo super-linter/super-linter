@@ -350,7 +350,7 @@ control "super-linter-validate-directories" do
   desc "Check that directories that Super-Linter needs are installed."
 
   dirs = [
-    "/usr/lib/R/library",
+    "/home/r-library",
     "/node_modules",
     "/action/lib",
     "/action/lib/functions",
@@ -361,7 +361,7 @@ control "super-linter-validate-directories" do
 
   # Removed linters from slim image
   SLIM_IMAGE_REMOVED_DIRS=%w(
-    /usr/lib/R/library
+    /home/r-library
   )
 
   dirs.each do |item|

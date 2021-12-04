@@ -260,9 +260,10 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 #################
 # Install Litnr #
 #################
-RUN mv /etc/R/* /usr/lib/R/etc/ \
+RUN mkdir -p /home/r-library \
+    && cp /etc/R/* /home/r-library/  \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
-    && R -e "install.packages(list.dirs('/usr/lib/R/library',recursive = FALSE), repos = NULL, type = 'source')"
+    && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ##################
 # Install ktlint #
@@ -420,7 +421,7 @@ COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /usr/lib/R/library /usr/lib/R/library
+COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
 
 ####################################################
