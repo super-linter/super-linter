@@ -261,6 +261,7 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 # Install Lintr #
 #################
 RUN mkdir -p /home/r-library \
+    && mkdir -p /home/r-library/etc \
     && cp /etc/R/* /home/r-library/etc/ \
     && cp /usr/lib/R/library/ /home/r-library/ \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
