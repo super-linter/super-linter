@@ -258,10 +258,11 @@ COPY --from=scalafmt /bin/scalafmt /usr/bin/
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
 #################
-# Install Litnr #
+# Install Lintr #
 #################
 RUN mkdir -p /home/r-library \
-    && cp /etc/R/* /home/r-library/  \
+    && cp /etc/R/* /home/r-library/etc/ \
+    && cp /usr/lib/R/library/ /home/r-library/ \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
