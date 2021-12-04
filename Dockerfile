@@ -262,7 +262,6 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 #################
 RUN mkdir -p /home/r-library \
     && mkdir -p /home/r-library/etc \
-    && cp -r /etc/R/* /home/r-library/etc/ \
     && cp -r /usr/lib/R/library/ /home/r-library/ \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
@@ -332,6 +331,7 @@ RUN apk add --no-cache rakudo zef \
     && luarocks install luacheck \
     && luarocks install argparse \
     && luarocks install luafilesystem \
+    && mv /etc/R/* /usr/lib/R/etc/ \
     && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
     && find /node_modules/ -type f -name '*.md' -exec rm {} + \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
