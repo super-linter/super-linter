@@ -677,6 +677,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
+      FILE_ARRAY_RUST_2021+=("${FILE}")
 
     #######################
     # Get the RUST crates #
