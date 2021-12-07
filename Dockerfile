@@ -15,7 +15,7 @@ FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.33.1 as tflint
 FROM alpine/terragrunt:1.0.11 as terragrunt
-FROM mvdan/shfmt:v3.4.0 as shfmt
+FROM mvdan/shfmt:v3.4.1 as shfmt
 FROM accurics/terrascan:1.12.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
@@ -23,7 +23,8 @@ FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM scalameta/scalafmt:v3.1.0 as scalafmt
+FROM scalameta/scalafmt:v3.1.2 as scalafmt
+FROM rhysd/actionlint:1.6.8 as actionlint
 
 ##################
 # Get base image #
@@ -143,14 +144,6 @@ RUN pip3 install --no-cache-dir pipenv \
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-#######################
-# Installs ActionLint #
-#######################
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
-    && chmod +x download-actionlint.bash \
-    && ./download-actionlint.bash \
-    && rm download-actionlint.bash \
-    && mv actionlint /usr/bin/actionlint \
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
@@ -259,6 +252,11 @@ COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 # Install scalafmt #
 ####################
 COPY --from=scalafmt /bin/scalafmt /usr/bin/
+
+######################
+# Install actionlint #
+######################
+COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
 #################
 # Install Litnr #
