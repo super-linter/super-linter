@@ -15,15 +15,14 @@ FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.33.1 as tflint
 FROM alpine/terragrunt:1.0.11 as terragrunt
-FROM mvdan/shfmt:v3.4.0 as shfmt
+FROM mvdan/shfmt:v3.4.1 as shfmt
 FROM accurics/terrascan:1.12.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM zricethezav/gitleaks:v7.6.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
-FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM scalameta/scalafmt:v3.1.0 as scalafmt
+FROM scalameta/scalafmt:v3.1.2 as scalafmt
 FROM rhysd/actionlint:1.6.8 as actionlint
 
 ##################
@@ -117,39 +116,39 @@ RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
     # hadolint ignore=DL3042
     && pipenv install --clear --system \
-####################
-# Run NPM Installs #
-####################
+    ####################
+    # Run NPM Installs #
+    ####################
     && npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
     && npm audit fix --audit-level=critical \
-##############################
-# Installs ruby dependencies #
-##############################
+    ##############################
+    # Installs ruby dependencies #
+    ##############################
     && bundle install \
-###################################
-# Install DotNet and Dependencies #
-###################################
+    ###################################
+    # Install DotNet and Dependencies #
+    ###################################
     && wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
     && chmod +x dotnet-install.sh \
     && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
     && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103 \
-########################
-# Install Python Black #
-########################
+    ########################
+    # Install Python Black #
+    ########################
     && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.11b1/black_linux \
     && chmod +x /usr/local/bin/black
 ##############################
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-#########################################
-# Install Powershell + PSScriptAnalyzer #
-#########################################
-# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
-# Slightly modified to always retrieve latest stable Powershell version
-# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
+    #########################################
+    # Install Powershell + PSScriptAnalyzer #
+    #########################################
+    # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
+    # Slightly modified to always retrieve latest stable Powershell version
+    # If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
     && mkdir -p ${PWSH_DIRECTORY} \
     && curl --retry 5 --retry-delay 5 -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
     | grep browser_download_url \
@@ -259,10 +258,12 @@ COPY --from=scalafmt /bin/scalafmt /usr/bin/
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
 #################
-# Install Litnr #
+# Install Lintr #
 #################
-COPY --from=lintr-lib /usr/lib/R/library/ /home/r-library
-RUN R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+RUN mkdir -p /home/r-library \
+    && cp -r /usr/lib/R/library/ /home/r-library/ \
+    && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
+    && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
 ##################
 # Install ktlint #
@@ -272,9 +273,9 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && mv "ktlint" /usr/bin/ \
     && terrascan init \
     && cd ~ && touch .chktexrc \
-####################
-# Install dart-sdk #
-####################
+    ####################
+    # Install dart-sdk #
+    ####################
     && wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
@@ -283,9 +284,9 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && chmod +x dart-sdk/bin/dart* \
     && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
     && rm -r dart-sdk/ \
-################################
-# Create and install Bash-Exec #
-################################
+    ################################
+    # Create and install Bash-Exec #
+    ################################
     && printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
     && chmod +x /usr/bin/bash-exec
 
@@ -294,26 +295,26 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 #################################################
 # Basic setup, programs and init
 RUN apk add --no-cache rakudo zef \
-######################
-# Install CheckStyle #
-######################
+    ######################
+    # Install CheckStyle #
+    ######################
     && CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
     | grep browser_download_url \
     | grep ".jar" \
     | cut -d '"' -f 4) \
     && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
     --output /usr/bin/checkstyle \
-##############################
-# Install google-java-format #
-##############################
+    ##############################
+    # Install google-java-format #
+    ##############################
     && GOOGLE_JAVA_FORMAT_VERSION=$(curl -s https://github.com/google/google-java-format/releases/latest \
     | cut -d '"' -f 2 | cut -d '/' -f 8 | sed -e 's/v//g') \
     && curl --retry 5 --retry-delay 5 -sSL \
     "https://github.com/google/google-java-format/releases/download/v$GOOGLE_JAVA_FORMAT_VERSION/google-java-format-$GOOGLE_JAVA_FORMAT_VERSION-all-deps.jar" \
     --output /usr/bin/google-java-format \
-#################################
-# Install luacheck and luarocks #
-#################################
+    #################################
+    # Install luacheck and luarocks #
+    #################################
     && wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
     && cd lua-5.3.5 \
     && make linux \
