@@ -68,6 +68,8 @@ function BuildFileList() {
 
   debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
 
+  debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -850,7 +852,7 @@ function BuildFileList() {
     debug ""
   done
 
-  if [ "${VALIDATE_ALL_CODEBASE}" == "true" ]; then
+  if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
     debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
     FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
   fi
