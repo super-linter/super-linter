@@ -80,7 +80,7 @@ title = "gitleaks config"
 
 [[rules]]
     description = "Google (GCP) Service Account"
-    regex = '''"type": "service_account"'''
+    regex = '''"type": " service_account "'''
     tags = ["key", "Google"]
 
 [[rules]]
