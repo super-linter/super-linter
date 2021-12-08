@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM cljkondo/clj-kondo:2021.10.19-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2021.12.01-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.35.2 as protolint
@@ -28,7 +28,7 @@ FROM rhysd/actionlint:1.6.8 as actionlint
 ##################
 # Get base image #
 ##################
-FROM python:3.10.0-alpine as base_image
+FROM python:3.10.1-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
