@@ -28,7 +28,7 @@ FROM rhysd/actionlint:1.6.8 as actionlint
 ##################
 # Get base image #
 ##################
-FROM python:3.10.0-alpine as base_image
+FROM python:3.10.1-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
