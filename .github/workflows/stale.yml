@@ -33,8 +33,8 @@ jobs:
         uses: actions/stale@v4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue."
-          stale-pr-message: "This pull request has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this pull request should stay open, please remove the `O: stale 🤖` label or comment on the pull request."
+          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue.\n\nIf you're a maintainer, you can stop the bot to mark this issue as stale in the future by adding the `O: backlog 🤖` label`."
+          stale-pr-message: "This pull request has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this pull request should stay open, please remove the `O: stale 🤖` label or comment on the pull request.\n\nIf you're a maintainer, you can stop the bot to mark this issue as stale in the future by adding the `O: backlog 🤖` label`."
           days-before-stale: 30
           days-before-close: 14
           stale-issue-label: "O: stale 🤖"
