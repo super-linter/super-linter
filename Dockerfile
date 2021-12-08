@@ -13,7 +13,7 @@ FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.35.2 as protolint
 FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.33.1 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.33.2.0 as tflint
 FROM alpine/terragrunt:1.0.11 as terragrunt
 FROM mvdan/shfmt:v3.4.1 as shfmt
 FROM accurics/terrascan:1.12.0 as terrascan
@@ -28,7 +28,7 @@ FROM rhysd/actionlint:1.6.8 as actionlint
 ##################
 # Get base image #
 ##################
-FROM python:3.10.0-alpine as base_image
+FROM python:3.10.1-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -52,6 +52,7 @@ ARG GLIBC_VERSION='2.31-r0'
 ####################
 RUN apk add --no-cache \
     bash \
+    ca-certificates \
     coreutils \
     curl \
     file \
@@ -339,7 +340,7 @@ RUN apk add --no-cache rakudo zef \
 ################################################################################
 # Grab small clean image #######################################################
 ################################################################################
-FROM alpine:3.14.3 as final
+FROM alpine:3.15.0 as final
 
 ############################
 # Get the build arguements #
