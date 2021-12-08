@@ -318,7 +318,7 @@ function BuildFileList() {
     FILE_ARRAY_JSCPD+=("${FILE}")
     # Need to make sure we dont check the secrets paterns
     # for secrets, as it will pop!
-    if [ "${FILE}" != ".gitleaks.toml" ]; then
+    if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
       # GitLeaks also runs an all files
       FILE_ARRAY_GITLEAKS+=("${FILE}")
     fi
