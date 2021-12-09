@@ -8,6 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM cljkondo/clj-kondo:2021.12.01-alpine as clj-kondo
+FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
 FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
 FROM yoheimuta/protolint:v0.35.2 as protolint
 FROM golangci/golangci-lint:v1.43.0 as golangci-lint
@@ -73,6 +74,7 @@ RUN apk add --no-cache \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
+    rustup \
     zlib zlib-dev
 
 ########################################
@@ -394,7 +396,6 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
-FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
 FROM final_slim as final_standard
 
 ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
@@ -420,10 +421,6 @@ COPY --from=base_image /usr/libexec/ /usr/libexec/
 # Install dotenv-linter #
 #########################
 COPY --from=dotenv-linter /dotenv-linter /usr/bin/
-
-RUN apk add --no-cache \
-    curl \
-    rustup
 
 ###################################
 # Install DotNet and Dependencies #
