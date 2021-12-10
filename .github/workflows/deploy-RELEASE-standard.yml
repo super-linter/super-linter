@@ -63,7 +63,10 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
+        run: |
+          BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          echo "Appending the build date (${BUILD_DATE}) contents to GITHUB_ENV..."
+          cat "${BUILD_DATE}" >> "${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
