@@ -312,7 +312,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **LINTER_RULES_PATH**              | `.github/linters`               | Directory for all linter configuration rules.                                                                                                                                                                        |
 | **LOG_FILE**                       | `super-linter.log`              | The filename for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                                                     |
 | **LOG_LEVEL**                      | `VERBOSE`                       | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `VERBOSE`, `DEBUG` or `TRACE`.                                                                                            |
-| **MULTI_STATUS**                   | `true`                          | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                 |
 | **MARKDOWN_CONFIG_FILE**           | `.markdown-lint.yml`            | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                           |
 | **MARKDOWN_CUSTOM_RULE_GLOBS**     | `.markdown-lint/rules,rules/**` | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md). |
 | **PHP_CONFIG_FILE**                | `php.ini`                       | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                               |
@@ -428,6 +427,12 @@ As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those i
 | **COMPLIANT_FILTER**                   | `none`            | URLs to approved dependencies repository sources.                                                                         |
 | **VALIDATE_PYTHON_BANDIT**             | `true`            | Flag to enable or disable the linting process of the Python with bandit.                                                  |
 | **VALIDATE_SEMGREP**                   | `true`            | Flag to enable or disable the using semgrep to check potentially all files of all languages.                              |
+
+The following environment variables were **removed** in 23andMe's super-linter.
+
+| **ENV VAR**                            | **Default Value** | **Notes**                                                                                                                                                        |
+| -------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MULTI_STATUS**                       | `true`            | A status API is made for each language that is linted to make visual parsing easier. Removed in 23andMe's fork as Lintly will being setting individual statuses. |
 
 The following is a list of supported language packs.
 
