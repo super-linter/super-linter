@@ -169,11 +169,8 @@ title = "gitleaks config"
     tags = ["key", "pypi"]
 
 [allowlist]
-    description = "Allowlisted files"
+    description = "Allowlisted files, and ignore #nosec lines"
     files = ['''^\.?gitleaks.toml$''',
     '''(.*?)(png|jpg|gif|doc|docx|pdf|bin|xls|pyc|zip)$''',
     '''(go.mod|go.sum)$''']
-    
-[allowlist]
-    description = "ignore #nosec lines"
     regexes = ['''#nosec''']
