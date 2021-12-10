@@ -67,8 +67,10 @@ function InvokeLintly() {
   # Lintly will comment on the PR
   lintly "${LINTLY_LOG}" --format="${LINTLY_FORMAT}" <"${LINTER_COMMAND_OUTPUT_FILE}"
 
-  debug "$?"
-  debug "^^ exit code ^^"
+  LINTLY_ERROR_CODE=$?
+  debug "${LINTLY_ERROR_CODE}"
+  debug "^^ Lintly exit code ^^"
+  return ${LINTLY_ERROR_CODE}
 }
 ################################################################################
 #### Function OutputToLintly ###################################################
