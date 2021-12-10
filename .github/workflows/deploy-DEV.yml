@@ -98,7 +98,7 @@ jobs:
           tags: |
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ github.sha }}
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}test
-          target: "${{ matrix.images.build-target }}"
+          target: "${{ matrix.images.container-build-target }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
