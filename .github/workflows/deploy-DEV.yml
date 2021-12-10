@@ -38,7 +38,7 @@ jobs:
           - container-build-target: final_slim
             container-image-id-prefix: slim-
             image-id: slim
-          - container-build-target: final
+          - container-build-target: final_standard
             container-image-id-prefix: ""
             image-id: standard
     timeout-minutes: 60
