@@ -11,9 +11,11 @@ GetLinterVersions() {
   # Print version headers #
   #########################
   debug "---------------------------------------------"
+  debug "WRITE_LINTER_VERSIONS_FILE: ${WRITE_LINTER_VERSIONS_FILE}"
+  debug "VERSION_FILE: ${VERSION_FILE}"
   debug "Linter Version Info:"
 
-  if ! [ -e "${VERSION_FILE}" ] && [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
+  if [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
     debug "Building linter version file..."
     if BuildLinterVersions "${VERSION_FILE}" "${LINTER_NAMES_ARRAY[@]}"; then
       info "Linter version file built correctly."
@@ -21,6 +23,8 @@ GetLinterVersions() {
     else
       fatal "Error while building the versions file."
     fi
+  else
+    debug "Skipping versions file build..."
   fi
 
   ################################
