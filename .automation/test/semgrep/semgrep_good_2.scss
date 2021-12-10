@@ -1,0 +1,14 @@
+// semgrep should skip this file.
+
+&-hide {
+    display: none;
+}
+
+&-title {
+    padding: $pad-h $pad-w 0;
+    color: $red;
+    font-size: $font-size;
+    &-h3 {
+        margin-bottom: $title-spacing;
+    }
+}
