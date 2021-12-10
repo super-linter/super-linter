@@ -3,3 +3,9 @@
 ## Hadolint config file ##
 ##########################
 ignored:
+    # Rule to pin versions in apt-get install
+  - DL3008
+    # Rule to delete the apt-get lists after installing something
+  - DL3009
+    # Rule to avoid cache directory with pip install --no-cache-dir <package>
+  - DL3042
