@@ -77,14 +77,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-single-buildx-{{ matrix.images.image-id }}
+          key: ${{ runner.os }}-single-buildx-${{ matrix.images.image-id }}
           restore-keys: |
             ${{ runner.os }}-single-buildx
 
       ###########################################
       # Build and Push containers to registries #
       ###########################################
-      - name: Build Docker image - {{ matrix.images.image-id }}
+      - name: Build Docker image - ${{ matrix.images.image-id }}
         uses: docker/build-push-action@v2.7.0
         with:
           context: .
@@ -96,9 +96,9 @@ jobs:
           load: true
           push: false
           tags: |
-            ghcr.io/github/super-linter:{{ matrix.images.container-image-id-prefix }}${{ github.sha }}
-            ghcr.io/github/super-linter:{{ matrix.images.container-image-id-prefix }}test
-          target: "{{ matrix.images.build-target }}"
+            ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ github.sha }}
+            ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}test
+          target: "${{ matrix.images.build-target }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -118,14 +118,14 @@ jobs:
       ########################################
       - name: Run Docker label test cases
         shell: bash
-        run: .automation/validate-docker-labels.sh "{{ matrix.images.image-id }}"
+        run: .automation/validate-docker-labels.sh "${{ matrix.images.image-id }}"
 
       ########################################
       # Edit action.yml for test local build #
       ########################################
       - name: Edit an action.yml file for test local build
         run: |
-          sed -i "s/super-linter:.*/super-linter:{{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}'/g" action.yml
+          sed -i "s/super-linter:.*/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}'/g" action.yml
 
       ######################
       # Gather information #
@@ -164,7 +164,7 @@ jobs:
       - name: Run the test suite
         shell: bash
         run: |
-          make IMAGE={{ matrix.images.image-id }} test
+          make IMAGE=${{ matrix.images.image-id }} test
 
       ##########################
       # Codacy Coverage Report #
@@ -181,7 +181,7 @@ jobs:
       #####################################
       # Run Linter against Test code base #
       #####################################
-      - name: Run Test Cases - {{ matrix.images.image-id }}
+      - name: Run Test Cases - ${{ matrix.images.image-id }}
         shell: bash
         run: |
           docker run \
@@ -191,7 +191,7 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/github/super-linter:{{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
+          "ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
 
       #########################################
       # Clean code base to run against it all #
@@ -203,7 +203,7 @@ jobs:
       ############################################
       # Run Linter against ALL cleaned code base #
       ############################################
-      - name: Run against all code base - {{ matrix.images.image-id }}
+      - name: Run against all code base - ${{ matrix.images.image-id }}
         shell: bash
         run: |
           docker run \
@@ -212,4 +212,4 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/github/super-linter:{{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
+          "ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
