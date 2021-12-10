@@ -329,6 +329,16 @@ function LintCodebase() {
       # Check for if it was supposed to pass #
       ########################################
       if [[ ${FILE_STATUS} == "good" ]]; then
+
+        #############################################################################################
+        # If Lintly was called, let Lintly set the error code instead.                              #
+        # With LINTLY_FAIL_ON=new, Lintly fails builds only if issues are found on changed *lines*. #
+        #############################################################################################
+        if OutputToLintly && SupportsLintly "${FILE_TYPE}"; then
+          InvokeLintly "${FILE_TYPE}" "${FILE}" "${LINT_OUTPUT_ONLY_FILE}"
+          ERROR_CODE=$?
+        fi
+
         ##############################
         # Check the shell for errors #
         ##############################
@@ -340,22 +350,12 @@ function LintCodebase() {
             ########
             warn "Warnings found in [${LINTER_NAME}] linter!"
             warn "${LINT_CMD}"
-
-            if OutputToLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${FILE_TYPE}" "${FILE}" "${LINT_OUTPUT_ONLY_FILE}"
-            fi
-
           else
             #########
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
             error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-
-            if OutputToLintly && SupportsLintly "${FILE_TYPE}"; then
-              InvokeLintly "${FILE_TYPE}" "${FILE}" "${LINT_OUTPUT_ONLY_FILE}"
-            fi
-
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
           fi
