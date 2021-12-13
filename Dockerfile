@@ -19,7 +19,7 @@ FROM mvdan/shfmt:v3.4.1 as shfmt
 FROM accurics/terrascan:1.12.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM zricethezav/gitleaks:v8.0.4 as gitleaks
+FROM zricethezav/gitleaks:v8.2.1 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM scalameta/scalafmt:v3.2.1 as scalafmt
