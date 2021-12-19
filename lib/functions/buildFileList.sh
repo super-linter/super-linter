@@ -54,19 +54,21 @@ function BuildFileList() {
   # Pull in vars #
   ################
   VALIDATE_ALL_CODEBASE="${1}"
-  debug "Validate all code base: ${VALIDATE_ALL_CODEBASE}..."
+  debug "VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
 
   TEST_CASE_RUN="${2}"
-  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}..."
+  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
   ANSIBLE_DIRECTORY="${3}"
-  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
+  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
+  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
-  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}..."
+  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
-  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}..."
+  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+
+  debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
@@ -316,8 +318,12 @@ function BuildFileList() {
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
     # jscpd also runs an all files
     FILE_ARRAY_JSCPD+=("${FILE}")
-    # GitLeaks also runs an all files
-    FILE_ARRAY_GITLEAKS+=("${FILE}")
+    # Need to make sure we dont check the secrets paterns
+    # for secrets, as it will pop!
+    if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
+      # GitLeaks also runs an all files
+      FILE_ARRAY_GITLEAKS+=("${FILE}")
+    fi
 
     #######################
     # Get the shell files #
@@ -395,12 +401,11 @@ function BuildFileList() {
     # Get the DOCKER files #
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
-    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
+    elif [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
       [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" =~ .*(contain|dock)erfile.* ]]; then
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_DOCKERFILE+=("${FILE}")
       FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
 
     #####################
@@ -677,6 +682,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
+      FILE_ARRAY_RUST_2021+=("${FILE}")
 
     #######################
     # Get the RUST crates #
@@ -849,6 +855,11 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
+
+  if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
+    debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
+    FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
+  fi
 
   ################
   # Footer print #

@@ -63,7 +63,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                   |
 | **Copy/paste detection**         | [jscpd](https://github.com/kucherenko/jscpd)                                                                                                                                  |
 | **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                             |
-| **Dockerfile**                   | [dockerfilelint](https://github.com/replicatedhq/dockerfilelint.git) / [hadolint](https://github.com/hadolint/hadolint)                                                       |
+| **Dockerfile**                   | [hadolint](https://github.com/hadolint/hadolint)                                                       |
 | **EditorConfig**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                          |
 | **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                               |
 | **GitHub Actions**               | [actionlint](https://github.com/rhysd/actionlint)                                                                                                                             |
@@ -138,7 +138,7 @@ name: Lint Code Base
 
 #
 # Documentation:
-# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 #
 
 #############################
@@ -211,6 +211,7 @@ The **GitHub Super-Linter** now builds and supports `multiple` images. We have f
 After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.
 This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
 The available images:
+
 - `github/super-linter:v4`
 - `github/super-linter:slim-v4`
 
@@ -322,6 +323,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [ESLint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
+| **VALIDATE_JSCPD_ALL_CODEBASE**    | `false`                         | If set to `true`, will lint the whole codebase with JSCPD, in addition to linting files with JSCPD one by one. If set to `false`, JSCPD will only lint files one by one.                                             |
 | **VALIDATE_ANSIBLE**               | `true`                          | Flag to enable or disable the linting process of the Ansible language.                                                                                                                                               |
 | **VALIDATE_ARM**                   | `true`                          | Flag to enable or disable the linting process of the ARM language.                                                                                                                                                   |
 | **VALIDATE_BASH**                  | `true`                          | Flag to enable or disable the linting process of the Bash language.                                                                                                                                                  |
@@ -334,7 +336,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_CSHARP**                | `true`                          | Flag to enable or disable the linting process of the C# language.                                                                                                                                                    |
 | **VALIDATE_CSS**                   | `true`                          | Flag to enable or disable the linting process of the CSS language.                                                                                                                                                   |
 | **VALIDATE_DART**                  | `true`                          | Flag to enable or disable the linting process of the Dart language.                                                                                                                                                  |
-| **VALIDATE_DOCKERFILE**            | `true`                          | Flag to enable or disable the linting process of the Docker language.                                                                                                                                                |
 | **VALIDATE_DOCKERFILE_HADOLINT**   | `true`                          | Flag to enable or disable the linting process of the Docker language.                                                                                                                                                |
 | **VALIDATE_EDITORCONFIG**          | `true`                          | Flag to enable or disable the linting process with the EditorConfig.                                                                                                                                                 |
 | **VALIDATE_ENV**                   | `true`                          | Flag to enable or disable the linting process of the ENV language.                                                                                                                                                   |

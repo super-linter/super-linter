@@ -44,7 +44,9 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
+        run: |
+          echo "Appending the build date contents to GITHUB_ENV..."
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -100,7 +102,7 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: .
-          file: ./Dockerfile-slim
+          file: ./Dockerfile
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
@@ -109,6 +111,7 @@ jobs:
           tags: |
             github/super-linter:slim-latest
             ghcr.io/github/super-linter:slim-latest
+          target: final_slim
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
