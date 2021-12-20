@@ -173,4 +173,4 @@ title = "gitleaks config"
     files = ['''^\.?gitleaks.toml$''',
     '''(.*?)(png|jpg|gif|doc|docx|pdf|bin|xls|pyc|zip)$''',
     '''(go.mod|go.sum)$''']
-    regexes = ['''#nosec''']
+    regexes = ['''#\s*nosec''']
