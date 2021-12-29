@@ -89,6 +89,8 @@ RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
     # hadolint ignore=DL3042
     && pipenv install --clear --system \
+    && wget --tries=5 -q -O /usr/local/bin/find_unicode_control.py https://raw.githubusercontent.com/siddhesh/find-unicode-control/main/find_unicode_control.py \
+    && chmod +x /usr/local/bin/find_unicode_control.py \
     ####################
     # Run NPM Installs #
     ####################
