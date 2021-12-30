@@ -22,7 +22,7 @@ FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM zricethezav/gitleaks:v8.2.3 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM scalameta/scalafmt:v3.2.1 as scalafmt
+FROM scalameta/scalafmt:v3.3.0 as scalafmt
 FROM rhysd/actionlint:1.6.8 as actionlint
 
 ##################
