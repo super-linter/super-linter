@@ -9,7 +9,7 @@
 #########################################
 FROM cljkondo/clj-kondo:2021.12.19-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM yoheimuta/protolint:v0.35.2 as protolint
 FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
