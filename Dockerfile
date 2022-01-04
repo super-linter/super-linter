@@ -38,6 +38,8 @@ FROM python:3.10.1-alpine as base_image
 ARG DART_VERSION='2.8.4'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
+# Unicode version info
+ARG UNICODE_VERSION='find_unicode_control2--2021-11-01-1136.zip'
 
 ####################
 # Run APK installs #
@@ -89,7 +91,7 @@ RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
     # hadolint ignore=DL3042
     && pipenv install --clear --system \
-    && wget --tries=5 -q https://access.redhat.com/sites/default/files/find_unicode_control2--2021-11-01-1136.zip -O - -q | unzip -q - \
+    && wget --tries=5 -q https://access.redhat.com/sites/default/files/${UNICODE_VERSION} -O - -q | unzip -q - \
     && mv find_unicode_control2.py /usr/local/bin/find_unicode_control2.py \
     && chmod +x /usr/local/bin/find_unicode_control2.py \
     ####################
