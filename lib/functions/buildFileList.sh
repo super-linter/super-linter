@@ -318,6 +318,8 @@ function BuildFileList() {
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
     # jscpd also runs an all files
     FILE_ARRAY_JSCPD+=("${FILE}")
+    # unicode control also runs an all files
+    FILE_ARRAY_UNICODE_CONTROL+=("${FILE}")
     # Need to make sure we dont check the secrets paterns
     # for secrets, as it will pop!
     if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
