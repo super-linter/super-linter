@@ -325,6 +325,10 @@ function LintCodebase() {
       #######################
       ERROR_CODE=$?
 
+      if [[ ${FILE_TYPE} == "UNICODE_CONTROL" ]] && [ -n "${LINT_CMD}" ]; then
+        ERROR_CODE=1
+      fi
+
       ########################################
       # Check for if it was supposed to pass #
       ########################################
