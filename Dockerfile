@@ -287,7 +287,9 @@ RUN apk add --no-cache rakudo zef \
 # Build python dependencies #
 ################################
 FROM base_image as python_deps
-COPY dependencies .
+RUN mkdir /data
+COPY dependencies /data
+WORKDIR /data
 RUN ./build-python-binaries.sh
 
 ################################################################################
