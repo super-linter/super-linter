@@ -1,25 +1,47 @@
 #!/usr/bin/env bash
+################################################################################
+########################### Install Python Dependancies ########################
+################################################################################
+
+#####################
+# Set fail on error #
+#####################
 set -euo pipefail
 
+#################################
+# Make the dirs to create execs #
+#################################
 mkdir -p venvs
 mkdir /stage
+
+########################################
+# Install basic libs to run installers #
+########################################
 pip install pyinstaller virtualenv
 
-while read -r line; do
-  package_name=$(cut -d'=' -f1 <<<"${line}")
-  printf "Generating virtualenv for %s\n" "${package_name}"
-  virtualenv "venvs/${package_name}"
-  pushd "venvs/${package_name}"
+#########################################################
+# Itterate through requirments.txt to install bainaries #
+#########################################################
+while read -r LINE; do
+  # split the package name from its version
+  PACKAGE_NAME=$(cut -d'=' -f1 <<<"${LINE}")
+  echo "-------------------------------------------"
+  echo "Generating virtualenv for:[${PACKAGE_NAME}]"
+  virtualenv "venvs/${PACKAGE_NAME}"
+  pushd "venvs/${PACKAGE_NAME}"
   # shellcheck disable=SC1091
   source bin/activate
-  pip install "${line}"
-  if [[ "${package_name}" == *"["* ]]; then
-    pyinstaller --onefile "./bin/$(cut -d'[' -f1 <<<"${line}")"
-    mv "./bin/$(cut -d'[' -f1 <<<"${line}")" /stage
+  pip install "${LINE}"
+  # Check for usecases like "ansible-lint[core]"
+  if [[ "${PACKAGE_NAME}" == *"["* ]]; then
+    pyinstaller --onefile "./bin/$(cut -d'[' -f1 <<<"${LINE}")"
+    mv "./bin/$(cut -d'[' -f1 <<<"${LINE}")" /stage
   else
-    pyinstaller --onefile "./bin/${package_name}"
-    mv "./bin/${package_name}" /stage
+    pyinstaller --onefile "./bin/${PACKAGE_NAME}"
+    mv "./bin/${PACKAGE_NAME}" /stage
   fi
+  # deactivate the python virtualenv
   deactivate
+  # pop the stack
   popd
 done <requirements.txt
