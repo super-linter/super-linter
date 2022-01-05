@@ -257,6 +257,14 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
+      #################################################################
+      # Corner case for TERRAFORM_TFLINT as it cant use the full path #
+      #################################################################
+      elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
