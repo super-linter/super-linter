@@ -12,7 +12,3 @@ resource "aws_instance" "good" {
     encrypted = true
   }
 }
-
-module "good" {
-  source = "../modules/ec2_instance"
-}
