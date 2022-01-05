@@ -698,7 +698,7 @@ function BuildFileList() {
     ###########################
     # Get the SCALA files #
     ###########################
-    elif [ "${FILE_TYPE}" == "scala" ] || [ "${FILE_TYPE}" == "sc" ] ||  [ "${BASE_FILE}" == "??????" ]; then
+    elif [ "${FILE_TYPE}" == "scala" ] || [ "${FILE_TYPE}" == "sc" ] || [ "${BASE_FILE}" == "??????" ]; then
       ################################
       # Append the file to the array #
       ################################
