@@ -49,8 +49,8 @@ rules:
     check-multi-line-strings: false
   key-duplicates: enable
   line-length:
-    level: disable
-    max: 80
+    level: warning
+    max: 100
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
   new-line-at-end-of-file: disable
