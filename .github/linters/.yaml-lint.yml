@@ -49,7 +49,7 @@ rules:
     check-multi-line-strings: false
   key-duplicates: enable
   line-length:
-    level: warning
+    level: disable
     max: 80
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
