@@ -31,4 +31,4 @@ spec:
           mountPath: /var/run/docker.sock
   volumes:
     - name: sample-example-volume
-      emptyDir: {}
+      emptyDir: { }

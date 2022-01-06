@@ -9,6 +9,6 @@ info:
   description: Test for super-linter
 servers:
   - url: 'http://localhost:3000'
-paths: {}
+paths: { }
 tags:
   - name: example
