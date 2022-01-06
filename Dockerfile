@@ -86,14 +86,10 @@ COPY dependencies/* /
 ################################
 # Installs python dependencies #
 ################################
-RUN pip3 install --no-cache-dir pipenv \
-    # Bug in hadolint thinks pipenv is pip
-    # hadolint ignore=DL3042
-    && pipenv install --clear --system \
-    ####################
-    # Run NPM Installs #
-    ####################
-    && npm config set package-lock false \
+####################
+# Run NPM Installs #
+####################
+RUN npm config set package-lock false \
     && npm config set loglevel error \
     && npm --no-cache install \
     && npm audit fix --audit-level=critical \
