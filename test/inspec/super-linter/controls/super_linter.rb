@@ -253,39 +253,6 @@ control "super-linter-installed-ruby-gems" do
 end
 
 ###############################################
-# Check to see all PIP packages are installed #
-###############################################
-control "super-linter-installed-pip-packages" do
-  impact 1
-  title "Super-Linter installed PIP packages check"
-  desc "Check that PIP packages that Super-Linter needs are installed."
-
-  packages = [
-    "ansible-lint",
-    "cfn-lint",
-    "cpplint",
-    "cython",
-    "flake8",
-    "isort",
-    "mypy",
-    "pylint",
-    "snakefmt",
-    "snakemake",
-    "sqlfluff",
-    "typing_extensions",
-    "yamllint",
-    "yq"
-  ]
-
-  packages.each do |item|
-    describe pip(item) do
-      it { should be_installed }
-    end
-  end
-
-end
-
-###############################################
 # Check to see all NPM packages are installed #
 ###############################################
 control "super-linter-installed-npm-packages" do
