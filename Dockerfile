@@ -84,7 +84,7 @@ RUN apk add --no-cache \
 COPY dependencies/* /
 
 ################################
-# Installs dependencies #
+# Installs python dependencies #
 ################################
 RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
@@ -93,6 +93,8 @@ RUN pip3 install --no-cache-dir pipenv \
     ####################
     # Run NPM Installs #
     ####################
+    && npm config set package-lock false \
+    && npm config set loglevel error \
     && npm --no-cache install \
     && npm audit fix --audit-level=critical \
     ##############################
@@ -283,14 +285,12 @@ RUN apk add --no-cache rakudo zef \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
     && find /usr/ -type f -name '*.md' -exec rm {} +
 
-################################
-# Build python dependencies #
-################################
-FROM base_image as python_deps
-RUN mkdir /data
-COPY dependencies /data
-WORKDIR /data
-RUN ./build-python-binaries.sh
+FROM python:3.10.1-alpine as python_builder
+RUN apk add --no-cache bash g++ git libffi-dev
+RUN mkdir -p /stage
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh
 
 ################################################################################
 # Grab small clean image #######################################################
@@ -379,7 +379,7 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
-COPY --from=python_deps /stage/ /user/bin/
+COPY --from=python_builder /venvs/ /venvs/
 
 ####################################################
 # Install Composer after all Libs have been copied #
@@ -390,6 +390,23 @@ RUN sh -c 'curl -sS https://getcomposer.org/installer | php -- --install-dir=/us
 # Add node packages to path and dotnet #
 ########################################
 ENV PATH="${PATH}:/node_modules/.bin"
+
+###############################
+# Add python packages to path #
+###############################
+ENV PATH="${PATH}:/venvs/ansible-lint/bin"
+ENV PATH="${PATH}:/venvs/black/bin"
+ENV PATH="${PATH}:/venvs/cfn-lint/bin"
+ENV PATH="${PATH}:/venvs/cpplint/bin"
+ENV PATH="${PATH}:/venvs/flake8/bin"
+ENV PATH="${PATH}:/venvs/isort/bin"
+ENV PATH="${PATH}:/venvs/mypy/bin"
+ENV PATH="${PATH}:/venvs/pylint/bin"
+ENV PATH="${PATH}:/venvs/snakefmt/bin"
+ENV PATH="${PATH}:/venvs/snakemake/bin"
+ENV PATH="${PATH}:/venvs/sqlfluff/bin"
+ENV PATH="${PATH}:/venvs/yamllint/bin"
+ENV PATH="${PATH}:/venvs/yq/bin"
 
 #############################
 # Copy scripts to container #
