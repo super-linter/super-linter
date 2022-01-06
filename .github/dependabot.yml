@@ -1,3 +1,4 @@
+---
 #################################
 # GitHub Dependabot Config info #
 #################################
@@ -36,4 +37,3 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
-

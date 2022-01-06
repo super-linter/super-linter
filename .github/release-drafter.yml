@@ -1,3 +1,5 @@
+---
+# yamllint disable rule:line-length
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 template: |
