@@ -14,10 +14,8 @@
 # Start the job on all push #
 #############################
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches-ignore: []
+
 
 ###############
 # Set the Job #
