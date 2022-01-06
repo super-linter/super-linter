@@ -1,5 +1,4 @@
 ---
-
 #############################
 #############################
 ## JavaScript Linter rules ##
@@ -39,6 +38,7 @@ plugins:
 # Rules #
 #########
 rules: { }
+
 
 ##############################
 # Overrides for JSON parsing #

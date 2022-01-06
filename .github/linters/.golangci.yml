@@ -7,6 +7,7 @@
 
 # configure golangci-lint
 # https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+
 issues:
   exclude-rules:
     - path: _test\.go
