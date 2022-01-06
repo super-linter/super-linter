@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
     if: ${{ github.event_name == 'push' ||
-            github.event.pull_request.head.repo.full_name != github.repository }}
+          github.event.pull_request.head.repo.full_name != github.repository }}
     timeout-minutes: 60
     ##################
     # Load all steps #
