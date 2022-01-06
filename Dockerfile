@@ -287,7 +287,6 @@ RUN apk add --no-cache rakudo zef \
 
 FROM python:3.10.1-alpine as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
-RUN mkdir -p /stage
 COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh
