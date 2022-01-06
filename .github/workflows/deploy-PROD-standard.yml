@@ -161,7 +161,7 @@ jobs:
               issue_number: "${{ steps.create-issue.outputs.result }}",
               assignees: [
                 'admiralawkbar',
-                'jwiebalk',
+                'lindluni',
                 'IAmHughes',
                 'nemchik',
                 'Hanse00',
