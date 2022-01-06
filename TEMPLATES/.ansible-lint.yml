@@ -8,7 +8,7 @@
 #############################
 # Exclude paths from linter #
 #############################
-#exclude_paths:
+# exclude_paths:
 
 ########################
 # Make output parsable #
@@ -23,23 +23,23 @@ quiet: true
 #####################
 # Path to rules dir #
 #####################
-#rulesdir:
+# rulesdir:
 
 ################
 # Tags to skip #
 ################
 skip_list:
-  - 'empty-string-compare' # Allow compare to empty string
-  - '204' # Allow string length greater than 160 chars
-  - 'no-changed-when' # False positives for running command shells
-  - 'command-instead-of-module' # Allow git commands for push, add, etc...
-  - 'command-instead-of-shell' # Allow use of shell when you want
-  - 'no-handler' # Allow step to run like handler
+  - 'empty-string-compare'  # Allow compare to empty string
+  - '204'  # Allow string length greater than 160 chars
+  - 'no-changed-when'  # False positives for running command shells
+  - 'command-instead-of-module'  # Allow git commands for push, add, etc...
+  - 'command-instead-of-shell'  # Allow use of shell when you want
+  - 'no-handler'  # Allow step to run like handler
 
 ##################
 # Tags to follow #
 ##################
-#tags:
+# tags:
 
 #############
 # Use rules #

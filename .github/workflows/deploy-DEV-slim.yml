@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
     if: ${{ github.event_name == 'push' ||
-            github.event.pull_request.head.repo.full_name != github.repository }}
+          github.event.pull_request.head.repo.full_name != github.repository }}
     timeout-minutes: 60
     ##################
     # Load all steps #
@@ -202,5 +202,6 @@ jobs:
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -e YAML_LINTER_RULES=.github/linters/.yaml-linter.yml \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:slim-${GITHUB_SHA}"
