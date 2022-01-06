@@ -318,8 +318,6 @@ function BuildFileList() {
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
     # jscpd also runs an all files
     FILE_ARRAY_JSCPD+=("${FILE}")
-    # unicode control also runs an all files
-    FILE_ARRAY_UNICODE_CONTROL+=("${FILE}")
     # Need to make sure we dont check the secrets paterns
     # for secrets, as it will pop!
     if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
@@ -698,7 +696,7 @@ function BuildFileList() {
     ###########################
     # Get the SCALA files #
     ###########################
-    elif [ "${FILE_TYPE}" == "scala" ] || [ "${BASE_FILE}" == "??????" ]; then
+    elif [ "${FILE_TYPE}" == "scala" ] || [ "${FILE_TYPE}" == "sc" ] || [ "${BASE_FILE}" == "??????" ]; then
       ################################
       # Append the file to the array #
       ################################
