@@ -11,7 +11,7 @@ set -euo pipefail
 ############################
 # Create staging directory #
 ############################
-mkdir -p /venv
+mkdir -p /venvs
 
 ########################################
 # Install basic libs to run installers #
@@ -28,12 +28,14 @@ while read -r LINE; do
     PACKAGE_NAME=$(cut -d'[' -f1 <<<"${PACKAGE_NAME}")
   fi
   echo "-------------------------------------------"
+  mkdir -p "/venvs/${PACKAGE_NAME}"
+  cp "${PACKAGE_NAME}/requirements.txt" "/venvs/${PACKAGE_NAME}/requirements.txt"
   echo "Generating virtualenv for: [${PACKAGE_NAME}]"
-  virtualenv "/venvs/${PACKAGE_NAME}"
   pushd "/venvs/${PACKAGE_NAME}"
+  virtualenv .
   # shellcheck disable=SC1091
   source bin/activate
-  pip install -r requirments.txt
+  pip install -r requirements.txt
   # deactivate the python virtualenv
   deactivate
   # pop the stack
