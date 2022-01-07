@@ -14,9 +14,10 @@ FROM yoheimuta/protolint:v0.35.2 as protolint
 FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.1 as tflint
+FROM hashicorp/terraform:1.1.2 as terraform
 FROM alpine/terragrunt:1.1.2 as terragrunt
 FROM mvdan/shfmt:v3.4.2 as shfmt
-FROM accurics/terrascan:1.12.0 as terrascan
+FROM accurics/terrascan:1.13.0 as terrascan
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM zricethezav/gitleaks:v8.2.5 as gitleaks
@@ -38,8 +39,6 @@ FROM python:3.10.1-alpine as base_image
 ARG DART_VERSION='2.8.4'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
-# Unicode version info
-ARG UNICODE_VERSION='2021-11-01-1136'
 
 ####################
 # Run APK installs #
@@ -91,9 +90,6 @@ RUN pip3 install --no-cache-dir pipenv \
     # Bug in hadolint thinks pipenv is pip
     # hadolint ignore=DL3042
     && pipenv install --clear --system \
-    && wget --tries=5 -q https://access.redhat.com/sites/default/files/find_unicode_control2--${UNICODE_VERSION}.zip -O - -q | unzip -q - \
-    && mv find_unicode_control2.py /usr/local/bin/find_unicode_control2.py \
-    && chmod +x /usr/local/bin/find_unicode_control2.py \
     ####################
     # Run NPM Installs #
     ####################
@@ -133,6 +129,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 # Install Go Linter #
 #####################
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
+
+#####################
+# Install Terraform #
+#####################
+COPY --from=terraform /bin/terraform /usr/bin/
 
 ##################
 # Install TFLint #

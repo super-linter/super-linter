@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
@@ -30,4 +31,4 @@ spec:
           mountPath: /var/run/docker.sock
   volumes:
     - name: example-volume
-      emptyDir: {}
+      emptyDir: { }

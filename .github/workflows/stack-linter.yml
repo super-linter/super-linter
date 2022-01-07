@@ -16,7 +16,6 @@
 on:
   pull_request:
 
-
 ###############
 # Set the Job #
 ###############

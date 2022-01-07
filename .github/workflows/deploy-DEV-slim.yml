@@ -19,6 +19,7 @@
 on:
   push:
     branches-ignore: [main]
+  pull_request:
 
 ###############
 # Set the Job #
@@ -161,7 +162,7 @@ jobs:
       # Codacy Coverage Report #
       ##########################
       - name: Upload the code coverage report
-        uses: codacy/codacy-coverage-reporter-action@v1.1
+        uses: codacy/codacy-coverage-reporter-action@v1.2
         # Dependabot does not have priv to see the secret, so will
         # fail opn bump jobs...
         continue-on-error: true
@@ -202,5 +203,6 @@ jobs:
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -e YAML_LINTER_RULES=.github/linters/.yaml-linter.yml \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:slim-${GITHUB_SHA}"
