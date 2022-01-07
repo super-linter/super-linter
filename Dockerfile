@@ -102,11 +102,6 @@ RUN npm config set package-lock false \
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-    ########################
-    # Install Python Black #
-    ########################
-    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.11b1/black_linux \
-    && chmod +x /usr/local/bin/black \
     #######################
     # Installs ActionLint #
     #######################
