@@ -1,0 +1,6 @@
+cpplint==1.5.5
+distlib==0.3.4
+filelock==3.4.2
+platformdirs==2.4.1
+six==1.16.0
+virtualenv==20.13.0
