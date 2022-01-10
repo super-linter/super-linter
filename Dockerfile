@@ -14,7 +14,7 @@ FROM yoheimuta/protolint:v0.35.2 as protolint
 FROM golangci/golangci-lint:v1.43.0 as golangci-lint
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.1 as tflint
-FROM hashicorp/terraform:1.1.2 as terraform
+FROM hashicorp/terraform:1.1.3 as terraform
 FROM alpine/terragrunt:1.1.2 as terragrunt
 FROM mvdan/shfmt:v3.4.2 as shfmt
 FROM accurics/terrascan:1.13.0 as terrascan
