@@ -7,21 +7,21 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
+FROM accurics/terrascan:1.10.0 as terrascan
+FROM alpine/terragrunt:1.0.7 as terragrunt
+FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2021.09.25-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
-FROM yoheimuta/protolint:v0.35.1 as protolint
-FROM golangci/golangci-lint:v1.42.1 as golangci-lint
-FROM koalaman/shellcheck:v0.7.2 as shellcheck
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
-FROM alpine/terragrunt:1.0.7 as terragrunt
-FROM mvdan/shfmt:v3.3.1 as shfmt
-FROM accurics/terrascan:1.10.0 as terrascan
-FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/assignuser/lintr-lib:0.3.0 as lintr-lib
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.32.1 as tflint
+FROM golangci/golangci-lint:v1.42.1 as golangci-lint
+FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM koalaman/shellcheck:v0.7.2 as shellcheck
+FROM mstruebing/editorconfig-checker:2.3.5 as editorconfig-checker
+FROM mvdan/shfmt:v3.3.1 as shfmt
+FROM yoheimuta/protolint:v0.35.1 as protolint
 
 ##################
 # Get base image #
@@ -31,11 +31,7 @@ FROM python:3.9.7-alpine as base_image
 ################################
 # Set ARG values used in Build #
 ################################
-# PowerShell & PSScriptAnalyzer
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='latest'
-# arm-ttk
+# arm-ttk Linter
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
@@ -44,6 +40,10 @@ ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 ARG DART_VERSION='2.8.4'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
+# PowerShell & PSScriptAnalyzer linter
+ARG PSSA_VERSION='latest'
+ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
+ARG PWSH_VERSION='latest'
 
 ####################
 # Run APK installs #
@@ -55,7 +55,7 @@ RUN apk add --no-cache \
     file \
     gcc \
     g++ \
-    git git-lfs\
+    git git-lfs \
     go \
     gnupg \
     icu-libs \
