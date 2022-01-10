@@ -282,6 +282,9 @@ RUN apk add --no-cache rakudo zef \
     && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
     && find /usr/ -type f -name '*.md' -exec rm {} +
 
+################################################################################
+# Grab small clean image to build python packages ##############################
+################################################################################
 FROM python:3.10.1-alpine as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
@@ -289,7 +292,7 @@ WORKDIR /stage
 RUN ./build-venvs.sh
 
 ################################################################################
-# Grab small clean image #######################################################
+# Grab small clean image to build final_slim ###################################
 ################################################################################
 FROM alpine:3.15.0 as final_slim
 
@@ -424,25 +427,33 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
+################################################################################
+# Grab small clean image to build final_standard ###############################
+################################################################################
 FROM final_slim as final_standard
 
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
-
-# PowerShell & PSScriptAnalyzer
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='latest'
+###############
+# Set up args #
+###############
 # arm-ttk
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
+# PowerShell & PSScriptAnalyzer
+ARG PWSH_VERSION='latest'
+ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
+ARG PSSA_VERSION='latest'
 
-ENV IMAGE="standard"
-
+################
+# Set ENV vars #
+################
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
-
+ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
+################
+# Pull in libs #
+################
 COPY --from=base_image /usr/libexec/ /usr/libexec/
 
 #########################
