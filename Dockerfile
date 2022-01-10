@@ -355,7 +355,7 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     && rm phive.phar.asc \
     && phive --no-progress install --trust-gpg-keys \
     31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
-    --target /usr/bin phpstan@^1.1.1 psalm@^4.12.0 phpcs@^3.6.1
+    --target /usr/bin phpstan@^1.3.3 psalm@^4.18.1 phpcs@^3.6.2
 
 #################################
 # Copy the libraries into image #
