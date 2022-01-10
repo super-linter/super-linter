@@ -6,14 +6,15 @@
 #########################
 
 # configure golangci-lint
-# see https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+# https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+
 issues:
   exclude-rules:
     - path: _test\.go
       linters:
-      - dupl
-      - gosec
-      - goconst
+        - dupl
+        - gosec
+        - goconst
 linters:
   enable:
     - gosec
@@ -26,7 +27,7 @@ linters:
     - revive
 linters-settings:
   errcheck:
-    # report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;
+    # report about assignment of errors to blank identifier
     # default is false: such cases aren't reported by default.
     check-blank: true
   govet:

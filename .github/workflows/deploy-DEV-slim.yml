@@ -10,15 +10,15 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+#####################################
+# Start the job on all push to main #
+#####################################
 #############################
 # Start the job on all push #
 #############################
 on:
   push:
-    branches-ignore: [master]
+    branches-ignore: [main]
 
 ###############
 # Set the Job #
@@ -31,7 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     # Prevent duplicate run from happening when a forked push is committed
     if: ${{ github.event_name == 'push' ||
-            github.event.pull_request.head.repo.full_name != github.repository }}
+          github.event.pull_request.head.repo.full_name != github.repository }}
+    timeout-minutes: 60
     ##################
     # Load all steps #
     ##################
@@ -40,7 +41,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         with:
           # Full git history is needed to get a proper list
           # of changed files within `super-linter`
@@ -50,7 +51,9 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
+        run: |
+          echo "Appending the build date contents to GITHUB_ENV..."
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -76,7 +79,7 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: .
-          file: ./Dockerfile-slim
+          file: ./Dockerfile
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
@@ -86,6 +89,7 @@ jobs:
           tags: |
             ghcr.io/github/super-linter:slim-${{ github.sha }}
             ghcr.io/github/super-linter:slim-test
+          target: final_slim
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -134,6 +138,7 @@ jobs:
           ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
 
       ###############################################################
       # Fix file and dir ownership.                                 #
@@ -156,7 +161,7 @@ jobs:
       # Codacy Coverage Report #
       ##########################
       - name: Upload the code coverage report
-        uses: codacy/codacy-coverage-reporter-action@v1.1
+        uses: codacy/codacy-coverage-reporter-action@v1.2
         # Dependabot does not have priv to see the secret, so will
         # fail opn bump jobs...
         continue-on-error: true
@@ -197,5 +202,6 @@ jobs:
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -e YAML_LINTER_RULES=.github/linters/.yaml-linter.yml \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:slim-${GITHUB_SHA}"

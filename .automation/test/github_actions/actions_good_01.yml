@@ -1,3 +1,4 @@
+---
 name: GitHub Actions Good
 on:
   push:

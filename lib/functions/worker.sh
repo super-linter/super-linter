@@ -10,7 +10,7 @@
 ################################################################################
 #### Function LintCodebase #####################################################
 function LintCodebase() {
-  # Call comes thorugh as:
+  # Call comes through as:
   # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   ####################
   # Pull in the vars #
@@ -255,6 +255,15 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
+      ############################################################################################
+      # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
+      ############################################################################################
+      elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          terraform get 2>&1
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
       else

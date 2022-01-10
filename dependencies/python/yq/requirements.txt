@@ -1,0 +1,10 @@
+argcomplete==2.0.0
+distlib==0.3.4
+filelock==3.4.2
+platformdirs==2.4.1
+PyYAML==6.0
+six==1.16.0
+toml==0.10.2
+virtualenv==20.13.0
+xmltodict==0.12.0
+yq==2.13.0

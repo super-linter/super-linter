@@ -10,9 +10,9 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-#######################################
-# Start the job on all push to master #
-#######################################
+##########################################
+# Start the job upon a published release #
+##########################################
 on:
   # Start when a release is published
   release:
@@ -31,10 +31,12 @@ jobs:
     #####################################################################
     # Only run if Admin start job and it was the Release Issue template #
     #####################################################################
-    if: ${{ github.actor == 'admiralawkbar' || github.actor == 'jwiebalk' ||
+    if: ${{ github.actor == 'admiralawkbar' || github.actor == 'lindluni' ||
             github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
             github.actor == 'Hanse00' || github.actor == 'github-actions' ||
             github.actor == 'GaboFDC' || github.actor == 'ferrarimarco' }}
+
+    timeout-minutes: 60
 
     ##################
     # Load all steps #
@@ -44,13 +46,13 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
 
       #########################
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.2
         id: deployment
         with:
           step: start
@@ -61,7 +63,9 @@ jobs:
       # Get the current date #
       ########################
       - name: Get current date
-        run: echo "BUILD_DATE=\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\" >> ${GITHUB_ENV}"
+        run: |
+          echo "Appending the build date contents to GITHUB_ENV..."
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
       ########################
       # Setup Docker build X #
@@ -73,7 +77,7 @@ jobs:
       # Login to DockerHub registry #
       ###############################
       - name: Login to DockerHub
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v1.12.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -82,7 +86,7 @@ jobs:
       # Login to GitHub Container registry #
       ######################################
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v1.12.0
         with:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
@@ -147,7 +151,7 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v0.6.2
         if: always()
         with:
           step: finish
@@ -167,11 +171,11 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const create = await github.issues.create({
+            const create = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy release to production",
-              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}"
+              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
             console.log('create', create)
             return create.data.number
@@ -186,13 +190,13 @@ jobs:
           # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.addAssignees({
+            github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",
               assignees: [
                 'admiralawkbar',
-                'jwiebalk',
+                'lindluni',
                 'IAmHughes',
                 'nemchik',
                 'Hanse00',
