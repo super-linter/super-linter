@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
   <!-- When adding new linter, do not forget to add its GPG key ID to Dockerfile -->
-  <phar name="phpcs" version="^3.5" installed="3.5.8" location="/usr/local/bin/phpcs" copy="true"/>
-  <phar name="phpstan" version="^0.12" installed="0.12.64" location="/usr/local/bin/phpstan" copy="true"/>
-  <phar name="psalm" version="^3.12" installed="3.18.2" location="./usr/local/bin/psalm" copy="true"/>
+  <phar name="phpcs" version="^3.6" installed="3.6.2" location="/usr/local/bin/phpcs" copy="true"/>
+  <phar name="phpstan" version="^3.6" installed="3.6.2" location="/usr/local/bin/phpstan" copy="true"/>
+  <phar name="psalm" version="^4.18" installed="4.18.1" location="./usr/local/bin/psalm" copy="true"/>
 </phive>

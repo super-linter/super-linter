@@ -7,24 +7,24 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
+FROM accurics/terrascan:1.13.0 as terrascan
+FROM alpine/terragrunt:1.1.3 as terragrunt
+FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2021.12.19-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
-FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
-FROM yoheimuta/protolint:v0.35.2 as protolint
-FROM golangci/golangci-lint:v1.43.0 as golangci-lint
-FROM koalaman/shellcheck:v0.8.0 as shellcheck
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.1 as tflint
-FROM hashicorp/terraform:1.1.2 as terraform
-FROM alpine/terragrunt:1.1.2 as terragrunt
-FROM mvdan/shfmt:v3.4.2 as shfmt
-FROM accurics/terrascan:1.13.0 as terrascan
-FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM zricethezav/gitleaks:v8.2.5 as gitleaks
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM scalameta/scalafmt:v3.3.1 as scalafmt
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.1 as tflint
+FROM golangci/golangci-lint:v1.43.0 as golangci-lint
+FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM hashicorp/terraform:1.1.3 as terraform
+FROM koalaman/shellcheck:v0.8.0 as shellcheck
+FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
+FROM mvdan/shfmt:v3.4.2 as shfmt
 FROM rhysd/actionlint:1.6.8 as actionlint
+FROM scalameta/scalafmt:v3.3.1 as scalafmt
+FROM yoheimuta/protolint:v0.35.2 as protolint
+FROM zricethezav/gitleaks:v8.2.7 as gitleaks
 
 ##################
 # Get base image #
@@ -34,11 +34,19 @@ FROM python:3.10.1-alpine as base_image
 ################################
 # Set ARG values used in Build #
 ################################
+# arm-ttk Linter
+ARG ARM_TTK_NAME='master.zip'
+ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
+ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.31-r0'
+# PowerShell & PSScriptAnalyzer linter
+ARG PSSA_VERSION='latest'
+ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
+ARG PWSH_VERSION='latest'
 
 ####################
 # Run APK installs #
@@ -52,7 +60,8 @@ RUN apk add --no-cache \
     file \
     gcc \
     g++ \
-    git git-lfs\
+    git git-lfs \
+    go \
     gnupg \
     go \
     icu-libs \
@@ -86,14 +95,7 @@ COPY dependencies/* /
 ################################
 # Installs python dependencies #
 ################################
-RUN pip3 install --no-cache-dir pipenv \
-    # Bug in hadolint thinks pipenv is pip
-    # hadolint ignore=DL3042
-    && pipenv install --clear --system \
-    ####################
-    # Run NPM Installs #
-    ####################
-    && npm config set package-lock false \
+RUN npm config set package-lock true  \
     && npm config set loglevel error \
     && npm --no-cache install \
     && npm audit fix --audit-level=critical \
@@ -106,11 +108,6 @@ RUN pip3 install --no-cache-dir pipenv \
 # Installs Perl dependencies #
 ##############################
 RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic \
-    ########################
-    # Install Python Black #
-    ########################
-    && wget --tries=5 -q -O /usr/local/bin/black https://github.com/psf/black/releases/download/21.11b1/black_linux \
-    && chmod +x /usr/local/bin/black \
     #######################
     # Installs ActionLint #
     #######################
@@ -286,7 +283,16 @@ RUN apk add --no-cache rakudo zef \
     && find /usr/ -type f -name '*.md' -exec rm {} +
 
 ################################################################################
-# Grab small clean image #######################################################
+# Grab small clean image to build python packages ##############################
+################################################################################
+FROM python:3.10.1-alpine as python_builder
+RUN apk add --no-cache bash g++ git libffi-dev
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh
+
+################################################################################
+# Grab small clean image to build final_slim ###################################
 ################################################################################
 FROM alpine:3.15.0 as final_slim
 
@@ -355,7 +361,7 @@ RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sger
     && rm phive.phar.asc \
     && phive --no-progress install --trust-gpg-keys \
     31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
-    --target /usr/bin phpstan@^1.1.1 psalm@^4.12.0 phpcs@^3.6.1
+    --target /usr/bin phpstan@^1.3.3 psalm@^4.18.1 phpcs@^3.6.2
 
 #################################
 # Copy the libraries into image #
@@ -372,6 +378,7 @@ COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
+COPY --from=python_builder /venvs/ /venvs/
 
 ####################################################
 # Install Composer after all Libs have been copied #
@@ -382,6 +389,23 @@ RUN sh -c 'curl -sS https://getcomposer.org/installer | php -- --install-dir=/us
 # Add node packages to path and dotnet #
 ########################################
 ENV PATH="${PATH}:/node_modules/.bin"
+
+###############################
+# Add python packages to path #
+###############################
+ENV PATH="${PATH}:/venvs/ansible-lint/bin"
+ENV PATH="${PATH}:/venvs/black/bin"
+ENV PATH="${PATH}:/venvs/cfn-lint/bin"
+ENV PATH="${PATH}:/venvs/cpplint/bin"
+ENV PATH="${PATH}:/venvs/flake8/bin"
+ENV PATH="${PATH}:/venvs/isort/bin"
+ENV PATH="${PATH}:/venvs/mypy/bin"
+ENV PATH="${PATH}:/venvs/pylint/bin"
+ENV PATH="${PATH}:/venvs/snakefmt/bin"
+ENV PATH="${PATH}:/venvs/snakemake/bin"
+ENV PATH="${PATH}:/venvs/sqlfluff/bin"
+ENV PATH="${PATH}:/venvs/yamllint/bin"
+ENV PATH="${PATH}:/venvs/yq/bin"
 
 #############################
 # Copy scripts to container #
@@ -403,25 +427,33 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
+################################################################################
+# Grab small clean image to build final_standard ###############################
+################################################################################
 FROM final_slim as final_standard
 
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
-
-# PowerShell & PSScriptAnalyzer
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='latest'
+###############
+# Set up args #
+###############
 # arm-ttk
 ARG ARM_TTK_NAME='master.zip'
 ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
 ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
+# PowerShell & PSScriptAnalyzer
+ARG PWSH_VERSION='latest'
+ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
+ARG PSSA_VERSION='latest'
 
-ENV IMAGE="standard"
-
+################
+# Set ENV vars #
+################
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
-
+ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
+################
+# Pull in libs #
+################
 COPY --from=base_image /usr/libexec/ /usr/libexec/
 
 #########################
