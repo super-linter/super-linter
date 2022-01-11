@@ -1,5 +1,5 @@
 black==21.12b0
-click==7.1.2
+click==8.0.3
 distlib==0.3.4
 filelock==3.4.2
 importlib-metadata==1.7.0
