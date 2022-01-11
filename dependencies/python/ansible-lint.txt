@@ -6,7 +6,7 @@ colorama==0.4.4
 commonmark==0.9.1
 cryptography==36.0.1
 distlib==0.3.4
-enrich==1.2.6
+enrich==1.2.7
 filelock==3.4.2
 Jinja2==3.0.3
 MarkupSafe==2.0.1
