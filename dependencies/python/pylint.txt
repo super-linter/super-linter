@@ -1,4 +1,4 @@
-astroid==2.9.2
+astroid==2.9.3
 distlib==0.3.4
 filelock==3.4.2
 isort==5.10.1
