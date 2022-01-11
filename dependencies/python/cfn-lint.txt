@@ -10,7 +10,7 @@ jschema-to-python==1.2.3
 jsonpatch==1.32
 jsonpickle==2.0.0
 jsonpointer==2.2
-jsonschema==3.2.0
+jsonschema==4.3.3
 junit-xml==1.9
 networkx==2.6.3
 pbr==5.8.0
