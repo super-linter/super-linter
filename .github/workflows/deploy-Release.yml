@@ -27,6 +27,7 @@ jobs:
     name: Deploy Docker Image - Release
     # Set the agent to run on
     runs-on: ubuntu-latest
+<<<<<<< HEAD:.github/workflows/deploy-Release.yml
     strategy:
       matrix:
         images:
@@ -38,6 +39,17 @@ jobs:
             container-image-id-prefix: ""
             deployment-environment-identifier: Release
             image-id: standard
+=======
+
+    #####################################################################
+    # Only run if Admin start job and it was the Release Issue template #
+    #####################################################################
+    if: ${{ github.actor == 'admiralawkbar' || github.actor == 'lindluni' ||
+            github.actor == 'IAmHughes' || github.actor == 'nemchik' ||
+            github.actor == 'Hanse00' || github.actor == 'github-actions' ||
+            github.actor == 'GaboFDC' || github.actor == 'ferrarimarco' }}
+
+>>>>>>> main:.github/workflows/deploy-RELEASE-slim.yml
     timeout-minutes: 60
 
     ###############
@@ -180,7 +192,7 @@ jobs:
               issue_number: "${{ steps.create-issue.outputs.result }}",
               assignees: [
                 'admiralawkbar',
-                'jwiebalk',
+                'lindluni',
                 'IAmHughes',
                 'nemchik',
                 'Hanse00',
