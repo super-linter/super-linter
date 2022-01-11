@@ -33,7 +33,7 @@ updates:
 
   # Maintain dependencies for python with pip
   - package-ecosystem: "pip"
-    directory: "/dependencies"
+    directory: "/dependencies/python/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
