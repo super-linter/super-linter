@@ -21,15 +21,12 @@ pip install virtualenv
 #########################################################
 # Itterate through requirments.txt to install bainaries #
 #########################################################
-while read -r LINE; do
+for DEP_FILE in *.txt; do
   # split the package name from its version
-  PACKAGE_NAME=$(cut -d'=' -f1 <<<"${LINE}")
-  if [[ "${PACKAGE_NAME}" == *"["* ]]; then
-    PACKAGE_NAME=$(cut -d'[' -f1 <<<"${PACKAGE_NAME}")
-  fi
+  PACKAGE_NAME=${DEP_FILE%.txt}
   echo "-------------------------------------------"
   mkdir -p "/venvs/${PACKAGE_NAME}"
-  cp "${PACKAGE_NAME}/requirements.txt" "/venvs/${PACKAGE_NAME}/requirements.txt"
+  cp "${DEP_FILE}" "/venvs/${PACKAGE_NAME}/requirements.txt"
   echo "Generating virtualenv for: [${PACKAGE_NAME}]"
   pushd "/venvs/${PACKAGE_NAME}"
   virtualenv .
@@ -40,4 +37,4 @@ while read -r LINE; do
   deactivate
   # pop the stack
   popd
-done <packages.txt
+done
