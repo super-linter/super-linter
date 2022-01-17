@@ -9,7 +9,7 @@ platformdirs==2.4.1
 six==1.16.0
 snakefmt==0.4.4
 toml==0.10.2
-tomli==1.2.3
+tomli==2.0.0
 typing_extensions==4.0.1
 virtualenv==20.13.0
 zipp==3.7.0
