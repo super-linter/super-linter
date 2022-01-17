@@ -26,7 +26,7 @@
     "jscpd": "^3.4.5",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.30.0",
-    "node-fetch": "^3.1.0",
+    "node-fetch": "^3.1.1",
     "npm-groovy-lint": "^9.4.0",
     "prettier": "^2.5.1",
     "prettyjson": "^1.2.5",
