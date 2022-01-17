@@ -8,7 +8,7 @@
     "asl-validator": "^1.10.0",
     "axios": "^0.24.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^8.6.0",
+    "eslint": "^8.7.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^25.3.4",
