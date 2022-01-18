@@ -8,7 +8,7 @@ filelock==3.4.2
 jmespath==0.10.0
 jschema-to-python==1.2.3
 jsonpatch==1.32
-jsonpickle==2.0.0
+jsonpickle==2.1.0
 jsonpointer==2.2
 jsonschema==3.2.0
 junit-xml==1.9
