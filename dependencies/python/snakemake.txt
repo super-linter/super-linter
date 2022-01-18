@@ -9,7 +9,7 @@ distlib==0.3.4
 docutils==0.18.1
 filelock==3.4.2
 gitdb==4.0.9
-GitPython==3.1.24
+GitPython==3.1.26
 idna==3.3
 ipython-genutils==0.2.0
 jsonschema==4.3.3
