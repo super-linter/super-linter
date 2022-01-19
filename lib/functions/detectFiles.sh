@@ -286,6 +286,32 @@ function CheckFileType() {
     ################################
     FILE_ARRAY_JSCPD+=("${FILE}")
     FILE_ARRAY_RUBY+=("${FILE}")
+  elif [[ ${GET_FILE_TYPE_CMD} == *"Python script"* ]]; then
+    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+      #########################
+      # It is a Python script #
+      #########################
+      warn "Found Python script without extension:[.py]"
+      info "Please update file with proper extensions."
+    fi
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_ARRAY_PYTHON+=("${FILE}")
+  elif [[ ${GET_FILE_TYPE_CMD} == *"Perl script"* ]]; then
+    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+      #######################
+      # It is a Perl script #
+      #######################
+      warn "Found Perl script without extension:[.pl]"
+      info "Please update file with proper extensions."
+    fi
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_ARRAY_PERL+=("${FILE}")
   else
     ############################
     # Extension was not found! #
