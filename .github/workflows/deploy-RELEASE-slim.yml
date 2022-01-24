@@ -117,7 +117,7 @@ jobs:
       # Build and Push containers to registries #
       ###########################################
       - name: Build and push - SLIM
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2.8.0
         with:
           context: .
           file: ./Dockerfile
