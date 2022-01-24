@@ -1,4 +1,4 @@
-## This .sqlfluffini file can be used to configure the SQLFluff linter when
+## This /.sqlfluff file can be used to configure the SQLFluff linter when
 ## used via the GitHub Super Linter. Copy it to the .github/linters folder of
 ## your repo, and uncomment the necessary lines to configure the Super Linter.
 ##
