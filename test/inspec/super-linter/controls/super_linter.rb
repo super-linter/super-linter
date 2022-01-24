@@ -392,7 +392,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.scalafmt.conf",
     "/action/lib/.automation/.snakefmt.toml",
     "/action/lib/.automation/.sql-config.json",
-    "/action/lib/.automation/.sqlfluffini",
+    "/action/lib/.automation//.sqlfluff",
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",
