@@ -14,7 +14,7 @@ packaging==21.3
 platformdirs==2.4.1
 pycparser==2.21
 Pygments==2.11.2
-pyparsing==3.0.6
+pyparsing==3.0.7
 PyYAML==6.0
 resolvelib==0.5.4
 rich==11.0.0
