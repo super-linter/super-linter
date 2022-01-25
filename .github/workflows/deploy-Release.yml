@@ -130,7 +130,7 @@ jobs:
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
           target: "${{ matrix.images.container-build-target }}"
-      
+
       #########################
       # Update Deployment API #
       #########################
