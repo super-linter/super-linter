@@ -108,11 +108,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{ matrix.images.deployment-environment-identifier }}
 
+<<<<<<< HEAD:.github/workflows/deploy-Release.yml
       ######################################
       # Build the docker image and push it #
       ######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
         uses: docker/build-push-action@v2.7.0
+=======
+      ###########################################
+      # Build and Push containers to registries #
+      ###########################################
+      - name: Build and push - SLIM
+        uses: docker/build-push-action@v2.8.0
+>>>>>>> main:.github/workflows/deploy-RELEASE-slim.yml
         with:
           context: .
           file: ./Dockerfile
