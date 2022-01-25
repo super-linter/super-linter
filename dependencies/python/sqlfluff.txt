@@ -22,7 +22,7 @@ pytest==6.2.5
 PyYAML==6.0
 regex==2022.1.18
 six==1.16.0
-sqlfluff==0.9.1
+sqlfluff==0.9.2
 tblib==1.7.0
 toml==0.10.2
 tqdm==4.62.3
