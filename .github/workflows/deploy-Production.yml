@@ -71,6 +71,7 @@ jobs:
       # Build local docker images for tests #
       #######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: docker/build-push-action@v2.7.0
         with:
           cache-from: type=gha
@@ -92,6 +93,7 @@ jobs:
       # Run local docker labels test #
       ################################
       - name: Run Docker label test cases
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: .automation/validate-docker-labels.sh "${{ matrix.images.image-id }}"
 
@@ -99,6 +101,7 @@ jobs:
       # Edit the action.yml for local tests #
       #######################################
       - name: Edit an action.yml file for test local build
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           sed -i "s/super-linter:.*/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}'/g" action.yml
 
@@ -106,6 +109,7 @@ jobs:
       # Gather information #
       ######################
       - name: Gather information about the runtime environment
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           make info
@@ -115,6 +119,7 @@ jobs:
       # Not the container directly, and not using RUN_LOCAL=true #
       ############################################################
       - name: Test the local action
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: ./
         env:
           ACTIONS_RUNNER_DEBUG: true
@@ -128,6 +133,7 @@ jobs:
       # Workaround for https://github.com/actions/runner/issues/434 #
       ###############################################################
       - name: Fix file and directory ownership
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           sudo chown -R "$(id -u)":"$(id -g)" "$(pwd)"
@@ -136,6 +142,7 @@ jobs:
       # Run local make tests #
       ########################
       - name: Run the test suite
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           make IMAGE=${{ matrix.images.image-id }} test
@@ -144,7 +151,7 @@ jobs:
       # Codacy Coverage Report #
       ##########################
       - name: Upload the code coverage report
-        if: ${{ github.repository == 'github/super-linter' }}
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: codacy/codacy-coverage-reporter-action@v1.1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -154,6 +161,7 @@ jobs:
       # Run Linter against Test code base #
       #####################################
       - name: Run Test Cases - ${{ matrix.images.image-id }}
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           docker run \
@@ -169,6 +177,7 @@ jobs:
       # Clean code base to run against it all #
       #########################################
       - name: Clean Test code base for additional testing
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: .automation/clean-code-base-for-tests.sh
 
@@ -176,6 +185,7 @@ jobs:
       # Run Linter against ALL cleaned code base #
       ############################################
       - name: Run against all code base - ${{ matrix.images.image-id }}
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           docker run \
@@ -241,7 +251,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          load: true
+          load: false
           push: true
           tags: |
             github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
