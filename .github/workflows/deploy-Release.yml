@@ -120,7 +120,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          load: true
+          load: false
           push: true
           tags: |
             github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
