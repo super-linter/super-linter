@@ -411,6 +411,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_XML**                   | `true`                          | Flag to enable or disable the linting process of the XML language.                                                                                                                                                   |
 | **VALIDATE_YAML**                  | `true`                          | Flag to enable or disable the linting process of the YAML language.                                                                                                                                                  |
 | **YAML_CONFIG_FILE**               | `.yaml-lint.yml`                | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                                                          |
+| **YAML_ERROR_ON_WARNING**          | `false`                         | Flag to enable or disable the error on warning for Yamllint.                                                                                                                                                         |
 
 ### 23andMe Custom Behavior and Environment Variables
 
