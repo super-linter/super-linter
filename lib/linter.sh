@@ -193,6 +193,8 @@ TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
 
 #################################################
 # Parse if we are using JS standard or prettier #
@@ -941,7 +943,11 @@ LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
-LINTER_COMMANDS_ARRAY['YAML']="yamllint --strict -c ${YAML_LINTER_RULES} -f parsable"
+if [ "${YAML_ERROR_ON_WARNING}" == 'false' ]; then
+  LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES} -f parsable"
+else
+  LINTER_COMMANDS_ARRAY['YAML']="yamllint --strict -c ${YAML_LINTER_RULES} -f parsable"
+fi
 
 debug "--- Linter commands ---"
 debug "-----------------------"
