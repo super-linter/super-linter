@@ -309,6 +309,7 @@ function LintCodebase() {
           # Success #
           ###########
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
+          info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"
         fi
       else
         #######################################
