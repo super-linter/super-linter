@@ -72,7 +72,7 @@ jobs:
       #######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2.8.0
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -241,7 +241,7 @@ jobs:
       ######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2.8.0
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
