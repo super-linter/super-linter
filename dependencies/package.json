@@ -13,7 +13,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-jsonc": "^2.0.0",
+    "eslint-plugin-jsonc": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
