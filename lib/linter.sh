@@ -60,6 +60,8 @@ source /action/lib/functions/updateSSL.sh # Source the function script(s)
 source /action/lib/functions/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/worker.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/setupSSH.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
@@ -805,6 +807,12 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
+
+############################################
+# Create SSH agent and add key if provided #
+############################################
+SetupSshAgent
+SetupGithubComSshKeys
 
 ################################################
 # Need to update the loops for the image style #
