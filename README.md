@@ -28,6 +28,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Template rules files](#template-rules-files)
     - [Using your own rules files](#using-your-own-rules-files)
     - [Disabling rules](#disabling-rules)
+    - [Using your own SSH key](#using-your-own-ssh-key)
   - [Filter linted files](#filter-linted-files)
   - [Docker Hub](#docker-hub)
   - [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
@@ -418,6 +419,84 @@ If your repository contains your own rules files that live outside of a `.github
 ### Disabling rules
 
 If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/main/docs/disabling-linters.md)
+
+### Using your own SSH key
+
+If you need to add an SSH agent and your own SSH key to your linter because of external dependencies, you can use the
+`SSH_KEY` environment variable. The value of that environment variable should be a full SSH private key that has access
+to your private repositories.
+
+Example:
+
+```
+-----BEGIN OPENSSH PRIVATE KEY-----
+KEY CONTENTS HERE
+-----END OPENSSH PRIVATE KEY-----
+```
+
+You should add this key as an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+and implement it with the `secrets` namespace in your workflow.
+
+Example workflow:
+
+```yml
+---
+#################################
+#################################
+## Super Linter GitHub Actions ##
+#################################
+#################################
+name: Lint Code Base
+
+#
+# Documentation:
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches-ignore: [master, main]
+    # Remove the line above to run when pushing to master
+  pull_request:
+    branches: [master, main]
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Lint Code Base
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+```
 
 ## Filter linted files
 
