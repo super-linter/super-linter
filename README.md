@@ -428,7 +428,7 @@ to your private repositories.
 
 Example:
 
-```
+```text
 -----BEGIN OPENSSH PRIVATE KEY-----
 KEY CONTENTS HERE
 -----END OPENSSH PRIVATE KEY-----
