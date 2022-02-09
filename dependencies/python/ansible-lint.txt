@@ -1,4 +1,4 @@
-ansible-core==2.12.1
+ansible-core==2.12.2
 ansible-lint==5.3.2
 bracex==2.2.1
 cffi==1.15.0
