@@ -60,6 +60,8 @@ source /action/lib/functions/updateSSL.sh # Source the function script(s)
 source /action/lib/functions/validation.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/worker.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/setupSSH.sh # Source the function script(s)
 
 ###########
 # GLOBALS #
@@ -167,6 +169,9 @@ SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 SUPPRESS_FILE_TYPE_WARN="${SUPPRESS_FILE_TYPE_WARN:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+# SSH_KEY="${SSH_KEY}"
+SSH_SETUP_GITHUB="${SSH_SETUP_GITHUB:-false}"
+SSH_INSECURE_NO_VERIFY_GITHUB_KEY="${SSH_INSECURE_NO_VERIFY_GITHUB_KEY:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 # SSL_CERT_SECRET="${SSL_CERT_SECRET}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -805,6 +810,12 @@ trap 'cleanup' 0 1 2 3 6 14 15
 # Header #
 ##########
 Header
+
+############################################
+# Create SSH agent and add key if provided #
+############################################
+SetupSshAgent
+SetupGithubComSshKeys
 
 ################################################
 # Need to update the loops for the image style #

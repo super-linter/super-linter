@@ -28,6 +28,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Template rules files](#template-rules-files)
     - [Using your own rules files](#using-your-own-rules-files)
     - [Disabling rules](#disabling-rules)
+    - [Using your own SSH key](#using-your-own-ssh-key)
   - [Filter linted files](#filter-linted-files)
   - [Docker Hub](#docker-hub)
   - [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
@@ -315,6 +316,9 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **SCALAFMT_CONFIG_FILE**           | `.scalafmt.conf`                | Filename for [scalafmt configuration](https://scalameta.org/scalafmt/docs/configuration.html) (ex: `.scalafmt.conf`)                                                                                                 |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE** | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
 | **SSL_CERT_SECRET**                | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
+| **SSH_KEY**                        | `none`                          | SSH key that has access to your private repositories |
+| **SSH_SETUP_GITHUB**               | `false`                         | If set to `true`, adds the `github.com` SSH key to `known_hosts`. This is ignored if `SSH_KEY` is provided - i.e. the `github.com` SSH key is always added if `SSH_KEY` is provided |
+| **SSH_INSECURE_NO_VERIFY_GITHUB_KEY** | `false`                      | **INSECURE -** If set to `true`, does not verify the fingerprint of the github.com SSH key before adding this. This is not recommended! |
 | **SQL_CONFIG_FILE**                | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **SQLFLUFF_CONFIG_FILE**                | `/.sqlfluff`             | Filename for [SQLFLUFF configuration](https://docs.sqlfluff.com/en/stable/configuration.html) (ex: `/.sqlfluff`, `pyproject.toml`)                                                                   |
 | **SUPPRESS_FILE_TYPE_WARN**        | `false`                         | If set to `true`, will hide warning messages about files without their proper extensions. Default is `false`                                                                                                         |
@@ -415,6 +419,76 @@ If your repository contains your own rules files that live outside of a `.github
 ### Disabling rules
 
 If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/main/docs/disabling-linters.md)
+
+### Using your own SSH key
+
+If you need to add your own SSH key to the linter because of private dependencies, you can use the `SSH_KEY` environment
+variable. The value of that environment variable should be an SSH private key that has access to your private
+repositories.
+
+You should add this key as an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+and access it with the `secrets` parameter.
+
+Example workflow:
+
+```yml
+---
+#################################
+#################################
+## Super Linter GitHub Actions ##
+#################################
+#################################
+name: Lint Code Base
+
+#
+# Documentation:
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches-ignore: [master, main]
+    # Remove the line above to run when pushing to master
+  pull_request:
+    branches: [master, main]
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Lint Code Base
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+```
 
 ## Filter linted files
 
