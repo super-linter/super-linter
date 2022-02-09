@@ -1,4 +1,4 @@
-black==21.12b0
+black==22.1.0
 click==7.1.2
 distlib==0.3.4
 filelock==3.4.2
