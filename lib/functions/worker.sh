@@ -263,7 +263,13 @@ function LintCodebase() {
       elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
+          # Just in case there's something in the .terraform folder, keep a copy of it
+          [ -d '.terraform' ] && cp -r .terraform /tmp/.terraform-tflint-backup
           terraform get 2>&1
+          # Clean up after ourselves
+          rm -rf .terraform
+          # Put the copy back in place
+          [ -d '/tmp/.terraform-tflint-backup' ] && mv /tmp/.terraform-tflint-backup .terraform
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
       else
