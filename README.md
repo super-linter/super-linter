@@ -426,14 +426,6 @@ If you need to add an SSH agent and your own SSH key to your linter because of e
 `SSH_KEY` environment variable. The value of that environment variable should be a full SSH private key that has access
 to your private repositories.
 
-Example:
-
-```text
------BEGIN OPENSSH PRIVATE KEY-----
-KEY CONTENTS HERE
------END OPENSSH PRIVATE KEY-----
-```
-
 You should add this key as an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 and implement it with the `secrets` namespace in your workflow.
 
