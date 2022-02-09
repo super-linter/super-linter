@@ -22,4 +22,4 @@ s3transfer==0.5.0
 sarif-om==1.0.4
 six==1.16.0
 urllib3==1.26.8
-virtualenv==20.13.0
+virtualenv==20.13.1

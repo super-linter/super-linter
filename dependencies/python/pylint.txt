@@ -8,5 +8,5 @@ platformdirs==2.4.1
 pylint==2.12.2
 six==1.16.0
 toml==0.10.2
-virtualenv==20.13.0
+virtualenv==20.13.1
 wrapt==1.13.3

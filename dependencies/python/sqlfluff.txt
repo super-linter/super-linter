@@ -27,4 +27,4 @@ tblib==1.7.0
 toml==0.10.2
 tqdm==4.62.3
 typing_extensions==4.0.1
-virtualenv==20.13.0
+virtualenv==20.13.1

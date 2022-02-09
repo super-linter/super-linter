@@ -6,4 +6,4 @@ platformdirs==2.4.1
 pycodestyle==2.8.0
 pyflakes==2.4.0
 six==1.16.0
-virtualenv==20.13.0
+virtualenv==20.13.1

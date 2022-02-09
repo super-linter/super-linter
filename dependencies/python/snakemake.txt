@@ -31,5 +31,5 @@ tabulate==0.8.9
 toposort==1.7
 traitlets==5.1.1
 urllib3==1.26.8
-virtualenv==20.13.0
+virtualenv==20.13.1
 wrapt==1.13.3
