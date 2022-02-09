@@ -17,7 +17,7 @@ Pygments==2.11.2
 pyparsing==3.0.7
 PyYAML==6.0
 resolvelib==0.5.4
-rich==11.0.0
+rich==11.2.0
 ruamel.yaml==0.17.20
 ruamel.yaml.clib==0.2.6
 six==1.16.0
