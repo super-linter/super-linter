@@ -52,7 +52,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Mark issue not stale
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             github.rest.issues.removeLabel({
