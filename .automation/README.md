@@ -19,7 +19,9 @@ When the script is triggered on the main branch, it will push with the tag:**lat
 When the script is triggered in a branch, it will push with the tag:**NameOfBranch** which can be used for:
 
 - _testing_
-- _troubleshooting_
+- _troubleshooting_- name: Super-Linter
+  uses: github/super-linter@v4.8.7
+
 - _debugging_
 - **Note:** The branch name will be reduced to alphanumeric for consistency and uploading
 
