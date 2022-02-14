@@ -563,7 +563,7 @@ GetGitHubVars() {
   ############################
   # Validate we have a value #
   ############################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
+  if [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
     error "Failed to get [GITHUB_TOKEN]!"
     error "[${GITHUB_TOKEN}]"
     error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
