@@ -262,7 +262,7 @@ jobs:
       #######################################################
       - name: Create GitHub Issue for failure
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
@@ -281,7 +281,7 @@ jobs:
       # Deploy was failure, alert admins #
       ####################################
       - name: Assign Admins on failure
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
