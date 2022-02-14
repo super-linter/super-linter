@@ -594,6 +594,122 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]"
     fi
   fi
+
+  ############################
+  # Validate we have a value #
+  ############################
+  if [ "${MULTI_STATUS}" == "true" ] && [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
+    error "Failed to get [GITHUB_TOKEN]!"
+    error "[${GITHUB_TOKEN}]"
+    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
+
+    ################################################################################
+    # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
+    ################################################################################
+    MULTI_STATUS='false'
+  else
+    info "Successfully found:${F[W]}[GITHUB_TOKEN]"
+  fi
+
+  ###############################
+  # Convert string to lowercase #
+  ###############################
+  MULTI_STATUS="${MULTI_STATUS,,}"
+
+  #######################################################################
+  # Check to see if the multi status is set, and we have a token to use #
+  #######################################################################
+  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ]; then
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "${GITHUB_REPOSITORY}" ]; then
+      error "Failed to get [GITHUB_REPOSITORY]!"
+      fatal "[${GITHUB_REPOSITORY}]"
+    else
+      info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
+    fi
+
+    ############################
+    # Validate we have a value #
+    ############################
+    if [ -z "${GITHUB_RUN_ID}" ]; then
+      error "Failed to get [GITHUB_RUN_ID]!"
+      fatal "[${GITHUB_RUN_ID}]"
+    else
+      info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
+    fi
+  fi
+}
+################################################################################
+#### Function CallStatusAPI ####################################################
+CallStatusAPI() {
+  ####################
+  # Pull in the vars #
+  ####################
+  LANGUAGE="${1}" # langauge that was validated
+  STATUS="${2}"   # success | error
+  SUCCESS_MSG='No errors were found in the linting process'
+  FAIL_MSG='Errors were detected, please view logs'
+  MESSAGE='' # Message to send to status API
+
+  debug "Calling Multi-Status API for $LANGUAGE with status $STATUS"
+
+  ######################################
+  # Check the status to create message #
+  ######################################
+  if [ "${STATUS}" == "success" ]; then
+    # Success
+    MESSAGE="${SUCCESS_MSG}"
+  else
+    # Failure
+    MESSAGE="${FAIL_MSG}"
+  fi
+
+  ##########################################################
+  # Check to see if were enabled for multi Status mesaages #
+  ##########################################################
+  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
+
+    # make sure we honor DISABLE_ERRORS
+    if [ "${DISABLE_ERRORS}" == "true" ]; then
+      STATUS="success"
+    fi
+
+    debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+
+    ##############################################
+    # Call the status API to create status check #
+    ##############################################
+    SEND_STATUS_CMD=$(
+      curl -f -s -X POST \
+        --url "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
+        -H 'accept: application/vnd.github.v3+json' \
+        -H "authorization: Bearer ${GITHUB_TOKEN}" \
+        -H 'content-type: application/json' \
+        -d "{ \"state\": \"${STATUS}\",
+        \"target_url\": \"https://${GITHUB_DOMAIN:-github.com}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
+        \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
+      }" 2>&1
+    )
+
+    #######################
+    # Load the error code #
+    #######################
+    ERROR_CODE=$?
+
+    debug "Send status comd output: [$SEND_STATUS_CMD]"
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ "${ERROR_CODE}" -ne 0 ]; then
+      # ERROR
+      info "ERROR! Failed to call GitHub Status API!"
+      info "ERROR:[${SEND_STATUS_CMD}]"
+      # Not going to fail the script on this yet...
+    fi
+  fi
 }
 ################################################################################
 #### Function Footer ###########################################################
