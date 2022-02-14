@@ -1,9 +1,4 @@
-distlib==0.3.4
-filelock==3.4.2
 flake8==4.0.1
 mccabe==0.6.1
-platformdirs==2.4.1
 pycodestyle==2.8.0
 pyflakes==2.4.0
-six==1.16.0
-virtualenv==20.13.0
