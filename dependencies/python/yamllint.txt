@@ -1,8 +1,3 @@
-distlib==0.3.4
-filelock==3.4.2
 pathspec==0.9.0
-platformdirs==2.4.1
 PyYAML==6.0
-six==1.16.0
-virtualenv==20.13.0
 yamllint==1.26.3
