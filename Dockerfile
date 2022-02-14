@@ -7,23 +7,23 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM accurics/terrascan:1.13.0 as terrascan
-FROM alpine/terragrunt:1.1.4 as terragrunt
+FROM accurics/terrascan:1.13.1 as terrascan
+FROM alpine/terragrunt:1.1.5 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2022.01.15-alpine as clj-kondo
-FROM dotenvlinter/dotenv-linter:3.1.1 as dotenv-linter
+FROM cljkondo/clj-kondo:2022.02.09-alpine as clj-kondo
+FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.1 as tflint
-FROM golangci/golangci-lint:v1.43.0 as golangci-lint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.34.1.2 as tflint
+FROM golangci/golangci-lint:v1.44.0 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.1.4 as terraform
+FROM hashicorp/terraform:1.1.5 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.2 as shfmt
 FROM rhysd/actionlint:1.6.8 as actionlint
-FROM scalameta/scalafmt:v3.3.3 as scalafmt
-FROM yoheimuta/protolint:v0.36.0 as protolint
+FROM scalameta/scalafmt:v3.4.3 as scalafmt
+FROM yoheimuta/protolint:v0.37.0 as protolint
 FROM zricethezav/gitleaks:v8.2.7 as gitleaks
 
 ##################

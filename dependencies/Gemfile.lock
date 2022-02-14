@@ -1,14 +1,14 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.1)
+    activesupport (7.0.2.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
     ast (2.4.2)
     concurrent-ruby (1.1.9)
-    i18n (1.8.11)
+    i18n (1.9.1)
       concurrent-ruby (~> 1.0)
     minitest (5.15.0)
     parallel (1.21.0)
@@ -16,9 +16,9 @@ GEM
       ast (~> 2.4.1)
     rack (2.2.3)
     rainbow (3.1.1)
-    regexp_parser (2.2.0)
+    regexp_parser (2.2.1)
     rexml (3.2.5)
-    rubocop (1.25.0)
+    rubocop (1.25.1)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -27,7 +27,7 @@ GEM
       rubocop-ast (>= 1.15.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.15.1)
+    rubocop-ast (1.15.2)
       parser (>= 3.0.1.1)
     rubocop-github (0.17.0)
       rubocop
@@ -59,4 +59,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.4.0)
 
 BUNDLED WITH
-  2.3.5
+   2.3.5
