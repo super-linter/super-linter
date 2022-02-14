@@ -28,6 +28,11 @@ function LintCodebase() {
   ##########################
   LIST_FILES=()
 
+  ###################################################
+  # Array to track directories where tflint was run #
+  ###################################################
+  declare -A TFLINT_SEEN_DIRS
+
   ################
   # Set the flag #
   ################
@@ -261,9 +266,30 @@ function LintCodebase() {
       # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
       ############################################################################################
       elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+        # Check the cache to see if we've already prepped this directory for tflint
+        if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
+          debug "  Setting up TERRAFORM_TFLINT cache for ${DIR_NAME}"
+
+          TF_DOT_DIR="${DIR_NAME}/.terraform"
+          if [ -d "${TF_DOT_DIR}" ]; then
+            # Just in case there's something in the .terraform folder, keep a copy of it
+            TF_BACKUP_DIR="/tmp/.terraform-tflint-backup${DIR_NAME}"
+            debug "  Backing up ${TF_DOT_DIR} to ${TF_BACKUP_DIR}"
+
+            mkdir -p "${TF_BACKUP_DIR}"
+            cp -r "${TF_DOT_DIR}" "${TF_BACKUP_DIR}"
+            # Store the destination directory so we can restore from our copy later
+            TFLINT_SEEN_DIRS[${DIR_NAME}]="${TF_BACKUP_DIR}"
+          else
+            # Just let the cache know we've seen this before
+            TFLINT_SEEN_DIRS[${DIR_NAME}]='false'
+          fi
+
+          terraform get 2>&1
+        fi
+
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
-          terraform get 2>&1
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
       else
@@ -337,6 +363,22 @@ function LintCodebase() {
       debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
     done
   fi
+
+  # Clean up after TFLINT
+  for TF_DIR in "${!TFLINT_SEEN_DIRS[@]}"; do
+    (
+      cd "${TF_DIR}" || exit
+      rm -rf .terraform
+
+      # Check to see if there was a .terraform folder there before we got started, restore it if so
+      POTENTIAL_BACKUP_DIR="${TFLINT_SEEN_DIRS[${TF_DIR}]}"
+      if [[ "${POTENTIAL_BACKUP_DIR}" != 'false' ]]; then
+        # Put the copy back in place
+        debug "  Restoring ${TF_DIR}/.terraform from ${POTENTIAL_BACKUP_DIR}"
+        mv "${POTENTIAL_BACKUP_DIR}/.terraform" .terraform
+      fi
+    )
+  done
 
   ##############################
   # Validate we ran some tests #
