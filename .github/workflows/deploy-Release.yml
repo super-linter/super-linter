@@ -102,7 +102,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.6.1
+        uses: bobheadxi/deployments@v0.6.2
         id: deployment
         with:
           step: start
@@ -150,7 +150,7 @@ jobs:
       #######################################################
       - name: Create GitHub Issue for failure
         if: failure()
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
@@ -169,7 +169,7 @@ jobs:
       # Assign admins on failure #
       ############################
       - name: Assign Admins on failure
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: failure()
         with:
           # https://octokit.github.io/rest.js/v18#issues-create

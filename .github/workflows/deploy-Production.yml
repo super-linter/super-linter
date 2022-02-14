@@ -230,7 +230,7 @@ jobs:
       #########################
       - name: Start deployment
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: bobheadxi/deployments@v0.6.1
+        uses: bobheadxi/deployments@v0.6.2
         id: deployment
         with:
           step: start
@@ -262,7 +262,7 @@ jobs:
       #######################################################
       - name: Create GitHub Issue for failure
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: create-issue
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
@@ -281,7 +281,7 @@ jobs:
       # Deploy was failure, alert admins #
       ####################################
       - name: Assign Admins on failure
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
         with:
           # https://octokit.github.io/rest.js/v18#issues-create
@@ -307,7 +307,7 @@ jobs:
       #########################
       - name: Update deployment status
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: bobheadxi/deployments@v0.6.1
+        uses: bobheadxi/deployments@v0.6.2
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
