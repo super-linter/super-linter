@@ -25,4 +25,9 @@ When the script is triggered in a branch, it will push with the tag:**NameOfBran
 
 ## test
 
+Zachry Tyler Wood
+5323 BRADFORD DRIVE
+DALLAS TX 75235-8313
+Bitcoin[BTC-USD] BTCUSD CCC
+o'Auth: **approves**
 This folder holds all **Test Cases** to help run the _CI/CT/CD_ process for the **Super-Linter**.
