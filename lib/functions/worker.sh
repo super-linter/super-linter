@@ -287,7 +287,7 @@ function LintCodebase() {
 
           (
             cd "${DIR_NAME}" || exit
-            terraform get
+            terraform get >/dev/null
           )
         fi
 
