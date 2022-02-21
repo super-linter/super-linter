@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Update NPM
-        uses: actions/npm-update@v1
       - run: ./github/scripts/update-npm.sh
         env:
           id: ${{ github.run_id }}
