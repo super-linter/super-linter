@@ -10,6 +10,7 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
+name: Deploy Production
 ###########################################
 # Start the job on all push or PR to main #
 ###########################################
