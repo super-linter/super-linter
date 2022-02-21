@@ -11,7 +11,7 @@
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^26.1.0",
+    "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-jsonc": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^6.5.1",
