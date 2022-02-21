@@ -10,6 +10,10 @@ pushd dependencies
 ncu -u
 npm install
 
+# Setup Git Config
+git config --global user.email "noreply@github.com"
+git config --global user.name "Super-Linter Automation"
+
 # Push changes to remote
 git add .
 git commit -a -Ss -m "Update NPM dependencies"
