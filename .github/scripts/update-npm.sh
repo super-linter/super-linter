@@ -19,13 +19,17 @@ echo "Configuring Git..."
 git config --global user.email "noreply@github.com"
 git config --global user.name "Super-Linter Automation"
 
-# Push changes to remote
-echo "Pushing changes to remote..."
-git add .
-git commit -a -Ss -m "Update NPM dependencies"
-git checkout -b "npm_deps_${id}"
-git push origin "npm_deps_${id}"
+if [[ $(git status --porcelain) ]]; then
+  # Push changes to remote
+  echo "Pushing changes to remote..."
+  git add .
+  git commit -a -Ss -m "Update NPM dependencies"
+  git checkout -b "npm_deps_${id}"
+  git push origin "npm_deps_${id}"
 
-# Open pull request
-echo "Opening pull request..."
-gh pr create --title "Weekly NPM Updates" --body "Updates NPM dependencies" --base master --head "npm_deps_${id}"
+  # Open pull request
+  echo "Opening pull request..."
+  gh pr create --title "Weekly NPM Updates" --body "Updates NPM dependencies" --base master --head "npm_deps_${id}"
+else
+  echo "No changes to commit"
+fi
