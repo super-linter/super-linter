@@ -13,7 +13,7 @@
 ##########################
 # Name of the action job #
 ##########################
-name: Keep GitHub tag versions up-to-date
+name: GitHub Tag Update
 
 #####################################################
 # Run the job when a release is published or edited #

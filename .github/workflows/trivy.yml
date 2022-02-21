@@ -1,6 +1,6 @@
 # Disabling trivy scans while they get troubleshooting for failures
 ---
-name: Container Security Scan with Trivy
+name: Trivy Container Scan
 on:
   push:
     branches:
