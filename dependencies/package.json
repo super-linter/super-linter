@@ -5,7 +5,7 @@
     "@stoplight/spectral": "^6.1.0",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
-    "asl-validator": "^1.10.0",
+    "asl-validator": "^2.0.0",
     "axios": "^0.26.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.9.0",
