@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM accurics/terrascan:1.13.1 as terrascan
-FROM alpine/terragrunt:1.1.5 as terragrunt
+FROM alpine/terragrunt:1.1.6 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.02.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
