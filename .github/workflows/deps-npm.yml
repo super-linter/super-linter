@@ -6,9 +6,10 @@ on:
   workflow_dispatch:
 jobs:
   update:
+    name: Update NPM Dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: ./github/scripts/update-npm.sh
+      - run: ./.github/scripts/update-npm.sh
         env:
           id: ${{ github.run_id }}
