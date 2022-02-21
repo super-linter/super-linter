@@ -10,15 +10,6 @@ pushd dependencies
 ncu -u
 npm install
 
-# Use NPM audit to force fix html-lint issue
-npm audit fix --force
-npm install
-
-# Use ncu to force fix NPM audit issue
-ncu -u
-npm install
-popd
-
 # Push changes to remote
 git add .
 git commit -a -Ss -m "Update NPM dependencies"
