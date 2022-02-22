@@ -63,7 +63,7 @@ if [[ $(git status --porcelain) ]]; then
   # Push changes to remote
   echo "Pushing changes to remote..."
   git add .
-  git commit -a -Ss -m "Update Python dependencies"
+  git commit -a -m "Update Python dependencies"
   # shellcheck disable=SC2154
   git checkout -b "python_deps_${id}"
   # shellcheck disable=SC2154
