@@ -1,7 +1,7 @@
 appdirs==1.4.4
 attrs==21.4.0
 chardet==4.0.0
-click==8.0.3
+click==8.0.4
 colorama==0.4.4
 diff-cover==6.4.4
 iniconfig==1.1.1
