@@ -13,3 +13,4 @@ jobs:
       - run: ./.github/scripts/update-python.sh
         env:
           id: ${{ github.run_id }}
+          working_directory: ${{ github.workspace }}
