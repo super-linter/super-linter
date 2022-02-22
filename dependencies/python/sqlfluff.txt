@@ -6,7 +6,7 @@ colorama==0.4.4
 diff-cover==6.4.4
 iniconfig==1.1.1
 Jinja2==3.0.3
-MarkupSafe==2.0.1
+MarkupSafe==2.1.0
 packaging==21.3
 pathspec==0.9.0
 pluggy==1.0.0
