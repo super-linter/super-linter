@@ -2,6 +2,6 @@ black==22.1.0
 click==8.0.3
 mypy-extensions==0.4.3
 pathspec==0.9.0
-platformdirs==2.5.0
+platformdirs==2.5.1
 tomli==2.0.1
 typing_extensions==4.1.1
