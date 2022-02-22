@@ -71,7 +71,7 @@ if [[ $(git status --porcelain) ]]; then
 
   # Open pull request
   echo "Opening pull request..."
-  echo "${GITHUB_TOKEN}" | gh auth login --with-token
+  echo "${token}" | gh auth login --with-token
   gh pr create --title "Weekly Python Updates" --body "Updates Python dependencies" --base master --head "python_deps_${id}"
 else
   echo "No changes to commit"
