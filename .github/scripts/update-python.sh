@@ -35,13 +35,13 @@ for DEP_FILE in *.txt; do
   # Activate virtualenv
   source bin/activate
   # Handle the ansibl-lint corner case
-  if [[ "$PACKAGE_NAME" == "ansible-lint" ]]; then
+  if [[ $PACKAGE_NAME == "ansible-lint" ]]; then
     pip install "ansible-lint[core]"
   else
     pip install "${PACKAGE_NAME}"
   fi
   # Generate an update requirements.txt
-  pip freeze > requirements.txt
+  pip freeze >requirements.txt
   # deactivate the python virtualenv
   deactivate
   # pop the stack
