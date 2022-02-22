@@ -33,6 +33,7 @@ for DEP_FILE in *.txt; do
   # Enable virtualenv
   virtualenv .
   # Activate virtualenv
+  # shellcheck disable=SC1091
   source bin/activate
   # Handle the ansibl-lint corner case
   if [[ $PACKAGE_NAME == "ansible-lint" ]]; then
