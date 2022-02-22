@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: ./.github/scripts/update-python.sh
+      - name: Update Dependencies
+        run: ./.github/scripts/update-python.sh
         env:
           id: ${{ github.run_id }}
           token: ${{ secrets.GITHUB_TOKEN }}
