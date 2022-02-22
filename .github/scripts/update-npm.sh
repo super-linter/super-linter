@@ -33,7 +33,7 @@ if [[ $(git status --porcelain) ]]; then
   echo "Opening pull request..."
   # shellcheck disable=SC2154
   echo "${token}" | gh auth login --with-token
-  gh pr create --title "Weekly NPM Updates" --body "Updates NPM dependencies" --base master --head "npm_deps_${id}"
+  gh pr create --title "Weekly NPM Updates" --body "Updates NPM dependencies" --base main --head "npm_deps_${id}"
 else
   echo "No changes to commit"
 fi
