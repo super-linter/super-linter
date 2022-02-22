@@ -6,7 +6,7 @@ ConfigArgParse==1.5.3
 connection-pool==0.0.3
 datrie==0.8.2
 docutils==0.18.1
-filelock==3.4.2
+filelock==3.6.0
 gitdb==4.0.9
 GitPython==3.1.27
 idna==3.3
