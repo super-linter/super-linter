@@ -11,7 +11,8 @@ set -euo pipefail
 ############################
 # Create staging directory #
 ############################
-mkdir -p /venvs
+# shellcheck disable=SC2154
+mkdir -p "${working_directory}/venvs"
 
 ########################################
 # Install basic libs to run installers #
@@ -26,9 +27,9 @@ for DEP_FILE in *.txt; do
   # split the package name from its version
   PACKAGE_NAME=${DEP_FILE%.txt}
   echo "-------------------------------------------"
-  mkdir -p "/venvs/${PACKAGE_NAME}"
+  mkdir -p "${working_directory}/venvs/${PACKAGE_NAME}"
   echo "Generating virtualenv for: [${PACKAGE_NAME}]"
-  pushd "/venvs/${PACKAGE_NAME}"
+  pushd "${working_directory}/venvs/${PACKAGE_NAME}"
   # Enable virtualenv
   virtualenv .
   # Activate virtualenv
@@ -48,7 +49,7 @@ for DEP_FILE in *.txt; do
   # Remove old lockfile
   rm -rf "$DEP_FILE"
   # Create new lockfile
-  mv "/venvs/${PACKAGE_NAME}/requirements.txt" "${DEP_FILE}"
+  mv "${working_directory}/venvs/${PACKAGE_NAME}/requirements.txt" "${DEP_FILE}"
 done
 
 git status
