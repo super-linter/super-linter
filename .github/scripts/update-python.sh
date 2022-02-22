@@ -73,7 +73,7 @@ if [[ $(git status --porcelain) ]]; then
   echo "Opening pull request..."
   # shellcheck disable=SC2154
   echo "${token}" | gh auth login --with-token
-  gh pr create --title "Weekly Python Updates" --body "Updates Python dependencies" --base master --head "python_deps_${id}"
+  gh pr create --title "Weekly Python Updates" --body "Updates Python dependencies" --base main --head "python_deps_${id}"
 else
   echo "No changes to commit"
 fi
