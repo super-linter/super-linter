@@ -1,0 +1,15 @@
+name: Update Deps - Python
+on:
+  schedule:
+    # Sunday at 5:00pm
+    - cron: "0 17 * * 0"
+  workflow_dispatch:
+jobs:
+  update:
+    name: Update Python Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./.github/scripts/update-python.sh
+        env:
+          id: ${{ github.run_id }}
