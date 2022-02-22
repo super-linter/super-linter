@@ -13,3 +13,4 @@ jobs:
       - run: ./.github/scripts/update-npm.sh
         env:
           id: ${{ github.run_id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
