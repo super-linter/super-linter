@@ -31,6 +31,7 @@ if [[ $(git status --porcelain) ]]; then
 
   # Open pull request
   echo "Opening pull request..."
+  echo "${GITHUB_TOKEN}" | gh auth login --with-token
   gh pr create --title "Weekly NPM Updates" --body "Updates NPM dependencies" --base master --head "npm_deps_${id}"
 else
   echo "No changes to commit"
