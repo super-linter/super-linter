@@ -7,7 +7,7 @@ commonmark==0.9.1
 cryptography==36.0.1
 enrich==1.2.7
 Jinja2==3.0.3
-MarkupSafe==2.0.1
+MarkupSafe==2.1.0
 packaging==21.3
 pycparser==2.21
 Pygments==2.11.2
