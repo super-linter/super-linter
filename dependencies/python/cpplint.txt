@@ -1,1 +1,1 @@
-cpplint==1.5.5
+cpplint==1.6.0
