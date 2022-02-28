@@ -21,7 +21,7 @@ FROM hashicorp/terraform:1.1.6 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
-FROM rhysd/actionlint:1.6.8 as actionlint
+FROM rhysd/actionlint:1.6.9 as actionlint
 FROM scalameta/scalafmt:v3.4.3 as scalafmt
 FROM yoheimuta/protolint:v0.37.0 as protolint
 FROM zricethezav/gitleaks:v8.2.7 as gitleaks
