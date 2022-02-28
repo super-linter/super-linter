@@ -1,6 +1,6 @@
 attrs==21.4.0
 aws-sam-translator==1.42.0
-boto3==1.21.4
+boto3==1.21.8
 botocore==1.24.4
 cfn-lint==0.58.1
 jmespath==0.10.0
