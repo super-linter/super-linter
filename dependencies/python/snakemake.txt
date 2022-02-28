@@ -23,7 +23,7 @@ ratelimiter==1.2.0.post0
 requests==2.27.1
 smart-open==5.2.1
 smmap==5.0.0
-snakemake==6.15.5
+snakemake==7.0.1
 stopit==1.1.2
 tabulate==0.8.9
 toposort==1.7
