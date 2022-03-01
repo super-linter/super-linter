@@ -847,6 +847,11 @@ export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                      
 ############################
 GetValidationInfo
 
+# Now ANSIBLE_DIRECTORY is set
+ANSIBLE_ROLES_PATH="${ANSIBLE_ROLES_PATH:-"${ANSIBLE_DIRECTORY}/roles"}"
+debug "Setting ANSIBLE_ROLES_PATH to: ${ANSIBLE_ROLES_PATH}..."
+export ANSIBLE_ROLES_PATH
+
 #################################
 # Get the linter rules location #
 #################################
@@ -868,7 +873,7 @@ GetStandardRules "typescript"
 # Define linter commands #
 ##########################
 declare -A LINTER_COMMANDS_ARRAY
-LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -v -c ${ANSIBLE_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -vv -c ${ANSIBLE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
 LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"

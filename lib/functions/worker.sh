@@ -188,20 +188,12 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        #########################################
-        # Make sure we don't lint certain files #
-        #########################################
-        if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]]; then
-          # This is a file we don't look at
-          continue
-        fi
-
         ################################
         # Lint the file with the rules #
         ################################
+        debug "ANSIBLE_ROLES_PATH set to: ${ANSIBLE_ROLES_PATH}..."
         LINT_CMD=$(
-          cd "${ANSIBLE_DIRECTORY}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${ANSIBLE_DIRECTORY}" 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
