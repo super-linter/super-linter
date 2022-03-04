@@ -159,7 +159,7 @@ function LintCodebase() {
       debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
 
       if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
-        # These linters expect
+        # These linters expect files inside a directory, not a directory. So we add a trailing slash
         TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
         debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
       fi
@@ -194,11 +194,9 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        ################################
-        # Lint the file with the rules #
-        ################################
-        debug "ANSIBLE_ROLES_PATH set to: ${ANSIBLE_ROLES_PATH}..."
         LINT_CMD=$(
+          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}..."
+          debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
           ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${ANSIBLE_DIRECTORY}" 2>&1
         )
       ####################################
