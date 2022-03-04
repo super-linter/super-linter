@@ -1,21 +1,4 @@
 ---
-###########################################
-###########################################
-#### GitHub Services-Engineering Stack ####
-####                                   ####
-#### GHE Primary HA backup-utils ONLY  ####
-###########################################
-###########################################
-
-###############################
-# Description of the playbook #
-###############################
-# description: Builds GHE Primary, HA, and backup-utils.
-# detailed_description: Builds GHE Primary, HA, and backup-utils.
-
-######################
-## Configure GitHub ##
-######################
 - hosts: github_primary
   vars:
     demo_github_initial_user: "{{ hostvars['localhost'].local_user }}"
