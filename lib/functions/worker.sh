@@ -190,21 +190,12 @@ function LintCodebase() {
       ####################
       LINT_CMD=''
 
-      #####################
-      # Check for ansible #
-      #####################
-      if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        LINT_CMD=$(
-          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}..."
-          debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
-          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${ANSIBLE_DIRECTORY}" 2>&1
-        )
       ####################################
       # Corner case for pwsh subshell    #
       #  - PowerShell (PSScriptAnalyzer) #
       #  - ARM        (arm-ttk)          #
       ####################################
-      elif [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
+      if [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
         ################################
         # Lint the file with the rules #
         ################################
