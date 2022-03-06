@@ -1,7 +1,7 @@
 attrs==21.4.0
 aws-sam-translator==1.42.0
-boto3==1.21.8
-botocore==1.24.8
+boto3==1.21.13
+botocore==1.24.13
 cfn-lint==0.58.2
 jmespath==0.10.0
 jschema-to-python==1.2.3
@@ -10,7 +10,7 @@ jsonpickle==2.1.0
 jsonpointer==2.2
 jsonschema==3.2.0
 junit-xml==1.9
-networkx==2.6.3
+networkx==2.7.1
 pbr==5.8.1
 pyrsistent==0.18.1
 python-dateutil==2.8.2
