@@ -3,20 +3,20 @@
   "dependencies": {
     "@coffeelint/cli": "^5.2.4",
     "@stoplight/spectral": "^6.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.12.1",
-    "@typescript-eslint/parser": "^5.12.1",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
     "asl-validator": "^2.0.0",
     "axios": "^0.26.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.10.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.4.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-jsonc": "^2.2.1",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.29.2",
+    "eslint-plugin-react": "^7.29.3",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-vue": "^8.5.0",
     "gherkin-lint": "^4.2.2",
@@ -26,7 +26,7 @@
     "jscpd": "^3.4.5",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.31.1",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^3.2.1",
     "npm-groovy-lint": "^9.4.1",
     "prettier": "^2.5.1",
     "prettyjson": "^1.2.5",
@@ -44,6 +44,6 @@
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^2.1.5",
-    "typescript": "^4.5.5"
+    "typescript": "^4.6.2"
   }
 }
