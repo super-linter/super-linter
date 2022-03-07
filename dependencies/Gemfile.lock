@@ -12,7 +12,7 @@ GEM
       concurrent-ruby (~> 1.0)
     minitest (5.15.0)
     parallel (1.21.0)
-    parser (3.1.0.0)
+    parser (3.1.1.0)
       ast (~> 2.4.1)
     rack (2.2.3)
     rainbow (3.1.1)
@@ -27,13 +27,13 @@ GEM
       rubocop-ast (>= 1.15.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.15.2)
-      parser (>= 3.0.1.1)
+    rubocop-ast (1.16.0)
+      parser (>= 3.1.1.0)
     rubocop-github (0.17.0)
       rubocop
       rubocop-performance
       rubocop-rails
-    rubocop-performance (1.13.2)
+    rubocop-performance (1.13.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.13.2)
@@ -53,7 +53,7 @@ PLATFORMS
 DEPENDENCIES
   rubocop (~> 1.25.1)
   rubocop-github (~> 0.17.0)
-  rubocop-performance (~> 1.13.2)
+  rubocop-performance (~> 1.13.3)
   rubocop-rails (~> 2.7)
   rubocop-rspec (~> 2.8.0)
 
