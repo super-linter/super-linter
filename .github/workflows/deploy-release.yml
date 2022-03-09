@@ -49,7 +49,7 @@ jobs:
       # Checkout the source code #
       ############################
       - name: Checkout Code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list
           # of changed files within `super-linter`
@@ -73,7 +73,7 @@ jobs:
       # Login to DockerHub #
       ######################
       - name: Login to DockerHub
-        uses: docker/login-action@v1.14.0
+        uses: docker/login-action@v1.14.1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -82,7 +82,7 @@ jobs:
       # Login to GHCR.io #
       ####################
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.14.0
+        uses: docker/login-action@v1.14.1
         with:
           registry: ghcr.io
           username: ${{ secrets.GCR_USERNAME }}
@@ -102,7 +102,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v0.6.2
+        uses: bobheadxi/deployments@v1.1.0
         id: deployment
         with:
           step: start
@@ -136,7 +136,7 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v0.6.2
+        uses: bobheadxi/deployments@v1.1.0
         if: always()
         with:
           step: finish
