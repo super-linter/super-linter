@@ -2,8 +2,8 @@ enum Test {
   Hoo = 'hoo'
 }
 
-const spiderman = (person) => {
-  return 'Hello, ' + person
+const spiderman = (person: string): string => {
+  return `Hello, ${person}`
 }
 
 const user = 'Peter Parker'
