@@ -27,7 +27,7 @@ parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaVersion: 2018
   sourceType: module
-  project: ./.github/linters/tsconfig.json
+  project: /github/workspace/.github/linters/tsconfig.json
 
 ###########
 # Plugins #
