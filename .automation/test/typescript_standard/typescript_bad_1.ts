@@ -1,3 +1,7 @@
+enum Test {
+    Hoo = 'hoo'
+}
+
 const spiderman = (person: String) => {
     return 'Hello, ' + person;
 }
