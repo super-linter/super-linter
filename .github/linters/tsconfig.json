@@ -6,6 +6,6 @@
     "src",
     "tests",
     "tools",
-    "typescript_standard"
+    "/tmp/lint/.automation/test"
   ]
 }
