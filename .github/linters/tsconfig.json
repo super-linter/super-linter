@@ -3,9 +3,9 @@
     "strictNullChecks": true
   },
   "include": [
+    ".automation",
     "src",
     "tests",
-    "tools",
-    "test"
+    "tools"
   ]
 }
