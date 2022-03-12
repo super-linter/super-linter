@@ -3,11 +3,9 @@
     "strictNullChecks": true
   },
   "include": [
-    "**/*.js",
-    "**/*.jsx",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mjs",
-    "**/*.cjs"
+    "src",
+    "tests",
+    "tools",
+    "test"
   ]
 }
