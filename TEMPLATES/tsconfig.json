@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
     "strictNullChecks": true
-  }
+  },
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mjs",
+    "**/*.cjs"
+  ]
 }
