@@ -371,6 +371,7 @@ COPY --from=base_image /usr/bin/ /usr/bin/
 COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
+COPY --from=base_image /usr/local/include/ /usr/local/include/
 COPY --from=base_image /usr/lib/ /usr/lib/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
