@@ -170,7 +170,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
@@ -204,7 +204,7 @@ Example:
 [![GitHub Super-Linter](https://github.com/nvuillam/npm-groovy-lint/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
-_Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository)
+_Note:_ IF you did not use `Lint Code Base` as GitHub Action name, please read [GitHub Actions Badges documentation](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/adding-a-workflow-status-badge).
 
 ### Images
 
@@ -330,7 +330,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **TYPESCRIPT_ES_CONFIG_FILE**      | `.eslintrc.yml`                 | Filename for [ESLint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats) (ex: `.eslintrc.yml`, `.eslintrc.json`)                                                               |
 | **USE_FIND_ALGORITHM**             | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**          | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
-| **VALIDATE_JSCPD_ALL_CODEBASE**    | `false`                         | If set to `true`, will lint the whole codebase with JSCPD, in addition to linting files with JSCPD one by one. If set to `false`, JSCPD will only lint files one by one.                                             |
+| **VALIDATE_JSCPD_ALL_CODEBASE**    | `false`                         | If set to `true`, will lint the whole codebase with JSCPD. If set to `false`, JSCPD will only lint files one by one.                                                                                                 |
 | **VALIDATE_ANSIBLE**               | `true`                          | Flag to enable or disable the linting process of the Ansible language.                                                                                                                                               |
 | **VALIDATE_ARM**                   | `true`                          | Flag to enable or disable the linting process of the ARM language.                                                                                                                                                   |
 | **VALIDATE_BASH**                  | `true`                          | Flag to enable or disable the linting process of the Bash language.                                                                                                                                                  |
