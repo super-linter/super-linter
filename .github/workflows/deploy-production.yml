@@ -315,3 +315,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
+          env_url: https://github.com/github/super-linter
