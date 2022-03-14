@@ -155,10 +155,16 @@ function LintCodebase() {
       fi
 
       INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
+      TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
+      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
 
-      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}"
+      if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
+        # These linters expect files inside a directory, not a directory. So we add a trailing slash
+        TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
+        debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
+      fi
 
-      if [[ ${FILE} != *"${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}/"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
+      if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
         debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
         continue
       fi
@@ -188,20 +194,10 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        #########################################
-        # Make sure we don't lint certain files #
-        #########################################
-        if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]]; then
-          # This is a file we don't look at
-          continue
-        fi
-
-        ################################
-        # Lint the file with the rules #
-        ################################
         LINT_CMD=$(
-          cd "${ANSIBLE_DIRECTORY}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
+          cd "${WORKSPACE_PATH}" || exit
+          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
@@ -393,6 +389,6 @@ function LintCodebase() {
     # We failed to find files and no tests were ran #
     #################################################
     error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
-    fatal "Please validate logic or that tests exist!"
+    fatal "Validate logic and that tests exist for linter: ${LINTER_NAME}"
   fi
 }

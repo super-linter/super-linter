@@ -21,10 +21,10 @@ FROM hashicorp/terraform:1.1.7 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
-FROM rhysd/actionlint:1.6.9 as actionlint
+FROM rhysd/actionlint:1.6.10 as actionlint
 FROM scalameta/scalafmt:v3.4.3 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
-FROM zricethezav/gitleaks:v8.3.0 as gitleaks
+FROM zricethezav/gitleaks:v8.4.0 as gitleaks
 
 ##################
 # Get base image #
@@ -371,6 +371,7 @@ COPY --from=base_image /usr/bin/ /usr/bin/
 COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
+COPY --from=base_image /usr/local/include/ /usr/local/include/
 COPY --from=base_image /usr/lib/ /usr/lib/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/

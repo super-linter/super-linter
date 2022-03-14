@@ -4,7 +4,7 @@ This folder holds the test cases for **Ansible**.
 
 ## Additional Docs
 
-The folder **ghe-initialize** is pulled from the **GitHub-Demo-Stack** and is a valid **Ansible** role.
+The folder **roles/ghe-initialize** is pulled from the **GitHub-Demo-Stack** and is a valid **Ansible** role.
 
 ## Good Test Cases
 

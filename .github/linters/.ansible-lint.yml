@@ -1,29 +1,8 @@
 ---
-##########################
-##########################
-## Ansible Linter rules ##
-##########################
-##########################
-
-#############################
-# Exclude paths from linter #
-#############################
-# exclude_paths:
-
 ########################
 # Make output parsable #
 ########################
 parseable: true
-
-#######################
-# Set output to quiet #
-#######################
-quiet: true
-
-#####################
-# Path to rules dir #
-#####################
-# rulesdir:
 
 ################
 # Tags to skip #
@@ -36,11 +15,6 @@ skip_list:
   - 'command-instead-of-shell'  # Allow use of shell when you want
   - 'no-handler'  # Allow step to run like handler
 
-##################
-# Tags to follow #
-##################
-# tags:
-
 #############
 # Use rules #
 #############
@@ -49,4 +23,4 @@ use_default_rules: true
 #################
 # Set verbosity #
 #################
-verbosity: 1
+verbosity: 2
