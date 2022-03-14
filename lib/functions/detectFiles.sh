@@ -7,27 +7,6 @@
 ################################################################################
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
-################################################################################
-################################################################################
-#### Function DetectAnsibleFile ################################################
-DetectAnsibleFile() {
-  ANSIBLE_DIRECTORY="${1}"
-  FILE="${2}"
-
-  debug "Checking if ${FILE} is an Ansible file. Ansible directory: ${ANSIBLE_DIRECTORY}..."
-
-  if [[ ${FILE} == *"vault.yml" ]] || [[ ${FILE} == *"galaxy.yml" ]] || [[ ${FILE} == *"vault.yaml" ]] || [[ ${FILE} == *"galaxy.yaml" ]]; then
-    debug "${FILE} is a file that super-linter ignores. Ignoring it..."
-    return 1
-  elif [[ "$(dirname "${FILE}")" == *"${ANSIBLE_DIRECTORY}"* ]]; then
-    debug "${FILE} is an Ansible-related file."
-    return 0
-  else
-    debug "${FILE} is NOT an Ansible-related file."
-    return 1
-  fi
-}
-################################################################################
 #### Function DetectActions ####################################################
 DetectActions() {
   FILE="${1}"

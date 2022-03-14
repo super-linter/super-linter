@@ -243,6 +243,16 @@ function BuildFileList() {
   done
   debug "---------------------------------------------"
 
+  #########################################
+  # Check if the Ansible directory exists #
+  #########################################
+  if [ -d "${ANSIBLE_DIRECTORY}" ]; then
+    debug "Adding ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) to the list of files and directories to lint."
+    FILE_ARRAY_ANSIBLE+=("${ANSIBLE_DIRECTORY}")
+  else
+    debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+  fi
+
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -498,15 +508,6 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_JSON+=("${FILE}")
 
-      ############################
-      # Check if file is Ansible #
-      ############################
-      if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
-        FILE_ARRAY_ANSIBLE+=("${FILE}")
-      fi
       ############################
       # Check if file is OpenAPI #
       ############################
@@ -792,19 +793,6 @@ function BuildFileList() {
         # Append the file to the array #
         ################################
         FILE_ARRAY_GITHUB_ACTIONS+=("${FILE}")
-      fi
-      ############################
-      # Check if file is Ansible #
-      ############################
-      if [ -d "${ANSIBLE_DIRECTORY}" ]; then
-        if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
-          ################################
-          # Append the file to the array #
-          ################################
-          FILE_ARRAY_ANSIBLE+=("${FILE}")
-        fi
-      else
-        debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
       fi
 
       #####################################
