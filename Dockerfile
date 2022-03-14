@@ -24,7 +24,7 @@ FROM mvdan/shfmt:v3.4.3 as shfmt
 FROM rhysd/actionlint:1.6.9 as actionlint
 FROM scalameta/scalafmt:v3.4.3 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
-FROM zricethezav/gitleaks:v8.3.0 as gitleaks
+FROM zricethezav/gitleaks:v8.4.0 as gitleaks
 
 ##################
 # Get base image #
