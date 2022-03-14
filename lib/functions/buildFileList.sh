@@ -316,8 +316,13 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
-    # jscpd also runs an all files
-    FILE_ARRAY_JSCPD+=("${FILE}")
+
+    if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
+      debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
+    else
+      # jscpd also runs an all files
+      FILE_ARRAY_JSCPD+=("${FILE}")
+    fi
     # Need to make sure we dont check the secrets paterns
     # for secrets, as it will pop!
     if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
