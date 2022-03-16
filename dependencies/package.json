@@ -3,15 +3,15 @@
   "dependencies": {
     "@coffeelint/cli": "^5.2.4",
     "@stoplight/spectral": "^6.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.14.0",
-    "@typescript-eslint/parser": "^5.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
     "asl-validator": "^2.0.0",
     "axios": "^0.26.1",
     "babel-eslint": "^10.1.0",
-    "eslint": "^8.11.0",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-jest": "^26.1.1",
+    "eslint-plugin-jest": "^24.7.0",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-jsonc": "^2.2.1",
     "eslint-plugin-jsx-a11y": "^6.5.1",
@@ -44,6 +44,7 @@
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^2.1.5",
+    "ts-standard": "^11.0.0",
     "typescript": "^4.6.2"
   }
 }

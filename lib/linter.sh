@@ -187,13 +187,15 @@ NATURAL_LANGUAGE_FILE_NAME="${NATURAL_LANGUAGE_CONFIG_FILE:-.textlintrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-standard}"
+TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-ts-standard}"
 TYPESCRIPT_STYLE_NAME='' # Variable for the style
 TYPESCRIPT_STYLE=''      # Variable for the style
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+TYPESCRIPT_STANDARD_TSCONFIG_FILE_NAME="${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-tsconfig.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -234,7 +236,7 @@ if [ "${TYPESCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
 else
   # Default to standard
   TYPESCRIPT_STYLE_NAME='TYPESCRIPT_STANDARD'
-  TYPESCRIPT_STYLE='standard'
+  TYPESCRIPT_STYLE='ts-standard'
 fi
 
 ##################
@@ -860,7 +862,9 @@ LinterRulesLocation
 ########################
 # Get the linter rules #
 ########################
-for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+LANGUAGE_ARRAY_FOR_LINTER_RULES=("${LANGUAGE_ARRAY[@]}" "TYPESCRIPT_STANDARD_TSCONFIG")
+
+for LANGUAGE in "${LANGUAGE_ARRAY_FOR_LINTER_RULES[@]}"; do
   debug "Loading rules for ${LANGUAGE}..."
   eval "GetLinterRules ${LANGUAGE} ${DEFAULT_RULES_LOCATION}"
 done
@@ -956,7 +960,7 @@ LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all
 LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-log-level error --terragrunt-hclfmt-file"
 LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin ${TYPESCRIPT_STANDARD_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="ts-standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin --project ${TYPESCRIPT_STANDARD_TSCONFIG_LINTER_RULES} ${TYPESCRIPT_STANDARD_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
 if [ "${YAML_ERROR_ON_WARNING}" == 'false' ]; then
