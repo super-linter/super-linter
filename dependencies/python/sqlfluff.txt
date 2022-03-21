@@ -15,7 +15,7 @@ Pygments==2.11.2
 pyparsing==3.0.7
 pytest==7.1.0
 PyYAML==6.0
-regex==2022.3.2
+regex==2022.3.15
 sqlfluff==0.11.0
 tblib==1.7.0
 toml==0.10.2
