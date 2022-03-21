@@ -1,13 +1,15 @@
+ansible-compat==2.0.2
 ansible-core==2.12.3
-ansible-lint==5.4.0
+ansible-lint==6.0.1
 bracex==2.2.1
 cffi==1.15.0
 commonmark==0.9.1
-cryptography==36.0.1
+cryptography==36.0.2
 enrich==1.2.7
 Jinja2==3.0.3
-MarkupSafe==2.1.0
+MarkupSafe==2.1.1
 packaging==21.3
+pathspec==0.9.0
 pycparser==2.21
 Pygments==2.11.2
 pyparsing==3.0.7
@@ -16,5 +18,6 @@ resolvelib==0.5.4
 rich==12.0.0
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.6
-tenacity==8.0.1
+subprocess-tee==0.3.5
 wcmatch==8.3
+yamllint==1.26.3
