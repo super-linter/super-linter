@@ -418,10 +418,10 @@ function RunAdditionalInstalls() {
     ############################################
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
-        PATH=$(dirname "${LINE}" 2>&1)
+        COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
         info "Found [composer.json] at:[${LINE}]"
         COMPOSER_CMD=$(
-          cd "${PATH}" || exit 1
+          cd "${COMPOSER_PATH}" || exit 1
           composer install --no-progress -q 2>&1
         )
 
@@ -435,7 +435,7 @@ function RunAdditionalInstalls() {
         ##############################
         if [ "${ERROR_CODE}" -ne 0 ]; then
           # Error
-          error "ERROR! Failed to run composer install at location:[${PATH}]"
+          error "ERROR! Failed to run composer install at location:[${COMPOSER_PATH}]"
           fatal "ERROR:[${COMPOSER_CMD}]"
         else
           # Success
