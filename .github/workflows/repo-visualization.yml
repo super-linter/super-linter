@@ -55,7 +55,7 @@ jobs:
       - name: Setup AWS CLI
         uses: actions/setup-aws-cli@v1
         with:
-          region: {{ secrets.AWS_REGION }}
+          region: ${{ secrets.AWS_REGION }}
           profile: default
 
       ###########################
@@ -66,11 +66,11 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: {{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       ############################
       # Push the image to aws s3 #
       ############################
       - name: PUsh diagram to s3
         if: success()
-        runs: aws s3 cp diagram.svg s3://{{ secrets.AWS_BUCKET }}/diagram.svg
+        runs: aws s3 cp diagram.svg s3://${{ secrets.AWS_BUCKET }}/diagram.svg
