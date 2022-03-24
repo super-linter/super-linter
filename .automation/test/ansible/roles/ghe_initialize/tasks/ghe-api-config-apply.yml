@@ -14,7 +14,7 @@
   # Run config to take in settings #
   ##################################
   - name: Run Configure for Settings to Take Effect
-    uri:
+    ansible.builtin.uri:
       url: "https://{{ ansible_host }}:8443/setup/api/configure"
       method: POST
       return_content: "yes"
@@ -31,7 +31,7 @@
     # https://docs.ansible.com/ansible/uri_module.html
     # yamllint disable-line
     # https://developer.github.com/enterprise/v3/enterprise-admin/management_console/#check-configuration-status
-    uri:
+    ansible.builtin.uri:
       url: "https://{{ ansible_host }}:8443/setup/api/configcheck"
       method: GET
       return_content: "yes"
@@ -51,7 +51,7 @@
   # files that were copied to the ghe server
   - name: Remove temp Files from GHE
     become: true
-    file:
+    ansible.builtin.file:
       path: "{{ item }}"
       state: absent
     with_items:
