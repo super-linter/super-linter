@@ -49,15 +49,6 @@ jobs:
           output_file: "./diagram.svg"
           should_push: false
 
-      #################
-      # Setup AWS cli #
-      #################
-      - name: Setup AWS CLI
-        uses: actions/setup-aws-cli@v1
-        with:
-          region: ${{ secrets.AWS_REGION }}
-          profile: default
-
       ###########################
       # Configure the AWS creds #
       ###########################
