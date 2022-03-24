@@ -5,7 +5,7 @@
   ########################################
   - name: Copy the script to the GHE instance
     become: true
-    template:
+    ansible.builtin.template:
       force: 'yes'
       src: "ghe-config-apply.sh"
       dest: /tmp/ghe-config-apply.sh
@@ -17,7 +17,7 @@
   # Run config to take in settings #
   ##################################
   - name: Run ghe-config-apply for Settings to Take Effect
-    shell: "nohup ./tmp/ghe-config-apply.sh </dev/null >/dev/null 2>&1 &"
+    ansible.builtin.shell: "nohup ./tmp/ghe-config-apply.sh </dev/null >/dev/null 2>&1 &"
     async: 300
     poll: 0
     args:
