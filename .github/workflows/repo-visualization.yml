@@ -65,4 +65,4 @@ jobs:
       ############################
       - name: Push diagram to s3
         if: success()
-        run: aws s3 cp diagram.svg s3://${{ secrets.AWS_BUCKET }}/diagram.svg
+        run: aws s3 cp diagram.svg s3://super-linter/diagram.svg
