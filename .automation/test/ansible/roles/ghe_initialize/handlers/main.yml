@@ -9,6 +9,6 @@
 # GHE config apply #
 ####################
 - name: ghe config apply
-  command: ghe-config-apply
+  ansible.builtin.command: ghe-config-apply
   poll: 0
   async: 300
