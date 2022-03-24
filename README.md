@@ -48,6 +48,8 @@ The super-linter finds issues and reports them to the console output. Fixes are 
 
 The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
 
+### Repository Visualization
+
 ![Visualization of the codebase](https://super-linter.s3.us-west-2.amazonaws.com/diagram.svg)
 
 ## Supported Linters
