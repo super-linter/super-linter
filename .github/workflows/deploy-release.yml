@@ -113,7 +113,7 @@ jobs:
       # Build the docker image and push it #
       ######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
-        uses: docker/build-push-action@v2.9.0
+        uses: docker/build-push-action@v2.10.0
         with:
           context: .
           file: ./Dockerfile
