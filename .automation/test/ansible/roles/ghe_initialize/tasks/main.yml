@@ -9,7 +9,7 @@
     # Need to run the tasks to stand up the GHE instance #
     ######################################################
     # Configure the base system
-    - include_tasks: ghe-initial-configuration.yml
+    - ansible.builtin.include_tasks: ghe-initial-configuration.yml
 
   ######################
   # Set the tags block #
@@ -32,7 +32,7 @@
     # Need to run the tasks to config LDAP on the GHE instance #
     ############################################################
     # Configure the base system
-    - include_tasks: ghe-ldap-configuration.yml
+    - ansible.builtin.include_tasks: ghe-ldap-configuration.yml
 
   ######################
   # Set the tags block #
@@ -53,7 +53,7 @@
     # Need to run the tasks to stand up the GHE instance #
     ######################################################
     # Configure the base system
-    - include_tasks: ghe-api-config-apply.yml
+    - ansible.builtin.include_tasks: ghe-api-config-apply.yml
 
   ######################
   # Set the tags block #
