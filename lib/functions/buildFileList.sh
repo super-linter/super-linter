@@ -569,6 +569,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_KOTLIN+=("${FILE}")
+      FILE_ARRAY_KOTLIN_ANDROID+=("${FILE}")
       FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
