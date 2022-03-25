@@ -15,9 +15,9 @@ name: Repository Visualization
 # Start the job on all push or PR to main #
 ###########################################
 on:
-  push:
-  #pull_request:
-  #  type: [closed]
+  schedule:
+    # Sunday at 5:00pm
+    - cron: "0 17 * * 0"
 
 ###############
 # Set the Job #
