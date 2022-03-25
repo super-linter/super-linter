@@ -17,6 +17,14 @@ on:
   # Start when a release is published
   release:
     types: ['published']
+  workflow_dispatch:
+    # Set the input variables you want to pull in
+    inputs:
+      release_version:
+        description: 'version to release. Ex: v4.3.2'
+        required: true
+        default: 'v'
+  
 
 ###############
 # Set the Job #
@@ -50,10 +58,6 @@ jobs:
       ############################
       - name: Checkout Code
         uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper list
-          # of changed files within `super-linter`
-          fetch-depth: 0
 
       ###########################
       # Set current date to ENV #
@@ -97,6 +101,11 @@ jobs:
           echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
           | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
           >> "${GITHUB_ENV}"
+          if [ -z "${RELEASE_VERSION}" ]; then
+            echo "No release version found in environment, using input..."
+            echo "RELEASE_VERSION=${{ github.event.inputs.release_version }}" \
+            >> "${GITHUB_ENV}"
+          fi
 
       #########################
       # Update deployment API #
