@@ -48,6 +48,10 @@ The super-linter finds issues and reports them to the console output. Fixes are 
 
 The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
 
+### Repository Visualization
+
+![Visualization of the codebase](https://super-linter.s3.us-west-2.amazonaws.com/diagram.svg)
+
 ## Supported Linters
 
 Developers on **GitHub** can call the **GitHub Action** to lint their codebase with the following list of linters:
@@ -361,6 +365,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_JSON**                  | `true`                          | Flag to enable or disable the linting process of the JSON language.                                                                                                                                                  |
 | **VALIDATE_JSX**                   | `true`                          | Flag to enable or disable the linting process for jsx files (Utilizing: eslint)                                                                                                                                      |
 | **VALIDATE_KOTLIN**                | `true`                          | Flag to enable or disable the linting process of the Kotlin language.                                                                                                                                                |
+| **VALIDATE_KOTLIN_ANDROID**        | `true`                          | Flag to enable or disable the linting process of the Kotlin language. (Utilizing: `ktlint --android`)                                                                                                                |
 | **VALIDATE_KUBERNETES_KUBEVAL**    | `true`                          | Flag to enable or disable the linting process of Kubernetes descriptors with Kubeval                                                                                                                                 |
 | **VALIDATE_LATEX**                 | `true`                          | Flag to enable or disable the linting process of the LaTeX language.                                                                                                                                                 |
 | **VALIDATE_LUA**                   | `true`                          | Flag to enable or disable the linting process of the language.                                                                                                                                                       |
