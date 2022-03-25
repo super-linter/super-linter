@@ -16,7 +16,7 @@ name: Deploy Release
 on:
   # Start when a release is published
   release:
-    types: ['published']
+    types: [published]
   workflow_dispatch:
     # Set the input variables you want to pull in
     inputs:
@@ -24,7 +24,6 @@ on:
         description: 'version to release. Ex: v4.3.2'
         required: true
         default: 'v'
-  
 
 ###############
 # Set the Job #
