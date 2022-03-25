@@ -16,7 +16,7 @@ name: Deploy Release
 on:
   # Start when a release is published
   release:
-    types: [published]
+    types: [published, edited]
 
 ###############
 # Set the Job #
