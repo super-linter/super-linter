@@ -3,9 +3,9 @@ attrs==21.4.0
 chardet==4.0.0
 click==8.0.4
 colorama==0.4.4
-diff-cover==6.4.4
+diff-cover==6.4.5
 iniconfig==1.1.1
-Jinja2==3.0.3
+Jinja2==3.1.1
 MarkupSafe==2.1.1
 packaging==21.3
 pathspec==0.9.0
@@ -16,9 +16,9 @@ pyparsing==3.0.7
 pytest==7.1.1
 PyYAML==6.0
 regex==2022.3.15
-sqlfluff==0.11.1
+sqlfluff==0.11.2
 tblib==1.7.0
 toml==0.10.2
 tomli==2.0.1
-tqdm==4.63.0
+tqdm==4.63.1
 typing_extensions==4.1.1
