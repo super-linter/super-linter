@@ -147,6 +147,8 @@ MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 OPENAPI_FILE_NAME=".openapirc.yml"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
+PERL_PERLCRITIC_OPTIONS="${PERL_PERLCRITIC_OPTIONS:-null}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_BUILTIN_FILE_NAME="${PHP_CONFIG_FILE:-php.ini}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 PHP_PHPCS_FILE_NAME="phpcs.xml"
@@ -942,7 +944,11 @@ if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
 fi
 LINTER_COMMANDS_ARRAY['NATURAL_LANGUAGE']="textlint -c ${NATURAL_LANGUAGE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES} -D"
-LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
+if [ "${PERL_PERLCRITIC_OPTIONS}" == "null" ] || [ -z "${PERL_PERLCRITIC_OPTIONS}" ]; then
+  LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
+else
+  LINTER_COMMANDS_ARRAY['PERL']="perlcritic ${PERL_PERLCRITIC_OPTIONS}"
+fi
 LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l -c ${PHP_BUILTIN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['PHP_PHPSTAN']="phpstan analyse --no-progress --no-ansi --memory-limit 1G -c ${PHP_PHPSTAN_LINTER_RULES}"
