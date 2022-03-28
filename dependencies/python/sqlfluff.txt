@@ -3,7 +3,7 @@ attrs==21.4.0
 chardet==4.0.0
 click==8.0.4
 colorama==0.4.4
-diff-cover==6.4.4
+diff-cover==6.4.5
 iniconfig==1.1.1
 Jinja2==3.0.3
 MarkupSafe==2.1.1
