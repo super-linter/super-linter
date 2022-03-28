@@ -46,6 +46,6 @@
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^2.1.5",
     "ts-standard": "^11.0.0",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.3"
   }
 }
