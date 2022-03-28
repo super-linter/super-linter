@@ -497,4 +497,35 @@ function RunAdditionalInstalls() {
       fi
     fi
   fi
+
+  ####################################
+  # Run installs for TFLINT language #
+  ####################################
+  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ "${#FILE_ARRAY_TERRAFORM_TFLINT[@]}" -ne 0 ]; then
+    info "Detected TFLint Language files to lint."
+    info "Trying to install the TFLint init inside:[${WORKSPACE_PATH}]"
+    #########################
+    # Run the build command #
+    #########################
+    BUILD_CMD=$(
+      cd "${WORKSPACE_PATH}" || exit 0
+      tflint --init 2>&1
+    )
+
+    ##############
+    # Error code #
+    ##############
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ "${ERROR_CODE}" -ne 0 ]; then
+      # Error
+      warn "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]"
+      warn "BUILD_CMD:[${BUILD_CMD}]"
+    else
+      info "Successfully ran:[tflint --init] in workspace:[${WORKSPACE_PATH}]"
+    fi
+  fi
 }
