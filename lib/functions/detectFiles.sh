@@ -507,7 +507,10 @@ function RunAdditionalInstalls() {
     #########################
     # Run the build command #
     #########################
-    BUILD_CMD=$(cd "${WORKSPACE_PATH}" || exit 0; tflint --init 2>&1)
+    BUILD_CMD=$(
+      cd "${WORKSPACE_PATH}" || exit 0
+      tflint --init 2>&1
+    )
 
     ##############
     # Error code #
