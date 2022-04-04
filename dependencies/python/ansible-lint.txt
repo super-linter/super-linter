@@ -1,5 +1,5 @@
 ansible-compat==2.0.2
-ansible-core==2.12.3
+ansible-core==2.12.4
 ansible-lint==6.0.2
 bracex==2.2.1
 cffi==1.15.0
@@ -15,9 +15,10 @@ Pygments==2.11.2
 pyparsing==3.0.7
 PyYAML==6.0
 resolvelib==0.5.4
-rich==12.0.1
+rich==12.1.0
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.6
 subprocess-tee==0.3.5
+typing_extensions==4.1.1
 wcmatch==8.3
 yamllint==1.26.3

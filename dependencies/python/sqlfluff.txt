@@ -1,7 +1,7 @@
 appdirs==1.4.4
 attrs==21.4.0
 chardet==4.0.0
-click==8.0.4
+click==8.1.2
 colorama==0.4.4
 diff-cover==6.4.5
 iniconfig==1.1.1
@@ -20,5 +20,5 @@ sqlfluff==0.11.2
 tblib==1.7.0
 toml==0.10.2
 tomli==2.0.1
-tqdm==4.63.1
+tqdm==4.64.0
 typing_extensions==4.1.1
