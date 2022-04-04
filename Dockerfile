@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM accurics/terrascan:1.13.2 as terrascan
+FROM accurics/terrascan:1.14.0 as terrascan
 FROM alpine/terragrunt:1.1.7 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
@@ -22,7 +22,7 @@ FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
 FROM rhysd/actionlint:1.6.10 as actionlint
-FROM scalameta/scalafmt:v3.4.3 as scalafmt
+FROM scalameta/scalafmt:v3.5.0 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
 FROM zricethezav/gitleaks:v8.5.3 as gitleaks
 
