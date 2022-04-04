@@ -44,7 +44,7 @@ jobs:
       # Create Visualization Files #
       ##############################
       - name: Create Visualization
-        uses: githubocto/repo-visualizer@0.7.1
+        uses: githubocto/repo-visualizer@0.8.1
         with:
           output_file: "./diagram.svg"
           should_push: false
