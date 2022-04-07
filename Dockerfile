@@ -103,7 +103,11 @@ RUN npm config set package-lock true  \
     ##############################
     # Installs ruby dependencies #
     ##############################
-    && bundle install
+    && bundle install \
+    ############################
+    # Installs go dependencies #
+    ############################
+    && go install
 
 ##############################
 # Installs Perl dependencies #
