@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: super-linter
+  description: |
+    Combination of multiple linters to install as a GitHub Action
+  annotations:
+    github.com/project-slug: Tradeshift/super-linter
+  tags:
+    - fork
+    - github-action
+    - docker
+spec:
+  type: library
+  owner: developer-productivity
+  lifecycle: production
