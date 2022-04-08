@@ -92,7 +92,6 @@ RUN apk add --no-cache \
 # Copy dependencies files to container #
 ########################################
 COPY dependencies/* /
-COPY .automation/test/go/golang_good_02.go /
 
 ################################
 # Installs python dependencies #
@@ -108,8 +107,7 @@ RUN npm config set package-lock true  \
     ############################
     # Installs go dependencies #
     ############################
-    && go install \
-    && rm golang_good_02.go
+    && go mod download
 
 ##############################
 # Installs Perl dependencies #
