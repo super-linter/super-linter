@@ -1,6 +1,6 @@
 module github.com/github/super-linter
 
-go 1.18
+go 1.17
 
 require (
 	github.com/go-playground/validator/v10 v10.10.1
