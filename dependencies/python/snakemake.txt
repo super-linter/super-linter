@@ -28,12 +28,12 @@ requests==2.27.1
 retry==0.9.2
 smart-open==5.2.1
 smmap==5.0.0
-snakemake==7.3.6
+snakemake==7.3.8
 stopit==1.1.2
 tabulate==0.8.9
 toposort==1.7
 traitlets==5.1.1
 urllib3==1.26.9
 wrapt==1.14.0
-yte==1.2.0
+yte==1.2.1
 zipp==3.8.0
