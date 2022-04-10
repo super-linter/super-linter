@@ -1,0 +1,5 @@
+"""
+settings
+"""
+
+TEST = "TEST"
