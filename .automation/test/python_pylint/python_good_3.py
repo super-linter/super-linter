@@ -1,5 +1,0 @@
-"""
-settings
-"""
-
-TEST = "TEST"

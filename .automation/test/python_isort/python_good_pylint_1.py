@@ -3,9 +3,9 @@ test for pylint
 """
 
 
-from python_good_2 import FOO
+from isort import code
 
-import python_good_3 as conf
+import python_good_2 as conf
 
 print(conf.TEST)
-print(FOO)
+print(code("a=1"))

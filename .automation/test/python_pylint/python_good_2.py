@@ -2,4 +2,4 @@
 settings
 """
 
-FOO = "FOO"
+TEST = "TEST"
