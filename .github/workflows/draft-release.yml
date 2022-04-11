@@ -18,8 +18,14 @@ on:
 #################
 # Start the job #
 #################
+permissions:
+  contents: read
+
 jobs:
   update_release_draft:
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
