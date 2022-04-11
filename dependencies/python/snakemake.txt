@@ -35,5 +35,5 @@ toposort==1.7
 traitlets==5.1.1
 urllib3==1.26.9
 wrapt==1.14.0
-yte==1.2.0
+yte==1.2.1
 zipp==3.8.0
