@@ -418,6 +418,11 @@ COPY lib /action/lib
 ##################################
 COPY TEMPLATES /action/lib/.automation
 
+################
+# Pull in libs #
+################
+COPY --from=base_image /usr/libexec/ /usr/libexec/
+
 ################################################
 # Run to build version file and validate image #
 ################################################
@@ -451,11 +456,6 @@ ARG PSSA_VERSION='latest'
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
-
-################
-# Pull in libs #
-################
-COPY --from=base_image /usr/libexec/ /usr/libexec/
 
 #########################
 # Install dotenv-linter #
