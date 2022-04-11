@@ -6,5 +6,6 @@
   "ignore": [
     "**/__snapshots__/**"
   ],
-  "absolute": true
+  "absolute": true,
+  "noSymlinks": true
 }
