@@ -1,7 +1,7 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@coffeelint/cli": "^5.2.5",
+    "@coffeelint/cli": "^5.2.6",
     "@stoplight/spectral": "^6.1.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
@@ -18,7 +18,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-react-hooks": "^4.4.0",
     "eslint-plugin-vue": "^8.5.0",
     "gherkin-lint": "^4.2.2",
     "htmlhint": "^1.1.3",
@@ -34,7 +34,7 @@
     "pug": "^3.0.2",
     "sql-lint": "0.0.19",
     "standard": "^16.0.4",
-    "stylelint": "^14.6.0",
+    "stylelint": "^14.6.1",
     "stylelint-config-recommended-scss": "^6.0.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-config-standard": "^25.0.0",

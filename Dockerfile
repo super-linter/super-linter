@@ -17,14 +17,14 @@ FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.35.0.0 as tflint
 FROM golangci/golangci-lint:v1.45.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.1.7 as terraform
+FROM hashicorp/terraform:1.1.8 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
 FROM rhysd/actionlint:1.6.10 as actionlint
 FROM scalameta/scalafmt:v3.5.0 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
-FROM zricethezav/gitleaks:v8.5.3 as gitleaks
+FROM zricethezav/gitleaks:v8.6.1 as gitleaks
 
 ##################
 # Get base image #
@@ -418,6 +418,11 @@ COPY lib /action/lib
 ##################################
 COPY TEMPLATES /action/lib/.automation
 
+################
+# Pull in libs #
+################
+COPY --from=base_image /usr/libexec/ /usr/libexec/
+
 ################################################
 # Run to build version file and validate image #
 ################################################
@@ -451,11 +456,6 @@ ARG PSSA_VERSION='latest'
 ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
-
-################
-# Pull in libs #
-################
-COPY --from=base_image /usr/libexec/ /usr/libexec/
 
 #########################
 # Install dotenv-linter #
