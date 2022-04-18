@@ -11,7 +11,7 @@ fastjsonschema==2.15.3
 gitdb==4.0.9
 GitPython==3.1.27
 idna==3.3
-importlib-resources==5.6.0
+importlib-resources==5.7.1
 Jinja2==3.1.1
 jsonschema==4.4.0
 jupyter-core==4.9.2
