@@ -49,7 +49,9 @@ jobs:
       # Solve the safe folder issues #
       ################################
       - name: work around permission issue
-        run: git config --global --add safe.directory /__w/super-linter/super-linter
+        run: |
+          git config --global --add safe.directory /__w/super-linter/super-linter
+          export GIT_CEILING_DIRECTORIES=/__w # only work before git v2.35.2
       
       ############################
       # Checkout the source code #
