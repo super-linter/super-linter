@@ -51,7 +51,7 @@ jobs:
       - name: work around permission issue
         run: |
           git config --global --add safe.directory /__w/super-linter/super-linter
-          export GIT_CEILING_DIRECTORIES=/__w # only work before git v2.35.2
+          echo "GIT_CEILING_DIRECTORIES=/__w" >> ${GITHUB_ENV} # only work before git v2.35.2
       
       ############################
       # Checkout the source code #
