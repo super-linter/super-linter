@@ -84,6 +84,7 @@ function BuildFileList() {
     # Switch codebase back to the default branch to get a list of all files changed #
     #################################################################################
     SWITCH_CMD=$(
+      git -c "${GITHUB_WORKSPACE}" config --global --add safe.directory "/github/workspace"
       git -C "${GITHUB_WORKSPACE}" pull --quiet
       git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
     )
