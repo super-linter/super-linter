@@ -45,6 +45,12 @@ jobs:
     # Steps below #
     ###############
     steps:
+      ################################
+      # Solve the safe folder issues #
+      ################################
+      - name: work around permission issue
+        run: git config --global --add safe.directory /__w/super-linter/super-linter
+      
       ############################
       # Checkout the source code #
       ############################
