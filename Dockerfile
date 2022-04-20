@@ -14,14 +14,14 @@ FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.35.0.0 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.35.0.1 as tflint
 FROM golangci/golangci-lint:v1.45.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.1.8 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
-FROM rhysd/actionlint:1.6.11 as actionlint
+FROM rhysd/actionlint:1.6.12 as actionlint
 FROM scalameta/scalafmt:v3.5.1 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
 FROM zricethezav/gitleaks:v8.7.1 as gitleaks
