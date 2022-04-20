@@ -70,6 +70,11 @@ function BuildFileList() {
 
   debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 
+  # Solve issue with git unsafe dirs
+  debug "Running git config for safe dirs"
+  git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+  git config --global --add safe.directory "/tmp/lint" 2>&1
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
@@ -84,8 +89,6 @@ function BuildFileList() {
     # Switch codebase back to the default branch to get a list of all files changed #
     #################################################################################
     SWITCH_CMD=$(
-      git config --global --add safe.directory "${GITHUB_WORKSPACE}"
-      git config --global --add safe.directory "/tmp/lint"
       git -C "${GITHUB_WORKSPACE}" pull --quiet
       git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
     )
