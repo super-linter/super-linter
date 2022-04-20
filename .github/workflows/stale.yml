@@ -24,6 +24,9 @@ jobs:
   # Mark an Issue Stale #
   #######################
   markstale:
+    permissions:
+      issues: write  # for actions/stale to close stale issues
+      pull-requests: write  # for actions/stale to close stale PRs
     runs-on: ubuntu-latest
     # only run on schedule
     if: ${{ github.event_name == 'schedule' }}

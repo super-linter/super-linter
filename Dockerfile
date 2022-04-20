@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM accurics/terrascan:1.14.0 as terrascan
-FROM alpine/terragrunt:1.1.7 as terragrunt
+FROM alpine/terragrunt:1.1.8 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
@@ -21,10 +21,10 @@ FROM hashicorp/terraform:1.1.8 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
-FROM rhysd/actionlint:1.6.10 as actionlint
-FROM scalameta/scalafmt:v3.5.0 as scalafmt
+FROM rhysd/actionlint:1.6.11 as actionlint
+FROM scalameta/scalafmt:v3.5.1 as scalafmt
 FROM yoheimuta/protolint:v0.37.1 as protolint
-FROM zricethezav/gitleaks:v8.6.1 as gitleaks
+FROM zricethezav/gitleaks:v8.7.1 as gitleaks
 
 ##################
 # Get base image #
@@ -294,7 +294,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build final_slim ###################################
 ################################################################################
-FROM alpine:3.15.3 as final_slim
+FROM alpine:3.15.4 as final_slim
 
 ############################
 # Get the build arguements #
