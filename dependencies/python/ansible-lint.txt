@@ -19,6 +19,6 @@ rich==12.2.0
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.6
 subprocess-tee==0.3.5
-typing_extensions==4.1.1
+typing_extensions==4.2.0
 wcmatch==8.3
 yamllint==1.26.3
