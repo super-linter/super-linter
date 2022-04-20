@@ -23,7 +23,7 @@
     "gherkin-lint": "^4.2.2",
     "htmlhint": "^1.1.4",
     "immer": "^9.0.12",
-    "ini": "^2.0.0",
+    "ini": "^3.0.0",
     "jscpd": "^3.4.5",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.31.1",
