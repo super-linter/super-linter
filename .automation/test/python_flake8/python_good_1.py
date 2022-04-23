@@ -11,7 +11,7 @@ env = load_dotenv()
 api_url = getenv("API_URL", default="https://api.github.com/graphql")
 github_token = getenv("GITHUB_TOKEN", default=None)
 m = [1, 2, 3]
-print(m[1 : 2])
+print(m[1 :])
 
 if github_token is None:
     sys.exit(
