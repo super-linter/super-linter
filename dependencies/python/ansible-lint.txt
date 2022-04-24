@@ -11,7 +11,7 @@ MarkupSafe==2.1.1
 packaging==21.3
 pathspec==0.9.0
 pycparser==2.21
-Pygments==2.11.2
+Pygments==2.12.0
 pyparsing==3.0.8
 PyYAML==6.0
 resolvelib==0.5.4
