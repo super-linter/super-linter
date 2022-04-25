@@ -11,7 +11,7 @@ packaging==21.3
 pathspec==0.9.0
 pluggy==1.0.0
 py==1.11.0
-Pygments==2.11.2
+Pygments==2.12.0
 pyparsing==3.0.8
 pytest==7.1.1
 PyYAML==6.0
