@@ -34,7 +34,7 @@
     "pug": "^3.0.2",
     "sql-lint": "0.0.19",
     "standard": "^16.0.4",
-    "stylelint": "^14.6.1",
+    "stylelint": "^14.7.1",
     "stylelint-config-recommended-scss": "^6.0.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-config-standard": "^25.0.0",
