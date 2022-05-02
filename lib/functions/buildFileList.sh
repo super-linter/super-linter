@@ -85,12 +85,18 @@ function BuildFileList() {
     debug "----------------------------------------------"
     debug "Pulling in code history and branches..."
 
+    CHECKOUT_CMD="checkout"
+
+    # check if FORCE_CHECKOUT is set to true
+    if [ "${FORCE_CHECKOUT}" == "true" ]; then
+      CHECKOUT_CMD="checkout -f"
+    fi
     #################################################################################
     # Switch codebase back to the default branch to get a list of all files changed #
     #################################################################################
     SWITCH_CMD=$(
       git -C "${GITHUB_WORKSPACE}" pull --quiet
-      git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
+      git -C "${GITHUB_WORKSPACE}" ${CHECKOUT_CMD} "${DEFAULT_BRANCH}" 2>&1
     )
 
     #######################
