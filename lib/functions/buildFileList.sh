@@ -96,7 +96,7 @@ function BuildFileList() {
     #################################################################################
     SWITCH_CMD=$(
       git -C "${GITHUB_WORKSPACE}" pull --quiet
-      git -C "${GITHUB_WORKSPACE}" ${CHECKOUT_CMD} "${DEFAULT_BRANCH}" 2>&1
+      git -C "${GITHUB_WORKSPACE}" "${CHECKOUT_CMD}" "${DEFAULT_BRANCH}" 2>&1
     )
 
     #######################
