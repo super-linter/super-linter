@@ -423,7 +423,6 @@ As a result, the `VALIDATE_[LANGUAGE]` variables behave differently from those i
 | **RUN_CODE_QUALITY_TOOLS**             | `false`           | Flag to enable or disable the entire suite of code-quality-related linters. See below for a list of linters in this pack. |
 | **RUN_SECURITY_TOOLS**                 | `true`            | Flag to enable or disable the entire suite of security tools. See below for a list of tools in this pack.                 |
 | **VALIDATE_CLOUDFORMATION_CFN_NAG**    | `true`            | Flag to enable or disable the security linting process of AWS CloudFormation templates.                                   |
-| **VALIDATE_DEPS_CHECKER**              | `true`            | Flag to enable or disable the validation of pulling dependencies from approved sources.                                   |
 | **COMPLIANT_FILTER**                   | `none`            | URLs to approved dependencies repository sources.                                                                         |
 | **VALIDATE_PYTHON_BANDIT**             | `true`            | Flag to enable or disable the linting process of the Python with bandit.                                                  |
 | **VALIDATE_SEMGREP**                   | `true`            | Flag to enable or disable the using semgrep to check potentially all files of all languages.                              |
