@@ -104,12 +104,12 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                           |
 
 ### 23andMe Custom Linters
-| _Language_                       | _Linter_                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------ |
-| _(All files)_                    | [semgrep](https://github.com/returntocorp/semgrep)                                               |
-| _(Dependency files)_             | [deps-checker](https://github.com/23andMe/super-linter/blob/master/ttam-linters/deps-checker.sh) |
-| **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)                                                 |
-| **Python3**                      | [bandit](https://github.com/PyCQA/bandit)                                                        |
+| _Language_                       | _Linter_                                                                                                                                                                      |
+| -------------------------------- | ----------------------------------------------------|
+| _(All files)_                    | [semgrep](https://github.com/returntocorp/semgrep)  |
+| **AWS CloudFormation templates** | [cfn-nag](https://github.com/stelligent/cfn_nag)    |
+| **Python3**                      | [bandit](https://github.com/PyCQA/bandit)           |
+
 
 
 ## How to use
@@ -438,7 +438,7 @@ The following is a list of supported language packs.
 
 | **Language pack**            | **Included Tools**                                                                                                                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DEPS_CHECKER`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`SEMGREP`<br />`TERRAFORM_TERRASCAN` |
+| **RUN_SECURITY_TOOLS**     | `CLOUDFORMATION_CFN_NAG`<br />`DOCKERFILE_HADOLINT`<br />`GITLEAKS`<br />`PYTHON_BANDIT`<br />`SEMGREP`<br />`TERRAFORM_TERRASCAN` |
 | **RUN_CODE_QUALITY_TOOLS** | _(All other tools that are currently not security tools)_                                                                                              |
 
 ### Template rules files

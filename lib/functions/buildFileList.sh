@@ -318,8 +318,6 @@ function BuildFileList() {
     FILE_ARRAY_JSCPD+=("${FILE}")
     # GitLeaks also runs an all files
     FILE_ARRAY_GITLEAKS+=("${FILE}")
-    # deps-checker should also check all the files
-    FILE_ARRAY_DEPS_CHECKER+=("${FILE}") # Deps-checker will filter for appropriate files
 
     #######################
     # Get the shell files #
