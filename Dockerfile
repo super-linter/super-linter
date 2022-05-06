@@ -253,8 +253,8 @@ RUN apk add --no-cache rakudo zef \
     ##############################
     # Install google-java-format #
     ##############################
-    && GOOGLE_JAVA_FORMAT_VERSION=$(curl -s https://github.com/google/google-java-format/releases/latest \
-    | cut -d '"' -f 2 | cut -d '/' -f 8 | sed -e 's/v//g') \
+    && GOOGLE_JAVA_FORMAT_VERSION=$(basename $(curl -s -w %{redirect_url} https://github.com/google/google-java-format/releases/latest) \
+    | sed -e 's/v//g') \
     && curl --retry 5 --retry-delay 5 -sSL \
     "https://github.com/google/google-java-format/releases/download/v$GOOGLE_JAVA_FORMAT_VERSION/google-java-format-$GOOGLE_JAVA_FORMAT_VERSION-all-deps.jar" \
     --output /usr/bin/google-java-format \
