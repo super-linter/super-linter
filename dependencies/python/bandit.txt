@@ -1,0 +1,7 @@
+bandit==1.7.4
+gitdb==4.0.9
+gitpython==3.1.27
+pbr==5.9.0
+pyyaml==6.0
+smmap==5.0.0
+stevedore==3.5.0

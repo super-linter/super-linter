@@ -407,6 +407,10 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+# 23andMe packages
+ENV PATH="${PATH}:/venvs/bandit/bin"
+ENV PATH="${PATH}:/venvs/lintly23/bin"
+ENV PATH="${PATH}:/venvs/semgrep/bin"
 
 #############################
 # Copy scripts to container #
