@@ -114,6 +114,8 @@ jobs:
         run: |
           make info
 
+      - run: git diff
+
       ############################################################
       # Test the built image in the actions context.             #
       # Not the container directly, and not using RUN_LOCAL=true #
