@@ -255,9 +255,8 @@ RUN apk add --no-cache rakudo zef \
     ##############################
     && GOOGLE_JAVA_FORMAT_LATEST=$(curl -s https://api.github.com/repos/google/google-java-format/releases/latest \
     | grep browser_download_url \
-    | grep ".jar" \
-    | cut -d '"' -f 4 \
-    | grep all-deps) \
+    | grep "all-deps.jar" \
+    | cut -d '"' -f 4) \
     && curl --retry 5 --retry-delay 5 -sSL "${GOOGLE_JAVA_FORMAT_LATEST}" \
     --output /usr/bin/google-java-format \
     #################################
