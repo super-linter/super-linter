@@ -253,10 +253,12 @@ RUN apk add --no-cache rakudo zef \
     ##############################
     # Install google-java-format #
     ##############################
-    && GOOGLE_JAVA_FORMAT_VERSION=$(curl -s https://github.com/google/google-java-format/releases/latest \
-    | cut -d '"' -f 2 | cut -d '/' -f 8 | sed -e 's/v//g') \
-    && curl --retry 5 --retry-delay 5 -sSL \
-    "https://github.com/google/google-java-format/releases/download/v$GOOGLE_JAVA_FORMAT_VERSION/google-java-format-$GOOGLE_JAVA_FORMAT_VERSION-all-deps.jar" \
+    && GOOGLE_JAVA_FORMAT_LATEST=$(curl -s https://api.github.com/repos/google/google-java-format/releases/latest \
+    | grep browser_download_url \
+    | grep ".jar" \
+    | cut -d '"' -f 4 \
+    | grep all-deps) \
+    && curl --retry 5 --retry-delay 5 -sSL "${GOOGLE_JAVA_FORMAT_LATEST}" \
     --output /usr/bin/google-java-format \
     #################################
     # Install luacheck and luarocks #
