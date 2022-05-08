@@ -4,7 +4,7 @@ ansible-lint==6.0.2
 bracex==2.2.1
 cffi==1.15.0
 commonmark==0.9.1
-cryptography==37.0.1
+cryptography==37.0.2
 enrich==1.2.7
 Jinja2==3.1.2
 MarkupSafe==2.1.1
@@ -15,7 +15,7 @@ Pygments==2.12.0
 pyparsing==3.0.8
 PyYAML==6.0
 resolvelib==0.5.4
-rich==12.3.0
+rich==12.4.1
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.6
 subprocess-tee==0.3.5
