@@ -16,7 +16,7 @@ pyparsing==3.0.8
 pytest==7.1.2
 PyYAML==6.0
 regex==2022.4.24
-sqlfluff==0.13.0
+sqlfluff==0.13.1
 tblib==1.7.0
 toml==0.10.2
 tomli==2.0.1
