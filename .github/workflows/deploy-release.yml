@@ -70,7 +70,7 @@ jobs:
       # Setup Docker BuildX #
       #######################
       - name: Setup BuildX
-        uses: docker/setup-buildx-action@v1.7.0
+        uses: docker/setup-buildx-action@v2.0.0
 
       ######################
       # Login to DockerHub #
