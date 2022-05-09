@@ -244,19 +244,14 @@ RUN apk add --no-cache rakudo zef \
     ######################
     # Install CheckStyle #
     ######################
-    && CHECKSTYLE_LATEST=$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
-    | grep browser_download_url \
-    | grep ".jar" \
-    | cut -d '"' -f 4) \
-    && curl --retry 5 --retry-delay 5 -sSL "$CHECKSTYLE_LATEST" \
+    && curl --retry 5 --retry-delay 5 -sSL \
+    "$(curl -s https://api.github.com/repos/checkstyle/checkstyle/releases/latest | jq -r '.assets[0].browser_download_url')" \
     --output /usr/bin/checkstyle \
     ##############################
     # Install google-java-format #
     ##############################
-    && GOOGLE_JAVA_FORMAT_VERSION=$(curl -s https://github.com/google/google-java-format/releases/latest \
-    | cut -d '"' -f 2 | cut -d '/' -f 8 | sed -e 's/v//g') \
     && curl --retry 5 --retry-delay 5 -sSL \
-    "https://github.com/google/google-java-format/releases/download/v$GOOGLE_JAVA_FORMAT_VERSION/google-java-format-$GOOGLE_JAVA_FORMAT_VERSION-all-deps.jar" \
+    "$(curl -s https://api.github.com/repos/google/google-java-format/releases/latest | jq -r '.assets | .[] | select(.browser_download_url | contains("all-deps.jar")) | .browser_download_url')" \
     --output /usr/bin/google-java-format \
     #################################
     # Install luacheck and luarocks #
