@@ -439,11 +439,6 @@ ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 #############################
 COPY lib /action/lib
 
-####################################
-# Copy custom linters to container #
-####################################
-COPY ttam-linters /action/ttam-linters
-
 ##################################
 # Copy linter rules to container #
 ##################################
