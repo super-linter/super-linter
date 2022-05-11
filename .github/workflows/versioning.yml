@@ -13,7 +13,7 @@
 ##########################
 # Name of the action job #
 ##########################
-name: Keep GitHub tag versions up-to-date
+name: GitHub Tag Update
 
 #####################################################
 # Run the job when a release is published or edited #
@@ -25,14 +25,20 @@ on:
 #################
 # Start the job #
 #################
+permissions:
+  contents: read
+
 jobs:
   actions-tagger:
+    permissions:
+      contents: write  # for Actions-R-Us/actions-tagger to create a release and add latest tag
     runs-on: windows-latest
+    timeout-minutes: 60
     steps:
       #############################
       # Check out the latest code #
       #############################
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
 
       ######################
       # Run the tag action #

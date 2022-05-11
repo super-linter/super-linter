@@ -105,7 +105,6 @@ control "super-linter-installed-commands" do
     { linter_name: "coffeelint"},
     { linter_name: "cpplint"},
     { linter_name: "dart"},
-    { linter_name: "dockerfilelint"},
     { linter_name: "dotnet-format"},
     { linter_name: "dotenv-linter"},
     { linter_name: "editorconfig-checker", version_option: "-version"},
@@ -253,38 +252,6 @@ control "super-linter-installed-ruby-gems" do
 end
 
 ###############################################
-# Check to see all PIP packages are installed #
-###############################################
-control "super-linter-installed-pip-packages" do
-  impact 1
-  title "Super-Linter installed PIP packages check"
-  desc "Check that PIP packages that Super-Linter needs are installed."
-
-  packages = [
-    "ansible-lint",
-    "cfn-lint",
-    "cpplint",
-    "cython",
-    "flake8",
-    "isort",
-    "mypy",
-    "pylint",
-    "snakemake",
-    "sqlfluff",
-    "typing_extensions",
-    "yamllint",
-    "yq"
-  ]
-
-  packages.each do |item|
-    describe pip(item) do
-      it { should be_installed }
-    end
-  end
-
-end
-
-###############################################
 # Check to see all NPM packages are installed #
 ###############################################
 control "super-linter-installed-npm-packages" do
@@ -300,7 +267,6 @@ control "super-linter-installed-npm-packages" do
     "asl-validator",
     #"axios",
     "babel-eslint",
-    "dockerfilelint",
     #"eslint",
     "eslint-config-airbnb",
     "eslint-config-prettier",
@@ -401,7 +367,6 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.chktexrc",
     "/action/lib/.automation/.clj-kondo",
     "/action/lib/.automation/.coffee-lint.json",
-    "/action/lib/.automation/.dockerfilelintrc",
     "/action/lib/.automation/.ecrc",
     "/action/lib/.automation/.eslintrc.yml",
     "/action/lib/.automation/.flake8",
@@ -425,6 +390,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.ruby-lint.yml",
     "/action/lib/.automation/.scalafmt.conf",
     "/action/lib/.automation/.sql-config.json",
+    "/action/lib/.automation//.sqlfluff",
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",

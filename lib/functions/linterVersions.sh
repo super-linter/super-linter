@@ -11,9 +11,11 @@ GetLinterVersions() {
   # Print version headers #
   #########################
   debug "---------------------------------------------"
+  debug "WRITE_LINTER_VERSIONS_FILE: ${WRITE_LINTER_VERSIONS_FILE}"
+  debug "VERSION_FILE: ${VERSION_FILE}"
   debug "Linter Version Info:"
 
-  if ! [ -e "${VERSION_FILE}" ] && [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
+  if [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
     debug "Building linter version file..."
     if BuildLinterVersions "${VERSION_FILE}" "${LINTER_NAMES_ARRAY[@]}"; then
       info "Linter version file built correctly."
@@ -21,6 +23,8 @@ GetLinterVersions() {
     else
       fatal "Error while building the versions file."
     fi
+  else
+    debug "Skipping versions file build..."
   fi
 
   ################################
@@ -68,7 +72,7 @@ BuildLinterVersions() {
       if [[ ${LINTER} == "arm-ttk" ]]; then
         # Need specific command for ARM
         GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1)"
-      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]] || [[ ${LINTER} == "gitleaks" ]]; then
+      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
         # Need specific command for Protolint and editorconfig-checker
         GET_VERSION_CMD="$(echo "--version not supported")"
       elif [[ ${LINTER} == "lintr" ]]; then
@@ -85,7 +89,7 @@ BuildLinterVersions() {
         GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
       elif [[ ${LINTER} == "clippy" ]]; then
         GET_VERSION_CMD="$(cargo-clippy --version 2>&1)"
-      elif [[ ${LINTER} == "protolint" ]]; then
+      elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "gitleaks" ]]; then
         GET_VERSION_CMD="$(${LINTER} version)"
       elif [[ ${LINTER} == "editorconfig-checker" ]]; then
         GET_VERSION_CMD="$(${LINTER} -version)"

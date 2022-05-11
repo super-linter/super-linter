@@ -4,7 +4,9 @@ This folder holds the test cases for **SQL**.
 
 ## Additional Docs
 
-No Additional information is needed for this test case.
+From version 0.12.0 SQLFluff requires a dialect to be set, and no longer sets a default. This can be provided as a command line argument, or a `.sqlfluff` config file (either in the usualy place for SQLFluff config files, or within the folder containg the SQL).
+
+For SQLFluff we have added a default `.sqlfluff` config file in this test directory.
 
 ## Good Test Cases
 

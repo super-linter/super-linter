@@ -1,21 +1,28 @@
 # Disabling trivy scans while they get troubleshooting for failures
 ---
-name: Container Security Scan with Trivy
+name: Trivy Container Scan
 on:
   push:
     branches:
       - main
   pull_request:
+permissions:
+  contents: read
+
 jobs:
   scan-container:
+    permissions:
+      contents: read  # for actions/checkout to fetch code
+      security-events: write  # for github/codeql-action/upload-sarif to upload SARIF results
     name: Build
     runs-on: ubuntu-18.04
+    timeout-minutes: 60
     steps:
       ######################
       # Checkout code base #
       ######################
       - name: Checkout code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       # ##########################
       # # Build the docker image #
@@ -40,7 +47,7 @@ jobs:
       # Upload report to security tab #
       #################################
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         if: always()
         with:
           sarif_file: 'report.sarif'
