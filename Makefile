@@ -76,11 +76,9 @@ DOCKERFILE := ''
 IMAGE := ''
 ifeq ($(IMAGE),slim)
 	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim-test"
-	DOCKERFILE := "Dockerfile-slim"
 	IMAGE := "slim"
 else
 	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:test"
-	DOCKERFILE := "Dockerfile"
 	IMAGE := "standard"
 endif
 

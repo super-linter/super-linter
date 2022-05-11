@@ -7,27 +7,6 @@
 ################################################################################
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
-################################################################################
-################################################################################
-#### Function DetectAnsibleFile ################################################
-DetectAnsibleFile() {
-  ANSIBLE_DIRECTORY="${1}"
-  FILE="${2}"
-
-  debug "Checking if ${FILE} is an Ansible file. Ansible directory: ${ANSIBLE_DIRECTORY}..."
-
-  if [[ ${FILE} == *"vault.yml" ]] || [[ ${FILE} == *"galaxy.yml" ]] || [[ ${FILE} == *"vault.yaml" ]] || [[ ${FILE} == *"galaxy.yaml" ]]; then
-    debug "${FILE} is a file that super-linter ignores. Ignoring it..."
-    return 1
-  elif [[ "$(dirname "${FILE}")" == *"${ANSIBLE_DIRECTORY}"* ]]; then
-    debug "${FILE} is an Ansible-related file."
-    return 0
-  else
-    debug "${FILE} is NOT an Ansible-related file."
-    return 1
-  fi
-}
-################################################################################
 #### Function DetectActions ####################################################
 DetectActions() {
   FILE="${1}"
@@ -181,8 +160,10 @@ DetectKubernetesFile() {
   ################
   FILE="${1}" # File that we need to validate
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
-
-  if grep -v 'kustomize.config.k8s.io' "${FILE}" | grep -v tekton | grep -q -E '(apiVersion):'; then
+  if grep -q -v 'kustomize.config.k8s.io' "${FILE}" &&
+    grep -q -v "tekton" "${FILE}" &&
+    grep -q -E '(apiVersion):' "${FILE}" &&
+    grep -q -E '(kind):' "${FILE}"; then
     debug "${FILE} is a Kubernetes descriptor"
     return 0
   fi
@@ -286,6 +267,32 @@ function CheckFileType() {
     ################################
     FILE_ARRAY_JSCPD+=("${FILE}")
     FILE_ARRAY_RUBY+=("${FILE}")
+  elif [[ ${GET_FILE_TYPE_CMD} == *"Python script"* ]]; then
+    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+      #########################
+      # It is a Python script #
+      #########################
+      warn "Found Python script without extension:[.py]"
+      info "Please update file with proper extensions."
+    fi
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_ARRAY_PYTHON+=("${FILE}")
+  elif [[ ${GET_FILE_TYPE_CMD} == *"Perl script"* ]]; then
+    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+      #######################
+      # It is a Perl script #
+      #######################
+      warn "Found Perl script without extension:[.pl]"
+      info "Please update file with proper extensions."
+    fi
+    ################################
+    # Append the file to the array #
+    ################################
+    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_ARRAY_PERL+=("${FILE}")
   else
     ############################
     # Extension was not found! #
@@ -411,10 +418,10 @@ function RunAdditionalInstalls() {
     ############################################
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
-        PATH=$(dirname "${LINE}" 2>&1)
+        COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
         info "Found [composer.json] at:[${LINE}]"
         COMPOSER_CMD=$(
-          cd "${PATH}" || exit 1
+          cd "${COMPOSER_PATH}" || exit 1
           composer install --no-progress -q 2>&1
         )
 
@@ -428,7 +435,7 @@ function RunAdditionalInstalls() {
         ##############################
         if [ "${ERROR_CODE}" -ne 0 ]; then
           # Error
-          error "ERROR! Failed to run composer install at location:[${PATH}]"
+          error "ERROR! Failed to run composer install at location:[${COMPOSER_PATH}]"
           fatal "ERROR:[${COMPOSER_CMD}]"
         else
           # Success
@@ -488,6 +495,37 @@ function RunAdditionalInstalls() {
         warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
         warn "INSTALL_CMD:[${INSTALL_CMD}]"
       fi
+    fi
+  fi
+
+  ####################################
+  # Run installs for TFLINT language #
+  ####################################
+  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ "${#FILE_ARRAY_TERRAFORM_TFLINT[@]}" -ne 0 ]; then
+    info "Detected TFLint Language files to lint."
+    info "Trying to install the TFLint init inside:[${WORKSPACE_PATH}]"
+    #########################
+    # Run the build command #
+    #########################
+    BUILD_CMD=$(
+      cd "${WORKSPACE_PATH}" || exit 0
+      tflint --init 2>&1
+    )
+
+    ##############
+    # Error code #
+    ##############
+    ERROR_CODE=$?
+
+    ##############################
+    # Check the shell for errors #
+    ##############################
+    if [ "${ERROR_CODE}" -ne 0 ]; then
+      # Error
+      warn "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]"
+      warn "BUILD_CMD:[${BUILD_CMD}]"
+    else
+      info "Successfully ran:[tflint --init] in workspace:[${WORKSPACE_PATH}]"
     fi
   fi
 }

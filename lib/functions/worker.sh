@@ -28,6 +28,11 @@ function LintCodebase() {
   ##########################
   LIST_FILES=()
 
+  ###################################################
+  # Array to track directories where tflint was run #
+  ###################################################
+  declare -A TFLINT_SEEN_DIRS
+
   ################
   # Set the flag #
   ################
@@ -173,10 +178,16 @@ function LintCodebase() {
       fi
 
       INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
+      TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
+      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
 
-      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}"
+      if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
+        # These linters expect files inside a directory, not a directory. So we add a trailing slash
+        TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
+        debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
+      fi
 
-      if [[ ${FILE} != *"${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}/"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
+      if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
         debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
         continue
       fi
@@ -209,20 +220,10 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        #########################################
-        # Make sure we don't lint certain files #
-        #########################################
-        if [[ ${FILE} == *"vault.yml"* ]] || [[ ${FILE} == *"galaxy.yml"* ]]; then
-          # This is a file we don't look at
-          continue
-        fi
-
-        ################################
-        # Lint the file with the rules #
-        ################################
         LINT_CMD=$(
-          cd "${ANSIBLE_DIRECTORY}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
+          cd "${WORKSPACE_PATH}" || exit
+          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
@@ -301,6 +302,39 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
+      ############################################################################################
+      # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
+      ############################################################################################
+      elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+        # Check the cache to see if we've already prepped this directory for tflint
+        if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
+          debug "  Setting up TERRAFORM_TFLINT cache for ${DIR_NAME}"
+
+          TF_DOT_DIR="${DIR_NAME}/.terraform"
+          if [ -d "${TF_DOT_DIR}" ]; then
+            # Just in case there's something in the .terraform folder, keep a copy of it
+            TF_BACKUP_DIR="/tmp/.terraform-tflint-backup${DIR_NAME}"
+            debug "  Backing up ${TF_DOT_DIR} to ${TF_BACKUP_DIR}"
+
+            mkdir -p "${TF_BACKUP_DIR}"
+            cp -r "${TF_DOT_DIR}" "${TF_BACKUP_DIR}"
+            # Store the destination directory so we can restore from our copy later
+            TFLINT_SEEN_DIRS[${DIR_NAME}]="${TF_BACKUP_DIR}"
+          else
+            # Just let the cache know we've seen this before
+            TFLINT_SEEN_DIRS[${DIR_NAME}]='false'
+          fi
+
+          (
+            cd "${DIR_NAME}" || exit
+            terraform get >/dev/null
+          )
+        fi
+
+        LINT_CMD=$(
+          cd "${DIR_NAME}" || exit
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
       ######################################################
       # Corner case for GITLEAKS:                          #
       # - Path to the file to scan is passed inside a flag #
@@ -364,6 +398,9 @@ function LintCodebase() {
           # Success #
           ###########
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
+          if [ -n "${LINT_CMD}" ]; then
+            info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"
+          fi
         fi
       else
         #######################################
@@ -397,6 +434,22 @@ function LintCodebase() {
     done
   fi
 
+  # Clean up after TFLINT
+  for TF_DIR in "${!TFLINT_SEEN_DIRS[@]}"; do
+    (
+      cd "${TF_DIR}" || exit
+      rm -rf .terraform
+
+      # Check to see if there was a .terraform folder there before we got started, restore it if so
+      POTENTIAL_BACKUP_DIR="${TFLINT_SEEN_DIRS[${TF_DIR}]}"
+      if [[ "${POTENTIAL_BACKUP_DIR}" != 'false' ]]; then
+        # Put the copy back in place
+        debug "  Restoring ${TF_DIR}/.terraform from ${POTENTIAL_BACKUP_DIR}"
+        mv "${POTENTIAL_BACKUP_DIR}/.terraform" .terraform
+      fi
+    )
+  done
+
   ##############################
   # Validate we ran some tests #
   ##############################
@@ -405,6 +458,6 @@ function LintCodebase() {
     # We failed to find files and no tests were ran #
     #################################################
     error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
-    fatal "Please validate logic or that tests exist!"
+    fatal "Validate logic and that tests exist for linter: ${LINTER_NAME}"
   fi
 }

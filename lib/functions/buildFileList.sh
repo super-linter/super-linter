@@ -54,19 +54,26 @@ function BuildFileList() {
   # Pull in vars #
   ################
   VALIDATE_ALL_CODEBASE="${1}"
-  debug "Validate all code base: ${VALIDATE_ALL_CODEBASE}..."
+  debug "VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
 
   TEST_CASE_RUN="${2}"
-  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}..."
+  debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
   ANSIBLE_DIRECTORY="${3}"
-  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}..."
+  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}..."
+  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
-  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}..."
+  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
-  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}..."
+  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+
+  debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
+
+  # Solve issue with git unsafe dirs
+  debug "Running git config for safe dirs"
+  git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+  git config --global --add safe.directory "/tmp/lint" 2>&1
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     # Need to build a list of all files changed
@@ -241,6 +248,16 @@ function BuildFileList() {
   done
   debug "---------------------------------------------"
 
+  #########################################
+  # Check if the Ansible directory exists #
+  #########################################
+  if [ -d "${ANSIBLE_DIRECTORY}" ]; then
+    debug "Adding ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) to the list of files and directories to lint."
+    FILE_ARRAY_ANSIBLE+=("${ANSIBLE_DIRECTORY}")
+  else
+    debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+  fi
+
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -314,10 +331,19 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
-    # jscpd also runs an all files
-    FILE_ARRAY_JSCPD+=("${FILE}")
-    # GitLeaks also runs an all files
-    FILE_ARRAY_GITLEAKS+=("${FILE}")
+
+    if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
+      debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
+    else
+      # jscpd also runs an all files
+      FILE_ARRAY_JSCPD+=("${FILE}")
+    fi
+    # Need to make sure we dont check the secrets paterns
+    # for secrets, as it will pop!
+    if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
+      # GitLeaks also runs an all files
+      FILE_ARRAY_GITLEAKS+=("${FILE}")
+    fi
 
     #######################
     # Get the shell files #
@@ -395,12 +421,11 @@ function BuildFileList() {
     # Get the DOCKER files #
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
-    elif [[ "${FILE_TYPE}" != "dockerfilelintrc" ]] && [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
+    elif [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
       [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" =~ .*(contain|dock)erfile.* ]]; then
       ################################
       # Append the file to the array #
       ################################
-      FILE_ARRAY_DOCKERFILE+=("${FILE}")
       FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
       FILE_ARRAY_SEMGREP+=("${FILE}")
 
@@ -494,15 +519,6 @@ function BuildFileList() {
       FILE_ARRAY_JSON+=("${FILE}")
 
       ############################
-      # Check if file is Ansible #
-      ############################
-      if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
-        FILE_ARRAY_ANSIBLE+=("${FILE}")
-      fi
-      ############################
       # Check if file is OpenAPI #
       ############################
       if DetectOpenAPIFile "${FILE}"; then
@@ -558,6 +574,7 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_KOTLIN+=("${FILE}")
+      FILE_ARRAY_KOTLIN_ANDROID+=("${FILE}")
       FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
@@ -689,6 +706,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
+      FILE_ARRAY_RUST_2021+=("${FILE}")
 
     #######################
     # Get the RUST crates #
@@ -702,7 +720,7 @@ function BuildFileList() {
     ###########################
     # Get the SCALA files #
     ###########################
-    elif [ "${FILE_TYPE}" == "scala" ] || [ "${BASE_FILE}" == "??????" ]; then
+    elif [ "${FILE_TYPE}" == "scala" ] || [ "${FILE_TYPE}" == "sc" ] || [ "${BASE_FILE}" == "??????" ]; then
       ################################
       # Append the file to the array #
       ################################
@@ -756,6 +774,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
+      FILE_ARRAY_TYPESCRIPT_PRETTIER+=("${FILE}")
       FILE_ARRAY_SEMGREP+=("${FILE}")
 
     #####################
@@ -793,19 +812,6 @@ function BuildFileList() {
         # Append the file to the array #
         ################################
         FILE_ARRAY_GITHUB_ACTIONS+=("${FILE}")
-      fi
-      ############################
-      # Check if file is Ansible #
-      ############################
-      if [ -d "${ANSIBLE_DIRECTORY}" ]; then
-        if DetectAnsibleFile "${ANSIBLE_DIRECTORY}" "${FILE}"; then
-          ################################
-          # Append the file to the array #
-          ################################
-          FILE_ARRAY_ANSIBLE+=("${FILE}")
-        fi
-      else
-        debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
       fi
 
       #####################################
@@ -862,6 +868,11 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
+
+  if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
+    debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
+    FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
+  fi
 
   ################
   # Footer print #

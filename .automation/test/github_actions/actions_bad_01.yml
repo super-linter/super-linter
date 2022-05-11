@@ -1,3 +1,4 @@
+---
 name: Github Actions Bad
 on:
   push:
