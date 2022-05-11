@@ -86,6 +86,8 @@ tests:
 
 # (optional) list skipped test IDs here, eg '[B101, B406]':
 skips:
+  - B101
+  - B301
   - B311
 ### (optional) plugin settings - some test plugins require configuration data
 ### that may be given here, per-plugin. All bandit test plugins have a built in
