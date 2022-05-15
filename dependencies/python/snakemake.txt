@@ -7,6 +7,7 @@ connection-pool==0.0.3
 datrie==0.8.2
 decorator==5.1.1
 docutils==0.18.1
+dpath==2.0.6
 fastjsonschema==2.15.3
 gitdb==4.0.9
 GitPython==3.1.27
@@ -32,8 +33,8 @@ snakemake==7.6.2
 stopit==1.1.2
 tabulate==0.8.9
 toposort==1.7
-traitlets==5.1.1
+traitlets==5.2.0
 urllib3==1.26.9
 wrapt==1.14.1
-yte==1.2.3
+yte==1.4.0
 zipp==3.8.0
