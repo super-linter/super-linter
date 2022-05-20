@@ -1,5 +1,6 @@
 ---
-- block:
+- name: GHE Initial configuration
+  block:
   ###############################
   # Wait for admin port to open #
   ###############################

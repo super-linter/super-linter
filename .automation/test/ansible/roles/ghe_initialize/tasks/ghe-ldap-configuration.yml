@@ -1,5 +1,6 @@
 ---
-- block:
+- name: GHE LDAP configuration
+  block:
   #######################################################
   # Copy License file to GHE to decrypt file and upload #
   #######################################################

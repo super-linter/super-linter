@@ -1,5 +1,6 @@
 ---
-- block:
+- name: Splunk settings
+  block:
   ###############################
   # Wait for admin port to open #
   ###############################

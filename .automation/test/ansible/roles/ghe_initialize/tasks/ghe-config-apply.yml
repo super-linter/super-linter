@@ -1,5 +1,6 @@
 ---
-- block:
+- name: GHE Config apply
+  block:
   ########################################
   # Copy the script to the local machine #
   ########################################
