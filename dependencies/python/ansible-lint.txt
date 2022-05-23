@@ -1,6 +1,6 @@
 ansible-compat==2.0.3
 ansible-core==2.12.5
-ansible-lint==6.1.0
+ansible-lint==6.2.1
 attrs==21.4.0
 bracex==2.2.1
 cffi==1.15.0
