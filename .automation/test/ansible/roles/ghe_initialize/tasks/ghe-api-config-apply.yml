@@ -1,5 +1,6 @@
 ---
-- block:
+- name: GHE API Configuration
+  block:
   # ##################################
   # # Run config to take in settings #
   # ##################################

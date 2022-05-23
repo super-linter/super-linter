@@ -1,8 +1,8 @@
-ansible-compat==2.0.3
-ansible-core==2.12.5
-ansible-lint==6.1.0
+ansible-compat==2.1.0
+ansible-core==2.13.0
+ansible-lint==6.2.1
 attrs==21.4.0
-bracex==2.2.1
+bracex==2.3
 cffi==1.15.0
 commonmark==0.9.1
 cryptography==37.0.2
@@ -23,7 +23,7 @@ pyrsistent==0.18.1
 pytest==7.1.2
 PyYAML==6.0
 resolvelib==0.5.4
-rich==12.4.1
+rich==12.4.3
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.6
 subprocess-tee==0.3.5

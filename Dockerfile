@@ -8,21 +8,21 @@
 # Get dependency images as build stages #
 #########################################
 FROM accurics/terrascan:1.14.0 as terrascan
-FROM alpine/terragrunt:1.1.9 as terragrunt
+FROM alpine/terragrunt:1.2.0 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
 FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.36.2.0 as tflint
-FROM golangci/golangci-lint:v1.46.0 as golangci-lint
+FROM golangci/golangci-lint:v1.46.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.1.9 as terraform
+FROM hashicorp/terraform:1.2.0 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.4.3 as shfmt
-FROM rhysd/actionlint:1.6.12 as actionlint
-FROM scalameta/scalafmt:v3.5.2 as scalafmt
+FROM rhysd/actionlint:1.6.13 as actionlint
+FROM scalameta/scalafmt:v3.5.3 as scalafmt
 FROM yoheimuta/protolint:v0.38.1 as protolint
 FROM zricethezav/gitleaks:v8.8.4 as gitleaks
 
