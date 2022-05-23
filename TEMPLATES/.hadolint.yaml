@@ -2,4 +2,7 @@
 ##########################
 ## Hadolint config file ##
 ##########################
+
+failure-threshold: warning
+
 ignored:
