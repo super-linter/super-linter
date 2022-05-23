@@ -231,7 +231,7 @@ jobs:
       #########################
       - name: Start deployment
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: bobheadxi/deployments@v1.1.0
+        uses: bobheadxi/deployments@v1.2.0
         id: deployment
         with:
           step: start
@@ -308,7 +308,7 @@ jobs:
       #########################
       - name: Update deployment status
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: bobheadxi/deployments@v1.1.0
+        uses: bobheadxi/deployments@v1.2.0
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
