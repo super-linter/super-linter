@@ -110,7 +110,7 @@ jobs:
       # Update deployment API #
       #########################
       - name: Start deployment
-        uses: bobheadxi/deployments@v1.1.0
+        uses: bobheadxi/deployments@v1.2.0
         id: deployment
         with:
           step: start
@@ -144,7 +144,7 @@ jobs:
       # Update Deployment API #
       #########################
       - name: Update deployment status
-        uses: bobheadxi/deployments@v1.1.0
+        uses: bobheadxi/deployments@v1.2.0
         if: always()
         with:
           step: finish
