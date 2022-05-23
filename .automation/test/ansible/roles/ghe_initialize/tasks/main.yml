@@ -1,67 +1,34 @@
 ---
-######################################
-######################################
-## Configure the GHE Instance Block ##
-######################################
-######################################
-- block:
+- name: Configure the GHE Instance
+  block:
     ######################################################
     # Need to run the tasks to stand up the GHE instance #
     ######################################################
     # Configure the base system
     - ansible.builtin.include_tasks: ghe-initial-configuration.yml
-
-  ######################
-  # Set the tags block #
-  ######################
   tags:
     - github
     - ghe_primary
     - initialize
-#################################################
-############### End of Block ####################
-#################################################
 
-##################################
-##################################
-## Configure the GHE LDAP Block ##
-##################################
-##################################
-- block:
+- name: Configure the GHE LDAP
+  block:
     ############################################################
     # Need to run the tasks to config LDAP on the GHE instance #
     ############################################################
     # Configure the base system
     - ansible.builtin.include_tasks: ghe-ldap-configuration.yml
-
-  ######################
-  # Set the tags block #
-  ######################
   tags:
     - openldap
-#################################################
-############### End of Block ####################
-#################################################
 
-######################################
-######################################
-## Configure the GHE Instance Block ##
-######################################
-######################################
-- block:
+- name: Configure the GHE Instance Block
+  block:
     ######################################################
     # Need to run the tasks to stand up the GHE instance #
     ######################################################
     # Configure the base system
     - ansible.builtin.include_tasks: ghe-api-config-apply.yml
-
-  ######################
-  # Set the tags block #
-  ######################
   tags:
     - github
     - ghe_primary
     - initialize
-#################################################
-############### End of Block ####################
-#################################################
