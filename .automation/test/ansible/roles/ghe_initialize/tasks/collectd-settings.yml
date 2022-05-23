@@ -1,8 +1,6 @@
 ---
-- block:
-  ###############################
-  # Wait for admin port to open #
-  ###############################
+- name: Wait for admin port to open
+  block:
   - name: Wait for Admin port to come up (Port 8443)
     ## Doc: http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
     ## Helpful Google: ansible wait_for
