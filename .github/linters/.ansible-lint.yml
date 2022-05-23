@@ -14,6 +14,7 @@ skip_list:
   - 'command-instead-of-module'  # Allow git commands for push, add, etc...
   - 'command-instead-of-shell'  # Allow use of shell when you want
   - 'no-handler'  # Allow step to run like handler
+  - 'unnamed-task'  # Allow tasks without a name
 
 #############
 # Use rules #
