@@ -376,6 +376,11 @@ COPY --from=base_image /home/r-library /home/r-library
 COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
 COPY --from=python_builder /venvs/ /venvs/
 
+##################################
+# Configure TFLint plugin folder #
+##################################
+ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
+
 ####################################################
 # Install Composer after all Libs have been copied #
 ####################################################
