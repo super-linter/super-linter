@@ -20,7 +20,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.2.0 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
-FROM mvdan/shfmt:v3.4.3 as shfmt
+FROM mvdan/shfmt:v3.5.1 as shfmt
 FROM rhysd/actionlint:1.6.13 as actionlint
 FROM scalameta/scalafmt:v3.5.3 as scalafmt
 FROM yoheimuta/protolint:v0.38.1 as protolint
