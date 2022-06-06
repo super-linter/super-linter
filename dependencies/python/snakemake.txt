@@ -14,7 +14,7 @@ GitPython==3.1.27
 idna==3.3
 importlib-resources==5.7.1
 Jinja2==3.1.2
-jsonschema==4.5.1
+jsonschema==4.6.0
 jupyter-core==4.10.0
 MarkupSafe==2.1.1
 nbformat==5.4.0
@@ -33,8 +33,8 @@ snakemake==7.8.1
 stopit==1.1.2
 tabulate==0.8.9
 toposort==1.7
-traitlets==5.2.1.post0
+traitlets==5.2.2.post1
 urllib3==1.26.9
 wrapt==1.14.1
-yte==1.4.0
+yte==1.5.1
 zipp==3.8.0
