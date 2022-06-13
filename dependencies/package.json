@@ -24,7 +24,7 @@
     "eslint-plugin-vue": "^9.1.0",
     "gherkin-lint": "^4.2.2",
     "htmlhint": "^1.1.4",
-    "immer": "^9.0.14",
+    "immer": "^9.0.15",
     "ini": "^3.0.0",
     "jscpd": "^3.4.5",
     "lodash": "^4.17.21",
