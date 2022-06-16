@@ -29,7 +29,7 @@
     "jscpd": "^3.4.5",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.31.1",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^3.2.6",
     "npm-groovy-lint": "^9.5.0",
     "prettier": "^2.6.2",
     "prettyjson": "^1.2.5",
