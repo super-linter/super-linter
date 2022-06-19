@@ -7,7 +7,7 @@ cffi==1.15.0
 commonmark==0.9.1
 cryptography==37.0.2
 enrich==1.2.7
-importlib-resources==5.7.1
+importlib-resources==5.8.0
 iniconfig==1.1.1
 Jinja2==3.1.2
 jsonschema==4.6.0
