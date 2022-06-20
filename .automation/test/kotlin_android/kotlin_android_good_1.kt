@@ -1,3 +1,4 @@
+// ktlint-disable filename
 import java.JavaClass
 import pkg.PkgClass
 
