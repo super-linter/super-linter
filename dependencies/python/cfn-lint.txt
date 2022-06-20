@@ -10,7 +10,7 @@ jsonpickle==2.2.0
 jsonpointer==2.3
 jsonschema==3.2.0
 junit-xml==1.9
-networkx==2.8.3
+networkx==2.8.4
 pbr==5.9.0
 pyrsistent==0.18.1
 python-dateutil==2.8.2
