@@ -31,7 +31,7 @@ smart-open==6.0.0
 smmap==5.0.0
 snakemake==7.8.2
 stopit==1.1.2
-tabulate==0.8.9
+tabulate==0.8.10
 toposort==1.7
 traitlets==5.3.0
 urllib3==1.26.9
