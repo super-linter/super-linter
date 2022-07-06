@@ -10,6 +10,7 @@ GEM
     concurrent-ruby (1.1.10)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
+    json (2.6.2)
     minitest (5.16.1)
     parallel (1.22.1)
     parser (3.1.2.0)
@@ -18,7 +19,8 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.5.0)
     rexml (3.2.5)
-    rubocop (1.30.1)
+    rubocop (1.31.1)
+      json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -45,13 +47,13 @@ GEM
     ruby-progressbar (1.11.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.1.0)
+    unicode-display_width (2.2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  rubocop (~> 1.30.1)
+  rubocop (~> 1.31.1)
   rubocop-github (~> 0.17.0)
   rubocop-performance (~> 1.14.2)
   rubocop-rails (~> 2.15)
