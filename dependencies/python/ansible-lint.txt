@@ -5,12 +5,12 @@ attrs==21.4.0
 bracex==2.3.post1
 cffi==1.15.1
 commonmark==0.9.1
-cryptography==37.0.2
+cryptography==37.0.4
 enrich==1.2.7
 importlib-resources==5.8.0
 iniconfig==1.1.1
 Jinja2==3.1.2
-jsonschema==4.6.1
+jsonschema==4.6.2
 MarkupSafe==2.1.1
 packaging==21.3
 pathspec==0.9.0
@@ -30,5 +30,5 @@ subprocess-tee==0.3.5
 tomli==2.0.1
 typing_extensions==4.3.0
 wcmatch==8.4
-yamllint==1.26.3
+yamllint==1.27.1
 zipp==3.8.0
