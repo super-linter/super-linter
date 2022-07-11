@@ -34,7 +34,7 @@ stopit==1.1.2
 tabulate==0.8.10
 toposort==1.7
 traitlets==5.3.0
-urllib3==1.26.9
+urllib3==1.26.10
 wrapt==1.14.1
 yte==1.5.1
 zipp==3.8.0
