@@ -1,7 +1,7 @@
 attrs==21.4.0
-aws-sam-translator==1.46.0
-boto3==1.24.26
-botocore==1.27.26
+aws-sam-translator==1.47.0
+boto3==1.24.31
+botocore==1.27.31
 cfn-lint==0.61.2
 jmespath==1.0.1
 jschema-to-python==1.2.3
