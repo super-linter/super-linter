@@ -31,4 +31,4 @@ tomli==2.0.1
 typing_extensions==4.3.0
 wcmatch==8.4
 yamllint==1.27.1
-zipp==3.8.0
+zipp==3.8.1
