@@ -8,17 +8,19 @@ GEM
       tzinfo (~> 2.0)
     ast (2.4.2)
     concurrent-ruby (1.1.10)
-    i18n (1.10.0)
+    i18n (1.11.0)
       concurrent-ruby (~> 1.0)
-    minitest (5.15.0)
+    json (2.6.2)
+    minitest (5.16.2)
     parallel (1.22.1)
     parser (3.1.2.0)
       ast (~> 2.4.1)
-    rack (2.2.3.1)
+    rack (2.2.4)
     rainbow (3.1.1)
     regexp_parser (2.5.0)
     rexml (3.2.5)
-    rubocop (1.30.1)
+    rubocop (1.31.2)
+      json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -27,16 +29,16 @@ GEM
       rubocop-ast (>= 1.18.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.18.0)
+    rubocop-ast (1.19.1)
       parser (>= 3.1.1.0)
-    rubocop-github (0.17.0)
-      rubocop
+    rubocop-github (0.18.0)
+      rubocop (>= 1.0.0)
       rubocop-performance
       rubocop-rails
     rubocop-performance (1.14.2)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.14.2)
+    rubocop-rails (2.15.2)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
@@ -45,16 +47,16 @@ GEM
     ruby-progressbar (1.11.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.1.0)
+    unicode-display_width (2.2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  rubocop (~> 1.30.1)
-  rubocop-github (~> 0.17.0)
+  rubocop (~> 1.31.2)
+  rubocop-github (~> 0.18.0)
   rubocop-performance (~> 1.14.2)
-  rubocop-rails (~> 2.14)
+  rubocop-rails (~> 2.15)
   rubocop-rspec (~> 2.11.1)
 
 BUNDLED WITH
