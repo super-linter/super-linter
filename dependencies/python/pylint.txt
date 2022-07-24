@@ -4,7 +4,7 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.7.0
 platformdirs==2.5.2
-pylint==2.14.4
+pylint==2.14.5
 tomli==2.0.1
 tomlkit==0.11.1
 typing_extensions==4.3.0
