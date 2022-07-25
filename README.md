@@ -35,7 +35,7 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Local (troubleshooting/debugging/enhancements)](#local-troubleshootingdebuggingenhancements)
     - [Azure](#azure)
     - [GitLab](#gitlab)
-    - [Visual Studio Code](#visual-studio-code)
+    - [Codespaces and Visual Studio Code](#codespaces-and-visual-studio-code)
     - [SSL Certs](#ssl-certs)
   - [Community Activity](#community-activity)
   - [Limitations](#limitations)
@@ -548,12 +548,10 @@ Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-lint
 
 Check out this [snippet](https://gitlab.com/snippets/1988376) and this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
 
-### Visual Studio Code
+### Codespaces and Visual Studio Code
 
-You can checkout this repository using [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
+You can checkout this repository using [GitHub Codespaces](https://github.com/features/codespaces/) and [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
 ![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
-
-We will also support [GitHub Codespaces](https://github.com/features/codespaces/) once it becomes available
 
 ### SSL Certs
 
