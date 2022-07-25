@@ -8,4 +8,4 @@ snakefmt==0.6.1
 toml==0.10.2
 tomli==2.0.1
 typing_extensions==4.3.0
-zipp==3.8.0
+zipp==3.8.1
