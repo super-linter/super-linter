@@ -35,7 +35,7 @@ GEM
       rubocop (>= 1.0.0)
       rubocop-performance
       rubocop-rails
-    rubocop-performance (1.14.2)
+    rubocop-performance (1.14.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.15.2)
@@ -55,7 +55,7 @@ PLATFORMS
 DEPENDENCIES
   rubocop (~> 1.31.2)
   rubocop-github (~> 0.18.0)
-  rubocop-performance (~> 1.14.2)
+  rubocop-performance (~> 1.14.3)
   rubocop-rails (~> 2.15)
   rubocop-rspec (~> 2.11.1)
 
