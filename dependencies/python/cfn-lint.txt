@@ -1,4 +1,4 @@
-attrs==21.4.0
+attrs==22.1.0
 aws-sam-translator==1.47.0
 boto3==1.24.36
 botocore==1.27.36
