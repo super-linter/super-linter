@@ -12,7 +12,7 @@ FROM tenable/terrascan:1.15.2 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
-FROM garethr/kubeval:0.16.0 as kubeval
+FROM garethr/kubeval:0.16.1 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.39.1.1 as tflint
 FROM golangci/golangci-lint:v1.47.3 as golangci-lint
