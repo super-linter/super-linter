@@ -19,7 +19,7 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.5.0)
     rexml (3.2.5)
-    rubocop (1.32.0)
+    rubocop (1.33.0)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
@@ -29,7 +29,7 @@ GEM
       rubocop-ast (>= 1.19.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.19.1)
+    rubocop-ast (1.21.0)
       parser (>= 3.1.1.0)
     rubocop-github (0.18.0)
       rubocop (>= 1.0.0)
@@ -53,7 +53,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rubocop (~> 1.32.0)
+  rubocop (~> 1.33.0)
   rubocop-github (~> 0.18.0)
   rubocop-performance (~> 1.14.3)
   rubocop-rails (~> 2.15)
