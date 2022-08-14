@@ -10,7 +10,7 @@ enrich==1.2.7
 importlib-resources==5.9.0
 iniconfig==1.1.1
 Jinja2==3.1.2
-jsonschema==4.9.0
+jsonschema==4.9.1
 MarkupSafe==2.1.1
 packaging==21.3
 pathspec==0.9.0
