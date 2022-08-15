@@ -215,17 +215,6 @@ function LintCodebase() {
           exit $? 2>&1
         )
       ###############################################################################
-      # Corner case for groovy as we have to pass it as path and file in ant format #
-      ###############################################################################
-      elif [[ ${FILE_TYPE} == "GROOVY" ]]; then
-        #######################################
-        # Lint the file with the updated path #
-        #######################################
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} --path "${DIR_NAME}" --files "$FILE_NAME" 2>&1
-        )
-      ###############################################################################
       # Corner case for R as we have to pass it to R                                #
       ###############################################################################
       elif [[ ${FILE_TYPE} == "R" ]]; then
