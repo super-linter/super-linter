@@ -12,7 +12,6 @@ FROM tenable/terrascan:1.15.2 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
-FROM garethr/kubeval:0.16.1 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.39.1.1 as tflint
 FROM golangci/golangci-lint:v1.47.3 as golangci-lint
@@ -47,6 +46,8 @@ ARG GLIBC_VERSION='2.31-r0'
 ARG PSSA_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='latest'
+# Kubeval Version
+ARG KUBEVAL_VERSION='v0.16.1'
 
 ####################
 # Run APK installs #
@@ -173,11 +174,6 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 ##################
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 
-###################
-# Install kubeval #
-###################
-COPY --from=kubeval /kubeval /usr/bin/
-
 #################
 # Install shfmt #
 #################
@@ -211,10 +207,17 @@ RUN mkdir -p /home/r-library \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+###################
+# Install Kubeval #
+###################
+RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz \
+    && tar xf kubeval-linux-amd64.tar.gz \
+    && sudo cp kubeval /usr/local/bin \
+    && rm kubeval-linux-amd64.tar.gz \
 ##################
 # Install ktlint #
 ##################
-RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
+    && curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/ \
     && terrascan init \
