@@ -212,7 +212,7 @@ RUN mkdir -p /home/r-library \
 ###################
 RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz \
     && tar xf kubeval-linux-amd64.tar.gz \
-    && sudo cp kubeval /usr/local/bin \
+    && mv kubeval /usr/local/bin \
     && rm kubeval-linux-amd64.tar.gz \
 ##################
 # Install ktlint #
