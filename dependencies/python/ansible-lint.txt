@@ -1,5 +1,5 @@
 ansible-compat==2.2.0
-ansible-core==2.13.2
+ansible-core==2.13.3
 ansible-lint==6.4.0
 attrs==22.1.0
 bracex==2.3.post1
