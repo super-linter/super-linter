@@ -21,6 +21,14 @@ IMAGE="${IMAGE:-standard}"                            # Version of the Super-lin
 LOG_FILE="${LOG_FILE:-super-linter.log}" # Default log file name (located in GITHUB_WORKSPACE folder)
 LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"        # Default log level (VERBOSE, DEBUG, TRACE)
 
+##################################################################
+# Get Environment Variables from env file                        #
+##################################################################
+SUPER_LINTER_ENV_FILE="${SUPER_LINTER_ENV_FILE:-.github/super-linter.env}" # Default env file name
+if test -f "$SUPER_LINTER_ENV_FILE"; then
+  source SUPER_LINTER_ENV_FILE
+fi
+
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
 # Boolean to see trace logs
 LOG_TRACE=$(if [[ ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)

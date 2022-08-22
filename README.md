@@ -265,7 +265,7 @@ Example usage:
 
 ## Environment variables
 
-The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
+The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality. You can also specify environment variables in .github/super-linter.env which will be used by both a local super-linter run and from Github actions.
 
 _Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
 
