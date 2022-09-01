@@ -355,7 +355,6 @@ DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master b
 # GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
 # GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
 # GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
-# GITHUB_TOKEN="${GITHUB_TOKEN}"                   # GitHub Token passed from environment
 # GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
 # TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
 # VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files

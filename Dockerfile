@@ -7,29 +7,28 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.2.4 as terragrunt
+FROM alpine/terragrunt:1.2.7 as terragrunt
 FROM tenable/terrascan:1.15.2 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
-FROM garethr/kubeval:0.15.0 as kubeval
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.38.1.0 as tflint
-FROM golangci/golangci-lint:v1.46.2 as golangci-lint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.39.3.1 as tflint
+FROM golangci/golangci-lint:v1.48.0 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.2.4 as terraform
+FROM hashicorp/terraform:1.2.7 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.5.1 as shfmt
 FROM rhysd/actionlint:1.6.15 as actionlint
 FROM scalameta/scalafmt:v3.5.8 as scalafmt
-FROM yoheimuta/protolint:0.38.2 as protolint
+FROM yoheimuta/protolint:0.39.0 as protolint
 FROM zricethezav/gitleaks:v8.8.12 as gitleaks
 
 ##################
 # Get base image #
 ##################
-FROM python:3.10.5-alpine as base_image
+FROM python:3.10.6-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -47,6 +46,8 @@ ARG GLIBC_VERSION='2.31-r0'
 ARG PSSA_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='latest'
+# Kubeval Version
+ARG KUBEVAL_VERSION='v0.16.1'
 
 ####################
 # Run APK installs #
@@ -173,11 +174,6 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 ##################
 COPY --from=chktex /usr/bin/chktex /usr/bin/
 
-###################
-# Install kubeval #
-###################
-COPY --from=kubeval /kubeval /usr/bin/
-
 #################
 # Install shfmt #
 #################
@@ -211,10 +207,17 @@ RUN mkdir -p /home/r-library \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+###################
+# Install Kubeval #
+###################
+RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz \
+    && tar xf kubeval-linux-amd64.tar.gz \
+    && mv kubeval /usr/local/bin \
+    && rm kubeval-linux-amd64.tar.gz \
 ##################
 # Install ktlint #
 ##################
-RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
+    && curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/ \
     && terrascan init \
@@ -280,7 +283,7 @@ RUN apk add --no-cache rakudo zef \
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.10.5-alpine as python_builder
+FROM python:3.10.6-alpine as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
