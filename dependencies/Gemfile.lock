@@ -46,12 +46,12 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (2.12.1)
-      rubocop (~> 1.31)
+    rubocop-rspec (2.13.1)
+      rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
 
 PLATFORMS
   ruby
@@ -63,7 +63,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.14.3)
   rubocop-rails (~> 2.15)
   rubocop-rake (~> 0.6.0)
-  rubocop-rspec (~> 2.12.1)
+  rubocop-rspec (~> 2.13.1)
 
 BUNDLED WITH
   2.3.5
