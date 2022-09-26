@@ -10,7 +10,7 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 #
 
-name: Deploy Production
+name: Build and test super-linter
 ###########################################
 # Start the job on all push or PR to main #
 ###########################################
@@ -24,7 +24,7 @@ on:
 jobs:
   build:
     # Name the Job
-    name: Deploy Docker Image - DEV
+    name: Build and eventually push the container image
     # Set the agent to run on
     runs-on: ubuntu-latest
     strategy:
