@@ -1,7 +1,7 @@
 appdirs==1.4.4
 attrs==22.1.0
 certifi==2022.6.15
-charset-normalizer==2.1.0
+charset-normalizer==2.1.1
 ConfigArgParse==1.5.3
 connection-pool==0.0.3
 datrie==0.8.2
