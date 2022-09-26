@@ -194,8 +194,8 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
+        debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
         LINT_CMD=$(
-          debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
           cd "${ANSIBLE_DIRECTORY}" || exit
           ${LINTER_COMMAND} "${FILE}" 2>&1
         )
