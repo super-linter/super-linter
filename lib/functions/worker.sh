@@ -197,7 +197,9 @@ function LintCodebase() {
         debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
         LINT_CMD=$(
           cd "${ANSIBLE_DIRECTORY}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
+          # Don't pass the file to lint to enable ansible-lint autodetection mode.
+          # See https://ansible-lint.readthedocs.io/usage for details
+          ${LINTER_COMMAND} 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
