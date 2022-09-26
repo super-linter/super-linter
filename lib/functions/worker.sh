@@ -195,9 +195,9 @@ function LintCodebase() {
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
         LINT_CMD=$(
-          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
-          cd "${WORKSPACE_PATH}" || exit
-          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${FILE}" 2>&1
+          debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
+          cd "${ANSIBLE_DIRECTORY}" || exit
+          ${LINTER_COMMAND} "${FILE}" 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
