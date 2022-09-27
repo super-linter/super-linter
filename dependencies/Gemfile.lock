@@ -17,7 +17,7 @@ GEM
       ast (~> 2.4.1)
     rack (2.2.4)
     rainbow (3.1.1)
-    regexp_parser (2.5.0)
+    regexp_parser (2.6.0)
     rexml (3.2.5)
     rubocop (1.35.0)
       json (~> 2.3)
@@ -46,12 +46,12 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (2.12.1)
-      rubocop (~> 1.31)
+    rubocop-rspec (2.13.2)
+      rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
 
 PLATFORMS
   ruby
@@ -63,7 +63,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.14.3)
   rubocop-rails (~> 2.15)
   rubocop-rake (~> 0.6.0)
-  rubocop-rspec (~> 2.12.1)
+  rubocop-rspec (~> 2.13.2)
 
 BUNDLED WITH
   2.3.5
