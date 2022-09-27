@@ -853,11 +853,6 @@ export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                      
 ############################
 GetValidationInfo
 
-# Now ANSIBLE_DIRECTORY is set
-ANSIBLE_ROLES_PATH="${ANSIBLE_ROLES_PATH:-"${ANSIBLE_DIRECTORY}/roles"}"
-debug "Setting ANSIBLE_ROLES_PATH to: ${ANSIBLE_ROLES_PATH}..."
-export ANSIBLE_ROLES_PATH
-
 #################################
 # Get the linter rules location #
 #################################
