@@ -62,28 +62,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{ matrix.images.deployment-environment-identifier }}
 
-      ######################################
-      # Build the docker image and push it #
-      ######################################
-      - name: Build Docker image - ${{ matrix.images.image-id }}
-        uses: docker/build-push-action@v3.1.1
+      # We don't rebuild the image to avoid that the latest tag and the release tags don't point to what the release tag is pointing to.
+      # Instead, we pull the latest image and tag it.
+      - name: Add release tags and push image
+        uses: akhilerm/tag-push-action@v2.0.0
         with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          load: false
-          push: true
-          tags: |
-            github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
+          src: ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
+          dst: |
             github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
-          target: "${{ matrix.images.container-build-target }}"
 
       - name: Update the deployment status for the ${{ matrix.images.deployment-environment-identifier }} environment
         uses: bobheadxi/deployments@v1.3.0
