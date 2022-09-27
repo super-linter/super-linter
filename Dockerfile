@@ -207,6 +207,10 @@ RUN mkdir -p /home/r-library \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+
 ###################
 # Install Kubeval #
 ###################
@@ -214,9 +218,9 @@ RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumen
     && tar xf kubeval-linux-amd64.tar.gz \
     && mv kubeval /usr/local/bin \
     && rm kubeval-linux-amd64.tar.gz \
-##################
-# Install ktlint #
-##################
+    ##################
+    # Install ktlint #
+    ##################
     && curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/ \
@@ -225,7 +229,6 @@ RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumen
     ####################
     # Install dart-sdk #
     ####################
-    && wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
     && rm glibc-${GLIBC_VERSION}.apk \
