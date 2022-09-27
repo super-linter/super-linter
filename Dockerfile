@@ -28,7 +28,7 @@ FROM zricethezav/gitleaks:v8.8.12 as gitleaks
 ##################
 # Get base image #
 ##################
-FROM python:3.10.6-alpine as base_image
+FROM python:3.10.7-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -283,7 +283,7 @@ RUN apk add --no-cache rakudo zef \
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.10.6-alpine as python_builder
+FROM python:3.10.7-alpine as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
