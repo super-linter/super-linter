@@ -34,6 +34,69 @@ You can follow the link below on how to install and configure **Docker** on your
 
 You can add as many **Additional** flags as needed, documented in [README.md](../README.md#Environment-variables)
 
+## Sharing Environment variables between Local and CI
+
+If you run both locally and on CI it's very helpful to only have to define your env variables once. This is one setup using Github's [STRTA](https://github.com/github/scripts-to-rule-them-all) style to do so.
+
+### .github/super-linter.env
+
+This is the shared location for the super-linter variables. Example:
+
+```bash
+VALIDATE_ALL_CODEBASE=true
+VALIDATE_DOCKERFILE_HADOLINT=false
+VALIDATE_EDITORCONFIG=false
+VALIDATE_GITLEAKS=false
+```
+
+### scripts/lint
+
+This always runs the local docker based linting.
+
+```bash
+docker run --rm \
+    -e RUN_LOCAL=true \
+    --env-file ".github/super-linter.env" \
+    -v "$PWD":/tmp/lint github/super-linter:v4
+```
+
+### scripts/test
+
+This runs the local lint when not on CI.
+
+```bash
+if [ "$(whoami)" == "runner" ]; then
+  echo "We are on GitHub, so don't run lint manually"
+else
+  echo "Running locally because we don't think we are on GitHub"
+  lint_ci
+fi
+```
+
+### .github/workflows/ci.yml
+
+This loads the environment variables before running the GitHub Actions job.
+
+```yaml
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    # Run GH Super-Linter against code base
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: cat .github/super-linter.env >> "$GITHUB_ENV"
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: develop
+```
+
 ## Troubleshooting
 
 ### Run container and gain access to the command-line
