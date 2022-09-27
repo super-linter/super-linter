@@ -48,10 +48,6 @@ The super-linter finds issues and reports them to the console output. Fixes are 
 
 The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
 
-### Repository Visualization
-
-![Visualization of the codebase](https://super-linter.s3.us-west-2.amazonaws.com/diagram.svg)
-
 ## Supported Linters
 
 Developers on **GitHub** can call the **GitHub Action** to lint their codebase with the following list of linters:
@@ -60,7 +56,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Ansible**                             | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                       |
 | **AWS CloudFormation templates**        | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                            |
-| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                   |
+| **Azure Resource Manager (ARM)**        | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                   |
 | **C++**                                 | [cpp-lint](https://github.com/cpplint/cpplint) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                     |
 | **C#**                                  | [dotnet-format](https://github.com/dotnet/format) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                  |
 | **CSS**                                 | [stylelint](https://stylelint.io/)                                                                                                                                            |
@@ -140,11 +136,6 @@ This file should have the following code:
 #################################
 #################################
 name: Lint Code Base
-
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
 
 #############################
 # Start the job on all push #
@@ -447,11 +438,6 @@ Example workflow:
 #################################
 #################################
 name: Lint Code Base
-
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
 
 #############################
 # Start the job on all push #
