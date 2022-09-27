@@ -194,10 +194,12 @@ function LintCodebase() {
       # Check for ansible #
       #####################
       if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
+        debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
         LINT_CMD=$(
-          debug "ANSIBLE_ROLES_PATH: ${ANSIBLE_ROLES_PATH}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
-          cd "${WORKSPACE_PATH}" || exit
-          ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} ${LINTER_COMMAND} "${FILE}" 2>&1
+          cd "${ANSIBLE_DIRECTORY}" || exit
+          # Don't pass the file to lint to enable ansible-lint autodetection mode.
+          # See https://ansible-lint.readthedocs.io/usage for details
+          ${LINTER_COMMAND} 2>&1
         )
       ####################################
       # Corner case for pwsh subshell    #
