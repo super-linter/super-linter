@@ -48,10 +48,6 @@ The super-linter finds issues and reports them to the console output. Fixes are 
 
 The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
 
-### Repository Visualization
-
-![Visualization of the codebase](https://super-linter.s3.us-west-2.amazonaws.com/diagram.svg)
-
 ## Supported Linters
 
 Developers on **GitHub** can call the **GitHub Action** to lint their codebase with the following list of linters:
@@ -60,7 +56,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Ansible**                             | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                       |
 | **AWS CloudFormation templates**        | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                            |
-| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                   |
+| **Azure Resource Manager (ARM)**        | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                   |
 | **C++**                                 | [cpp-lint](https://github.com/cpplint/cpplint) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                     |
 | **C#**                                  | [dotnet-format](https://github.com/dotnet/format) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                  |
 | **CSS**                                 | [stylelint](https://stylelint.io/)                                                                                                                                            |
@@ -140,11 +136,6 @@ This file should have the following code:
 #################################
 #################################
 name: Lint Code Base
-
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
 
 #############################
 # Start the job on all push #
@@ -283,7 +274,6 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ACTIONS_RUNNER_DEBUG**           | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
 | **ANSIBLE_CONFIG_FILE**            | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible-lint.readthedocs.io/en/latest/configuring.html#configuration-file) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                              |
 | **ANSIBLE_DIRECTORY**              | `/ansible`                      | Flag to set the root directory for Ansible file location(s), relative to `DEFAULT_WORKSPACE`. Set to `.` to use the top-level of the `DEFAULT_WORKSPACE`.                                                            |
-| **ANSIBLE_ROLES_PATH**             | `${ANSIBLE_DIRECTORY}/roles`    | Path to the Ansible roles directory.                                                                                                                                                                                 |
 | **CSS_FILE_NAME**                  | `.stylelintrc.json`             | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                         |
 | **DEFAULT_BRANCH**                 | `master`                        | The name of the repository default branch.                                                                                                                                                                           |
 | **DEFAULT_WORKSPACE**              | `/tmp/lint`                     | The location containing files to lint if you are running locally.                                                                                                                                                    |
@@ -448,11 +438,6 @@ Example workflow:
 #################################
 #################################
 name: Lint Code Base
-
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
 
 #############################
 # Start the job on all push #

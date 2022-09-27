@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.2.7 as terragrunt
+FROM alpine/terragrunt:1.3.0 as terragrunt
 FROM tenable/terrascan:1.15.2 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.03.09-alpine as clj-kondo
@@ -20,15 +20,15 @@ FROM hashicorp/terraform:1.2.7 as terraform
 FROM koalaman/shellcheck:v0.8.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.5.1 as shfmt
-FROM rhysd/actionlint:1.6.15 as actionlint
-FROM scalameta/scalafmt:v3.5.8 as scalafmt
+FROM rhysd/actionlint:1.6.19 as actionlint
+FROM scalameta/scalafmt:v3.5.9 as scalafmt
 FROM yoheimuta/protolint:0.39.0 as protolint
 FROM zricethezav/gitleaks:v8.8.12 as gitleaks
 
 ##################
 # Get base image #
 ##################
-FROM python:3.10.6-alpine as base_image
+FROM python:3.10.7-alpine as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -207,6 +207,10 @@ RUN mkdir -p /home/r-library \
     && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
     && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
 
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+
 ###################
 # Install Kubeval #
 ###################
@@ -214,9 +218,9 @@ RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumen
     && tar xf kubeval-linux-amd64.tar.gz \
     && mv kubeval /usr/local/bin \
     && rm kubeval-linux-amd64.tar.gz \
-##################
-# Install ktlint #
-##################
+    ##################
+    # Install ktlint #
+    ##################
     && curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/latest/download/ktlint \
     && chmod a+x ktlint \
     && mv "ktlint" /usr/bin/ \
@@ -225,7 +229,6 @@ RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumen
     ####################
     # Install dart-sdk #
     ####################
-    && wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
     && rm glibc-${GLIBC_VERSION}.apk \
@@ -283,7 +286,7 @@ RUN apk add --no-cache rakudo zef \
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.10.6-alpine as python_builder
+FROM python:3.10.7-alpine as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -329,11 +332,14 @@ ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 ENV IMAGE="slim"
 
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+
 ######################################
 # Install Phive dependencies and git #
 ######################################
-RUN wget --tries=5 -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
+RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
     && apk add --no-cache \
     bash \
     ca-certificates \

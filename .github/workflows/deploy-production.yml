@@ -1,31 +1,13 @@
 ---
-#############################################
-#############################################
-## Deploy Docker Image test and Production ##
-#############################################
-#############################################
+name: Build, test, and eventually deploy super-linter container images
 
-#
-# Documentation:
-# https://help.github.com/en/articles/workflow-syntax-for-github-actions
-#
-
-name: Deploy Production
-###########################################
-# Start the job on all push or PR to main #
-###########################################
 on:
   pull_request:
   push:
 
-###############
-# Set the Job #
-###############
 jobs:
   build:
-    # Name the Job
-    name: Deploy Docker Image - DEV
-    # Set the agent to run on
+    name: Build, test, and eventually push the container image
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -41,13 +23,7 @@ jobs:
             image-id: standard
     timeout-minutes: 60
 
-    ###############
-    # Steps below #
-    ###############
     steps:
-      ############################
-      # Checkout the source code #
-      ############################
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -55,23 +31,14 @@ jobs:
           # of changed files within `super-linter`
           fetch-depth: 0
 
-      ###########################
-      # Set current date to ENV #
-      ###########################
-      - name: Get current date
+      - name: Get current date and make it available as an environment variable
         run: |
           echo "Appending the build date contents to GITHUB_ENV..."
           echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
-      #######################
-      # Setup Docker BuildX #
-      #######################
-      - name: Setup BuildX
+      - name: Setup Docker BuildX
         uses: docker/setup-buildx-action@v2.0.0
 
-      #######################################
-      # Build local docker images for tests #
-      #######################################
       - name: Build Docker image - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: docker/build-push-action@v3.1.1
@@ -89,25 +56,16 @@ jobs:
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}test
           target: "${{ matrix.images.container-build-target }}"
 
-      ################################
-      # Run local docker labels test #
-      ################################
-      - name: Run Docker label test cases
+      - name: Run container image label test cases
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: .automation/validate-docker-labels.sh "${{ matrix.images.image-id }}"
 
-      #######################################
-      # Edit the action.yml for local tests #
-      #######################################
       - name: Edit an action.yml file for test local build
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           sed -i "s/super-linter:.*/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}'/g" action.yml
 
-      ######################
-      # Gather information #
-      ######################
       - name: Gather information about the runtime environment
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
@@ -129,29 +87,19 @@ jobs:
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
 
-
-      ###############################################################
-      # Fix file and dir ownership.                                 #
-      # Workaround for https://github.com/actions/runner/issues/434 #
-      ###############################################################
+      # Workaround for https://github.com/actions/runner/issues/434
       - name: Fix file and directory ownership
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           sudo chown -R "$(id -u)":"$(id -g)" "$(pwd)"
 
-      ########################
-      # Run local make tests #
-      ########################
       - name: Run the test suite
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
           make IMAGE=${{ matrix.images.image-id }} test
 
-      ##########################
-      # Codacy Coverage Report #
-      ##########################
       - name: Upload the code coverage report
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: codacy/codacy-coverage-reporter-action@v1.1
@@ -161,10 +109,7 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
 
-      #####################################
-      # Run Linter against Test code base #
-      #####################################
-      - name: Run Test Cases - ${{ matrix.images.image-id }}
+      - name: Run test cases - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: |
@@ -177,17 +122,11 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
 
-      #########################################
-      # Clean code base to run against it all #
-      #########################################
-      - name: Clean Test code base for additional testing
+      - name: Clean the working directory for additional testing
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
         run: .automation/clean-code-base-for-tests.sh
 
-      ############################################
-      # Run Linter against ALL cleaned code base #
-      ############################################
       - name: Run against all code base - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
@@ -200,26 +139,13 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${GITHUB_SHA}"
 
-      #############################################################
-      #############################################################
-      ## The following steps are only run if the PR is merges    ##
-      ## into the 'main' branch and push the image to registries ##
-      #############################################################
-      #############################################################
-
-      ######################
-      # Login to DockerHub #
-      ######################
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v2.0.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      ####################
-      # Login to GHCR.io #
-      ####################
       - name: Login to GitHub Container Registry
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v2.0.0
@@ -228,10 +154,7 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
 
-      #########################
-      # Update deployment API #
-      #########################
-      - name: Start deployment
+      - name: Start the deployment for the ${{ matrix.images.deployment-environment-identifier }} environment
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
         uses: bobheadxi/deployments@v1.3.0
         id: deployment
@@ -240,10 +163,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{ matrix.images.deployment-environment-identifier }}
 
-      ######################################
-      # Build the docker image and push it #
-      ######################################
-      - name: Build Docker image - ${{ matrix.images.image-id }}
+      - name: Build the container image and push it - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v3.1.1
         with:
@@ -260,10 +180,18 @@ jobs:
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
           target: "${{ matrix.images.container-build-target }}"
 
-      #######################################################
-      # Create a GitHub Issue with the info from this build #
-      #######################################################
-      - name: Create GitHub Issue for failure
+      - name: Update the deployment status for the ${{ matrix.images.deployment-environment-identifier }} environment
+        if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
+        uses: bobheadxi/deployments@v1.3.0
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://github.com/github/super-linter
+
+      - name: Create a GitHub issue on failure
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
         uses: actions/github-script@v6
         id: create-issue
@@ -280,14 +208,10 @@ jobs:
             console.log('create', create)
             return create.data.number
 
-      ####################################
-      # Deploy was failure, alert admins #
-      ####################################
-      - name: Assign Admins on failure
+      - name: Assign admins to the issue created on failure
         uses: actions/github-script@v6
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' && failure() }}
         with:
-          # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             github.rest.issues.addAssignees({
@@ -304,17 +228,3 @@ jobs:
                 'ferrarimarco'
               ]
             })
-
-      #########################
-      # Update Deployment API #
-      #########################
-      - name: Update deployment status
-        if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: bobheadxi/deployments@v1.3.0
-        with:
-          step: finish
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/github/super-linter
