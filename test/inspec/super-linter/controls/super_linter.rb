@@ -13,6 +13,7 @@ control "super-linter-installed-packages" do
 
   packages = [
     "bash",
+    "ca-certificates",
     "coreutils",
     "curl",
     "gcc",
@@ -43,6 +44,7 @@ control "super-linter-installed-packages" do
     "openssl-dev",
     "perl-dev",
     "perl",
+    "py3-pyflakes",
     "py3-setuptools",
     "python3-dev",
     "rakudo",
@@ -392,7 +394,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.scalafmt.conf",
     "/action/lib/.automation/.snakefmt.toml",
     "/action/lib/.automation/.sql-config.json",
-    "/action/lib/.automation//.sqlfluff",
+    "/action/lib/.automation/.sqlfluff",
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",

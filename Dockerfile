@@ -81,7 +81,8 @@ RUN apk add --no-cache \
     openssh-client \
     openssl-dev \
     perl perl-dev \
-    py3-setuptools python3-dev \
+    py3-setuptools python3-dev  \
+    py3-pyflakes \
     R R-dev R-doc \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
@@ -108,15 +109,7 @@ RUN npm config set package-lock true  \
 ##############################
 # Installs Perl dependencies #
 ##############################
-RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic Perl::Critic::Community \
-    #######################
-    # Installs ActionLint #
-    #######################
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
-    && chmod +x download-actionlint.bash \
-    && ./download-actionlint.bash \
-    && rm download-actionlint.bash \
-    && mv actionlint /usr/bin/actionlint
+RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic Perl::Critic::Community
 
 ######################
 # Install shellcheck #
