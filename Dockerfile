@@ -341,8 +341,8 @@ RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/down
     glibc-${GLIBC_VERSION}.apk \
     tar zstd \
     gnupg \
-    php7 php7-curl php7-ctype php7-dom php7-iconv php7-json php7-mbstring \
-    php7-openssl php7-phar php7-simplexml php7-tokenizer php-xmlwriter \
+    php81 php81-curl php81-ctype php81-dom php81-iconv php81-mbstring \
+    php81-openssl php81-phar php81-simplexml php81-tokenizer php81-xmlwriter \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget -q --tries=5 -O /tmp/libz.tar.zst https://www.archlinux.org/packages/core/x86_64/zlib/download \
     && mkdir /tmp/libz \
