@@ -27,5 +27,5 @@ about: Used for requesting enhancements to the GitHub Super-Linter
 - [ ] Important: Will significantly enhance the overall utility of the demo
 - [ ] Nice to have: self-explanatory
 
-**Other information** (e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. stackoverflow, gitter, etc)
+**Other information** (e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. Stack Overflow, gitter, etc)
 <!-- markdownlint-restore -->
