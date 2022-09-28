@@ -653,7 +653,7 @@ CallStatusAPI() {
     # Call the status API to create status check #
     ##############################################
     SEND_STATUS_CMD=$(
-      curl -f -s -X POST \
+      curl -f -s --show-error -X POST \
         --url "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
         -H 'accept: application/vnd.github.v3+json' \
         -H "authorization: Bearer ${GITHUB_TOKEN}" \
