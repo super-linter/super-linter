@@ -101,7 +101,7 @@ jobs:
 
 ### Run container and gain access to the command-line
 
-If you need to run the container locally and gain access to its command line, you can run the following command:
+If you need to run the container locally and gain access to its command-line, you can run the following command:
 
 - `docker run -it --entrypoint /bin/bash github/super-linter`
 - This will drop you in the command-line of the docker container for any testing or troubleshooting that may be needed.
