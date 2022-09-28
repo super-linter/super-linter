@@ -72,7 +72,7 @@ BuildLinterVersions() {
       if [[ ${LINTER} == "arm-ttk" ]]; then
         # Need specific command for ARM
         GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1)"
-      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
+      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]] || [[ ${LINTER} == "asl-validator" ]]; then
         # Need specific command for Protolint and editorconfig-checker
         GET_VERSION_CMD="$(echo "--version not supported")"
       elif [[ ${LINTER} == "lintr" ]]; then
