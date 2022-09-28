@@ -36,6 +36,7 @@ skip_list:
   - 'command-instead-of-shell'  # Allow use of shell when you want
   - 'no-handler'  # Allow step to run like handler
   - 'unnamed-task' # Allow tasks without a name
+  - 'yaml' # Disable YAML linting since it's done by yamllint
 
 ##################
 # Tags to follow #
