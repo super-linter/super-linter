@@ -37,7 +37,6 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [GitLab](#gitlab)
     - [Codespaces and Visual Studio Code](#codespaces-and-visual-studio-code)
     - [SSL Certs](#ssl-certs)
-  - [Community Activity](#community-activity)
   - [Limitations](#limitations)
   - [How to contribute](#how-to-contribute)
     - [License](#license)
@@ -554,10 +553,6 @@ Once found, it will load the certificate contents to a file, and to the trust st
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
 ```
-
-## Community Activity
-
-![super-linter stats](https://cauldron.io/project/2083/stats.svg)
 
 ## Limitations
 
