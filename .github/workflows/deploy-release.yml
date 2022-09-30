@@ -53,6 +53,11 @@ jobs:
             echo "RELEASE_VERSION=${{ github.event.inputs.release_version }}" \
             >> "${GITHUB_ENV}"
           fi
+          {
+            echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
+            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
+          } >> "${GITHUB_ENV}"
 
       - name: Start deployment for the ${{ matrix.images.deployment-environment-identifier }} environment
         uses: bobheadxi/deployments@v1.3.0
@@ -73,6 +78,16 @@ jobs:
             github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
+
+      # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
+      # Then, we use that reference to create new tags, so that the new tags point to the commit
+      # the original tag was pointing to, and not to the original tag.
+      # This notation is documented at https://git-scm.com/docs/gitrevisions#Documentation/gitrevisions.txt-emltrevgtemegemv0998em
+      - name: Update the major version and latest tags
+        run: |
+          git tag --force "${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "${RELEASE_VERSION}^{}"
+          git tag --force latest "${RELEASE_VERSION}^{}"
+          git push --force origin "refs/tags/${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "refs/tags/latest"
 
       - name: Update the deployment status for the ${{ matrix.images.deployment-environment-identifier }} environment
         uses: bobheadxi/deployments@v1.3.0
