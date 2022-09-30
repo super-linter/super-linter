@@ -79,6 +79,12 @@ jobs:
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of commits and tags
+          fetch-depth: 0
+
       # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
       # Then, we use that reference to create new tags, so that the new tags point to the commit
       # the original tag was pointing to, and not to the original tag.
