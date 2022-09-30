@@ -23,7 +23,7 @@ When an *Admin* wants to create a Release, the process is as follows:
   - `github/super-linter:slim-latest`
   - `github/super-linter:slim-v4`
   - `github/super-linter:slim-v4.6.3`
-- The `versioning.yml` workflow is also triggered to update the `latest` and `vMAJOR` Git tags to point to the same commit that the release Git tag is pointing at.
+- This also updates the `latest` and `vMAJOR` Git tags to point to the same commit that the release Git tag is pointing at.
 - At this point, the Release is complete and images are available for general consumption
 
 ## Pitfalls and Issues
