@@ -20,10 +20,10 @@ jobs:
       - id: version
         name: Get major version
         run: |
-          echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >>${GITHUB_ENV}
-          echo "SEMVER_VERSION=${GIT_TAG#v}" >>${GITHUB_ENV}
-          echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}" >>${GITHUB_ENV}
-          echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}" >>${GITHUB_ENV}
+          echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >> "${GITHUB_ENV}"
+          echo "SEMVER_VERSION=${GIT_TAG#v}" >> "${GITHUB_ENV}"
+          echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}" >> "${GITHUB_ENV}"
+          echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}" >> "${GITHUB_ENV}"
 
       # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
       # Then, we use that reference to create new tags, so that the new tags point to the commit
