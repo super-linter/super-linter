@@ -193,7 +193,7 @@ TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-prettier}"
 TYPESCRIPT_STYLE_NAME='TYPESCRIPT_PRETTIER' # Variable for the style
-TYPESCRIPT_STYLE='prettier'      # Variable for the style
+TYPESCRIPT_STYLE='prettier'                 # Variable for the style
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -384,7 +384,7 @@ Header() {
   ###############################
   # Give them the possum action #
   ###############################
-  if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
+  if [[ ${SUPPRESS_POSSUM} == "false" ]]; then
     /bin/bash /action/lib/functions/possum.sh
   fi
 
@@ -749,7 +749,7 @@ UpdateLoopsForImage() {
   ######################################################################
   # Need to clean the array lists of the linters removed for the image #
   ######################################################################
-  if [[ "${IMAGE}" == "slim" ]]; then
+  if [[ ${IMAGE} == "slim" ]]; then
     #############################################
     # Need to remove linters for the slim image #
     #############################################
@@ -760,7 +760,7 @@ UpdateLoopsForImage() {
     echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
     for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
-        if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
+        if [[ ${LANGUAGE_ARRAY[INDEX]} == "${REMOVE_LANGUAGE}" ]]; then
           echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
           unset 'LANGUAGE_ARRAY[INDEX]'
         fi
@@ -771,7 +771,7 @@ UpdateLoopsForImage() {
     echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
     for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
-        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
+        if [[ ${INDEX} == "${REMOVE_LINTER}" ]]; then
           echo "found item:[${REMOVE_LINTER}], removing linter..."
           unset 'LINTER_NAMES_ARRAY[$INDEX]'
         fi
