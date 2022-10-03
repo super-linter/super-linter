@@ -761,7 +761,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
-      FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_PRETTIER+=("${FILE}")
 
     #####################
