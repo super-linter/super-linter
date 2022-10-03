@@ -13,7 +13,7 @@ FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.09.08-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.41.0.0 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.41.0.1 as tflint
 FROM golangci/golangci-lint:v1.49.0 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.3.1 as terraform
