@@ -58,7 +58,7 @@ jobs:
             exit 1
           fi
 
-          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")"; then
+          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"; then
             echo "Error: RELEASE_VERSION doesn't look like a semantic version: ${RELEASE_VERSION}"
             exit 2
           fi
