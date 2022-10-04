@@ -526,11 +526,10 @@ function RunAdditionalInstalls() {
     # Check the shell for errors #
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
-      # Error
-      warn "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]"
-      warn "BUILD_CMD:[${BUILD_CMD}]"
+      fatal "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]. BUILD_CMD:[${BUILD_CMD}]"
     else
       info "Successfully ran:[tflint --init] in workspace:[${WORKSPACE_PATH}]"
+      debug "BUILD_CMD:[${BUILD_CMD}]"
     fi
   fi
 }
