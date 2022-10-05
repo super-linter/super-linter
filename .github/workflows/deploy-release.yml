@@ -45,8 +45,7 @@ jobs:
       - name: Get current release identifier
         # shellcheck disable=SC2062
         run: |
-          RELESE_VERSION="$(echo ${{ github.event.release.name }} \
-            | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")"
+          RELESE_VERSION="${{ github.event.release.name }}"
 
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "No release version found in environment, using input..."
@@ -57,6 +56,11 @@ jobs:
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "Error RELEASE_VERSION is empty. Exiting..."
             exit 1
+          fi
+
+          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"; then
+            echo "Error: RELEASE_VERSION doesn't look like a semantic version: ${RELEASE_VERSION}"
+            exit 2
           fi
 
           {
