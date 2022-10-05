@@ -45,16 +45,26 @@ jobs:
       - name: Get current release identifier
         # shellcheck disable=SC2062
         run: |
-          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
-          | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
-          >> "${GITHUB_ENV}"
+          RELESE_VERSION="${{ github.event.release.name }}"
+
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "No release version found in environment, using input..."
             RELEASE_VERSION="${{ github.event.inputs.release_version }}"
-            echo "RELEASE_VERSION=${RELEASE_VERSION}" \
-            >> "${GITHUB_ENV}"
           fi
+
+          # Check the RELEASE_VERSION again
+          if [ -z "${RELEASE_VERSION}" ]; then
+            echo "Error RELEASE_VERSION is empty. Exiting..."
+            exit 1
+          fi
+
+          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"; then
+            echo "Error: RELEASE_VERSION doesn't look like a semantic version: ${RELEASE_VERSION}"
+            exit 2
+          fi
+
           {
+            echo "RELEASE_VERSION=${RELESE_VERSION}"
             echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
             echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
             echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"

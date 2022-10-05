@@ -509,12 +509,13 @@ function RunAdditionalInstalls() {
     if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
       TF_LOG_LEVEL="debug"
     fi
+    debug "Set the tflint log level to: ${TF_LOG_LEVEL}"
     #########################
     # Run the build command #
     #########################
     BUILD_CMD=$(
       cd "${WORKSPACE_PATH}" || exit 0
-      tflint --init --loglevel="${TF_LOG_LEVEL}" -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
+      TFLINT_LOG="${TF_LOG_LEVEL}" tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
     )
 
     ##############
