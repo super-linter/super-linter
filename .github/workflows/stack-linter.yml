@@ -16,6 +16,7 @@ name: Stack Linter
 # Start the job on all push #
 #############################
 on:
+  push:
   pull_request:
 
 ###############
