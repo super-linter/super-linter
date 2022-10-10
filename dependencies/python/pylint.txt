@@ -1,4 +1,4 @@
-astroid==2.12.10
+astroid==2.12.11
 dill==0.3.5.1
 isort==5.10.1
 lazy-object-proxy==1.7.1
