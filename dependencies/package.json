@@ -30,13 +30,13 @@
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.32.2",
     "node-fetch": "^3.2.10",
-    "npm-groovy-lint": "^10.1.0",
+    "npm-groovy-lint": "^11.0.0",
     "prettier": "^2.7.1",
     "prettyjson": "^1.2.5",
     "pug": "^3.0.2",
     "sql-lint": "1.0.0",
     "standard": "^17.0.0",
-    "stylelint": "^14.12.1",
+    "stylelint": "^14.13.0",
     "stylelint-config-recommended-scss": "^7.0.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-config-standard": "^28.0.0",
@@ -49,7 +49,7 @@
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^3.0.3",
-    "ts-standard": "^11.0.0",
+    "ts-standard": "^12.0.1",
     "typescript": "^4.8.4"
   }
 }
