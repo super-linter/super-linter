@@ -31,7 +31,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.21.0)
       parser (>= 3.1.1.0)
-    rubocop-github (0.18.0)
+    rubocop-github (0.19.0)
       rubocop (>= 1.0.0)
       rubocop-performance
       rubocop-rails
@@ -58,7 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   rubocop (~> 1.36.0)
-  rubocop-github (~> 0.18.0)
+  rubocop-github (~> 0.19.0)
   rubocop-minitest (~> 0.22.2)
   rubocop-performance (~> 1.15.0)
   rubocop-rails (~> 2.16)
