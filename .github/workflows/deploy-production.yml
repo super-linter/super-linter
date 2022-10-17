@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Docker image - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v3.2.0
         with:
           context: .
           file: ./Dockerfile
@@ -165,7 +165,7 @@ jobs:
 
       - name: Build the container image and push it - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref == 'refs/heads/main' }}
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v3.2.0
         with:
           context: .
           file: ./Dockerfile
