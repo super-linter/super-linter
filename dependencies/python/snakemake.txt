@@ -9,7 +9,7 @@ docutils==0.19
 dpath==2.0.6
 fastjsonschema==2.16.2
 gitdb==4.0.9
-GitPython==3.1.28
+GitPython==3.1.29
 idna==3.4
 importlib-resources==5.10.0
 Jinja2==3.1.2
