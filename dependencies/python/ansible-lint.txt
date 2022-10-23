@@ -1,6 +1,6 @@
 ansible-compat==2.2.1
-ansible-core==2.13.4
-ansible-lint==6.8.0
+ansible-core==2.13.5
+ansible-lint==6.8.2
 attrs==22.1.0
 black==22.10.0
 bracex==2.3.post1
@@ -26,7 +26,7 @@ PyYAML==6.0
 resolvelib==0.8.1
 rich==12.6.0
 ruamel.yaml==0.17.21
-ruamel.yaml.clib==0.2.6
+ruamel.yaml.clib==0.2.7
 subprocess-tee==0.3.5
 tomli==2.0.1
 typing_extensions==4.4.0
