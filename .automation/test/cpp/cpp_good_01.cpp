@@ -14,7 +14,3 @@ int main() {
   // Close the file
   MyFile.close();
 }
-
-#ifndef TEST_CPP_CPP_GOOD_01_CPP_
-#define TEST_CPP_CPP_GOOD_01_CPP_
-#endif  // TEST_CPP_CPP_GOOD_01_CPP_
