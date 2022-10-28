@@ -479,7 +479,8 @@ function RunAdditionalInstalls() {
       ##############################
       INSTALL_CMD=$(
         cd "${WORKSPACE_PATH}" || exit 0
-        R CMD INSTALL "${BUILD_PKG}" 2>&1
+        R -e "install.packages('remotes', repos = 'https://cloud.r-project.org/')"
+        R -e "remotes::install_local('.', dependencies=T)" 2>&1
       )
 
       ##############
