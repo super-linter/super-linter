@@ -507,6 +507,7 @@ RUN mkdir -p ${PWSH_DIRECTORY} \
     | cut -d '"' -f 4 \
     | xargs -n 1 wget -q -O - \
     | tar -xzC ${PWSH_DIRECTORY} \
+    && chmod +x ${PWSH_DIRECTORY}/pwsh \
     && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
     && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
 
