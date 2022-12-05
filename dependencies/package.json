@@ -37,7 +37,7 @@
     "sql-lint": "1.0.0",
     "standard": "^17.0.0",
     "stylelint": "^14.13.0",
-    "stylelint-config-recommended-scss": "^7.0.0",
+    "stylelint-config-recommended-scss": "^8.0.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-config-standard": "^28.0.0",
     "stylelint-config-standard-scss": "^5.0.0",
