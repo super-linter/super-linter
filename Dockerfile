@@ -49,8 +49,8 @@ ARG KTLINT_VERSION='0.47.1'
 ARG PSSA_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='latest'
-# Kubeval Version
-ARG KUBEVAL_VERSION='v0.16.1'
+# Kubeconform Version
+ARG KUBECONFORM_VERSION='v0.5.0'
 
 ####################
 # Run APK installs #
@@ -208,12 +208,12 @@ RUN mkdir -p /home/r-library \
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
 ###################
-# Install Kubeval #
+# Install Kubeconform #
 ###################
-RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz \
-    && tar xf kubeval-linux-amd64.tar.gz \
-    && mv kubeval /usr/local/bin \
-    && rm kubeval-linux-amd64.tar.gz \
+RUN wget --tries=5 -q -O kubeconform-linux-amd64.tar.gz https://github.com/yannh/kubeconform/releases/download/${kubeconform_VERSION}/kubeconform-linux-amd64.tar.gz \
+    && tar xf kubeconform-linux-amd64.tar.gz \
+    && mv kubeconform /usr/local/bin \
+    && rm kubeconform-linux-amd64.tar.gz \
     ##################
     # Install ktlint #
     ##################
