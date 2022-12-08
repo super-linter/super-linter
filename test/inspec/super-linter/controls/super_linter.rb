@@ -119,7 +119,7 @@ control "super-linter-installed-commands" do
     { linter_name: "isort"},
     { linter_name: "jscpd"},
     { linter_name: "ktlint"},
-    { linter_name: "kubeval"},
+    { linter_name: "kubeconform"},
     { linter_name: "lua", version_option: "-v"},
     { linter_name: "markdownlint"},
     { linter_name: "mypy"},

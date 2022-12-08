@@ -45,8 +45,6 @@ ARG KTLINT_VERSION='0.47.1'
 ARG PSSA_VERSION='1.21.0'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='v7.3.1'
-# Kubeval Version
-ARG KUBEVAL_VERSION='v0.16.1'
 
 ####################
 # Run APK installs #
@@ -195,7 +193,7 @@ RUN /install-lintr.sh && rm -rf /install-lintr.sh
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
 ###################
-# Install Kubeval #
+# Install Kubeconform #
 ###################
 COPY scripts/install-kubeval.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-kubeval.sh && rm -rf /install-kubeval.sh
