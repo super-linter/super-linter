@@ -1,6 +1,6 @@
-# Kubeval Test Cases
+# Kubeconform Test Cases
 
-This folder holds the test cases for **Kubeval**.
+This folder holds the test cases for **Kubeconform**.
 
 ## Additional Docs
 
