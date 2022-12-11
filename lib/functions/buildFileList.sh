@@ -312,6 +312,9 @@ function BuildFileList() {
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
 
+    # Textlint should check every file
+    FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
+
     if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
       debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
     else
@@ -577,7 +580,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
-      FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     ######################
     # Get the PHP files #
