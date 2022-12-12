@@ -1,89 +1,40 @@
 ---
-#################################
-#################################
-## Deploy Docker Image Release ##
-#################################
-#################################
+name: Deploy super-linter release container images
 
-#
-# Documentation:
-# https://help.github.com/en/articles/workflow-syntax-for-github-actions
-#
-name: Deploy Release
-###########################################
-# Start the job upon publishing a release #
-###########################################
 on:
-  # Start when a release is published
   release:
     types: [published]
   workflow_dispatch:
-    # Set the input variables you want to pull in
     inputs:
       release_version:
         description: 'version to release. Ex: v4.3.2'
         required: true
         default: 'v'
 
-###############
-# Set the Job #
-###############
 jobs:
   build:
-    # Name the Job
-    name: Deploy Docker Image - Release
-    # Set the agent to run on
+    name: Deploy container image - Release
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         images:
-          - container-build-target: final_slim
-            container-image-id-prefix: slim-
+          - container-image-id-prefix: slim-
             deployment-environment-identifier: Release-SLIM
-            image-id: slim
-          - container-build-target: final_standard
-            container-image-id-prefix: ""
+          - container-image-id-prefix: ""
             deployment-environment-identifier: Release
-            image-id: standard
     timeout-minutes: 60
 
-    ###############
-    # Steps below #
-    ###############
     steps:
-      ############################
-      # Checkout the source code #
-      ############################
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      ###########################
-      # Set current date to ENV #
-      ###########################
-      - name: Get current date
-        run: |
-          echo "Appending the build date contents to GITHUB_ENV..."
-          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
-
-      #######################
-      # Setup Docker BuildX #
-      #######################
-      - name: Setup BuildX
+      - name: Setup Docker BuildX
         uses: docker/setup-buildx-action@v2.0.0
 
-      ######################
-      # Login to DockerHub #
-      ######################
       - name: Login to DockerHub
         uses: docker/login-action@v2.0.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      ####################
-      # Login to GHCR.io #
-      ####################
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2.0.0
         with:
@@ -91,25 +42,35 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_TOKEN }}
 
-      ###########################
-      # Get the current release #
-      ###########################
-      - name: Get current Release number
+      - name: Get current release identifier
         # shellcheck disable=SC2062
         run: |
-          echo "RELEASE_VERSION=$(echo ${{ github.event.release.name }} \
-          | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+")" \
-          >> "${GITHUB_ENV}"
+          RELESE_VERSION="${{ github.event.release.name }}"
+
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "No release version found in environment, using input..."
-            echo "RELEASE_VERSION=${{ github.event.inputs.release_version }}" \
-            >> "${GITHUB_ENV}"
+            RELEASE_VERSION="${{ github.event.inputs.release_version }}"
           fi
 
-      #########################
-      # Update deployment API #
-      #########################
-      - name: Start deployment
+          # Check the RELEASE_VERSION again
+          if [ -z "${RELEASE_VERSION}" ]; then
+            echo "Error RELEASE_VERSION is empty. Exiting..."
+            exit 1
+          fi
+
+          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"; then
+            echo "Error: RELEASE_VERSION doesn't look like a semantic version: ${RELEASE_VERSION}"
+            exit 2
+          fi
+
+          {
+            echo "RELEASE_VERSION=${RELESE_VERSION}"
+            echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
+            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Start deployment for the ${{ matrix.images.deployment-environment-identifier }} environment
         uses: bobheadxi/deployments@v1.3.0
         id: deployment
         with:
@@ -117,33 +78,35 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{ matrix.images.deployment-environment-identifier }}
 
-      ######################################
-      # Build the docker image and push it #
-      ######################################
-      - name: Build Docker image - ${{ matrix.images.image-id }}
-        uses: docker/build-push-action@v3.1.1
+      # We don't rebuild the image to avoid that the latest tag and the release tags don't point to what the release tag is pointing to.
+      # Instead, we pull the latest image and tag it.
+      - name: Add release tags and push image
+        uses: akhilerm/tag-push-action@v2.0.0
         with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          load: false
-          push: true
-          tags: |
-            github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
+          src: ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
+          dst: |
             github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}v4
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ env.RELEASE_VERSION }}
-          target: "${{ matrix.images.container-build-target }}"
 
-      #########################
-      # Update Deployment API #
-      #########################
-      - name: Update deployment status
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of commits and tags
+          fetch-depth: 0
+
+      # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
+      # Then, we use that reference to create new tags, so that the new tags point to the commit
+      # the original tag was pointing to, and not to the original tag.
+      # This notation is documented at https://git-scm.com/docs/gitrevisions#Documentation/gitrevisions.txt-emltrevgtemegemv0998em
+      - name: Update the major version and latest tags
+        run: |
+          git tag --force "${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "${RELEASE_VERSION}^{}"
+          git tag --force latest "${RELEASE_VERSION}^{}"
+          git push --force origin "refs/tags/${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "refs/tags/latest"
+
+      - name: Update the deployment status for the ${{ matrix.images.deployment-environment-identifier }} environment
         uses: bobheadxi/deployments@v1.3.0
         if: always()
         with:
@@ -154,10 +117,7 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
 
-      #######################################################
-      # Create a GitHub Issue with the info from this build #
-      #######################################################
-      - name: Create GitHub Issue for failure
+      - name: Create a GitHub issue on failure
         if: failure()
         uses: actions/github-script@v6
         id: create-issue
@@ -174,14 +134,10 @@ jobs:
             console.log('create', create)
             return create.data.number
 
-      ############################
-      # Assign admins on failure #
-      ############################
-      - name: Assign Admins on failure
+      - name: Assign admins to the issue created on failure
         uses: actions/github-script@v6
         if: failure()
         with:
-          # https://octokit.github.io/rest.js/v18#issues-create
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             github.rest.issues.addAssignees({

@@ -3,5 +3,7 @@
         {:exclude [(compojure.api.sweet/defroutes)]}
     :refer-all
         {:exclude [clj-time.jdbc]}
+    :namespace-name-mismatch
+        {:level :off}
     }
 }

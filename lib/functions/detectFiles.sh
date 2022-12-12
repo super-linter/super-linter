@@ -509,12 +509,13 @@ function RunAdditionalInstalls() {
     if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
       TF_LOG_LEVEL="debug"
     fi
+    debug "Set the tflint log level to: ${TF_LOG_LEVEL}"
     #########################
     # Run the build command #
     #########################
     BUILD_CMD=$(
       cd "${WORKSPACE_PATH}" || exit 0
-      tflint --init --loglevel="${TF_LOG_LEVEL}" -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
+      TFLINT_LOG="${TF_LOG_LEVEL}" tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
     )
 
     ##############
@@ -526,11 +527,10 @@ function RunAdditionalInstalls() {
     # Check the shell for errors #
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
-      # Error
-      warn "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]"
-      warn "BUILD_CMD:[${BUILD_CMD}]"
+      fatal "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]. BUILD_CMD:[${BUILD_CMD}]"
     else
       info "Successfully ran:[tflint --init] in workspace:[${WORKSPACE_PATH}]"
+      debug "BUILD_CMD:[${BUILD_CMD}]"
     fi
   fi
 }

@@ -13,6 +13,7 @@ control "super-linter-installed-packages" do
 
   packages = [
     "bash",
+    "ca-certificates",
     "coreutils",
     "curl",
     "gcc",
@@ -43,6 +44,7 @@ control "super-linter-installed-packages" do
     "openssl-dev",
     "perl-dev",
     "perl",
+    "py3-pyflakes",
     "py3-setuptools",
     "python3-dev",
     "rakudo",
@@ -92,7 +94,7 @@ control "super-linter-installed-commands" do
     { linter_name: "actionlint"},
     { linter_name: "ansible-lint"},
     { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs"},
-    { linter_name: "asl-validator"},
+    { linter_name: "asl-validator", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "black"},
     { linter_name: "clang-format"},
@@ -392,7 +394,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.scalafmt.conf",
     "/action/lib/.automation/.snakefmt.toml",
     "/action/lib/.automation/.sql-config.json",
-    "/action/lib/.automation//.sqlfluff",
+    "/action/lib/.automation/.sqlfluff",
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",

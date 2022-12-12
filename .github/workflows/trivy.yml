@@ -24,13 +24,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # ##########################
-      # # Build the docker image #
-      # ##########################
-      - name: Build an image from Dockerfile
-        run: |
-          docker build -t "docker.io/github/super-linter:${{ github.sha }}" .
-
       #################################
       # Run Trivy Scan of source code #
       #################################
@@ -48,6 +41,5 @@ jobs:
       #################################
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
-        if: always()
         with:
           sarif_file: 'report.sarif'
