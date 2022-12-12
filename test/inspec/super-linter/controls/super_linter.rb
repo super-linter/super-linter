@@ -273,11 +273,13 @@ control "super-linter-installed-npm-packages" do
     #"eslint",
     "eslint-config-airbnb",
     "eslint-config-prettier",
+    "eslint-config-next"
     "eslint-plugin-jest",
     "eslint-plugin-json",
     "eslint-plugin-jsonc",
     "eslint-plugin-jsx-a11y",
     "eslint-plugin-prettier",
+    "@next/eslint-plugin-next",
     "gherkin-lint",
     "htmlhint",
     #"immer",
