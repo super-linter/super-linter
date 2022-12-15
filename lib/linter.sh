@@ -76,7 +76,7 @@ fi
 GITHUB_API_URL="${GITHUB_API_URL%/}"
 
 # Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/automation'          # Default rules files location
+DEFAULT_RULES_LOCATION='/action/lib/automation'           # Default rules files location
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
 VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
 export VERSION_FILE                                       # Workaround SC2034
@@ -379,10 +379,10 @@ DEFAULT_DISABLE_ERRORS='false'                                  # Default to ena
 export DEFAULT_DISABLE_ERRORS                                   # Workaround SC2034
 ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
 export ERROR_ON_MISSING_EXEC_BIT
-RAW_FILE_ARRAY=()                   # Array of all files that were changed
-export RAW_FILE_ARRAY               # Workaround SC2034
+RAW_FILE_ARRAY=()                  # Array of all files that were changed
+export RAW_FILE_ARRAY              # Workaround SC2034
 TEST_CASE_FOLDER='automation/test' # Folder for test cases we should always ignore
-export TEST_CASE_FOLDER             # Workaround SC2034
+export TEST_CASE_FOLDER            # Workaround SC2034
 
 ##########################
 # Array of changed files #
@@ -402,7 +402,7 @@ Header() {
   ###############################
   # Give them the possum action #
   ###############################
-  if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
+  if [[ ${SUPPRESS_POSSUM} == "false" ]]; then
     /bin/bash /action/lib/functions/possum.sh
   fi
 
@@ -767,7 +767,7 @@ UpdateLoopsForImage() {
   ######################################################################
   # Need to clean the array lists of the linters removed for the image #
   ######################################################################
-  if [[ "${IMAGE}" == "slim" ]]; then
+  if [[ ${IMAGE} == "slim" ]]; then
     #############################################
     # Need to remove linters for the slim image #
     #############################################
@@ -778,7 +778,7 @@ UpdateLoopsForImage() {
     echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
     for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
-        if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
+        if [[ ${LANGUAGE_ARRAY[INDEX]} == "${REMOVE_LANGUAGE}" ]]; then
           echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
           unset 'LANGUAGE_ARRAY[INDEX]'
         fi
@@ -789,7 +789,7 @@ UpdateLoopsForImage() {
     echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
     for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
-        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
+        if [[ ${INDEX} == "${REMOVE_LINTER}" ]]; then
           echo "found item:[${REMOVE_LINTER}], removing linter..."
           unset 'LINTER_NAMES_ARRAY[$INDEX]'
         fi
