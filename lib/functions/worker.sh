@@ -282,6 +282,10 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
+      elif [[ ${FILE_TYPE} == "TYPESCRIPT_STANDARD" ]]; then
+        LINT_CMD=$(
+          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
       else
         ################################
         # Lint the file with the rules #
@@ -305,7 +309,7 @@ function LintCodebase() {
         ##############################
         if [ ${ERROR_CODE} -ne 0 ]; then
           debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
-          if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
+          if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ ${ERROR_ON_MISSING_EXEC_BIT} == "false" ]]; then
             ########
             # WARN #
             ########
@@ -364,7 +368,7 @@ function LintCodebase() {
 
       # Check to see if there was a .terraform folder there before we got started, restore it if so
       POTENTIAL_BACKUP_DIR="${TFLINT_SEEN_DIRS[${TF_DIR}]}"
-      if [[ "${POTENTIAL_BACKUP_DIR}" != 'false' ]]; then
+      if [[ ${POTENTIAL_BACKUP_DIR} != 'false' ]]; then
         # Put the copy back in place
         debug "  Restoring ${TF_DIR}/.terraform from ${POTENTIAL_BACKUP_DIR}"
         mv "${POTENTIAL_BACKUP_DIR}/.terraform" .terraform
