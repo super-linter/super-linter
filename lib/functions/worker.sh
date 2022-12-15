@@ -282,11 +282,6 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
-      elif [[ ${FILE_TYPE} == "TYPESCRIPT_STANDARD" ]]; then
-        echo "${LINTER_COMMAND} ${WORKSPACE_PATH}/${FILE_NAME}"
-        LINT_CMD=$(
-          ${LINTER_COMMAND} "${WORKSPACE_PATH}/${FILE_NAME}" 2>&1
-        )
       else
         ################################
         # Lint the file with the rules #
