@@ -59,7 +59,7 @@ jobs:
       - name: Run container image label test cases
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
-        run: .automation/validate-docker-labels.sh "${{ matrix.images.image-id }}"
+        run: automation/validate-docker-labels.sh "${{ matrix.images.image-id }}"
 
       - name: Edit an action.yml file for test local build
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
@@ -116,7 +116,7 @@ jobs:
           docker run \
           -e RUN_LOCAL=true \
           -e TEST_CASE_RUN=true \
-          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ANSIBLE_DIRECTORY=automation/test/ansible \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
@@ -125,7 +125,7 @@ jobs:
       - name: Clean the working directory for additional testing
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         shell: bash
-        run: .automation/clean-code-base-for-tests.sh
+        run: automation/clean-code-base-for-tests.sh
 
       - name: Run against all code base - ${{ matrix.images.image-id }}
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}

@@ -70,7 +70,7 @@ CleanTestFiles() {
     ##################################
     # Check if from the tests folder #
     ##################################
-    if [[ $FILE_DIR == **".automation/test"** ]]; then
+    if [[ $FILE_DIR == **"automation/test"** ]]; then
       ################################
       # Its a test, we can delete it #
       ################################
@@ -111,7 +111,7 @@ CleanTestDockerFiles() {
     ##################################
     # Check if from the tests folder #
     ##################################
-    if [[ $FILE_DIR != **".automation/test/docker/good"** ]]; then
+    if [[ $FILE_DIR != **"automation/test/docker/good"** ]]; then
       ################################
       # Its a test, we can delete it #
       ################################

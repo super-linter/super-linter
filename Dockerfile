@@ -419,7 +419,7 @@ COPY lib /action/lib
 ##################################
 # Copy linter rules to container #
 ##################################
-COPY TEMPLATES /action/lib/.automation
+COPY TEMPLATES /action/lib/automation
 
 ################
 # Pull in libs #

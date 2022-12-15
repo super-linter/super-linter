@@ -283,8 +283,9 @@ function LintCodebase() {
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
       elif [[ ${FILE_TYPE} == "TYPESCRIPT_STANDARD" ]]; then
+        echo "${LINTER_COMMAND} ${WORKSPACE_PATH}/${FILE_NAME}"
         LINT_CMD=$(
-          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+          ${LINTER_COMMAND} "${WORKSPACE_PATH}/${FILE_NAME}" 2>&1
         )
       else
         ################################

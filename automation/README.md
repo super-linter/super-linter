@@ -1,4 +1,4 @@
-# .automation
+# automation
 
 This folder holds automation scripts to help `deploy` and `cleanup` **DockerHub** images of the **Super-Linter**
 

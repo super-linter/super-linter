@@ -6,6 +6,6 @@
     "src",
     "tests",
     "tools",
-    "/tmp/lint/.automation/test"
+    "/tmp/lint/automation/test"
   ]
 }
