@@ -15,6 +15,11 @@ jobs:
   build:
     name: Deploy container image - Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      issues: write
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -81,7 +86,7 @@ jobs:
       # We don't rebuild the image to avoid that the latest tag and the release tags don't point to what the release tag is pointing to.
       # Instead, we pull the latest image and tag it.
       - name: Add release tags and push image
-        uses: akhilerm/tag-push-action@v2.0.0
+        uses: akhilerm/tag-push-action@v2.1.0
         with:
           src: ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}latest
           dst: |
