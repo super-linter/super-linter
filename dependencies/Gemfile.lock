@@ -15,7 +15,7 @@ GEM
     parallel (1.22.1)
     parser (3.1.3.0)
       ast (~> 2.4.1)
-    rack (3.0.0)
+    rack (3.0.2)
     rainbow (3.1.1)
     regexp_parser (2.6.1)
     rexml (3.2.5)
@@ -35,12 +35,12 @@ GEM
       rubocop (>= 1.0.0)
       rubocop-performance
       rubocop-rails
-    rubocop-minitest (0.22.2)
+    rubocop-minitest (0.25.0)
       rubocop (>= 0.90, < 2.0)
     rubocop-performance (1.15.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.16.1)
+    rubocop-rails (2.17.3)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
@@ -59,9 +59,9 @@ PLATFORMS
 DEPENDENCIES
   rubocop (~> 1.41.0)
   rubocop-github (~> 0.18.0)
-  rubocop-minitest (~> 0.22.2)
+  rubocop-minitest (~> 0.25.0)
   rubocop-performance (~> 1.15.1)
-  rubocop-rails (~> 2.16)
+  rubocop-rails (~> 2.17)
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 2.16.0)
 
