@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      deployments: write
+      issues: write
       packages: write
     strategy:
       fail-fast: false
