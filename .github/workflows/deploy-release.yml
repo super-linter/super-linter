@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     name: Deploy container image - Release
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-20.04-8core-sl
     strategy:
       fail-fast: false
       matrix:
