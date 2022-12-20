@@ -1,5 +1,5 @@
 attrs==22.1.0
-aws-sam-translator==1.52.0
+aws-sam-translator==1.55.0
 boto3==1.24.89
 botocore==1.27.89
 cfn-lint==0.67.0
