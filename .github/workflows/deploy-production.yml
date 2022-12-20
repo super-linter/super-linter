@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build, test, and eventually push the container image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
