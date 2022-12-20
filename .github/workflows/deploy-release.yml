@@ -44,8 +44,8 @@ jobs:
         uses: docker/login-action@v2.0.0
         with:
           registry: ghcr.io
-          username: ${{ secrets.GCR_USERNAME }}
-          password: ${{ secrets.GCR_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get current release identifier
         # shellcheck disable=SC2062
