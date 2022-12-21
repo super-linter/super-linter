@@ -224,12 +224,6 @@ jobs:
               repo: context.repo.repo,
               issue_number: "${{ steps.create-issue.outputs.result }}",
               assignees: [
-                'admiralawkbar',
-                'jwiebalk',
-                'IAmHughes',
-                'nemchik',
-                'Hanse00',
-                'GaboFDC',
-                'ferrarimarco'
+                'lindluni'
               ]
             })
