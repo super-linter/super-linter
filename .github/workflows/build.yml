@@ -1,0 +1,86 @@
+name: Build Image
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-20.04-8core-sl
+    permissions:
+        contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        images:
+          - container-build-target: final_slim
+            container-image-id-prefix: slim-
+            deployment-environment-identifier: Production-SLIM
+            image-id: slim
+          - container-build-target: final_standard
+            container-image-id-prefix: ""
+            deployment-environment-identifier: Production
+            image-id: standard
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Retrieve Datetime
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
+      - name: Build Docker images
+        run: |
+          docker build --build-arg "${date}" \
+            --build-arg "${revision}" \
+            --build-arg "${version}" \
+            --target "${target}" \
+            --tag "ghcr.io/github/super-linter:${tag}" .
+        env:
+          date: ${{ env.BUILD_DATE }}
+          revision: ${{ github.sha }}
+          tag: ${{ matrix.images.container-image-id }}
+          target: ${{ matrix.images.container-build-target }}
+          version: ${{ github.sha }}
+      - name: Update action.yml
+        run: yq -i action.yml '.runs.image = "docker://ghcr.io/github/super-linter:${tag}"'
+        env:
+            tag: ${{ matrix.images.container-image-id }}
+      - name: Lint Codebase
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
+        uses: ./
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          LOCAL_UPDATES: true
+      - name: Run Test Suite
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
+        run: make IMAGE=${{ matrix.images.image-id }} test
+      - name: Run Super-Linter Tests
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
+        run: |
+          docker run \
+            -e RUN_LOCAL=true \
+            -e TEST_CASE_RUN=true \
+            -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+            -e ACTIONS_RUNNER_DEBUG=true \
+            -e ERROR_ON_MISSING_EXEC_BIT=true \
+            -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+            "ghcr.io/github/super-linter:${tag}"
+        env:
+          tag: ${{ matrix.images.container-image-id }}
+      - name: Run All Codebase Super-Linter Tests
+        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
+        run: |
+          docker run \git
+            -e RUN_LOCAL=true \
+            -e OUTPUT_DETAILS=detailed \
+            -e ACTIONS_RUNNER_DEBUG=true \
+            -e ERROR_ON_MISSING_EXEC_BIT=true \
+            -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+            "ghcr.io/github/super-linter:${tag}"
+        env:
+          tag: ${{ matrix.images.container-image-id }}
