@@ -14,11 +14,11 @@ jobs:
       matrix:
         images:
           - container-build-target: final_slim
-            container-image-id-prefix: slim-
+            image-id-prefix: slim-
             deployment-environment-identifier: Production-SLIM
             image-id: slim
           - container-build-target: final_standard
-            container-image-id-prefix: ""
+            image-id-prefix: ""
             deployment-environment-identifier: Production
             image-id: standard
     timeout-minutes: 60
@@ -39,13 +39,13 @@ jobs:
         env:
           date: ${{ env.BUILD_DATE }}
           revision: ${{ github.sha }}
-          tag: ${{ matrix.images.container-image-id }}
+          tag: ${{ matrix.images.image-id }}
           target: ${{ matrix.images.container-build-target }}
           version: ${{ github.sha }}
       - name: Update action.yml
         run: yq -i action.yml '.runs.image = "docker://ghcr.io/github/super-linter:${tag}"'
         env:
-            tag: ${{ matrix.images.container-image-id }}
+            tag: ${{ matrix.images.image-id }}
       - name: Lint Codebase
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: ./
@@ -71,7 +71,7 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.container-image-id }}
+          tag: ${{ matrix.images.image-id }}
       - name: Run All Codebase Super-Linter Tests
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
@@ -83,4 +83,4 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.container-image-id }}
+          tag: ${{ matrix.images.image-id }}
