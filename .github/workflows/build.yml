@@ -28,9 +28,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Update action.yml
-        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${tag}"' -i action.yml
-        env:
-          tag: ${{ matrix.images.image-id }}
+        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${{ matrix.images.image-id }}"' -i action.yml && cat action.yml
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
       - name: Build Docker Image
