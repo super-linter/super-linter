@@ -27,9 +27,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Update action.yml
+        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${tag}"' -i action.yml
+        env:
+          tag: ${{ matrix.images.image-id }}
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
-      - name: Build Docker images
+      - name: Build Docker Image
         run: |
           docker build --build-arg "BUILD_DATE=${date}" \
           --build-arg "BUILD_DATE=${revision}" \
@@ -42,10 +46,6 @@ jobs:
           tag: ${{ matrix.images.image-id }}
           target: ${{ matrix.images.container-build-target }}
           version: ${{ github.sha }}
-      - name: Update action.yml
-        run: yq -i action.yml '.runs.image = "docker://ghcr.io/github/super-linter:${tag}"'
-        env:
-            tag: ${{ matrix.images.image-id }}
       - name: Lint Codebase
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: ./
