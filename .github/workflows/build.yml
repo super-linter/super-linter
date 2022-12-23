@@ -70,7 +70,7 @@ jobs:
           "ghcr.io/github/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.image-id }}
-      - name: Run All Codebase Super-Linter Tests
+      - name: Lint Codebase
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           docker run \
