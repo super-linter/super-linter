@@ -31,11 +31,11 @@ jobs:
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
       - name: Build Docker images
         run: |
-          docker build --build-arg "${date}" \
-            --build-arg "${revision}" \
-            --build-arg "${version}" \
-            --target "${target}" \
-            --tag "ghcr.io/github/super-linter:${tag}" .
+          docker build --build-arg "BUILD_DATE=${date}" \
+          --build-arg "BUILD_DATE=${revision}" \
+          --build-arg "BUILD_VERSION=${version}" \
+          --target "${target}" \
+          --tag "ghcr.io/github/super-linter:${tag}" .
         env:
           date: ${{ env.BUILD_DATE }}
           revision: ${{ github.sha }}
@@ -63,24 +63,24 @@ jobs:
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           docker run \
-            -e RUN_LOCAL=true \
-            -e TEST_CASE_RUN=true \
-            -e ANSIBLE_DIRECTORY=.automation/test/ansible \
-            -e ACTIONS_RUNNER_DEBUG=true \
-            -e ERROR_ON_MISSING_EXEC_BIT=true \
-            -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-            "ghcr.io/github/super-linter:${tag}"
+          -e RUN_LOCAL=true \
+          -e TEST_CASE_RUN=true \
+          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.container-image-id }}
       - name: Run All Codebase Super-Linter Tests
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           docker run \git
-            -e RUN_LOCAL=true \
-            -e OUTPUT_DETAILS=detailed \
-            -e ACTIONS_RUNNER_DEBUG=true \
-            -e ERROR_ON_MISSING_EXEC_BIT=true \
-            -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-            "ghcr.io/github/super-linter:${tag}"
+          -e RUN_LOCAL=true \
+          -e OUTPUT_DETAILS=detailed \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.container-image-id }}
