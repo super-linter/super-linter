@@ -75,10 +75,10 @@ SUPER_LINTER_TEST_CONTINER_URL := ''
 DOCKERFILE := ''
 IMAGE := ''
 ifeq ($(IMAGE),slim)
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim-test"
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim"
 	IMAGE := "slim"
 else
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:test"
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:standard"
 	IMAGE := "standard"
 endif
 
