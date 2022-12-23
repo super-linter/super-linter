@@ -723,6 +723,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TERRAFORM_TFLINT+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
+      FILE_ARRAY_TERRAFORM_FMT+=("${FILE}")
 
     ############################
     # Get the Terragrunt files #
