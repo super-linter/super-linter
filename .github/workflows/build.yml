@@ -73,7 +73,7 @@ jobs:
       - name: Run All Codebase Super-Linter Tests
         if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
-          docker run \git
+          docker run git
           -e RUN_LOCAL=true \
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
