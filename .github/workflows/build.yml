@@ -1,11 +1,11 @@
-name: Build Image
+name: Build and Test
 
 on:
   pull_request:
 
 jobs:
-  build:
-    name: Build Image
+  test:
+    name: Build and Test
     runs-on: ubuntu-20.04-8core-sl
     permissions:
         contents: read
