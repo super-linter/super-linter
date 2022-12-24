@@ -217,7 +217,7 @@ WORKDIR /stage
 RUN ./build-venvs.sh
 
 ################################################################################
-# Grab small clean image to build final_slim ###################################
+# Grab small clean image to build slim ###################################
 ################################################################################
 FROM alpine:3.17.0 as final_slim
 
@@ -347,9 +347,9 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 ################################################################################
-# Grab small clean image to build final_standard ###############################
+# Grab small clean image to build standard ###############################
 ################################################################################
-FROM final_slim as final_standard
+FROM slim as standard
 
 ###############
 # Set up args #

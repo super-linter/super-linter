@@ -13,37 +13,35 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - container-build-target: final_slim
-            image-id-prefix: slim-
-            deployment-environment-identifier: Production-SLIM
-            image-id: slim
-          - container-build-target: final_standard
-            image-id-prefix: ""
-            deployment-environment-identifier: Production
-            image-id: standard
+          - target: slim
+          - target: standard
     timeout-minutes: 60
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Update action.yml
-        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${{ matrix.images.image-id }}"' -i action.yml
+        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${{ matrix.images.target }}"' -i action.yml
+
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
-      - name: Build Docker Image
-        run: |
-          docker build --build-arg "BUILD_DATE=${date}" \
-          --build-arg "BUILD_DATE=${revision}" \
-          --build-arg "BUILD_VERSION=${version}" \
-          --target "${target}" \
-          --tag "ghcr.io/github/super-linter:${tag}" .
-        env:
-          date: ${{ env.BUILD_DATE }}
-          revision: ${{ github.sha }}
-          tag: ${{ matrix.images.image-id }}
-          target: ${{ matrix.images.container-build-target }}
-          version: ${{ github.sha }}
+
+      - name: Build Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          load: false
+          push: false
+          tags: ghcr.io/github/super-linter:${{ matrix.images.target }}
+          target: "${{ matrix.images.target }}"
+
       - name: Test Local Action
         uses: ./
         env:
@@ -53,8 +51,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
+
       - name: Run Test Suite
-        run: make IMAGE=${{ matrix.images.image-id }} test
+        run: make IMAGE=${{ matrix.images.target }} test
+
       - name: Upload the code coverage report
         uses: codacy/codacy-coverage-reporter-action@v1.1
         # Sometimes this fails when user does not have permissions to secrets
@@ -62,6 +62,7 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
+
       - name: Run Super-Linter Tests
         run: |
           docker run \
@@ -73,8 +74,9 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.image-id }}
-      - name: Lint Codebase
+          tag: ${{ matrix.images.target }}
+
+      - name: Lint Entire Codebase
         run: |
           docker run \
           -e RUN_LOCAL=true \
@@ -84,4 +86,4 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/github/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.image-id }}
+          tag: ${{ matrix.images.target }}
