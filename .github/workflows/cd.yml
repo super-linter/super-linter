@@ -69,7 +69,7 @@ jobs:
             ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
           target: "${{ matrix.images.target }}"
 
-      - name: Update ${{ matrix.images.deployment-environment-identifier }} Deployment
+      - name: Update ${{ matrix.images.environment }} Deployment
         uses: bobheadxi/deployments@v1.3.0
         with:
           step: finish
