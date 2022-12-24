@@ -44,8 +44,7 @@ jobs:
           tag: ${{ matrix.images.image-id }}
           target: ${{ matrix.images.container-build-target }}
           version: ${{ github.sha }}
-      - name: Lint Codebase
-        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
+      - name: Test Local Action
         uses: ./
         env:
           ACTIONS_RUNNER_DEBUG: true
@@ -55,10 +54,8 @@ jobs:
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
       - name: Run Test Suite
-        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: make IMAGE=${{ matrix.images.image-id }} test
       - name: Upload the code coverage report
-        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         uses: codacy/codacy-coverage-reporter-action@v1.1
         # Sometimes this fails when user does not have permissions to secrets
         continue-on-error: true
@@ -66,7 +63,6 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
       - name: Run Super-Linter Tests
-        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           docker run \
           -e RUN_LOCAL=true \
@@ -79,7 +75,6 @@ jobs:
         env:
           tag: ${{ matrix.images.image-id }}
       - name: Lint Codebase
-        if: ${{ github.repository == 'github/super-linter' && github.ref != 'refs/heads/main' }}
         run: |
           docker run \
           -e RUN_LOCAL=true \
