@@ -386,7 +386,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.mypy.ini",
     "/action/lib/.automation/.openapirc.yml",
     "/action/lib/.automation/.perlcriticrc",
-    "/action/lib/.automation/.powershell-psscriptanalyzer.psd1",
+    "/action/lib/.automation/.powershell-psscriptanalyzer.txt",
     "/action/lib/.automation/.protolintrc.yml",
     "/action/lib/.automation/.python-black",
     "/action/lib/.automation/.python-lint",
