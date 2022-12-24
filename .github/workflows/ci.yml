@@ -28,6 +28,9 @@ jobs:
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
+      - name: Setup Docker BuildX
+        uses: docker/setup-buildx-action@v2.2.1
+
       - name: Build Image
         uses: docker/build-push-action@v3
         with:
