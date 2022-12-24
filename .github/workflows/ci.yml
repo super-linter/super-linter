@@ -55,7 +55,7 @@ jobs:
       - name: Run Test Suite
         run: make IMAGE=${{ matrix.images.target }} test
 
-      - name: Upload the code coverage report
+      - name: Upload Code Coverage Report
         uses: codacy/codacy-coverage-reporter-action@v1.1
         # Sometimes this fails when user does not have permissions to secrets
         continue-on-error: true
