@@ -10,7 +10,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^8.30.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "@next/eslint-plugin-next": "^12.1.6",
     "eslint-config-next": "^12.1.6",
     "eslint-config-prettier": "^8.5.0",
