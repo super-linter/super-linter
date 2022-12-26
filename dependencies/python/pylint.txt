@@ -1,6 +1,6 @@
 astroid==2.12.13
 dill==0.3.6
-isort==5.11.3
+isort==5.11.4
 lazy-object-proxy==1.8.0
 mccabe==0.7.0
 platformdirs==2.6.0
