@@ -54,6 +54,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           load: true
           push: false
           tags: |
@@ -178,6 +179,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           load: false
           push: true
           tags: |
