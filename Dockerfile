@@ -33,14 +33,11 @@ FROM python:3.11.1-alpine3.17 as base_image
 ################################
 # Set ARG values used in Build #
 ################################
-# arm-ttk Linter
-ARG ARM_TTK_NAME='master.zip'
-ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 ARG CHECKSTYLE_VERSION='10.3.4'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
+ARG GITHUB_TOKEN
 ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
@@ -97,17 +94,10 @@ RUN apk add --no-cache \
 ########################################
 COPY dependencies/* /
 
-################################
-# Installs python dependencies #
-################################
-RUN npm config set package-lock true  \
-    && npm config set loglevel error \
-    && npm --no-cache install \
-    && npm audit fix --audit-level=critical \
-    ##############################
-    # Installs ruby dependencies #
-    ##############################
-    && bundle install
+#############################
+# Install Dependencies #
+#############################
+RUN npm install && bundle install
 
 ##############################
 # Installs Perl dependencies #
@@ -198,10 +188,8 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 #################
 # Install Lintr #
 #################
-RUN mkdir -p /home/r-library \
-    && cp -r /usr/lib/R/library/ /home/r-library/ \
-    && Rscript -e "install.packages(c('lintr','purrr'), repos = 'https://cloud.r-project.org/')" \
-    && R -e "install.packages(list.dirs('/home/r-library',recursive = FALSE), repos = NULL, type = 'source')"
+COPY scripts/install-lintr.sh /
+RUN /install-lintr.sh && rm -rf /install-lintr.sh
 
 # Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 # Store the key here because the above host is sometimes down, and breaks our builds
@@ -210,72 +198,15 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 ###################
 # Install Kubeval #
 ###################
-RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz \
-    && tar xf kubeval-linux-amd64.tar.gz \
-    && mv kubeval /usr/local/bin \
-    && rm kubeval-linux-amd64.tar.gz \
-    ##################
-    # Install ktlint #
-    ##################
-    && curl --retry 5 --retry-delay 5 -sSLO "https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint" \
-    && chmod a+x ktlint \
-    && mv "ktlint" /usr/bin/ \
-    && terrascan init \
-    && cd ~ && touch .chktexrc \
-    ####################
-    # Install dart-sdk #
-    ####################
-    && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
-    && apk add --no-cache --force-overwrite glibc-${GLIBC_VERSION}.apk \
-    && rm glibc-${GLIBC_VERSION}.apk \
-    && wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
-    && chmod +x dart-sdk/bin/dart* \
-    && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/ \
-    && rm -r dart-sdk/ \
-    ################################
-    # Create and install Bash-Exec #
-    ################################
-    && printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: File:[$1] is not executable"; exit 1; fi' > /usr/bin/bash-exec \
-    && chmod +x /usr/bin/bash-exec
+COPY scripts/install-kubeval.sh /
+RUN /install-kubeval.sh && rm -rf /install-kubeval.sh
 
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
 # Basic setup, programs and init
-RUN apk add --no-cache rakudo zef \
-    ######################
-    # Install CheckStyle #
-    ######################
-    && curl --retry 5 --retry-delay 5 --show-error -sSL "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${CHECKSTYLE_VERSION}/checkstyle-${CHECKSTYLE_VERSION}-all.jar" \
-    --output /usr/bin/checkstyle \
-    ##############################
-    # Install google-java-format #
-    ##############################
-    && curl --retry 5 --retry-delay 5 --show-error -sSL "https://github.com/google/google-java-format/releases/download/v${GOOGLE_JAVA_FORMAT_VERSION}/google-java-format-${GOOGLE_JAVA_FORMAT_VERSION}-all-deps.jar" \
-    --output /usr/bin/google-java-format \
-    #################################
-    # Install luacheck and luarocks #
-    #################################
-    && wget --tries=5 -q https://www.lua.org/ftp/lua-5.3.5.tar.gz -O - -q | tar -xzf - \
-    && cd lua-5.3.5 \
-    && make linux \
-    && make install \
-    && cd .. && rm -r lua-5.3.5/ \
-    && wget --tries=5 -q https://github.com/cvega/luarocks/archive/v3.3.1-super-linter.tar.gz -O - -q | tar -xzf - \
-    && cd luarocks-3.3.1-super-linter \
-    && ./configure --with-lua-include=/usr/local/include \
-    && make \
-    && make -b install \
-    && cd .. \
-    && rm -r luarocks-3.3.1-super-linter/ \
-    && luarocks install luacheck \
-    && luarocks install argparse \
-    && luarocks install luafilesystem \
-    && mv /etc/R/* /usr/lib/R/etc/ \
-    && find /node_modules/ -type f -name 'LICENSE' -exec rm {} + \
-    && find /node_modules/ -type f -name '*.md' -exec rm {} + \
-    && find /node_modules/ -type f -name '*.txt' -exec rm {} + \
-    && find /usr/ -type f -name '*.md' -exec rm {} +
+COPY scripts/install-raku.sh /
+RUN /install-raku.sh && rm -rf /install-raku.sh
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
@@ -297,6 +228,7 @@ FROM alpine:3.17.0 as final_slim
 ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
+ARG GITHUB_TOKEN
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 
@@ -330,6 +262,7 @@ ENV IMAGE="slim"
 # Store the key here because the above host is sometimes down, and breaks our builds
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
+<<<<<<< HEAD
 ######################################
 # Install Phive dependencies and git #
 ######################################
@@ -361,6 +294,18 @@ RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/down
     && phive --no-progress install --trust-gpg-keys \
     31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
     --target /usr/bin phpstan@^1.3.3 psalm@^4.18.1 phpcs@^3.6.2
+=======
+###############
+# Install Git #
+###############
+RUN apk add --no-cache bash git git-lfs
+
+##############################
+# Install Phive dependencies #
+##############################
+COPY scripts/install-phive.sh /
+RUN /install-phive.sh && rm -rf /install-phive.sh
+>>>>>>> 65949c12 (Push scripts into standalone files)
 
 ####################################################
 # Install Composer after all Libs have been copied #
@@ -445,11 +390,7 @@ FROM final_slim as final_standard
 ###############
 # Set up args #
 ###############
-# arm-ttk
-ARG ARM_TTK_NAME='master.zip'
-ARG ARM_TTK_URI='https://github.com/Azure/arm-ttk/archive/master.zip'
-ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
-# PowerShell & PSScriptAnalyzer
+ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='latest'
@@ -457,7 +398,6 @@ ARG PSSA_VERSION='latest'
 ################
 # Set ENV vars #
 ################
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
@@ -469,60 +409,27 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 ###################################
 # Install DotNet and Dependencies #
 ###################################
-RUN wget --tries=5 -q -O dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
-    && chmod +x dotnet-install.sh \
-    && ./dotnet-install.sh --install-dir /usr/share/dotnet -channel Current -version latest \
-    && /usr/share/dotnet/dotnet tool install --tool-path /usr/bin dotnet-format --version 5.0.211103
+COPY scripts/install-dotnet.sh /
+RUN /install-dotnet.sh && rm -rf /install-dotnet.sh
 
 ##############################
 # Install rustfmt & clippy   #
 ##############################
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
-RUN ln -s /usr/bin/rustup-init /usr/bin/rustup \
-    && rustup toolchain install stable-x86_64-unknown-linux-musl \
-    && rustup component add rustfmt --toolchain=stable-x86_64-unknown-linux-musl \
-    && rustup component add clippy --toolchain=stable-x86_64-unknown-linux-musl \
-    && mv /root/.rustup /usr/lib/.rustup \
-    && ln -fsv /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustfmt /usr/bin/rustfmt \
-    && ln -fsv /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rustc /usr/bin/rustc \
-    && ln -fsv /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo /usr/bin/cargo \
-    && ln -fsv /usr/lib/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy \
-    && echo '#!/usr/bin/env bash' > /usr/bin/clippy \
-    && echo 'pushd $(dirname $1)' >> /usr/bin/clippy \
-    && echo 'cargo-clippy' >> /usr/bin/clippy \
-    && echo 'rc=$?' >> /usr/bin/clippy \
-    && echo 'popd' >> /usr/bin/clippy \
-    && echo 'exit $rc' >> /usr/bin/clippy \
-    && chmod +x /usr/bin/clippy
+COPY scripts/install-rustfmt.sh /
+RUN /install-rustfmt.sh && rm -rf /install-rustfmt.sh
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
-# Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
-# Slightly modified to always retrieve latest stable Powershell version
-# If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
-RUN mkdir -p ${PWSH_DIRECTORY} \
-    && curl --retry 5 --retry-delay 5 --show-error -s https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION} \
-    | grep browser_download_url \
-    | grep linux-alpine-x64 \
-    | cut -d '"' -f 4 \
-    | xargs -n 1 wget -q -O - \
-    | tar -xzC ${PWSH_DIRECTORY} \
-    && chmod +x ${PWSH_DIRECTORY}/pwsh \
-    && ln -sf ${PWSH_DIRECTORY}/pwsh /usr/bin/pwsh \
-    && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force'
+COPY scripts/install-pwsh.sh /
+RUN /install-pwsh.sh && rm -rf /install-pwsh.sh
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
 #############################################################
-# Depends on PowerShell
-# Reference https://github.com/Azure/arm-ttk
-# Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
-ENV ARM_TTK_PSD1="${ARM_TTK_DIRECTORY}/arm-ttk-master/arm-ttk/arm-ttk.psd1"
-RUN curl --retry 5 --retry-delay 5 --show-error -sLO "${ARM_TTK_URI}" \
-    && unzip "${ARM_TTK_NAME}" -d "${ARM_TTK_DIRECTORY}" \
-    && rm "${ARM_TTK_NAME}" \
-    && ln -sTf "${ARM_TTK_PSD1}" /usr/bin/arm-ttk
+COPY scripts/install-arm-ttk.sh /
+RUN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
 ########################################################################################
 # Run to build version file and validate image again because we installed more linters #
