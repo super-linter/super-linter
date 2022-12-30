@@ -85,7 +85,7 @@ jobs:
 
       # We don't rebuild the image to avoid that the latest tag and the release tags don't point to what the release tag is pointing to.
       # Instead, we pull the latest image and tag it.
-      - name: Build and Push Images
+      - name: Retag and Push Images
         uses: akhilerm/tag-push-action@v2.1.0
         with:
           src: ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
