@@ -3,7 +3,7 @@ dill==0.3.6
 isort==5.11.4
 lazy-object-proxy==1.8.0
 mccabe==0.7.0
-platformdirs==2.6.0
+platformdirs==2.6.2
 pylint==2.15.9
 tomli==2.0.1
 tomlkit==0.11.6
