@@ -17,7 +17,7 @@ packaging==22.0
 pathspec==0.10.3
 platformdirs==2.6.0
 pycparser==2.21
-Pygments==2.13.0
+Pygments==2.14.0
 pyrsistent==0.19.2
 PyYAML==6.0
 resolvelib==0.8.1
