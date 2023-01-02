@@ -18,7 +18,7 @@ pathspec==0.10.3
 platformdirs==2.6.0
 pycparser==2.21
 Pygments==2.13.0
-pyrsistent==0.19.2
+pyrsistent==0.19.3
 PyYAML==6.0
 resolvelib==0.8.1
 rich==12.6.0
