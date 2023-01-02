@@ -11,7 +11,7 @@ MarkupSafe==2.1.1
 packaging==22.0
 pathspec==0.10.3
 pluggy==1.0.0
-Pygments==2.13.0
+Pygments==2.14.0
 pytest==7.2.0
 PyYAML==6.0
 regex==2022.10.31
