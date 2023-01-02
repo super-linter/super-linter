@@ -17,7 +17,7 @@ jupyter_core==5.1.1
 MarkupSafe==2.1.1
 nbformat==5.7.1
 plac==1.3.5
-platformdirs==2.6.0
+platformdirs==2.6.2
 psutil==5.9.4
 PuLP==2.7.0
 pyrsistent==0.19.2
