@@ -11,7 +11,7 @@ FROM alpine/terragrunt:1.3.6 as terragrunt
 FROM tenable/terrascan:1.17.1 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM cljkondo/clj-kondo:2022.12.10-alpine as clj-kondo
-FROM dotenvlinter/dotenv-linter:3.2.0 as dotenv-linter
+FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.44.1.0 as tflint
 FROM golangci/golangci-lint:v1.50.1 as golangci-lint
