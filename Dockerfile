@@ -43,9 +43,9 @@ ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
 ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
 # PowerShell & PSScriptAnalyzer linter
-ARG PSSA_VERSION='latest'
+ARG PSSA_VERSION='1.21.0'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PWSH_VERSION='latest'
+ARG PWSH_VERSION='v7.3.1'
 # Kubeval Version
 ARG KUBEVAL_VERSION='v0.16.1'
 
