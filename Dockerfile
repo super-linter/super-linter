@@ -393,7 +393,7 @@ FROM final_slim as final_standard
 ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='latest'
+ARG PSSA_VERSION='1.21.0'
 
 ################
 # Set ENV vars #
