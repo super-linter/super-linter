@@ -199,14 +199,14 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 # Install Kubeval #
 ###################
 COPY scripts/install-kubeval.sh /
-RUN /install-kubeval.sh && rm -rf /install-kubeval.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-kubeval.sh && rm -rf /install-kubeval.sh
 
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
 # Basic setup, programs and init
 COPY scripts/install-raku.sh /
-RUN /install-raku.sh && rm -rf /install-raku.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-raku.sh && rm -rf /install-raku.sh
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
@@ -271,7 +271,7 @@ RUN apk add --no-cache bash git git-lfs
 # Install Phive dependencies #
 ##############################
 COPY scripts/install-phive.sh /
-RUN /install-phive.sh && rm -rf /install-phive.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-phive.sh && rm -rf /install-phive.sh
 
 ####################################################
 # Install Composer after all Libs have been copied #
@@ -390,13 +390,13 @@ RUN /install-rustfmt.sh && rm -rf /install-rustfmt.sh
 # Install Powershell + PSScriptAnalyzer #
 #########################################
 COPY scripts/install-pwsh.sh /
-RUN /install-pwsh.sh && rm -rf /install-pwsh.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh.sh
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
 #############################################################
 COPY scripts/install-arm-ttk.sh /
-RUN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
 ########################################################################################
 # Run to build version file and validate image again because we installed more linters #
