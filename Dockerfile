@@ -28,7 +28,7 @@ FROM zricethezav/gitleaks:v8.15.2 as gitleaks
 ##################
 # Get base image #
 ##################
-FROM python:3.10.7-alpine as base_image
+FROM python:3.11.1-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -40,10 +40,10 @@ ARG ARM_TTK_DIRECTORY='/usr/lib/microsoft'
 ARG CHECKSTYLE_VERSION='10.3.4'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
-ARG DART_VERSION='2.8.4'
+ARG DART_VERSION='2.18.5'
 ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.31-r0'
+ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
 # PowerShell & PSScriptAnalyzer linter
 ARG PSSA_VERSION='latest'
@@ -226,7 +226,7 @@ RUN wget --tries=5 -q -O kubeval-linux-amd64.tar.gz https://github.com/instrumen
     # Install dart-sdk #
     ####################
     && wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
-    && apk add --no-cache glibc-${GLIBC_VERSION}.apk \
+    && apk add --no-cache --force-overwrite glibc-${GLIBC_VERSION}.apk \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget --tries=5 -q https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip -O - -q | unzip -q - \
     && chmod +x dart-sdk/bin/dart* \
@@ -280,7 +280,7 @@ RUN apk add --no-cache rakudo zef \
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.10.7-alpine as python_builder
+FROM python:3.11.1-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -289,7 +289,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build final_slim ###################################
 ################################################################################
-FROM alpine:3.15.4 as final_slim
+FROM alpine:3.17.0 as final_slim
 
 ############################
 # Get the build arguements #
@@ -298,7 +298,7 @@ ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.31-r0'
+ARG GLIBC_VERSION='2.34-r0'
 
 #########################################
 # Label the instance and set maintainer #
@@ -334,15 +334,16 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 # Install Phive dependencies and git #
 ######################################
 RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
-    && apk add --no-cache \
+    && apk update && apk upgrade && apk add --no-cache --force-overwrite \
     bash \
     ca-certificates \
+    curl \
     git git-lfs \
     glibc-${GLIBC_VERSION}.apk \
     tar zstd \
     gnupg \
-    php7 php7-curl php7-ctype php7-dom php7-iconv php7-json php7-mbstring \
-    php7-openssl php7-phar php7-simplexml php7-tokenizer php-xmlwriter \
+    php81 php81-curl php81-ctype php81-dom php81-iconv php81-mbstring \
+    php81-openssl php81-phar php81-simplexml php81-tokenizer php81-xmlwriter \
     && rm glibc-${GLIBC_VERSION}.apk \
     && wget -q --tries=5 -O /tmp/libz.tar.zst https://www.archlinux.org/packages/core/x86_64/zlib/download \
     && mkdir /tmp/libz \
@@ -360,6 +361,11 @@ RUN wget --tries=5 -q https://github.com/sgerrand/alpine-pkg-glibc/releases/down
     && phive --no-progress install --trust-gpg-keys \
     31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 \
     --target /usr/bin phpstan@^1.3.3 psalm@^4.18.1 phpcs@^3.6.2
+
+####################################################
+# Install Composer after all Libs have been copied #
+####################################################
+RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer'
 
 #################################
 # Copy the libraries into image #
@@ -383,11 +389,6 @@ COPY --from=python_builder /venvs/ /venvs/
 # Configure TFLint plugin folder #
 ##################################
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
-
-####################################################
-# Install Composer after all Libs have been copied #
-####################################################
-RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer'
 
 ########################################
 # Add node packages to path and dotnet #
