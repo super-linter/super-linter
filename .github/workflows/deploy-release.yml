@@ -15,11 +15,6 @@ jobs:
   build:
     name: Deploy container image - Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-      issues: write
-      packages: write
     strategy:
       fail-fast: false
       matrix:
