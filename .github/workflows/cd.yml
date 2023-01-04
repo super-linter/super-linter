@@ -9,6 +9,9 @@ jobs:
   test:
     name: Build and Test
     runs-on: ubuntu-20.04-8core-sl
+    concurrency:
+      group: ${{ github.workflow }}-main
+      cancel-in-progress: false
     permissions:
       contents: read
       deployments: write
@@ -71,6 +74,7 @@ jobs:
 
       - name: Update ${{ matrix.images.environment }} Deployment
         uses: bobheadxi/deployments@v1.3.0
+        if: always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,8 +84,8 @@ jobs:
           env_url: https://github.com/github/super-linter
 
       - name: Create Issue on Failure
-        if: failure()
         uses: actions/github-script@v6
+        if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |

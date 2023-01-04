@@ -56,8 +56,7 @@ jobs:
         run: make IMAGE=${{ matrix.images.target }} test
 
       - name: Upload Code Coverage Report
-        uses: codacy/codacy-coverage-reporter-action@v1.1
-        # Sometimes this fails when user does not have permissions to secrets
+        uses: codacy/codacy-coverage-reporter-action@v1
         continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
