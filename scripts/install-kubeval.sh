@@ -41,7 +41,7 @@ curl --retry 5 --retry-delay 5 -sL -o "glibc-${GLIBC_VERSION}.apk" \
   -H "Accept: application/octet-stream" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}"
-apk add --no-cache "glibc-${GLIBC_VERSION}.apk"
+apk add --no-cache --force-overwrite "glibc-${GLIBC_VERSION}.apk"
 rm "glibc-${GLIBC_VERSION}.apk"
 
 curl --retry 5 --retry-delay 5 -sO "https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip"
