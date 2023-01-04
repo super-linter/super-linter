@@ -9,12 +9,12 @@ set -euo pipefail
 mkdir -p "${PWSH_DIRECTORY}"
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
   jq -r '.assets | .[] | select(.name | contains("linux-alpine-x64")) | .url')
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}" | tar -xz -C "${PWSH_DIRECTORY}"
 chmod +x "${PWSH_DIRECTORY}/pwsh"
 ln -sf "${PWSH_DIRECTORY}/pwsh" /usr/bin/pwsh
