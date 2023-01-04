@@ -107,16 +107,7 @@ inspec: inspec-check ## Run InSpec tests
 .phony: docker
 docker:
 	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
-	docker build \
-		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
-		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
-		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
-		-t ghcr.io/github/super-linter .
-
-.phony: docker-buildx
-docker-buildx:
-	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
-	docker buildx build --load \
+	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
 		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
