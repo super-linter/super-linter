@@ -57,7 +57,7 @@ jobs:
           load: true
           push: false
           secrets: |
-            GITHUB_TOKEN=GITHUB_TOKEN${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}${{ github.sha }}
             ghcr.io/github/super-linter:${{ matrix.images.container-image-id-prefix }}test
