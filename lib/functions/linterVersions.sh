@@ -137,6 +137,7 @@ WriteFile() {
   #######################
   # Load the error code #
   #######################
+  # shellcheck disable=SC2320
   ERROR_CODE=$?
 
   ##############################
