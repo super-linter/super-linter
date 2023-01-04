@@ -4,12 +4,12 @@ set -euo pipefail
 
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/instrumenta/kubeval/releases/tags/${KUBEVAL_VERSION}" |
   jq -r '.assets | .[] | select(.name | contains("linux-amd")) | .url')
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}" | tar -xz
 mv kubeval /usr/local/bin
 
@@ -18,12 +18,12 @@ mv kubeval /usr/local/bin
 ##################
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/pinterest/ktlint/releases/tags/${KTLINT_VERSION}" |
   jq -r '.assets | .[] | select(.name=="ktlint") | .url')
 curl --retry 5 --retry-delay 5 -sL -o "/usr/bin/ktlint" \
   -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}"
 chmod a+x /usr/bin/ktlint
 terrascan init
@@ -34,12 +34,12 @@ cd ~ && touch .chktexrc
 ####################
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/sgerrand/alpine-pkg-glibc/releases/tags/${GLIBC_VERSION}" |
   jq --arg name "glibc-${GLIBC_VERSION}.apk" -r '.assets | .[] | select(.name | contains($name)) | .url')
 curl --retry 5 --retry-delay 5 -sL -o "glibc-${GLIBC_VERSION}.apk" \
   -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}"
 apk add --no-cache "glibc-${GLIBC_VERSION}.apk"
 rm "glibc-${GLIBC_VERSION}.apk"
