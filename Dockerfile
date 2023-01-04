@@ -398,6 +398,7 @@ ARG PSSA_VERSION='1.21.0'
 ################
 # Set ENV vars #
 ################
+ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 

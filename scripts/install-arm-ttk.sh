@@ -15,5 +15,7 @@ curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   "${url}" | tar -xz -C /usr/lib/microsoft
-chmod a+x /usr/lib/microsoft/*/arm-ttk/arm-ttk.psd1
-ln -sTf /usr/lib/microsoft/*/arm-ttk/arm-ttk.psd1 /usr/bin/arm-ttk
+mv /usr/lib/microsoft/Azure-arm-ttk-*/arm-ttk /usr/lib/microsoft/arm-ttk
+rm -rf /usr/lib/microsoft/Azure-arm-ttk-*
+chmod a+x /usr/lib/microsoft/arm-ttk/arm-ttk.psd1
+ln -sTf /usr/lib/microsoft/arm-ttk/arm-ttk.psd1 /usr/bin/arm-ttk
