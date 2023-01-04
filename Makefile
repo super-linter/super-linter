@@ -111,7 +111,6 @@ docker:
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
 		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
-		--build-arg GITHUB_TOKEN="${GITHUB_PAT}" \
 		-t ghcr.io/github/super-linter .
 
 .phony: docker-buildx
@@ -121,5 +120,5 @@ docker-buildx:
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
 		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
-		--build-arg GITHUB_TOKEN="${GITHUB_PAT}" \
+		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
 		-t ghcr.io/github/super-linter .
