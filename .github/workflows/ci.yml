@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-20.04-8core-sl
     permissions:
         contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
