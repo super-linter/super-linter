@@ -801,12 +801,13 @@ UpdateLoopsForImage() {
 }
 ################################################################################
 #### Function Cleanup ##########################################################
+# shellcheck disable=SC2317
 cleanup() {
   local -ri EXIT_CODE=$?
 
   sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/${LOG_FILE}" || true
 
-  exit ${EXIT_CODE}
+  exit "${EXIT_CODE}"
   trap - 0 1 2 3 6 14 15
 }
 trap 'cleanup' 0 1 2 3 6 14 15
