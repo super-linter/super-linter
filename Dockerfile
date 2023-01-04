@@ -37,7 +37,6 @@ ARG CHECKSTYLE_VERSION='10.3.4'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
-ARG GITHUB_TOKEN
 ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
@@ -228,7 +227,6 @@ FROM alpine:3.17.0 as final_slim
 ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
-ARG GITHUB_TOKEN
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 
