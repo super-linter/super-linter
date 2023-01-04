@@ -50,7 +50,7 @@ jobs:
       - name: Get current release identifier
         # shellcheck disable=SC2062
         run: |
-          RELESE_VERSION="${{ github.event.release.name }}"
+          RELEASE_VERSION="${{ github.event.release.name }}"
 
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "No release version found in environment, using input..."
@@ -69,7 +69,7 @@ jobs:
           fi
 
           {
-            echo "RELEASE_VERSION=${RELESE_VERSION}"
+            echo "RELEASE_VERSION=${RELEASE_VERSION}"
             echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
             echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
             echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
