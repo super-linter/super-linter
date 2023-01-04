@@ -10,8 +10,10 @@ url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   https://api.github.com/repos/Azure/arm-ttk/releases/latest | jq -r '.tarball_url')
+mkdir -p /usr/lib/microsoft
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   "${url}" | tar -xz -C /usr/lib/microsoft
-ln -sTf /usr/lib/microsoft/arm-ttk-master/arm-ttk/arm-ttk.psd1 /usr/bin/arm-ttk
+chmod a+x /usr/lib/microsoft/*/arm-ttk/arm-ttk.psd1
+ln -sTf /usr/lib/microsoft/*/arm-ttk/arm-ttk.psd1 /usr/bin/arm-ttk
