@@ -40,7 +40,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          load: false
+          load: true
           push: false
           tags: ghcr.io/github/super-linter:${{ matrix.images.target }}
           target: "${{ matrix.images.target }}"
