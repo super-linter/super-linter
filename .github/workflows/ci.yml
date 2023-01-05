@@ -42,6 +42,8 @@ jobs:
             BUILD_VERSION=${{ github.sha }}
           load: true
           push: false
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: ghcr.io/github/super-linter:${{ matrix.images.target }}
           target: "${{ matrix.images.target }}"
 
