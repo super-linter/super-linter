@@ -93,11 +93,11 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **Rust**                                | [Rustfmt](https://github.com/rust-lang/rustfmt) / [Clippy](https://github.com/rust-lang/rust-clippy)                                                                          |
 | **Scala**                               | [scalafmt](https://github.com/scalameta/scalafmt)                                                                                                                             |
 | **Secrets**                             | [GitLeaks](https://github.com/zricethezav/gitleaks)                                                                                                                           |
-| **Shell**                               | [ShellCheck](https://github.com/koalaman/shellcheck) / [executable bit check] / [shfmt](https://github.com/mvdan/sh)                                                          |
+| **Shell**                               | [ShellCheck](https://github.com/koalaman/shellcheck) / `executable bit check` / [shfmt](https://github.com/mvdan/sh)                                                          |
 | **Snakemake**                           | [snakefmt](https://github.com/snakemake/snakefmt/) / [snakemake --lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)         |
 | **SQL**                                 | [sql-lint](https://github.com/joereynolds/sql-lint) / [sqlfluff](https://github.com/sqlfluff/sqlfluff)                                                                        |
 | **Tekton**                              | [tekton-lint](https://github.com/IBM/tekton-lint)                                                                                                                             |
-| **Terraform**                           | [fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) / [tflint](https://github.com/terraform-linters/tflint) / [terrascan](https://github.com/accurics/terrascan)                                                                    |
+| **Terraform**                           | [fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) / [tflint](https://github.com/terraform-linters/tflint) / [terrascan](https://github.com/accurics/terrascan)|
 | **Terragrunt**                          | [terragrunt](https://github.com/gruntwork-io/terragrunt)                                                                                                                      |
 | **TypeScript**                          | [ESLint](https://eslint.org/) / [standard js](https://standardjs.com/)                                                                                                        |
 | **XML**                                 | [LibXML](http://xmlsoft.org/)                                                                                                                                                 |
@@ -123,7 +123,7 @@ To use this **GitHub** Action you will need to complete the following:
 In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
 
 - `.github/workflows/linter.yml`
-  - Example file can be found at [`TEMPLATES/linter.yml`](/TEMPLATES/linter.yml)
+  - Example file can be found at [`TEMPLATES/linter.yml`](TEMPLATES/linter.yml)
 
 This file should have the following code:
 
@@ -273,6 +273,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ACTIONS_RUNNER_DEBUG**              | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
 | **ANSIBLE_CONFIG_FILE**               | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible-lint.readthedocs.io/en/latest/configuring.html#configuration-file) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                              |
 | **ANSIBLE_DIRECTORY**                 | `/ansible`                      | Flag to set the root directory for Ansible file location(s), relative to `DEFAULT_WORKSPACE`. Set to `.` to use the top-level of the `DEFAULT_WORKSPACE`.                                                            |
+| **CREATE_LOG_FILE**                   | `false`                         | If set to `true`, it creates the log file. You can set the log file name using the `LOG_FILE` environment variable.                                                                                                  |
 | **CSS_FILE_NAME**                     | `.stylelintrc.json`             | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                         |
 | **DEFAULT_BRANCH**                    | `master`                        | The name of the repository default branch.                                                                                                                                                                           |
 | **DEFAULT_WORKSPACE**                 | `/tmp/lint`                     | The location containing files to lint if you are running locally.                                                                                                                                                    |

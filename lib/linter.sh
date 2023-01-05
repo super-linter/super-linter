@@ -20,6 +20,8 @@ IMAGE="${IMAGE:-standard}"                            # Version of the Super-lin
 ##################################################################
 LOG_FILE="${LOG_FILE:-super-linter.log}" # Default log file name (located in GITHUB_WORKSPACE folder)
 LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"        # Default log level (VERBOSE, DEBUG, TRACE)
+CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
+export CREATE_LOG_FILE
 
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
 # Boolean to see trace logs
@@ -800,18 +802,24 @@ UpdateLoopsForImage() {
     done
   fi
 }
-################################################################################
-#### Function Cleanup ##########################################################
+
 # shellcheck disable=SC2317
 cleanup() {
   local -ri EXIT_CODE=$?
-
-  sh -c "cat ${LOG_TEMP} >> ${GITHUB_WORKSPACE}/${LOG_FILE}" || true
+  local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
+  debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}, LOG_FILE_PATH: ${LOG_FILE_PATH}"
+  if [ "${CREATE_LOG_FILE}" = "true" ]; then
+    debug "Creating log file: ${LOG_FILE_PATH}"
+    sh -c "cat ${LOG_TEMP} >> ${LOG_FILE_PATH}" || true
+  else
+    debug "Skipping the log file creation"
+  fi
 
   exit "${EXIT_CODE}"
   trap - 0 1 2 3 6 14 15
 }
 trap 'cleanup' 0 1 2 3 6 14 15
+
 ################################################################################
 ############################### MAIN ###########################################
 ################################################################################
