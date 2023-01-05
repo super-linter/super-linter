@@ -438,8 +438,10 @@ function BuildFileList() {
     ########################
     # Get the GROOVY files #
     ########################
+    # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
-      [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ]; then
+      [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ] ||
+      [[ "$BASE_FILE" =~ .*jenkinsfile.* ]]; then
       ################################
       # Append the file to the array #
       ################################
