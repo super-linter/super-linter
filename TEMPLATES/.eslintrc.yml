@@ -20,6 +20,10 @@ globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
 
+ignorePatterns:
+  - "!.*"
+  - "**/node_modules/.*"
+
 ###############
 # Parser vars #
 ###############
