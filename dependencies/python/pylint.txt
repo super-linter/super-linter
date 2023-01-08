@@ -1,10 +1,11 @@
-astroid==2.12.13
+astroid==2.13.2
 dill==0.3.6
 isort==5.11.4
-lazy-object-proxy==1.8.0
+lazy-object-proxy==1.9.0
 mccabe==0.7.0
 platformdirs==2.6.2
 pylint==2.15.9
 tomli==2.0.1
 tomlkit==0.11.6
+typing_extensions==4.4.0
 wrapt==1.14.1
