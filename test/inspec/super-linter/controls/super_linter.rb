@@ -68,7 +68,7 @@ control "super-linter-installed-packages" do
   )
 
   packages.each do |item|
-    if(image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
       next
     else
       describe package(item) do
@@ -171,10 +171,10 @@ control "super-linter-installed-commands" do
     # command because the vast majority of linters have name == command
     linter_command = ""
 
-    if(image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
       next
     else
-      if(linter.key?(:linter_command))
+      if (linter.key?(:linter_command))
         linter_command = linter[:linter_command]
       else
         linter_command = linter[:linter_name]
@@ -185,12 +185,12 @@ control "super-linter-installed-commands" do
       end
 
       # A few linters have a command that it's different than linter_command
-      if(linter.key?(:version_command))
+      if (linter.key?(:version_command))
         version_command = linter[:version_command]
       else
         # Check if the linter needs an option that is different from the one that
         # the vast majority of linters use to get the version
-        if(linter.key?(:version_option))
+        if (linter.key?(:version_option))
           version_option = linter[:version_option]
         else
           version_option = default_version_option
@@ -198,13 +198,13 @@ control "super-linter-installed-commands" do
 
         version_command = "#{linter_command} #{version_option}"
 
-        if(linter.key?(:expected_exit_status))
+        if (linter.key?(:expected_exit_status))
           expected_exit_status = linter[:expected_exit_status]
         else
           expected_exit_status = default_version_expected_exit_status
         end
 
-        if(linter.key?(:expected_stdout_regex))
+        if (linter.key?(:expected_stdout_regex))
           expected_stdout_regex = linter[:expected_stdout_regex]
         else
           expected_stdout_regex = default_expected_stdout_regex
@@ -332,7 +332,7 @@ control "super-linter-validate-directories" do
   )
 
   dirs.each do |item|
-    if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
       next
     else
       describe directory(item) do
@@ -421,7 +421,7 @@ control "super-linter-validate-powershell-modules" do
   title "Super-Linter validate Powershell Modules"
   desc "Check that Powershell modules that Super-Linter needs are installed."
 
-  if(image == "slim")
+  if (image == "slim")
     next
   else
     describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
