@@ -75,24 +75,26 @@ BuildLinterVersions() {
       elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]] || [[ ${LINTER} == "asl-validator" ]]; then
         # Need specific command for Protolint and editorconfig-checker
         GET_VERSION_CMD="$(echo "--version not supported")"
+      elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
+        GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
+      elif [[ ${LINTER} == "clippy" ]]; then
+        GET_VERSION_CMD="$(cargo-clippy --version 2>&1)"
+      elif [[ ${LINTER} == "editorconfig-checker" ]]; then
+        GET_VERSION_CMD="$(${LINTER} -version)"
+      elif [[ ${LINTER} == "kubeconform" ]]; then
+        GET_VERSION_CMD="$(${LINTER} -v)"
       elif [[ ${LINTER} == "lintr" ]]; then
         # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
         GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \
                     lintr_ver <- packageVersion('lintr'); \
                     glue::glue('lintr { lintr_ver } on { r_ver }')")"
+      elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "gitleaks" ]]; then
+        GET_VERSION_CMD="$(${LINTER} version)"
       elif [[ ${LINTER} == "lua" ]]; then
         # Semi standardversion command
         GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
       elif [[ ${LINTER} == "terrascan" ]]; then
         GET_VERSION_CMD="$("${LINTER}" version 2>&1)"
-      elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
-        GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
-      elif [[ ${LINTER} == "clippy" ]]; then
-        GET_VERSION_CMD="$(cargo-clippy --version 2>&1)"
-      elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "gitleaks" ]]; then
-        GET_VERSION_CMD="$(${LINTER} version)"
-      elif [[ ${LINTER} == "editorconfig-checker" ]]; then
-        GET_VERSION_CMD="$(${LINTER} -version)"
       else
         # Standard version command
         GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
