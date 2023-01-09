@@ -14,6 +14,7 @@ FROM cljkondo/clj-kondo:2023.01.12-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.44.1.0 as tflint
+FROM ghcr.io/yannh/kubeconform:v0.5.0 as kubeconfrm
 FROM golangci/golangci-lint:v1.50.1 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.3.7 as terraform
@@ -182,6 +183,11 @@ COPY --from=scalafmt /bin/scalafmt /usr/bin/
 ######################
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
+######################
+# Install kubeconform #
+######################
+COPY --from=kubeconfrm /kubeconform /usr/bin/
+
 #################
 # Install Lintr #
 #################
@@ -192,11 +198,11 @@ RUN /install-lintr.sh && rm -rf /install-lintr.sh
 # Store the key here because the above host is sometimes down, and breaks our builds
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
-###################
-# Install Kubeconform #
-###################
-COPY scripts/install-kubeval.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-kubeval.sh && rm -rf /install-kubeval.sh
+##################
+# Install ktlint #
+##################
+COPY scripts/install-ktlint.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 
 #################################################
 # Install Raku and additional Edge dependencies #
