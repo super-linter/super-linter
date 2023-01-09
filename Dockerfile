@@ -18,7 +18,7 @@ FROM golangci/golangci-lint:v1.50.1 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.3.6 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mcr.microsoft.com/powershell:7.3-alpine-3.15
+FROM mcr.microsoft.com/powershell:7.3-alpine-3.15 as powershell
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.6.0 as shfmt
 FROM rhysd/actionlint:1.6.22 as actionlint
