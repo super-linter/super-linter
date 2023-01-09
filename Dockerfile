@@ -18,6 +18,7 @@ FROM golangci/golangci-lint:v1.50.1 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.3.6 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
+FROM mcr.microsoft.com/powershell:7.3-alpine-3.15
 FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.6.0 as shfmt
 FROM rhysd/actionlint:1.6.22 as actionlint
@@ -41,10 +42,8 @@ ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
-# PowerShell & PSScriptAnalyzer linter
+# PSScriptAnalyzer linter
 ARG PSSA_VERSION='1.21.0'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PWSH_VERSION='v7.3.1'
 # Kubeval Version
 ARG KUBEVAL_VERSION='v0.16.1'
 
@@ -183,6 +182,11 @@ COPY --from=scalafmt /bin/scalafmt /usr/bin/
 # Install actionlint #
 ######################
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
+
+######################
+# Install powershell #
+######################
+COPY --from=powershell /usr/bin/pwsh /usr/bin/
 
 #################
 # Install Lintr #
@@ -355,8 +359,6 @@ FROM slim as standard
 # Set up args #
 ###############
 ARG GITHUB_TOKEN
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
 
 ################
@@ -384,11 +386,10 @@ ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 COPY scripts/install-rustfmt.sh /
 RUN /install-rustfmt.sh && rm -rf /install-rustfmt.sh
 
-#########################################
-# Install Powershell + PSScriptAnalyzer #
-#########################################
-COPY scripts/install-pwsh.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh.sh
+############################
+# Install PSScriptAnalyzer #
+############################
+RUN pwsh -c "Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force"
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
