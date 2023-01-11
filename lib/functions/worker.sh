@@ -385,7 +385,7 @@ function LintCodebase() {
 
   if [ "${TEST_CASE_RUN}" = "true" ]; then
 
-    debug "The test suite for has ${INDEX} test, of which ${BAD_TEST_CASES_COUNT} 'bad' (supposed to fail), ${GOOD_TEST_CASES_COUNT} 'good' (supposed to pass)."
+    debug "The ${LINTER_NAME} (linter: ${LINTER_NAME}) test suite has ${INDEX} test, of which ${BAD_TEST_CASES_COUNT} 'bad' (supposed to fail), ${GOOD_TEST_CASES_COUNT} 'good' (supposed to pass)."
 
     # Check if we ran at least one test
     if [ "${INDEX}" -eq 0 ]; then
@@ -396,7 +396,7 @@ function LintCodebase() {
     # Check if we ran 'bad' tests
     if [ "${BAD_TEST_CASES_COUNT}" -eq 0 ]; then
       if [ "${FILE_TYPE}" = "ANSIBLE" ]; then
-        debug "There are no 'bad' tests for Ansible, but it's a corner case that we allow because it's supposed to lint entire directories and the test suite doesn't support this corner case for 'bad' tests yet."
+        debug "There are no 'bad' tests for ${FILE_TYPE}, but it's a corner case that we allow because ${LINTER_NAME} is supposed to lint entire directories and the test suite doesn't support this corner case for 'bad' tests yet."
       else
         error "Failed to find any tests that are expected to fail for the Linter:[${LINTER_NAME}]!"
         fatal "Validate logic and that tests that are expected to fail exist for linter: ${LINTER_NAME}"
