@@ -39,6 +39,10 @@ function LintCodebase() {
   SKIP_FLAG=0
   INDEX=0
 
+  # We use these flags to check how many "bad" and "good" test cases we ran
+  BAD_TEST_CASES_COUNT=0
+  GOOD_TEST_CASES_COUNT=0
+
   ############################################################
   # Check to see if we need to go through array or all files #
   ############################################################
@@ -300,6 +304,9 @@ function LintCodebase() {
       # Check for if it was supposed to pass #
       ########################################
       if [[ ${FILE_STATUS} == "good" ]]; then
+        # Increase the good test cases count
+        (("GOOD_TEST_CASES_COUNT++"))
+
         ##############################
         # Check the shell for errors #
         ##############################
@@ -333,6 +340,10 @@ function LintCodebase() {
         #######################################
         # File status = bad, this should fail #
         #######################################
+
+        # Increase the bad test cases count
+        (("BAD_TEST_CASES_COUNT++"))
+
         ##############################
         # Check the shell for errors #
         ##############################
@@ -372,14 +383,30 @@ function LintCodebase() {
     )
   done
 
-  ##############################
-  # Validate we ran some tests #
-  ##############################
-  if [ "${TEST_CASE_RUN}" = "true" ] && [ "${INDEX}" -eq 0 ]; then
-    #################################################
-    # We failed to find files and no tests were ran #
-    #################################################
-    error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
-    fatal "Validate logic and that tests exist for linter: ${LINTER_NAME}"
+  if [ "${TEST_CASE_RUN}" = "true" ]; then
+
+    debug "The test suite for has ${INDEX} test, of which ${BAD_TEST_CASES_COUNT} 'bad' (supposed to fail), ${GOOD_TEST_CASES_COUNT} 'good' (supposed to pass)."
+
+    # Check if we ran at least one test
+    if [ "${INDEX}" -eq 0 ]; then
+      error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
+      fatal "Validate logic and that tests exist for linter: ${LINTER_NAME}"
+    fi
+
+    # Check if we ran 'bad' tests
+    if [ "${BAD_TEST_CASES_COUNT}" -eq 0 ]; then
+      if [ "${FILE_TYPE}" = "ANSIBLE" ]; then
+        debug "There are no 'bad' tests for Ansible, but it's a corner case that we allow because it's supposed to lint entire directories and the test suite doesn't support this corner case for 'bad' tests yet."
+      else
+        error "Failed to find any tests that are expected to fail for the Linter:[${LINTER_NAME}]!"
+        fatal "Validate logic and that tests that are expected to fail exist for linter: ${LINTER_NAME}"
+      fi
+    fi
+
+    # Check if we ran 'good' tests
+    if [ "${GOOD_TEST_CASES_COUNT}" -eq 0 ]; then
+      error "Failed to find any tests that are expected to pass for the Linter:[${LINTER_NAME}]!"
+      fatal "Validate logic and that tests that are expected to pass exist for linter: ${LINTER_NAME}"
+    fi
   fi
 }
