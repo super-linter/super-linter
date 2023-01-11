@@ -149,6 +149,7 @@ control "super-linter-installed-commands" do
     { linter_name: "standard"},
     { linter_name: "stylelint"},
     { linter_name: "tekton-lint"},
+    { linter_name: "terraform_fmt", version_command: "terraform fmt --version"}
     { linter_name: "terragrunt"},
     { linter_name: "terrascan", version_option: "version"},
     { linter_name: "tflint"},
