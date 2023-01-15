@@ -3,6 +3,7 @@
     "comments": true
   },
   "rules": {
-    "terminology": true
+    "terminology": true,
+    "write-good": true
   }
 }
