@@ -491,10 +491,9 @@ function RunAdditionalInstalls() {
       ##############################
       # Check the shell for errors #
       ##############################
+      debug "INSTALL_CMD:[${INSTALL_CMD}]"
       if [ "${ERROR_CODE}" -ne 0 ]; then
-        # Error
-        warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
-        warn "INSTALL_CMD:[${INSTALL_CMD}]"
+        fatal "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
       fi
     fi
   fi
