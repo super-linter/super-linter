@@ -4,17 +4,17 @@ This folder holds the test cases for **natural language**.
 
 ## Additional Docs
 
-No Additional information is needed for this test case.
+This test case does not need any extra information.
 
 ## Good Test Cases
 
-The test cases denoted: `LANGUAGE_good_FILE.EXTENSION` are all valid, and should pass successfully when linted.
+The test cases denoted: `LANGUAGE_good_FILE.EXTENSION` are all valid, and should pass when linted.
 
-- **Note:** They are linted utilizing the default linter rules.
+- **Note:** They feed the linter utilizing the default rules.
 
 ## Bad Test Cases
 
 The test cases denoted: `LANGUAGE_bad_FILE.EXTENSION` are **NOT** valid, and should trigger errors when linted.
 
-- **Note:** They are linted utilizing the default linter rules.
-{"mode":"full","isActive":false}
+- **Note:** They feed the linter utilizing the default rules.
+  {"mode":"full","isActive":false}

@@ -1,2 +1,2 @@
-My **Javascript** is good
-Write change logs about source-maps
+My **JavaScript** is good
+Write changelogs about source maps
