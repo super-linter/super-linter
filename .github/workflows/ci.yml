@@ -1,0 +1,93 @@
+name: Build and Test
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-20.04-8core-sl
+    permissions:
+        contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.images.target }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        images:
+          - target: slim
+          - target: standard
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Update action.yml
+        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${{ matrix.images.target }}"' -i action.yml
+
+      - name: Retrieve Datetime
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
+
+      - name: Build Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          load: true
+          push: false
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          tags: ghcr.io/github/super-linter:${{ matrix.images.target }}
+          target: "${{ matrix.images.target }}"
+
+      - name: Test Local Action
+        uses: ./
+        env:
+          ACTIONS_RUNNER_DEBUG: true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          LOCAL_UPDATES: true
+
+      - name: Run Test Suite
+        run: make IMAGE=${{ matrix.images.target }} test
+
+      - name: Upload Code Coverage Report
+        uses: codacy/codacy-coverage-reporter-action@v1
+        continue-on-error: true
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
+
+      - name: Run Super-Linter Tests
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e TEST_CASE_RUN=true \
+          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${tag}"
+        env:
+          tag: ${{ matrix.images.target }}
+
+      - name: Lint Entire Codebase
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e OUTPUT_DETAILS=detailed \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "ghcr.io/github/super-linter:${tag}"
+        env:
+          tag: ${{ matrix.images.target }}

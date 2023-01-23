@@ -573,7 +573,7 @@ FindBuiltImage() {
   ###############################
   # Check if we found the image #
   ###############################
-  if [ ${FOUND_MAJOR} -eq 1 ] && [ ${FOUND_RELASE} -eq 1 ]; then
+  if [ "${FOUND_MAJOR}" -eq 1 ] && [ "${FOUND_RELASE}" -eq 1 ]; then
     FOUND_IMAGE=1
   fi
 }
