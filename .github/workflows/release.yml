@@ -76,7 +76,7 @@ jobs:
           } >> "${GITHUB_ENV}"
 
       - name: Start ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
@@ -112,7 +112,7 @@ jobs:
           git push --force origin "refs/tags/${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "refs/tags/latest"
 
       - name: Update ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         if: always()
         with:
           step: finish
