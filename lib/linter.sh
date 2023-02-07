@@ -654,6 +654,8 @@ CallStatusAPI() {
 
     debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
 
+    GITHUB_DOMAIN=$(echo $GITHUB_DOMAIN | sed 's~http[s]*://~~g')
+
     ##############################################
     # Call the status API to create status check #
     ##############################################
