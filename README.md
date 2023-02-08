@@ -519,6 +519,8 @@ echo "@generated" # @not-generated
 
 The **Docker** container that is built from this repository is located at [github/super-linter](https://hub.docker.com/r/github/super-linter)
 
+If you would like to use your own container registry instead, please set the `image` input attribute when calling the action.
+
 ## Run Super-Linter outside GitHub Actions
 
 ### Local (troubleshooting/debugging/enhancements)
