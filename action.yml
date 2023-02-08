@@ -2,9 +2,13 @@
 name: 'Super-Linter'
 author: 'GitHub'
 description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
+inputs:
+  image:
+    description: 'Docker image to run the super-linter. If you are internally hosting this, use the link to your internal container registry.'
+    default: 'docker://ghcr.io/github/super-linter:v4.10.1'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/github/super-linter:v4.10.1'
+  image: ${{ inputs.image }}
 branding:
   icon: 'check-square'
   color: 'white'
