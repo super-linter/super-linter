@@ -17,9 +17,9 @@ GEM
       ast (~> 2.4.1)
     rack (3.0.3)
     rainbow (3.1.1)
-    regexp_parser (2.6.2)
+    regexp_parser (2.7.0)
     rexml (3.2.5)
-    rubocop (1.44.0)
+    rubocop (1.45.1)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.2.0.0)
@@ -60,7 +60,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rubocop (~> 1.44.0)
+  rubocop (~> 1.45.1)
   rubocop-github (~> 0.20.0)
   rubocop-minitest (~> 0.26.1)
   rubocop-performance (~> 1.15.2)
