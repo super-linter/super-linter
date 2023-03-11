@@ -92,16 +92,12 @@ RUN apk add --no-cache \
 ########################################
 COPY dependencies/* /
 
-#############################
-# Install Dependencies #
-#############################
-RUN npm install && bundle install
-
-############################################################
-# Fix broken permissions in ast-types-flow dependency      #
-# Fixes https://github.com/github/super-linter/issues/3901 #
-############################################################
-RUN chown -R "$(id -u)":"$(id -g)" node_modules
+###################################################################
+# Install Dependencies                                            #
+# The chown fixes broken uid/gid in ast-types-flow dependency     #
+# (see https://github.com/github/super-linter/issues/3901)        #
+###################################################################
+RUN npm install && chown -R "$(id -u)":"$(id -g)" node_modules && bundle install
 
 ##############################
 # Installs Perl dependencies #
