@@ -97,6 +97,12 @@ COPY dependencies/* /
 #############################
 RUN npm install && bundle install
 
+############################################################
+# Fix broken permissions in ast-types-flow dependency      #
+# Fixes https://github.com/github/super-linter/issues/3901 #
+############################################################
+RUN chown -R "$(id -u)":"$(id -g)" node_modules
+
 ##############################
 # Installs Perl dependencies #
 ##############################
