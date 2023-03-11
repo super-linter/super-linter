@@ -892,7 +892,12 @@ GetStandardRules "typescript"
 declare -A LINTER_COMMANDS_ARRAY
 LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -c ${ANSIBLE_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
-LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
+if [ -z "${BASH_SEVERITY}" ]
+then
+  LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
+else
+  LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources --severity=${BASH_SEVERITY}"
+fi
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
 LINTER_COMMANDS_ARRAY['CLANG_FORMAT']="clang-format --Werror --dry-run"
 LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
