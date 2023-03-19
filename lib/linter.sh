@@ -623,7 +623,7 @@ CallStatusAPI() {
   ####################
   # Pull in the vars #
   ####################
-  LANGUAGE="${1}" # langauge that was validated
+  LANGUAGE="${1}" # language that was validated
   STATUS="${2}"   # success | error
   SUCCESS_MSG='No errors were found in the linting process'
   FAIL_MSG='Errors were detected, please view logs'
@@ -726,7 +726,7 @@ Footer() {
       #########################################
       CallStatusAPI "${LANGUAGE}" "error"
       ######################################
-      # Check if we validated the langauge #
+      # Check if we validated the language #
       ######################################
     elif [[ ${!ERROR_COUNTER} -eq 0 ]]; then
       if CheckInArray "${LANGUAGE}"; then
