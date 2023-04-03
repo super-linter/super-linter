@@ -7,7 +7,7 @@ connection-pool==0.0.3
 datrie==0.8.2
 docutils==0.19
 dpath==2.1.4
-fastjsonschema==2.16.2
+fastjsonschema==2.16.3
 gitdb==4.0.10
 GitPython==3.1.30
 humanfriendly==10.0
