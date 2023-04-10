@@ -1,5 +1,13 @@
 ---
 - name: GHE Initial configuration
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - github
+    - ghe_primary
+    - initialize
+
   block:
   ###############################
   # Wait for admin port to open #
@@ -78,11 +86,3 @@
   - name: Set the GitHub Admin password fact
     ansible.builtin.set_fact:
       github_admin_password: "{{ github_admin_password }}"
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - github
-    - ghe_primary
-    - initialize

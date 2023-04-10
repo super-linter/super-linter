@@ -2,17 +2,6 @@
 
 set -euo pipefail
 
-url=$(curl -s \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "https://api.github.com/repos/instrumenta/kubeval/releases/tags/${KUBEVAL_VERSION}" |
-  jq -r '.assets | .[] | select(.name | contains("linux-amd")) | .url')
-curl --retry 5 --retry-delay 5 -sL \
-  -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "${url}" | tar -xz
-mv kubeval /usr/local/bin
-
 ##################
 # Install ktlint #
 ##################
