@@ -1,5 +1,13 @@
 ---
 - name: Splunk settings
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - splunk
+    - github
+    - ghe_primary
+    - initialize
   block:
   ###############################
   # Wait for admin port to open #
@@ -57,12 +65,3 @@
     register: http_splunk_config_result
     until: http_splunk_config_result.rc == 0
     notify: ghe config apply
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - splunk
-    - github
-    - ghe_primary
-    - initialize
