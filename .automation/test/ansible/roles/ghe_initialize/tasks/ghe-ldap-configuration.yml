@@ -1,5 +1,10 @@
 ---
 - name: GHE LDAP configuration
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - openldap
   block:
   #######################################################
   # Copy License file to GHE to decrypt file and upload #
@@ -24,9 +29,3 @@
     delay: 2
     register: http_ldapconfig_result
     until: http_ldapconfig_result.rc == 0
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - openldap
