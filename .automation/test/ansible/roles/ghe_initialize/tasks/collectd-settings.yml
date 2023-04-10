@@ -1,5 +1,14 @@
 ---
 - name: Wait for admin port to open
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - metrics
+    - github
+    - ghe_primary
+    - initialize
+
   block:
   - name: Wait for Admin port to come up (Port 8443)
     ## Doc: http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
@@ -77,12 +86,3 @@
     ansible.builtin.service:
       name: collectd
       state: restarted
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - metrics
-    - github
-    - ghe_primary
-    - initialize
