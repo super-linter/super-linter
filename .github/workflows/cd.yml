@@ -67,7 +67,6 @@ jobs:
             BUILD_VERSION=${{ github.sha }}
           load: false
           push: true
-          platforms: linux/amd64,linux/arm64
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
