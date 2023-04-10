@@ -9,7 +9,7 @@ type FooType struct {
 	Var *string `validate:"alphanum"`
 }
 
-func post(c echo.Context) (err error) {
+func post(echo.Context) (err error) {
 	validate := validator.New()
 
 	if err = validate.Struct(FooType{Var: nil}); err != nil {
