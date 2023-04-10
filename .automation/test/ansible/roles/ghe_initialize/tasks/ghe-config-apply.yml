@@ -1,5 +1,13 @@
 ---
 - name: GHE Config apply
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - github
+    - ghe_primary
+    - initialize
+
   block:
   ########################################
   # Copy the script to the local machine #
@@ -23,11 +31,3 @@
     poll: 0
     args:
       executable: "/bin/bash"
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - github
-    - ghe_primary
-    - initialize

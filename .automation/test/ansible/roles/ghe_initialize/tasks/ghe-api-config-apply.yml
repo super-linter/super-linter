@@ -1,5 +1,12 @@
 ---
 - name: GHE API Configuration
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - github
+    - ghe_primary
+    - initialize
   block:
   # ##################################
   # # Run config to take in settings #
@@ -59,11 +66,3 @@
       - "/tmp/ghe-license.ghl"
       - "/tmp/settings.json"
       - "/tmp/ldap-settings.json"
-
-  ######################
-  # Set the tags block #
-  ######################
-  tags:
-    - github
-    - ghe_primary
-    - initialize
