@@ -1,5 +1,6 @@
 ---
-- hosts: github_primary
+- name: Configure the GHE Instance
+  hosts: github_primary
   vars:
     demo_github_initial_user: "{{ hostvars['localhost'].local_user }}"
     github_host: "{{ hostvars['github_primary'].ansible_host }}"
