@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
@@ -67,6 +67,7 @@ jobs:
             BUILD_VERSION=${{ github.sha }}
           load: false
           push: true
+          platforms: linux/amd64,linux/arm64
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
@@ -75,7 +76,7 @@ jobs:
           target: "${{ matrix.images.target }}"
 
       - name: Update ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         if: always()
         with:
           step: finish

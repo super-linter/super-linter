@@ -821,7 +821,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
+        FILE_ARRAY_KUBERNETES_KUBECONFORM+=("${FILE}")
       fi
     ########################################################################
     # We have something that we need to try to check file type another way #
