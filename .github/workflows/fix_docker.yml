@@ -12,15 +12,15 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Reload Docker
         run: |
-          docker pull github/super-linter:v.5.0.0
+          docker pull github/super-linter:v5.0.0
           docker pull github/super-linter:slim-v5.0.0
           docker pull github/super-linter:v4.10.1
           docker pull github/super-linter:slim-v4.10.1
-          docker tag github/super-linter:v.5.0.0 github/super-linter:v.5
+          docker tag github/super-linter:v5.0.0 github/super-linter:v.5
           docker tag github/super-linter:slim-v5.0.0 github/super-linter:slim-v5
           docker tag github/super-linter:v4.10.1 github/super-linter:v4
           docker tag github/super-linter:slim-v4.10.1 github/super-linter:slim-v4
-          docker push github/super-linter:v.5
+          docker push github/super-linter:v5
           docker push github/super-linter:slim-v5
           docker push github/super-linter:v4
           docker push github/super-linter:slim-v4
