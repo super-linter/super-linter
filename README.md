@@ -156,6 +156,14 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
 
+    ############################################
+    # Grant status permission for MULTI_STATUS #
+    ############################################
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     ##################
     # Load all steps #
     ##################
