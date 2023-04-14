@@ -88,12 +88,12 @@ jobs:
       - name: Retag and Push Images
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
+          src: ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            github/super-linter:${{ matrix.images.prefix }}v4
-            github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v4
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
+            denisa/super-linter:${{ matrix.images.prefix }}v4
+            denisa/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
+            ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}v4
+            ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -120,7 +120,7 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
+          env_url: https://github.com/denisa/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
 
       - name: Create Issue on Failure
         if: failure()

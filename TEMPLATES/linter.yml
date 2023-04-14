@@ -49,7 +49,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: denisa/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           # Change to 'master' if your main branch differs

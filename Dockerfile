@@ -225,7 +225,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.17.3 as slim
+FROM alpine:3.17.1 as slim
 
 ############################
 # Get the build arguements #
@@ -248,9 +248,9 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
     org.opencontainers.image.revision=$BUILD_REVISION \
     org.opencontainers.image.version=$BUILD_VERSION \
     org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-    org.opencontainers.image.url="https://github.com/github/super-linter" \
-    org.opencontainers.image.source="https://github.com/github/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.url="https://github.com/denisa/super-linter" \
+    org.opencontainers.image.source="https://github.com/denisa/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/denisa/super-linter" \
     org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="Lint your code base with GitHub Actions"
 

@@ -4,9 +4,9 @@ author: 'GitHub'
 description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/github/super-linter:v5.0.0'
+  image: 'docker://ghcr.io/denisa/super-linter:v4.10.1'
 branding:
   icon: 'check-square'
   color: 'white'
-# You can view https://github.com/github/super-linter#environment-variables
+# You can view https://github.com/denisa/super-linter#environment-variables
 # to see a comprehensive list of all environment variables that can be passed

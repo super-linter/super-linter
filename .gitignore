@@ -76,3 +76,4 @@ super-linter.report
 
 # Test reports
 test/reports
+super-linter.bbprojectd

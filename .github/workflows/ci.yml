@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: Build and Test
-    runs-on: ubuntu-20.04-8core-sl
+    runs-on: ubuntu-latest
     permissions:
         contents: read
     concurrency:
@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       - name: Update action.yml
-        run: yq '.runs.image = "docker://ghcr.io/github/super-linter:${{ matrix.images.target }}"' -i action.yml
+        run: yq '.runs.image = "docker://ghcr.io/denisa/super-linter:${{ matrix.images.target }}"' -i action.yml
 
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
@@ -45,7 +45,7 @@ jobs:
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          tags: ghcr.io/github/super-linter:${{ matrix.images.target }}
+          tags: ghcr.io/denisa/super-linter:${{ matrix.images.target }}
           target: "${{ matrix.images.target }}"
 
       - name: Test Local Action
@@ -77,7 +77,7 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/github/super-linter:${tag}"
+          "ghcr.io/denisa/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.target }}
 
@@ -89,6 +89,6 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/github/super-linter:${tag}"
+          "ghcr.io/denisa/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.target }}
