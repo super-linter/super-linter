@@ -75,16 +75,16 @@ SUPER_LINTER_TEST_CONTINER_URL := ''
 DOCKERFILE := ''
 IMAGE := ''
 ifeq ($(IMAGE),slim)
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:slim"
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/denisa/super-linter:slim"
 	IMAGE := "slim"
 else
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/github/super-linter:standard"
+	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/denisa/super-linter:standard"
 	IMAGE := "standard"
 endif
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
-	LOCAL_IMAGE="$$(docker images $(SUPER_LINTER_TEST_CONTINER_URL) |grep 'ghcr.io/github/super-linter')"; \
+	LOCAL_IMAGE="$$(docker images $(SUPER_LINTER_TEST_CONTINER_URL) |grep 'ghcr.io/denisa/super-linter')"; \
 	if [ "$$?" -ne 0 ]; then docker build -t $(SUPER_LINTER_TEST_CONTINER_URL) -f Dockerfile .; fi && \
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
@@ -112,4 +112,4 @@ docker:
 		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
 		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
-		-t ghcr.io/github/super-linter .
+		-t ghcr.io/denisa/super-linter .
