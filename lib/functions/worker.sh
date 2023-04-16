@@ -21,6 +21,7 @@ function LintCodebase() {
   FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
   FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
   TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
+  EXPR_BATCH_WORKER="${1}" && shift    # Flag for if running in experimental batch worker
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
   ##########################
@@ -84,287 +85,330 @@ function LintCodebase() {
     info "----------------------------------------------"
     info "----------------------------------------------"
 
-    ##################
-    # Lint the files #
-    ##################
-    for FILE in "${LIST_FILES[@]}"; do
-      debug "Linting FILE: ${FILE}"
-      ###################################
-      # Get the file name and directory #
-      ###################################
-      FILE_NAME=$(basename "${FILE}" 2>&1)
-      DIR_NAME=$(dirname "${FILE}" 2>&1)
+    # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+    # if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
+    #   debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
+    #   continue
+    # fi
+    if [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "cfn-lint" ]; then
 
-      ############################
-      # Get the file pass status #
-      ############################
-      # Example: markdown_good_1.md -> good
-      FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
-      # Example: clan_format_good_1.md -> good
-      SECONDARY_STATUS=$(echo "${FILE_NAME}" | cut -f3 -d'_')
+      # batched cfn-lint
+      # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+      # USED_EXPR_BATCH_WORKER="true"
+      LintCodebaseCfnLint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
 
-      ####################################
-      # Catch edge cases of double names #
-      ####################################
-      if [ "${SECONDARY_STATUS}" == 'good' ] || [ "${SECONDARY_STATUS}" == 'bad' ]; then
-        FILE_STATUS="${SECONDARY_STATUS}"
-      fi
+    elif [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "eslint" ]; then
 
-      ###################
-      # Check if docker #
-      ###################
-      if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
-        debug "FILE_TYPE for FILE ${FILE} is related to Docker: ${FILE_TYPE}"
-        if [[ ${FILE} == *"good"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
-          #############
-          # Good file #
-          #############
-          FILE_STATUS='good'
-        elif [[ ${FILE} == *"bad"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
-          ############
-          # Bad file #
-          ############
-          FILE_STATUS='bad'
+      # batched eslint
+      # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+      # USED_EXPR_BATCH_WORKER="true"
+      LintCodebaseEslint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
+
+    else
+      #############################
+      # Lint the files one by one #
+      #############################
+      # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+      # USED_EXPR_BATCH_WORKER="true"
+      for FILE in "${LIST_FILES[@]}"; do
+        debug "Linting FILE: ${FILE}"
+        ###################################
+        # Get the file name and directory #
+        ###################################
+        FILE_NAME=$(basename "${FILE}" 2>&1)
+        DIR_NAME=$(dirname "${FILE}" 2>&1)
+
+        ############################
+        # Get the file pass status #
+        ############################
+        # Example: markdown_good_1.md -> good
+        FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
+        # Example: clan_format_good_1.md -> good
+        SECONDARY_STATUS=$(echo "${FILE_NAME}" | cut -f3 -d'_')
+
+        ####################################
+        # Catch edge cases of double names #
+        ####################################
+        if [ "${SECONDARY_STATUS}" == 'good' ] || [ "${SECONDARY_STATUS}" == 'bad' ]; then
+          FILE_STATUS="${SECONDARY_STATUS}"
         fi
-      fi
 
-      #######################################
-      # Check if Cargo.toml for Rust Clippy #
-      #######################################
-      if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
-        debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
-        if [[ ${FILE} == *"good"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
-          #############
-          # Good file #
-          #############
-          FILE_STATUS='good'
-        elif [[ ${FILE} == *"bad"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
-          ############
-          # Bad file #
-          ############
-          FILE_STATUS='bad'
+        ###################
+        # Check if docker #
+        ###################
+        if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
+          debug "FILE_TYPE for FILE ${FILE} is related to Docker: ${FILE_TYPE}"
+          if [[ ${FILE} == *"good"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+            #############
+            # Good file #
+            #############
+            FILE_STATUS='good'
+          elif [[ ${FILE} == *"bad"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+            ############
+            # Bad file #
+            ############
+            FILE_STATUS='bad'
+          fi
         fi
-      fi
 
-      #########################################################
-      # If not found, assume it should be linted successfully #
-      #########################################################
-      if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
-        debug "FILE_STATUS (${FILE_STATUS}) is empty, or not set to 'good' or 'bad'. Assuming it should be linted correctly. Setting FILE_STATUS to 'good'..."
-        FILE_STATUS="good"
-      fi
-
-      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
-      TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
-      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
-
-      if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
-        # These linters expect files inside a directory, not a directory. So we add a trailing slash
-        TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
-        debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
-      fi
-
-      if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
-        debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
-        continue
-      fi
-
-      ##################################
-      # Increase the linted file index #
-      ##################################
-      (("INDEX++"))
-
-      ##############
-      # File print #
-      ##############
-      info "---------------------------"
-      info "File:[${FILE}]"
-
-      #################################
-      # Add the language to the array #
-      #################################
-      LINTED_LANGUAGES_ARRAY+=("${FILE_TYPE}")
-
-      ####################
-      # Set the base Var #
-      ####################
-      LINT_CMD=''
-
-      #####################
-      # Check for ansible #
-      #####################
-      if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
-        LINT_CMD=$(
-          cd "${ANSIBLE_DIRECTORY}" || exit
-          # Don't pass the file to lint to enable ansible-lint autodetection mode.
-          # See https://ansible-lint.readthedocs.io/usage for details
-          ${LINTER_COMMAND} 2>&1
-        )
-      ####################################
-      # Corner case for pwsh subshell    #
-      #  - PowerShell (PSScriptAnalyzer) #
-      #  - ARM        (arm-ttk)          #
-      ####################################
-      elif [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
-        ################################
-        # Lint the file with the rules #
-        ################################
-        # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} \"${FILE}\"; if (\${Error}.Count) { exit 1 }"
-          exit $? 2>&1
-        )
-      ###############################################################################
-      # Corner case for R as we have to pass it to R                                #
-      ###############################################################################
-      elif [[ ${FILE_TYPE} == "R" ]]; then
         #######################################
-        # Lint the file with the updated path #
+        # Check if Cargo.toml for Rust Clippy #
         #######################################
-        if [ ! -f "${DIR_NAME}/.lintr" ]; then
-          r_dir="${WORKSPACE_PATH}"
-        else
-          r_dir="${DIR_NAME}"
+        if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
+          debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
+          if [[ ${FILE} == *"good"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+            #############
+            # Good file #
+            #############
+            FILE_STATUS='good'
+          elif [[ ${FILE} == *"bad"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+            ############
+            # Bad file #
+            ############
+            FILE_STATUS='bad'
+          fi
         fi
-        LINT_CMD=$(
-          cd "$r_dir" || exit
-          R --slave -e "lints <- lintr::lint('$FILE');print(lints);errors <- purrr::keep(lints, ~ .\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
-        )
-      #########################################################
-      # Corner case for C# as it writes to tty and not stdout #
-      #########################################################
-      elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
-          exit "${PIPESTATUS[0]}"
-        )
-      #######################################################
-      # Corner case for KTLINT as it cant use the full path #
-      #######################################################
-      elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
-        )
-      ############################################################################################
-      # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
-      ############################################################################################
-      elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
-        # Check the cache to see if we've already prepped this directory for tflint
-        if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
-          debug "  Setting up TERRAFORM_TFLINT cache for ${DIR_NAME}"
 
-          TF_DOT_DIR="${DIR_NAME}/.terraform"
-          if [ -d "${TF_DOT_DIR}" ]; then
-            # Just in case there's something in the .terraform folder, keep a copy of it
-            TF_BACKUP_DIR="/tmp/.terraform-tflint-backup${DIR_NAME}"
-            debug "  Backing up ${TF_DOT_DIR} to ${TF_BACKUP_DIR}"
+        #########################################################
+        # If not found, assume it should be linted successfully #
+        #########################################################
+        if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
+          debug "FILE_STATUS (${FILE_STATUS}) is empty, or not set to 'good' or 'bad'. Assuming it should be linted correctly. Setting FILE_STATUS to 'good'..."
+          FILE_STATUS="good"
+        fi
 
-            mkdir -p "${TF_BACKUP_DIR}"
-            cp -r "${TF_DOT_DIR}" "${TF_BACKUP_DIR}"
-            # Store the destination directory so we can restore from our copy later
-            TFLINT_SEEN_DIRS[${DIR_NAME}]="${TF_BACKUP_DIR}"
+        INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
+        TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
+        debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
+
+        if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
+          # These linters expect files inside a directory, not a directory. So we add a trailing slash
+          TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
+          debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
+        fi
+
+        if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
+          debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
+          continue
+        fi
+
+        ##################################
+        # Increase the linted file index #
+        ##################################
+        (("INDEX++"))
+
+        ##############
+        # File print #
+        ##############
+        info "---------------------------"
+        info "File:[${FILE}]"
+
+        #################################
+        # Add the language to the array #
+        #################################
+        LINTED_LANGUAGES_ARRAY+=("${FILE_TYPE}")
+
+        ####################
+        # Set the base Var #
+        ####################
+        LINT_CMD=''
+
+        #####################
+        # Check for ansible #
+        #####################
+        if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
+          debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}, LINTER_COMMAND:${LINTER_COMMAND}, FILE: ${FILE}"
+          LINT_CMD=$(
+            cd "${ANSIBLE_DIRECTORY}" || exit
+            # Don't pass the file to lint to enable ansible-lint autodetection mode.
+            # See https://ansible-lint.readthedocs.io/usage for details
+            ${LINTER_COMMAND} 2>&1
+          )
+        ####################################
+        # Corner case for pwsh subshell    #
+        #  - PowerShell (PSScriptAnalyzer) #
+        #  - ARM        (arm-ttk)          #
+        ####################################
+        elif [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
+          ################################
+          # Lint the file with the rules #
+          ################################
+          # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
+          LINT_CMD=$(
+            cd "${WORKSPACE_PATH}" || exit
+            pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} \"${FILE}\"; if (\${Error}.Count) { exit 1 }"
+            exit $? 2>&1
+          )
+        ###############################################################################
+        # Corner case for R as we have to pass it to R                                #
+        ###############################################################################
+        elif [[ ${FILE_TYPE} == "R" ]]; then
+          #######################################
+          # Lint the file with the updated path #
+          #######################################
+          if [ ! -f "${DIR_NAME}/.lintr" ]; then
+            r_dir="${WORKSPACE_PATH}"
           else
-            # Just let the cache know we've seen this before
-            TFLINT_SEEN_DIRS[${DIR_NAME}]='false'
+            r_dir="${DIR_NAME}"
+          fi
+          LINT_CMD=$(
+            cd "$r_dir" || exit
+            R --slave -e "lints <- lintr::lint('$FILE');print(lints);errors <- purrr::keep(lints, ~ .\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
+          )
+        #########################################################
+        # Corner case for C# as it writes to tty and not stdout #
+        #########################################################
+        elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+          LINT_CMD=$(
+            cd "${DIR_NAME}" || exit
+            ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
+            exit "${PIPESTATUS[0]}"
+          )
+        #######################################################
+        # Corner case for KTLINT as it cant use the full path #
+        #######################################################
+        elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
+          LINT_CMD=$(
+            cd "${DIR_NAME}" || exit
+            ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+          )
+        ############################################################################################
+        # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
+        ############################################################################################
+        elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+          # Check the cache to see if we've already prepped this directory for tflint
+          if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
+            debug "  Setting up TERRAFORM_TFLINT cache for ${DIR_NAME}"
+
+            TF_DOT_DIR="${DIR_NAME}/.terraform"
+            if [ -d "${TF_DOT_DIR}" ]; then
+              # Just in case there's something in the .terraform folder, keep a copy of it
+              TF_BACKUP_DIR="/tmp/.terraform-tflint-backup${DIR_NAME}"
+              debug "  Backing up ${TF_DOT_DIR} to ${TF_BACKUP_DIR}"
+
+              mkdir -p "${TF_BACKUP_DIR}"
+              cp -r "${TF_DOT_DIR}" "${TF_BACKUP_DIR}"
+              # Store the destination directory so we can restore from our copy later
+              TFLINT_SEEN_DIRS[${DIR_NAME}]="${TF_BACKUP_DIR}"
+            else
+              # Just let the cache know we've seen this before
+              TFLINT_SEEN_DIRS[${DIR_NAME}]='false'
+            fi
+
+            (
+              cd "${DIR_NAME}" || exit
+              terraform get >/dev/null
+            )
           fi
 
-          (
+          LINT_CMD=$(
             cd "${DIR_NAME}" || exit
-            terraform get >/dev/null
+            ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+          )
+        else
+          ################################
+          # Lint the file with the rules #
+          ################################
+          LINT_CMD=$(
+            cd "${WORKSPACE_PATH}" || exit
+            ${LINTER_COMMAND} "${FILE}" 2>&1
           )
         fi
+        #######################
+        # Load the error code #
+        #######################
+        ERROR_CODE=$?
 
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
-        )
-      else
-        ################################
-        # Lint the file with the rules #
-        ################################
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
-        )
-      fi
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
+        ########################################
+        # Check for if it was supposed to pass #
+        ########################################
+        if [[ ${FILE_STATUS} == "good" ]]; then
+          # Increase the good test cases count
+          (("GOOD_TEST_CASES_COUNT++"))
 
-      ########################################
-      # Check for if it was supposed to pass #
-      ########################################
-      if [[ ${FILE_STATUS} == "good" ]]; then
-        # Increase the good test cases count
-        (("GOOD_TEST_CASES_COUNT++"))
-
-        ##############################
-        # Check the shell for errors #
-        ##############################
-        if [ ${ERROR_CODE} -ne 0 ]; then
-          debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
-          if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
-            ########
-            # WARN #
-            ########
-            warn "Warnings found in [${LINTER_NAME}] linter!"
-            warn "${LINT_CMD}"
+          ##############################
+          # Check the shell for errors #
+          ##############################
+          if [ ${ERROR_CODE} -ne 0 ]; then
+            debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
+            if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
+              ########
+              # WARN #
+              ########
+              warn "Warnings found in [${LINTER_NAME}] linter!"
+              warn "${LINT_CMD}"
+            else
+              #########
+              # Error #
+              #########
+              error "Found errors in [${LINTER_NAME}] linter!"
+              error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
+              # Increment the error count
+              (("ERRORS_FOUND_${FILE_TYPE}++"))
+            fi
           else
+            ###########
+            # Success #
+            ###########
+            info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
+            if [ -n "${LINT_CMD}" ]; then
+              info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"
+            fi
+          fi
+        else
+          #######################################
+          # File status = bad, this should fail #
+          #######################################
+
+          # Increase the bad test cases count
+          (("BAD_TEST_CASES_COUNT++"))
+
+          ##############################
+          # Check the shell for errors #
+          ##############################
+          if [ ${ERROR_CODE} -eq 0 ]; then
             #########
             # Error #
             #########
             error "Found errors in [${LINTER_NAME}] linter!"
+            error "This file should have failed test case!"
             error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
             # Increment the error count
             (("ERRORS_FOUND_${FILE_TYPE}++"))
-          fi
-        else
-          ###########
-          # Success #
-          ###########
-          info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
-          if [ -n "${LINT_CMD}" ]; then
-            info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"
+          else
+            ###########
+            # Success #
+            ###########
+            info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
           fi
         fi
-      else
-        #######################################
-        # File status = bad, this should fail #
-        #######################################
+        debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
+      done
+    fi
+    # TODO: These code are copied from above to calculate index/good/bad count if using experimental worker
+    # if [ "${USED_EXPR_BATCH_WORKER}" == "true" ]; then
+    #   for FILE in "${LIST_FILES[@]}"; do
+    #     FILE_NAME=$(basename "${FILE}" 2>&1)
 
-        # Increase the bad test cases count
-        (("BAD_TEST_CASES_COUNT++"))
+    #     # Example: markdown_good_1.md -> good
+    #     FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
+    #     # Example: clan_format_good_1.md -> good
+    #     SECONDARY_STATUS=$(echo "${FILE_NAME}" | cut -f3 -d'_')
 
-        ##############################
-        # Check the shell for errors #
-        ##############################
-        if [ ${ERROR_CODE} -eq 0 ]; then
-          #########
-          # Error #
-          #########
-          error "Found errors in [${LINTER_NAME}] linter!"
-          error "This file should have failed test case!"
-          error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-          # Increment the error count
-          (("ERRORS_FOUND_${FILE_TYPE}++"))
-        else
-          ###########
-          # Success #
-          ###########
-          info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
-        fi
-      fi
-      debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-    done
+    #     if [ "${SECONDARY_STATUS}" == 'good' ] || [ "${SECONDARY_STATUS}" == 'bad' ]; then
+    #       FILE_STATUS="${SECONDARY_STATUS}"
+    #     fi
+    #     if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
+    #       debug "FILE_STATUS (${FILE_STATUS}) is empty, or not set to 'good' or 'bad'. Assuming it should be linted correctly. Setting FILE_STATUS to 'good'..."
+    #       FILE_STATUS="good"
+    #     fi
+    #   done
+    #   (("INDEX+=${#FILE_ARRAY[@]}"))
+    # fi
   fi
 
   # Clean up after TFLINT
