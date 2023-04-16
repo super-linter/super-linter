@@ -154,7 +154,7 @@ jobs:
     # Name the Job
     name: Lint Code Base
     # Set the agent to run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     ##################
     # Load all steps #
@@ -459,7 +459,7 @@ jobs:
     # Name the Job
     name: Lint Code Base
     # Set the agent to run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     ##################
     # Load all steps #

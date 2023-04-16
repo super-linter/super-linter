@@ -26,7 +26,7 @@ jobs:
     permissions:
       contents: write  # for release-drafter/release-drafter to create a github release
       pull-requests: write  # for release-drafter/release-drafter to add label to PR
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       # Drafts your next Release notes as Pull Requests are merged into "master"
