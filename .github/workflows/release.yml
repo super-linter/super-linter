@@ -14,7 +14,7 @@ on:
 jobs:
   release:
     name: Release Images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       contents: read
       deployments: write

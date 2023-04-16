@@ -27,7 +27,7 @@ jobs:
     permissions:
       issues: write  # for actions/stale to close stale issues
       pull-requests: write  # for actions/stale to close stale PRs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     # only run on schedule
     if: ${{ github.event_name == 'schedule' }}
     timeout-minutes: 60
@@ -49,7 +49,7 @@ jobs:
   # Mark not stale #
   ##################
   marknotstale:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     # do not run on schedule
     if: "${{ github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot' }}"
     timeout-minutes: 60

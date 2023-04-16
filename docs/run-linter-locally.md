@@ -86,7 +86,7 @@ on:
 jobs:
   lint:
     # Run GH Super-Linter against code base
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - run: cat .github/super-linter.env >> "$GITHUB_ENV"
