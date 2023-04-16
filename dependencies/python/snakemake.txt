@@ -1,5 +1,5 @@
 appdirs==1.4.4
-attrs==22.2.0
+attrs==23.1.0
 certifi==2022.12.7
 charset-normalizer==3.1.0
 ConfigArgParse==1.5.3
