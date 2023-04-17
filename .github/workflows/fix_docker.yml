@@ -24,4 +24,4 @@ jobs:
           docker push denisa/super-linter:slim-v5
           docker push denisa/super-linter:v4
           docker push denisa/super-linter:slim-v4
-          
+
