@@ -20,7 +20,7 @@ pycparser==2.21
 Pygments==2.15.0
 pyrsistent==0.19.3
 PyYAML==6.0
-resolvelib==0.8.1
+resolvelib==1.0.1
 rich==13.3.4
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.7
