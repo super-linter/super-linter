@@ -15,15 +15,33 @@ function LintCodebaseEslint() {
   info "Running EXPERIMENTAL batched LintCodebase on ${#FILE_ARRAY[@]} files. FILE_TYPE: ${FILE_TYPE}, LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
   # * space separated $LINTER_COMMAND, expect to split before feeding into xargs correctly
   # shellcheck disable=SC2046 disable=SC2086
-  ESLINT_ERRORS_FOUND=$(printf "%s\n" "${FILE_ARRAY[@]}" | xargs -P $(nproc) -n 64 ${LINTER_COMMAND} | tee /dev/stderr | (
-    ESLINT_ERRORS_FOUND=0
-    while IFS= read -r LINE; do
-      if grep "$PWD" <<<"$LINE" >/dev/null; then
-        ESLINT_CUR_FILENAME=$LINE
-        debug "Filename from eslint: $ESLINT_CUR_FILENAME"
-        ESLINT_CUR_FILE_COUNTED="false"
-        continue
-      fi
+  ESLINT_ERRORS_FOUND=$(
+    printf "%s\n" "${FILE_ARRAY[@]}" | \
+    parallel -L 64 -P "$(nproc)" --xargs ${LINTER_COMMAND} | \
+    tee /dev/stderr | \
+    (
+      ESLINT_ERRORS_FOUND=0
+      while IFS= read -r LINE; do
+        if grep "$PWD" <<<"$LINE" >/dev/null; then
+          ESLINT_CUR_FILENAME=$LINE
+          debug "Filename from eslint: $ESLINT_CUR_FILENAME"
+          ESLINT_CUR_FILE_COUNTED="false"
+          continue
+        fi
+
+        if grep "[[:space:]]\+[0-9]\+:[0-9]\+[[:space:]]\+error[[:space:]]\+" <<<"$LINE" >/dev/null; then
+          debug "Eslint error matched"
+          if [[ "$ESLINT_CUR_FILE_COUNTED" == "false" ]]; then
+            ESLINT_CUR_FILE_COUNTED="true"
+            (("ESLINT_ERRORS_FOUND++"))
+            debug "Error counter incremented to ${ESLINT_ERRORS_FOUND}"
+          fi
+          continue
+        fi
+      done
+      echo "${ESLINT_ERRORS_FOUND}"
+    )
+  ) 2>&1
 
   # * workaround shfmt error for =ESLINT_ERRORS_FOUND
   for i in $(seq -w "$ESLINT_ERRORS_FOUND");

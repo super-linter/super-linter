@@ -80,6 +80,7 @@ RUN apk add --no-cache \
     openjdk11-jre \
     openssh-client \
     openssl-dev \
+    parallel \
     perl perl-dev \
     py3-setuptools python3-dev  \
     py3-pyflakes \
