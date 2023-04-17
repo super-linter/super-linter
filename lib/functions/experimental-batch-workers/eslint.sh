@@ -25,18 +25,11 @@ function LintCodebaseEslint() {
         continue
       fi
 
-      if grep "[[:space:]]\+[0-9]\+:[0-9]\+[[:space:]]\+error[[:space:]]\+" <<<"$LINE" >/dev/null; then
-        debug "Eslint error matched"
-        if [[ "$ESLINT_CUR_FILE_COUNTED" == "false" ]]; then
-          ESLINT_CUR_FILE_COUNTED="true"
-          (("ESLINT_ERRORS_FOUND++"))
-          debug "Error counter incremented to ${ESLINT_ERRORS_FOUND}"
-        fi
-        continue
-      fi
-    done
-    echo "${ESLINT_ERRORS_FOUND}"
-  ));
-  (("ERRORS_FOUND_${FILE_TYPE}"=ESLINT_ERRORS_FOUND));
+  # * workaround shfmt error for =ESLINT_ERRORS_FOUND
+  for i in $(seq -w "$ESLINT_ERRORS_FOUND");
+  do
+    (("ERRORS_FOUND_${FILE_TYPE}"++));
+  done
+  
   info "Exiting EXPERIMENTAL batched LintCodebase on ${#FILE_ARRAY[@]} files. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}"
 }
