@@ -88,7 +88,7 @@ control "super-linter-installed-commands" do
 
   default_version_option = "--version"
   default_version_expected_exit_status = 0
-  default_expected_stdout_regex = /(.*?)/s
+  default_expected_stdout_regex = /(.*?)/n
 
   linters = [
     { linter_name: "actionlint"},
