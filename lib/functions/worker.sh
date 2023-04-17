@@ -104,6 +104,13 @@ function LintCodebase() {
       # USED_EXPR_BATCH_WORKER="true"
       LintCodebaseEslint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
 
+    elif [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "gitleaks" ]; then
+
+      # batched gitleaks
+      # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+      # USED_EXPR_BATCH_WORKER="true"
+      LintCodebaseGitleaks "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
+
     else
       #############################
       # Lint the files one by one #
