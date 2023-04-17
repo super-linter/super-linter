@@ -182,7 +182,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -216,12 +216,12 @@ After further investigation, we were able to see that a few linters were very di
 This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
 The available images:
 
-- `github/super-linter:v4`
-- `github/super-linter:slim-v4`
+- `github/super-linter:v5`
+- `github/super-linter:slim-v5`
 
 #### Standard Image
 
-The standard `github/super-linter:v4` comes with all supported linters.
+The standard `github/super-linter:v5` comes with all supported linters.
 Example usage:
 
 ```yml
@@ -229,7 +229,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter@v4
+  uses: github/super-linter@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -238,7 +238,7 @@ Example usage:
 
 #### Slim Image
 
-The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
+The slim `github/super-linter:slim-v5` comes with all supported linters but removes the following:
 
 - `rust` linters
 - `dotenv` linters
@@ -255,7 +255,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter/slim@v4
+  uses: github/super-linter/slim@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -487,7 +487,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -560,7 +560,7 @@ Once found, it will load the certificate contents to a file, and to the trust st
 
 ```yml
 - name: Lint Code Base
-  uses: github/super-linter@v4
+  uses: github/super-linter@v5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
