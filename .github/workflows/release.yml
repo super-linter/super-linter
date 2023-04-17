@@ -90,9 +90,9 @@ jobs:
         with:
           src: ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            github/super-linter:${{ matrix.images.prefix }}v4
+            github/super-linter:${{ matrix.images.prefix }}v5
             github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v4
+            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v5
             ghcr.io/github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
