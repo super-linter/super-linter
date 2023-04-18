@@ -92,3 +92,27 @@ jobs:
           "ghcr.io/denisa/super-linter:${tag}"
         env:
           tag: ${{ matrix.images.target }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          load: false
+          push: true
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}latest
+          target: "${{ matrix.images.target }}"
