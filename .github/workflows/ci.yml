@@ -18,7 +18,9 @@ jobs:
       matrix:
         images:
           - target: slim
+            prefix: slim-
           - target: standard
+            prefix: ""
     timeout-minutes: 60
     steps:
       - name: Checkout Code
