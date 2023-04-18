@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
         contents: read
+        packages: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.images.target }}
       cancel-in-progress: true
