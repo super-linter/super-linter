@@ -6,12 +6,24 @@ set -euo pipefail
 # Slightly modified to always retrieve latest stable Powershell version
 # If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
 
+case $TARGETARCH in
+  amd64)
+    target=x64
+    ;;
+  arm64)
+    # only on ubuntu
+  *)
+    echo "$TARGETARCH is not supported"
+    exit 1
+    ;;
+esac
+
 mkdir -p "${PWSH_DIRECTORY}"
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
-  jq -r '.assets | .[] | select(.name | contains("linux-alpine-x64")) | .url')
+  jq -r '.assets | .[] | select(.name | contains("linux-alpine-${target}")) | .url')
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \

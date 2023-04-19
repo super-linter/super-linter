@@ -2,6 +2,18 @@
 
 set -euo pipefail
 
+case $TARGETARCH in
+  amd64)
+    target=x64
+    ;;
+  arm64)
+    target=arm64
+  *)
+    echo "$TARGETARCH is not supported"
+    exit 1
+    ;;
+esac
+
 ##################
 # Install ktlint #
 ##################
@@ -33,8 +45,8 @@ curl --retry 5 --retry-delay 5 -sL -o "glibc-${GLIBC_VERSION}.apk" \
 apk add --no-cache --force-overwrite "glibc-${GLIBC_VERSION}.apk"
 rm "glibc-${GLIBC_VERSION}.apk"
 
-curl --retry 5 --retry-delay 5 -sO "https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip"
-unzip -q dartsdk-linux-x64-release.zip
+curl --retry 5 --retry-delay 5 -sO "https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-${target}-release.zip"
+unzip -q dartsdk-linux-${target}-release.zip
 chmod +x dart-sdk/bin/dart* && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/
 rm -r dart-sdk/ dartsdk-linux-x64-release.zip
 
