@@ -3,6 +3,19 @@
 set -euo pipefail
 set -x
 
+case $TARGETARCH in
+  amd64)
+    target=x86_64
+    ;;
+  arm64)
+    target=aarch64
+    ;;
+  *)
+    echo "$TARGETARCH is not supported"
+    exit 1
+    ;;
+esac
+
 apk add curl jq
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
@@ -23,7 +36,7 @@ apk add --no-cache --force-overwrite \
   tar zstd
 rm "glibc-${GLIBC_VERSION}.apk"
 mkdir /tmp/libz
-curl --retry 5 --retry-delay 5 -sL https://www.archlinux.org/packages/core/x86_64/zlib/download | tar -x --zstd -C /tmp/libz
+curl --retry 5 --retry-delay 5 -sL https://www.archlinux.org/packages/core/${target}/zlib/download | tar -x --zstd -C /tmp/libz
 mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib
 rm -rf /tmp/libz
 curl --retry 5 --retry-delay 5 -sLO https://phar.io/releases/phive.phar

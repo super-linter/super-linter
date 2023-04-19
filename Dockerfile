@@ -46,6 +46,8 @@ ARG KTLINT_VERSION='0.47.1'
 ARG PSSA_VERSION='1.21.0'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='v7.3.1'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ####################
 # Run APK installs #
