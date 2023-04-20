@@ -3,16 +3,16 @@
 set -euo pipefail
 
 case $TARGETARCH in
-  amd64)
-    target=x64
-    ;;
-  arm64)
-    target=arm64
-    ;;
-  *)
-    echo "$TARGETARCH is not supported"
-    exit 1
-    ;;
+amd64)
+  target=x64
+  ;;
+arm64)
+  target=arm64
+  ;;
+*)
+  echo "$TARGETARCH is not supported"
+  exit 1
+  ;;
 esac
 
 ##################

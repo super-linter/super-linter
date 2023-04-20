@@ -7,15 +7,15 @@ set -euo pipefail
 # If changing PWSH_VERSION='latest' to a specific version, use format PWSH_VERSION='tags/v7.0.2'
 
 case $TARGETARCH in
-  amd64)
-    target=x64
-    ;;
-  arm64)
-    # only on ubuntu
-  *)
-    echo "$TARGETARCH is not supported"
-    exit 1
-    ;;
+amd64)
+  target=x64
+  ;;
+arm64)
+  # only on ubuntu
+*)
+  echo "$TARGETARCH is not supported"
+  exit 1
+  ;;
 esac
 
 mkdir -p "${PWSH_DIRECTORY}"

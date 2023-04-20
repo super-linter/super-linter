@@ -4,16 +4,16 @@ set -euo pipefail
 set -x
 
 case $TARGETARCH in
-  amd64)
-    target=x86_64
-    ;;
-  arm64)
-    target=aarch64
-    ;;
-  *)
-    echo "$TARGETARCH is not supported"
-    exit 1
-    ;;
+amd64)
+  target=x86_64
+  ;;
+arm64)
+  target=aarch64
+  ;;
+*)
+  echo "$TARGETARCH is not supported"
+  exit 1
+  ;;
 esac
 
 apk add curl jq
