@@ -90,9 +90,9 @@ jobs:
         with:
           src: ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            denisa/super-linter:${{ matrix.images.prefix }}v4
+            denisa/super-linter:${{ matrix.images.prefix }}v5
             denisa/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}v4
+            ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}v5
             ghcr.io/denisa/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code

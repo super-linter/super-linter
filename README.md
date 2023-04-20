@@ -156,6 +156,14 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
 
+    ############################################
+    # Grant status permission for MULTI_STATUS #
+    ############################################
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     ##################
     # Load all steps #
     ##################
@@ -174,7 +182,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -208,12 +216,12 @@ After further investigation, we were able to see that a few linters were very di
 This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
 The available images:
 
-- `github/super-linter:v4`
-- `github/super-linter:slim-v4`
+- `github/super-linter:v5`
+- `github/super-linter:slim-v5`
 
 #### Standard Image
 
-The standard `github/super-linter:v4` comes with all supported linters.
+The standard `github/super-linter:v5` comes with all supported linters.
 Example usage:
 
 ```yml
@@ -221,7 +229,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter@v4
+  uses: github/super-linter@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -230,7 +238,7 @@ Example usage:
 
 #### Slim Image
 
-The slim `github/super-linter:slim-v4` comes with all supported linters but removes the following:
+The slim `github/super-linter:slim-v5` comes with all supported linters but removes the following:
 
 - `rust` linters
 - `dotenv` linters
@@ -247,7 +255,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter/slim@v4
+  uses: github/super-linter/slim@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -273,6 +281,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **ACTIONS_RUNNER_DEBUG**              | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
 | **ANSIBLE_CONFIG_FILE**               | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible-lint.readthedocs.io/en/latest/configuring.html#configuration-file) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                              |
 | **ANSIBLE_DIRECTORY**                 | `/ansible`                      | Flag to set the root directory for Ansible file location(s), relative to `DEFAULT_WORKSPACE`. Set to `.` to use the top-level of the `DEFAULT_WORKSPACE`.                                                            |
+| **BASH_SEVERITY**                     | `style`                         | Specify the minimum severity of errors to consider in shellcheck. Valid values in order of severity are error, warning, info and style.                                                                              |
 | **CREATE_LOG_FILE**                   | `false`                         | If set to `true`, it creates the log file. You can set the log filename using the `LOG_FILE` environment variable.                                                                                                   |
 | **CSS_FILE_NAME**                     | `.stylelintrc.json`             | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                         |
 | **DEFAULT_BRANCH**                    | `master`                        | The name of the repository default branch.                                                                                                                                                                           |
@@ -478,7 +487,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -551,7 +560,7 @@ Once found, it will load the certificate contents to a file, and to the trust st
 
 ```yml
 - name: Lint Code Base
-  uses: github/super-linter@v4
+  uses: github/super-linter@v5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
