@@ -49,7 +49,7 @@ rm "glibc-${GLIBC_VERSION}.apk"
 curl --retry 5 --retry-delay 5 -sO "https://storage.googleapis.com/dart-archive/channels/stable/release/${DART_VERSION}/sdk/dartsdk-linux-${target}-release.zip"
 unzip -q dartsdk-linux-${target}-release.zip
 chmod +x dart-sdk/bin/dart* && mv dart-sdk/bin/* /usr/bin/ && mv dart-sdk/lib/* /usr/lib/ && mv dart-sdk/include/* /usr/include/
-rm -r dart-sdk/ dartsdk-linux-x64-release.zip
+rm -r dart-sdk/ dartsdk-linux-${target}-release.zip
 
 ################################
 # Create and install Bash-Exec #
