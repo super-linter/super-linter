@@ -237,6 +237,8 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 #########################################
 # Label the instance and set maintainer #
@@ -358,6 +360,8 @@ ENTRYPOINT ["/action/lib/linter.sh"]
 # Grab small clean image to build standard ###############################
 ################################################################################
 FROM slim as standard
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ###############
 # Set up args #
