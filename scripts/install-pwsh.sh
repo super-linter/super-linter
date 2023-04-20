@@ -10,8 +10,8 @@ case $TARGETARCH in
 amd64)
   target=x64
   ;;
-arm64)
-  # only on ubuntu
+# arm64)
+# only on ubuntu
 *)
   echo "$TARGETARCH is not supported"
   exit 1
