@@ -8,6 +8,7 @@ case $TARGETARCH in
     ;;
   arm64)
     target=arm64
+    ;;
   *)
     echo "$TARGETARCH is not supported"
     exit 1
