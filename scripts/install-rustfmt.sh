@@ -27,7 +27,7 @@ ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/rust
 ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/cargo /usr/bin/cargo
 ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy
 
-cat << 'EOF' > /usr/bin/clippy
+cat <<'EOF' >/usr/bin/clippy
 #!/usr/bin/env bash
 pushd $(dirname $1)
 cargo-clippy
