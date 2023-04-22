@@ -222,9 +222,7 @@ COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
-# Basic setup, programs and init
-COPY scripts/install-raku.sh /
-RUN /install-raku.sh && rm -rf /install-raku.sh
+RUN apk add --no-cache rakudo zef
 
 ######################
 # Install CheckStyle #
