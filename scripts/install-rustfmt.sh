@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2016
-# shellcheck disable=SC2129
 
 # https://doc.rust-lang.org/rustc/platform-support.html
 
@@ -29,10 +27,12 @@ ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/rust
 ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/cargo /usr/bin/cargo
 ln -fsv /usr/lib/.rustup/toolchains/stable-${target}-unknown-linux-musl/bin/cargo-clippy /usr/bin/cargo-clippy
 
-echo '#!/usr/bin/env bash' >/usr/bin/clippy
-echo 'pushd $(dirname $1)' >>/usr/bin/clippy
-echo 'cargo-clippy' >>/usr/bin/clippy
-echo 'rc=$?' >>/usr/bin/clippy
-echo 'popd' >>/usr/bin/clippy
-echo 'exit $rc' >>/usr/bin/clippy
+cat <<'EOF' >/usr/bin/clippy
+#!/usr/bin/env bash
+pushd $(dirname $1)
+cargo-clippy
+rc=$?
+popd
+exit $rc
+EOF
 chmod +x /usr/bin/clippy
