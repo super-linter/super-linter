@@ -16,25 +16,10 @@ arm64)
   ;;
 esac
 
-apk add curl jq
-url=$(curl -s \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "https://api.github.com/repos/sgerrand/alpine-pkg-glibc/releases/tags/${GLIBC_VERSION}" |
-  jq --arg name "glibc-${GLIBC_VERSION}.apk" -r '.assets | .[] | select(.name | contains($name)) | .url')
-curl --retry 5 --retry-delay 5 -sL -o "glibc-${GLIBC_VERSION}.apk" \
-  -H "Accept: application/octet-stream" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "${url}"
 apk add --no-cache --force-overwrite \
-  bash \
-  ca-certificates \
-  "glibc-${GLIBC_VERSION}.apk" \
-  gnupg \
   php81 php81-curl php81-ctype php81-dom php81-iconv php81-mbstring \
   php81-openssl php81-phar php81-simplexml php81-tokenizer php81-xmlwriter \
   tar zstd
-rm "glibc-${GLIBC_VERSION}.apk"
 mkdir /tmp/libz
 curl --retry 5 --retry-delay 5 -sL https://www.archlinux.org/packages/core/${target}/zlib/download | tar -x --zstd -C /tmp/libz
 mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib

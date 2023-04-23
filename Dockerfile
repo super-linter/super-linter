@@ -39,8 +39,6 @@ ARG CHECKSTYLE_VERSION='10.3.4'
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
 ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
 # PowerShell & PSScriptAnalyzer linter
 ARG PSSA_VERSION='1.21.0'
@@ -60,6 +58,7 @@ RUN apk add --no-cache \
     curl \
     file \
     gcc \
+    gcompat ``
     g++ \
     git git-lfs \
     go \
@@ -262,8 +261,6 @@ FROM alpine:3.17.3 as slim
 ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 

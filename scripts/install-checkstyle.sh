@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+apk add --no-cache --force-overwrite \
+  curl
+
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
