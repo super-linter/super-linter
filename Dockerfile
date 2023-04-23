@@ -387,8 +387,6 @@ ENTRYPOINT ["/action/lib/linter.sh"]
 # Grab small clean image to build standard ###############################
 ################################################################################
 FROM slim as standard
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
 
 ###############
 # Set up args #
@@ -397,6 +395,8 @@ ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ################
 # Set ENV vars #
