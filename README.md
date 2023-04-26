@@ -1,3 +1,5 @@
+**NOTICE**: If your use of the super-linter action failed around April 26th, we changed the organization name from `github` to `super-linter` so you will need to update your references to this action from `github/super-linter` to `super-linter/super-linter`.
+<hr>
 # Super-Linter
 
 This repository is for the **GitHub Action** to run a **Super-Linter**.
