@@ -1,3 +1,5 @@
+**NOTICE**: If your use of the super-linter action failed around April 26th, 2023, we changed the organization name from `github` to `super-linter` so you will need to update your references to this action from `github/super-linter` to `super-linter/super-linter`.
+<hr>
 # Super-Linter
 
 This repository is for the **GitHub Action** to run a **Super-Linter**.
@@ -216,12 +218,12 @@ After further investigation, we were able to see that a few linters were very di
 This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
 The available images:
 
-- `github/super-linter:v5`
-- `github/super-linter:slim-v5`
+- `super-linter/super-linter:v5`
+- `super-linter/super-linter:slim-v5`
 
 #### Standard Image
 
-The standard `github/super-linter:v5` comes with all supported linters.
+The standard `super-linter/super-linter:v5` comes with all supported linters.
 Example usage:
 
 ```yml
@@ -229,7 +231,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter@v5
+  uses: super-linter/super-linter@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -238,7 +240,7 @@ Example usage:
 
 #### Slim Image
 
-The slim `github/super-linter:slim-v5` comes with all supported linters but removes the following:
+The slim `super-linter/super-linter:slim-v5` comes with all supported linters but removes the following:
 
 - `rust` linters
 - `dotenv` linters
@@ -255,7 +257,7 @@ Example usage:
 # Run Linter against code base #
 ################################
 - name: Lint Code Base
-  uses: github/super-linter/slim@v5
+  uses: super-linter/super-linter/slim@v5
   env:
     VALIDATE_ALL_CODEBASE: false
     DEFAULT_BRANCH: master
@@ -420,7 +422,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 You can use the **GitHub** **Super-Linter** _with_ or _without_ your own personal rules sets. This allows for greater flexibility for each individual codebase. The Template rules all try to follow the standards we believe should be enabled at the basic level.
 
 - Copy **any** or **all** template rules files from `TEMPLATES/` into the `.github/linters/` directory of your repository, and modify them to suit your needs.
-  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/github/super-linter/tree/main/TEMPLATES) will be used as defaults should any be omitted.
+  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/super-linter/super-linter/tree/main/TEMPLATES) will be used as defaults should any be omitted.
 
 ### Using your own rules files
 
@@ -428,7 +430,7 @@ If your repository contains your own rules files that live outside of a `.github
 
 ### Disabling rules
 
-If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/github/super-linter/blob/main/docs/disabling-linters.md)
+If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/super-linter/super-linter/blob/main/docs/disabling-linters.md)
 
 ### Using your own SSH key
 
@@ -487,7 +489,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v5
+        uses: super-linter/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
@@ -533,7 +535,7 @@ The **Docker** container that is built from this repository is located at [githu
 
 ### Local (troubleshooting/debugging/enhancements)
 
-If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/github/super-linter/blob/main/docs/run-linter-locally.md)
+If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md)
 
 Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
 
@@ -560,7 +562,7 @@ Once found, it will load the certificate contents to a file, and to the trust st
 
 ```yml
 - name: Lint Code Base
-  uses: github/super-linter@v5
+  uses: super-linter/super-linter@v5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
@@ -576,10 +578,10 @@ Below are a list of the known limitations for the **GitHub Super-Linter**:
 
 ## How to contribute
 
-If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/github/super-linter/blob/main/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md)
 
 ---
 
 ### License
 
-- [MIT License](https://github.com/github/super-linter/blob/main/LICENSE)
+- [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE)
