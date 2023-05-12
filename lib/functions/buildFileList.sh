@@ -228,26 +228,6 @@ function BuildFileList() {
     fi
   fi
 
-  ###############################
-  # Load the ignored files list #
-  ###############################
-  debug "Loading the files list that Git ignores..."
-  mapfile -t GIT_IGNORED_FILES < <(git -C "${GITHUB_WORKSPACE}" status --ignored --porcelain=v1 --short --untracked-files=normal | grep '!!' | awk -F ' ' '{print $2}' | sed -e 's#^#'"${GITHUB_WORKSPACE}"/'#' | sort)
-  debug "GIT_IGNORED_FILES contents: ${GIT_IGNORED_FILES[*]}"
-
-  # Build an associative array to avoid looping throug the ignored files list
-  local i
-  declare -g -A GIT_IGNORED_FILES_INDEX
-  for i in "${!GIT_IGNORED_FILES[@]}"; do
-    eval GIT_IGNORED_FILES_INDEX["${GIT_IGNORED_FILES[$i]}"]="$i"
-  done
-  debug "--- GIT_IGNORED_FILES_INDEX contents ---"
-  debug "-----------------------"
-  for i in "${!GIT_IGNORED_FILES_INDEX[@]}"; do
-    debug "key: $i, value: ${GIT_IGNORED_FILES_INDEX[$i]}"
-  done
-  debug "---------------------------------------------"
-
   #########################################
   # Check if the Ansible directory exists #
   #########################################
@@ -316,7 +296,7 @@ function BuildFileList() {
     ###################################################
     # Filter files if FILTER_REGEX_EXCLUDE is not set #
     ###################################################
-    if [ "${GIT_IGNORED_FILES_INDEX[$FILE]}" ] && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
+    if git check-ignore "$FILE" && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi
@@ -331,6 +311,9 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
+
+    # Textlint should check every file
+    FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
       debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
@@ -458,8 +441,10 @@ function BuildFileList() {
     ########################
     # Get the GROOVY files #
     ########################
+    # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
-      [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ]; then
+      [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ] ||
+      [[ "$BASE_FILE" =~ .*jenkinsfile.* ]]; then
       ################################
       # Append the file to the array #
       ################################
@@ -595,7 +580,6 @@ function BuildFileList() {
       # Append the file to the array #
       ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
-      FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     ######################
     # Get the PHP files #
@@ -743,6 +727,7 @@ function BuildFileList() {
       ################################
       FILE_ARRAY_TERRAFORM_TFLINT+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
+      FILE_ARRAY_TERRAFORM_FMT+=("${FILE}")
 
     ############################
     # Get the Terragrunt files #
@@ -838,7 +823,7 @@ function BuildFileList() {
         ################################
         # Append the file to the array #
         ################################
-        FILE_ARRAY_KUBERNETES_KUBEVAL+=("${FILE}")
+        FILE_ARRAY_KUBERNETES_KUBECONFORM+=("${FILE}")
       fi
     ########################################################################
     # We have something that we need to try to check file type another way #

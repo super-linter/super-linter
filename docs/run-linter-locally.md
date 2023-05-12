@@ -57,7 +57,7 @@ This always runs the local docker based linting.
 docker run --rm \
     -e RUN_LOCAL=true \
     --env-file ".github/super-linter.env" \
-    -v "$PWD":/tmp/lint github/super-linter:v4
+    -v "$PWD":/tmp/lint github/super-linter:v5
 ```
 
 ### scripts/test
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: cat .github/super-linter.env >> "$GITHUB_ENV"
       - name: Lint Code Base
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: develop

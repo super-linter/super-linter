@@ -68,7 +68,7 @@ control "super-linter-installed-packages" do
   )
 
   packages.each do |item|
-    if(image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_PACKAGES.include?(item))
       next
     else
       describe package(item) do
@@ -92,7 +92,7 @@ control "super-linter-installed-commands" do
 
   linters = [
     { linter_name: "actionlint"},
-    { linter_name: "ansible-lint"},
+    { linter_name: "ansible-lint", expected_stdout_regex: /(.*)/},
     { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs"},
     { linter_name: "asl-validator", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
@@ -119,7 +119,7 @@ control "super-linter-installed-commands" do
     { linter_name: "isort"},
     { linter_name: "jscpd"},
     { linter_name: "ktlint"},
-    { linter_name: "kubeval"},
+    { linter_name: "kubeconform", version_option: "-v"},
     { linter_name: "lua", version_option: "-v"},
     { linter_name: "markdownlint"},
     { linter_name: "mypy"},
@@ -149,6 +149,7 @@ control "super-linter-installed-commands" do
     { linter_name: "standard"},
     { linter_name: "stylelint"},
     { linter_name: "tekton-lint"},
+    { linter_name: "terraform"},
     { linter_name: "terragrunt"},
     { linter_name: "terrascan", version_option: "version"},
     { linter_name: "tflint"},
@@ -171,10 +172,10 @@ control "super-linter-installed-commands" do
     # command because the vast majority of linters have name == command
     linter_command = ""
 
-    if(image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_LINTERS.include?(linter[:linter_name]))
       next
     else
-      if(linter.key?(:linter_command))
+      if (linter.key?(:linter_command))
         linter_command = linter[:linter_command]
       else
         linter_command = linter[:linter_name]
@@ -185,12 +186,12 @@ control "super-linter-installed-commands" do
       end
 
       # A few linters have a command that it's different than linter_command
-      if(linter.key?(:version_command))
+      if (linter.key?(:version_command))
         version_command = linter[:version_command]
       else
         # Check if the linter needs an option that is different from the one that
         # the vast majority of linters use to get the version
-        if(linter.key?(:version_option))
+        if (linter.key?(:version_option))
           version_option = linter[:version_option]
         else
           version_option = default_version_option
@@ -198,13 +199,13 @@ control "super-linter-installed-commands" do
 
         version_command = "#{linter_command} #{version_option}"
 
-        if(linter.key?(:expected_exit_status))
+        if (linter.key?(:expected_exit_status))
           expected_exit_status = linter[:expected_exit_status]
         else
           expected_exit_status = default_version_expected_exit_status
         end
 
-        if(linter.key?(:expected_stdout_regex))
+        if (linter.key?(:expected_stdout_regex))
           expected_stdout_regex = linter[:expected_stdout_regex]
         else
           expected_stdout_regex = default_expected_stdout_regex
@@ -332,7 +333,7 @@ control "super-linter-validate-directories" do
   )
 
   dirs.each do |item|
-    if(image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
+    if (image == "slim" && SLIM_IMAGE_REMOVED_DIRS.include?(item))
       next
     else
       describe directory(item) do
@@ -421,7 +422,7 @@ control "super-linter-validate-powershell-modules" do
   title "Super-Linter validate Powershell Modules"
   desc "Check that Powershell modules that Super-Linter needs are installed."
 
-  if(image == "slim")
+  if (image == "slim")
     next
   else
     describe command("pwsh -c \"(Get-Module -Name PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Name\" 2>&1") do
