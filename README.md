@@ -1,6 +1,6 @@
-**NOTICE**: If your use of the super-linter action failed around April 26th, 2023, we changed the organization name from `github` to `super-linter` so you will need to update your references to this action from `github/super-linter` to `super-linter/super-linter`.
-<hr>
 # Super-Linter
+
+**NOTICE**: If your use of the super-linter action failed around April 26th, 2023, we changed the organization name from `github` to `super-linter` so you will need to update your references to this action from `github/super-linter` to `super-linter/super-linter`.
 
 This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
