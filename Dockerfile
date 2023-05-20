@@ -46,6 +46,8 @@ ARG KTLINT_VERSION='0.47.1'
 ARG PSSA_VERSION='1.21.0'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='v7.3.1'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ####################
 # Run APK installs #
@@ -206,12 +208,39 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 
+####################
+# Install dart-sdk #
+####################
+COPY scripts/install-dart-sdk.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
+
+################################
+# Install Bash-Exec #
+################################
+COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
+
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
-# Basic setup, programs and init
-COPY scripts/install-raku.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-raku.sh && rm -rf /install-raku.sh
+RUN apk add --no-cache rakudo zef
+
+######################
+# Install CheckStyle #
+######################
+COPY scripts/install-checkstyle.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh && rm -rf /install-checkstyle.sh
+
+##############################
+# Install google-java-format #
+##############################
+COPY scripts/install-google-java-format.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf /install-google-java-format.sh
+
+#################################
+# Install luacheck and luarocks #
+#################################
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
@@ -235,6 +264,8 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 #########################################
 # Label the instance and set maintainer #
@@ -364,6 +395,8 @@ ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ################
 # Set ENV vars #
