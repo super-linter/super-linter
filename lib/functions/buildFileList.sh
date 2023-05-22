@@ -108,7 +108,7 @@ function BuildFileList() {
     ##############################
     # Check the shell for errors #
     ##############################
-    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATDES}" == "false" ]; then
+    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
       # Error
       info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
       fatal "[${SWITCH_CMD}]"
