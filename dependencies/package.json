@@ -26,7 +26,7 @@
     "htmlhint": "^1.1.4",
     "immer": "^10.0.1",
     "ini": "^4.1.0",
-    "jscpd": "^3.5.4",
+    "jscpd": "^3.5.9",
     "lodash": "^4.17.21",
     "markdownlint-cli": "^0.33.0",
     "node-fetch": "^3.3.1",
