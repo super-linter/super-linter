@@ -23,7 +23,7 @@ FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.6.0 as shfmt
 FROM rhysd/actionlint:1.6.24 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM yoheimuta/protolint:0.43.1 as protolint
+FROM yoheimuta/protolint:0.44.0 as protolint
 FROM zricethezav/gitleaks:v8.16.2 as gitleaks
 
 ##################
