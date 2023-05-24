@@ -31,8 +31,10 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.28.1)
       parser (>= 3.2.1.0)
-    rubocop-capybara (2.17.1)
+    rubocop-capybara (2.18.0)
       rubocop (~> 1.41)
+    rubocop-factory_bot (2.23.1)
+      rubocop (~> 1.33)
     rubocop-github (0.20.0)
       rubocop (>= 1.37)
       rubocop-performance (>= 1.15)
@@ -48,9 +50,10 @@ GEM
       rubocop (>= 1.33.0, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (2.19.0)
+    rubocop-rspec (2.22.0)
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
+      rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -66,7 +69,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.18.0)
   rubocop-rails (~> 2.19)
   rubocop-rake (~> 0.6.0)
-  rubocop-rspec (~> 2.19.0)
+  rubocop-rspec (~> 2.22.0)
 
 BUNDLED WITH
   2.3.5
