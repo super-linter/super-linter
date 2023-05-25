@@ -7,23 +7,23 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.4.4 as terragrunt
+FROM alpine/terragrunt:1.4.6 as terragrunt
 FROM tenable/terrascan:1.17.1 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2023.03.17-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2023.05.18-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.0.1 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.1.1 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.1 as kubeconfrm
 FROM golangci/golangci-lint:v1.52.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.4.4 as terraform
+FROM hashicorp/terraform:1.4.6 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.6.0 as shfmt
 FROM rhysd/actionlint:1.6.24 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM yoheimuta/protolint:0.43.1 as protolint
+FROM yoheimuta/protolint:0.44.0 as protolint
 FROM zricethezav/gitleaks:v8.16.2 as gitleaks
 
 ##################
@@ -254,7 +254,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.17.3 as slim
+FROM alpine:3.18.0 as slim
 
 ############################
 # Get the build arguements #
