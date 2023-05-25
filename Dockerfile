@@ -7,23 +7,23 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.4.4 as terragrunt
+FROM alpine/terragrunt:1.4.6 as terragrunt
 FROM tenable/terrascan:1.17.1 as terrascan
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2023.03.17-alpine as clj-kondo
+FROM cljkondo/clj-kondo:2023.05.18-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.0.1 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.1.1 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.1 as kubeconfrm
 FROM golangci/golangci-lint:v1.52.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.4.4 as terraform
+FROM hashicorp/terraform:1.4.6 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.6.0 as shfmt
 FROM rhysd/actionlint:1.6.24 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM yoheimuta/protolint:0.43.1 as protolint
+FROM yoheimuta/protolint:0.44.0 as protolint
 FROM zricethezav/gitleaks:v8.16.2 as gitleaks
 
 ##################
@@ -46,6 +46,8 @@ ARG KTLINT_VERSION='0.47.1'
 ARG PSSA_VERSION='1.21.0'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PWSH_VERSION='v7.3.1'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ####################
 # Run APK installs #
@@ -206,12 +208,39 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 
+####################
+# Install dart-sdk #
+####################
+COPY scripts/install-dart-sdk.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
+
+################################
+# Install Bash-Exec #
+################################
+COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
+
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
-# Basic setup, programs and init
-COPY scripts/install-raku.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-raku.sh && rm -rf /install-raku.sh
+RUN apk add --no-cache rakudo zef
+
+######################
+# Install CheckStyle #
+######################
+COPY scripts/install-checkstyle.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh && rm -rf /install-checkstyle.sh
+
+##############################
+# Install google-java-format #
+##############################
+COPY scripts/install-google-java-format.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf /install-google-java-format.sh
+
+#################################
+# Install luacheck and luarocks #
+#################################
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
@@ -225,7 +254,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.17.3 as slim
+FROM alpine:3.18.0 as slim
 
 ############################
 # Get the build arguements #
@@ -235,6 +264,8 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 #########################################
 # Label the instance and set maintainer #
@@ -364,6 +395,8 @@ ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 ################
 # Set ENV vars #

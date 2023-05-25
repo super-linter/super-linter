@@ -4,7 +4,7 @@ This folder holds the test cases for **Azure Resource Manager (ARM)**.
 
 ## Additional Docs
 
-No Additional information is needed for this test case.
+Note: apiVersions older than 2 years (730 days) are treated as errors by the ARM linter if there is a newer version available.
 
 ## Good Test Cases
 
