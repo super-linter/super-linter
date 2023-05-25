@@ -2,4 +2,4 @@ argcomplete==3.0.5
 PyYAML==6.0
 tomlkit==0.11.7
 xmltodict==0.13.0
-yq==3.2.1
+yq==3.2.2
