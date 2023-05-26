@@ -70,7 +70,6 @@ jobs:
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
-            # github/super-linter:${{ matrix.images.prefix }}latest
             ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           target: "${{ matrix.images.target }}"
 
