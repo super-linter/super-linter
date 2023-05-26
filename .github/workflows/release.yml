@@ -35,13 +35,13 @@ jobs:
         uses: docker/setup-buildx-action@v2.5.0
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2.0.0
+        uses: docker/login-action@v2.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to GHCR
-        uses: docker/login-action@v2.0.0
+        uses: docker/login-action@v2.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -90,9 +90,9 @@ jobs:
         with:
           src: ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            github/super-linter:${{ matrix.images.prefix }}v4
+            github/super-linter:${{ matrix.images.prefix }}v5
             github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v4
+            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v5
             ghcr.io/github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
@@ -132,7 +132,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "Failed to deploy release to production",
-              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               assignees: [
                 'lindluni'
               ]
