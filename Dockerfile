@@ -10,7 +10,6 @@
 FROM tenable/terrascan:1.18.1 as terrascan
 FROM alpine/terragrunt:1.4.6 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2023.05.18-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.1.1 as tflint
@@ -35,6 +34,7 @@ FROM python:3.11.3-alpine3.17 as base_image
 # Set ARG values used in Build #
 ################################
 ARG CHECKSTYLE_VERSION='10.3.4'
+ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -142,11 +142,6 @@ COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 ######################
 COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 
-#####################
-# Install clj-kondo #
-#####################
-COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
-
 ################################
 # Install editorconfig-checker #
 ################################
@@ -197,6 +192,12 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 #################
 COPY scripts/install-lintr.sh /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh
+
+#####################
+# Install clj-kondo #
+#####################
+COPY scripts/install-clj-kondo.sh /
+RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
 
 # Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 # Store the key here because the above host is sometimes down, and breaks our builds
