@@ -304,7 +304,7 @@ function BuildFileList() {
     ###################################################
     # Filter files if FILTER_REGEX_EXCLUDE is not set #
     ###################################################
-    if git check-ignore "$FILE" && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
+    if [ "${IGNORE_GITIGNORED_FILES}" == "true" ] && git check-ignore "$FILE"; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi
