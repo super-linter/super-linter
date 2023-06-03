@@ -213,7 +213,8 @@ function GetValidationInfo() {
 
   debug "--- DEBUG INFO ---"
   debug "---------------------------------------------"
-  RUNNER=$(whoami)
+  #RUNNER=$(whoami || echo "EUID: ${EUID}")
+  RUNNER=$(id -un 2>/dev/null)
   debug "Runner:[${RUNNER}]"
   PRINTENV=$(printenv | sort)
   debug "ENV:"
