@@ -21,10 +21,10 @@ GEM
     rainbow (3.1.1)
     regexp_parser (2.8.1)
     rexml (3.2.5)
-    rubocop (1.51.0)
+    rubocop (1.52.1)
       json (~> 2.3)
       parallel (~> 1.10)
-      parser (>= 3.2.0.0)
+      parser (>= 3.2.2.3)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
@@ -65,7 +65,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rubocop (~> 1.51.0)
+  rubocop (~> 1.52.1)
   rubocop-github (~> 0.20.0)
   rubocop-minitest (~> 0.31.0)
   rubocop-performance (~> 1.18.0)
