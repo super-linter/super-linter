@@ -28,7 +28,7 @@ FROM yoheimuta/protolint:0.44.0 as protolint
 ##################
 # Get base image #
 ##################
-FROM python:3.11.3-alpine3.17 as base_image
+FROM python:3.11.4-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -246,7 +246,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.s
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.3-alpine3.17 as python_builder
+FROM python:3.11.4-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
