@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.18.1 as terrascan
-FROM alpine/terragrunt:1.5.0 as terragrunt
+FROM alpine/terragrunt:1.5.1 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
@@ -19,7 +19,7 @@ FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.5.1 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
-FROM mvdan/shfmt:v3.6.0 as shfmt
+FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
 FROM zricethezav/gitleaks:v8.17.0 as gitleaks
