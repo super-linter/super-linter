@@ -88,7 +88,7 @@ jobs:
         with:
           src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}v5
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION_WITH_PREFIX }}
             ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
