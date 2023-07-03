@@ -77,6 +77,15 @@ fi
 # Remove trailing slash if present
 GITHUB_API_URL="${GITHUB_API_URL%/}"
 
+# GitHub server url
+if [ -n "$GITHUB_DOMAIN" ]; then
+  GITHUB_SERVER_URL="${GITHUB_DOMAIN}"
+elif [ -z "$GITHUB_SERVER_URL" ]; then
+  GITHUB_SERVER_URL="https://github.com"
+fi
+# Extract domain name from URL
+GITHUB_SERVER_URL=$(echo "$GITHUB_SERVER_URL" | cut -d '/' -f 3)
+
 # Default Vars
 DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
@@ -654,7 +663,6 @@ CallStatusAPI() {
 
     debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
 
-    GITHUB_DOMAIN=$(echo "$GITHUB_DOMAIN" | cut -d '/' -f 3)
 
     ##############################################
     # Call the status API to create status check #
@@ -666,7 +674,7 @@ CallStatusAPI() {
         -H "authorization: Bearer ${GITHUB_TOKEN}" \
         -H 'content-type: application/json' \
         -d "{ \"state\": \"${STATUS}\",
-        \"target_url\": \"https://${GITHUB_DOMAIN:-github.com}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
+        \"target_url\": \"https://${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
         \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
       }" 2>&1
     )
