@@ -65,7 +65,7 @@ jobs:
           SEMVER_VERSION=${RELEASE_VERSION#v}
           SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}
           SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}
-          
+
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
             echo "SEMVER_VERSION=${SEMVER_VERSION}"
