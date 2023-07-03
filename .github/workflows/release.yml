@@ -16,7 +16,7 @@ jobs:
     name: Release Images
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       deployments: write
       issues: write
       packages: write
