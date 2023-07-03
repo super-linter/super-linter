@@ -65,7 +65,7 @@ jobs:
           SEMVER_VERSION=${RELEASE_VERSION#v}
           SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}
           SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}
-          
+
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
             echo "SEMVER_VERSION=${SEMVER_VERSION}"
@@ -88,7 +88,7 @@ jobs:
         with:
           src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}v5
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION_WITH_PREFIX }}
             ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
