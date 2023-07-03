@@ -62,11 +62,15 @@ jobs:
             exit 2
           fi
 
+          SEMVER_VERSION=${RELEASE_VERSION#v}
+          SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}
+          SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}
+          
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
-            echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
-            echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
-            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_VERSION=${SEMVER_VERSION}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=${SEMVER_MAJOR_VERSION_WITH_PREFIX}"
           } >> "${GITHUB_ENV}"
 
       - name: Start ${{ matrix.images.environment }} Deployment
