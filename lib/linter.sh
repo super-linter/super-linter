@@ -663,7 +663,6 @@ CallStatusAPI() {
 
     debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
 
-
     ##############################################
     # Call the status API to create status check #
     ##############################################
