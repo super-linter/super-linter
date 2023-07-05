@@ -7,6 +7,14 @@
 ################################################################################
 ########################## FUNCTION CALLS BELOW ################################
 ################################################################################
+
+################################################################################
+#### Function BuildFileList ####################################################
+function IssueHintForFullGitHistory() {
+  info "Check that you have the full git history, the checkout is not shallow, etc"
+  info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+}
+
 ################################################################################
 #### Function GenerateFileDiff #################################################
 function GenerateFileDiff() {
@@ -33,8 +41,7 @@ function GenerateFileDiff() {
   if [ ${ERROR_CODE} -ne 0 ]; then
     # Error
     info "Failed to get Diff with:[$CMD]"
-    info "Check that you have the full git history, the checkout is not shallow, etc"
-    info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+    IssueHintForFullGitHistory
     fatal "[${CMD_OUTPUT}]"
   fi
 
@@ -101,7 +108,7 @@ function BuildFileList() {
     ##############################
     # Check the shell for errors #
     ##############################
-    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATDES}" == "false" ]; then
+    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
       # Error
       info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
       fatal "[${SWITCH_CMD}]"
@@ -224,6 +231,7 @@ function BuildFileList() {
     if [ ${ERROR_CODE} -ne 0 ]; then
       # Error
       error "Failed to switch back to branch!"
+      IssueHintForFullGitHistory
       fatal "[${SWITCH2_CMD}]"
     fi
   fi
@@ -296,7 +304,7 @@ function BuildFileList() {
     ###################################################
     # Filter files if FILTER_REGEX_EXCLUDE is not set #
     ###################################################
-    if git check-ignore "$FILE" && [ "${IGNORE_GITIGNORED_FILES}" == "true" ]; then
+    if [ "${IGNORE_GITIGNORED_FILES}" == "true" ] && git check-ignore "$FILE"; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi

@@ -7,34 +7,34 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.4.4 as terragrunt
-FROM tenable/terrascan:1.17.1 as terrascan
+FROM tenable/terrascan:1.18.1 as terrascan
+FROM alpine/terragrunt:1.5.1 as terragrunt
 FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2023.03.17-alpine as clj-kondo
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.0.1 as tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.1 as kubeconfrm
-FROM golangci/golangci-lint:v1.52.2 as golangci-lint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.1.1 as tflint
+FROM ghcr.io/yannh/kubeconform:v0.6.2 as kubeconfrm
+FROM golangci/golangci-lint:v1.53.3 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.4.4 as terraform
+FROM hashicorp/terraform:1.5.1 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
-FROM mvdan/shfmt:v3.6.0 as shfmt
-FROM rhysd/actionlint:1.6.24 as actionlint
+FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
+FROM mvdan/shfmt:v3.7.0 as shfmt
+FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM yoheimuta/protolint:0.43.1 as protolint
-FROM zricethezav/gitleaks:v8.16.2 as gitleaks
+FROM zricethezav/gitleaks:v8.17.0 as gitleaks
+FROM yoheimuta/protolint:0.45.0 as protolint
 
 ##################
 # Get base image #
 ##################
-FROM python:3.11.1-alpine3.17 as base_image
+FROM python:3.11.4-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
 ################################
 ARG CHECKSTYLE_VERSION='10.3.4'
+ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -142,11 +142,6 @@ COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 ######################
 COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 
-#####################
-# Install clj-kondo #
-#####################
-COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
-
 ################################
 # Install editorconfig-checker #
 ################################
@@ -198,6 +193,12 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 COPY scripts/install-lintr.sh /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh
 
+#####################
+# Install clj-kondo #
+#####################
+COPY scripts/install-clj-kondo.sh /
+RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
+
 # Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 # Store the key here because the above host is sometimes down, and breaks our builds
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
@@ -245,7 +246,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.s
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.1-alpine3.17 as python_builder
+FROM python:3.11.4-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -254,7 +255,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.17.3 as slim
+FROM alpine:3.18.2 as slim
 
 ############################
 # Get the build arguements #
