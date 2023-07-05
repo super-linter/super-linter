@@ -16,7 +16,7 @@ jobs:
     name: Release Images
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       deployments: write
       issues: write
       packages: write
@@ -62,11 +62,15 @@ jobs:
             exit 2
           fi
 
+          SEMVER_VERSION=${RELEASE_VERSION#v}
+          SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}
+          SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}
+
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
-            echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
-            echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
-            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_VERSION=${SEMVER_VERSION}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=${SEMVER_MAJOR_VERSION_WITH_PREFIX}"
           } >> "${GITHUB_ENV}"
 
       - name: Start ${{ matrix.images.environment }} Deployment
@@ -84,7 +88,7 @@ jobs:
         with:
           src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}v5
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION_WITH_PREFIX }}
             ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code

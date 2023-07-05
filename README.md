@@ -116,7 +116,7 @@ To use this **GitHub** Action you will need to complete the following:
 3. Commit that file to a new branch
 4. Open up a pull request and observe the action working
 5. Enjoy your more _stable_, and _cleaner_ codebase
-6. Check out the [Wiki](https://github.com/github/super-linter/wiki) for customization options
+6. Check out the [Wiki](https://github.com/super-linter/super-linter/wiki) for customization options
 
 **NOTE:** If you pass the _Environment_ variable `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` in your workflow, then the **GitHub Super-Linter** will mark the status of each individual linter run in the Checks section of a pull request. Without this you will only see the overall status of the full run. There is no need to set the **GitHub** Secret as it is automatically set by GitHub, it only needs to be passed to the action.
 
@@ -184,7 +184,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v5
+        uses: super-linter/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
