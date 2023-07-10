@@ -28,7 +28,7 @@
     "ini": "^4.1.0",
     "jscpd": "^3.5.9",
     "lodash": "^4.17.21",
-    "markdownlint-cli": "^0.34.0",
+    "markdownlint-cli": "^0.35.0",
     "node-fetch": "^3.3.1",
     "npm-groovy-lint": "^11.1.1",
     "postcss-less": "^6.0.0",
