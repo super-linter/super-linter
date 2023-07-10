@@ -50,8 +50,6 @@ The design of the **Super-Linter** is currently to allow linting to occur in **G
 
 ### Repository Visualization
 
-![Visualization of the codebase](https://super-linter.s3.us-west-2.amazonaws.com/diagram.svg)
-
 ## Supported Linters
 
 Developers on **GitHub** can call the **GitHub Action** to lint their codebase with the following list of linters:
