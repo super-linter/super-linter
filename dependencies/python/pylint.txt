@@ -6,6 +6,6 @@ mccabe==0.7.0
 platformdirs==3.5.1
 pylint==2.17.4
 tomli==2.0.1
-tomlkit==0.11.7
+tomlkit==0.11.8
 typing_extensions==4.7.0
 wrapt==1.15.0
