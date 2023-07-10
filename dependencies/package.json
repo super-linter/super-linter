@@ -32,7 +32,7 @@
     "node-fetch": "^3.3.1",
     "npm-groovy-lint": "^11.1.1",
     "postcss-less": "^6.0.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
     "prettyjson": "^1.2.5",
     "pug": "^3.0.2",
     "sql-lint": "1.0.0",
