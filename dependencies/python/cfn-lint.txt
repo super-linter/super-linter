@@ -16,7 +16,7 @@ pbr==5.11.1
 pydantic==1.10.9
 pyrsistent==0.19.3
 python-dateutil==2.8.2
-PyYAML==6.0
+PyYAML==6.0.1
 regex==2023.6.3
 s3transfer==0.6.0
 sarif-om==1.0.4
