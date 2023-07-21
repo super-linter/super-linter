@@ -19,7 +19,7 @@ platformdirs==3.5.1
 pycparser==2.21
 Pygments==2.15.1
 pyrsistent==0.19.3
-PyYAML==6.0
+PyYAML==6.0.1
 resolvelib==0.8.1
 rich==13.3.5
 ruamel.yaml==0.17.21
