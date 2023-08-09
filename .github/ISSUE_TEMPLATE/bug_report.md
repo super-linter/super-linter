@@ -31,7 +31,7 @@ docker run \
   -e MULTI_STATUS=false \
   -e VALIDATE_ALL_CODEBASE=true \
   -v $(pwd):/tmp/lint \
-  ghcr.io/github/super-linter:v3.13.5
+  ghcr.io/super-linter/super-linter:v3.13.5
 -->
 
 1. Go to '...'
