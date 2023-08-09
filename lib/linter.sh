@@ -431,7 +431,7 @@ Header() {
   info "---------------------------------------------"
   info "---------------------------------------------"
   info "The Super-Linter source code can be found at:"
-  info " - https://github.com/github/super-linter"
+  info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 }
 ################################################################################
