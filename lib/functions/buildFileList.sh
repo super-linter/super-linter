@@ -12,7 +12,7 @@
 #### Function BuildFileList ####################################################
 function IssueHintForFullGitHistory() {
   info "Check that you have the full git history, the checkout is not shallow, etc"
-  info "See https://github.com/github/super-linter#example-connecting-github-action-workflow"
+  info "See https://github.com/super-linter/super-linter#example-connecting-github-action-workflow"
 }
 
 ################################################################################
