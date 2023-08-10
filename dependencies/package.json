@@ -10,7 +10,7 @@
     "asl-validator": "^3.6.1",
     "axios": "^1.4.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.46.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.8.0",
