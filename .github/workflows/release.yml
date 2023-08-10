@@ -16,7 +16,7 @@ jobs:
     name: Release Images
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       deployments: write
       issues: write
       packages: write
@@ -32,13 +32,7 @@ jobs:
 
     steps:
       - name: Setup Docker BuildX
-        uses: docker/setup-buildx-action@v2.5.0
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        uses: docker/setup-buildx-action@v2.9.0
 
       - name: Login to GHCR
         uses: docker/login-action@v2.1.0
@@ -68,11 +62,15 @@ jobs:
             exit 2
           fi
 
+          SEMVER_VERSION=${RELEASE_VERSION#v}
+          SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}
+          SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}
+
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
-            echo "SEMVER_VERSION=${RELEASE_VERSION#v}"
-            echo "SEMVER_MAJOR_VERSION=${SEMVER_VERSION%%.*}"
-            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=v${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_VERSION=${SEMVER_VERSION}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_MAJOR_VERSION}"
+            echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=${SEMVER_MAJOR_VERSION_WITH_PREFIX}"
           } >> "${GITHUB_ENV}"
 
       - name: Start ${{ matrix.images.environment }} Deployment
@@ -88,12 +86,10 @@ jobs:
       - name: Retag and Push Images
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: ghcr.io/github/super-linter:${{ matrix.images.prefix }}latest
+          src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           dst: |
-            github/super-linter:${{ matrix.images.prefix }}v5
-            github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}v5
-            ghcr.io/github/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION_WITH_PREFIX }}
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -120,7 +116,7 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/github/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
+          env_url: https://github.com/super-linter/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
 
       - name: Create Issue on Failure
         if: failure()
@@ -134,6 +130,7 @@ jobs:
               title: "Failed to deploy release to production",
               body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               assignees: [
-                'lindluni'
+                'zkoppert',
+                'Hanse00'
               ]
             })

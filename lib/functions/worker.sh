@@ -284,7 +284,7 @@ function LintCodebase() {
 
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+          ${LINTER_COMMAND} --filter="${FILE_NAME}" 2>&1
         )
       else
         ################################
