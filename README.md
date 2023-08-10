@@ -32,7 +32,6 @@ It is a simple combination of various linters, written in `bash`, to help valida
     - [Disabling rules](#disabling-rules)
     - [Using your own SSH key](#using-your-own-ssh-key)
   - [Filter linted files](#filter-linted-files)
-  - [Docker Hub](#docker-hub)
   - [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
     - [Local (troubleshooting/debugging/enhancements)](#local-troubleshootingdebuggingenhancements)
     - [Azure](#azure)
