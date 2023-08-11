@@ -56,6 +56,7 @@ RUN apk add --no-cache \
     bash \
     ca-certificates \
     cargo \
+    cmake \
     coreutils \
     curl \
     file \
