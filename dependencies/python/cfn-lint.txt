@@ -22,5 +22,5 @@ s3transfer==0.6.0
 sarif-om==1.0.4
 six==1.16.0
 sympy==1.11.1
-typing_extensions==4.7.0
+typing_extensions==4.7.1
 urllib3==1.26.15
