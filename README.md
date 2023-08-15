@@ -144,7 +144,7 @@ name: Lint Code Base
 on:
   push:
     branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master
+    # Remove the line above to run when pushing to master or main
   pull_request:
     branches: [master, main]
 
@@ -187,7 +187,7 @@ jobs:
         uses: super-linter/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -232,7 +232,7 @@ Example usage:
   uses: super-linter/super-linter@v5
   env:
     VALIDATE_ALL_CODEBASE: false
-    DEFAULT_BRANCH: master
+    DEFAULT_BRANCH: main
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -258,7 +258,7 @@ Example usage:
   uses: super-linter/super-linter/slim@v5
   env:
     VALIDATE_ALL_CODEBASE: false
-    DEFAULT_BRANCH: master
+    DEFAULT_BRANCH: main
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -456,7 +456,7 @@ name: Lint Code Base
 on:
   push:
     branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master
+    # Remove the line above to run when pushing to master or main
   pull_request:
     branches: [master, main]
 
@@ -490,7 +490,7 @@ jobs:
         uses: super-linter/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
