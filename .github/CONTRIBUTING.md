@@ -62,6 +62,6 @@ If you are the current maintainer of this action you can create releases from th
 - [Using Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 - [GitHub Help](https://docs.github.com/en)
 
-[pulls]: https://github.com/github/super-linter/pulls
-[pr]: https://github.com/github/super-linter/compare
-[fork]: https://github.com/github/super-linter/fork
+[pulls]: https://github.com/super-linter/super-linter/pulls
+[pr]: https://github.com/super-linter/super-linter/compare
+[fork]: https://github.com/super-linter/super-linter/fork

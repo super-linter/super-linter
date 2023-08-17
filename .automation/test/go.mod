@@ -1,4 +1,4 @@
-module github.com/github/super-linter
+module github.com/super-linter/super-linter
 
 go 1.17
 

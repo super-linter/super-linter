@@ -5,7 +5,7 @@ template: |
   # Changelog
   $CHANGES
 
-  See details of [all code changes](https://github.com/github/super-linter/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION) since previous release
+  See details of [all code changes](https://github.com/super-linter/super-linter/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION) since previous release
 
 categories:
   - title: '🚀 Features'
@@ -28,13 +28,13 @@ change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 version-resolver:
   major:
     labels:
-      - 'type: breaking'
+      - 'breaking'
   minor:
     labels:
-      - 'type: enhancement'
+      - 'enhancement'
   patch:
     labels:
-      - 'type: bug'
-      - 'type: maintenance'
-      - 'type: documentation'
+      - 'bug'
+      - 'maintenance'
+      - 'documentation'
   default: patch
