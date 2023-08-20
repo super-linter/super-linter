@@ -1,3 +1,3 @@
 func test() {
-    let index: Int = 0
+  let index: Int = 0
 }

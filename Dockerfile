@@ -73,7 +73,6 @@ RUN apk add --no-cache \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
     libintl libssl1.1 libstdc++ \
-    libressl-dev \
     libxml2-dev libxml2-utils \
     linux-headers \
     lttng-ust-dev \
@@ -250,7 +249,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.s
 #####################
 # Install swiftlint #
 #####################
-COPY --from=swiftlint /usr/bin/swiftlint /usr/bin/swiftlint
+COPY --from=swiftformat /usr/bin/swiftformat /usr/bin/swiftformat
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
