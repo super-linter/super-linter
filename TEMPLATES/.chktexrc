@@ -1,0 +1,802 @@
+##
+##  ChkTeX, example resource file for ChkTeX.
+##  Copyright (C) 1995-96 Jens T. Berger Thielemann
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+##
+##  Contact the author at:
+##      Jens Berger
+##      Spektrumvn. 4
+##      N-0666 Oslo
+##      Norway
+##      E-mail: <jensthi@ifi.uio.no>
+##
+
+#####################################################################
+#
+# Note:   The  format  has  changed  slightly  (again).  The { ...  }
+# syntax does now mean case-sensitive comparing, while [ ...  ] means
+# case-insensitive   comparing  of  the  keywords.   Case-insensitive
+# comparing  of  the  keywords  is  only  supported  on  a few of the
+# keywords  (it's not meaningful in all contexts, and it slows ChkTeX
+# down).  Keywords supporting this are marked throughout the file.
+#
+# You  may  also reset a list by saying "KEYWORD = { ...  }"; it will
+# then be set equal to the contents of the list you specify.
+#
+# Comments  begin  with  `#', and continues for the rest of the line.
+# Blank lines plus leading and trailing spaces are of course ignored.
+#
+# The general format of this file is the following:
+#
+# KEYWORD { item item ...} [ item item ... ] /* Adds items */
+#
+# KEYWORD [ item item ...] { item item ... } /* Adds items */
+#
+# KEYWORD = item
+#
+# KEYWORD = { item item ... } /* Clears list before adding */
+#
+# KEYWORD = [ item item ... ] /* Clears list before adding */
+#
+# This  does  _not_  mean  that  you may alternate the forms; certain
+# keywords  demands  a  list, other a single value.  You thus have to
+# look at the examples of their use.
+#
+# Please  also  note  that if you specify a list-keyword twice, we'll
+# concatenate the lists.   If you specify a item-keyword twice, we'll
+# kill the previous value.
+#
+# We  are  slightly  context-sensitive when detecting tokens like "}"
+# and "]"; they have to be preceded by a space.  This generally makes
+# life easier.
+#
+# Items  are separated by spaces.  Newlines are considered as spaces,
+# but  can't be escaped.  You may surround items with quotes (`"') to
+# easily put spaces into them.
+#
+# Escape sequences available:
+#
+#   Sequence        Resulting character
+#   !               A space (type `! ', not just a exclamation mark)
+#   !"              "
+#   !#              #
+#   !!              !
+#   !{              {
+#   !}              }
+#   ![              [
+#   !]              ]
+#   !=              =
+#   !b              Backspace
+#   !n              New line
+#   !r              Carriage return
+#   !t              Tab
+#   !f              Form feed
+#   !xNN            NN must be a hexadecimal number (00 - ff),
+#                   _both_ characters must be included.
+#   !dNNN           DDD must be a decimal number (000 - 255), all
+#                   three characters must be included. Unspecified
+#                   results if DDD > 255.
+#   !NNN            DDD must be a octal number (000 - 377), all
+#                   three characters must be included. Unspecified
+#                   results if DDD > 377.
+#
+# Minor  note:   As  you  can see, most of these escape sequences are
+# equal  to  those  in  C  (with  some extensions); however, we use !
+# instead of \ as escape character for obvious reasons.
+#
+#
+# Quick summary of keywords follows.  Keywords marked with a * accept
+# keywords accepting case-insensitive lists.
+#
+#   Abbrev*     - A list of abbreviations not automatically caught.
+#   CenterDots  - Commands/characters  which  should  have  \cdots in
+#                 between.
+#   CmdLine     - Default   commandline   options.    These  will  be
+#                 processed  before  the ones you give on the command
+#                 line.
+#   HyphDash   \
+#   NumDash     - Number of dashes allowed in different contexts.
+#   WordDash   /
+#   IJAccent    - Commands   which   puts   an  accent  _over_  their
+#                 argument.
+#   Italic      - Commands immediately turning on italic mode.
+#   ItalCmd     - Commands putting their argument into italic.
+#   Linker      - Commands  which should have a non-breaking space in
+#                 front.
+#   LowDots     - Commands/characters  which  should  have  \ldots in
+#                 between.
+#   MathEnvir   - Environments which turn on math mode.
+#   MathCmd     - Commands which turn on math mode.
+#   TextCmd     - Commands which turn off math mode.
+#   MathRoman   - Mathematical   operators   with  LaTeX  replacement
+#                 defined.
+#   NoCharNext  - Insists on that certain commands aren't followed by
+#                 certain characters.
+#   NonItalic   - Commands immediately turning off italic mode.
+#   NotPreSpaced- Commands  which should not have a space in front of
+#                 them.
+#   Primitives  - Primitive TeX commands.
+#   PostLink    - Commands which generates a page reference.
+#   OutFormat   - Formats  to use for output.  See the -f & -v switch
+#                 in the main doc.
+#   QuoteStyle  - Either  "Traditional"  or "Logical".  See main doc,
+#                 warning 38.
+#   Silent      - These  commands  do not produce any textual output;
+#                 and are thus allowed to have a space after them.
+#   TabSize     - Tab size you are using.
+#   TeXInputs   - Paths to search \input and \include files for.
+#   UserWarn*   - These  strings  will be searched for throughout the
+#                 text.
+#   VerbEnvir   - Environments which contents should be ignored.
+#   VerbClear   - String we will overwrite unwanted data with.
+#   WipeArg     - Commands  (with  arguments) which should be ignored
+#                 in the checking.
+#
+
+
+#####################################################################
+#
+# Enter which type of  quote-style you are using here.  Currently, we
+# support the following styles:
+#
+#  Style        Example of use
+#  Traditional  "An example," he said, "would be great."
+#  Logical      "An example", he said, "would be great".
+#
+
+QuoteStyle = Logical
+
+#####################################################################
+#
+# Enter  here what interval you have between your tabs.  Only regular
+# intervals are supported.
+#
+
+TabSize = 8
+
+#####################################################################
+#
+# Here, you can put default commandline options; most users would for
+# instance like to put -v2 here.
+#
+
+CmdLine
+{
+    -v2
+}
+
+#####################################################################
+#
+# These  patterns  will  be  searched for through the text; no matter
+# whether   they   appear  as  normal  text,  commands  or  whatever.
+# Currently case-sensitive.  They are not found in comments.
+#
+# I usually define a special command like this:
+#
+# \def\unknown{\large\bf??}
+#
+# which  I use whenever there is some information I don't have at the
+# moment of writing.  Thus, it makes sense to search for it.
+#
+# You should be able to develop your own uses for this.
+#
+
+UserWarn
+{
+
+    \unknown
+###
+#
+# Another example; one should write \chktex or Chk\TeX - never ChkTeX.
+#
+###
+
+    ChkTeX
+}
+[
+
+###
+#
+# You may put case-insensitive patterns here.
+#
+###
+
+]
+
+
+###
+#
+# These patterns will be searched for, no matter whether they appear
+# as normal text, commands or arguments.  However, they will _not_
+# match in verbatim environments.
+#
+# Remember that you have to escape (with a !) the following
+# characters: "#!= as well as spaces and {}[] if they are proceeded by
+# a space.
+#
+# Since these are PCRE regular expressions, you can use (?i) to make
+# the expression case insensitive.  See the man pages (man pcresyntax)
+# or the nicely formatted http://perldoc.perl.org/perlre.html for
+# documentation on the regular expression syntax.  Note however that
+# some the features of perl regular expression are not available such
+# as running code (callouts), and replacing.
+#
+# An initial PCRE comment (?# ... ) can be used change what is
+# displayed, thereby reminding yourself how to fix the problem.
+#
+###
+UserWarnRegex
+{
+
+  (?!#Always! use! \nmid)\\not! *(\||\\mid)
+
+  # capitalize section when saying Section 6.
+  (?!#-1:Capitalize! before! references)PCRE:\b(chapter|(sub)?section|theorem|lemma|proposition|corollary|appendix)~\\ref
+  (?!#1:Capitalize! before! references)POSIX:([^[:alnum:]]|^)(chapter|(sub)?section|theorem|lemma|proposition|corollary|appendix)~\\ref
+
+  # spell it out.
+  # PCRE:(?i)\bintro\b(?!#Spell! it! out.! This! comment! is! not! used.)
+  # POSIX:([^[:alnum:]]|^)intro([^[:alnum:]]|$)
+
+  # Pretty tables--see http://texdoc.net/texmf-dist/doc/latex/booktabs/booktabs.pdf
+  (?!#-2:Use! \toprule,! midrule,! or! \bottomrule! from! booktabs)\\hline
+  # This relies on it being on a single line, and not having anything
+  # else on that line.  With PCRE we could match balanced [] and {},
+  # but I wonder if it's worth the complexity...
+  (?!#-2:Vertical! rules! in! tables! are! ugly)\\begin\{(array|tabularx?\*?)\}(\[.*\])?\{.*\|.*\}
+
+}
+
+
+#####################################################################
+#
+# Here you can list the path of where ChkTeX should look for files it
+# \inputs.   The  // postfix is now supported; if you append a double
+# path-separator we'll recursively search that directory directories.
+# MS-DOS users must append \\ instead, e.g.  "C:\EMTEX\\".
+#
+# If you under either MS-DOS or UNIX wish to search an entire
+# partition or the complete directory tree, you must use *three*
+# slashes, e.g. "c:\\\" or "///". This may be considered to be a bug.
+#
+# By  default,  we'll  search the current directory (not recursively,
+# put  "//"  in the list for this); any paths specified below will be
+# searched in addition to this.
+#
+
+TeXInputs
+{
+
+}
+
+#####################################################################
+#
+# Here you may specify more output formats for use with the -v option,
+# it simply indexes  into this list.  Remember to use ! instead of \,
+# though.
+#
+# For explanation of how % fields expand; look at ChkTeX.{dvi,ps,pdf}.
+#
+# We will by default select entry number _two_ in this list (we count
+# from 0), and -v without any parameter selects entry number _three_.
+#
+
+OutFormat
+{
+
+# -v0; silent mode
+%f%b%l%b%c%b%n%b%m!n
+
+# -v1; normal mode
+"%k %n in %f line %l: %m!n%r%s%t!n%u!n"
+
+# -v2; fancy mode
+"%k %n in %f line %l: %m!n%r%i%s%I%t!n!n"
+
+# -v3; lacheck mode
+"!"%f!", line %l: %m!n"
+
+# -v4; verbose lacheck mode
+"!"%f!", line %l: %m!n%r%s%t!n%u!n"
+
+# -v5; no line number, ease auto-test
+"%k %n in %f: %m!n%r%s%t!n%u!n"
+
+# -v6; emacs compilation mode
+"!"%f!", line %l.%c:(#%n) %m!n"
+
+}
+
+
+
+#####################################################################
+#
+# These commands should  be ignored when detecting  whether a command
+# is ended by a space.  You can specify regular expressions in the []
+# section in  case you  have many  custom macros  that can  be safely
+# terminated with a space.
+#
+
+Silent
+{
+    \rm \em \bf \it \sl \sf \sc \tt \selectfont
+    \rmfamily \sffamily \ttfamily \mdseries \bfseries
+    \slshape \scshape \relax
+    \vskip \pagebreak \nopagebreak
+
+    \textrm \textem \textbf \textit \textsl \textsf \textsc \texttt
+
+    \clearpage \ddots \dotfill \flushbottom \fussy \indent \linebreak
+    \onecolumn \pagebreak \pushtabs \poptabs \scriptsize \sloppy
+    \twocolumn \vdots
+    \today \kill \newline \thicklines \thinlines
+
+    \columnsep \space \item \tiny \footnotesize \small \normalsize
+    \normal \large \Large \LARGE \huge \Huge \printindex
+
+    \newpage \listoffigures \listoftables \tableofcontents
+    \maketitle \makeindex
+
+    \hline \hrule \vrule
+
+    \centering
+
+    \bigskip \medskip \smallskip
+
+    \noindent \expandafter
+
+    \makeatletter \makeatother
+
+    \columnseprule
+
+    \textwidth \textheight \hsize \vsize
+
+    \if \fi \else
+
+    \csname \endcsname
+
+    \z@ \p@ \@warning \typeout
+
+    \dots \ldots \input \endinput \nextline \leavevmode \cdots
+    \appendix \listfiles \and \quad
+    \hskip \vfill \vfil \hfill \hfil \topmargin \oddsidemargin
+    \frenchspacing \nonfrenchspacing
+    \begingroup \endgroup \par
+
+    \vrefwarning \upshape \headheight \headsep \hoffset \voffset
+    \cdot \qquad
+    \left \right
+    \qedhere
+
+    \xspace
+
+    \addlinespace \cr \fill \frontmatter
+    \toprule \midrule \bottomrule
+
+}[
+# Here you can put regular expressions to match Silent macros.  It was
+# designed for  the case where you  have many custom macros  sharing a
+# common prefix, but can of course be used for other things.
+
+# Support ConTeXt to at least some extent
+\\start.* \\stop.*
+
+]
+
+#####################################################################
+#
+# Here,  you  can  specify the length of various dashes.  We sort the
+# dash according to which type of characters that are on the left and
+# right of it.  We are only conclusive if they are the same.
+#
+# We associate as follows:
+#
+#     Name        Type of character on each side
+#     HyphDash    Alphabetic (foo-bar)
+#     NumDash     Numeric (2--3)
+#     WordDash    Space (like this --- see?)
+#
+# Below you specify how many dashes which are legal in each case.  We
+# define 0 as  a magic constant which always generates an error.  You
+# may specify more than one legal dash-length.
+#
+# Let's look at an example.  You use the following dash-syntax:
+#
+#     foo-bar
+#     2--3
+#     like this---see?
+#
+#
+# HYPHDASH { 1 3 }        # Either a hyphen, or inter-word
+# NUMDASH { 2 }           # Between words
+# WORDDASH { 0 }          # We never use this
+#
+
+HyphDash
+{
+    1 3
+}
+
+NumDash
+{
+    2
+}
+
+WordDash
+{
+    3
+}
+
+#####################################################################
+#
+# Here are exceptions to the dash rules above.  For example, an
+# n-dash -- between words is usually wrong, but in some cases it is
+# correct, such as when naming a theorem.  The Birch--Swinnerton-Dyer
+# conjecture is one example where the difference matters.  You can
+# tell that Birch is one person and Swinnerton-Dyer is another.
+#
+# Adding line suppressions for these is possible, but can quickly
+# become tedious if a certain theorem is referenced often.  For this
+# reason exceptions can be specified here.  They are case-sensitive.
+#
+
+DashExcpt
+{
+    Birch--Swinnerton-Dyer
+}
+
+#####################################################################
+#
+# This  keyword  indicates commands  whose argument isn't LaTeX code,
+# and thus should be ignored.
+#
+# After  the command,  you may  place  arguments that  you wish  that
+# should be wiped  in the process; use [] for  optional arguments, {}
+# for  required ones  and *  if the  command supports  an alternative
+# variant.  These should be separated  from the command with a colon.
+# Some  commands (e.g.  \cmidrule)  use ()  to  delimit and  optional
+# argument and so this syntax is supported as well.
+#
+# For  instance,  if  you would like to wipe the \newcommand command,
+# you would declare it as \newcommand:*[][]{}
+#
+# These  commands may be "executed" before they're wiped, so you will
+# typically also wish to list filehandling commands and similar here.
+#
+
+WipeArg
+{
+    \label:{} \ref:{} \eqref:{} \vref:{} \pageref:{} \index:[]{}
+    \cite:[][]{} \nocite:{}
+    \input:{} \verbatiminput:[]{} \listinginput:[]{}{}
+    \verbatimtabinput:[]{} \include:{} \includeonly:{}
+    \bibitem:[]{}
+    \cline:{} \cmidrule:[](){}
+    \href:{}{}
+    # Cleveref -- there are many others that could be here as well...
+    \cref:*{} \cpageref:*{} \crefrange:*{}{} \cpagerefrange:*{}{}
+    \Cref:*{} \Cpageref:*{} \Crefrange:*{}{} \Cpagerefrange:*{}{}
+    # natbib
+    \citet:*[][]{} \citep:*[][]{} \citealt:*{} \citealp:*[]{} \citeauthor:*{}
+    \Citet:*[][]{} \Citep:*[][]{} \Citealt:*{} \Citealp:*[]{} \Citeauthor:{}
+    \citetext:{} \citeyear:*{} \citeyearpar:{}
+    # tipa which uses "
+    \textipa:{}
+}
+
+#####################################################################
+#
+# These environments contain material which will be typeset as
+# mathematics by LaTeX.  This turns on/off some warnings.
+#
+# We will automagically append a * to each keyword.
+#
+
+MathEnvir
+{
+    displaymath math eqnarray array equation
+    align alignat gather flalign multline
+}
+
+#####################################################################
+#
+# These commands contain material which will be typeset as mathematics
+# by LaTeX.  The commands are assumed to have one mandatory argument
+# which is in math mode.  This turns on/off some warnings.
+#
+
+MathCmd
+{
+    \ensuremath
+}
+
+#####################################################################
+#
+# These commands contain material which will _not_ be typeset as
+# mathematics by LaTeX even if it would otherwise be in mathmode.  The
+# commands are assumed to have one mandatory argument which is in text
+# mode.  This turns on/off some warnings.
+#
+
+TextCmd
+{
+    \text \intertext \shortintertext \mbox
+}
+
+#####################################################################
+#
+# These  environments  contains  material  which  contents  should be
+# ignored.
+#
+# We will automagically append a * to each keyword.
+#
+
+VerbEnvir
+{
+    verbatim comment listing verbatimtab rawhtml errexam picture texdraw
+    filecontents pgfpicture tikzpicture minted lstlisting IPA ignore
+}
+
+#####################################################################
+#
+# ChkTeX  does  automagically  catch  most abbreviations; the ones we
+# need  to  list here, are those which are most likely to be followed
+# by a word with an upper-case letter (that is not the beginning of a
+# new sentence).
+#
+# The case-insensitive abbreviations are not really case-insensitive,
+# it seems to be more  practical to  only let  the first character be
+# case-insensitive, while the remaining are case-sensitive.
+#
+# To  speed  up the searching process somewhat, we require that these
+# end in a `.', this should not be a problem.
+#
+# Much  of  this  work (both the abbreviations below, and the regexps
+# necessary  to catch the remaining automatically) have been provided
+# by Russ Bubley, <russ@scs.leeds.ac.uk>.
+#
+
+Abbrev
+{
+# Ordinals
+1st. 2nd. 3rd. 4th.
+# Titles
+Mr. Mrs. Miss. Ms. Dr. Prof. St.
+
+#
+# Days
+# Mon. Tue. Wed. Thu. Fri. Sat. Sun.
+#
+# Months
+# Jan. Feb. Mar. Apr. May. Jun. Jul. Aug. Sep. Oct. Nov. Dec.
+#
+# Letters
+# Kt. Jr.
+#
+# Corporate
+# Co. Ltd.
+#
+# Addresses
+# Rd. Dr. St. Ave. Cres. Gdns. Sq. Circ. Terr. Pl. Arc. La. Clo. Ho. Est. Gn.
+#
+# Misc.
+# oe. pbab. ps. rsvp. Tx.
+}
+[
+###
+#
+# The first letter is case-insensitive in the abbrevs in this
+# list. Due to the nature of the checking algorithm used for
+# this, entries consisting of only one character will be
+# silently ignored.
+#
+##
+
+# Latin
+# cf. "et al." etc. qed. qv. viz.
+#
+# Corporate
+# inc. plc.
+#
+# Misc
+# fax. pcs. qty. tel. misc.
+]
+
+#####################################################################
+#
+# Commands which accent characters, meaning that \i or \j (\imath and
+# \jmath in mathmode) should be used instead of `i' and `j'
+#
+
+IJAccent
+{
+    \hat \check \breve \acute \grave \tilde \bar \vec \dot \ddot
+
+    \' \` \^ \" \~ \= \. \u \v \H \t
+
+###
+#
+# The  remaining  accent commands (\c,\d,\b) put their accent _under_
+# the  character,  not above, and should thus be used with normal i's
+# and j's.
+#
+###
+
+}
+
+#####################################################################
+#
+# Commands   which,  when  the  group  is  terminated,  needs  italic
+# correction.
+#
+
+Italic
+{
+    \it \em \sl
+    \itshape \slshape
+}
+
+#####################################################################
+#
+# Commands which makes the font non-italic.
+#
+
+NonItalic
+{
+    \bf \rm \sf \tt \sc
+    \upshape
+}
+
+#####################################################################
+#
+# Commands which  put their argument  into italic (and  thus possibly
+# needs italic correction in the end).
+#
+# This is currently  empty, since \textit, \textsl and  \emph do that
+# automatically.
+#
+
+ItalCmd
+{
+}
+
+#####################################################################
+#
+# These  commands  all have in common that a pagebreak right in front
+# of  them  is  highly  undesirable; thus there should be no space in
+# front of them.
+#
+
+PostLink
+{
+    \index \label
+}
+
+#####################################################################
+#
+# These commands should not have a space in front of them for various
+# reasons.   I.e.   much  the  same as POSTLINK, but produces another
+# warning.
+#
+
+NotPreSpaced
+{
+    \footnote \footnotemark \/
+}
+
+#####################################################################
+#
+# The  commands  listed  here,  should be prepended with a `~', as in
+# "look  in  table~\ref{foo}", to avoid the references being split
+# across lines.
+#
+
+Linker
+{
+    \ref \vref \pageref \eqref \cite
+}
+
+#####################################################################
+#
+# Commands/characters  which  should  have  \cdots  in  between, e.g.
+# $1+2+3+\cdots+n$.
+#
+
+CenterDots
+{
+    = + - \cdot \div & \times \geq \leq < >
+}
+
+#####################################################################
+#
+# Commands/characters  which  should  have  \ldots  in  between, e.g.
+# $1,2,3,\ldots,n$.
+#
+
+LowDots
+{
+    . , ;
+}
+
+#####################################################################
+#
+# In maths mode, there are certain aliases for mathematical operators
+# like  sin, cos, etc.  Ignore the leading backslash in the commands,
+# and so forth.  You should list these below.
+#
+
+MathRoman
+{
+    log lg ln lim limsup liminf sin arcsin sinh cos arccos cosh tan
+    arctan tanh cot coth sec csc max min sup inf arg ker dim hom det
+    exp Pr gcd deg bmod pmod mod
+}
+
+#####################################################################
+#
+# These  TeX commands  have become  unnecessary, as  there are  LaTeX
+# commands that  does the same.   Purists should thus avoid  these in
+# their code.
+#
+# (These are a spell-corrected version of those lacheck uses).
+#
+
+Primitives
+{
+    \above \advance \catcode \chardef \closein \closeout \copy \count
+    \countdef \cr \crcr \csname \delcode \dimendef \dimen \divide
+    \expandafter \font \hskip \vskip \openout
+}
+
+#####################################################################
+#
+# Format: \command:characters
+#
+# We'll emit a warning if any of characters are found after the
+# command.
+#
+
+NoCharNext
+{
+    \left:{}$ \right:{}$
+}
+
+#####################################################################
+#
+# We're killing \verb@...@ commands and the arguments of the commands
+# listed above in WipeArg by overwriting them with a string or a
+# single character.
+#
+# This should not  contain an alphabetic character (in  case the user
+# writes  (\foo\verb@bar@),  neither  should  it contain  be  one  of
+# LaTeX's  reserved  characters  (`#$%&~_^\{}'), or  any  parenthesis
+# character  ('()[]{}').   If  possible,   don't  use  a  punctuation
+# character, either, or any spacing character.
+#
+# The asterisk is also unsuitable, as some commands behave in another
+# way if  they are  appended with  an asterisk.   Which more  or less
+# leaves us with the pipe.
+#
+# Please  note  that  this  may  also  be  a  _string_, which will be
+# repeated until the proper length is reached.
+#
+
+VerbClear = "|"
+
+#
+# All for now - have fun.
+#
+#####################################################################

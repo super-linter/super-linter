@@ -1,0 +1,67 @@
+---
+- name: Splunk settings
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - splunk
+    - github
+    - ghe_primary
+    - initialize
+  block:
+  ###############################
+  # Wait for admin port to open #
+  ###############################
+  - name: Wait for Admin port to come up (Port 8443)
+    ## Doc: http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
+    ## Helpful Google: ansible wait_for
+    ansible.builtin.wait_for:
+      host: "{{ ansible_host }}"
+      port: 8443
+      delay: 5
+      timeout: 300
+      state: started
+    changed_when: false
+
+  #################################
+  # Wait for successful open port #
+  #################################
+  - name: Wait for http status 200
+    changed_when: false
+    ansible.builtin.uri:
+      url: "https://{{ ansible_host }}:8443"
+      validate_certs: "no"
+    register: http_result
+    # ignore_errors: true
+    until: http_result.status == 200
+    retries: 100
+    delay: 3
+
+  #######################################################
+  # Copy License file to GHE to decrypt file and upload #
+  #######################################################
+  # Copy of the file will allow for Ansible Vault to decrypt the file
+  # and place it on the new remote machine
+  - name: Copy splunk-settings.json File to GHE
+    become: true
+    ansible.builtin.template:
+      src: "splunk-settings.json.j2"
+      dest: /tmp/splunk-settings.json
+      owner: admin
+      group: admin
+      mode: 0644
+
+  ########################################################
+  # Set up Admin password, License, and Initial Settings #
+  ########################################################
+  - name: Setup Splunk
+    # yamllint disable
+    ansible.builtin.shell: curl --fail -Lk \
+      -X PUT "https://api_key:{{ github_admin_password }}@{{ ansible_host }}:8443/setup/api/settings" \
+      --data-urlencode "settings=`cat /tmp/splunk-settings.json`"
+    # yamllint enable
+    retries: 10
+    delay: 5
+    register: http_splunk_config_result
+    until: http_splunk_config_result.rc == 0
+    notify: ghe config apply

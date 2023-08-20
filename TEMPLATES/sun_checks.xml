@@ -51,8 +51,7 @@
 
   <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
   <module name="SuppressionFilter">
-    <property name="file" value="${org.checkstyle.sun.suppressionfilter.config}"
-              default="checkstyle-suppressions.xml" />
+    <property name="file" value="${org.checkstyle.sun.suppressionfilter.config}" default="checkstyle-suppressions.xml" />
     <property name="optional" value="true"/>
   </module>
 
@@ -95,6 +94,8 @@
   <!--   <property name="fileExtensions" value="java"/> -->
   <!-- </module> -->
 
+  <!-- Enables @SuppressWarnings Support                -->
+  <module name="SuppressWarningsFilter"/>
   <module name="TreeWalker">
 
     <!-- Checks for Javadoc comments.                     -->
@@ -105,6 +106,8 @@
     <module name="JavadocVariable"/>
     <module name="JavadocStyle"/>
     <module name="MissingJavadocMethod"/>
+    <!-- Enables @SuppressWarnings Support                -->
+    <module name="SuppressWarningsHolder"/>
 
     <!-- Checks for Naming Conventions.                  -->
     <!-- See https://checkstyle.org/config_naming.html -->
@@ -121,7 +124,8 @@
     <!-- Checks for imports                              -->
     <!-- See https://checkstyle.org/config_imports.html -->
     <module name="AvoidStarImport"/>
-    <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <module name="IllegalImport"/>
+    <!-- defaults to sun.* packages -->
     <module name="RedundantImport"/>
     <module name="UnusedImports">
       <property name="processJavadoc" value="false"/>
@@ -188,8 +192,7 @@
 
     <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
     <module name="SuppressionXpathFilter">
-      <property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}"
-                default="checkstyle-xpath-suppressions.xml" />
+      <property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}" default="checkstyle-xpath-suppressions.xml" />
       <property name="optional" value="true"/>
     </module>
 

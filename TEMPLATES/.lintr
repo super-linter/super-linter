@@ -1,0 +1,1 @@
+linters: linters_with_defaults(object_usage_linter = NULL)

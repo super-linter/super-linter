@@ -11,19 +11,19 @@ issues:
   exclude-rules:
     - path: _test\.go
       linters:
-      - dupl
-      - gosec
-      - goconst
+        - dupl
+        - gosec
+        - goconst
 linters:
   enable:
-    - golint
     - gosec
     - unconvert
     - gocyclo
     - goconst
     - goimports
-    - maligned
     - gocritic
+    - govet
+    - revive
 linters-settings:
   errcheck:
     # report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;

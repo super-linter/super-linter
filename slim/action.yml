@@ -1,0 +1,12 @@
+---
+name: 'Super-Linter slim'
+author: 'GitHub'
+description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
+runs:
+  using: 'docker'
+  image: 'docker://ghcr.io/super-linter/super-linter:slim-v5'
+branding:
+  icon: 'check-square'
+  color: 'white'
+# You can view https://github.com/super-linter/super-linter#environment-variables
+# to see a comprehensive list of all environment variables that can be passed

@@ -1,0 +1,88 @@
+---
+- name: Wait for admin port to open
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - metrics
+    - github
+    - ghe_primary
+    - initialize
+
+  block:
+  - name: Wait for Admin port to come up (Port 8443)
+    ## Doc: http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
+    ## Helpful Google: ansible wait_for
+    ansible.builtin.wait_for:
+      host: "{{ ansible_host }}"
+      port: 8443
+      delay: 5
+      timeout: 300
+      state: started
+    changed_when: false
+
+  #################################
+  # Wait for successful open port #
+  #################################
+  - name: Wait for http status 200
+    changed_when: false
+    ansible.builtin.uri:
+      url: "https://{{ ansible_host }}:8443"
+      validate_certs: "no"
+    register: http_result
+    # ignore_errors: true
+    until: http_result.status == 200
+    retries: 100
+    delay: 3
+
+  #######################################################
+  # Copy License file to GHE to decrypt file and upload #
+  #######################################################
+  # Copy of the file will allow for Ansible Vault to decrypt the file
+  # and place it on the new remote machine
+  - name: Copy collectd-settings.json File to GHE
+    become: true
+    ansible.builtin.template:
+      src: "collectd-settings.json.j2"
+      dest: /tmp/collectd-settings.json
+      owner: admin
+      group: admin
+      mode: 0644
+
+  ########################################################
+  # Set up Admin password, License, and Initial Settings #
+  ########################################################
+  - name: Setup Grafana
+    # yamllint disable
+    ansible.builtin.shell: curl --fail -Lk \
+      -X PUT "https://api_key:{{ github_admin_password }}@{{ ansible_host }}:8443/setup/api/settings" \
+      --data-urlencode "settings=`cat /tmp/collectd-settings.json`"
+    # yamllint enable
+    retries: 10
+    delay: 5
+    register: http_collectd_config_result
+    until: http_collectd_config_result.rc == 0
+    notify: ghe config apply
+
+
+  #####################################
+  # Edit forwarding.conf with metrics #
+  #####################################
+  - name: Copy forwarding.conf File to GHE
+    become: true
+    ansible.builtin.template:
+      force: true
+      src: "forwarding.conf.j2"
+      dest: /etc/collectd/conf.d/forwarding.conf
+      owner: root
+      group: root
+      mode: 0644
+
+  ###########################################
+  # Restart Collectd service to take effect #
+  ###########################################
+  - name: Restart Collectd service
+    become: true
+    ansible.builtin.service:
+      name: collectd
+      state: restarted

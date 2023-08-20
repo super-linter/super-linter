@@ -1,0 +1,14 @@
+---
+################################
+################################
+## GitHub Enterprise Handlers ##
+################################
+################################
+
+####################
+# GHE config apply #
+####################
+- name: GHE Config Apply
+  ansible.builtin.command: ghe-config-apply
+  poll: 0
+  async: 300

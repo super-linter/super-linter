@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+not ok 1 - terraform-terrascan_bad_1.tf
+  ---
+  message: 2021-03-09T14 08 05.328Z	error	opa/engine.go 90	failed to load rego file{file 15 0 /root/.terrascan/pkg/policies/opa/rego/aws/aws_kms_key/kmsKeyNoDisabled.rego <nil>} {error 25 0 open /root/.terrascan/pkg/policies/opa/rego/aws/aws_kms_key/kmsKeyNoDisabled.rego no such file or directory}\nresults \n violations \n - rule_name instanceWithNoVpc\n description Ensure that your AWS application is not deployed within the default Virtual Private Cloud in order to follow security best practices\n rule_id AC-AW-IS-IN-M-0146\n severity MEDIUM\n category Infrastructure Security\n resource_name instanceWithNoVpc\n resource_type aws_instance\n file terraform-terrascan_bad_1.tf\n line 1\n count \n low 0\n medium 1\n high 0\n total 1\n
+  ...
+ok 2 - terraform-terrascan_good_1.tf

@@ -1,0 +1,34 @@
+---
+- name: Configure the GHE Instance
+  tags:
+    - github
+    - ghe_primary
+    - initialize
+  block:
+    ######################################################
+    # Need to run the tasks to stand up the GHE instance #
+    ######################################################
+    # Configure the base system
+    - ansible.builtin.include_tasks: ghe-initial-configuration.yml
+
+- name: Configure the GHE LDAP
+  tags:
+    - openldap
+  block:
+    ############################################################
+    # Need to run the tasks to config LDAP on the GHE instance #
+    ############################################################
+    # Configure the base system
+    - ansible.builtin.include_tasks: ghe-ldap-configuration.yml
+
+- name: Configure the GHE Instance Block
+  tags:
+    - github
+    - ghe_primary
+    - initialize
+  block:
+    ######################################################
+    # Need to run the tasks to stand up the GHE instance #
+    ######################################################
+    # Configure the base system
+    - ansible.builtin.include_tasks: ghe-api-config-apply.yml

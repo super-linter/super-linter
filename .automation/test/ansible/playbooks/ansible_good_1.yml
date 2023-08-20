@@ -1,0 +1,9 @@
+---
+- name: Configure the GHE Instance
+  hosts: github_primary
+  vars:
+    demo_github_initial_user: "{{ hostvars['localhost'].local_user }}"
+    github_host: "{{ hostvars['github_primary'].ansible_host }}"
+    probot_server_ip: "{{ hostvars['backup-utils'].ansible_host }}"
+  roles:
+    - role: ghe_initialize

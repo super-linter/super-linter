@@ -24,16 +24,20 @@ jobs:
   # Mark an Issue Stale #
   #######################
   markstale:
+    permissions:
+      issues: write  # for actions/stale to close stale issues
+      pull-requests: write  # for actions/stale to close stale PRs
     runs-on: ubuntu-latest
     # only run on schedule
-    if: "github.event_name == 'schedule'"
+    if: ${{ github.event_name == 'schedule' }}
+    timeout-minutes: 60
     steps:
       - name: Mark issue stale
-        uses: actions/stale@v3.0.9
+        uses: actions/stale@v8
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue."
-          stale-pr-message: "This pull request has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this pull request should stay open, please remove the `O: stale 🤖` label or comment on the pull request."
+          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue.\n\nIf you're a maintainer, you can stop the bot to mark this issue as stale in the future by adding the `O: backlog 🤖` label`."
+          stale-pr-message: "This pull request has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this pull request should stay open, please remove the `O: stale 🤖` label or comment on the pull request.\n\nIf you're a maintainer, you can stop the bot to mark this issue as stale in the future by adding the `O: backlog 🤖` label`."
           days-before-stale: 30
           days-before-close: 14
           stale-issue-label: "O: stale 🤖"
@@ -47,13 +51,14 @@ jobs:
   marknotstale:
     runs-on: ubuntu-latest
     # do not run on schedule
-    if: "github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot'"
+    if: "${{ github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot' }}"
+    timeout-minutes: 60
     steps:
       - name: Mark issue not stale
-        uses: actions/github-script@v2
+        uses: actions/github-script@v6
         with:
           script: |
-            github.issues.removeLabel({
+            github.rest.issues.removeLabel({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,

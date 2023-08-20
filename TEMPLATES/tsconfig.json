@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true
+  },
+  "include": [
+    "src",
+    "tests",
+    "tools",
+    "/tmp/lint/.automation/test"
+  ]
+}

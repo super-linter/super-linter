@@ -1,0 +1,4 @@
+---
+collections:
+  - ansible.posix
+...

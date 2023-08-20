@@ -1,3 +1,4 @@
+---
 ##########################
 ##########################
 ## Ansible Linter rules ##
@@ -7,7 +8,7 @@
 #############################
 # Exclude paths from linter #
 #############################
-#exclude_paths:
+# exclude_paths:
 
 ########################
 # Make output parsable #
@@ -22,23 +23,25 @@ quiet: true
 #####################
 # Path to rules dir #
 #####################
-#rulesdir:
+# rulesdir:
 
 ################
 # Tags to skip #
 ################
 skip_list:
-  - '602' # Allow compare to empty string
-  - '204' # Allow string length greater than 160 chars
-  - '301' # False positives for running command shells
-  - '303' # Allow git commands for push, add, etc...
-  - '305' # Allow use of shell when you want
-  - '503' # Allow step to run like handler
+  - 'empty-string-compare'  # Allow compare to empty string
+  - '204'  # Allow string length greater than 160 chars
+  - 'no-changed-when'  # False positives for running command shells
+  - 'command-instead-of-module'  # Allow git commands for push, add, etc...
+  - 'command-instead-of-shell'  # Allow use of shell when you want
+  - 'no-handler'  # Allow step to run like handler
+  - 'unnamed-task' # Allow tasks without a name
+  - 'yaml' # Disable YAML linting since it's done by yamllint
 
 ##################
 # Tags to follow #
 ##################
-#tags:
+# tags:
 
 #############
 # Use rules #

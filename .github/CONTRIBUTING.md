@@ -26,7 +26,7 @@ We're thrilled that you'd like to contribute to this project. Your help is essen
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
 
 - Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
-- Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+- Write [good commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 Draft pull requests are also welcome to get feedback early on, or if there is something blocking you.
 
@@ -41,26 +41,27 @@ The **Super-Linter** has _CI/CT/CD_ configured utilizing **GitHub** Actions.
 - The **Docker** container is then ran against the _test cases_ to validate all code sanity
   - `.automation/test` contains all test cases for each language that should be validated
 - These **GitHub** Actions utilize the Checks API and Protected Branches to help follow the SDLC
-- When the Pull Request is merged to master, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
+- When the Pull Request is merged to main, the **Super-Linter** **Docker** container is then updated and deployed with the new codebase
   - **Note:** The branch's **Docker** container is also removed from **DockerHub** to cleanup after itself
 
 ## Releasing
 
-If you are the current maintainer of this action:
+If you are the current maintainer of this action you can create releases from the `Release` page  of the repository.
 
-1. If a major version number change: Update `README.md` and the wiki to reflect new version number in the example workflow file sections
-2. Draft [Releases](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) are created automatically. They just need to be checked over for accuracy before making it official.
-3. Ensure you check the box for [publishing to the marketplace](https://help.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace#publishing-an-action)
-4. A GitHub Action will Publish the Docker image to GitHub Package Registry once a Release is created
-5. A GitHub Action will Publish the Docker image to Docker Hub once a Release is created
-6. Look for approval from [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
+- It will notify the issue it has seen the information and starts the Actions job
+- It will create a branch and update the `actions.yml` with the new version supplied to the issue
+- It will then create a PR with the updated code
+- It will then create the build the artifacts needed
+- it will then publish the release and merge the PR
+- A GitHub Action will Publish the Docker image to GitHub Package Registry once a Release is created
+- A GitHub Action will Publish the Docker image to Docker Hub once a Release is created
 
 ## Resources
 
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
-- [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
-- [GitHub Help](https://help.github.com)
+- [Using Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+- [GitHub Help](https://docs.github.com/en)
 
-[pulls]: https://github.com/github/super-linter/pulls
-[pr]: https://github.com/github/super-linter/compare
-[fork]: https://github.com/github/super-linter/fork
+[pulls]: https://github.com/super-linter/super-linter/pulls
+[pr]: https://github.com/super-linter/super-linter/compare
+[fork]: https://github.com/super-linter/super-linter/fork

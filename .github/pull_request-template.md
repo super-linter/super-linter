@@ -19,6 +19,6 @@ Fixes #
 ### Author/Contributor
 - [ ] If documentation is needed for this change, has that been included in this pull request
 
-### Reviewing Maintainer 
+### Reviewing Maintainer
 - [ ] Label as `breaking` if this is a large fundamental change
 - [ ] Label as either `automation`, `bug`, `documentation`, `enhancement`, `infrastructure`, or `performance`

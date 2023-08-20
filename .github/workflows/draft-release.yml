@@ -1,0 +1,35 @@
+---
+####################################
+####################################
+## Draft releases on Push to main ##
+####################################
+####################################
+name: Release Drafter
+
+###########################
+# Start on push to main #
+###########################
+on:
+  push:
+    # branches to consider in the event; optional, defaults to all
+    branches:
+      - main
+
+#################
+# Start the job #
+#################
+permissions:
+  contents: read
+
+jobs:
+  update_release_draft:
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

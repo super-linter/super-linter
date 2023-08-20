@@ -1,9 +1,12 @@
+---
 name: 'Super-Linter'
 author: 'GitHub'
 description: 'It is a simple combination of various linters, written in bash, to help validate your source code.'
 runs:
   using: 'docker'
-  image: 'docker://github/super-linter:v3'
+  image: 'docker://ghcr.io/super-linter/super-linter:v5'
 branding:
-  icon: 'check-square' 
+  icon: 'check-square'
   color: 'white'
+# You can view https://github.com/super-linter/super-linter#environment-variables
+# to see a comprehensive list of all environment variables that can be passed

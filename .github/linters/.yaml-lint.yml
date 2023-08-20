@@ -50,7 +50,7 @@ rules:
   key-duplicates: enable
   line-length:
     level: warning
-    max: 80
+    max: 1024
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
   new-line-at-end-of-file: disable

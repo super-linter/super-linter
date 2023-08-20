@@ -1,0 +1,88 @@
+---
+- name: GHE Initial configuration
+  ######################
+  # Set the tags block #
+  ######################
+  tags:
+    - github
+    - ghe_primary
+    - initialize
+
+  block:
+  ###############################
+  # Wait for admin port to open #
+  ###############################
+  - name: Wait for Admin port to come up (Port 8443)
+    # yamllint disable-line
+    ## Documentation: http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
+    ## Helpful Google: ansible wait_for
+    ansible.builtin.wait_for:
+      host: "{{ ansible_host }}"
+      port: 8443
+      delay: 5
+      timeout: 300
+      state: started
+    changed_when: false
+
+  #################################
+  # Wait for successful open port #
+  #################################
+  - name: Wait for http status 200
+    changed_when: false
+    ansible.builtin.uri:
+      url: "https://{{ ansible_host }}:8443"
+      validate_certs: "no"
+    register: http_result
+    # ignore_errors: true
+    until: http_result.status == 200
+    retries: 100
+    delay: 3
+
+  #######################################################
+  # Copy License file to GHE to decrypt file and upload #
+  #######################################################
+  # Copy of the file will allow for Ansible Vault to decrypt the file
+  # and place it on the new remote machine
+  - name: Copy License File to GHE
+    become: true
+    ansible.builtin.copy:
+      src: "{{ role_path }}/files/ghe-license.ghl"
+      dest: /tmp/ghe-license.ghl
+      owner: admin
+      group: admin
+      mode: 0600
+
+  #######################################################
+  # Copy License file to GHE to decrypt file and upload #
+  #######################################################
+  # Copy of the file will allow for Ansible Vault to decrypt the file
+  # and place it on the new remote machine
+  - name: Copy settings.json File to GHE
+    become: true
+    ansible.builtin.template:
+      src: "settings.json.j2"
+      dest: /tmp/settings.json
+      owner: admin
+      group: admin
+      mode: 0644
+
+  ########################################################
+  # Set up Admin password, License, and Initial Settings #
+  ########################################################
+  - name: Setup License, Admin Password, and Initial Settings
+    ansible.builtin.command: curl --fail -Lk \
+      -X POST "https://{{ ansible_host }}:8443/setup/api/start" \
+      -F license=@/tmp/ghe-license.ghl \
+      -F "password={{ github_admin_password }}" \
+      -F "settings=</tmp/settings.json"
+    retries: 10
+    delay: 2
+    register: http_initialconfig_result
+    until: http_initialconfig_result.rc == 0
+
+  ###################################
+  # Set the GHE Admin Password fact #
+  ###################################
+  - name: Set the GitHub Admin password fact
+    ansible.builtin.set_fact:
+      github_admin_password: "{{ github_admin_password }}"
