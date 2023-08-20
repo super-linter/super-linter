@@ -65,6 +65,9 @@ typings/
 # clj-kondo cache
 .cache
 
+# IDEs
+.idea
+
 # default output report
 super-linter.report
 
