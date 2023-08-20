@@ -22,8 +22,8 @@ FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM norionomura/swiftlint:latest as swiftlint
-FROM norionomura/swift:525
+# FROM norionomura/swift:525 may remove, may not
+FROM mtgto/swift-format:5.8 as swiftlint
 FROM zricethezav/gitleaks:v8.17.0 as gitleaks
 FROM yoheimuta/protolint:0.45.1 as protolint
 
@@ -190,6 +190,11 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 ######################
 COPY --from=kubeconfrm /kubeconform /usr/bin/
 
+########################
+# Install swift-format #
+########################
+COPY --from=swift-format /work /usr/bin/
+
 #################
 # Install Lintr #
 #################
@@ -245,11 +250,6 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 #################################
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
-
-#####################
-# Install swiftlint #
-#####################
-COPY --from=swiftformat /usr/bin/swiftformat /usr/bin/swiftformat
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
