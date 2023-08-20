@@ -148,6 +148,7 @@ control "super-linter-installed-commands" do
     { linter_name: "sqlfluff"},
     { linter_name: "standard"},
     { linter_name: "stylelint"},
+    { linter_name: "swift-format"},
     { linter_name: "tekton-lint"},
     { linter_name: "terraform"},
     { linter_name: "terragrunt"},
@@ -297,6 +298,7 @@ control "super-linter-installed-npm-packages" do
     "stylelint-config-sass-guidelines",
     "stylelint-config-standard",
     #"stylelint-scss",
+    "swift-format",
     "tekton-lint",
     "typescript"
   ]

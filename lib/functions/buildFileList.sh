@@ -726,6 +726,15 @@ function BuildFileList() {
       FILE_ARRAY_SQL+=("${FILE}")
       FILE_ARRAY_SQLFLUFF+=("${FILE}")
 
+    #####################
+    # Get the SWIFT files #
+    #####################
+    elif [ "${FILE_TYPE}" == "swift" ]; then
+      ################################
+      # Append the file to the array #
+      ################################
+      FILE_ARRAY_SWIFT+=("${FILE}")
+
     ###########################
     # Get the Terraform files #
     ###########################
