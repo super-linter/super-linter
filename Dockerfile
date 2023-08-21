@@ -241,8 +241,8 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 #################################
 # Install luacheck and luarocks #
 #################################
-#COPY scripts/install-lua.sh /
-#RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
 ################################################################################
 # Grab small clean image to build python packages ##############################
