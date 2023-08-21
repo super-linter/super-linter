@@ -22,7 +22,7 @@ FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-# FROM norionomura/swift:525 may remove, may not
+#FROM swift:5.8.1 as swift
 FROM mtgto/swift-format:5.8 as swift-format
 FROM zricethezav/gitleaks:v8.17.0 as gitleaks
 FROM yoheimuta/protolint:0.45.1 as protolint
@@ -194,7 +194,7 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 # Install swift-format #
 ########################
 COPY --from=swift-format /usr/bin/swift-format /usr/bin/
-RUN apk add --no-cache libstdc++6
+RUN apk add --no-cache libstdc++6 libstdc++-11-dev
 
 #################
 # Install Lintr #
