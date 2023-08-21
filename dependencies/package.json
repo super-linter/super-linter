@@ -21,7 +21,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-vue": "^9.15.1",
+    "eslint-plugin-vue": "^9.17.0",
     "gherkin-lint": "^4.2.2",
     "htmlhint": "^1.1.4",
     "immer": "^10.0.2",
