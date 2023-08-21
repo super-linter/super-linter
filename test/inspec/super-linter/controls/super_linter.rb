@@ -398,7 +398,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.sql-config.json",
     "/action/lib/.automation/.sqlfluff",
     "/action/lib/.automation/.stylelintrc.json",
-    "/action/lib/.automation/.swift-format.json",
+    "/action/lib/.automation/.swift-format",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",
     "/action/lib/.automation/analysis_options.yml",
