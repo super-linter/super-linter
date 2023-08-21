@@ -193,7 +193,7 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 ########################
 # Install swift-format #
 ########################
-COPY --from=swift-format /work /usr/bin/
+COPY --from=swift-format /usr/bin/swift-format /usr/bin/
 
 #################
 # Install Lintr #
