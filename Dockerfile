@@ -23,7 +23,7 @@ FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
 # FROM norionomura/swift:525 may remove, may not
-FROM mtgto/swift-format:5.8 as swiftlint
+FROM mtgto/swift-format:5.8 as swift-format
 FROM zricethezav/gitleaks:v8.17.0 as gitleaks
 FROM yoheimuta/protolint:0.45.1 as protolint
 
