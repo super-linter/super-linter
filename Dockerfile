@@ -195,7 +195,7 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 ########################
 COPY --from=swift /usr/lib/swift /usr/lib/swift
 COPY --from=swift-format /usr/bin/swift-format /usr/bin/
-RUN apk add --no-cache libstdc++ libstdc++6 libstdc++-dev libgcc build-base
+RUN apk add --no-cache libstdc++ libstdc++6 libstdc++-dev libgcc build-base libc6-compat
 
 #################
 # Install Lintr #
