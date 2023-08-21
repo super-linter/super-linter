@@ -72,7 +72,7 @@ RUN apk add --no-cache \
     jq \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
-    libintl libssl1.1 libstdc++ \
+    libintl libssl1.1 libstdc++ lib32stdc++6 \
     libxml2-dev libxml2-utils \
     linux-headers \
     lttng-ust-dev \
