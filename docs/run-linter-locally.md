@@ -17,7 +17,7 @@ You can follow the link below on how to install and configure **Docker** on your
 ## Download the latest Super-Linter Docker container
 
 - Pull the latest **Docker** container down from **DockerHub**
-  - `docker pull super-linter/super-linter:latest`
+  - `docker pull ghcr.io/super-linter/super-linter:latest`
     Once the container has been downloaded to your local environment, you can then begin the process, or running the container against your codebase.
 
 ## Run the container Locally
