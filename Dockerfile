@@ -244,6 +244,11 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+#########################
+# Clean to shrink image #
+#########################
+RUN find /usr/ -type f -name '*.md' -exec rm {} +
+
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
@@ -441,8 +446,3 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-a
 # Run to build version file and validate image again because we installed more linters #
 ########################################################################################
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
-
-#########################
-# Clean to shrink image #
-#########################
-RUN find /usr/ -type f -name '*.md' -exec rm {} +
