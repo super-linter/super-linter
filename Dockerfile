@@ -9,7 +9,7 @@
 #########################################
 FROM tenable/terrascan:1.18.3 as terrascan
 FROM alpine/terragrunt:1.5.5 as terragrunt
-FROM assignuser/chktex-alpine:v0.2.0 as chktex
+FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.47.0.0 as tflint
