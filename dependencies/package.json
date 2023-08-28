@@ -34,7 +34,7 @@
     "node-fetch": "^3.3.2",
     "npm-groovy-lint": "^11.1.1",
     "postcss-less": "^6.0.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.2",
     "prettyjson": "^1.2.5",
     "pug": "^3.0.2",
     "react": "^18.2.0",
