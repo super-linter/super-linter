@@ -998,9 +998,9 @@ LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="ts-standard --parser @typescript-e
 LINTER_COMMANDS_ARRAY['TYPESCRIPT_PRETTIER']="prettier --check"
 LINTER_COMMANDS_ARRAY['XML']="xmllint"
 if [ "${YAML_ERROR_ON_WARNING}" == 'false' ]; then
-  LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES} -f parsable"
+  LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_FILE_NAME} -f parsable"
 else
-  LINTER_COMMANDS_ARRAY['YAML']="yamllint --strict -c ${YAML_LINTER_RULES} -f parsable"
+  LINTER_COMMANDS_ARRAY['YAML']="yamllint --strict -c ${YAML_FILE_NAME} -f parsable"
 fi
 
 debug "--- Linter commands ---"
