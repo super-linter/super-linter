@@ -1,0 +1,18 @@
+{
+  "ignooooooooorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/tests/**",
+    "**/__fixtures__/**"
+  ],
+  "iggggggggnoreDeps": [
+    "go",
+    "node-fetch"
+  ],
+  "constraaaaaaaaaints": {
+    "go": "1.20"
+  }
+}

@@ -337,9 +337,8 @@ function BuildFileList() {
     fi
 
     # See https://docs.renovatebot.com/configuration-options/
-    if [ "${BASE_FILE}" == "renovate.json" ] || [ "${BASE_FILE}" == "renovate.json5" ] \
-       || [ "${BASE_FILE}" == ".renovaterc" ] || [ "${BASE_FILE}" == ".renovaterc.json" ] \
-       || [ "${BASE_FILE}" == ".renovaterc.json5" ] || [ "${BASE_FILE}" == "package.json" ]; then
+    if [[ "${BASE_FILE}" =~ renovate.+json5? ]]|| [[ "${BASE_FILE}" =~ .renovaterc.* ]] \
+       || [[ "${BASE_FILE}" =~ package.+json ]]; then
       FILE_ARRAY_RENOVATE+=("${FILE}")
     fi
 
