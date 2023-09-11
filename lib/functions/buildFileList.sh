@@ -323,6 +323,9 @@ function BuildFileList() {
     # Textlint should check every file
     FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
+    # renovate should check every file
+    FILE_ARRAY_RENOVATE+=("${FILE}")
+
     if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
       debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
     else
