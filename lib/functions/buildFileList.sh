@@ -323,9 +323,6 @@ function BuildFileList() {
     # Textlint should check every file
     FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
-    # renovate should check every file
-    FILE_ARRAY_RENOVATE+=("${FILE}")
-
     if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
       debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
     else
@@ -337,6 +334,12 @@ function BuildFileList() {
     if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
       # GitLeaks also runs an all files
       FILE_ARRAY_GITLEAKS+=("${FILE}")
+    fi
+
+    if [ "${BASE_FILE}" == "renovate.json" ] || [ "${BASE_FILE}" == "renovate.json5" ] \
+       || [ "${BASE_FILE}" == ".renovaterc" ] || [ "${BASE_FILE}" == ".renovaterc.json" ] \
+       || [ "${BASE_FILE}" == ".renovaterc.json5" ] || [ "${BASE_FILE}" == "package.json" ]; then
+      FILE_ARRAY_RENOVATE+=("${FILE}")
     fi
 
     #######################
