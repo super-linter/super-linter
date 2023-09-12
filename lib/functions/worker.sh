@@ -253,6 +253,14 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
         )
+      ######################
+      # Check for Renovate #
+      ######################
+      elif [[ ${FILE_TYPE} == "RENOVATE" ]]; then
+        LINT_CMD=$(
+          cd "${WORKSPACE_PATH}" || exit
+          RENOVATE_CONFIG_FILE="${FILE}" ${LINTER_COMMAND} 2>&1
+        )
       ############################################################################################
       # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
       ############################################################################################

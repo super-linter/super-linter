@@ -336,6 +336,12 @@ function BuildFileList() {
       FILE_ARRAY_GITLEAKS+=("${FILE}")
     fi
 
+    # See https://docs.renovatebot.com/configuration-options/
+    if [[ "${BASE_FILE}" =~ renovate.+json5? ]] ||
+      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.+json5? ]]; then
+      FILE_ARRAY_RENOVATE+=("${FILE}")
+    fi
+
     #######################
     # Get the shell files #
     #######################

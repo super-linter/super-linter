@@ -93,6 +93,8 @@ BuildLinterVersions() {
       elif [[ ${LINTER} == "lua" ]]; then
         # Semi standardversion command
         GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
+      elif [[ ${LINTER} == "renovate-config-validator" ]]; then
+        GET_VERSION_CMD="$(renovate --version 2>&1)"
       elif [[ ${LINTER} == "terrascan" ]]; then
         GET_VERSION_CMD="$("${LINTER}" version 2>&1)"
       else
