@@ -30,6 +30,7 @@ jobs:
         if: >
           steps.metadata.outputs.update-type == 'version-update:semver-patch'
           || steps.metadata.outputs.dependency-names == 'actions/checkout'
+          || steps.metadata.outputs.dependency-names == 'docker/setup-buildx-action'
           || steps.metadata.outputs.dependency-names == 'docker/metadata-action'
         run: gh pr merge --auto --squash --delete-branch "${PR_URL}"
 ...
