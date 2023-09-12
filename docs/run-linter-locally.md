@@ -88,7 +88,7 @@ jobs:
     # Run GH Super-Linter against code base
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: cat .github/super-linter.env >> "$GITHUB_ENV"
       - name: Lint Code Base
         uses: super-linter/super-linter@v5
