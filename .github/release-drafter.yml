@@ -22,6 +22,7 @@ categories:
       - 'infrastructure'
       - 'automation'
       - 'documentation'
+      - 'dependencies'
   - title: '🏎 Performance'
     label: 'performance'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
@@ -37,4 +38,5 @@ version-resolver:
       - 'bug'
       - 'maintenance'
       - 'documentation'
+      - 'dependencies'
   default: patch

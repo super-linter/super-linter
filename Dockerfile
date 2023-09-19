@@ -22,13 +22,13 @@ FROM mstruebing/editorconfig-checker:2.7.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM zricethezav/gitleaks:v8.17.0 as gitleaks
+FROM zricethezav/gitleaks:v8.18.0 as gitleaks
 FROM yoheimuta/protolint:0.46.0 as protolint
 
 ##################
 # Get base image #
 ##################
-FROM python:3.11.4-alpine3.17 as base_image
+FROM python:3.11.5-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -252,7 +252,7 @@ RUN find /usr/ -type f -name '*.md' -exec rm {} +
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.4-alpine3.17 as python_builder
+FROM python:3.11.5-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
