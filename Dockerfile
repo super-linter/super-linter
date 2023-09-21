@@ -116,7 +116,6 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 # Install Go Linter #
 #####################
 COPY --from=golang /usr/local/go/ /usr/lib/
-ENV PATH="${PATH}:/usr/lib/go/bin"
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
@@ -366,6 +365,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+
+#########################
+# Add go binary to path #
+#########################
+ENV PATH="${PATH}:/usr/lib/go/bin"
 
 #############################
 # Copy scripts to container #
