@@ -115,7 +115,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 #####################
 # Install Go Linter #
 #####################
-COPY --from=golang /usr/local/go/bin/go /usr/bin/
+COPY --from=golang /usr/local/go/bin/ /usr/lib/go/
+COPY --from=golang /usr/local/go/lib/ /usr/lib/go/
+COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/
+COPY --from=golang /usr/local/go/src/ /usr/lib/go/
+ENV PATH="${PATH}:/usr/lib/go/bin"
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
