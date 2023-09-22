@@ -14,6 +14,7 @@ FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.47.0.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
+FROM golang:1.21.1-alpine as golang
 FROM golangci/golangci-lint:v1.54.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.5.7 as terraform
@@ -63,7 +64,6 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     git git-lfs \
-    go \
     gnupg \
     icu-libs \
     jpeg-dev \
@@ -115,6 +115,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 #####################
 # Install Go Linter #
 #####################
+COPY --from=golang /usr/local/go/go.env /usr/lib/go/
+COPY --from=golang /usr/local/go/bin/ /usr/lib/go/bin/
+COPY --from=golang /usr/local/go/lib/ /usr/lib/go/lib/
+COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/pkg/
+COPY --from=golang /usr/local/go/src/ /usr/lib/go/src/
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
@@ -364,6 +369,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+
+##################
+# Add go to path #
+##################
+ENV PATH="${PATH}:/usr/lib/go/bin"
 
 #############################
 # Copy scripts to container #
