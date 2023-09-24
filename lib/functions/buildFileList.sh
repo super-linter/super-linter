@@ -338,8 +338,8 @@ function BuildFileList() {
 
     # See https://docs.renovatebot.com/configuration-options/
     # See https://docs.renovatebot.com/config-presets/
-    if [[ "${BASE_FILE}" =~ renovate.+json5? ]] || [[ "${BASE_FILE}" =~ default.+json ]] ||
-      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.+json5? ]]; then
+    if [[ "${BASE_FILE}" =~ renovate.json5? ]] || [ "${BASE_FILE}" == "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE}" ] ||
+      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
       FILE_ARRAY_RENOVATE+=("${FILE}")
     fi
 

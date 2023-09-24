@@ -4,17 +4,15 @@ This folder holds the test cases for **renovate**.
 
 ## Additional Docs
 
-No Additional information is needed for this test case.
+Due to the nature of the naming of files, we have `2` subfolders in this directory.
+
+- `good` is for working, and correct renovate config files
+- `bad` is for invalid, and incorrect renovate config files
 
 ## Good Test Cases
-
-The test cases denoted: `LANGUAGE_good_FILE.EXTENSION` are all valid, and should pass successfully when linted.
 
 - **Note:** They are linted utilizing the default linter rules.
 
 ## Bad Test Cases
 
-The test cases denoted: `LANGUAGE_bad_FILE.EXTENSION` are **NOT** valid, and should trigger errors when linted.
-
 - **Note:** They are linted utilizing the default linter rules.
-{"mode":"full","isActive":false}
