@@ -26,5 +26,3 @@ rm -r cvega-luarocks-6b1aee6
 luarocks install luacheck
 luarocks install argparse
 luarocks install luafilesystem
-mv /etc/R/* /usr/lib/R/etc/
-find /usr/ -type f -name '*.md' -exec rm {} +

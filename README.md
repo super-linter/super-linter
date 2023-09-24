@@ -1,7 +1,5 @@
 # Super-Linter
 
-**NOTICE**: If your use of the super-linter action failed around April 26th, 2023, we changed the organization name from `github` to `super-linter` so you will need to update your references to this action from `github/super-linter` to `super-linter/super-linter`.
-
 This repository is for the **GitHub Action** to run a **Super-Linter**.
 It is a simple combination of various linters, written in `bash`, to help validate your source code.
 
@@ -90,6 +88,7 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **Python3**                      | [pylint](https://pylint.pycqa.org/) / [flake8](https://flake8.pycqa.org/en/latest/) / [black](https://github.com/psf/black) / [isort](https://pypi.org/project/isort/)                                                  |
 | **R**                            | [lintr](https://github.com/jimhester/lintr)                                                                                                                                                                             |
 | **Raku**                         | [Raku](https://raku.org)                                                                                                                                                                                                |
+| **Renovate**                     | [renovate-config-validator](https://docs.renovatebot.com/config-validation/)                                                                                                                                            |
 | **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                                                                        |
 | **Rust**                         | [Rustfmt](https://github.com/rust-lang/rustfmt) / [Clippy](https://github.com/rust-lang/rust-clippy)                                                                                                                    |
 | **Scala**                        | [scalafmt](https://github.com/scalameta/scalafmt)                                                                                                                                                                       |
@@ -174,7 +173,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Full git history is needed to get a proper
           # list of changed files within `super-linter`
@@ -390,6 +389,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **VALIDATE_PYTHON_PYLINT**            | `true`                          | Flag to enable or disable the linting process of the Python language. (Utilizing: pylint)                                                                                                                            |
 | **VALIDATE_R**                        | `true`                          | Flag to enable or disable the linting process of the R language.                                                                                                                                                     |
 | **VALIDATE_RAKU**                     | `true`                          | Flag to enable or disable the linting process of the Raku language.                                                                                                                                                  |
+| **VALIDATE_RENOVATE**                 | `true`                          | Flag to enable or disable the linting process of the Renovate configuration files.                                                                                                                                   |
 | **VALIDATE_RUBY**                     | `true`                          | Flag to enable or disable the linting process of the Ruby language.                                                                                                                                                  |
 | **VALIDATE_RUST_2015**                | `true`                          | Flag to enable or disable the linting process of the Rust language. (edition: 2015)                                                                                                                                  |
 | **VALIDATE_RUST_2018**                | `true`                          | Flag to enable or disable the linting process of Rust language. (edition: 2018)                                                                                                                                      |
@@ -479,7 +479,7 @@ jobs:
       # Checkout the code base #
       ##########################
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0

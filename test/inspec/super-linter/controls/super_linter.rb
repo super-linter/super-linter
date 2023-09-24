@@ -265,13 +265,14 @@ control "super-linter-installed-npm-packages" do
   desc "Check that NPM packages that Super-Linter needs are installed."
 
   packages = [
+    "@babel/eslint-parser",
+    "@babel/preset-react",
     "@coffeelint/cli",
     "@stoplight/spectral",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "asl-validator",
     #"axios",
-    "babel-eslint",
     #"eslint",
     "eslint-config-airbnb",
     "eslint-config-prettier",

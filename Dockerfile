@@ -8,29 +8,30 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.18.3 as terrascan
-FROM alpine/terragrunt:1.5.2 as terragrunt
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
+FROM alpine/terragrunt:1.5.7 as terragrunt
+FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.47.0.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
-FROM golangci/golangci-lint:v1.54.1 as golangci-lint
+FROM golang:1.21.1-alpine as golang
+FROM golangci/golangci-lint:v1.54.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.5.5 as terraform
+FROM hashicorp/terraform:1.5.7 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.7.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.25 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
 FROM swift:5.8.1 as swift
 FROM mtgto/swift-format:5.8 as swift-format
-FROM zricethezav/gitleaks:v8.17.0 as gitleaks
-FROM yoheimuta/protolint:0.45.1 as protolint
+FROM zricethezav/gitleaks:v8.18.0 as gitleaks
+FROM yoheimuta/protolint:0.46.0 as protolint
 
 ##################
 # Get base image #
 ##################
-FROM python:3.11.4-alpine3.17 as base_image
+FROM python:3.11.5-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -65,7 +66,6 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     git git-lfs \
-    go \
     gnupg \
     icu-libs \
     jpeg-dev \
@@ -117,6 +117,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 #####################
 # Install Go Linter #
 #####################
+COPY --from=golang /usr/local/go/go.env /usr/lib/go/
+COPY --from=golang /usr/local/go/bin/ /usr/lib/go/bin/
+COPY --from=golang /usr/local/go/lib/ /usr/lib/go/lib/
+COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/pkg/
+COPY --from=golang /usr/local/go/src/ /usr/lib/go/src/
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
@@ -253,10 +258,15 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+#########################
+# Clean to shrink image #
+#########################
+RUN find /usr/ -type f -name '*.md' -exec rm {} +
+
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.4-alpine3.17 as python_builder
+FROM python:3.11.5-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -368,6 +378,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+
+##################
+# Add go to path #
+##################
+ENV PATH="${PATH}:/usr/lib/go/bin"
 
 #############################
 # Copy scripts to container #
