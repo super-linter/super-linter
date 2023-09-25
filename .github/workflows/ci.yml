@@ -58,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
-          RENOVATE_SHAREABLE_CONFIG_PRESET_FILE: default.json
+          RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Run Test Suite
         run: make IMAGE=${{ matrix.images.target }} test
@@ -77,7 +77,7 @@ jobs:
           -e TEST_CASE_RUN=true \
           -e ANSIBLE_DIRECTORY=.automation/test/ansible \
           -e ACTIONS_RUNNER_DEBUG=true \
-          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE=default.json \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
@@ -90,7 +90,7 @@ jobs:
           -e RUN_LOCAL=true \
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
-          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE=default.json \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
