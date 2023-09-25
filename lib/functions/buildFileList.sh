@@ -347,6 +347,7 @@ function BuildFileList() {
     for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
       if [ "${BASE_FILE}" == "${file_name}" ]; then
         FILE_ARRAY_RENOVATE+=("${FILE}")
+        break
       fi
     done
 
