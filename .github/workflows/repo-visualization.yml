@@ -66,6 +66,3 @@ jobs:
       ############################
       # Push the image to aws s3 #
       ############################
-      - name: Push diagram to s3
-        if: success()
-        run: aws s3 cp diagram.svg s3://super-linter/diagram.svg
