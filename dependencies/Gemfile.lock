@@ -46,7 +46,7 @@ GEM
       rubocop (>= 1.37)
       rubocop-performance (>= 1.15)
       rubocop-rails (>= 2.17)
-    rubocop-minitest (0.32.1)
+    rubocop-minitest (0.32.2)
       rubocop (>= 1.39, < 2.0)
     rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
@@ -76,7 +76,7 @@ GEM
       rubocop-performance (~> 1.19.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.4.2)
+    unicode-display_width (2.5.0)
 
 PLATFORMS
   ruby
@@ -84,7 +84,7 @@ PLATFORMS
 DEPENDENCIES
   rubocop (~> 1.56.3)
   rubocop-github (~> 0.20.0)
-  rubocop-minitest (~> 0.32.1)
+  rubocop-minitest (~> 0.32.2)
   rubocop-performance (~> 1.19.1)
   rubocop-rails (~> 2.21)
   rubocop-rake (~> 0.6.0)
