@@ -12,7 +12,7 @@ FROM alpine/terragrunt:1.5.7 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.47.0.0 as tflint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
 FROM golang:1.21.1-alpine as golang
 FROM golangci/golangci-lint:v1.54.2 as golangci-lint
@@ -21,7 +21,7 @@ FROM hashicorp/terraform:1.5.7 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
-FROM rhysd/actionlint:1.6.25 as actionlint
+FROM rhysd/actionlint:1.6.26 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
 FROM zricethezav/gitleaks:v8.18.0 as gitleaks
 FROM yoheimuta/protolint:0.46.0 as protolint
