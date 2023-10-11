@@ -96,7 +96,7 @@ jobs:
         with:
           # Full git history is needed to get a proper list of commits and tags
           fetch-depth: 0
-      
+
       - name: Update action.yml release version number
         uses: fjogeleit/yaml-update-action@main
         with:
