@@ -26,5 +26,5 @@ ruamel.yaml==0.17.32
 ruamel.yaml.clib==0.2.7
 subprocess-tee==0.4.1
 tomli==2.0.1
-wcmatch==8.4.1
+wcmatch==8.5
 yamllint==1.31.0
