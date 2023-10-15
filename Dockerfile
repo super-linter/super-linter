@@ -14,7 +14,7 @@ FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
-FROM golang:1.21.1-alpine as golang
+FROM golang:1.21.2-alpine as golang
 FROM golangci/golangci-lint:v1.54.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.6.0 as terraform
