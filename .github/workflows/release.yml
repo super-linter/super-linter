@@ -97,6 +97,28 @@ jobs:
           # Full git history is needed to get a proper list of commits and tags
           fetch-depth: 0
 
+      - name: Update action.yml release version number
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'action.yaml'
+          propertyPath: 'runs.image'
+          value: docker://ghcr.io/super-linter/super-linter:${{ env.RELEASE_VERSION }}
+          commitChange: true
+          message: update action.yml version pointer
+          branch: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update slim/action.yml release version number
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'slim/action.yaml'
+          propertyPath: 'runs.image'
+          value: docker://ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}
+          commitChange: true
+          message: update slim/action.yml version pointer
+          branch: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
       # Then, we use that reference to create new tags, so that the new tags point to the commit
       # the original tag was pointing to, and not to the original tag.
