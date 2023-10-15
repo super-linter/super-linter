@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     name: Build and Test
-    runs-on: super-linter-large-runner
+    runs-on: ubuntu-latest
     permissions:
         contents: read
     concurrency:
