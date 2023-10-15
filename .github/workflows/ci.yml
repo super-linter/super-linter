@@ -22,6 +22,12 @@ jobs:
           - target: standard
     timeout-minutes: 60
     steps:
+      - name: Free Disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
