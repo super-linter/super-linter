@@ -94,6 +94,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
+          ref: main
           # Full git history is needed to get a proper list of commits and tags
           fetch-depth: 0
 
