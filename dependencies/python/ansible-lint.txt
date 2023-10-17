@@ -13,7 +13,7 @@ markdown-it-py==2.2.0
 MarkupSafe==2.1.2
 mdurl==0.1.2
 mypy-extensions==1.0.0
-packaging==23.1
+packaging==23.2
 pathspec==0.11.1
 platformdirs==3.5.1
 pycparser==2.21
