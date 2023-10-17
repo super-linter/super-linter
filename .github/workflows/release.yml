@@ -98,19 +98,6 @@ jobs:
           # Full git history is needed to get a proper list of commits and tags
           fetch-depth: 0
 
-      - name: Update action.yml
-        run: yq '.runs.image = "docker://ghcr.io/super-linter/super-linter:${{ env.RELEASE_VERSION }}"' -i action.yml
-
-      - name: Update slim/action.yml
-        run: yq '.runs.image = "docker://ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}"' -i slim/action.yml
-
-      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
-        with:
-          add: 'action.yml slim/action.yml'
-          default_author: github_actions
-          message: 'Automated update of action.yml and slim/action.yml version numbers'
-          push: origin main --force
-
       # We use ^{} to recursively deference the tag to get the commit the tag is pointing at.
       # Then, we use that reference to create new tags, so that the new tags point to the commit
       # the original tag was pointing to, and not to the original tag.
