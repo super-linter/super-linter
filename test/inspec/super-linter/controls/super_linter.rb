@@ -266,6 +266,7 @@ control "super-linter-installed-npm-packages" do
   packages = [
     "@babel/eslint-parser",
     "@babel/preset-react",
+    "@babel/preset-typescript",
     "@coffeelint/cli",
     "@stoplight/spectral",
     "@typescript-eslint/eslint-plugin",
