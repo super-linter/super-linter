@@ -34,7 +34,6 @@ jobs:
         START_DATE: ${{ env.START_DATE }}
         END_DATE: ${{ env.END_DATE }}
         REPOSITORY: super-linter/super-linter
-        SPONSOR_INFO: "true"
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
