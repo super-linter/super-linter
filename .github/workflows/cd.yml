@@ -26,7 +26,7 @@ jobs:
             target: slim
           - environment: Production
             prefix: ""
-            image-id: standard
+            target: standard
     timeout-minutes: 60
     steps:
       - name: Checkout Code
