@@ -18,8 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - target: slim
-          - target: standard
+          - prefix: slim-
+            target: slim
+          - prefix: ""
+            target: standard
     timeout-minutes: 60
     steps:
       - name: Free Disk space
@@ -52,7 +54,7 @@ jobs:
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          tags: ghcr.io/super-linter/super-linter:${{ matrix.images.target }}
+          tags: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
           target: "${{ matrix.images.target }}"
 
       - name: Test Local Action
@@ -81,7 +83,7 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.target }}
+          tag: ${{ matrix.images.prefix }}latest
 
       - name: Lint Entire Codebase
         run: |
@@ -94,4 +96,4 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.target }}
+          tag: ${{ matrix.images.prefix }}latest

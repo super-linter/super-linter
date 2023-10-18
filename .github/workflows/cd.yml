@@ -73,7 +73,7 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.target }}
+          tag: ${{ matrix.images.prefix }}latest
 
       - name: Lint Entire Codebase
         run: |
@@ -86,7 +86,7 @@ jobs:
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "ghcr.io/super-linter/super-linter:${tag}"
         env:
-          tag: ${{ matrix.images.target }}
+          tag: ${{ matrix.images.prefix }}latest
 
       - name: Login to GHCR
         uses: docker/login-action@v3.0.0
