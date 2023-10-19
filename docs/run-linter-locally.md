@@ -5,8 +5,9 @@ If you want to test locally against the **Super-Linter** to test your branch of 
 - Clone your testing source code to your local environment
 - Install Docker to your local environment
 - Pull the container down
-- Run the container
-- Debug/Troubleshoot
+- Run the container locally
+- Run the test suite locally
+- Troubleshoot
 
 ## Install Docker to your local machine
 
@@ -95,6 +96,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: develop
+```
+
+## Build the container image and run the test suite locally
+
+You can run the test suite locally with the following command:
+
+```shell
+make
+```
+
+The test suite will build the container image and run the test suite against a
+a container that is an instance of that container image.
+
+### Run the test suite against an arbitrary super-linter container image
+
+You can run the test suite against an arbitrary super-linter container image.
+
+Here is an example that runs the test suite against the `standard` flavor of the
+`v5.4.3` image.
+
+```shell
+CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v5.4.3" \
+CONTAINER_IMAGE_TARGET="standard" \
+make docker-pull test
 ```
 
 ## Troubleshooting

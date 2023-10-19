@@ -69,11 +69,10 @@ inspec: inspec-check ## Run InSpec tests
 		--log-level=debug \
 		-t "docker://$${SUPER_LINTER_TEST_CONTAINER_ID}" \
 	&& docker ps \
-	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME) \
-	&& docker rm $(SUPER_LINTER_TEST_CONTAINER_NAME)
+	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME)
 
 .phony: docker
-docker:
+docker: ## Build the container image
 	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
@@ -81,3 +80,7 @@ docker:
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
 		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
+
+.phony: docker-pull
+docker-pull: ## Pull the container image from registry
+	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)
