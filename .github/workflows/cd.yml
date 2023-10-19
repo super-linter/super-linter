@@ -29,8 +29,7 @@ jobs:
             image-id: standard
     timeout-minutes: 60
     env:
-      CONTAINER_IMAGE_TAG: "${{ matrix.images.prefix }}latest"
-      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ env.CONTAINER_IMAGE_TAG }}"
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
     steps:
       - name: Free Disk space
