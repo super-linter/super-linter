@@ -39,7 +39,7 @@ jobs:
 
       - name: Update action.yml
         run: |
-          yq '.runs.image = "docker://ghcr.io/super-linter/super-linter:env(CONTAINER_IMAGE_TAG)"' -i action.yml
+          yq '.runs.image = docker://ghcr.io/super-linter/super-linter:env(CONTAINER_IMAGE_TAG)' -i action.yml
           echo "Action file contents:"
           cat action.yml
 
