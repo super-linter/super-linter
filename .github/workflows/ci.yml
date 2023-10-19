@@ -25,6 +25,8 @@ jobs:
     timeout-minutes: 60
     env:
       CONTAINER_IMAGE_TAG: "${{ matrix.images.prefix }}latest"
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ env.CONTAINER_IMAGE_TAG }}"
+      CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
     steps:
       - name: Free Disk space
         shell: bash
@@ -40,7 +42,7 @@ jobs:
       - name: Update action.yml
         run: |
           echo "yq version: $(yq --version)"
-          yq '.runs.image = "docker://ghcr.io/super-linter/super-linter:" + env(CONTAINER_IMAGE_TAG)' -i action.yml
+          yq '.runs.image = env(CONTAINER_IMAGE_ID)' -i action.yml
           echo "Action file contents:"
           cat action.yml
 
@@ -60,7 +62,8 @@ jobs:
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          tags: ghcr.io/super-linter/super-linter:${{ env.CONTAINER_IMAGE_TAG }}
+          tags: |
+            ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
 
       - name: Test Local Action
@@ -75,7 +78,7 @@ jobs:
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Run Test Suite
-        run: make IMAGE=${{ matrix.images.target }} test
+        run: make test
 
       - name: Run Super-Linter Tests
         run: |
@@ -87,7 +90,7 @@ jobs:
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${CONTAINER_IMAGE_TAG}"
+          "${CONTAINER_IMAGE_ID}"
 
       - name: Lint Entire Codebase
         run: |
@@ -98,4 +101,4 @@ jobs:
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${CONTAINER_IMAGE_TAG}"
+          "${CONTAINER_IMAGE_ID}"
