@@ -28,6 +28,8 @@ jobs:
             prefix: ""
             image-id: standard
     timeout-minutes: 60
+    env:
+      CONTAINER_IMAGE_TAG: "${{ matrix.images.prefix }}latest"
     steps:
       - name: Free Disk space
         shell: bash
@@ -55,7 +57,7 @@ jobs:
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
+            ghcr.io/super-linter/super-linter:${{ env.CONTAINER_IMAGE_TAG }}
           target: "${{ matrix.images.target }}"
 
       - name: Run Test Suite
@@ -71,9 +73,7 @@ jobs:
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${tag}"
-        env:
-          tag: ${{ matrix.images.prefix }}latest
+          "ghcr.io/super-linter/super-linter:${CONTAINER_IMAGE_TAG}"
 
       - name: Lint Entire Codebase
         run: |
@@ -84,9 +84,7 @@ jobs:
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${tag}"
-        env:
-          tag: ${{ matrix.images.prefix }}latest
+          "ghcr.io/super-linter/super-linter:${CONTAINER_IMAGE_TAG}"
 
       - name: Login to GHCR
         uses: docker/login-action@v3.0.0
@@ -117,7 +115,7 @@ jobs:
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
+            ghcr.io/super-linter/super-linter:${{ env.CONTAINER_IMAGE_TAG }}
           target: "${{ matrix.images.target }}"
 
       - name: Update ${{ matrix.images.environment }} Deployment
