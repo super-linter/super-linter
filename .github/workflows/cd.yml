@@ -26,7 +26,7 @@ jobs:
             target: slim
           - environment: Production
             prefix: ""
-            image-id: standard
+            target: standard
     timeout-minutes: 60
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
