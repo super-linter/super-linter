@@ -1,10 +1,10 @@
 # Inspired by https://github.com/jessfraz/dotfiles
 
 .PHONY: all
-all: info test ## Run all targets.
+all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info clean inspec kcov prepare-test-reports ## Run tests
+test: inspec ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -22,40 +22,6 @@ info: ## Gather information about the runtime environment
 	docker images; \
 	docker ps
 
-.PHONY: kcov
-kcov: ## Run kcov
-	docker run --rm $(DOCKER_FLAGS) \
-		--user "$$(id -u)":"$$(id -g)" \
-		-v "$(CURDIR)":/workspace \
-		-w="/workspace" \
-		kcov/kcov \
-		kcov \
-		--bash-parse-files-in-dir=/workspace \
-		--clean \
-		--exclude-pattern=.coverage,.git \
-		--include-pattern=.sh \
-		/workspace/test/.coverage \
-		/workspace/test/runTests.sh
-
-COBERTURA_REPORTS_DESTINATION_DIRECTORY := "$(CURDIR)/test/reports/cobertura"
-
-.PHONY: prepare-test-reports
-prepare-test-reports: ## Prepare the test reports for consumption
-	mkdir -p $(COBERTURA_REPORTS_DESTINATION_DIRECTORY); \
-	COBERTURA_REPORTS="$$(find "$$(pwd)" -name 'cobertura.xml')"; \
-	for COBERTURA_REPORT_FILE_PATH in $$COBERTURA_REPORTS ; do \
-		COBERTURA_REPORT_DIRECTORY_PATH="$$(dirname "$$COBERTURA_REPORT_FILE_PATH")"; \
-		COBERTURA_REPORT_DIRECTORY_NAME="$$(basename "$$COBERTURA_REPORT_DIRECTORY_PATH")"; \
-		COBERTURA_REPORT_DIRECTORY_NAME_NO_SUFFIX="$${COBERTURA_REPORT_DIRECTORY_NAME%.*}"; \
-		mkdir -p "$(COBERTURA_REPORTS_DESTINATION_DIRECTORY)"/"$$COBERTURA_REPORT_DIRECTORY_NAME_NO_SUFFIX"; \
-		cp "$$COBERTURA_REPORT_FILE_PATH" "$(COBERTURA_REPORTS_DESTINATION_DIRECTORY)"/"$$COBERTURA_REPORT_DIRECTORY_NAME_NO_SUFFIX"/cobertura.xml; \
-	done
-
-.PHONY: clean
-clean: ## Clean the workspace
-	rm -rf $(CURDIR)/test/.coverage; \
-	rm -rf $(CURDIR)/test/reports
-
 .PHONY: help
 help: ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -71,25 +37,26 @@ inspec-check: ## Validate inspec profiles
 		test/inspec/super-linter
 
 SUPER_LINTER_TEST_CONTAINER_NAME := "super-linter-test"
-SUPER_LINTER_TEST_CONTINER_URL := ''
+SUPER_LINTER_TEST_CONTAINER_URL := $(CONTAINER_IMAGE_ID)
 DOCKERFILE := ''
-IMAGE := ''
-ifeq ($(IMAGE),slim)
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/super-linter/super-linter:slim"
-	IMAGE := "slim"
-else
-	SUPER_LINTER_TEST_CONTINER_URL := "ghcr.io/super-linter/super-linter:standard"
-	IMAGE := "standard"
+IMAGE := $(CONTAINER_IMAGE_TARGET)
+
+# Default to stadard
+ifeq ($(IMAGE),)
+IMAGE := "standard"
+endif
+
+# Default to latest
+ifeq ($(SUPER_LINTER_TEST_CONTAINER_URL),)
+SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:latest"
 endif
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
-	LOCAL_IMAGE="$$(docker images $(SUPER_LINTER_TEST_CONTINER_URL) |grep 'ghcr.io/super-linter/super-linter')"; \
-	if [ "$$?" -ne 0 ]; then docker build -t $(SUPER_LINTER_TEST_CONTINER_URL) -f Dockerfile .; fi && \
-	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" "$(SUPER_LINTER_TEST_CONTAINER_NAME)" 2>/dev/null || echo "")"; \
-	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"; fi && \
-	docker tag $(SUPER_LINTER_TEST_CONTINER_URL) $(SUPER_LINTER_TEST_CONTAINER_NAME) && \
-	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name "$(SUPER_LINTER_TEST_CONTAINER_NAME)" --rm -it --entrypoint /bin/ash "$(SUPER_LINTER_TEST_CONTAINER_NAME)" -c "while true; do sleep 1; done")" \
+	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
+	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME); fi && \
+	docker tag $(SUPER_LINTER_TEST_CONTAINER_URL) $(SUPER_LINTER_TEST_CONTAINER_NAME) && \
+	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name $(SUPER_LINTER_TEST_CONTAINER_NAME) --rm -it --entrypoint /bin/ash $(SUPER_LINTER_TEST_CONTAINER_NAME) -c "while true; do sleep 1; done")" \
 	&& docker run $(DOCKER_FLAGS) \
 		--rm \
 		-v "$(CURDIR)":/workspace \
@@ -102,14 +69,18 @@ inspec: inspec-check ## Run InSpec tests
 		--log-level=debug \
 		-t "docker://$${SUPER_LINTER_TEST_CONTAINER_ID}" \
 	&& docker ps \
-	&& docker kill "$(SUPER_LINTER_TEST_CONTAINER_NAME)"
+	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME)
 
 .phony: docker
-docker:
+docker: ## Build the container image
 	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
 		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
 		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
 		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
-		-t ghcr.io/super-linter/super-linter .
+		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
+
+.phony: docker-pull
+docker-pull: ## Pull the container image from registry
+	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)

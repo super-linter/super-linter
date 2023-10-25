@@ -130,6 +130,26 @@ function LintCodebase() {
         fi
       fi
 
+      #####################
+      # Check if Renovate #
+      #####################
+      if [[ ${FILE_TYPE} == *"RENOVATE"* ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to Renovate: ${FILE_TYPE}"
+        if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+          #############
+          # Good file #
+          #############
+          FILE_STATUS='good'
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+          ############
+          # Bad file #
+          ############
+          FILE_STATUS='bad'
+        fi
+      fi
+
       #######################################
       # Check if Cargo.toml for Rust Clippy #
       #######################################
