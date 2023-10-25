@@ -26,17 +26,69 @@ jobs:
             target: slim
           - environment: Production
             prefix: ""
-            image-id: standard
+            target: standard
     timeout-minutes: 60
+    env:
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
+      CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
     steps:
+      - name: Free Disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
+      - name: Build Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          load: true
+          push: false
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            ${{ env.CONTAINER_IMAGE_ID }}
+          target: "${{ matrix.images.target }}"
+
+      - name: Run Test Suite
+        run: make test
+
+      - name: Run Super-Linter Tests
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e TEST_CASE_RUN=true \
+          -e ANSIBLE_DIRECTORY=.automation/test/ansible \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "${CONTAINER_IMAGE_ID}"
+
+      - name: Lint Entire Codebase
+        run: |
+          docker run \
+          -e RUN_LOCAL=true \
+          -e OUTPUT_DETAILS=detailed \
+          -e ACTIONS_RUNNER_DEBUG=true \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+          -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -v "${GITHUB_WORKSPACE}:/tmp/lint" \
+          "${CONTAINER_IMAGE_ID}"
+
       - name: Login to GHCR
-        uses: docker/login-action@v2.2.0
+        uses: docker/login-action@v3.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -51,7 +103,7 @@ jobs:
           env: ${{ matrix.images.environment }}
 
       - name: Build and Push Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
@@ -64,7 +116,7 @@ jobs:
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
+            ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
 
       - name: Update ${{ matrix.images.environment }} Deployment

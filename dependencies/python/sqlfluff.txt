@@ -7,7 +7,7 @@ exceptiongroup==1.1.2
 iniconfig==2.0.0
 Jinja2==3.1.2
 MarkupSafe==2.1.2
-packaging==23.1
+packaging==23.2
 pathspec==0.11.1
 pluggy==1.0.0
 Pygments==2.15.1

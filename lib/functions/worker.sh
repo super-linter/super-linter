@@ -130,6 +130,26 @@ function LintCodebase() {
         fi
       fi
 
+      #####################
+      # Check if Renovate #
+      #####################
+      if [[ ${FILE_TYPE} == *"RENOVATE"* ]]; then
+        debug "FILE_TYPE for FILE ${FILE} is related to Renovate: ${FILE_TYPE}"
+        if [[ ${FILE} == *"good"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+          #############
+          # Good file #
+          #############
+          FILE_STATUS='good'
+        elif [[ ${FILE} == *"bad"* ]]; then
+          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+          ############
+          # Bad file #
+          ############
+          FILE_STATUS='bad'
+        fi
+      fi
+
       #######################################
       # Check if Cargo.toml for Rust Clippy #
       #######################################
@@ -252,6 +272,14 @@ function LintCodebase() {
         LINT_CMD=$(
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+        )
+      ######################
+      # Check for Renovate #
+      ######################
+      elif [[ ${FILE_TYPE} == "RENOVATE" ]]; then
+        LINT_CMD=$(
+          cd "${WORKSPACE_PATH}" || exit
+          RENOVATE_CONFIG_FILE="${FILE}" ${LINTER_COMMAND} 2>&1
         )
       ############################################################################################
       # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #

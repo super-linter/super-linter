@@ -18,23 +18,38 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - target: slim
-          - target: standard
+          - prefix: slim-
+            target: slim
+          - prefix: ""
+            target: standard
     timeout-minutes: 60
+    env:
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
+      CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
     steps:
+      - name: Free Disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Update action.yml
-        run: yq '.runs.image = "docker://ghcr.io/super-linter/super-linter:${{ matrix.images.target }}"' -i action.yml
+        run: |
+          echo "yq version: $(yq --version)"
+          yq '.runs.image = env(CONTAINER_IMAGE_ID)' -i action.yml
+          echo "Action file contents:"
+          cat action.yml
 
       - name: Retrieve Datetime
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
 
       - name: Build Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
@@ -46,7 +61,8 @@ jobs:
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          tags: ghcr.io/super-linter/super-linter:${{ matrix.images.target }}
+          tags: |
+            ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
 
       - name: Test Local Action
@@ -58,16 +74,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
+          RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Run Test Suite
-        run: make IMAGE=${{ matrix.images.target }} test
-
-      - name: Upload Code Coverage Report
-        uses: codacy/codacy-coverage-reporter-action@v1
-        continue-on-error: true
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: test/reports/cobertura/runTests.sh/cobertura.xml
+        run: make test
 
       - name: Run Super-Linter Tests
         run: |
@@ -76,11 +86,10 @@ jobs:
           -e TEST_CASE_RUN=true \
           -e ANSIBLE_DIRECTORY=.automation/test/ansible \
           -e ACTIONS_RUNNER_DEBUG=true \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${tag}"
-        env:
-          tag: ${{ matrix.images.target }}
+          "${CONTAINER_IMAGE_ID}"
 
       - name: Lint Entire Codebase
         run: |
@@ -88,8 +97,7 @@ jobs:
           -e RUN_LOCAL=true \
           -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
+          -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
-          "ghcr.io/super-linter/super-linter:${tag}"
-        env:
-          tag: ${{ matrix.images.target }}
+          "${CONTAINER_IMAGE_ID}"

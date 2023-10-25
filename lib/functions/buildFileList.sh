@@ -336,6 +336,21 @@ function BuildFileList() {
       FILE_ARRAY_GITLEAKS+=("${FILE}")
     fi
 
+    # See https://docs.renovatebot.com/configuration-options/
+    if [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
+      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
+      FILE_ARRAY_RENOVATE+=("${FILE}")
+    fi
+
+    # See https://docs.renovatebot.com/config-presets/
+    IFS="," read -r -a RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY <<<"${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES}"
+    for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
+      if [ "${BASE_FILE}" == "${file_name}" ]; then
+        FILE_ARRAY_RENOVATE+=("${FILE}")
+        break
+      fi
+    done
+
     #######################
     # Get the shell files #
     #######################
