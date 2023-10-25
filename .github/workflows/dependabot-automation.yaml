@@ -1,0 +1,36 @@
+---
+name: Dependabot automation
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    env:
+      PR_URL: ${{github.event.pull_request.html_url}}
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve the PR
+        run: gh pr review --approve "${PR_URL}"
+      - name: Enable auto-merge for patch updates PR
+        if: >
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+          || steps.metadata.outputs.dependency-names == 'actions/checkout'
+          || steps.metadata.outputs.dependency-names == 'docker/setup-buildx-action'
+          || steps.metadata.outputs.dependency-names == 'docker/metadata-action'
+        run: gh pr merge --auto --squash --delete-branch "${PR_URL}"
+...

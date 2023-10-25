@@ -1,14 +1,14 @@
 attrs==23.1.0
-aws-sam-translator==1.65.0
+aws-sam-translator==1.73.0
 boto3==1.28.1
 botocore==1.31.1
-cfn-lint==0.77.5
+cfn-lint==0.80.3
 jmespath==1.0.1
 jschema-to-python==1.2.3
 jsonpatch==1.33
-jsonpickle==3.0.1
-jsonpointer==2.3
-jsonschema==4.17.3
+jsonpickle==3.0.2
+jsonpointer==2.4
+jsonschema==4.19.0
 junit-xml==1.9
 mpmath==1.3.0
 networkx==3.1
@@ -22,5 +22,5 @@ s3transfer==0.6.0
 sarif-om==1.0.4
 six==1.16.0
 sympy==1.11.1
-typing_extensions==4.7.0
+typing_extensions==4.7.1
 urllib3==1.26.15

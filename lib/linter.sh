@@ -267,7 +267,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
   'KUBERNETES_KUBECONFORM' 'KOTLIN' 'KOTLIN_ANDROID' 'LATEX' 'LUA' 'MARKDOWN'
   'NATURAL_LANGUAGE' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN'
   'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT'
-  'PYTHON_FLAKE8' 'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RUBY' 'RUST_2015'
+  'PYTHON_FLAKE8' 'PYTHON_ISORT' 'PYTHON_MYPY' 'R' 'RAKU' 'RENOVATE' 'RUBY' 'RUST_2015'
   'RUST_2018' 'RUST_2021' 'RUST_CLIPPY' 'SCALAFMT' 'SHELL_SHFMT'
   'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'SQLFLUFF' 'TEKTON'
   'TERRAFORM_FMT' 'TERRAFORM_TFLINT' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX'
@@ -286,7 +286,7 @@ LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
 LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
 LINTER_NAMES_ARRAY['COFFEESCRIPT']="coffeelint"
 LINTER_NAMES_ARRAY['CPP']="cpplint"
-LINTER_NAMES_ARRAY['CSHARP']="dotnet-format"
+LINTER_NAMES_ARRAY['CSHARP']="dotnet"
 LINTER_NAMES_ARRAY['CSS']="stylelint"
 LINTER_NAMES_ARRAY['DART']="dart"
 LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
@@ -328,6 +328,7 @@ LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
 LINTER_NAMES_ARRAY['PYTHON_MYPY']="mypy"
 LINTER_NAMES_ARRAY['R']="R"
 LINTER_NAMES_ARRAY['RAKU']="raku"
+LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
 LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
 LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
@@ -431,7 +432,7 @@ Header() {
   info "---------------------------------------------"
   info "---------------------------------------------"
   info "The Super-Linter source code can be found at:"
-  info " - https://github.com/github/super-linter"
+  info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 }
 ################################################################################
@@ -910,7 +911,7 @@ LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --l
 LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['COFFEESCRIPT']="coffeelint -f ${COFFEESCRIPT_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['CPP']="cpplint"
-LINTER_COMMANDS_ARRAY['CSHARP']="dotnet-format --folder --check --exclude / --include"
+LINTER_COMMANDS_ARRAY['CSHARP']="dotnet format whitespace --folder --verify-no-changes --exclude / --include"
 LINTER_COMMANDS_ARRAY['CSS']="stylelint --config ${CSS_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['DART']="dartanalyzer --fatal-infos --fatal-warnings --options ${DART_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}"
@@ -975,6 +976,7 @@ LINTER_COMMANDS_ARRAY['PYTHON_ISORT']="isort --check --diff --sp ${PYTHON_ISORT_
 LINTER_COMMANDS_ARRAY['PYTHON_MYPY']="mypy --config-file ${PYTHON_MYPY_LINTER_RULES} --install-types --non-interactive"
 LINTER_COMMANDS_ARRAY['R']="lintr"
 LINTER_COMMANDS_ARRAY['RAKU']="raku"
+LINTER_COMMANDS_ARRAY['RENOVATE']="renovate-config-validator --strict"
 LINTER_COMMANDS_ARRAY['RUBY']="rubocop -c ${RUBY_LINTER_RULES} --force-exclusion --ignore-unrecognized-cops"
 LINTER_COMMANDS_ARRAY['RUST_2015']="rustfmt --check --edition 2015"
 LINTER_COMMANDS_ARRAY['RUST_2018']="rustfmt --check --edition 2018"

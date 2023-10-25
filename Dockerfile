@@ -7,28 +7,29 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.1 as terrascan
-FROM alpine/terragrunt:1.5.2 as terragrunt
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
+FROM tenable/terrascan:1.18.3 as terrascan
+FROM alpine/terragrunt:1.6.2 as terragrunt
+FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.47.0.0 as tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.2 as kubeconfrm
-FROM golangci/golangci-lint:v1.53.3 as golangci-lint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
+FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
+FROM golang:1.21.3-alpine as golang
+FROM golangci/golangci-lint:v1.55.0 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.5.5 as terraform
+FROM hashicorp/terraform:1.6.0 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.7.0 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:2.7.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
-FROM rhysd/actionlint:1.6.25 as actionlint
+FROM rhysd/actionlint:1.6.26 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM zricethezav/gitleaks:v8.17.0 as gitleaks
-FROM yoheimuta/protolint:0.45.0 as protolint
+FROM zricethezav/gitleaks:v8.18.0 as gitleaks
+FROM yoheimuta/protolint:0.46.1 as protolint
 
 ##################
 # Get base image #
 ##################
-FROM python:3.11.4-alpine3.17 as base_image
+FROM python:3.11.5-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
@@ -63,7 +64,6 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     git git-lfs \
-    go \
     gnupg \
     icu-libs \
     jpeg-dev \
@@ -98,7 +98,7 @@ COPY dependencies/* /
 ###################################################################
 # Install Dependencies                                            #
 # The chown fixes broken uid/gid in ast-types-flow dependency     #
-# (see https://github.com/github/super-linter/issues/3901)        #
+# (see https://github.com/super-linter/super-linter/issues/3901)  #
 ###################################################################
 RUN npm install && chown -R "$(id -u)":"$(id -g)" node_modules && bundle install
 
@@ -115,6 +115,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 #####################
 # Install Go Linter #
 #####################
+COPY --from=golang /usr/local/go/go.env /usr/lib/go/
+COPY --from=golang /usr/local/go/bin/ /usr/lib/go/bin/
+COPY --from=golang /usr/local/go/lib/ /usr/lib/go/lib/
+COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/pkg/
+COPY --from=golang /usr/local/go/src/ /usr/lib/go/src/
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
@@ -244,10 +249,15 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+#########################
+# Clean to shrink image #
+#########################
+RUN find /usr/ -type f -name '*.md' -exec rm {} +
+
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.4-alpine3.17 as python_builder
+FROM python:3.11.5-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -256,7 +266,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.18.2 as slim
+FROM alpine:3.18.4 as slim
 
 ############################
 # Get the build arguements #
@@ -281,9 +291,9 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
     org.opencontainers.image.revision=$BUILD_REVISION \
     org.opencontainers.image.version=$BUILD_VERSION \
     org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-    org.opencontainers.image.url="https://github.com/github/super-linter" \
-    org.opencontainers.image.source="https://github.com/github/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
     org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="Lint your code base with GitHub Actions"
 
@@ -359,6 +369,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+
+##################
+# Add go to path #
+##################
+ENV PATH="${PATH}:/usr/lib/go/bin"
 
 #############################
 # Copy scripts to container #
