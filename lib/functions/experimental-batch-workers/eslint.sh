@@ -1,49 +1,55 @@
 #!/usr/bin/env bash
 
-# This function runs linter in batch
+# gitleaks reports failing linter rules to stdout
+# stderr contains uncaught linter errors e.g. invalid parameter, which shall indicate a bug in this script
+# using default LintCodebaseBaseStderrParser
+
+# Sample eslint output:
 #
-# To reproduce serial behavior, ERRORS_FOUND_${FILE_TYPE} should be calculated from linter output
+# /path/to/failed.js
+#  11:5  error  'a' is never reassigned. Use 'const' instead  prefer-const
+#  11:5  error  'a' is assigned a value but never used        no-unused-vars
 #
-# The calculation should not affect, break or interleave linter output in any way
-function LintCodebaseEslint() {
-  FILE_TYPE="${1}" && shift      # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="${1}" && shift    # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="${1}" && shift # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  TEST_CASE_RUN="${1}" && shift  # Flag for if running in test cases
-  FILE_ARRAY=("$@")              # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
+function LintCodebaseEslintStdoutParser() {
+  local STDOUT_PIPENAME="${1}" && shift
+  local LINTER_NAME="${1}" && shift
 
-  info "Running EXPERIMENTAL batched LintCodebase on ${#FILE_ARRAY[@]} files. FILE_TYPE: ${FILE_TYPE}, LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
-  # * space separated $LINTER_COMMAND, expect to split before feeding into xargs correctly
-  # shellcheck disable=SC2046 disable=SC2086
-  ESLINT_ERRORS_FOUND=$(
-    printf "%s\n" "${FILE_ARRAY[@]}" |
-      parallel -L 64 -P "$(nproc)" --xargs ${LINTER_COMMAND} |
-      tee /dev/stderr |
-      (
-        ESLINT_ERRORS_FOUND=0
-        while IFS= read -r LINE; do
-          if grep "$PWD" <<<"$LINE" >/dev/null; then
-            ESLINT_CUR_FILENAME=$LINE
-            debug "Filename from eslint: $ESLINT_CUR_FILENAME"
-            ESLINT_CUR_FILE_COUNTED="false"
-            continue
-          fi
+  local ERRORS_FOUND=0
+  local CUR_FILE_COUNTED
+  local LINE
+  while IFS= read -r LINE; do
+    if grep "$PWD" <<<"$LINE" >/dev/null; then
+      CUR_FILE_COUNTED="false"
+      continue
+    fi
+    if grep "[[:space:]]\+[0-9]\+:[0-9]\+[[:space:]]\+error[[:space:]]\+" <<<"$LINE" >/dev/null; then
+      if [[ "$CUR_FILE_COUNTED" == "false" ]]; then
+        CUR_FILE_COUNTED="true"
+        ERRORS_FOUND=$((ERRORS_FOUND + 1))
+      fi
+    fi
+  done < "${STDOUT_PIPENAME}"
 
-          if grep "[[:space:]]\+[0-9]\+:[0-9]\+[[:space:]]\+error[[:space:]]\+" <<<"$LINE" >/dev/null; then
-            debug "Eslint error matched"
-            if [[ "$ESLINT_CUR_FILE_COUNTED" == "false" ]]; then
-              ESLINT_CUR_FILE_COUNTED="true"
-              (("ESLINT_ERRORS_FOUND++"))
-              debug "Error counter incremented to ${ESLINT_ERRORS_FOUND}"
-            fi
-            continue
-          fi
-        done
-        echo "${ESLINT_ERRORS_FOUND}"
-      )
-  ) 2>&1
+  echo "${ERRORS_FOUND}" > "${STDOUT_PIPENAME}.return"
+  return 0
+}
 
-  (("ERRORS_FOUND_${FILE_TYPE}=ESLINT_ERRORS_FOUND"))
+function ParallelLintCodebaseEslint() {
+  local FILE_TYPE="${1}" && shift
+  local LINTER_NAME="${1}" && shift
+  local LINTER_COMMAND="${1}" && shift
+  local TEST_CASE_RUN="${1}" && shift
+  local FILE_ARRAY=("$@")
+  local NUM_PROC="$(($(nproc)*1))"
+  local FILES_PER_PROC="64"
+  local STDOUT_PARSER="LintCodebaseEslintStdoutParser"
+  local STDERR_PARSER="LintCodebaseBaseStderrParser"
 
-  info "Exiting EXPERIMENTAL batched LintCodebase on ${#FILE_ARRAY[@]} files. ERROR_FOUND: ${ESLINT_ERRORS_FOUND} FILE_TYPE: ${FILE_TYPE}. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}"
+  info "Running EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
+  
+  ParallelLintCodebaseImpl "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${NUM_PROC}" "${FILES_PER_PROC}" "${STDOUT_PARSER}" "${STDERR_PARSER}" "${FILE_ARRAY[@]}"
+
+  info "Exiting EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. ERROR_FOUND: ${ERRORS_FOUND}. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}"
+  
+  return 0
 }
