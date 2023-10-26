@@ -1051,6 +1051,11 @@ debug "ENV:"
 debug "${PRINTENV}"
 debug "------------------------------------"
 
+if [ "${EXPERIMENTAL_BATCH_WORKER}" == "true" ]; then
+  # we have showed citation once, so every other parallel call will use --will-cite
+  info parallel --citation
+fi
+
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Running linter for the ${LANGUAGE} language..."
   VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
