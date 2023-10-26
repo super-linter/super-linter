@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# gitleaks reports failing linter rules to stdout
-# stderr contains uncaught linter errors e.g. invalid parameter, which shall indicate a bug in this script
-# using default LintCodebaseBaseStderrParser
-
 # Sample eslint output:
 #
 # /path/to/failed.js

@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# gitleaks reports failing linter rules to stdout
-# stderr contains uncaught linter errors e.g. invalid parameter, which shall indicate a bug in this script
-# using default LintCodebaseBaseStderrParser
-
 # Sample cfn-lint v0.x output:
 #
 # E3002 Invalid Property Resources/Whatever/Properties/Is/Wrong
