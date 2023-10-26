@@ -1054,6 +1054,8 @@ debug "------------------------------------"
 if [ "${EXPERIMENTAL_BATCH_WORKER}" == "true" ]; then
   # we have showed citation once, so every other parallel call will use --will-cite
   info parallel --citation
+else
+  EXPERIMENTAL_BATCH_WORKER="false"
 fi
 
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
