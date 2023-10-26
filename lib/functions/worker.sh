@@ -112,11 +112,9 @@ function LintCodebase() {
       LintCodebaseGitleaks "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
 
     else
-      #############################
-      # Lint the files one by one #
-      #############################
-      # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
-      # USED_EXPR_BATCH_WORKER="true"
+      ##################
+      # Lint the files #
+      ##################
       for FILE in "${LIST_FILES[@]}"; do
         debug "Linting FILE: ${FILE}"
         ###################################
@@ -145,6 +143,26 @@ function LintCodebase() {
         ###################
         if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
           debug "FILE_TYPE for FILE ${FILE} is related to Docker: ${FILE_TYPE}"
+          if [[ ${FILE} == *"good"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
+            #############
+            # Good file #
+            #############
+            FILE_STATUS='good'
+          elif [[ ${FILE} == *"bad"* ]]; then
+            debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
+            ############
+            # Bad file #
+            ############
+            FILE_STATUS='bad'
+          fi
+        fi
+
+        #####################
+        # Check if Renovate #
+        #####################
+        if [[ ${FILE_TYPE} == *"RENOVATE"* ]]; then
+          debug "FILE_TYPE for FILE ${FILE} is related to Renovate: ${FILE_TYPE}"
           if [[ ${FILE} == *"good"* ]]; then
             debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
             #############
@@ -283,6 +301,14 @@ function LintCodebase() {
             cd "${DIR_NAME}" || exit
             ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
           )
+        ######################
+        # Check for Renovate #
+        ######################
+        elif [[ ${FILE_TYPE} == "RENOVATE" ]]; then
+          LINT_CMD=$(
+            cd "${WORKSPACE_PATH}" || exit
+            RENOVATE_CONFIG_FILE="${FILE}" ${LINTER_COMMAND} 2>&1
+          )
         ############################################################################################
         # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
         ############################################################################################
@@ -314,7 +340,7 @@ function LintCodebase() {
 
           LINT_CMD=$(
             cd "${DIR_NAME}" || exit
-            ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+            ${LINTER_COMMAND} --filter="${FILE_NAME}" 2>&1
           )
         else
           ################################
@@ -396,7 +422,7 @@ function LintCodebase() {
         debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
       done
     fi
-    # TODO: These code are copied from above to calculate index/good/bad count if using experimental worker
+    # TODO: Testing: These code are copied from above to calculate index/good/bad count if using experimental worker
     # if [ "${USED_EXPR_BATCH_WORKER}" == "true" ]; then
     #   for FILE in "${LIST_FILES[@]}"; do
     #     FILE_NAME=$(basename "${FILE}" 2>&1)

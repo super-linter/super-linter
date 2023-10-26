@@ -7,34 +7,35 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.4.4 as terragrunt
-FROM tenable/terrascan:1.17.1 as terrascan
-FROM assignuser/chktex-alpine:v0.1.1 as chktex
-FROM cljkondo/clj-kondo:2023.03.17-alpine as clj-kondo
+FROM tenable/terrascan:1.18.3 as terrascan
+FROM alpine/terragrunt:1.6.2 as terragrunt
+FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.46.0.1 as tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.1 as kubeconfrm
-FROM golangci/golangci-lint:v1.52.2 as golangci-lint
+FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
+FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
+FROM golang:1.21.3-alpine as golang
+FROM golangci/golangci-lint:v1.55.0 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.4.4 as terraform
+FROM hashicorp/terraform:1.6.0 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.4.0 as editorconfig-checker
-FROM mvdan/shfmt:v3.6.0 as shfmt
-FROM rhysd/actionlint:1.6.24 as actionlint
+FROM mstruebing/editorconfig-checker:2.7.1 as editorconfig-checker
+FROM mvdan/shfmt:v3.7.0 as shfmt
+FROM rhysd/actionlint:1.6.26 as actionlint
 FROM scalameta/scalafmt:v3.7.3 as scalafmt
-FROM yoheimuta/protolint:0.43.1 as protolint
-FROM zricethezav/gitleaks:v8.16.2 as gitleaks
+FROM zricethezav/gitleaks:v8.18.0 as gitleaks
+FROM yoheimuta/protolint:0.46.1 as protolint
 
 ##################
 # Get base image #
 ##################
-FROM python:3.11.1-alpine3.17 as base_image
+FROM python:3.11.5-alpine3.17 as base_image
 
 ################################
 # Set ARG values used in Build #
 ################################
 ARG CHECKSTYLE_VERSION='10.3.4'
+ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
@@ -56,13 +57,13 @@ RUN apk add --no-cache \
     bash \
     ca-certificates \
     cargo \
+    cmake \
     coreutils \
     curl \
     file \
     gcc \
     g++ \
     git git-lfs \
-    go \
     gnupg \
     icu-libs \
     jpeg-dev \
@@ -98,14 +99,14 @@ COPY dependencies/* /
 ###################################################################
 # Install Dependencies                                            #
 # The chown fixes broken uid/gid in ast-types-flow dependency     #
-# (see https://github.com/github/super-linter/issues/3901)        #
+# (see https://github.com/super-linter/super-linter/issues/3901)  #
 ###################################################################
 RUN npm install && chown -R "$(id -u)":"$(id -g)" node_modules && bundle install
 
 ##############################
 # Installs Perl dependencies #
 ##############################
-RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic Perl::Critic::Community
+RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic Perl::Critic::Community Perl::Critic::More Perl::Critic::Bangs Perl::Critic::Lax Perl::Critic::StricterSubs Perl::Critic::Swift Perl::Critic::Tics
 
 ######################
 # Install shellcheck #
@@ -115,6 +116,11 @@ COPY --from=shellcheck /bin/shellcheck /usr/bin/
 #####################
 # Install Go Linter #
 #####################
+COPY --from=golang /usr/local/go/go.env /usr/lib/go/
+COPY --from=golang /usr/local/go/bin/ /usr/lib/go/bin/
+COPY --from=golang /usr/local/go/lib/ /usr/lib/go/lib/
+COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/pkg/
+COPY --from=golang /usr/local/go/src/ /usr/lib/go/src/
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
 
 #####################
@@ -142,11 +148,6 @@ COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
 # Install protolint #
 ######################
 COPY --from=protolint /usr/local/bin/protolint /usr/bin/
-
-#####################
-# Install clj-kondo #
-#####################
-COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
 ################################
 # Install editorconfig-checker #
@@ -199,6 +200,12 @@ COPY --from=kubeconfrm /kubeconform /usr/bin/
 COPY scripts/install-lintr.sh /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh
 
+#####################
+# Install clj-kondo #
+#####################
+COPY scripts/install-clj-kondo.sh /
+RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
+
 # Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 # Store the key here because the above host is sometimes down, and breaks our builds
 COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
@@ -243,10 +250,15 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+#########################
+# Clean to shrink image #
+#########################
+RUN find /usr/ -type f -name '*.md' -exec rm {} +
+
 ################################################################################
 # Grab small clean image to build python packages ##############################
 ################################################################################
-FROM python:3.11.1-alpine3.17 as python_builder
+FROM python:3.11.5-alpine3.17 as python_builder
 RUN apk add --no-cache bash g++ git libffi-dev
 COPY dependencies/python/ /stage
 WORKDIR /stage
@@ -255,7 +267,7 @@ RUN ./build-venvs.sh
 ################################################################################
 # Grab small clean image to build slim ###################################
 ################################################################################
-FROM alpine:3.17.3 as slim
+FROM alpine:3.18.4 as slim
 
 ############################
 # Get the build arguements #
@@ -280,9 +292,9 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
     org.opencontainers.image.revision=$BUILD_REVISION \
     org.opencontainers.image.version=$BUILD_VERSION \
     org.opencontainers.image.authors="GitHub DevOps <github_devops@github.com>" \
-    org.opencontainers.image.url="https://github.com/github/super-linter" \
-    org.opencontainers.image.source="https://github.com/github/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/github/super-linter" \
+    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
     org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="Lint your code base with GitHub Actions"
 
@@ -358,6 +370,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
+
+##################
+# Add go to path #
+##################
+ENV PATH="${PATH}:/usr/lib/go/bin"
 
 #############################
 # Copy scripts to container #

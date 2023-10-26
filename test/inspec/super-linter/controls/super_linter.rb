@@ -107,7 +107,7 @@ control "super-linter-installed-commands" do
     { linter_name: "coffeelint"},
     { linter_name: "cpplint"},
     { linter_name: "dart"},
-    { linter_name: "dotnet-format"},
+    { linter_name: "dotnet"},
     { linter_name: "dotenv-linter"},
     { linter_name: "editorconfig-checker", version_option: "-version"},
     { linter_name: "eslint"},
@@ -161,7 +161,7 @@ control "super-linter-installed-commands" do
   SLIM_IMAGE_REMOVED_LINTERS=%w(
     arm-ttk
     clippy
-    dotnet-format
+    dotnet
     dotenv-linter
     pwsh
     rustfmt
@@ -264,13 +264,15 @@ control "super-linter-installed-npm-packages" do
   desc "Check that NPM packages that Super-Linter needs are installed."
 
   packages = [
+    "@babel/eslint-parser",
+    "@babel/preset-react",
+    "@babel/preset-typescript",
     "@coffeelint/cli",
     "@stoplight/spectral",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "asl-validator",
     #"axios",
-    "babel-eslint",
     #"eslint",
     "eslint-config-airbnb",
     "eslint-config-prettier",

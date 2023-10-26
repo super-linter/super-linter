@@ -162,8 +162,8 @@ DetectKubernetesFile() {
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
   if grep -q -v 'kustomize.config.k8s.io' "${FILE}" &&
     grep -q -v "tekton" "${FILE}" &&
-    grep -q -E '(apiVersion):' "${FILE}" &&
-    grep -q -E '(kind):' "${FILE}"; then
+    grep -q -E '(^apiVersion):' "${FILE}" &&
+    grep -q -E '(^kind):' "${FILE}"; then
     debug "${FILE} is a Kubernetes descriptor"
     return 0
   fi
@@ -493,7 +493,7 @@ function RunAdditionalInstalls() {
       ##############################
       debug "INSTALL_CMD:[${INSTALL_CMD}]"
       if [ "${ERROR_CODE}" -ne 0 ]; then
-        fatal "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
+        warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
       fi
     fi
   fi
