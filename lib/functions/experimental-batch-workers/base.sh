@@ -79,7 +79,7 @@ function ParallelLintCodebaseImpl() {
   if [ "${LOG_TRACE}" == "true" ]; then
     PARALLEL_DEBUG_OPTS="--verbose"
   fi
-  local PARALLEL_COMMAND="parallel --keep-order --max-lines ${FILES_PER_PROC} --max-procs ${NUM_PROC} ${PARALLEL_DEBUG_OPTS} --xargs ${LINTER_COMMAND}"
+  local PARALLEL_COMMAND="parallel --will-cite --keep-order --max-lines ${FILES_PER_PROC} --max-procs ${NUM_PROC} ${PARALLEL_DEBUG_OPTS} --xargs ${LINTER_COMMAND}"
   info "Parallel command: ${PARALLEL_COMMAND}"
   
   # named pipes for routing linter outputs and return values
