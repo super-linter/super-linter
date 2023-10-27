@@ -1,3 +1,5 @@
+---
+
 name: Sync scala format version between Dockerfile and config file
 
 on:
