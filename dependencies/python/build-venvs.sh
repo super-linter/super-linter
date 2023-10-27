@@ -18,9 +18,9 @@ mkdir -p /venvs
 ########################################
 pip install virtualenv
 
-#########################################################
-# Itterate through requirments.txt to install bainaries #
-#########################################################
+#######################################################
+# Iterate through requirments.txt to install binaries #
+#######################################################
 for DEP_FILE in *.txt; do
   # split the package name from its version
   PACKAGE_NAME=${DEP_FILE%.txt}
