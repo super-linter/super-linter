@@ -20,15 +20,15 @@ jobs:
     - name: Sync the version if the dockerfile is getting updated
       shell: bash
       run: |
-        scala_version_from_dockerfile=$(cat Dockerfile | grep 'scalameta/scalafmt' | awk -F: '{print $2}' | awk '{print $1}')
+        scala_version_from_dockerfile=$(grep 'scalameta/scalafmt' Dockerfile | awk -F: '{print $2}' | awk '{print $1}')
         scala_version_from_dockerfile=${scala_version_from_dockerfile#v}
 
-        scala_version_from_config=$(cat TEMPLATES/.scalafmt.conf | grep 'version =' | awk -F= '{print $2}' | tr -d '[:space:]')
+        scala_version_from_config=$(grep 'version =' TEMPLATES/.scalafmt.conf | awk -F= '{print $2}' | tr -d '[:space:]')
 
         echo "scala_version_from_dockerfile: $scala_version_from_dockerfile"
         echo "scala_version_from_config: $scala_version_from_config"
 
-        if [ "$scala_version_from_dockerfile" != "$scala_version_from_config" ]; then echo "versions differ"; cat TEMPLATES/.scalafmt.conf | sed "s/\(version =\).*/\1 ${scala_version_from_dockerfile}/g" | tee TEMPLATES/.scalafmt.conf; fi
+        if [ "$scala_version_from_dockerfile" != "$scala_version_from_config" ]; then echo "versions differ"; sed -i "s/\(version =\).*/\1 ${scala_version_from_dockerfile}/g" TEMPLATES/.scalafmt.conf; fi
     - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
       with:
         add: 'TEMPLATES/.scalafmt.conf'
