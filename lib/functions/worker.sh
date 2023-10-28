@@ -93,7 +93,7 @@ function LintCodebase() {
     # TODO: How to test $EXPR_BATCH_WORKER == true, now just skip it
     if [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "cfn-lint" ]; then
       ParallelLintCodebaseCfnLint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
-      return 0      
+      return 0
     elif [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "eslint" ]; then
       ParallelLintCodebaseEslint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
       return 0

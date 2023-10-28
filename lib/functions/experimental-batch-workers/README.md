@@ -16,9 +16,9 @@ In order to maximize compatibility to programs using output of super-linter, the
 
 ## Motivation
 
-Some linter might have a high startup cost, e.g. 
-  - `eslint` with some popular frontend framework plugins requires reading thousands of js files to init
-  - `cfn-lint` which requires reading the whole cloudformation spec to run
+Some linter might have a high startup cost, e.g.
+- `eslint` with some popular frontend framework plugins requires reading thousands of js files to init
+- `cfn-lint` which requires reading the whole cloudformation spec to run
 
 A lot of linter supports linting multiple files per invocation, i.e. `<linter-name> file1 file2 file3 ...`, which can be leveraged to reduce the startup overhead.
 
@@ -31,7 +31,7 @@ Shift-left paradigm encourages running linters in the IDE, for example in `.gith
 | Linter   | Batch | Parallel | Notes                       |
 | -------- | ----- | -------- | --------------------------- |
 | cfn-lint | o     | o        |                             |
-| eslint   | o     | o        |                             |
+| ESLint   | o     | o        |                             |
 | gitleaks |       | o        | Batch unsupported by linter |
 
 ## Architecture
@@ -53,6 +53,6 @@ LintCodebase
       # ./${LinterName}.sh
       # TASK: see ./base.sh
       LintCodebase${LinterName}StderrParser
-      # ./base.sh if the default works for you 
+      # ./base.sh if the default works for you
       LintCodebaseBaseStderrParser
 ```

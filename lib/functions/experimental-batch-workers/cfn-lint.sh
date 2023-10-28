@@ -30,9 +30,9 @@ function LintCodebaseCfnLintStdoutParser() {
       fi
       continue
     fi
-  done < "${STDOUT_PIPENAME}"
+  done <"${STDOUT_PIPENAME}"
 
-  echo "${ERRORS_FOUND}" > "${STDOUT_PIPENAME}.return"
+  echo "${ERRORS_FOUND}" >"${STDOUT_PIPENAME}.return"
   return 0
 }
 
@@ -42,16 +42,16 @@ function ParallelLintCodebaseCfnLint() {
   local LINTER_COMMAND="${1}" && shift
   local TEST_CASE_RUN="${1}" && shift
   local FILE_ARRAY=("$@")
-  local NUM_PROC="$(($(nproc)*1))"
+  local NUM_PROC="$(($(nproc) * 1))"
   local FILES_PER_PROC="16"
   local STDOUT_PARSER="LintCodebaseCfnLintStdoutParser"
   local STDERR_PARSER="LintCodebaseBaseStderrParser"
 
   info "Running EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
-  
+
   ParallelLintCodebaseImpl "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${NUM_PROC}" "${FILES_PER_PROC}" "${STDOUT_PARSER}" "${STDERR_PARSER}" "${FILE_ARRAY[@]}"
 
   info "Exiting EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. ERROR_FOUND: ${ERRORS_FOUND}. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}"
-  
+
   return 0
 }

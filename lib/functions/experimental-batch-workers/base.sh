@@ -19,19 +19,18 @@ function LintCodebaseBaseStderrParser() {
   local UNCAUGHT_LINTER_ERRORS=0
   local LINE
   while IFS= read -r LINE; do
-      if [[ "${LINE}" == "${LINTER_COMMAND}"* ]]; then
-        trace "[parallel] ${LINE}"
-        continue
-      fi
-      error "[${LINTER_NAME}] ${LINE//\\/\\\\}"
-      UNCAUGHT_LINTER_ERRORS="$((UNCAUGHT_LINTER_ERRORS+1))"
-  done < "${STDERR_PIPENAME}"
+    if [[ "${LINE}" == "${LINTER_COMMAND}"* ]]; then
+      trace "[parallel] ${LINE}"
+      continue
+    fi
+    error "[${LINTER_NAME}] ${LINE//\\/\\\\}"
+    UNCAUGHT_LINTER_ERRORS="$((UNCAUGHT_LINTER_ERRORS + 1))"
+  done <"${STDERR_PIPENAME}"
 
-  echo "${UNCAUGHT_LINTER_ERRORS}" > "${STDERR_PIPENAME}.return"
+  echo "${UNCAUGHT_LINTER_ERRORS}" >"${STDERR_PIPENAME}.return"
 
   return 0
 }
-
 
 # stdout is piped from linter's stdout
 # * this stream is already `tee`-ed to stdout by caller as in serial super-linter behavior
@@ -52,10 +51,9 @@ function LintCodebaseBaseStdoutParser() {
   # * you can use any way to parse the linter output as you like
   fatal "LintCodebaseBaseStdoutParser is not implemented"
 
-  echo 0 > "${STDOUT_PIPENAME}.return"
+  echo 0 >"${STDOUT_PIPENAME}.return"
   return 0
 }
-
 
 # This function runs linter in parallel and batch#
 # To reproduce serial behavior, ERRORS_FOUND_${FILE_TYPE} should be calculated from linter output
@@ -81,7 +79,7 @@ function ParallelLintCodebaseImpl() {
   fi
   local PARALLEL_COMMAND="parallel --will-cite --keep-order --max-lines ${FILES_PER_PROC} --max-procs ${NUM_PROC} ${PARALLEL_DEBUG_OPTS} --xargs ${LINTER_COMMAND}"
   info "Parallel command: ${PARALLEL_COMMAND}"
-  
+
   # named pipes for routing linter outputs and return values
   local STDOUT_PIPENAME="/tmp/parallel-${FILE_TYPE,,}.stdout"
   local STDERR_PIPENAME="/tmp/parallel-${FILE_TYPE,,}.stderr"
@@ -93,14 +91,14 @@ function ParallelLintCodebaseImpl() {
   "${STDOUT_PARSER}" "${STDOUT_PIPENAME}" "${LINTER_NAME}" &
   "${STDERR_PARSER}" "${STDERR_PIPENAME}" "${LINTER_NAME}" "${LINTER_COMMAND}" &
   # start linter in parallel
-  printf "%s\n" "${FILE_ARRAY[@]}" | ${PARALLEL_COMMAND} 2> "${STDERR_PIPENAME}" | tee "${STDOUT_PIPENAME}" &
+  printf "%s\n" "${FILE_ARRAY[@]}" | ${PARALLEL_COMMAND} 2>"${STDERR_PIPENAME}" | tee "${STDOUT_PIPENAME}" &
 
   local UNCAUGHT_LINTER_ERRORS
   local ERRORS_FOUND
   # wait for all parsers to finish, should read a number from each pipe
-  IFS= read -r UNCAUGHT_LINTER_ERRORS < "${STDERR_PIPENAME}.return"
+  IFS= read -r UNCAUGHT_LINTER_ERRORS <"${STDERR_PIPENAME}.return"
   trace "UNCAUGHT_LINTER_ERRORS: ${UNCAUGHT_LINTER_ERRORS}"
-  IFS= read -r ERRORS_FOUND < "${STDOUT_PIPENAME}.return"
+  IFS= read -r ERRORS_FOUND <"${STDOUT_PIPENAME}.return"
   trace "ERRORS_FOUND: ${ERRORS_FOUND}"
   # assert return values are integers >= 0 just in case some implementation error
   if ! [[ "${ERRORS_FOUND}" =~ ^[0-9]+$ ]]; then
@@ -111,7 +109,7 @@ function ParallelLintCodebaseImpl() {
     fatal "UNCAUGHT_LINTER_ERRORS is not a number: ${UNCAUGHT_LINTER_ERRORS}"
     exit 1
   fi
-  ERRORS_FOUND=$((ERRORS_FOUND+UNCAUGHT_LINTER_ERRORS))
+  ERRORS_FOUND=$((ERRORS_FOUND + UNCAUGHT_LINTER_ERRORS))
   printf -v "ERRORS_FOUND_${FILE_TYPE}" "%d" "${ERRORS_FOUND}"
 
   return 0

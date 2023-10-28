@@ -19,9 +19,9 @@ function LintCodebaseGitleaksStdoutParser() {
   local LINTER_NAME="${1}" && shift
 
   # shellcheck disable=SC2155
-  local ERRORS_FOUND=$( (grep "^File:[[:space:]]\+" | sort -u | wc -l) < "${STDOUT_PIPENAME}" )
+  local ERRORS_FOUND=$( (grep "^File:[[:space:]]\+" | sort -u | wc -l) <"${STDOUT_PIPENAME}")
 
-  echo "${ERRORS_FOUND}" > "${STDOUT_PIPENAME}.return"
+  echo "${ERRORS_FOUND}" >"${STDOUT_PIPENAME}.return"
   return 0
 }
 
@@ -31,13 +31,13 @@ function ParallelLintCodebaseGitleaks() {
   local LINTER_COMMAND="${1}" && shift
   local TEST_CASE_RUN="${1}" && shift
   local FILE_ARRAY=("$@")
-  local NUM_PROC="$(($(nproc)*1))"
+  local NUM_PROC="$(($(nproc) * 1))"
   local FILES_PER_PROC="1" # no file batching support for gitleaks
   local STDOUT_PARSER="LintCodebaseGitleaksStdoutParser"
   local STDERR_PARSER="LintCodebaseBaseStderrParser"
 
   info "Running EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
-  
+
   local MODIFIED_LINTER_COMMAND="${LINTER_COMMAND}"
   MODIFIED_LINTER_COMMAND=${MODIFIED_LINTER_COMMAND//--source/}
   MODIFIED_LINTER_COMMAND=${MODIFIED_LINTER_COMMAND//-s/}
@@ -55,6 +55,6 @@ function ParallelLintCodebaseGitleaks() {
   ParallelLintCodebaseImpl "${FILE_TYPE}" "${LINTER_NAME}" "${MODIFIED_LINTER_COMMAND}" "${TEST_CASE_RUN}" "${NUM_PROC}" "${FILES_PER_PROC}" "${STDOUT_PARSER}" "${STDERR_PARSER}" "${FILE_ARRAY[@]}"
 
   info "Exiting EXPERIMENTAL parallel ${FILE_TYPE} LintCodebase on ${#FILE_ARRAY[@]} files. ERROR_FOUND: ${ERRORS_FOUND}. LINTER_NAME: ${LINTER_NAME}, LINTER_COMMAND: ${LINTER_COMMAND}"
-  
+
   return 0
 }
