@@ -64,6 +64,11 @@ source /action/lib/functions/validation.sh # Source the function script(s)
 source /action/lib/functions/worker.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/setupSSH.sh # Source the function script(s)
+# shellcheck source=/dev/null
+for batch_worker_script in /action/lib/functions/experimental-batch-workers/*.sh; do
+  # shellcheck source=/dev/null
+  source "$batch_worker_script"
+done
 
 ###########
 # GLOBALS #
@@ -1046,6 +1051,13 @@ debug "ENV:"
 debug "${PRINTENV}"
 debug "------------------------------------"
 
+if [ "${EXPERIMENTAL_BATCH_WORKER}" == "true" ]; then
+  # we have showed citation once, so every other parallel call will use --will-cite
+  info parallel --citation
+else
+  EXPERIMENTAL_BATCH_WORKER="false"
+fi
+
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Running linter for the ${LANGUAGE} language..."
   VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
@@ -1093,7 +1105,7 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
 
     debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
+    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${EXPERIMENTAL_BATCH_WORKER}" "${!LANGUAGE_FILE_ARRAY}"
   fi
 done
 
