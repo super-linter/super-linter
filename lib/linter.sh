@@ -502,7 +502,7 @@ GetGitHubVars() {
 
     info "Linting all files in mapped directory:[${GITHUB_WORKSPACE}]"
 
-    pushd "$GITHUB_WORKSPACE" >/dev/null || exit 1
+    pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     # No need to touch or set the GITHUB_SHA
     # No need to touch or set the GITHUB_EVENT_PATH
