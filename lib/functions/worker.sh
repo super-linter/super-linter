@@ -21,6 +21,7 @@ function LintCodebase() {
   FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
   FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
   TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
+  EXPR_BATCH_WORKER="${1}" && shift    # Flag for if running in experimental batch worker
   FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
 
   ##########################
@@ -83,6 +84,23 @@ function LintCodebase() {
 
     info "----------------------------------------------"
     info "----------------------------------------------"
+
+    # TODO: When testing in experimental batch mode, for implemented linters should filter out these files
+    # if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
+    #   debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
+    #   continue
+    # fi
+    # TODO: How to test $EXPR_BATCH_WORKER == true, now just skip it
+    if [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "cfn-lint" ]; then
+      ParallelLintCodebaseCfnLint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
+      return 0
+    elif [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "eslint" ]; then
+      ParallelLintCodebaseEslint "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
+      return 0
+    elif [ "$EXPR_BATCH_WORKER" == "true" ] && [ "${LINTER_NAME}" == "gitleaks" ]; then
+      ParallelLintCodebaseGitleaks "${FILE_TYPE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${TEST_CASE_RUN}" "${FILE_ARRAY[@]}"
+      return 0
+    fi
 
     ##################
     # Lint the files #
