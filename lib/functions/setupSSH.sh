@@ -26,7 +26,7 @@ function SetupGithubComSshKeys() {
     info "Adding github.com SSH keys"
     # Fetched out of band from
     # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
-    GITHUB_RSA_FINGERPRINT="SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8"
+    GITHUB_RSA_FINGERPRINT="SHA256:uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s"
     ssh-keyscan -t rsa github.com >/tmp/github.pub 2>/dev/null
     if [[ "${SSH_INSECURE_NO_VERIFY_GITHUB_KEY}" == "true" ]]; then
       warn "Skipping github.com key verification and adding without checking fingerprint"
