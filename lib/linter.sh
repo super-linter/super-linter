@@ -500,7 +500,9 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
-    info "Linting all files in mapped directory:[${DEFAULT_WORKSPACE}]"
+    info "Linting all files in mapped directory:[${GITHUB_WORKSPACE}]"
+
+    pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     # No need to touch or set the GITHUB_SHA
     # No need to touch or set the GITHUB_EVENT_PATH
