@@ -40,7 +40,7 @@ control "super-linter-installed-packages" do
     "musl-dev",
     "npm",
     "nodejs-current",
-    "openjdk11-jre",
+    "openjdk18-jre",
     "openssl-dev",
     "perl-dev",
     "perl",
