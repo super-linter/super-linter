@@ -78,7 +78,7 @@ RUN apk add --no-cache \
     musl-dev \
     net-snmp-dev \
     npm nodejs-current \
-    openjdk11-jre \
+    openjdk18-jre \
     openssh-client \
     openssl-dev \
     parallel \
