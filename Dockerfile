@@ -8,16 +8,16 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.18.3 as terrascan
-FROM alpine/terragrunt:1.6.2 as terragrunt
+FROM alpine/terragrunt:1.6.3 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.3 as kubeconfrm
 FROM golang:1.21.3-alpine as golang
-FROM golangci/golangci-lint:v1.55.1 as golangci-lint
+FROM golangci/golangci-lint:v1.55.2 as golangci-lint
 FROM hadolint/hadolint:latest-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.6.2 as terraform
+FROM hashicorp/terraform:1.6.3 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
@@ -39,7 +39,7 @@ ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
-ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
+ARG GOOGLE_JAVA_FORMAT_VERSION='1.18.1'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
@@ -78,7 +78,7 @@ RUN apk add --no-cache \
     musl-dev \
     net-snmp-dev \
     npm nodejs-current \
-    openjdk11-jre \
+    openjdk17-jre \
     openssh-client \
     openssl-dev \
     parallel \
