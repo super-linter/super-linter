@@ -22,7 +22,7 @@ FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.26 as actionlint
-FROM scalameta/scalafmt:v3.7.15 as scalafmt
+FROM scalameta/scalafmt:v3.7.16 as scalafmt
 FROM zricethezav/gitleaks:v8.18.0 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
