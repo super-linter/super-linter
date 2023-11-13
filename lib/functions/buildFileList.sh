@@ -428,7 +428,10 @@ function BuildFileList() {
     ########################
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
-      [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] && [[ "${FILE_TYPE}" != "xml" ]] && [[ "${BASE_FILE}" =~ .*(contain|dock)erfile.* ]]; then
+      [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] &&
+      [[ "${FILE_TYPE}" != "xml" ]] &&
+      [[ echo "${BASE_FILE}" | grep -qiE "^(.+\.)?(Docker|Container)file$" ]]; then
+
       ################################
       # Append the file to the array #
       ################################
