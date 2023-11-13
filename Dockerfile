@@ -39,7 +39,7 @@ ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
-ARG GOOGLE_JAVA_FORMAT_VERSION='1.15.0'
+ARG GOOGLE_JAVA_FORMAT_VERSION='1.18.1'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
@@ -78,7 +78,7 @@ RUN apk add --no-cache \
     musl-dev \
     net-snmp-dev \
     npm nodejs-current \
-    openjdk11-jre \
+    openjdk17-jre \
     openssh-client \
     openssl-dev \
     parallel \
