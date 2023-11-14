@@ -430,7 +430,7 @@ function BuildFileList() {
     elif [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
       [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] &&
       [[ "${FILE_TYPE}" != "xml" ]] &&
-      [[ echo "${BASE_FILE}" | grep -qiE "^(.+\.)?(Docker|Container)file$" ]]; then
+      [[ echo "${BASE_FILE}" =~  ".*(contain|dock)erfile$" ]]; then
 
       ################################
       # Append the file to the array #
@@ -870,10 +870,6 @@ function BuildFileList() {
     debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
     FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
   fi
-
-  # Debug print of the ansible directory
-  echo "Print the ANSIBLE_DIRECTORY contents to see if tests exist"
-  ls $ANSIBLE_DIRECTORY
 
   ################
   # Footer print #
