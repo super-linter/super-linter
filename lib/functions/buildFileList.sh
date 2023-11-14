@@ -871,6 +871,10 @@ function BuildFileList() {
     FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
   fi
 
+  # Debug print of the ansible directory
+  echo "Print the ANSIBLE_DIRECTORY contents to see if tests exist"
+  ls $ANSIBLE_DIRECTORY
+
   ################
   # Footer print #
   ################
