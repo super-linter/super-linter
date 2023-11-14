@@ -430,7 +430,7 @@ function BuildFileList() {
     elif [[ "${FILE_TYPE}" != "tap" ]] && [[ "${FILE_TYPE}" != "yml" ]] &&
       [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] &&
       [[ "${FILE_TYPE}" != "xml" ]] &&
-      [[ "${BASE_FILE}" =~ "^(.+\.)?(contain|dock)erfile$" ]]; then
+      [[ "${BASE_FILE}" =~ ^(.+\.)?(contain|dock)erfile$ ]]; then
 
       ################################
       # Append the file to the array #
