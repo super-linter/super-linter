@@ -8,7 +8,7 @@ on:
       - 'Dockerfile'
 
 permissions:
-      contents: write
+  contents: write
 
 jobs:
   build:
