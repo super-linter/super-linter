@@ -24,7 +24,7 @@ mkdir -p "${PWSH_DIRECTORY}"
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
+  "https://api.github.com/repos/powershell/powershell/releases/tags/v7.3.10" |
   jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-alpine-" + $target)) | .url')
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
