@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-# This is for debug, @zkoppert please remove before merging
-set -o xtrace
 
 # Reference: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7
 # Slightly modified to always retrieve latest stable Powershell version
@@ -24,8 +22,8 @@ mkdir -p "${PWSH_DIRECTORY}"
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "https://api.github.com/repos/powershell/powershell/releases/tags/v7.3.10" |
-  jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-alpine-" + $target)) | .url')
+  "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
+  jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-musl-" + $target)) | .url')
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
