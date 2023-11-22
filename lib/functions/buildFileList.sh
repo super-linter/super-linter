@@ -40,8 +40,7 @@ function GenerateFileDiff() {
   # Check the shell for errors #
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    info "Failed to get Diff with:[$CMD]"
+    error "Failed to get Diff with:[$CMD]"
     IssueHintForFullGitHistory
     fatal "[${CMD_OUTPUT}]"
   fi
@@ -90,24 +89,28 @@ function BuildFileList() {
     # This can be pulled from the GITHUB_EVENT_PATH payload
 
     debug "----------------------------------------------"
-    debug "Pulling in code history and branches..."
-    PULL_CMD=$(git -C "${GITHUB_WORKSPACE}" pull --quiet 2>&1)
-    ERROR_CODE=$?
-    debug "PULL_CMD error code: ${ERROR_CODE}"
+    if [ "${LOCAL_UPDATES}" == "false" ]; then
+      debug "Pulling in code history and branches..."
+      PULL_CMD=$(git -C "${GITHUB_WORKSPACE}" pull 2>&1)
+      ERROR_CODE=$?
+      debug "PULL_CMD error code: ${ERROR_CODE}"
 
-    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
-      error "Failed to pull latest changes in ${GITHUB_WORKSPACE}"
-      fatal "[${PULL_CMD}]"
-    fi
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        error "Failed to pull latest changes in ${GITHUB_WORKSPACE}"
+        fatal "[${PULL_CMD}]"
+      fi
 
-    debug "Switching back to the default branch..."
-    SWITCH_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1)
-    ERROR_CODE=$?
-    debug "SWITCH_CMD error code: ${ERROR_CODE}"
+      debug "Switching back to the default branch..."
+      SWITCH_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1)
+      ERROR_CODE=$?
+      debug "SWITCH_CMD error code: ${ERROR_CODE}"
 
-    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
-      error "Failed to switch to ${DEFAULT_BRANCH} branch!"
-      fatal "[${SWITCH_CMD}]"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        error "Failed to switch to ${DEFAULT_BRANCH} branch!"
+        fatal "[${SWITCH_CMD}]"
+      fi
+    else
+      debug "Skipped pulling latest changes and switching to the default branch."
     fi
 
     if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
