@@ -34,6 +34,7 @@ function GenerateFileDiff() {
   # Load the error code #
   #######################
   ERROR_CODE=$?
+  debug "Diff command return code: ${ERROR_CODE}"
 
   ##############################
   # Check the shell for errors #
@@ -73,6 +74,8 @@ function BuildFileList() {
 
   debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
+  debug "LOCAL_UPDATES: ${LOCAL_UPDATES}"
+
   debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
 
   debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
@@ -86,31 +89,24 @@ function BuildFileList() {
     # Need to build a list of all files changed
     # This can be pulled from the GITHUB_EVENT_PATH payload
 
-    ################
-    # print header #
-    ################
     debug "----------------------------------------------"
     debug "Pulling in code history and branches..."
-
-    #################################################################################
-    # Switch codebase back to the default branch to get a list of all files changed #
-    #################################################################################
-    SWITCH_CMD=$(
-      git -C "${GITHUB_WORKSPACE}" pull --quiet
-      git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
-    )
-
-    #######################
-    # Load the error code #
-    #######################
+    PULL_CMD=$(git -C "${GITHUB_WORKSPACE}" pull --quiet 2>&1)
     ERROR_CODE=$?
+    debug "PULL_CMD error code: ${ERROR_CODE}"
 
-    ##############################
-    # Check the shell for errors #
-    ##############################
     if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
-      # Error
-      info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
+      error "Failed to pull latest changes in ${GITHUB_WORKSPACE}"
+      fatal "[${PULL_CMD}]"
+    fi
+
+    debug "Switching back to the default branch..."
+    SWITCH_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1)
+    ERROR_CODE=$?
+    debug "SWITCH_CMD error code: ${ERROR_CODE}"
+
+    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
+      error "Failed to switch to ${DEFAULT_BRANCH} branch!"
       fatal "[${SWITCH_CMD}]"
     fi
 
