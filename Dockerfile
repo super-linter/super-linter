@@ -34,12 +34,10 @@ FROM python:3.11.5-alpine3.17 as base_image
 ################################
 # Set ARG values used in Build #
 ################################
-ARG CHECKSTYLE_VERSION='10.3.4'
 ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
-ARG GOOGLE_JAVA_FORMAT_VERSION='1.18.1'
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'

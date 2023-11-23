@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+CHECKSTYLE_VERSION="$(grep <"/dependencies/checkstyle/build.gradle" "checkstyle" | awk -F ':' '{print $2}')"
+echo "Installing Checkstyle: ${CHECKSTYLE_VERSION}"
+
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
