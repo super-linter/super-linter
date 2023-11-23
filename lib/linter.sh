@@ -504,9 +504,14 @@ GetGitHubVars() {
     # Validate we have a value #
     ############################
     if [ -z "${GITHUB_SHA}" ]; then
-      error "Failed to get [GITHUB_SHA]!"
-      fatal "[${GITHUB_SHA}]"
+      fatal "Failed to get the value for the GITHUB_SHA variable [${GITHUB_SHA}]"
     else
+      debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
+      if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
+        fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
+      else
+        debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
+      fi
       info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
     fi
 
