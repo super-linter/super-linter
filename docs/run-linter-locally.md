@@ -95,7 +95,7 @@ jobs:
         uses: super-linter/super-linter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: develop
+          DEFAULT_BRANCH: main
 ```
 
 ## Build the container image and run the test suite locally

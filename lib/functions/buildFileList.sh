@@ -49,6 +49,18 @@ function GenerateFileDiff() {
   debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
+function CheckIfGitBranchExists() {
+  local BRANCH_NAME="${1}"
+  debug "Check if the ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
+  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${BRANCH_NAME}"; then
+    info "The ${BRANCH_NAME} branch doesn't exist in ${GITHUB_WORKSPACE}"
+    return 1
+  else
+    debug "The ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
+    return 0
+  fi
+}
+
 ################################################################################
 #### Function BuildFileList ####################################################
 function BuildFileList() {
@@ -76,38 +88,22 @@ function BuildFileList() {
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "----------------------------------------------"
-    echo "Build the list of all changed files"
+    debug "Build the list of all changed files"
 
+    debug "Git branches: $(git branch -a)"
     debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
-    if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${DEFAULT_BRANCH}"; then
-      debug "Git branches: $(git branch -a)"
-      fatal "The default branch doesn't exist in this Git repository"
-    else
-      debug "The default branch exists in this repository"
-    fi
-
-    if [ "${LOCAL_UPDATES}" == "false" ]; then
-      debug "Pulling in code history and branches..."
-      PULL_CMD=$(git -C "${GITHUB_WORKSPACE}" pull 2>&1)
-      ERROR_CODE=$?
-      debug "PULL_CMD error code: ${ERROR_CODE}"
-
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to pull latest changes in ${GITHUB_WORKSPACE}"
-        fatal "[${PULL_CMD}]"
-      fi
-
-      debug "Switching back to the default branch..."
-      SWITCH_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1)
-      ERROR_CODE=$?
-      debug "SWITCH_CMD error code: ${ERROR_CODE}"
-
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to switch to ${DEFAULT_BRANCH} branch!"
-        fatal "[${SWITCH_CMD}]"
+    if ! CheckIfGitBranchExists "${DEFAULT_BRANCH}"; then
+      REMOTE_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
+      debug "The default branch (${DEFAULT_BRANCH}) doesn't exist in this Git repository. Trying with ${REMOTE_DEFAULT_BRANCH}"
+      if ! CheckIfGitBranchExists "${REMOTE_DEFAULT_BRANCH}"; then
+        fatal "Neither ${DEFAULT_BRANCH}, nor ${REMOTE_DEFAULT_BRANCH} exist in ${GITHUB_WORKSPACE}"
+      else
+        info "${DEFAULT_BRANCH} doesn't exist, however ${REMOTE_DEFAULT_BRANCH} exists. Setting DEFAULT_BRANCH to: ${REMOTE_DEFAULT_BRANCH}"
+        DEFAULT_BRANCH="${REMOTE_DEFAULT_BRANCH}"
+        debug "Updated DEFAULT_BRANCH: ${DEFAULT_BRANCH}"
       fi
     else
-      debug "Skipped pulling latest changes and switching to the default branch."
+      debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
     fi
 
     DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
@@ -200,28 +196,6 @@ function BuildFileList() {
     # No files were found to lint #
     ###############################
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
-  fi
-
-  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    #########################################
-    # Need to switch back to branch of code #
-    #########################################
-    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ]; then
-      # Error
-      error "Failed to switch back to branch!"
-      IssueHintForFullGitHistory
-      fatal "[${SWITCH2_CMD}]"
-    fi
   fi
 
   #########################################

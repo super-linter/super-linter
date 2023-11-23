@@ -73,7 +73,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-          LOCAL_UPDATES: true
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Run Test Suite
