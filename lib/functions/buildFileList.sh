@@ -79,6 +79,14 @@ function BuildFileList() {
     # This can be pulled from the GITHUB_EVENT_PATH payload
 
     debug "----------------------------------------------"
+
+    debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
+    if ! git rev-parse --quiet --verify "${DEFAULT_BRANCH}"; then
+      fatal "The default branch doesn't exist in this Git repository"
+    else
+      debug "The default branch exists in this repository"
+    fi
+
     if [ "${LOCAL_UPDATES}" == "false" ]; then
       debug "Pulling in code history and branches..."
       PULL_CMD=$(git -C "${GITHUB_WORKSPACE}" pull 2>&1)
