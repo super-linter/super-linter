@@ -862,6 +862,10 @@ UpdateLoopsForImage
 ##################################
 GetLinterVersions
 
+debug "Allow Git to work on ${GITHUB_WORKSPACE}"
+git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+git config --global --add safe.directory "/tmp/lint" 2>&1
+
 #######################
 # Get GitHub Env Vars #
 #######################
@@ -876,10 +880,6 @@ DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"                         
 export DEFAULT_ANSIBLE_DIRECTORY                                                      # Workaround SC2034
 DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
 export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
-
-debug "Allow Git to work on ${GITHUB_WORKSPACE}"
-git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-git config --global --add safe.directory "/tmp/lint" 2>&1
 
 ############################
 # Validate the environment #
