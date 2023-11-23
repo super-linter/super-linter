@@ -92,7 +92,7 @@ RUN apk add --no-cache \
 ########################################
 # Copy dependencies files to container #
 ########################################
-COPY dependencies/* /
+COPY dependencies/ /
 
 ###################################################################
 # Install Dependencies                                            #
