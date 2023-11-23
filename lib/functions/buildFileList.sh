@@ -75,13 +75,12 @@ function BuildFileList() {
   debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
-    # Need to build a list of all files changed
-    # This can be pulled from the GITHUB_EVENT_PATH payload
-
     debug "----------------------------------------------"
+    echo "Build the list of all changed files"
 
     debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
     if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${DEFAULT_BRANCH}"; then
+      debug "Git branches: $(git branch -a)"
       fatal "The default branch doesn't exist in this Git repository"
     else
       debug "The default branch exists in this repository"
