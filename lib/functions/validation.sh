@@ -204,7 +204,7 @@ function GetValidationInfo() {
   fi
 
   debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
-  if ! git -C "${GITHUB_WORKSPACE}" cat-file -t "${GITHUB_SHA}"; then
+  if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
     fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
   else
     debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
