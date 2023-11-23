@@ -28,7 +28,7 @@ function GenerateFileDiff() {
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  CMD_OUTPUT=$(eval "$CMD")
+  CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail")
 
   #######################
   # Load the error code #
@@ -113,6 +113,8 @@ function BuildFileList() {
       debug "Skipped pulling latest changes and switching to the default branch."
     fi
 
+    DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+
     if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       ################
       # push event   #
@@ -131,14 +133,14 @@ function BuildFileList() {
         debug "----------------------------------------------"
         debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
 
-        DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+        DIFF_CMD=${DIFF_GIT_DEFAULT_BRANCH_CMD}
         GenerateFileDiff "$DIFF_CMD"
       fi
     else
       ################
       # PR event     #
       ################
-      DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+      DIFF_CMD=${DIFF_GIT_DEFAULT_BRANCH_CMD}
       GenerateFileDiff "$DIFF_CMD"
     fi
   else
