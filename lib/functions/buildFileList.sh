@@ -81,7 +81,7 @@ function BuildFileList() {
     debug "----------------------------------------------"
 
     debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
-    if ! git rev-parse --quiet --verify "${DEFAULT_BRANCH}"; then
+    if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${DEFAULT_BRANCH}"; then
       fatal "The default branch doesn't exist in this Git repository"
     else
       debug "The default branch exists in this repository"
