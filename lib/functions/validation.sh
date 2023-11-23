@@ -32,7 +32,6 @@ function GetValidationInfo() {
       VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
       info "- Validating ALL files in code base..."
     else
-      # Its false
       info "- Only validating [new], or [edited] files in code base..."
     fi
   fi
@@ -202,6 +201,13 @@ function GetValidationInfo() {
   ############################
   if [ "${ACTIONS_RUNNER_DEBUG}" != "false" ]; then
     ACTIONS_RUNNER_DEBUG="true"
+  fi
+
+  debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
+  if ! git -C "${GITHUB_WORKSPACE}" cat-file -t "${GITHUB_SHA}"; then
+    fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
+  else
+    debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
   fi
 
   ###########################
