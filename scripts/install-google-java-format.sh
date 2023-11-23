@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-GOOGLE_JAVA_FORMAT_VERSION="$(grep <"dependencies/google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $2}')"
+GOOGLE_JAVA_FORMAT_VERSION="$(grep <"dependencies/google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
 echo "Installing Google Java Format: ${GOOGLE_JAVA_FORMAT_VERSION}"
 
 url=$(curl -s \
