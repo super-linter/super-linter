@@ -365,20 +365,8 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-# ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"         # Ansible Directory
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
-# DISABLE_ERRORS="${DISABLE_ERRORS}"               # Boolean to enable warning-only output without throwing errors
-# FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"   # RegExp defining which files will be processed by linters (all by default)
-# FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"   # RegExp defining which files will be excluded from linting (none by default)
-# GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"         # Github Event Path
-# GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
-# GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
-# GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
-# GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
-# TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
-# VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
-
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 
 # Do not ignore generated files by default for backwards compatibility

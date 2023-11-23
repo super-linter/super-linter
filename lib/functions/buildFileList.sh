@@ -19,10 +19,6 @@ function IssueHintForFullGitHistory() {
 #### Function GenerateFileDiff #################################################
 function GenerateFileDiff() {
   CMD="${1}"
-  ################
-  # print header #
-  ################
-  debug "----------------------------------------------"
   debug "Generating Diff with:[$CMD]"
 
   #################################################
@@ -42,7 +38,7 @@ function GenerateFileDiff() {
   if [ ${ERROR_CODE} -ne 0 ]; then
     error "Failed to get Diff with:[$CMD]"
     IssueHintForFullGitHistory
-    fatal "[${CMD_OUTPUT}]"
+    fatal "[Diff command output: ${CMD_OUTPUT}]"
   fi
 
   ###################################################
@@ -68,6 +64,8 @@ function BuildFileList() {
 
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
+
+  debug "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME:-"not set"}"
 
   debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
@@ -113,7 +111,7 @@ function BuildFileList() {
       debug "Skipped pulling latest changes and switching to the default branch."
     fi
 
-    DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+    DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
 
     if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       ################
@@ -126,12 +124,8 @@ function BuildFileList() {
       # Need to see if the array is empty, if so, try the other way #
       ###############################################################
       if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
-        # Empty array, going to try to pull from main branch differences
-        ################
-        # print header #
-        ################
         debug "----------------------------------------------"
-        debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
+        debug "Generation of the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
 
         DIFF_CMD=${DIFF_GIT_DEFAULT_BRANCH_CMD}
         GenerateFileDiff "$DIFF_CMD"
@@ -180,12 +174,6 @@ function BuildFileList() {
         -type f \
         2>&1 | sort)
     else
-      ##############################
-      # use the standard mechinism #
-      ##############################
-      ################
-      # print header #
-      ################
       debug "----------------------------------------------"
       debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
       mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
