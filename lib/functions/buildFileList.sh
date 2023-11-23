@@ -12,6 +12,7 @@
 #### Function BuildFileList ####################################################
 function IssueHintForFullGitHistory() {
   info "Check that you have the full git history, the checkout is not shallow, etc"
+  info "Is shallow repository: $(git -C "${GITHUB_WORKSPACE}" rev-parse --is-shallow-repository)"
   info "See https://github.com/super-linter/super-linter#example-connecting-github-action-workflow"
 }
 
