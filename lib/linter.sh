@@ -10,7 +10,6 @@
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-# RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
 IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
 
@@ -466,6 +465,7 @@ GetGitHubVars() {
   # Convert string to lowercase #
   ###############################
   RUN_LOCAL="${RUN_LOCAL,,}"
+  debug "RUN_LOCAL: ${RUN_LOCAL}"
 
   #################################
   # Check if were running locally #
@@ -547,7 +547,16 @@ GetGitHubVars() {
     # Github sha on PR events is not the latest commit.
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
     if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+      debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD sha"
       GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH")
+      ERROR_CODE=$?
+      debug "GITHUB_SHA update error code: ${ERROR_CODE}"
+
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        error "Failed to update GITHUB_SHA for pull request event."
+        fatal "[Output: ${GITHUB_SHA}]"
+      fi
+      debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
     fi
 
     ############################
