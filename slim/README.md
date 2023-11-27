@@ -18,7 +18,7 @@ The slim `super-linter/super-linter:slim-v5` comes with all supported linters bu
 - `c#` linters
 
 By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
-The behavior will be the same for non-supported languages, and will skip languages at run time.
+The behavior will be the same for non-supported languages, and will skip languages at runtime.
 Example usage:
 
 ```yml
