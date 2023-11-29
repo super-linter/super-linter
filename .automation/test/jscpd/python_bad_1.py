@@ -84,17 +84,14 @@ def get_labels(owner, repo):
     status_code = response.status_code
     result = response.json()
 
-    if status_code >= 200 and status_code <= 300:
-        repo_id = result["data"]["repository"]["id"]
-        labels = result["data"]["repository"]["labels"]["nodes"]
-
-        return repo_id, labels
-    else:
+    if status_code < 200 or status_code > 300:
         raise Exception(
             "[ERROR] getting issue labels. Status Code: {status_code} - Message: {result}".format(
                 status_code=status_code, result=result["message"]
             )
         )
+    repo_id = result["data"]["repository"]["id"]
+    return repo_id, result["data"]["repository"]["labels"]["nodes"]
 
 
 def delete_label(label_id):
@@ -115,9 +112,7 @@ def delete_label(label_id):
         query = "".join(query_file.readlines())
 
     payload = {"query": query, "variables": query_variables}
-    result = requests.post(api_url, data=json.dumps(payload), headers=headers).json()
-
-    return result
+    return requests.post(api_url, data=json.dumps(payload), headers=headers).json()
 
 
 @click.command()
