@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info inspec ## Run tests
+test: info validate-container-image-labels inspec ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -51,6 +51,14 @@ ifeq ($(SUPER_LINTER_TEST_CONTAINER_URL),)
 SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:latest"
 endif
 
+ifeq ($(BUILD_REVISION),)
+BUILD_REVISION := $(shell git rev-parse --short HEAD)
+endif
+
+ifeq ($(BUILD_VERSION),)
+BUILD_VERSION := $(shell git rev-parse --short HEAD)
+endif
+
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
@@ -75,12 +83,18 @@ inspec: inspec-check ## Run InSpec tests
 docker: ## Build the container image
 	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
-		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') \
-		--build-arg BUILD_REVISION=$(shell git rev-parse --short HEAD) \
-		--build-arg BUILD_VERSION=$(shell git rev-parse --short HEAD) \
+		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
+		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
 		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
 
 .phony: docker-pull
 docker-pull: ## Pull the container image from registry
 	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: validate-container-image-labels
+validate-container-image-labels: ## Validate container image labels
+	$(CURDIR)/.automation/validate-docker-labels.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		$(BUILD_REVISION) \
+		$(BUILD_VERSION)

@@ -45,16 +45,12 @@ jobs:
           echo "Action file contents:"
           cat action.yml
 
-      - name: Retrieve Datetime
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
-
       - name: Build Image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
           load: true

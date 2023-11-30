@@ -270,13 +270,16 @@ FROM alpine:3.18.5 as slim
 ############################
 # Get the build arguements #
 ############################
-ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
 ARG GLIBC_VERSION='2.34-r0'
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
+
+# Don't set this as a build argument so we avoid invalidating the cache
+RUN BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+    && export BUILD_DATE
 
 #########################################
 # Label the instance and set maintainer #
@@ -299,7 +302,6 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 #################################################
 # Set ENV values used for debugging the version #
 #################################################
-ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 ENV IMAGE="slim"
