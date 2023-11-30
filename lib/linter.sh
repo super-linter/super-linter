@@ -998,7 +998,6 @@ VALIDATE_JSCPD_ALL_CODEBASE="${VALIDATE_JSCPD_ALL_CODEBASE:-"false"}"
 export VALIDATE_JSCPD_ALL_CODEBASE
 debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 
-
 ###########################################
 # Build the list of files for each linter #
 ###########################################
