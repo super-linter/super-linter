@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+description: Suggest an idea for this project
 title: ''
 labels:
   - enhancement
@@ -10,7 +10,7 @@ body:
       value: |
         Thanks for taking the time to fill out this feature request!
         If this is a request to add a new language, after submitting this issue
-        check out [the wiki](https://github.com/super-linter/super-linter/wiki/Adding-new-language-support)
+        check out [the wiki](https://github.com/super-linter/super-linter/wiki/Adding-new-language-support-to-Super-Linter)
         for more information on how to accomplish that.
   - type: checkboxes
     attributes:
