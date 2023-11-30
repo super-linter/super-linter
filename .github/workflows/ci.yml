@@ -44,7 +44,8 @@ jobs:
           yq '.runs.image = env(CONTAINER_IMAGE_ID)' -i action.yml
           echo "Action file contents:"
           cat action.yml
-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build Image
         uses: docker/build-push-action@v5
         with:
