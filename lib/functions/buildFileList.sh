@@ -49,18 +49,6 @@ function GenerateFileDiff() {
   debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
-function CheckIfGitBranchExists() {
-  local BRANCH_NAME="${1}"
-  debug "Check if the ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
-  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${BRANCH_NAME}"; then
-    info "The ${BRANCH_NAME} branch doesn't exist in ${GITHUB_WORKSPACE}"
-    return 1
-  else
-    debug "The ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
-    return 0
-  fi
-}
-
 ################################################################################
 #### Function BuildFileList ####################################################
 function BuildFileList() {
