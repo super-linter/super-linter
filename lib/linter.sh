@@ -467,24 +467,6 @@ GetGitHubVars() {
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
   else
-    ############################
-    # Validate we have a value #
-    ############################
-    if [ -z "${GITHUB_SHA}" ]; then
-      fatal "Failed to get the value for the GITHUB_SHA variable [${GITHUB_SHA}]"
-    else
-      debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
-      if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
-        fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
-      else
-        debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
-      fi
-      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
-    fi
-
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
       fatal "[${GITHUB_WORKSPACE}]"
@@ -497,6 +479,12 @@ GetGitHubVars() {
       fatal "[${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}"
+    fi
+
+    if [ -z "${GITHUB_SHA}" ]; then
+      fatal "Failed to get the value for the GITHUB_SHA variable [${GITHUB_SHA}]"
+    else
+      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
     fi
 
     ##################################################
@@ -848,6 +836,14 @@ export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                      
 ############################
 # Validate the environment #
 ############################
+if [[ "${USE_FIND_ALGORITHM}" != "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" != "true" ]]; then
+  debug "Validate the local Git environment"
+  ValidateLocalGitRepository
+  ValidateGitShaReference
+else
+  debug "Skipped the validation of the local Git environment because we don't depend on it."
+fi
+
 GetValidationInfo
 
 #################################

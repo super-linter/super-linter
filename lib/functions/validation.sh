@@ -210,3 +210,21 @@ function GetValidationInfo() {
   debug "${PRINTENV}"
   debug "---------------------------------------------"
 }
+
+function ValidateLocalGitRepository() {
+  debug "Check if ${GITHUB_WORKSPACE} is a Git repository"
+  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --git-dir; then
+    fatal "${GITHUB_WORKSPACE} is not a Git repository."
+  else
+    debug "${GITHUB_WORKSPACE} is a Git repository"
+  fi
+}
+
+function ValidateGitShaReference() {
+  debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
+  if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
+    fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
+  else
+    debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
+  fi
+}
