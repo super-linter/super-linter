@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
+echo "Installing Google Java Format: ${GOOGLE_JAVA_FORMAT_VERSION}"
+
 url=$(curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
