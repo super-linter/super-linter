@@ -37,3 +37,15 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+
+  # Maintain dependencies for Java
+  - package-ecosystem: "gradle"
+    directory: "/dependencies/checkstyle"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+  - package-ecosystem: "gradle"
+    directory: "/dependencies/google-java-format"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
