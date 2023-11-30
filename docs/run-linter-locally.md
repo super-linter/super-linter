@@ -127,12 +127,11 @@ a container that is an instance of that container image.
 
 You can run the test suite against an arbitrary super-linter container image.
 
-Here is an example that runs the test suite against the `standard` flavor of the
-`v5.4.3` image.
+Here is an example that runs the test suite against the `v5.4.3` container
+image version.
 
 ```shell
 CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v5.4.3" \
-CONTAINER_IMAGE_TARGET="standard" \
 BUILD_REVISION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 BUILD_VERSION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 make docker-pull test

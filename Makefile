@@ -52,11 +52,11 @@ SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:latest"
 endif
 
 ifeq ($(BUILD_REVISION),)
-BUILD_REVISION := $(shell git rev-parse --short HEAD)
+BUILD_REVISION := $(shell git rev-parse HEAD)
 endif
 
 ifeq ($(BUILD_VERSION),)
-BUILD_VERSION := $(shell git rev-parse --short HEAD)
+BUILD_VERSION := $(shell git rev-parse HEAD)
 endif
 
 .PHONY: inspec
