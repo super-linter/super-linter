@@ -377,6 +377,22 @@ DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if runni
 DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
 
+if [ -z "${TEST_CASE_RUN}" ]; then
+  TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
+fi
+
+# Convert string to lowercase
+TEST_CASE_RUN="${TEST_CASE_RUN,,}"
+debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
+
+if [ -z "${RUN_LOCAL}" ]; then
+  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
+fi
+
+# Convert string to lowercase
+RUN_LOCAL="${RUN_LOCAL,,}"
+debug "RUN_LOCAL: ${RUN_LOCAL}"
+
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
@@ -434,50 +450,9 @@ GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
-  ###############################
-  # Get the Run test cases flag #
-  ###############################
-  if [ -z "${TEST_CASE_RUN}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  TEST_CASE_RUN="${TEST_CASE_RUN,,}"
-
-  ##########################
-  # Get the run local flag #
-  ##########################
-  if [ -z "${RUN_LOCAL}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  RUN_LOCAL="${RUN_LOCAL,,}"
-  debug "RUN_LOCAL: ${RUN_LOCAL}"
-
-  #################################
-  # Check if were running locally #
-  #################################
   if [[ ${RUN_LOCAL} != "false" ]]; then
-    ##########################################
-    # We are running locally for a debug run #
-    ##########################################
-    info "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
-    info "bypassing GitHub Actions variables..."
+    info "RUN_LOCAL has been set to:[${RUN_LOCAL}]. Bypassing GitHub Actions variables..."
 
-    ############################
-    # Set the GITHUB_WORKSPACE #
-    ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
     fi
@@ -490,14 +465,6 @@ GetGitHubVars() {
 
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
-    # No need to touch or set the GITHUB_SHA
-    # No need to touch or set the GITHUB_EVENT_PATH
-    # No need to touch or set the GITHUB_ORG
-    # No need to touch or set the GITHUB_REPO
-
-    #################################
-    # Set the VALIDATE_ALL_CODEBASE #
-    #################################
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
   else
     ############################
@@ -525,9 +492,6 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
       error "Failed to get [GITHUB_EVENT_PATH]!"
       fatal "[${GITHUB_EVENT_PATH}]"
