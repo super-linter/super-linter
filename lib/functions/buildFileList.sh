@@ -113,24 +113,21 @@ function BuildFileList() {
       # push event   #
       ################
       DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-      GenerateFileDiff "$DIFF_TREE_CMD"
+      GenerateFileDiff "${DIFF_TREE_CMD}"
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
       ###############################################################
       if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
         debug "----------------------------------------------"
-        debug "Generation of the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
-
-        DIFF_CMD=${DIFF_GIT_DEFAULT_BRANCH_CMD}
-        GenerateFileDiff "$DIFF_CMD"
+        debug "Generating the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
+        GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
       fi
     else
       ################
       # PR event     #
       ################
-      DIFF_CMD=${DIFF_GIT_DEFAULT_BRANCH_CMD}
-      GenerateFileDiff "$DIFF_CMD"
+      GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
