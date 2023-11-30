@@ -49,11 +49,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Set build revision and build version
-        run:
-          if [  ]
-          echo "BUILD_REVISION=${{ github.sha }}" >> "${GITHUB_ENV}"
-
-      - name: Set build revision and build version
         run: |
           if [[ ${{ github.event_name }} == 'push' ]]; then
             echo "BUILD_REVISION=${{ github.sha }}" >> $GITHUB_ENV
