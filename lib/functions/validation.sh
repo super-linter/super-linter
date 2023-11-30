@@ -242,3 +242,20 @@ function ValidateGitShaReference() {
     debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
   fi
 }
+
+function ValidateDefaultGitBranch() {
+  debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
+  if ! CheckIfGitBranchExists "${DEFAULT_BRANCH}"; then
+    REMOTE_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
+    debug "The default branch (${DEFAULT_BRANCH}) doesn't exist in this Git repository. Trying with ${REMOTE_DEFAULT_BRANCH}"
+    if ! CheckIfGitBranchExists "${REMOTE_DEFAULT_BRANCH}"; then
+      fatal "Neither ${DEFAULT_BRANCH}, nor ${REMOTE_DEFAULT_BRANCH} exist in ${GITHUB_WORKSPACE}"
+    else
+      info "${DEFAULT_BRANCH} doesn't exist, however ${REMOTE_DEFAULT_BRANCH} exists. Setting DEFAULT_BRANCH to: ${REMOTE_DEFAULT_BRANCH}"
+      DEFAULT_BRANCH="${REMOTE_DEFAULT_BRANCH}"
+      debug "Updated DEFAULT_BRANCH: ${DEFAULT_BRANCH}"
+    fi
+  else
+    debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
+  fi
+}

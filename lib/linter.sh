@@ -844,6 +844,7 @@ if [[ "${USE_FIND_ALGORITHM}" != "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" != 
   debug "Validate the local Git environment"
   ValidateLocalGitRepository
   ValidateGitShaReference
+  ValidateDefaultGitBranch
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
