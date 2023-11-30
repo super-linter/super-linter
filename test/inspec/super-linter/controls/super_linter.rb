@@ -268,7 +268,7 @@ control "super-linter-installed-npm-packages" do
     "@babel/preset-react",
     "@babel/preset-typescript",
     "@coffeelint/cli",
-    "@stoplight/spectral",
+    "@stoplight/spectral-cli",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "asl-validator",
