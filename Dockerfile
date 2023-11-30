@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.3 as terrascan
+FROM tenable/terrascan:1.18.4 as terrascan
 FROM alpine/terragrunt:1.6.5 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
