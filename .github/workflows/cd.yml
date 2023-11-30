@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+# Don't grant any access by default
+permissions: {}
+
 jobs:
   test:
     name: Build and Test

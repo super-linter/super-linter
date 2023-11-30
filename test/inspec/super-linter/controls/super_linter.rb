@@ -119,6 +119,7 @@ control "super-linter-installed-commands" do
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "black"},
     { linter_name: "cfn-lint"},
+    { linter_name: "checkov"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
     { linter_name: "chktex"},
     { linter_name: "clang-format"},
@@ -374,6 +375,7 @@ control "super-linter-installed-pypi-packages" do
     "ansible-lint",
     "black",
     "cfn-lint",
+    "checkov",
     "cpplint",
     "flake8",
     "isort",

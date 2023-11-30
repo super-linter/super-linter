@@ -6,9 +6,14 @@ on:
   pull_request:
   merge_group:
 
+# Don't grant any access by default
+permissions: {}
+
 jobs:
   commitlint:
     runs-on: ubuntu-latest
+    permissions:
+        contents: read
     steps:
       - uses: actions/checkout@v4
         with:

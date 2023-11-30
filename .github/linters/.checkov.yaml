@@ -1,0 +1,29 @@
+---
+# Options reference: https://www.checkov.io/2.Basics/CLI%20Command%20Reference.html
+
+# Establish a baseline so we don't have to fix these issues at the same time
+# as we ship Checkov with super-linter.
+baseline: .github/linters/.checkov.baseline
+
+# Report skipped baseline checks in the output
+output-baseline-as-skipped: true
+
+# Don't report passed checks in output
+quiet: true
+
+# The tests directory contains files that we need for test cases that are
+# expected to fail. Checkov would catch those issues, so we exclude the tests
+# directory.
+skip-path:
+  - test/linters/ansible
+  - test/linters/arm
+  - test/linters/checkov/bad
+  - test/linters/dockerfile_hadolint
+  - test/linters/jscpd
+  - test/linters/json
+  - test/linters/kubernetes_kubeconform
+  - test/linters/openapi
+  - test/linters/terraform_fmt
+  - test/linters/terraform_tflint
+  - test/linters/terraform_terrascan
+...

@@ -157,6 +157,7 @@ test-linters: ## Run the linters test suite
 	docker run \
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ANSIBLE_DIRECTORY=test/linters/ansible \
+		-e CHECKOV_FILE_NAME=".checkov-test-linters.yaml" \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
@@ -170,6 +171,8 @@ test-linters: ## Run the linters test suite
 .phony: build-dev-container-image
 build-dev-container-image: ## Build commit linter container image
 	DOCKER_BUILDKIT=1 docker buildx build --load \
+		--build-arg GID=$(shell id -g) \
+		--build-arg UID=$(shell id -u) \
 		-t ${DEV_CONTAINER_URL} "${CURDIR}/dev-dependencies"
 
 .phony: lint-commits

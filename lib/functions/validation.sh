@@ -261,3 +261,17 @@ function ValidateDefaultGitBranch() {
     debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
   fi
 }
+
+function CheckovConfigurationFileContainsDirectoryOption() {
+  local CHECKOV_LINTER_RULES_PATH="${1}"
+  local CONFIGURATION_OPTION_KEY="directory:"
+  debug "Checking if ${CHECKOV_LINTER_RULES_PATH} contains a '${CONFIGURATION_OPTION_KEY}' configuration option"
+
+  if grep -q "${CONFIGURATION_OPTION_KEY}" "${CHECKOV_LINTER_RULES_PATH}"; then
+    debug "${CHECKOV_LINTER_RULES_PATH} contains a '${CONFIGURATION_OPTION_KEY}' statement"
+    return 0
+  else
+    debug "${CHECKOV_LINTER_RULES_PATH} doesn't contain a '${CONFIGURATION_OPTION_KEY}' statement"
+    return 1
+  fi
+}

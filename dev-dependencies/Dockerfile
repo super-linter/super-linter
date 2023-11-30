@@ -18,6 +18,15 @@ RUN jq '.dependencies | to_entries[] | select(.key | startswith("@commitlint/"))
   && xargs npm install -g < "${NPM_PACKAGES_FILE_PATH}" \
   && rm package.json "${NPM_PACKAGES_FILE_PATH}"
 
+# Split this from the previous RUN instruction so we can cache the costly installation step
+# hadolint ignore=DL3059
 RUN commitlint --version \
   && release-please --version \
   && git config --global --add safe.directory /source-repository
+
+ARG USERNAME=super-linter-dev
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g ${GID} -o "${USERNAME}" \
+  && useradd -m -u ${UID} -g ${GID} -o -s /bin/bash -l "${USERNAME}"
+USER $UNAME
