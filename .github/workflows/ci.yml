@@ -69,8 +69,6 @@ jobs:
           build-args: |
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           load: true
           push: false
           secrets: |

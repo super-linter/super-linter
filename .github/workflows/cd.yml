@@ -52,8 +52,6 @@ jobs:
           build-args: |
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           load: true
           push: false
           secrets: |
@@ -112,8 +110,6 @@ jobs:
           build-args: |
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           load: false
           push: true
           secrets: |
