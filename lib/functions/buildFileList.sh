@@ -66,14 +66,6 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
-
-  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
-
-  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
-
-  debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
-
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "----------------------------------------------"
     debug "Build the list of all changed files"

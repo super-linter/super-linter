@@ -230,6 +230,8 @@ function ValidateLocalGitRepository() {
   else
     debug "${GITHUB_WORKSPACE} is a Git repository"
   fi
+
+  debug "Git branches: $(git -C "${GITHUB_WORKSPACE}" branch -a)"
 }
 
 function ValidateGitShaReference() {

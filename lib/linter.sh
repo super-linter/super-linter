@@ -217,6 +217,8 @@ TYPESCRIPT_STANDARD_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 TYPESCRIPT_STANDARD_TSCONFIG_FILE_NAME="${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-tsconfig.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
+debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -365,9 +367,11 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
 # Do not ignore generated files by default for backwards compatibility
 IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
+debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
 ################
 # Default Vars #
@@ -621,7 +625,7 @@ CallStatusAPI() {
       STATUS="success"
     fi
 
-    debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+    debug "Status URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
 
     ##############################################
     # Call the status API to create status check #
@@ -991,6 +995,8 @@ CheckSSLCert
 # Check if we need to lint the whole codebase with JSCPD
 VALIDATE_JSCPD_ALL_CODEBASE="${VALIDATE_JSCPD_ALL_CODEBASE:-"false"}"
 export VALIDATE_JSCPD_ALL_CODEBASE
+debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
+
 
 ###########################################
 # Build the list of files for each linter #
