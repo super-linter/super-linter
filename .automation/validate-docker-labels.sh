@@ -10,22 +10,36 @@ shift
 BUILD_VERSION="${1}"
 shift
 
-BUILD_DATE_LABEL_KEY="org.opencontainers.image.created"
+GetContainerImageLabel() {
+  echo "$(docker inspect --format "{{ index .Config.Labels \"${1}\" }}" "${2}")"
+}
 
 ValidateLabel() {
-  CONTAINER_KEY="$1"
-  CONTAINER_VALUE="$2"
+  local LABEL_KEY="$1"
+  local CONTAINER_VALUE="$2"
 
-  LABEL=$(docker inspect --format "{{ index .Config.Labels \"${CONTAINER_KEY}\" }}" "${CONTAINER_IMAGE_ID}")
+  LABEL="$(GetContainerImageLabel "${LABEL_KEY}" "${CONTAINER_IMAGE_ID}")"
 
-  if ( [[ "${CONTAINER_KEY}" == "${BUILD_DATE_LABEL_KEY}" ]] && [[ -z "${LABEL}" ]] ) || [[ ${LABEL} != "${CONTAINER_VALUE}" ]]; then
-    echo "[ERROR] Assert failed ${CONTAINER_KEY}: ${LABEL}. Expected: ${CONTAINER_VALUE}"
+  if [[ "${LABEL}" != "${CONTAINER_VALUE}" ]]; then
+    echo "[ERROR] Invalid container image label: ${LABEL_KEY}: ${LABEL}. Expected: ${CONTAINER_VALUE}"
     exit 1
+  else
+    echo "${LABEL_KEY} is valid: ${LABEL}. Expected: ${CONTAINER_VALUE}"
   fi
+}
 
-  echo "${CONTAINER_KEY} is valid: ${CONTAINER_VALUE}. Expected: ${CONTAINER_VALUE}"
+ValidateNonEmptyLabel() {
+  local LABEL_KEY="${1}"
+  local LABEL="$(GetContainerImageLabel "${LABEL_KEY}" "${CONTAINER_IMAGE_ID}")"
+
+  if [[ -z "${LABEL}" ]]; then
+    echo "[ERROR] Invalid container image label: ${LABEL_KEY}: ${LABEL}. Expected: not empty"
+    exit 1
+  else
+    echo "${LABEL_KEY} is valid: ${LABEL}. Expected: not empty"
+  fi
 }
 
 ValidateLabel "org.opencontainers.image.revision" "${BUILD_REVISION}"
 ValidateLabel "org.opencontainers.image.version" "${BUILD_VERSION}"
-ValidateLabel "${BUILD_DATE_LABEL_KEY}" "not empty"
+ValidateNonEmptyLabel "org.opencontainers.image.created"
