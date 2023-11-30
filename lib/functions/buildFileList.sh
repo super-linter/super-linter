@@ -78,7 +78,7 @@ function BuildFileList() {
     debug "----------------------------------------------"
     debug "Build the list of all changed files"
 
-    debug "Git branches: $(git branch -a)"
+    debug "Git branches: $(git -C ${GITHUB_WORKSPACE} branch -a)"
     debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
     if ! CheckIfGitBranchExists "${DEFAULT_BRANCH}"; then
       REMOTE_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
