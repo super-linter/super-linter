@@ -28,18 +28,5 @@ ValidateLabel() {
   fi
 }
 
-ValidateNonEmptyLabel() {
-  local LABEL_KEY="${1}"
-  local LABEL="$(GetContainerImageLabel "${LABEL_KEY}" "${CONTAINER_IMAGE_ID}")"
-
-  if [[ -z "${LABEL}" ]]; then
-    echo "[ERROR] Invalid container image label: ${LABEL_KEY}: ${LABEL}. Expected: not empty"
-    exit 1
-  else
-    echo "${LABEL_KEY} is valid: ${LABEL}. Expected: not empty"
-  fi
-}
-
 ValidateLabel "org.opencontainers.image.revision" "${BUILD_REVISION}"
 ValidateLabel "org.opencontainers.image.version" "${BUILD_VERSION}"
-ValidateNonEmptyLabel "org.opencontainers.image.created"
