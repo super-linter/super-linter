@@ -22,9 +22,10 @@ categories:
       - 'infrastructure'
       - 'automation'
       - 'documentation'
+      - 'performance'
+  - title: 'Dependency updates'
+    labels:
       - 'dependencies'
-  - title: '🏎 Performance'
-    label: 'performance'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 version-resolver:
   major:

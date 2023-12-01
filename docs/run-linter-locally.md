@@ -1,13 +1,16 @@
 # Run Super-Linter locally to test your branch of code
 
-If you want to test locally against the **Super-Linter** to test your branch of code, you will need to complete the following:
+If you want to test locally against the **Super-Linter** to test your branch of
+code or to reproduce an issue, do the following:
 
 - Clone your testing source code to your local environment
 - Install Docker to your local environment
-- Pull the container down
+- Pull the container
 - Run the container locally
+
+If you're contributing to Super-Linter, you also need to do following:
+
 - Run the test suite locally
-- Troubleshoot
 
 ## Install Docker to your local machine
 
@@ -17,27 +20,38 @@ You can follow the link below on how to install and configure **Docker** on your
 
 ## Download the latest Super-Linter Docker container
 
-- Pull the latest **Docker** container down from **DockerHub**
+- Pull the latest **Docker** container image from the registry
   - `docker pull ghcr.io/super-linter/super-linter:latest`
     Once the container has been downloaded to your local environment, you can then begin the process, or running the container against your codebase.
 
 ## Run the container Locally
 
-- You can run the container locally with the following **Base** flags to run your code:
-  - `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase:/tmp/lint ghcr.io/super-linter/super-linter`
-    - To run against a single file you can use: `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
-  - **NOTE:** You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint` so that the linter can pick up the code
-  - **NOTE:** If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
-  - **NOTE:** The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted
-  - **NOTE:** Add the `--rm` docker flag to automatically remove the container after execution.
+You can run the container locally with the following flags to run your code:
 
-### Flags for running Locally
+```bash
+docker run \
+  -e ACTIONS_RUNNER_DEBUG=true \
+  -e RUN_LOCAL=true \
+  -v /path/to/local/codebase:/tmp/lint \
+  ghcr.io/super-linter/super-linter:latest
+```
 
-You can add as many **Additional** flags as needed, documented in [README.md](../README.md#Environment-variables)
+This example uses the `latest` container image version. If you're trying to reproduce
+an issue, **refer to a specific version instead**.
+
+Notes:
+
+- To run against a single file you can use: `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
+- You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint`.
+- If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
+- The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted.
+- Add the `--rm` docker flag to automatically removes the container after execution.
+- You can add as many flags as needed. Flags are documented in the [README](../README.md#Environment-variables).
 
 ## Sharing Environment variables between Local and CI
 
-If you run both locally and on CI it's very helpful to only have to define your env variables once. This is one setup using Github's [STRTA](https://github.com/github/scripts-to-rule-them-all) style to do so.
+If you run both locally and on CI it's very helpful to only have to define your env variables once.
+This is one setup using Github's [STRTA](https://github.com/github/scripts-to-rule-them-all) style to do so.
 
 ### .github/super-linter.env
 
@@ -58,7 +72,7 @@ This always runs the local docker based linting.
 docker run --rm \
     -e RUN_LOCAL=true \
     --env-file ".github/super-linter.env" \
-    -v "$PWD":/tmp/lint ghcr.io/super-linter/super-linter:v5
+    -v "$PWD":/tmp/lint ghcr.io/super-linter/super-linter:latest
 ```
 
 ### scripts/test
