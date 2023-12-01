@@ -873,7 +873,7 @@ export DEFAULT_ANSIBLE_DIRECTORY                                                
 DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
 export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
 
-TYPESCRIPT_STANDARD_TSCONFIG_FILE="${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"${GITHUB_WORKSPACE}/tsconfig.json"}"
+TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
 debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 
 ############################
