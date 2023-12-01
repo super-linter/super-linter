@@ -45,22 +45,35 @@ jobs:
           echo "Action file contents:"
           cat action.yml
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Set build metadata
         run: |
-          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
           if [[ ${{ github.event_name }} == 'push' ]]; then
-            echo "BUILD_REVISION=${{ github.sha }}" >> "$GITHUB_ENV"
-            echo "BUILD_VERSION=${{ github.sha }}" >> "$GITHUB_ENV"
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
           elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            echo "BUILD_REVISION=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
-            echo "BUILD_VERSION=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+            BUILD_REVISION=${{ github.event.workflow_run.head_sha }}
+            BUILD_VERSION=${{ github.event.workflow_run.head_sha }}
           else
-            echo "Event not supported when setting build revision and build version"
+            echo "[ERROR] Event not supported when setting build revision and build version"
             exit 1
           fi
+
+          if [ -z "${BUILD_REVISION}" ]; then
+            echo "[ERROR] BUILD_REVISION is empty"
+            exit 1
+          fi
+
+          if [ -z "${BUILD_VERSION}" ]; then
+            echo "[ERROR] BUILD_VERSION is empty"
+            exit 1
+          fi
+
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
+          echo "BUILD_REVISION=${BUILD_REVISION}" >> "${GITHUB_ENV}"
+          echo "BUILD_VERSION=${BUILD_VERSION}" >> "${GITHUB_ENV}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Image
         uses: docker/build-push-action@v5
