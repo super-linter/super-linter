@@ -1,10 +1,12 @@
-<!-- Please ensure your PR title is brief and descriptive for a good changelog entry -->
-<!-- Link to issue if there is one -->
+<!-- Ensure that your PR title is brief and descriptive. -->
+<!-- Start: issue fix section -->
+<!-- Link to issue if there is one, otherwise remove the "issue fix" section -->
 <!-- markdownlint-disable -->
 
 Fixes #
 
 <!-- markdownlint-restore -->
+<!-- End: issue fix section -->
 
 <!-- Describe what the changes are -->
 
@@ -17,8 +19,11 @@ Fixes #
 ## Readiness Checklist
 
 ### Author/Contributor
-- [ ] If documentation is needed for this change, has that been included in this pull request
+
+- [ ] I included all the needed documentation for this change.
+- [ ] I provided the necessary tests.
 
 ### Reviewing Maintainer
-- [ ] Label as `breaking` if this is a large fundamental change
-- [ ] Label as either `automation`, `bug`, `documentation`, `enhancement`, `infrastructure`, or `performance`
+
+- [ ] Label as `breaking` if this is a large, fundamental change.
+- [ ] Label as either: `automation`, `bug`, `documentation`, `enhancement`, `infrastructure`.
