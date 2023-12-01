@@ -434,6 +434,7 @@ Header() {
   ##########
   info "---------------------------------------------"
   info "--- GitHub Actions Multi Language Linter ----"
+  info " - Image Creation Date:[${BUILD_DATE}]"
   info " - Image Revision:[${BUILD_REVISION}]"
   info " - Image Version:[${BUILD_VERSION}]"
   info "---------------------------------------------"
