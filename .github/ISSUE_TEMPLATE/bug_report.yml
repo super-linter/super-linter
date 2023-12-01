@@ -1,7 +1,6 @@
 ---
 name: Bug report
 description: Create a bug report
-title: ''
 labels:
   - bug
 body:
