@@ -52,11 +52,11 @@ jobs:
         run: |
           echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
           if [[ ${{ github.event_name }} == 'push' ]]; then
-            echo "BUILD_REVISION=${{ github.sha }}" >> $GITHUB_ENV
-            echo "BUILD_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+            echo "BUILD_REVISION=${{ github.sha }}" >> "$GITHUB_ENV"
+            echo "BUILD_VERSION=${{ github.sha }}" >> "$GITHUB_ENV"
           elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            echo "BUILD_REVISION=${{ github.event.workflow_run.head_sha }}" >> $GITHUB_ENV
-            echo "BUILD_VERSION=${{ github.event.workflow_run.head_sha }}" >> $GITHUB_ENV
+            echo "BUILD_REVISION=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+            echo "BUILD_VERSION=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
           else
             echo "Event not supported when setting build revision and build version"
             exit 1
