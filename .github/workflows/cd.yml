@@ -58,9 +58,11 @@ jobs:
             exit 1
           fi
 
-          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
-          echo "BUILD_REVISION=${BUILD_REVISION}" >> "${GITHUB_ENV}"
-          echo "BUILD_VERSION=${BUILD_VERSION}" >> "${GITHUB_ENV}"
+          {
+            echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "BUILD_REVISION=${BUILD_REVISION}"
+            echo "BUILD_VERSION=${BUILD_VERSION}"
+          } >> "${GITHUB_ENV}"
 
       - name: Free Disk space
         shell: bash
