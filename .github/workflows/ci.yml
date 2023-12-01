@@ -48,8 +48,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set build revision and build version
+      - name: Set build metadata
         run: |
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
           if [[ ${{ github.event_name }} == 'push' ]]; then
             echo "BUILD_REVISION=${{ github.sha }}" >> $GITHUB_ENV
             echo "BUILD_VERSION=${{ github.sha }}" >> $GITHUB_ENV
@@ -67,6 +68,7 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
+            BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           load: true

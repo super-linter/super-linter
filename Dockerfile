@@ -270,6 +270,7 @@ FROM alpine:3.18.5 as slim
 ############################
 # Get the build arguements #
 ############################
+ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
 ## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
@@ -298,6 +299,7 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
 #################################################
 # Set ENV values used for debugging the version #
 #################################################
+ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 ENV IMAGE="slim"

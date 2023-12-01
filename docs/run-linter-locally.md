@@ -132,10 +132,15 @@ image version.
 
 ```shell
 CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v5.4.3" \
+BUILD_DATE="2023-10-17T16:19:11Z" \
 BUILD_REVISION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 BUILD_VERSION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 make docker-pull test
 ```
+
+Initialize the `BUILD_DATE`, `BUILD_REVISION`, and `BUILD_VERSION` variables
+with the values for that specific container image version. You can get these
+values from the build log for that version.
 
 ## Troubleshooting
 

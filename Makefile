@@ -51,6 +51,10 @@ ifeq ($(SUPER_LINTER_TEST_CONTAINER_URL),)
 SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:latest"
 endif
 
+ifeq ($(BUILD_DATE),)
+BUILD_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+endif
+
 ifeq ($(BUILD_REVISION),)
 BUILD_REVISION := $(shell git rev-parse HEAD)
 endif
@@ -83,6 +87,7 @@ inspec: inspec-check ## Run InSpec tests
 docker: ## Build the container image
 	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
 		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
@@ -94,7 +99,8 @@ docker-pull: ## Pull the container image from registry
 
 .phony: validate-container-image-labels
 validate-container-image-labels: ## Validate container image labels
-	$(CURDIR)/.automation/validate-docker-labels.sh \
+	$(CURDIR)/test/validate-docker-labels.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		$(BUILD_DATE) \
 		$(BUILD_REVISION) \
 		$(BUILD_VERSION)

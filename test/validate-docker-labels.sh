@@ -5,6 +5,8 @@ set -o nounset
 
 CONTAINER_IMAGE_ID="${1}"
 shift
+BUILD_DATE="${1}"
+shift
 BUILD_REVISION="${1}"
 shift
 BUILD_VERSION="${1}"
@@ -24,5 +26,6 @@ ValidateLabel() {
   fi
 }
 
+ValidateLabel "org.opencontainers.image.created" "${BUILD_DATE}"
 ValidateLabel "org.opencontainers.image.revision" "${BUILD_REVISION}"
 ValidateLabel "org.opencontainers.image.version" "${BUILD_VERSION}"
