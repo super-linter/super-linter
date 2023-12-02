@@ -176,7 +176,7 @@ GetStandardRules() {
   ################
   # Pull In Vars #
   ################
-  LINTER="${1}" # Type: javascript | typescript
+  LINTER="${1}"
 
   #########################################################################
   # Need to get the ENV vars from the linter rules to run in command line #
@@ -193,8 +193,6 @@ GetStandardRules() {
   GET_ENV_ARRAY=()
   if [[ ${LINTER} == "javascript" ]]; then
     mapfile -t GET_ENV_ARRAY < <(yq .env "${JAVASCRIPT_STANDARD_LINTER_RULES}" | grep true)
-  elif [[ ${LINTER} == "typescript" ]]; then
-    mapfile -t GET_ENV_ARRAY < <(yq .env "${TYPESCRIPT_STANDARD_LINTER_RULES}" | grep true)
   fi
 
   #######################
@@ -243,7 +241,5 @@ GetStandardRules() {
   #########################################
   if [[ ${LINTER} == "javascript" ]]; then
     JAVASCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-  elif [[ ${LINTER} == "typescript" ]]; then
-    TYPESCRIPT_STANDARD_LINTER_RULES="$(echo -e "${ENV_STRING}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   fi
 }

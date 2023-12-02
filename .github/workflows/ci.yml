@@ -75,6 +75,7 @@ jobs:
           DEFAULT_BRANCH: main
           LOCAL_UPDATES: true
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
+          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
 
       - name: Run Test Suite
         run: make test
@@ -88,6 +89,7 @@ jobs:
           -e ACTIONS_RUNNER_DEBUG=true \
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
+          -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
           "${CONTAINER_IMAGE_ID}"
 
