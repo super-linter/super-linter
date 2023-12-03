@@ -37,7 +37,7 @@ jobs:
 
       - name: Set build metadata
         run: |
-          if [[ ${{ github.event_name }} == 'push' ]]; then
+          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event_name }} == 'merge_group' ]]; then
             BUILD_REVISION=${{ github.sha }}
             BUILD_VERSION=${{ github.sha }}
           elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
