@@ -79,8 +79,8 @@ jobs:
 
       - name: Get the contents of the log file
         run: |
-          cat super-linter.log
-          rm -v super-linter.log
+          sudo cat super-linter.log
+          sudo rm -v super-linter.log
 
       - name: Run Test Suite
         run: make test
