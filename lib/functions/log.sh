@@ -56,8 +56,18 @@ log() {
   local MESSAGE=${2:-}
   local LOG_LEVEL_LABEL="[${3}]"
 
-  local LOG_MESSAGE_DATE= "$(date +"%F %T")"
-  local COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${F[B]}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
+  local LOG_MESSAGE_DATE="$(date +"%F %T")"
+  local COLOR_MARKER="${F[B]}"
+
+  if [ "${LOG_LEVEL_LABEL}" == "NOTICE" ]; then
+    COLOR_MARKER="${F[G]}"
+  elif [ "${LOG_LEVEL_LABEL}" == "WARN" ]; then
+    COLOR_MARKER="${F[Y]}"
+  elif [ "${LOG_LEVEL_LABEL}" == "ERROR" ] || [ "${LOG_LEVEL_LABEL}" == "FATAL" ]; then
+    COLOR_MARKER="${F[R]}"
+  fi
+
+  local COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${COLOR_MARKER}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
   local MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
 
   if [[ -n ${TOTERM} ]]; then
@@ -75,6 +85,6 @@ notice() { log "${LOG_NOTICE:-}" "$*" "NOTICE"; }
 warn() { log "${LOG_WARN:-}" "$*" "WARN"; }
 error() { log "${LOG_ERROR:-}" "$*" "ERROR"; }
 fatal() {
-  log "true" "$*"  "FATAL"
+  log "true" "$*" "FATAL"
   exit 1
 }
