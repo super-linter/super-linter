@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter Validation Functions @admiralawkbar ###################
-################################################################################
-################################################################################
-########################## FUNCTION CALLS BELOW ################################
-################################################################################
-################################################################################
-#### Function GetValidationInfo ################################################
 function GetValidationInfo() {
   ############################################
   # Print headers for user provided env vars #
@@ -32,7 +23,6 @@ function GetValidationInfo() {
       VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
       info "- Validating ALL files in code base..."
     else
-      # Its false
       info "- Only validating [new], or [edited] files in code base..."
     fi
   fi
@@ -219,4 +209,53 @@ function GetValidationInfo() {
   debug "ENV:"
   debug "${PRINTENV}"
   debug "---------------------------------------------"
+}
+
+function CheckIfGitBranchExists() {
+  local BRANCH_NAME="${1}"
+  debug "Check if the ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
+  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${BRANCH_NAME}"; then
+    info "The ${BRANCH_NAME} branch doesn't exist in ${GITHUB_WORKSPACE}"
+    return 1
+  else
+    debug "The ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
+    return 0
+  fi
+}
+
+function ValidateLocalGitRepository() {
+  debug "Check if ${GITHUB_WORKSPACE} is a Git repository"
+  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --git-dir; then
+    fatal "${GITHUB_WORKSPACE} is not a Git repository."
+  else
+    debug "${GITHUB_WORKSPACE} is a Git repository"
+  fi
+
+  debug "Git branches: $(git -C "${GITHUB_WORKSPACE}" branch -a)"
+}
+
+function ValidateGitShaReference() {
+  debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
+  if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
+    fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
+  else
+    debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
+  fi
+}
+
+function ValidateDefaultGitBranch() {
+  debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
+  if ! CheckIfGitBranchExists "${DEFAULT_BRANCH}"; then
+    REMOTE_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
+    debug "The default branch (${DEFAULT_BRANCH}) doesn't exist in this Git repository. Trying with ${REMOTE_DEFAULT_BRANCH}"
+    if ! CheckIfGitBranchExists "${REMOTE_DEFAULT_BRANCH}"; then
+      fatal "Neither ${DEFAULT_BRANCH}, nor ${REMOTE_DEFAULT_BRANCH} exist in ${GITHUB_WORKSPACE}"
+    else
+      info "${DEFAULT_BRANCH} doesn't exist, however ${REMOTE_DEFAULT_BRANCH} exists. Setting DEFAULT_BRANCH to: ${REMOTE_DEFAULT_BRANCH}"
+      DEFAULT_BRANCH="${REMOTE_DEFAULT_BRANCH}"
+      debug "Updated DEFAULT_BRANCH: ${DEFAULT_BRANCH}"
+    fi
+  else
+    debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
+  fi
 }

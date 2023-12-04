@@ -10,7 +10,6 @@
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-# RUN_LOCAL="${RUN_LOCAL}"                            # Boolean to see if we are running locally
 ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
 IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
 
@@ -150,8 +149,6 @@ LATEX_FILE_NAME=".chktexrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 LUA_FILE_NAME=".luacheckrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-LOCAL_UPDATES="${LOCAL_UPDATES:-false}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
 MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 OPENAPI_FILE_NAME=".openapirc.yml"
@@ -216,6 +213,8 @@ TYPESCRIPT_STYLE=''      # Variable for the style
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
+debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -361,24 +360,14 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 ###################
 # GitHub ENV Vars #
 ###################
-# ANSIBLE_DIRECTORY="${ANSIBLE_DIRECTORY}"         # Ansible Directory
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
-# DISABLE_ERRORS="${DISABLE_ERRORS}"               # Boolean to enable warning-only output without throwing errors
-# FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE}"   # RegExp defining which files will be processed by linters (all by default)
-# FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE}"   # RegExp defining which files will be excluded from linting (none by default)
-# GITHUB_EVENT_PATH="${GITHUB_EVENT_PATH}"         # Github Event Path
-# GITHUB_REPOSITORY="${GITHUB_REPOSITORY}"         # GitHub Org/Repo passed from system
-# GITHUB_RUN_ID="${GITHUB_RUN_ID}"                 # GitHub RUn ID to point to logs
-# GITHUB_SHA="${GITHUB_SHA}"                       # GitHub sha from the commit
-# GITHUB_WORKSPACE="${GITHUB_WORKSPACE}"           # Github Workspace
-# TEST_CASE_RUN="${TEST_CASE_RUN}"                 # Boolean to validate only test cases
-# VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE}" # Boolean to validate all files
-
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
 
 # Do not ignore generated files by default for backwards compatibility
 IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
+debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 
 ################
 # Default Vars #
@@ -387,6 +376,22 @@ DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if running locally
 DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
+
+if [ -z "${TEST_CASE_RUN}" ]; then
+  TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
+fi
+
+# Convert string to lowercase
+TEST_CASE_RUN="${TEST_CASE_RUN,,}"
+debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
+
+if [ -z "${RUN_LOCAL}" ]; then
+  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
+fi
+
+# Convert string to lowercase
+RUN_LOCAL="${RUN_LOCAL,,}"
+debug "RUN_LOCAL: ${RUN_LOCAL}"
 
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
@@ -445,49 +450,9 @@ GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
-  ###############################
-  # Get the Run test cases flag #
-  ###############################
-  if [ -z "${TEST_CASE_RUN}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  TEST_CASE_RUN="${TEST_CASE_RUN,,}"
-
-  ##########################
-  # Get the run local flag #
-  ##########################
-  if [ -z "${RUN_LOCAL}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  RUN_LOCAL="${RUN_LOCAL,,}"
-
-  #################################
-  # Check if were running locally #
-  #################################
   if [[ ${RUN_LOCAL} != "false" ]]; then
-    ##########################################
-    # We are running locally for a debug run #
-    ##########################################
-    info "NOTE: ENV VAR [RUN_LOCAL] has been set to:[true]"
-    info "bypassing GitHub Actions variables..."
+    info "RUN_LOCAL has been set to:[${RUN_LOCAL}]. Bypassing GitHub Actions variables..."
 
-    ############################
-    # Set the GITHUB_WORKSPACE #
-    ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
     fi
@@ -500,29 +465,8 @@ GetGitHubVars() {
 
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
-    # No need to touch or set the GITHUB_SHA
-    # No need to touch or set the GITHUB_EVENT_PATH
-    # No need to touch or set the GITHUB_ORG
-    # No need to touch or set the GITHUB_REPO
-
-    #################################
-    # Set the VALIDATE_ALL_CODEBASE #
-    #################################
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
   else
-    ############################
-    # Validate we have a value #
-    ############################
-    if [ -z "${GITHUB_SHA}" ]; then
-      error "Failed to get [GITHUB_SHA]!"
-      fatal "[${GITHUB_SHA}]"
-    else
-      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
-    fi
-
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
       fatal "[${GITHUB_WORKSPACE}]"
@@ -530,14 +474,17 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
       error "Failed to get [GITHUB_EVENT_PATH]!"
       fatal "[${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}"
+    fi
+
+    if [ -z "${GITHUB_SHA}" ]; then
+      fatal "Failed to get the value for the GITHUB_SHA variable [${GITHUB_SHA}]"
+    else
+      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
     fi
 
     ##################################################
@@ -555,7 +502,16 @@ GetGitHubVars() {
     # Github sha on PR events is not the latest commit.
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
     if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+      debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD sha"
       GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH")
+      ERROR_CODE=$?
+      debug "GITHUB_SHA update error code: ${ERROR_CODE}"
+
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        error "Failed to update GITHUB_SHA for pull request event."
+        fatal "[Output: ${GITHUB_SHA}]"
+      fi
+      debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
     fi
 
     ############################
@@ -665,7 +621,7 @@ CallStatusAPI() {
       STATUS="success"
     fi
 
-    debug "URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+    debug "Status URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
 
     ##############################################
     # Call the status API to create status check #
@@ -858,6 +814,10 @@ UpdateLoopsForImage
 ##################################
 GetLinterVersions
 
+debug "Allow Git to work on ${GITHUB_WORKSPACE}"
+git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+git config --global --add safe.directory "/tmp/lint" 2>&1
+
 #######################
 # Get GitHub Env Vars #
 #######################
@@ -879,6 +839,15 @@ debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 ############################
 # Validate the environment #
 ############################
+if [[ "${USE_FIND_ALGORITHM}" != "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" != "true" ]]; then
+  debug "Validate the local Git environment"
+  ValidateLocalGitRepository
+  ValidateGitShaReference
+  ValidateDefaultGitBranch
+else
+  debug "Skipped the validation of the local Git environment because we don't depend on it."
+fi
+
 GetValidationInfo
 
 #################################
@@ -1025,6 +994,7 @@ CheckSSLCert
 # Check if we need to lint the whole codebase with JSCPD
 VALIDATE_JSCPD_ALL_CODEBASE="${VALIDATE_JSCPD_ALL_CODEBASE:-"false"}"
 export VALIDATE_JSCPD_ALL_CODEBASE
+debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 
 ###########################################
 # Build the list of files for each linter #

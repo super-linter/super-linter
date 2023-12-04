@@ -12,6 +12,7 @@
 #### Function BuildFileList ####################################################
 function IssueHintForFullGitHistory() {
   info "Check that you have the full git history, the checkout is not shallow, etc"
+  info "Is shallow repository: $(git -C "${GITHUB_WORKSPACE}" rev-parse --is-shallow-repository)"
   info "See https://github.com/super-linter/super-linter#example-connecting-github-action-workflow"
 }
 
@@ -19,30 +20,26 @@ function IssueHintForFullGitHistory() {
 #### Function GenerateFileDiff #################################################
 function GenerateFileDiff() {
   CMD="${1}"
-  ################
-  # print header #
-  ################
-  debug "----------------------------------------------"
   debug "Generating Diff with:[$CMD]"
 
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  CMD_OUTPUT=$(eval "$CMD")
+  CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail")
 
   #######################
   # Load the error code #
   #######################
   ERROR_CODE=$?
+  debug "Diff command return code: ${ERROR_CODE}"
 
   ##############################
   # Check the shell for errors #
   ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
-    # Error
-    info "Failed to get Diff with:[$CMD]"
+    error "Failed to get Diff with:[$CMD]"
     IssueHintForFullGitHistory
-    fatal "[${CMD_OUTPUT}]"
+    fatal "[Diff command output: ${CMD_OUTPUT}]"
   fi
 
   ###################################################
@@ -69,78 +66,32 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
-
-  debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
-
-  debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
-
-  debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
-
-  # Solve issue with git unsafe dirs
-  debug "Running git config for safe dirs"
-  git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-  git config --global --add safe.directory "/tmp/lint" 2>&1
-
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
-    # Need to build a list of all files changed
-    # This can be pulled from the GITHUB_EVENT_PATH payload
-
-    ################
-    # print header #
-    ################
     debug "----------------------------------------------"
-    debug "Pulling in code history and branches..."
+    debug "Build the list of all changed files"
 
-    #################################################################################
-    # Switch codebase back to the default branch to get a list of all files changed #
-    #################################################################################
-    SWITCH_CMD=$(
-      git -C "${GITHUB_WORKSPACE}" pull --quiet
-      git -C "${GITHUB_WORKSPACE}" checkout "${DEFAULT_BRANCH}" 2>&1
-    )
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ] && [ "${LOCAL_UPDATES}" == "false" ]; then
-      # Error
-      info "Failed to switch to ${DEFAULT_BRANCH} branch to get files changed!"
-      fatal "[${SWITCH_CMD}]"
-    fi
+    DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
 
     if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       ################
       # push event   #
       ################
       DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-      GenerateFileDiff "$DIFF_TREE_CMD"
+      GenerateFileDiff "${DIFF_TREE_CMD}"
 
       ###############################################################
       # Need to see if the array is empty, if so, try the other way #
       ###############################################################
       if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
-        # Empty array, going to try to pull from main branch differences
-        ################
-        # print header #
-        ################
         debug "----------------------------------------------"
-        debug "WARN: Generation of File array with diff-tree produced [0] items, trying with git diff..."
-
-        DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-        GenerateFileDiff "$DIFF_CMD"
+        debug "Generating the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
+        GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
       fi
     else
       ################
       # PR event     #
       ################
-      DIFF_CMD="git -C ${GITHUB_WORKSPACE} diff --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} --diff-filter=d | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-      GenerateFileDiff "$DIFF_CMD"
+      GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
     fi
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
@@ -179,12 +130,6 @@ function BuildFileList() {
         -type f \
         2>&1 | sort)
     else
-      ##############################
-      # use the standard mechinism #
-      ##############################
-      ################
-      # print header #
-      ################
       debug "----------------------------------------------"
       debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
       mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
@@ -212,28 +157,6 @@ function BuildFileList() {
     # No files were found to lint #
     ###############################
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
-  fi
-
-  if [ "${VALIDATE_ALL_CODEBASE}" == "false" ]; then
-    #########################################
-    # Need to switch back to branch of code #
-    #########################################
-    SWITCH2_CMD=$(git -C "${GITHUB_WORKSPACE}" checkout --progress --force "${GITHUB_SHA}" 2>&1)
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ ${ERROR_CODE} -ne 0 ]; then
-      # Error
-      error "Failed to switch back to branch!"
-      IssueHintForFullGitHistory
-      fatal "[${SWITCH2_CMD}]"
-    fi
   fi
 
   #########################################
