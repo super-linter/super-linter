@@ -56,8 +56,10 @@ log() {
   local MESSAGE=${2:-}
   local LOG_LEVEL_LABEL="[${3}]"
 
-  local LOG_MESSAGE_DATE="$(date +"%F %T")"
-  local COLOR_MARKER="${F[B]}"
+  local LOG_MESSAGE_DATE
+  LOG_MESSAGE_DATE="$(date +"%F %T")"
+  local COLOR_MARKER
+  COLOR_MARKER="${F[B]}"
 
   if [ "${LOG_LEVEL_LABEL}" == "NOTICE" ]; then
     COLOR_MARKER="${F[G]}"
@@ -67,8 +69,10 @@ log() {
     COLOR_MARKER="${F[R]}"
   fi
 
-  local COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${COLOR_MARKER}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
-  local MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
+  local COLORED_MESSAGE
+  COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${COLOR_MARKER}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
+  local MESSAGE_FOR_LOG_FILE
+  MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
 
   if [[ -n ${TOTERM} ]]; then
     echo -e "${COLORED_MESSAGE}"
