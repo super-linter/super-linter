@@ -79,7 +79,7 @@ log() {
   fi
 
   if [ "${CREATE_LOG_FILE}" = "true" ]; then
-    echo -e "${MESSAGE}" >> "${LOG_TEMP}"
+    echo -e "${MESSAGE_FOR_LOG_FILE}" >>"${LOG_TEMP}"
   fi
 }
 trace() { log "${LOG_TRACE:-}" "$*" "TRACE"; }

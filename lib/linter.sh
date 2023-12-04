@@ -18,7 +18,7 @@ IMAGE="${IMAGE:-standard}"                            # Version of the Super-lin
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
 LOG_FILE="${LOG_FILE:-"super-linter.log"}" # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"        # Default log level (VERBOSE, DEBUG, TRACE)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"          # Default log level (VERBOSE, DEBUG, TRACE)
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
 export CREATE_LOG_FILE
 
@@ -651,10 +651,7 @@ CallStatusAPI() {
     # Check the shell for errors #
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
-      # ERROR
-      info "ERROR! Failed to call GitHub Status API!"
-      info "ERROR:[${SEND_STATUS_CMD}]"
-      # Not going to fail the script on this yet...
+      info "Failed to call GitHub Status API: ${SEND_STATUS_CMD}"
     fi
   fi
 }
