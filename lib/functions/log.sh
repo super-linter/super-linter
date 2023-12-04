@@ -50,7 +50,7 @@ export NC
 
 LOG_TEMP=$(mktemp) || echo "Failed to create temporary log file."
 export LOG_TEMP
-echo "super-linter Log" >"${LOG_TEMP}"
+
 log() {
   local TOTERM=${1:-}
   local MESSAGE=${2:-}
@@ -71,7 +71,7 @@ log() {
   local MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
 
   if [[ -n ${TOTERM} ]]; then
-    echo -e "${MESSAGE}"
+    echo -e "${COLORED_MESSAGE}"
   fi
 
   if [ "${CREATE_LOG_FILE}" = "true" ]; then

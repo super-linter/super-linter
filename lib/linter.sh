@@ -782,7 +782,10 @@ cleanup() {
   debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
   if [ "${CREATE_LOG_FILE}" = "true" ]; then
     debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
-    sh -c "mv ${LOG_TEMP} ${LOG_FILE_PATH}"
+    mv \
+      --force \
+      --verbose \
+      "${LOG_TEMP}" "${LOG_FILE_PATH}"
   else
     debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
   fi
