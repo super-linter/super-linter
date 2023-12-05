@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Background colors:
+# Blue
+# Cyan
+# Green
+# Black
+# Magenta
+# Red
+# White
+# Yellow
 declare -Agr B=(
   [B]=$(echo -e "\e[44m")
   [C]=$(echo -e "\e[46m")
@@ -10,6 +19,16 @@ declare -Agr B=(
   [W]=$(echo -e "\e[47m")
   [Y]=$(echo -e "\e[43m")
 )
+
+# Foreground colors:
+# Blue
+# Cyan
+# Green
+# Black
+# Magenta
+# Red
+# White
+# Yellow
 declare -Agr F=(
   [B]=$(echo -e "\e[0;34m")
   [C]=$(echo -e "\e[0;36m")
@@ -20,6 +39,8 @@ declare -Agr F=(
   [W]=$(echo -e "\e[0;37m")
   [Y]=$(echo -e "\e[0;33m")
 )
+
+# Reset
 NC=$(echo -e "\e[0m")
 readonly NC
 
@@ -27,28 +48,47 @@ export B
 export F
 export NC
 
-# Log Functions
 LOG_TEMP=$(mktemp) || echo "Failed to create temporary log file."
 export LOG_TEMP
-echo "super-linter Log" >"${LOG_TEMP}"
+
 log() {
   local TOTERM=${1:-}
   local MESSAGE=${2:-}
-  echo -e "${MESSAGE:-}" | (
-    if [[ -n ${TOTERM} ]]; then
-      tee -a "${LOG_TEMP}" >&2
-    else
-      cat >>"${LOG_TEMP}" 2>&1
-    fi
-  )
+  local LOG_LEVEL_LABEL="[${3}]"
+
+  local LOG_MESSAGE_DATE
+  LOG_MESSAGE_DATE="$(date +"%F %T")"
+  local COLOR_MARKER
+  COLOR_MARKER="${F[B]}"
+
+  if [ "${LOG_LEVEL_LABEL}" == "NOTICE" ]; then
+    COLOR_MARKER="${F[G]}"
+  elif [ "${LOG_LEVEL_LABEL}" == "WARN" ]; then
+    COLOR_MARKER="${F[Y]}"
+  elif [ "${LOG_LEVEL_LABEL}" == "ERROR" ] || [ "${LOG_LEVEL_LABEL}" == "FATAL" ]; then
+    COLOR_MARKER="${F[R]}"
+  fi
+
+  local COLORED_MESSAGE
+  COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${COLOR_MARKER}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
+  local MESSAGE_FOR_LOG_FILE
+  MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
+
+  if [[ -n ${TOTERM} ]]; then
+    echo -e "${COLORED_MESSAGE}"
+  fi
+
+  if [ "${CREATE_LOG_FILE}" = "true" ]; then
+    echo -e "${MESSAGE_FOR_LOG_FILE}" >>"${LOG_TEMP}"
+  fi
 }
-trace() { log "${LOG_TRACE:-}" "${NC}$(date +"%F %T") ${F[B]}[TRACE]${NC}   $*${NC}"; }
-debug() { log "${LOG_DEBUG:-}" "${NC}$(date +"%F %T") ${F[B]}[DEBUG]${NC}   $*${NC}"; }
-info() { log "${LOG_VERBOSE:-}" "${NC}$(date +"%F %T") ${F[B]}[INFO]${NC}   $*${NC}"; }
-notice() { log "${LOG_NOTICE:-}" "${NC}$(date +"%F %T") ${F[G]}[NOTICE]${NC}   $*${NC}"; }
-warn() { log "${LOG_WARN:-}" "${NC}$(date +"%F %T") ${F[Y]}[WARN]${NC}   $*${NC}"; }
-error() { log "${LOG_ERROR:-}" "${NC}$(date +"%F %T") ${F[R]}[ERROR]${NC}   $*${NC}"; }
+trace() { log "${LOG_TRACE:-}" "$*" "TRACE"; }
+debug() { log "${LOG_DEBUG:-}" "$*" "DEBUG"; }
+info() { log "${LOG_VERBOSE:-}" "$*" "INFO"; }
+notice() { log "${LOG_NOTICE:-}" "$*" "NOTICE"; }
+warn() { log "${LOG_WARN:-}" "$*" "WARN"; }
+error() { log "${LOG_ERROR:-}" "$*" "ERROR"; }
 fatal() {
-  log "true" "${NC}$(date +"%F %T") ${B[R]}${F[W]}[FATAL]${NC}   $*${NC}"
+  log "true" "$*" "FATAL"
   exit 1
 }

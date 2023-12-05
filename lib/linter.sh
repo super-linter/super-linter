@@ -17,8 +17,8 @@ IMAGE="${IMAGE:-standard}"                            # Version of the Super-lin
 # Log Vars                                                       #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-LOG_FILE="${LOG_FILE:-super-linter.log}" # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"        # Default log level (VERBOSE, DEBUG, TRACE)
+LOG_FILE="${LOG_FILE:-"super-linter.log"}" # Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"          # Default log level (VERBOSE, DEBUG, TRACE)
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
 export CREATE_LOG_FILE
 
@@ -95,6 +95,8 @@ DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files 
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
 VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
 export VERSION_FILE                                       # Workaround SC2034
+
+debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
 
 ###############
 # Rules files #
@@ -649,10 +651,7 @@ CallStatusAPI() {
     # Check the shell for errors #
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
-      # ERROR
-      info "ERROR! Failed to call GitHub Status API!"
-      info "ERROR:[${SEND_STATUS_CMD}]"
-      # Not going to fail the script on this yet...
+      info "Failed to call GitHub Status API: ${SEND_STATUS_CMD}"
     fi
   fi
 }
@@ -775,13 +774,17 @@ UpdateLoopsForImage() {
 # shellcheck disable=SC2317
 cleanup() {
   local -ri EXIT_CODE=$?
+  # Define this variable here so we can rely on it as soon as possible
   local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
-  debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}, LOG_FILE_PATH: ${LOG_FILE_PATH}"
+  debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
   if [ "${CREATE_LOG_FILE}" = "true" ]; then
-    debug "Creating log file: ${LOG_FILE_PATH}"
-    sh -c "cat ${LOG_TEMP} >> ${LOG_FILE_PATH}" || true
+    debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
+    mv \
+      --force \
+      --verbose \
+      "${LOG_TEMP}" "${LOG_FILE_PATH}"
   else
-    debug "Skipping the log file creation"
+    debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
   fi
 
   exit "${EXIT_CODE}"

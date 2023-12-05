@@ -69,12 +69,18 @@ jobs:
         uses: ./
         env:
           ACTIONS_RUNNER_DEBUG: true
+          CREATE_LOG_FILE: true
           ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
           TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
+
+      - name: Get the contents of the log file
+        run: |
+          sudo cat super-linter.log
+          sudo rm -v super-linter.log
 
       - name: Run Test Suite
         run: make test
@@ -96,7 +102,6 @@ jobs:
         run: |
           docker run \
           -e RUN_LOCAL=true \
-          -e OUTPUT_DETAILS=detailed \
           -e ACTIONS_RUNNER_DEBUG=true \
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
