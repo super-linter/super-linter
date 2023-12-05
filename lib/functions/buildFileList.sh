@@ -304,7 +304,7 @@ function BuildFileList() {
     ###################################################
     # Filter files if FILTER_REGEX_EXCLUDE is not set #
     ###################################################
-    if [ "${IGNORE_GITIGNORED_FILES}" == "true" ] && git -C "${WORKSPACE_PATH}" check-ignore "$FILE"; then
+    if [ "${IGNORE_GITIGNORED_FILES}" == "true" ] && git -C "${GITHUB_WORKSPACE}" check-ignore "$FILE"; then
       debug "${FILE} is ignored by Git. Skipping ${FILE}"
       continue
     fi
