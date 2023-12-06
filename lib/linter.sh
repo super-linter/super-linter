@@ -817,16 +817,16 @@ UpdateLoopsForImage
 ##################################
 GetLinterVersions
 
-debug "Allow Git to work on ${GITHUB_WORKSPACE}"
-git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-git config --global --add safe.directory "/tmp/lint" 2>&1
-
 #######################
 # Get GitHub Env Vars #
 #######################
 # Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
+
+debug "Allow Git to work on ${GITHUB_WORKSPACE}"
+git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+git config --global --add safe.directory "/tmp/lint" 2>&1
 
 ########################################################
 # Initialize variables that depend on GitHub variables #
