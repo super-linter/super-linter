@@ -115,7 +115,6 @@ jobs:
         run: make test
 
       - name: Test super-linter on a subdirectory using find
-        uses: ./
         run: |
           docker run \
           -e RUN_LOCAL=true \
