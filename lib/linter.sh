@@ -374,11 +374,11 @@ debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate all files
-DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                                        # Default value for validate all files
+DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
-DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
+DEFAULT_RUN_LOCAL='false'                                                   # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'                                               # Flag to tell code to run only test cases
 
 if [ -z "${TEST_CASE_RUN}" ]; then
   TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
