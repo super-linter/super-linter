@@ -111,6 +111,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)

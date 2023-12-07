@@ -121,6 +121,7 @@ jobs:
           -e TEST_CASE_RUN=true \
           -e ANSIBLE_DIRECTORY=.automation/test/ansible \
           -e ACTIONS_RUNNER_DEBUG=true \
+          -e DEFAULT_BRANCH=main \
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
@@ -132,6 +133,7 @@ jobs:
           docker run \
           -e RUN_LOCAL=true \
           -e ACTIONS_RUNNER_DEBUG=true \
+          -e DEFAULT_BRANCH=main \
           -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
           -e ERROR_ON_MISSING_EXEC_BIT=true \
           -v "${GITHUB_WORKSPACE}:/tmp/lint" \
