@@ -445,8 +445,7 @@ Header() {
 }
 ConfigureGitSafeDirectories() {
   declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "/tmp/lint")
-  for safe_directory in "${git_safe_directories[@]}"
-  do
+  for safe_directory in "${git_safe_directories[@]}"; do
     debug "Allow Git to work on ${safe_directory}"
     if ! git config --global --add safe.directory "${safe_directory}"; then
       fatal "Cannot configure ${safe_directory} as a Git safe directory."
