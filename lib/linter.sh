@@ -375,7 +375,8 @@ debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 # Default Vars #
 ################
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if running locally
+DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
 DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
 
@@ -443,15 +444,18 @@ Header() {
   info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 }
+
 ConfigureGitSafeDirectories() {
-  declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "/tmp/lint")
+  debug "Configuring Git safe directories"
+  declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "${DEFAULT_SUPER_LINTER_WORKSPACE}" "${DEFAULT_WORKSPACE}")
   for safe_directory in "${git_safe_directories[@]}"; do
-    debug "Allow Git to work on ${safe_directory}"
+    debug "Set ${safe_directory} as a Git safe directory"
     if ! git config --global --add safe.directory "${safe_directory}"; then
       fatal "Cannot configure ${safe_directory} as a Git safe directory."
     fi
   done
 }
+
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars() {
@@ -462,7 +466,7 @@ GetGitHubVars() {
   info "Gathering GitHub information..."
 
   if [[ ${RUN_LOCAL} != "false" ]]; then
-    info "RUN_LOCAL has been set to:[${RUN_LOCAL}]. Bypassing GitHub Actions variables..."
+    info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
 
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
@@ -472,15 +476,15 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
-    info "Linting all files in mapped directory:[${GITHUB_WORKSPACE}]"
-
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
+    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}. Setting VALIDATE_ALL_CODEBASE to: ${VALIDATE_ALL_CODEBASE}"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
-      GITHUB_SHA=$(git -c "${GITHUB_WORKSPACE}" rev-parse HEAD)
+      debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
+      GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)
       ERROR_CODE=$?
       debug "GITHUB_SHA initalization return code: ${ERROR_CODE}"
       if [ ${ERROR_CODE} -ne 0 ]; then
