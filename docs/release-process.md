@@ -1,4 +1,4 @@
-# Creating GitHub Super-Linter Release
+# Creating Super-Linter Release
 
 The Process to create a `Release` of the **super-linter/super-linter** is as follows:
 

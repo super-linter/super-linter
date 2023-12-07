@@ -1,6 +1,6 @@
-# GitHub Super-Linter Slim Image Action
+# Super-Linter Slim Image Action
 
-The **GitHub Super-Linter** maintains `two` major images:
+The **Super-Linter** maintains `two` major images:
 
 - `super-linter/super-linter:v5`
 - `super-linter/super-linter:slim-v5`
