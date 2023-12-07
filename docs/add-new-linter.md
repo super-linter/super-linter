@@ -45,7 +45,7 @@ new tool, it should include:
       install your dependencies.
     4. Add the following content to the `Dockerfile`:
 
-      ```
+      ```dockerfile
       COPY scripts/install-<name-of-tool>.sh /
       RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
       ```
@@ -71,7 +71,7 @@ new tool, it should include:
 
     1. Add a new build stage to get the image:
 
-      ```docker
+      ```dockerfile
       FROM your/image:version as <name-of-tool>
       ```
 
