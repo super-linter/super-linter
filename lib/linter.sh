@@ -363,6 +363,7 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 # GitHub ENV Vars #
 ###################
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
+MULTI_STATUS="${MULTI_STATUS,,}"           # Convert string to lowercase
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
@@ -572,18 +573,14 @@ GetGitHubVars() {
     fi
   fi
 
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  MULTI_STATUS="${MULTI_STATUS,,}"
-
   #######################################################################
   # Check to see if the multi status is set, and we have a token to use #
   #######################################################################
   if [ "${MULTI_STATUS}" == "true" ]; then
 
     if [[ ${RUN_LOCAL} == "true" ]]; then
-      warn "Cannot enable status reports when running locally.  RUN_LOCAL "
+      # Safety check. This shouldn't occur because we forcefully set MULTI_STATUS=false above
+      fatal "Cannot enable status reports when running locally."
     fi
 
     if [ -z "${GITHUB_TOKEN}" ]; then
@@ -592,9 +589,6 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_TOKEN]."
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_REPOSITORY}" ]; then
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
@@ -602,9 +596,6 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_RUN_ID}" ]; then
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
