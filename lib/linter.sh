@@ -468,6 +468,18 @@ GetGitHubVars() {
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
+
+    if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+      GITHUB_SHA=$(git -c "${GITHUB_WORKSPACE}" rev-parse HEAD)
+      ERROR_CODE=$?
+      debug "GITHUB_SHA initalization return code: ${ERROR_CODE}"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
+      fi
+      debug "GITHUB_SHA: ${GITHUB_SHA}"
+    else
+      debug "Skip the initalization of GITHUB_SHA because we don't need it"
+    fi
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
