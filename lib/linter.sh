@@ -479,7 +479,8 @@ GetGitHubVars() {
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}. Setting VALIDATE_ALL_CODEBASE to: ${VALIDATE_ALL_CODEBASE}"
+    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}"
+    debug "Setting VALIDATE_ALL_CODEBASE to ${VALIDATE_ALL_CODEBASE} because we are not running on GitHub Actions"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
@@ -494,6 +495,9 @@ GetGitHubVars() {
     else
       debug "Skip the initalization of GITHUB_SHA because we don't need it"
     fi
+
+    MULTI_STATUS="false"
+    debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
@@ -568,22 +572,6 @@ GetGitHubVars() {
     fi
   fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
-    error "Failed to get [GITHUB_TOKEN]!"
-    error "[${GITHUB_TOKEN}]"
-    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
-
-    ################################################################################
-    # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
-    ################################################################################
-    MULTI_STATUS='false'
-  else
-    info "Successfully found:${F[W]}[GITHUB_TOKEN]"
-  fi
-
   ###############################
   # Convert string to lowercase #
   ###############################
@@ -592,7 +580,18 @@ GetGitHubVars() {
   #######################################################################
   # Check to see if the multi status is set, and we have a token to use #
   #######################################################################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ]; then
+  if [ "${MULTI_STATUS}" == "true" ]; then
+
+    if [[ ${RUN_LOCAL} == "true" ]]; then
+      warn "Cannot enable status reports when running locally.  RUN_LOCAL "
+    fi
+
+    if [ -z "${GITHUB_TOKEN}" ]; then
+      fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
+    else
+      info "Successfully found:${F[W]}[GITHUB_TOKEN]."
+    fi
+
     ############################
     # Validate we have a value #
     ############################
