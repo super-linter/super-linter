@@ -54,7 +54,7 @@ export LOG_TEMP
 log() {
   local TOTERM=${1:-}
   local MESSAGE=${2:-}
-  local LOG_LEVEL_LABEL="[${3}]"
+  local LOG_LEVEL_LABEL="${3}"
 
   local LOG_MESSAGE_DATE
   LOG_MESSAGE_DATE="$(date +"%F %T")"
@@ -68,6 +68,8 @@ log() {
   elif [ "${LOG_LEVEL_LABEL}" == "ERROR" ] || [ "${LOG_LEVEL_LABEL}" == "FATAL" ]; then
     COLOR_MARKER="${F[R]}"
   fi
+
+  LOG_LEVEL_LABEL="[${LOG_LEVEL_LABEL}]"
 
   local COLORED_MESSAGE
   COLORED_MESSAGE="${NC}${LOG_MESSAGE_DATE} ${COLOR_MARKER}${LOG_LEVEL_LABEL}${NC}   ${MESSAGE}${NC}"
