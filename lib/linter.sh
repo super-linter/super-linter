@@ -842,6 +842,8 @@ debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 ############################
 # Validate the environment #
 ############################
+GetValidationInfo
+
 if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
   debug "Validate the local Git environment"
   ValidateLocalGitRepository
@@ -850,8 +852,6 @@ if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" == 
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
-
-GetValidationInfo
 
 #################################
 # Get the linter rules location #
