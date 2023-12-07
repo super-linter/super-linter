@@ -443,6 +443,11 @@ Header() {
   info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 }
+ConfigureGitSafeDirectories() {
+  debug "Allow Git to work on ${GITHUB_WORKSPACE}"
+  git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
+  git config --global --add safe.directory "/tmp/lint" 2>&1
+}
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars() {
@@ -470,6 +475,7 @@ GetGitHubVars() {
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+      ConfigureGitSafeDirectories
       GITHUB_SHA=$(git -c "${GITHUB_WORKSPACE}" rev-parse HEAD)
       ERROR_CODE=$?
       debug "GITHUB_SHA initalization return code: ${ERROR_CODE}"
@@ -836,9 +842,9 @@ GetLinterVersions
 # needed to connect back and update checks
 GetGitHubVars
 
-debug "Allow Git to work on ${GITHUB_WORKSPACE}"
-git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-git config --global --add safe.directory "/tmp/lint" 2>&1
+# Ensure that Git safe directories are configured because we don't do this in
+# all cases when initializing variables
+ConfigureGitSafeDirectories
 
 ########################################################
 # Initialize variables that depend on GitHub variables #
