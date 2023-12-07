@@ -444,9 +444,14 @@ Header() {
   info "---------------------------------------------"
 }
 ConfigureGitSafeDirectories() {
-  debug "Allow Git to work on ${GITHUB_WORKSPACE}"
-  git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-  git config --global --add safe.directory "/tmp/lint" 2>&1
+  declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "/tmp/lint")
+  for safe_directory in "${git_safe_directories[@]}"
+  do
+    debug "Allow Git to work on ${safe_directory}"
+    if ! git config --global --add safe.directory "${safe_directory}"; then
+      fatal "Cannot configure ${safe_directory} as a Git safe directory."
+    fi
+  done
 }
 ################################################################################
 #### Function GetGitHubVars ####################################################
