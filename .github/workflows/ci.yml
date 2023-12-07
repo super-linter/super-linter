@@ -27,12 +27,6 @@ jobs:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
     steps:
-      - name: Free Disk space
-        shell: bash
-        run: |
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
-
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
@@ -45,8 +39,43 @@ jobs:
           echo "Action file contents:"
           cat action.yml
 
-      - name: Retrieve Datetime
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "${GITHUB_ENV}"
+      - name: Set build metadata
+        run: |
+          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event_name }} == 'merge_group' ]]; then
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            BUILD_REVISION=${{ github.event.pull_request.head.sha }}
+            BUILD_VERSION=${{ github.event.pull_request.head.sha }}
+          else
+            echo "[ERROR] Event not supported when setting build revision and build version"
+            exit 1
+          fi
+
+          if [ -z "${BUILD_REVISION}" ]; then
+            echo "[ERROR] BUILD_REVISION is empty"
+            exit 1
+          fi
+
+          if [ -z "${BUILD_VERSION}" ]; then
+            echo "[ERROR] BUILD_VERSION is empty"
+            exit 1
+          fi
+
+          {
+            echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "BUILD_REVISION=${BUILD_REVISION}"
+            echo "BUILD_VERSION=${BUILD_VERSION}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Free Disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Image
         uses: docker/build-push-action@v5
@@ -55,8 +84,8 @@ jobs:
           file: ./Dockerfile
           build-args: |
             BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
+            BUILD_REVISION=${{ env.BUILD_REVISION }}
+            BUILD_VERSION=${{ env.BUILD_VERSION }}
           load: true
           push: false
           secrets: |
