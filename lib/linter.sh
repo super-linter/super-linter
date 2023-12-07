@@ -573,13 +573,11 @@ GetGitHubVars() {
     fi
   fi
 
-  #######################################################################
-  # Check to see if the multi status is set, and we have a token to use #
-  #######################################################################
   if [ "${MULTI_STATUS}" == "true" ]; then
 
     if [[ ${RUN_LOCAL} == "true" ]]; then
       # Safety check. This shouldn't occur because we forcefully set MULTI_STATUS=false above
+      # when RUN_LOCAL=true
       fatal "Cannot enable status reports when running locally."
     fi
 
