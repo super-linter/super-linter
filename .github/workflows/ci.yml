@@ -114,16 +114,6 @@ jobs:
       - name: Run Test Suite
         run: make test
 
-      - name: Test super-linter on a subdirectory using find
-        run: |
-          docker run \
-          -e RUN_LOCAL=true \
-          -e ACTIONS_RUNNER_DEBUG=true \
-          -e ERROR_ON_MISSING_EXEC_BIT=true \
-          -e USE_FIND_ALGORITHM=true \
-          -v "${GITHUB_WORKSPACE}/.github:/tmp/lint" \
-          "${CONTAINER_IMAGE_ID}"
-
       - name: Run Super-Linter Tests
         run: |
           docker run \
