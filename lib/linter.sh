@@ -374,10 +374,11 @@ debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 ################
 # Default Vars #
 ################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                # Default value for validate all files
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-/tmp/lint}" # Default workspace if running locally
-DEFAULT_RUN_LOCAL='false'                           # Default value for debugging locally
-DEFAULT_TEST_CASE_RUN='false'                       # Flag to tell code to run only test cases
+DEFAULT_VALIDATE_ALL_CODEBASE='true'                                        # Default value for validate all files
+DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
+DEFAULT_RUN_LOCAL='false'                                                   # Default value for debugging locally
+DEFAULT_TEST_CASE_RUN='false'                                               # Flag to tell code to run only test cases
 
 if [ -z "${TEST_CASE_RUN}" ]; then
   TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
@@ -443,6 +444,18 @@ Header() {
   info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 }
+
+ConfigureGitSafeDirectories() {
+  debug "Configuring Git safe directories"
+  declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "${DEFAULT_SUPER_LINTER_WORKSPACE}" "${DEFAULT_WORKSPACE}")
+  for safe_directory in "${git_safe_directories[@]}"; do
+    debug "Set ${safe_directory} as a Git safe directory"
+    if ! git config --global --add safe.directory "${safe_directory}"; then
+      fatal "Cannot configure ${safe_directory} as a Git safe directory."
+    fi
+  done
+}
+
 ################################################################################
 #### Function GetGitHubVars ####################################################
 GetGitHubVars() {
@@ -453,7 +466,7 @@ GetGitHubVars() {
   info "Gathering GitHub information..."
 
   if [[ ${RUN_LOCAL} != "false" ]]; then
-    info "RUN_LOCAL has been set to:[${RUN_LOCAL}]. Bypassing GitHub Actions variables..."
+    info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
 
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
@@ -463,11 +476,24 @@ GetGitHubVars() {
       fatal "Provided volume is not a directory!"
     fi
 
-    info "Linting all files in mapped directory:[${GITHUB_WORKSPACE}]"
-
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
+    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}. Setting VALIDATE_ALL_CODEBASE to: ${VALIDATE_ALL_CODEBASE}"
+
+    if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+      ConfigureGitSafeDirectories
+      debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
+      GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)
+      ERROR_CODE=$?
+      debug "GITHUB_SHA initalization return code: ${ERROR_CODE}"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
+      fi
+      debug "GITHUB_SHA: ${GITHUB_SHA}"
+    else
+      debug "Skip the initalization of GITHUB_SHA because we don't need it"
+    fi
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
@@ -817,16 +843,16 @@ UpdateLoopsForImage
 ##################################
 GetLinterVersions
 
-debug "Allow Git to work on ${GITHUB_WORKSPACE}"
-git config --global --add safe.directory "${GITHUB_WORKSPACE}" 2>&1
-git config --global --add safe.directory "/tmp/lint" 2>&1
-
 #######################
 # Get GitHub Env Vars #
 #######################
 # Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
+
+# Ensure that Git safe directories are configured because we don't do this in
+# all cases when initializing variables
+ConfigureGitSafeDirectories
 
 ########################################################
 # Initialize variables that depend on GitHub variables #
@@ -842,7 +868,9 @@ debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 ############################
 # Validate the environment #
 ############################
-if [[ "${USE_FIND_ALGORITHM}" != "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" != "true" ]]; then
+GetValidationInfo
+
+if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
   debug "Validate the local Git environment"
   ValidateLocalGitRepository
   ValidateGitShaReference
@@ -850,8 +878,6 @@ if [[ "${USE_FIND_ALGORITHM}" != "false" ]] || [[ "${VALIDATE_ALL_CODEBASE}" != 
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
-
-GetValidationInfo
 
 #################################
 # Get the linter rules location #

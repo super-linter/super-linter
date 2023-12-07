@@ -235,6 +235,8 @@ function ValidateLocalGitRepository() {
 }
 
 function ValidateGitShaReference() {
+  debug "Git HEAD: $(git -C "${GITHUB_WORKSPACE}" show HEAD --stat)"
+
   debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
   if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
     fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"

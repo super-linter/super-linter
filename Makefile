@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels inspec ## Run tests
+test: info validate-container-image-labels inspec test-find ## Run tests
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -104,3 +104,14 @@ validate-container-image-labels: ## Validate container image labels
 		$(BUILD_DATE) \
 		$(BUILD_REVISION) \
 		$(BUILD_VERSION)
+
+.phony: test-find
+test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/.github":/tmp/lint \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
