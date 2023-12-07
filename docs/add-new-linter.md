@@ -19,7 +19,7 @@ new tool, it should include:
 
   - If there are PyPi packages, create a text file named `dependencies/python/<name-of-tool>.txt`
     and list the packages there.
-  - If there are NPM packages, update `dependencies/package.json` and `dependencies/package-lock.json`.
+  - If there are npm packages, update `dependencies/package.json` and `dependencies/package-lock.json`.
     by adding the new packages.
   - If there are Ruby Gems, update `dependencies/Gemfile` and `dependencies/Gemfile.lock`
   - If there are Maven or Java packages:
