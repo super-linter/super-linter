@@ -46,4 +46,11 @@ gpg --verify phive.phar.asc phive.phar
 chmod +x phive.phar
 mv phive.phar /usr/local/bin/phive
 rm phive.phar.asc
-echo y | phive --no-progress install --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5 --target /usr/bin phpstan@^1.3.3 psalm@^4.18.1 phpcs@^3.6.2
+
+# Install PHARs
+phive --no-progress install \
+  --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5,5E6DDE998AB73B8E \
+  --target /usr/bin \
+  phpstan@^1.10.48 \
+  psalm@^5.17.0 \
+  phpcs@^3.8.0
