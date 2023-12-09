@@ -6,6 +6,7 @@
 
 # Declare global ARGs here so we can reuse them across build stages
 
+ARG GITHUB_TOKEN
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
@@ -257,24 +258,11 @@ RUN ./build-venvs.sh
 ################################################################################
 FROM alpine:3.19.0 as slim
 
-############################
-# Get the build arguements #
-############################
-ARG BUILD_DATE
-ARG BUILD_REVISION
-ARG BUILD_VERSION
-
-#########################################
-# Label the instance and set maintainer #
-#########################################
 LABEL com.github.actions.name="GitHub Super-Linter" \
     com.github.actions.description="Lint your code base with GitHub Actions" \
     com.github.actions.icon="code" \
     com.github.actions.color="red" \
     maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
-    org.opencontainers.image.created=$BUILD_DATE \
-    org.opencontainers.image.revision=$BUILD_REVISION \
-    org.opencontainers.image.version=$BUILD_VERSION \
     org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
     org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
     org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
@@ -282,12 +270,6 @@ LABEL com.github.actions.name="GitHub Super-Linter" \
     org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="Lint your code base with GitHub Actions"
 
-#################################################
-# Set ENV values used for debugging the version #
-#################################################
-ENV BUILD_DATE=$BUILD_DATE
-ENV BUILD_REVISION=$BUILD_REVISION
-ENV BUILD_VERSION=$BUILD_VERSION
 ENV IMAGE="slim"
 
 ###############################
@@ -389,6 +371,20 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
+# Set build metadata here so we don't invalidate the container image cache if we
+# change the values of these arguments
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION
+
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
+
 ################################################################################
 # Grab small clean image to build standard ###############################
 ################################################################################
@@ -397,7 +393,6 @@ FROM slim as standard
 ###############
 # Set up args #
 ###############
-ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
