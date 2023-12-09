@@ -79,10 +79,17 @@ fi
 # Convert string to lowercase
 RUN_LOCAL="${RUN_LOCAL,,}"
 
-ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
+# Dynamically set the default behavior for GitHub Actions log markers because
+# we want to give users a chance to enable this even when running locally, but
+# we still want to provide a default value in case they don't want to explictly
+# configure it.
 if [[ "${RUN_LOCAL}" == "true" ]]; then
-  ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
+else
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
 fi
+# Let users configure GitHub Actions log markers regardless of running locally or not
+ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
 
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
