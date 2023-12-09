@@ -285,6 +285,8 @@ RUN apk add --no-cache \
     jq \
     tar
 
+COPY --from=base_image /usr/glibc-compat/ /usr/glibc-compat/
+
 ##############################
 # Install Phive dependencies #
 ##############################
@@ -300,7 +302,6 @@ RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.o
 # Copy the libraries into image #
 #################################
 COPY --from=base_image /usr/bin/ /usr/bin/
-COPY --from=base_image /usr/glibc-compat/ /usr/glibc-compat/
 COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
