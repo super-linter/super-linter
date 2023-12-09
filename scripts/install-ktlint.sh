@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-
-url=$(curl -s \
+url=$(set -euo pipefail;
+  curl -s \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "https://api.github.com/repos/pinterest/ktlint/releases/tags/${KTLINT_VERSION}" |

@@ -4,6 +4,11 @@
 ###########################################
 ###########################################
 
+# Declare global ARGs here so we can reuse them across build stages
+
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
+
 #########################################
 # Get dependency images as build stages #
 #########################################
@@ -38,15 +43,7 @@ ARG CLJ_KONDO_VERSION='2023.05.18'
 # Dart Linter
 ## stable dart sdk: https://dart.dev/get-dart#release-channels
 ARG DART_VERSION='2.8.4'
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
 ARG KTLINT_VERSION='0.47.1'
-# PowerShell & PSScriptAnalyzer linter
-ARG PSSA_VERSION='1.21.0'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PWSH_VERSION='v7.3.1'
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
 
 ####################
 # Run APK installs #
@@ -88,6 +85,8 @@ RUN apk add --no-cache \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     rustup \
     zlib zlib-dev
+
+SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
 ########################################
 # Copy dependencies files to container #
@@ -191,6 +190,17 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 ######################
 COPY --from=kubeconfrm /kubeconform /usr/bin/
 
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+
+#################
+# Install glibc #
+#################
+ARG GLIBC_VERSION='2.35-r1'
+COPY scripts/install-glibc.sh /
+RUN /install-glibc.sh && rm -rf /install-glibc.sh
+
 #################
 # Install Lintr #
 #################
@@ -202,10 +212,6 @@ RUN /install-lintr.sh && rm -rf /install-lintr.sh
 #####################
 COPY scripts/install-clj-kondo.sh /
 RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
-
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
 ##################
 # Install ktlint #
@@ -272,10 +278,6 @@ FROM alpine:3.19.0 as slim
 ARG BUILD_DATE
 ARG BUILD_REVISION
 ARG BUILD_VERSION
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
 
 #########################################
 # Label the instance and set maintainer #
@@ -303,14 +305,18 @@ ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 ENV IMAGE="slim"
 
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-
-###############
-# Install Git #
-###############
-RUN apk add --no-cache bash git git-lfs
+###############################
+# Install common dependencies #
+###############################
+RUN apk add --no-cache \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    git-lfs \
+    gnupg \
+    jq \
+    tar
 
 ##############################
 # Install Phive dependencies #
@@ -327,6 +333,7 @@ RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.o
 # Copy the libraries into image #
 #################################
 COPY --from=base_image /usr/bin/ /usr/bin/
+COPY --from=base_image /usr/glibc-compat/ /usr/glibc-compat/
 COPY --from=base_image /usr/local/bin/ /usr/local/bin/
 COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
@@ -409,8 +416,6 @@ ARG GITHUB_TOKEN
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
 
 ################
 # Set ENV vars #
