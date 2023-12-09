@@ -31,23 +31,8 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
-##################
-# Get base image #
-##################
 FROM python:3.11.5-alpine3.17 as base_image
 
-################################
-# Set ARG values used in Build #
-################################
-ARG CLJ_KONDO_VERSION='2023.05.18'
-# Dart Linter
-## stable dart sdk: https://dart.dev/get-dart#release-channels
-ARG DART_VERSION='2.8.4'
-ARG KTLINT_VERSION='0.47.1'
-
-####################
-# Run APK installs #
-####################
 RUN apk add --no-cache \
     bash \
     ca-certificates \
@@ -88,9 +73,6 @@ RUN apk add --no-cache \
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
-########################################
-# Copy dependencies files to container #
-########################################
 COPY dependencies/ /
 
 ###################################################################
@@ -210,18 +192,21 @@ RUN /install-lintr.sh && rm -rf /install-lintr.sh
 #####################
 # Install clj-kondo #
 #####################
+ARG CLJ_KONDO_VERSION='2023.05.18'
 COPY scripts/install-clj-kondo.sh /
 RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
 
 ##################
 # Install ktlint #
 ##################
+ARG KTLINT_VERSION='0.47.1'
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 
 ####################
 # Install dart-sdk #
 ####################
+ARG DART_VERSION='2.8.4'
 COPY scripts/install-dart-sdk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
 
