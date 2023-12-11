@@ -123,7 +123,7 @@ writeGitHubActionsLogGroupMarker() {
       echo "::group::${GROUP_TITLE}"
       debug "Started GitHub Actions log group: ${GROUP_TITLE}"
     elif [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" ]]; then
-      debug "Ending GitHub Actions log group"
+      debug "Ending GitHub Actions log group: ${GROUP_TITLE}"
       echo "::endgroup::"
     fi
   else
