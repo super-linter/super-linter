@@ -1,127 +1,83 @@
-# Run Super-Linter locally to test your branch of code
+# Run super-linter outside GitHub Actions
 
-If you want to test locally against the **Super-Linter** to test your branch of
-code or to reproduce an issue, do the following:
+If you want to run super-linter outside GitHub Actions, you need a container
+runtime engine to run the super-linter container image.
 
-- Clone your testing source code to your local environment
-- Install Docker to your local environment
-- Pull the container
-- Run the container locally
+## Run super-linter Locally
 
-If you're contributing to Super-Linter, you also need to do following:
-
-- Run the test suite locally
-
-## Install Docker to your local machine
-
-You can follow the link below on how to install and configure **Docker** on your local machine
-
-- [Docker Install Documentation](https://docs.docker.com/install/)
-
-## Download the latest Super-Linter Docker container
-
-- Pull the latest **Docker** container image from the registry
-  - `docker pull ghcr.io/super-linter/super-linter:latest`
-    Once the container has been downloaded to your local environment, you can then begin the process, or running the container against your codebase.
-
-## Run the container Locally
-
-You can run the container locally with the following flags to run your code:
+You can run the container locally with the following configuration options to run your code:
 
 ```bash
 docker run \
   -e ACTIONS_RUNNER_DEBUG=true \
   -e RUN_LOCAL=true \
   -v /path/to/local/codebase:/tmp/lint \
+  --rm \
   ghcr.io/super-linter/super-linter:latest
 ```
 
 This example uses the `latest` container image version. If you're trying to reproduce
-an issue, **refer to a specific version instead**.
+an issue, or running super-linter as part of your CI pipeline, we recommend that
+you **refer to a specific version instead**.
 
 Notes:
 
 - To run against a single file you can use: `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
-- You need to pass the `RUN_LOCAL` flag to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint`.
+- You need to pass the `RUN_LOCAL` option to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint`.
 - If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
-- The flag:`RUN_LOCAL` will set: `VALIDATE_ALL_CODEBASE` to true. This means it will scan **all** the files in the directory you have mapped. If you want to only validate a subset of your codebase, map a folder with only the files you wish to have linted.
-- Add the `--rm` docker flag to automatically removes the container after execution.
-- You can add as many flags as needed. Flags are documented in the [README](../README.md#Environment-variables).
+- You can add as many configuration options as needed. Configuration options are documented in the [README](../README.md#configure-super-linter).
 
-## Sharing Environment variables between Local and CI
+### Azure
 
-If you run both locally and on CI it's very helpful to only have to define your env variables once.
-This is one setup using Github's [STRTA](https://github.com/github/scripts-to-rule-them-all) style to do so.
+Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
 
-### .github/super-linter.env
+### GitLab
 
-This is the shared location for the super-linter variables. Example:
+Check out this [snippet](https://gitlab.com/snippets/1988376) and this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
 
-```bash
-VALIDATE_ALL_CODEBASE=true
-VALIDATE_DOCKERFILE_HADOLINT=false
-VALIDATE_EDITORCONFIG=false
-VALIDATE_GITLEAKS=false
-```
+### Run on Codespaces and Visual Studio Code
 
-### scripts/lint
+This repository provides a DevContainer for [remote development](https://code.visualstudio.com/docs/remote/containers).
 
-This always runs the local docker based linting.
+## Share Environment variables between environments
 
-```bash
-docker run --rm \
-    -e RUN_LOCAL=true \
-    --env-file ".github/super-linter.env" \
-    -v "$PWD":/tmp/lint ghcr.io/super-linter/super-linter:latest
-```
+To avoid duplication if you run super-linter both locally and in other
+environements, such as CI, you can define configuration options once, and load
+them accordingly:
 
-### scripts/test
+1. Create a configuration file for super-linter `super-linter.env`. For example:
 
-This runs the local lint when not on CI.
+    ```bash
+    VALIDATE_ALL_CODEBASE=true
+    ```
 
-```bash
-if [ "$(whoami)" == "runner" ]; then
-  echo "We are on GitHub, so don't run lint manually"
-else
-  echo "Running locally because we don't think we are on GitHub"
-  lint_ci
-fi
-```
+1. Load the super-linter configuration file when running outside GitHub Actions:
 
-### .github/workflows/ci.yml
+    ```bash
+    docker run --rm \
+        -e RUN_LOCAL=true \
+        --env-file ".github/super-linter.env" \
+        -v "$(pwd)":/tmp/lint \
+        ghcr.io/super-linter/super-linter:latest
+    ```
 
-This loads the environment variables before running the GitHub Actions job.
+1. Load the super-linter configuration file when running in GitHub Actions by
+  adding the following step to the GitHub Actions workflow that runs
+  super-linter, after checking out your repository and before running
+  super-linter:
 
-```yaml
-name: CI
-
-on:
-  pull_request:
-
-jobs:
-  lint:
-    # Run GH Super-Linter against code base
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cat .github/super-linter.env >> "$GITHUB_ENV"
-      - name: Lint Code Base
-        uses: super-linter/super-linter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
-```
+    ```yaml
+    - name: Load super-linter configuration
+      run: cat .github/super-linter.env >> "$GITHUB_ENV"
+    ```
 
 ## Build the container image and run the test suite locally
 
-You can run the test suite locally with the following command:
+You can run the build and test process locally with the following command:
 
 ```shell
 make
 ```
-
-The test suite will build the container image and run the test suite against a
-a container that is an instance of that container image.
 
 ### Run the test suite against an arbitrary super-linter container image
 
@@ -142,15 +98,10 @@ Initialize the `BUILD_DATE`, `BUILD_REVISION`, and `BUILD_VERSION` variables
 with the values for that specific container image version. You can get these
 values from the build log for that version.
 
-## Troubleshooting
+### Get the list of available build targets
 
-### Run container and gain access to the command-line
+To get the list of the available `Make` targets, run the following command:
 
-If you need to run the container locally and gain access to its command-line, you can run the following command:
-
-- `docker run -it --entrypoint /bin/bash ghcr.io/super-linter/super-linter`
-- This will drop you in the command-line of the docker container for any testing or troubleshooting that may be needed.
-
-### Found issues
-
-If you find a _bug_ or _issue_, please open a **GitHub** issue at: [super-linter/super-linter/issues](https://github.com/super-linter/super-linter/issues)
+```shell
+make help
+```
