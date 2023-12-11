@@ -53,33 +53,30 @@ them accordingly:
 
 1. Load the super-linter configuration file when running outside GitHub Actions:
 
-  ```bash
-  docker run --rm \
-      -e RUN_LOCAL=true \
-      --env-file ".github/super-linter.env" \
-      -v "$(pwd)":/tmp/lint \
-      ghcr.io/super-linter/super-linter:latest
-  ```
+    ```bash
+    docker run --rm \
+        -e RUN_LOCAL=true \
+        --env-file ".github/super-linter.env" \
+        -v "$(pwd)":/tmp/lint \
+        ghcr.io/super-linter/super-linter:latest
+    ```
 
 1. Load the super-linter configuration file when running in GitHub Actions by
   adding the following step to the GitHub Actions workflow that runs
   super-linter, after checking out your repository:
 
-  ```yaml
-  - name: Load super-linter configuration
-    run: cat .github/super-linter.env >> "$GITHUB_ENV"
-  ```
+    ```yaml
+    - name: Load super-linter configuration
+      run: cat .github/super-linter.env >> "$GITHUB_ENV"
+    ```
 
 ## Build the container image and run the test suite locally
 
-You can run the test suite locally with the following command:
+You can run the build and test process locally with the following command:
 
 ```shell
 make
 ```
-
-The test suite will build the container image and run the test suite against a
-a container that is an instance of that container image.
 
 ### Run the test suite against an arbitrary super-linter container image
 
@@ -99,12 +96,3 @@ make docker-pull test
 Initialize the `BUILD_DATE`, `BUILD_REVISION`, and `BUILD_VERSION` variables
 with the values for that specific container image version. You can get these
 values from the build log for that version.
-
-## Troubleshooting
-
-### Run container and gain access to the command-line
-
-If you need to run the container locally and gain access to its command-line, you can run the following command:
-
-- `docker run -it --entrypoint /bin/bash ghcr.io/super-linter/super-linter`
-- This will drop you in the command-line of the docker container for any testing or troubleshooting that may be needed.
