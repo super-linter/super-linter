@@ -120,19 +120,16 @@ To run super-linter as a GitHub Action, you do the following:
 
 You can show Super-Linter status with a badge in your repository README:
 
-[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/cd.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
-Format:
+Example:
 
 ```markdown
 [![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
-Example:
-
-```markdown
-[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
-```
+For more information, see
+[Adding a workflow status badge](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/adding-a-workflow-status-badge).
 
 ## Super-linter variants
 
