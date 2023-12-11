@@ -63,7 +63,8 @@ them accordingly:
 
 1. Load the super-linter configuration file when running in GitHub Actions by
   adding the following step to the GitHub Actions workflow that runs
-  super-linter, after checking out your repository:
+  super-linter, after checking out your repository and before running
+  super-linter:
 
     ```yaml
     - name: Load super-linter configuration
