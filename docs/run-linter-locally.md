@@ -47,9 +47,9 @@ them accordingly:
 
 1. Create a configuration file for super-linter `super-linter.env`. For example:
 
-  ```bash
-  VALIDATE_ALL_CODEBASE=true
-  ```
+    ```bash
+    VALIDATE_ALL_CODEBASE=true
+    ```
 
 1. Load the super-linter configuration file when running outside GitHub Actions:
 
