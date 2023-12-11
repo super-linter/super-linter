@@ -15,6 +15,8 @@ issues that those tools find as console output, and as
 Super-linter is licensed under a
 [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
 
+[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/cd.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 ## Supported linters and code analyzers
 
 Super-linter supports the following tools:
@@ -119,8 +121,6 @@ To run super-linter as a GitHub Action, you do the following:
 ## Add Super-Linter badge in your repository README
 
 You can show Super-Linter status with a badge in your repository README:
-
-[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/cd.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 Example:
 
