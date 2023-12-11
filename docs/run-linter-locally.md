@@ -97,3 +97,11 @@ make docker-pull test
 Initialize the `BUILD_DATE`, `BUILD_REVISION`, and `BUILD_VERSION` variables
 with the values for that specific container image version. You can get these
 values from the build log for that version.
+
+### Get the list of available build targets
+
+To get the list of the available `Make` targets, run the following command:
+
+```shell
+make help
+```
