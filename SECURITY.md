@@ -1,5 +1,17 @@
-# Security Policy
+# Reporting Security Issues
 
-If you discover a security issue in this repository, please submit it through the [GitHub Security Bug Bounty](https://hackerone.com/github)
+The super-linter team and community take security bugs seriously. We appreciate
+your efforts to responsibly disclose your findings, and will make every effort
+to acknowledge your contributions.
 
-Thanks for helping make GitHub Actions safe for everyone.
+To report a security issue, please use the GitHub Security Advisory
+["Report a Vulnerability"](https://github.com/super-linter/super-linter/security/advisories/new)
+feature.
+
+The super-linter team will send a response indicating the next steps in handling
+your report. After the initial reply to your report, the security team will keep
+you informed of the progress towards a fix and full announcement, and may ask
+for additional information or guidance.
+
+Report security bugs in third-party software to the person or team maintaining
+the third-party software.

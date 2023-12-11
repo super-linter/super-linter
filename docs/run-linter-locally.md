@@ -17,7 +17,8 @@ docker run \
 ```
 
 This example uses the `latest` container image version. If you're trying to reproduce
-an issue, **refer to a specific version instead**.
+an issue, or running super-linter as part of your CI pipeline, we recommend that
+you **refer to a specific version instead**.
 
 Notes:
 
