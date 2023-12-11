@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels inspec test-find ## Run tests
+test: info validate-container-image-labels inspec lint-codebase test-find test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -110,8 +110,33 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e DEFAULT_BRANCH=main \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: lint-codebase
+lint-codebase: ## Lint the entire codebase
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e DEFAULT_BRANCH=main \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-v "${GITHUB_WORKSPACE}:/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-linters
+test-linters: ## Run the linters test suite
+	docker run \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ANSIBLE_DIRECTORY=.automation/test/ansible \
+		-e DEFAULT_BRANCH=main \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-e RUN_LOCAL=true \
+		-e TEST_CASE_RUN=true \
+		-e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
+		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
