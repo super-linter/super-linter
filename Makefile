@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-non-default-workdir test-git-flags test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -128,7 +128,8 @@ validate-container-image-labels: ## Validate container image labels
 		$(BUILD_REVISION) \
 		$(BUILD_VERSION)
 
-# Mount a directory that doesn't have too many files to keep this test short
+# For some cases, mount a directory that doesn't have too many files to keep tests short
+
 .phony: test-find
 test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
@@ -138,6 +139,36 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+# We need to set USE_FIND_ALGORITHM=true because the DEFALUT_WORKSPACE is not
+# a Git directory in this test case
+.phony: test-non-default-workdir
+test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e DEFAULT_WORKSPACE=/tmp/not-default-workspace \
+		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-v $(CURDIR)/.github:/tmp/not-default-workspace/.github \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-git-flags
+test-git-flags: ## Run super-linter with different git-related flags
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e IGNORE_GENERATED_FILES=true \
+		-e IGNORE_GITIGNORED_FILES=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-v "$(CURDIR)":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: lint-codebase
