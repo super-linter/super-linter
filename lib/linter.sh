@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-set -o errexit
-set -o pipefail
-
 ##################################################################
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
@@ -1075,6 +1072,7 @@ fi
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  startGitHubActionsLogGroup "${LANGUAGE}"
   debug "Running linter for the ${LANGUAGE} language..."
   VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
   debug "Setting VALIDATE_LANGUAGE_VARIABLE_NAME to ${VALIDATE_LANGUAGE_VARIABLE_NAME}..."
@@ -1082,7 +1080,6 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Setting VALIDATE_LANGUAGE_VARIABLE_VALUE to ${VALIDATE_LANGUAGE_VARIABLE_VALUE}..."
 
   if [ "${VALIDATE_LANGUAGE_VARIABLE_VALUE}" = "true" ]; then
-    startGitHubActionsLogGroup "${LANGUAGE}"
     # Check if we need an .editorconfig file
     # shellcheck disable=SC2153
     if [ "${LANGUAGE}" = "EDITORCONFIG" ] || [ "${LANGUAGE}" = "SHELL_SHFMT" ]; then
@@ -1123,8 +1120,8 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
 
     debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
     LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${EXPERIMENTAL_BATCH_WORKER}" "${!LANGUAGE_FILE_ARRAY}"
-    endGitHubActionsLogGroup "${LANGUAGE}"
   fi
+  endGitHubActionsLogGroup "${LANGUAGE}"
 done
 
 ##########
