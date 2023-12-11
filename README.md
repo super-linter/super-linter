@@ -1,52 +1,23 @@
 # Super-Linter
 
-This repository is for the **GitHub Action** to run a **Super-Linter**.
-It is a simple combination of various linters, written in `bash`, to help validate your source code.
+This repository is for the **GitHub Action** to run a **Super-Linter**, a
+ready-to-run collection of linters and code analyzers, to help validate your
+source code.
 
-**The end goal of this tool:**
+The goal of super-linter is to help you establish best practices and consistent
+formatting across multiple programming languages, and ensure developers are
+adhering to those conventions.
 
-- Prevent broken code from being uploaded to the default branch (_Usually_ `master` or `main`)
-- Help establish coding best practices across multiple languages
-- Build guidelines for code layout and format
-- Automate the process to help streamline code reviews
+Super-linter analyzes source code files using several tools, and reports the
+issues that those tools find as console output, and as
+[GitHub Actions status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks).
 
-## Table of Contents
+Super-linter is licensed under a
+[MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
 
-- [Super-Linter](#super-linter)
-  - [Table of Contents](#table-of-contents)
-  - [How it Works](#how-it-works)
-  - [Supported Linters](#supported-linters)
-  - [How to use](#how-to-use)
-    - [Example connecting GitHub Action Workflow](#example-connecting-github-action-workflow)
-    - [Add Super-Linter badge in your repository README](#add-super-linter-badge-in-your-repository-readme)
-    - [Images](#images)
-      - [Standard Image](#standard-image)
-      - [Slim Image](#slim-image)
-  - [Environment variables](#environment-variables)
-    - [Template rules files](#template-rules-files)
-    - [Using your own rules files](#using-your-own-rules-files)
-    - [Disabling rules](#disabling-rules)
-    - [Using your own SSH key](#using-your-own-ssh-key)
-  - [Filter linted files](#filter-linted-files)
-  - [Run Super-Linter outside GitHub Actions](#run-super-linter-outside-github-actions)
-    - [Local (troubleshooting/debugging/enhancements)](#local-troubleshootingdebuggingenhancements)
-    - [Azure](#azure)
-    - [GitLab](#gitlab)
-    - [Codespaces and Visual Studio Code](#codespaces-and-visual-studio-code)
-    - [SSL Certs](#ssl-certs)
-  - [Limitations](#limitations)
-  - [How to contribute](#how-to-contribute)
-    - [License](#license)
+## Supported linters and code analyzers
 
-## How it Works
-
-The super-linter finds issues and reports them to the console output. Fixes are suggested in the console output but not automatically fixed, and a status check will show up as failed on the pull request.
-
-The design of the **Super-Linter** is currently to allow linting to occur in **GitHub Actions** as a part of continuous integration occurring on pull requests as the commits get pushed. It works best when commits are being pushed early and often to a branch with an open or draft pull request. There is some desire to move this closer to local development for faster feedback on linting errors but this is not yet supported.
-
-## Supported Linters
-
-Developers on **GitHub** can call the **GitHub Action** to lint their codebase with the following list of linters:
+Super-linter supports the following tools:
 
 | _Language_                       | _Linter_                                                                                                                                                                                                                |
 |----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -101,178 +72,86 @@ Developers on **GitHub** can call the **GitHub Action** to lint their codebase w
 | **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                                                                           |
 | **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                     |
 
-## How to use
+## Get started
 
 More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) available
 
-To use this **GitHub** Action you will need to complete the following:
+To run super-linter as a GitHub Action, you do the following:
 
-1. Create a new file in your repository called `.github/workflows/linter.yml`
-2. Copy the example workflow from below into that new file, no extra configuration required
-3. Commit that file to a new branch
-4. Open up a pull request and observe the action working
-5. Enjoy your more _stable_, and _cleaner_ codebase
-6. Check out the [Wiki](https://github.com/super-linter/super-linter/wiki) for customization options
+1. Create a new [GitHub Actions workflow](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows) in your repository with the following content:
 
-**NOTE:** If you pass the _Environment_ variable `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` in your workflow, then the **GitHub Super-Linter** will mark the status of each individual linter run in the Checks section of a pull request. Without this you will only see the overall status of the full run. There is no need to set the **GitHub** Secret as it is automatically set by GitHub, it only needs to be passed to the action.
+  ```yaml
+  ---
+  name: Lint
 
-### Example connecting GitHub Action Workflow
+  on:  # yamllint disable-line rule:truthy
+    push: null
+    pull_request: null
 
-In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
+  jobs:
+    build:
+      name: Lint
+      runs-on: ubuntu-latest
 
-- `.github/workflows/linter.yml`
-  - Example file can be found at [`TEMPLATES/linter.yml`](TEMPLATES/linter.yml)
+      permissions:
+        contents: read
+        packages: read
+        # To report GitHub Actions status checks
+        statuses: write
 
-This file should have the following code:
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-```yml
----
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
-name: Lint Code Base
+        - name: Super-linter
+          uses: super-linter/super-linter@v5
+          env:
+            DEFAULT_BRANCH: main
+            # To report GitHub Actions status checks
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ...
+  ```
 
-#############################
-# Start the job on all push #
-#############################
-on:
-  push:
-    branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master or main
-  pull_request:
-    branches: [master, main]
+1. Commit that file to a new branch.
+1. Push the new commit to the remote repository.
+1. Create a new pull request to observe the results.
 
-###############
-# Set the Job #
-###############
-jobs:
-  build:
-    # Name the Job
-    name: Lint Code Base
-    # Set the agent to run on
-    runs-on: ubuntu-latest
+## Add Super-Linter badge in your repository README
 
-    ############################################
-    # Grant status permission for MULTI_STATUS #
-    ############################################
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
+You can show Super-Linter status with a badge in your repository README:
 
-    ##################
-    # Load all steps #
-    ##################
-    steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          # Full git history is needed to get a proper
-          # list of changed files within `super-linter`
-          fetch-depth: 0
-
-      ################################
-      # Run Linter against code base #
-      ################################
-      - name: Lint Code Base
-        uses: super-linter/super-linter@v5
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-### Add Super-Linter badge in your repository README
-
-You can show Super-Linter status with a badge in your repository README
-
-[![GitHub Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 Format:
 
 ```markdown
-[![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
 Example:
 
 ```markdown
-[![GitHub Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ```
 
-### Images
+## Super-linter variants
 
-The **GitHub Super-Linter** now builds and supports `multiple` images. We have found as we added more linters, the image size expanded drastically.
-After further investigation, we were able to see that a few linters were very disk heavy. We removed those linters and created the `slim` image.
-This allows users to choose which **Super-Linter** they want to run and potentially speed up their build time.
-The available images:
+Super-Linter provides several variants:
 
-- `super-linter/super-linter:v5`
-- `super-linter/super-linter:slim-v5`
+- `standard`: `super-linter/super-linter:[VERSION]`: includes all supported linters.
+- `slim`: `super-linter/super-linter:slim-[VERSION]`: includes all supported linters except:
 
-#### Standard Image
+  - `rust` linters
+  - `dotenv` linters
+  - `armttk` linters
+  - `pwsh` linters
+  - `c#` linters
 
-The standard `super-linter/super-linter:v5` comes with all supported linters.
-Example usage:
+## Configure super-linter
 
-```yml
-################################
-# Run Linter against code base #
-################################
-- name: Lint Code Base
-  uses: super-linter/super-linter@v5
-  env:
-    VALIDATE_ALL_CODEBASE: false
-    DEFAULT_BRANCH: main
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+You can configure super-linter using the following environment variables:
 
-#### Slim Image
-
-The slim `super-linter/super-linter:slim-v5` comes with all supported linters but removes the following:
-
-- `rust` linters
-- `dotenv` linters
-- `armttk` linters
-- `pwsh` linters
-- `c#` linters
-
-By removing these linters, we were able to bring the image size down by `2gb` and drastically speed up the build and download time.
-The behavior will be the same for non-supported languages, and will skip languages at runtime.
-Example usage:
-
-```yml
-################################
-# Run Linter against code base #
-################################
-- name: Lint Code Base
-  uses: super-linter/super-linter/slim@v5
-  env:
-    VALIDATE_ALL_CODEBASE: false
-    DEFAULT_BRANCH: main
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-## Environment variables
-
-The super-linter allows you to pass the following `ENV` variables to be able to trigger different functionality.
-
-_Note:_ All the `VALIDATE_[LANGUAGE]` variables behave in a very specific way:
-
-- If none of them are passed, then they all default to true.
-- If any one of the variables are set to true, we default to leaving any unset variable to false (only validate those languages).
-- If any one of the variables are set to false, we default to leaving any unset variable to true (only exclude those languages).
-- If there are `VALIDATE_[LANGUAGE]` variables set to both true and false. It will fail.
-
-This means that if you run the linter "out of the box", all languages will be checked.
-But if you wish to select or exclude specific linters, we give you full control to choose which linters are run, and won't run anything unexpected.
-
-| **ENV VAR**                                     | **Default Value**               | **Notes**                                                                                                                                                                                                            |
+| **Environment variable**                        | **Default Value**               | **Description**                                                                                                                                                                                                      |
 |-------------------------------------------------|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **ACTIONS_RUNNER_DEBUG**                        | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
 | **ANSIBLE_CONFIG_FILE**                         | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible.readthedocs.io/projects/lint/configuring/) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                                                      |
@@ -310,7 +189,7 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **NATURAL_LANGUAGE_CONFIG_FILE**                | `.textlintrc`                   | Filename for [textlint configuration](https://textlint.github.io/docs/getting-started.html#configuration) (ex: `.textlintrc`)                                                                                        |
 | **PERL_PERLCRITIC_OPTIONS**                     | `null`                          | Additional arguments to pass to the command-line when running **perlcritic** (Example: --theme community)                                                                                                            |
 | **PHP_CONFIG_FILE**                             | `php.ini`                       | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                               |
-| **PHP_PHPCS_FILE_NAME**                         | `phpcs.xml`                     | Filename for [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) (ex: `.phpcs.xml`, `.phpcs.xml.dist`) |
+| **PHP_PHPCS_FILE_NAME**                         | `phpcs.xml`                     | Filename for [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) (ex: `.phpcs.xml`, `.phpcs.xml.dist`)                                                                                                   |
 | **PROTOBUF_CONFIG_FILE**                        | `.protolintrc.yml`              | Filename for [protolint configuration](https://github.com/yoheimuta/protolint/blob/master/_example/config/.protolint.yaml) (ex: `.protolintrc.yml`)                                                                  |
 | **PYTHON_BLACK_CONFIG_FILE**                    | `.python-black`                 | Filename for [black configuration](https://github.com/psf/black/blob/main/docs/guides/using_black_with_other_tools.md#black-compatible-configurations) (ex: `.isort.cfg`, `pyproject.toml`)                          |
 | **PYTHON_FLAKE8_CONFIG_FILE**                   | `.flake8`                       | Filename for [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html) (ex: `.flake8`, `tox.ini`)                                                                                           |
@@ -415,167 +294,119 @@ But if you wish to select or exclude specific linters, we give you full control 
 | **YAML_CONFIG_FILE**                            | `.yaml-lint.yml`                | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex: `.yaml-lint.yml`, `.yamllint.yml`)                                                                          |
 | **YAML_ERROR_ON_WARNING**                       | `false`                         | Flag to enable or disable the error on warning for Yamllint.                                                                                                                                                         |
 
-### Template rules files
+The `VALIDATE_[LANGUAGE]` variables work as follows:
 
-You can use the **GitHub** **Super-Linter** _with_ or _without_ your own personal rules sets. This allows for greater flexibility for each individual codebase. The Template rules all try to follow the standards we believe should be enabled at the basic level.
+- super-linter runs all supported linters by default.
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to `true`, super-linter defaults to leaving any unset variable to false (only validate those languages).
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to `false`, super-linter defaults to leaving any unset variable to true (only exclude those languages).
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to both `true` and `false`, super-linter fails reporting an error.
 
-- Copy **any** or **all** template rules files from `TEMPLATES/` into the `.github/linters/` directory of your repository, and modify them to suit your needs.
-  - The rules files in [this repository's `TEMPLATE` folder](https://github.com/super-linter/super-linter/tree/main/TEMPLATES) will be used as defaults should any be omitted.
+For more information about reusing super-linter configuration across
+environments, see
+[Share Environment variables between environments](docs/run-linter-locally.md#share-environment-variables-between-environments).
 
-### Using your own rules files
+## Configure linters
 
-If your repository contains your own rules files that live outside of a `.github/linters/` directory, you will have to tell Super-Linter where your rules files are located in your repository, and what their filenames are. To learn more, see [Using your own rules files](docs/using-rules-files.md).
+Super-linter provides default configurations for some linters in the [`TEMPLATES/`](TEMPLATES/)
+directory. You can customize the configuration for the linters that support
+this by placing your own configuration files in the `LINTER_RULES_PATH`
+directory. `LINTER_RULES_PATH` is relative to the `DEFAULT_WORKSPACE` directory.
 
-### Disabling rules
+Super-linter supports customizing the name of these configuration files. For
+more information, refer to [Configure super-linter](#configure-super-linter).
 
-If you need to disable certain _rules_ and _functionality_, you can view [Disable Rules](https://github.com/super-linter/super-linter/blob/main/docs/disabling-linters.md)
+For example, you can configure super-linter to load configuration files from the
+root of your repository:
 
-### Using your own SSH key
-
-If you need to add your own SSH key to the linter because of private dependencies, you can use the `SSH_KEY` environment
-variable. The value of that environment variable should be an SSH private key that has access to your private
-repositories.
-
-You should add this key as an [Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-and access it with the `secrets` parameter.
-
-Example workflow:
-
-```yml
----
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
-name: Lint Code Base
-
-#############################
-# Start the job on all push #
-#############################
-on:
-  push:
-    branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master or main
-  pull_request:
-    branches: [master, main]
-
-###############
-# Set the Job #
-###############
-jobs:
-  build:
-    # Name the Job
-    name: Lint Code Base
-    # Set the agent to run on
-    runs-on: ubuntu-latest
-
-    ##################
-    # Load all steps #
-    ##################
-    steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
-
-      ################################
-      # Run Linter against code base #
-      ################################
-      - name: Lint Code Base
-        uses: super-linter/super-linter@v5
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+```yaml
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    LINTER_RULES_PATH: .
 ```
 
-## Filter linted files
+Some of the linters that super-linter provides can be configured to disable
+certain rules or checkes, and to ignore certain files or part of them.
 
-If you need to lint only a folder or exclude some files from linting, you can use optional environment parameters `FILTER_REGEX_INCLUDE` and `FILTER_REGEX_EXCLUDE`
+For more information about how to configure each linter, review
+[their own documentation](#supported-linters-and-code-analyzers).
 
-Examples:
+## Include or exclude files from checks
 
-- Lint only src folder: `FILTER_REGEX_INCLUDE: .*src/.*`
+If you need to include or exclude directories from being checked, you can use
+two environment variables: `FILTER_REGEX_INCLUDE` and `FILTER_REGEX_EXCLUDE`.
+
+For example:
+
+- Lint only the `src` folder: `FILTER_REGEX_INCLUDE: .*src/.*`
 - Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
 - Do not lint JavaScript files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*.js`
 
 <!-- This `README.md` has both markers in the text, so it is considered not generated. -->
-Additionally when `IGNORE_GENERATED_FILES=true`, super-linter
-ignores any file with `@generated` marker in it unless the file
-also has `@not-generated` marker. `@generated` marker is
-[used by Facebook](https://engineering.fb.com/2015/08/20/open-source/writing-code-that-writes-code-with-hack-codegen/)
-and some other projects to mark generated files. For example, this
-file is considered generated:
+Additionally, if you set `IGNORE_GENERATED_FILES` to `true`, super-linter
+ignores any file with `@generated` string in it, unless the file
+also has `@not-generated` marker. For example, super-linter considers a file
+with the following contents as generated:
 
 ```bash
 #!/bin/sh
 echo "@generated"
 ```
 
-And this file is considered not generated:
+while considers this file as not generated:
 
 ```bash
 #!/bin/sh
 echo "@generated" # @not-generated
 ```
 
+Finally, you can set `IGNORE_GITIGNORED_FILES` to `true` to ignore a file if Git
+ignores it too.
+
 ## Run Super-Linter outside GitHub Actions
 
-### Local (troubleshooting/debugging/enhancements)
+You don't need GitHub Actions to run super-linter. It supports several runtime
+environments.
 
-If you find that you need to run super-linter locally, you can follow the documentation at [Running super-linter locally](https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md)
+### Run using a container runtime engine
 
-Check out the [note](#how-it-works) in **How it Works** to understand more about the **Super-Linter** linting locally versus via continuous integration.
+You can run super-linter outside GitHub Actions. For example, you can run
+super-linter from a shell:
 
-### Azure
-
-Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
-
-### GitLab
-
-Check out this [snippet](https://gitlab.com/snippets/1988376) and this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
-
-### Codespaces and Visual Studio Code
-
-You can checkout this repository using [GitHub Codespaces](https://github.com/features/codespaces/) and [Container Remote Development](https://code.visualstudio.com/docs/remote/containers), and debug the linter using the `Test Linter` task.
-![Example](https://user-images.githubusercontent.com/15258962/85165778-2d2ce700-b21b-11ea-803e-3f6709d8e609.gif)
-
-### SSL Certs
-
-If you need to inject a SSL cert into the trust store, you will need to first copy the cert to **GitHub Secrets**
-Once you have copied the plain text certificate into **GitHub Secrets**, you can use the variable `SSL_CERT_SECRET` to point the **Super-Linter** to the files contents.
-Once found, it will load the certificate contents to a file, and to the trust store.
-
-- Example workflow:
-
-```yml
-- name: Lint Code Base
-  uses: super-linter/super-linter@v5
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+```bash
+docker run \
+  -e ACTIONS_RUNNER_DEBUG=true \
+  -e RUN_LOCAL=true \
+  -v /path/to/local/codebase:/tmp/lint \
+  ghcr.io/super-linter/super-linter:latest
 ```
 
-## Limitations
+For more information, see
+[Run super-linter outside GitHub Actions](https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md).
 
-Below are a list of the known limitations for the **GitHub Super-Linter**:
+## Use your own SSH key and certificate
 
-- Due to being completely packaged at runtime, you will not be able to update dependencies or change versions of the enclosed linters and binaries
-- Additional details from `package.json` are not read by the **GitHub Super-Linter**
-- Downloading additional codebases as dependencies from private repositories will fail due to lack of permissions
+If you need to use your own SSH key to authenticate against private
+repositories, you can use the `SSH_KEY` environment variable. The value of that
+environment variable is expected to be be the private key of an SSH keypair that
+has access to your private repositories.
+
+For example, you can configure this private key as an
+[Encrypted Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+and access it with the `secrets` parameter from your GitHub Actions workflow:
+
+```yaml
+SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+```
+
+If you need to inject a SSL certificate into the trust store, you can use the
+`SSL_CERT_SECRET` variable. The value of that variable is expected to be the
+path to the files that contains a CA that can be used to valide the certificate:
+
+```yaml
+SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+```
 
 ## How to contribute
 
-If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md)
-
----
-
-### License
-
-- [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE)
+If you would like to help contribute to super-linter, see
+[CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md)
