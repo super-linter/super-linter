@@ -95,6 +95,7 @@ fatal() {
   exit 1
 }
 
+# shellcheck disable=SC2034  # Variable is referenced in other files
 SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE="Super-Linter initialization"
 GITHUB_ACTIONS_LOG_GROUP_MARKER_START="start"
 GITHUB_ACTIONS_LOG_GROUP_MARKER_END="end"
@@ -121,7 +122,7 @@ writeGitHubActionsLogGroupMarker() {
     if [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_START}" ]]; then
       echo "::group::${GROUP_TITLE}"
       debug "Started GitHub Actions log group: ${GROUP_TITLE}"
-    elif [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" ]]
+    elif [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" ]]; then
       debug "Ending GitHub Actions log group"
       echo "::endgroup::"
     fi
