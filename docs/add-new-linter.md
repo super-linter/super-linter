@@ -27,59 +27,60 @@ new tool, it should include:
     1. Create a directory named `dependencies/<name-of-tool>`.
     2. Create a `dependencies/<name-of-tool>/build.gradle` file with the following contents:
 
-      ```gradle
-      repositories {
-        mavenLocal()
-        mavenCentral()
-      }
+        ```gradle
+        repositories {
+          mavenLocal()
+          mavenCentral()
+        }
 
-      // Hold this dependency here so we can get automated updates using DependaBot
-      dependencies {
-        implementation 'your:dependency-here:version'
-      }
+        // Hold this dependency here so we can get automated updates using DependaBot
+        dependencies {
+          implementation 'your:dependency-here:version'
+        }
 
-      group 'com.github.super-linter'
-      version '1.0.0-SNAPSHOT'
-      ```
+        group 'com.github.super-linter'
+        version '1.0.0-SNAPSHOT'
+        ```
+
     3. Update the `dependencies` section in `dependencies/<name-of-tool>/build.gradle` to
       install your dependencies.
     4. Add the following content to the `Dockerfile`:
 
-      ```dockerfile
-      COPY scripts/install-<name-of-tool>.sh /
-      RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
-      ```
+        ```dockerfile
+        COPY scripts/install-<name-of-tool>.sh /
+        RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
+        ```
 
     5. Create `scripts/install-<name-of-tool>.sh`, and implement the logic to install your tool.
       You get the version of a dependency from `build.gradle`. Example:
 
-      ```sh
-      GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
-      ```
+        ```sh
+        GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
+        ```
 
     6. Add the new to DependaBot configuration:
 
-      ```yaml
-        - package-ecosystem: "gradle"
-          directory: "/dependencies/<name-of-tool>"
-          schedule:
-            interval: "weekly"
-          open-pull-requests-limit: 10
-      ```
+        ```yaml
+          - package-ecosystem: "gradle"
+            directory: "/dependencies/<name-of-tool>"
+            schedule:
+              interval: "weekly"
+            open-pull-requests-limit: 10
+        ```
 
   - If there is a container (Docker) image:
 
     1. Add a new build stage to get the image:
 
-      ```dockerfile
-      FROM your/image:version as <name-of-tool>
-      ```
+        ```dockerfile
+        FROM your/image:version as <name-of-tool>
+        ```
 
-    2. Copy the necessary binaries and libraries to the relevant locations. Example:
+    1. Copy the necessary binaries and libraries to the relevant locations. Example:
 
-      ```sh
-      COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
-      ```
+        ```sh
+        COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
+        ```
 
 - Configure the new tool:
 
