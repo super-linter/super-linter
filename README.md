@@ -316,16 +316,15 @@ Super-linter supports customizing the name of these configuration files. For
 more information, refer to [Configure super-linter](#configure-super-linter).
 
 For example, you can configure super-linter to load configuration files from the
-root of your repository:
+`config/lint` directory in your repository:
 
 ```yaml
   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    LINTER_RULES_PATH: .
+    LINTER_RULES_PATH: `config/lint`
 ```
 
 Some of the linters that super-linter provides can be configured to disable
-certain rules or checkes, and to ignore certain files or part of them.
+certain rules or checks, and to ignore certain files or part of them.
 
 For more information about how to configure each linter, review
 [their own documentation](#supported-linters-and-code-analyzers).
@@ -395,7 +394,8 @@ For example, you can configure this private key as an
 and access it with the `secrets` parameter from your GitHub Actions workflow:
 
 ```yaml
-SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  env:
+    SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
 
 If you need to inject a SSL certificate into the trust store, you can use the
@@ -403,7 +403,8 @@ If you need to inject a SSL certificate into the trust store, you can use the
 path to the files that contains a CA that can be used to valide the certificate:
 
 ```yaml
-SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
+  env:
+    SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
 ```
 
 ## How to contribute
