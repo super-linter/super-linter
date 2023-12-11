@@ -53,7 +53,7 @@
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^11.1.0",
     "stylelint-prettier": "^4.1.0",
-    "stylelint-scss": "^5.3.1",
+    "stylelint-scss": "^5.3.2",
     "tekton-lint": "^0.6.0",
     "textlint": "^13.4.1",
     "textlint-filter-rule-allowlist": "^4.0.0",
