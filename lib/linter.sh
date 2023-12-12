@@ -296,7 +296,7 @@ fi
 LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
   'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS' 'DART'
   'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GITHUB_ACTIONS'
-  'GITLEAKS' 'GHERKIN' 'GO' 'GOOGLE_JAVA_FORMAT' 'GROOVY' 'HTML' 'JAVA'
+  'GITLEAKS' 'GHERKIN' 'GO' 'GO_DIRECTORY' 'GOOGLE_JAVA_FORMAT' 'GROOVY' 'HTML' 'JAVA'
   'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX'
   'KUBERNETES_KUBECONFORM' 'KOTLIN' 'KOTLIN_ANDROID' 'LATEX' 'LUA' 'MARKDOWN'
   'NATURAL_LANGUAGE' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN'
@@ -330,6 +330,7 @@ LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
 LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
 LINTER_NAMES_ARRAY['GHERKIN']="gherkin-lint"
 LINTER_NAMES_ARRAY['GO']="golangci-lint"
+LINTER_NAMES_ARRAY['GO_DIRECTORY']="${LINTER_NAMES_ARRAY['GO']}"
 LINTER_NAMES_ARRAY['GOOGLE_JAVA_FORMAT']="google-java-format"
 LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
 LINTER_NAMES_ARRAY['HTML']="htmlhint"
@@ -874,6 +875,12 @@ DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"                         
 export DEFAULT_ANSIBLE_DIRECTORY                                                      # Workaround SC2034
 DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
 export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
+# shellcheck disable=SC2034  # Variable is referenced in other shell scripts
+DEFAULT_TEST_CASE_GO_DIRECTORY="${TEST_CASE_FOLDER}/go_directory" # Default Go directory when running test cases
+# shellcheck disable=SC2034  # Variable is referenced in other shell scripts
+DEFAULT_BAD_TEST_CASE_GO_DIRECTORY="${GO_DIRECTORY}/go_directory_bad"
+# shellcheck disable=SC2034  # Variable is referenced in other shell scripts
+DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY="${GO_DIRECTORY}/go_directory_good"
 
 TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
 debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
@@ -910,6 +917,9 @@ done
 # Load rules for special cases
 GetStandardRules "javascript"
 
+GO_DIRECTORY="${GO_DIRECTORY:-}"
+debug "GO_DIRECTORY: ${GO_DIRECTORY}"
+
 ##########################
 # Define linter commands #
 ##########################
@@ -940,7 +950,8 @@ else
 fi
 LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks detect --no-banner --no-git -c ${GITLEAKS_LINTER_RULES} -v -s"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['GO']="golangci-lint run --fast -c ${GO_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['GO_DIRECTORY']="golangci-lint run -c ${GO_LINTER_RULES}"
+LINTER_COMMANDS_ARRAY['GO']="${LINTER_COMMANDS_ARRAY['GO']} --fast"
 LINTER_COMMANDS_ARRAY['GOOGLE_JAVA_FORMAT']="java -jar /usr/bin/google-java-format --dry-run --set-exit-if-changed"
 LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c ${GROOVY_LINTER_RULES} --failon warning --no-insight"
 LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
@@ -1041,7 +1052,7 @@ debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
 ###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}" "${GO_DIRECTORY}"
 
 #####################################
 # Run additional Installs as needed #

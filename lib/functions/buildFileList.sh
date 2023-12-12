@@ -66,6 +66,9 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
+  GO_DIRECTORY="${4}"
+  debug "GO_DIRECTORY: ${GO_DIRECTORY}"
+
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "----------------------------------------------"
     debug "Build the list of all changed files"
@@ -167,6 +170,20 @@ function BuildFileList() {
     FILE_ARRAY_ANSIBLE+=("${ANSIBLE_DIRECTORY}")
   else
     debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+  fi
+
+  if [ "${VALIDATE_GO_DIRECTORY}" == "true" ]; then
+    # We don't need to check if these directories exist because we already did that in validation
+    if [ "${TEST_CASE_RUN}" == "true" ]; then
+      debug "Adding GO_DIRECTORY test cases to the list of files and directories to lint."
+      FILE_ARRAY_GO_DIRECTORY+=("${DEFAULT_BAD_TEST_CASE_GO_DIRECTORY}")
+      FILE_ARRAY_GO_DIRECTORY+=("${DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY}")
+    else
+      debug "Adding GO_DIRECTORY (${GO_DIRECTORY}) to the list of files and directories to lint."
+      FILE_ARRAY_GO_DIRECTORY+=("${GO_DIRECTORY}")
+    fi
+  else
+    debug "Skipping linting of Go directory (${GO_DIRECTORY}) as a Go project."
   fi
 
   ################################################
