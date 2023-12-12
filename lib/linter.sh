@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter (Lint all the code) @admiralawkbar ####################
-################################################################################
-################################################################################
-
 ##################################################################
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
@@ -68,6 +62,33 @@ for batch_worker_script in /action/lib/functions/experimental-batch-workers/*.sh
   # shellcheck source=/dev/null
   source "$batch_worker_script"
 done
+
+# Initialize RUN_LOCAL early because we need it for logging
+DEFAULT_RUN_LOCAL='false'
+
+if [ -z "${RUN_LOCAL}" ]; then
+  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
+fi
+
+# Convert string to lowercase
+RUN_LOCAL="${RUN_LOCAL,,}"
+
+# Dynamically set the default behavior for GitHub Actions log markers because
+# we want to give users a chance to enable this even when running locally, but
+# we still want to provide a default value in case they don't want to explictly
+# configure it.
+if [[ "${RUN_LOCAL}" == "true" ]]; then
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
+else
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
+fi
+# Let users configure GitHub Actions log markers regardless of running locally or not
+ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
+
+startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
+debug "RUN_LOCAL: ${RUN_LOCAL}"
+debug "ENABLE_GITHUB_ACTIONS_GROUP_TITLE: ${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
 
 ###########
 # GLOBALS #
@@ -377,7 +398,6 @@ debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                                        # Default value for validate all files
 DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
-DEFAULT_RUN_LOCAL='false'                                                   # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                                               # Flag to tell code to run only test cases
 
 if [ -z "${TEST_CASE_RUN}" ]; then
@@ -387,14 +407,6 @@ fi
 # Convert string to lowercase
 TEST_CASE_RUN="${TEST_CASE_RUN,,}"
 debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
-
-if [ -z "${RUN_LOCAL}" ]; then
-  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
-fi
-
-# Convert string to lowercase
-RUN_LOCAL="${RUN_LOCAL,,}"
-debug "RUN_LOCAL: ${RUN_LOCAL}"
 
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
@@ -1057,7 +1069,10 @@ else
   EXPERIMENTAL_BATCH_WORKER="false"
 fi
 
+endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  startGitHubActionsLogGroup "${LANGUAGE}"
   debug "Running linter for the ${LANGUAGE} language..."
   VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
   debug "Setting VALIDATE_LANGUAGE_VARIABLE_NAME to ${VALIDATE_LANGUAGE_VARIABLE_NAME}..."
@@ -1106,6 +1121,7 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
     LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${EXPERIMENTAL_BATCH_WORKER}" "${!LANGUAGE_FILE_ARRAY}"
   fi
+  endGitHubActionsLogGroup "${LANGUAGE}"
 done
 
 ##########

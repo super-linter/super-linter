@@ -112,8 +112,9 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e DEFAULT_BRANCH=main \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -124,6 +125,7 @@ lint-codebase: ## Lint the entire codebase
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-v "$(CURDIR):/tmp/lint" \
@@ -135,6 +137,7 @@ test-linters: ## Run the linters test suite
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ANSIBLE_DIRECTORY=.automation/test/ansible \
 		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e RUN_LOCAL=true \
