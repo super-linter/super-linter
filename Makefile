@@ -126,7 +126,7 @@ lint-codebase: ## Lint the entire codebase
 		-e DEFAULT_BRANCH=main \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
-		-v "${GITHUB_WORKSPACE}:/tmp/lint" \
+		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-linters
