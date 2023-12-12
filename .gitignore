@@ -82,3 +82,8 @@ test/reports
 
 # Developer credentials
 .github-personal-access-token
+
+# Test leftovers
+.lintr
+.automation/test/rust_clippy/**/Cargo.lock
+.automation/test/rust_clippy/**/target/**
