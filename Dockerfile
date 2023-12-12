@@ -4,11 +4,6 @@
 ###########################################
 ###########################################
 
-# Declare global ARGs here so we can reuse them across build stages
-
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
-
 #########################################
 # Get dependency images as build stages #
 #########################################
@@ -32,6 +27,9 @@ FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
 FROM python:3.11.5-alpine3.17 as base_image
+
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 
 RUN apk add --no-cache \
     bash \
@@ -257,6 +255,8 @@ RUN ./build-venvs.sh
 ################################################################################
 FROM alpine:3.19.0 as slim
 
+ARG TARGETARCH
+
 LABEL com.github.actions.name="GitHub Super-Linter" \
     com.github.actions.description="Lint your code base with GitHub Actions" \
     com.github.actions.icon="code" \
@@ -389,6 +389,8 @@ ENV BUILD_VERSION=$BUILD_VERSION
 # Grab small clean image to build standard ###############################
 ################################################################################
 FROM slim as standard
+
+ARG TARGETARCH
 
 ###############
 # Set up args #
