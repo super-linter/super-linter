@@ -6,7 +6,6 @@
 
 # Declare global ARGs here so we can reuse them across build stages
 
-ARG GITHUB_TOKEN
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
