@@ -255,6 +255,7 @@ RUN ./build-venvs.sh
 ################################################################################
 FROM alpine:3.19.0 as slim
 
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
 LABEL com.github.actions.name="GitHub Super-Linter" \
@@ -390,6 +391,7 @@ ENV BUILD_VERSION=$BUILD_VERSION
 ################################################################################
 FROM slim as standard
 
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
 ###############
