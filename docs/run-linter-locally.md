@@ -73,11 +73,22 @@ them accordingly:
 
 ## Build the container image and run the test suite locally
 
-You can run the build and test process locally with the following command:
+To run the build and test process locally, do the following:
 
-```shell
-make
-```
+1. [Create a fine-grained GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token).
+1. Create a file to store the personal access token on your machine:
+
+    ```bash
+    touch .github-personal-access-token
+    ```
+
+    The file to store the personal access token is ignored by Git.
+
+1. Run the build process:
+
+    ```shell
+    make
+    ```
 
 ### Run the test suite against an arbitrary super-linter container image
 

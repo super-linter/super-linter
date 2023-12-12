@@ -63,6 +63,8 @@ ifeq ($(BUILD_VERSION),)
 BUILD_VERSION := $(shell git rev-parse HEAD)
 endif
 
+GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
+
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
@@ -85,12 +87,12 @@ inspec: inspec-check ## Run InSpec tests
 
 .phony: docker
 docker: ## Build the container image
-	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
+	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
-		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
+		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
 
 .phony: docker-pull

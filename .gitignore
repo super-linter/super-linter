@@ -79,3 +79,6 @@ super-linter.report
 
 # Test reports
 test/reports
+
+# Developer credentials
+.github-personal-access-token
