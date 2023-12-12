@@ -73,9 +73,30 @@ them accordingly:
 
 ## Build the container image and run the test suite locally
 
-You can run the build and test process locally with the following command:
+To run the build and test process locally, do the following:
 
-```shell
+1. [Create a fine-grained GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token).
+1. Create a file to store the personal access token on your machine:
+
+    ```bash
+    touch .github-personal-access-token
+    ```
+
+    The file to store the personal access token is ignored by Git.
+
+1. Run the build process:
+
+    ```bash
+    make
+    ```
+
+To avoid invalidating the build cache, and reuse it, you can set build metadata
+to arbitrary values before running `make`:
+
+```bash
+BUILD_DATE=2023-12-12T09:32:05Z \
+BUILD_REVISION=83c16f63caa9d432df4519efb4c58a56e2190bd6 \
+BUILD_VERSION=83c16f63caa9d432df4519efb4c58a56e2190bd6 \
 make
 ```
 
@@ -88,7 +109,7 @@ image version.
 
 ```shell
 CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v5.4.3" \
-BUILD_DATE="2023-10-17T16:19:11Z" \
+BUILD_DATE="2023-10-17T17:00:53Z" \
 BUILD_REVISION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 BUILD_VERSION=b0d1acee1f8050d1684a28ddbf8315f81d084fe9 \
 make docker-pull test

@@ -82,37 +82,37 @@ To run super-linter as a GitHub Action, you do the following:
 
 1. Create a new [GitHub Actions workflow](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows) in your repository with the following content:
 
-  ```yaml
-  ---
-  name: Lint
+    ```yaml
+    ---
+    name: Lint
 
-  on:  # yamllint disable-line rule:truthy
-    push: null
-    pull_request: null
+    on:  # yamllint disable-line rule:truthy
+      push: null
+      pull_request: null
 
-  jobs:
-    build:
-      name: Lint
-      runs-on: ubuntu-latest
+    jobs:
+      build:
+        name: Lint
+        runs-on: ubuntu-latest
 
-      permissions:
-        contents: read
-        packages: read
-        # To report GitHub Actions status checks
-        statuses: write
+        permissions:
+          contents: read
+          packages: read
+          # To report GitHub Actions status checks
+          statuses: write
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
 
-        - name: Super-linter
-          uses: super-linter/super-linter@v5
-          env:
-            DEFAULT_BRANCH: main
-            # To report GitHub Actions status checks
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  ...
-  ```
+          - name: Super-linter
+            uses: super-linter/super-linter@v5
+            env:
+              DEFAULT_BRANCH: main
+              # To report GitHub Actions status checks
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ...
+    ```
 
 1. Commit that file to a new branch.
 1. Push the new commit to the remote repository.
@@ -407,4 +407,4 @@ path to the files that contains a CA that can be used to valide the certificate:
 ## How to contribute
 
 If you would like to help contribute to super-linter, see
-[CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md)
+[CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md).
