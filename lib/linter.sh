@@ -485,7 +485,7 @@ GetGitHubVars() {
     fi
 
     if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-      fatal "Provided volume is not a directory!"
+      fatal "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
     fi
 
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
