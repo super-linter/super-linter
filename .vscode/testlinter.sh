@@ -14,7 +14,7 @@ CODE_PATH='/tmp/lint' # Path to code base
 ##################
 if [ ! -L ${CODE_PATH} ]; then
   # Create symbolic link
-  ln -s "${PWD}"/.automation/test ${CODE_PATH}
+  ln -s "${PWD}"/test/linters ${CODE_PATH}
 fi
 
 #########################
