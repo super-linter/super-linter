@@ -31,8 +31,8 @@ apk add --no-cache --force-overwrite \
   ca-certificates \
   "glibc-${GLIBC_VERSION}.apk" \
   gnupg \
-  php81 php81-curl php81-ctype php81-dom php81-iconv php81-mbstring \
-  php81-openssl php81-phar php81-simplexml php81-tokenizer php81-xmlwriter \
+  php82 php82-curl php82-ctype php82-dom php82-iconv php82-mbstring \
+  php82-openssl php82-phar php82-simplexml php82-tokenizer php82-xmlwriter \
   tar zstd
 rm "glibc-${GLIBC_VERSION}.apk"
 mkdir /tmp/libz
