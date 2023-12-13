@@ -851,9 +851,6 @@ SetupGithubComSshKeys
 ################################################
 UpdateLoopsForImage
 
-# Validate linters here because we need it even to generate the versions file
-ValidateLintersArray
-
 ##################################
 # Get and print all version info #
 ##################################
