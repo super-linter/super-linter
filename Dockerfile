@@ -177,7 +177,7 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 #################
 # Install glibc #
 #################
-ARG GLIBC_VERSION='2.35-r1'
+ARG GLIBC_VERSION='2.34-r1'
 COPY scripts/install-glibc.sh /
 RUN /install-glibc.sh && rm -rf /install-glibc.sh
 
