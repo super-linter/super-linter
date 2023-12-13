@@ -30,7 +30,7 @@
     "ini": "^4.1.1",
     "jscpd": "^3.5.10",
     "lodash": "^4.17.21",
-    "markdownlint-cli": "^0.37.0",
+    "markdownlint-cli": "^0.38.0",
     "next": "^14.0.4",
     "next-pwa": "^5.6.0",
     "node-fetch": "^3.3.2",
