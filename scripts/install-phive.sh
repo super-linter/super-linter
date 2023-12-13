@@ -54,3 +54,6 @@ phive --no-progress install \
   phpstan@^1.10.48 \
   psalm@^5.17.0 \
   phpcs@^3.8.0
+
+# Install composer
+curl --retry 5 --retry-delay 5 -sLO https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer

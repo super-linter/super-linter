@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 case $TARGETARCH in
 amd64)
-  target=x64
+  target=x86_64
   ;;
 arm64)
   target=arm64

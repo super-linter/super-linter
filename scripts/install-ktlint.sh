@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 url=$(set -euo pipefail;
   curl -s \
   -H "Accept: application/vnd.github+json" \

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 # Depends on PowerShell
 # Reference https://github.com/Azure/arm-ttk
 # Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit

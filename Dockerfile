@@ -16,7 +16,7 @@ FROM ghcr.io/terraform-linters/tflint:v0.48.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
 FROM golangci/golangci-lint:v1.55.2 as golangci-lint
-FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.6.5 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
@@ -26,13 +26,18 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
-FROM python:3.11.5-alpine3.17 as base_image
+FROM python:3.12.1-alpine3.19 as base_image
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
+# Install bash first so we can use it
 RUN apk add --no-cache \
-    bash \
+    bash
+
+SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
+
+RUN apk add --no-cache \
     ca-certificates \
     cargo \
     cmake \
@@ -48,7 +53,7 @@ RUN apk add --no-cache \
     jq \
     krb5-libs \
     libc-dev libcurl libffi-dev libgcc \
-    libintl libssl1.1 libstdc++ \
+    libintl libssl3 libstdc++ \
     libxml2-dev libxml2-utils \
     linux-headers \
     lttng-ust-dev \
@@ -67,9 +72,9 @@ RUN apk add --no-cache \
     readline-dev \
     ruby ruby-dev ruby-bundler ruby-rdoc \
     rustup \
-    zlib zlib-dev
-
-SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
+    tar \
+    zlib zlib-dev \
+    zstd
 
 COPY dependencies/ /
 
@@ -177,9 +182,9 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 #################
 # Install glibc #
 #################
-ARG GLIBC_VERSION='2.34-r1'
+ARG GLIBC_VERSION='2.34-r0'
 COPY scripts/install-glibc.sh /
-RUN /install-glibc.sh && rm -rf /install-glibc.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-glibc.sh
 
 #################
 # Install Lintr #
@@ -206,7 +211,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-kt
 ####################
 ARG DART_VERSION='2.8.4'
 COPY scripts/install-dart-sdk.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
+RUN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
 
 ################################
 # Install Bash-Exec #
@@ -236,19 +241,23 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+##############################
+# Install Phive dependencies #
+##############################
+COPY scripts/install-phive.sh /
+RUN /install-phive.sh && rm -rf /install-phive.sh
+
+#####################################
+# Build python virtual environments #
+#####################################
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh
+
 #########################
 # Clean to shrink image #
 #########################
 RUN find /usr/ -type f -name '*.md' -exec rm {} +
-
-################################################################################
-# Grab small clean image to build python packages ##############################
-################################################################################
-FROM python:3.11.5-alpine3.17 as python_builder
-RUN apk add --no-cache bash g++ git libffi-dev
-COPY dependencies/python/ /stage
-WORKDIR /stage
-RUN ./build-venvs.sh
 
 ################################################################################
 # Grab small clean image to build slim ###################################
@@ -285,17 +294,6 @@ RUN apk add --no-cache \
     jq \
     tar
 
-##############################
-# Install Phive dependencies #
-##############################
-COPY scripts/install-phive.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-phive.sh && rm -rf /install-phive.sh
-
-####################################################
-# Install Composer after all Libs have been copied #
-####################################################
-RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer'
-
 #################################
 # Copy the libraries into image #
 #################################
@@ -305,27 +303,32 @@ COPY --from=base_image /usr/local/lib/ /usr/local/lib/
 COPY --from=base_image /usr/local/share/ /usr/local/share/
 COPY --from=base_image /usr/local/include/ /usr/local/include/
 COPY --from=base_image /usr/lib/ /usr/lib/
+COPY --from=base_image /usr/libexec/ /usr/libexec/
 COPY --from=base_image /usr/share/ /usr/share/
 COPY --from=base_image /usr/include/ /usr/include/
 COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
-COPY --from=python_builder /venvs/ /venvs/
+COPY --from=base_image /root/.phive/ /root/.phive/
+COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
+COPY --from=base_image /venvs/ /venvs/
+# Update this when updating the installed PHP package in scripts/install-phive.sh
+COPY --from=base_image /etc/php82/ /etc/php82/
 
-##################################
-# Configure TFLint plugin folder #
-##################################
-ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
+#################################
+# Copy super-linter executables #
+#################################
+COPY lib /action/lib
 
-########################################
-# Add node packages to path and dotnet #
-########################################
-ENV PATH="${PATH}:/node_modules/.bin"
+###################################
+# Copy linter configuration files #
+###################################
+COPY TEMPLATES /action/lib/.automation
 
-###############################
-# Add python packages to path #
-###############################
+##################
+# Configure PATH #
+##################
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
 ENV PATH="${PATH}:/venvs/cfn-lint/bin"
@@ -339,26 +342,11 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
-
-##################
-# Add go to path #
-##################
+ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 
-#############################
-# Copy scripts to container #
-#############################
-COPY lib /action/lib
-
-##################################
-# Copy linter rules to container #
-##################################
-COPY TEMPLATES /action/lib/.automation
-
-################
-# Pull in libs #
-################
-COPY --from=base_image /usr/libexec/ /usr/libexec/
+# Configure TFLint plugin folder
+ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 
 ################################################
 # Run to build version file and validate image #

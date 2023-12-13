@@ -2,6 +2,8 @@
 
 # https://doc.rust-lang.org/rustc/platform-support.html
 
+set -euo pipefail
+
 case $TARGETARCH in
 amd64)
   target=x86_64
