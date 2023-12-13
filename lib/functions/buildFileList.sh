@@ -66,9 +66,6 @@ function BuildFileList() {
   ANSIBLE_DIRECTORY="${3}"
   debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
 
-  GO_DIRECTORY="${4}"
-  debug "GO_DIRECTORY: ${GO_DIRECTORY}"
-
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "----------------------------------------------"
     debug "Build the list of all changed files"
@@ -172,20 +169,6 @@ function BuildFileList() {
     debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
   fi
 
-  if [ "${VALIDATE_GO_DIRECTORY}" == "true" ]; then
-    # We don't need to check if these directories exist because we already did that in validation
-    if [ "${TEST_CASE_RUN}" == "true" ]; then
-      debug "Adding GO_DIRECTORY test cases to the list of files and directories to lint."
-      FILE_ARRAY_GO_DIRECTORY+=("${DEFAULT_BAD_TEST_CASE_GO_DIRECTORY}")
-      FILE_ARRAY_GO_DIRECTORY+=("${DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY}")
-    else
-      debug "Adding GO_DIRECTORY (${GO_DIRECTORY}) to the list of files and directories to lint."
-      FILE_ARRAY_GO_DIRECTORY+=("${GO_DIRECTORY}")
-    fi
-  else
-    debug "Skipping linting of Go directory (${GO_DIRECTORY}) as a Go project."
-  fi
-
   ################################################
   # Iterate through the array of all files found #
   ################################################
@@ -193,15 +176,16 @@ function BuildFileList() {
   info "------ File list to check: ------"
   info "---------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
-    # Extract just the file extension
+    # Get the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
-    # get the baseFile for additonal logic, lowercase
+    # Get the name of the file (lowercase) and the containing directory path
     BASE_FILE=$(basename "${FILE,,}")
+    FILE_DIR_NAME="$(dirname "${FILE}")"
 
     ##############
     # Print file #
     ##############
-    debug "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
+    debug "FILE: ${FILE}, FILE_TYPE: ${FILE_TYPE}, BASE_FILE: ${BASE_FILE}, FILE_DIR_NAME: ${FILE_DIR_NAME}"
 
     ##########################################################
     # Check if the file exists on the filesystem, or skip it #
@@ -290,6 +274,11 @@ function BuildFileList() {
         break
       fi
     done
+
+    if [ "${BASE_FILE}" == "go.mod" ]; then
+      debug "Found ${FILE}. Considering ${FILE_DIR_NAME} as a Go module."
+      FILE_ARRAY_GO_MODULES+=("${FILE_DIR_NAME}")
+    fi
 
     #######################
     # Get the shell files #

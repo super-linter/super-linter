@@ -150,62 +150,6 @@ function GetValidationInfo() {
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
 
-  #########################
-  # Validate Go Directory #
-  #########################
-  if [ "${TEST_CASE_RUN}" == "true" ]; then
-    GO_DIRECTORY="${DEFAULT_TEST_CASE_GO_DIRECTORY}"
-    debug "Setting Go directory to the default for test cases: ${DEFAULT_TEST_CASE_GO_DIRECTORY}. GO_DIRECTORY: ${GO_DIRECTORY}"
-  fi
-  if [ -n "${GO_DIRECTORY}" ]; then
-    debug "GO_DIRECTORY is set to: ${GO_DIRECTORY}"
-
-    # Check if first char is '/'
-    if [[ ${GO_DIRECTORY:0:1} == "/" ]]; then
-      # Remove first char
-      GO_DIRECTORY="${GO_DIRECTORY:1}"
-    fi
-
-    if [[ "${GO_DIRECTORY}" == "." ]] || [[ "${GO_DIRECTORY}" == "/" ]]; then
-      debug ""
-      GO_DIRECTORY="${GITHUB_WORKSPACE}"
-    else
-      # Need to give it full path
-      GO_DIRECTORY="${GITHUB_WORKSPACE}/${GO_DIRECTORY}"
-    fi
-
-    debug "Setting GO_DIRECTORY directory to: ${GO_DIRECTORY}"
-
-    if [ "${VALIDATE_GO_DIRECTORY}" == "true" ]; then
-      debug "Validating GO_DIRECTORY: ${GO_DIRECTORY}"
-      if [ -d "${GO_DIRECTORY}" ]; then
-        debug "${GO_DIRECTORY} exists and is a directory."
-      else
-        fatal "${GO_DIRECTORY} doesn't exist or is not a directory."
-      fi
-
-      if [ "${TEST_CASE_RUN}" == "true" ]; then
-        debug "Validating Go test case directories"
-        if [ -d "${DEFAULT_BAD_TEST_CASE_GO_DIRECTORY}" ]; then
-          debug "${DEFAULT_BAD_TEST_CASE_GO_DIRECTORY} exists and is a directory."
-        else
-          fatal "${DEFAULT_BAD_TEST_CASE_GO_DIRECTORY} doesn't exist or is not a directory."
-        fi
-        if [ -d "${DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY}" ]; then
-          debug "${DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY} exists and is a directory."
-        else
-          fatal "${DEFAULT_GOOD_TEST_CASE_GO_DIRECTORY} doesn't exist or is not a directory."
-        fi
-      else
-        debug "Skip validation of Go test case directories"
-      fi
-    else
-      debug "Skip Go directory validation. VALIDATE_GO_DIRECTORY: ${VALIDATE_GO_DIRECTORY}"
-    fi
-  else
-    debug "GO_DIRECTORY is set to an empty value"
-  fi
-
   ###############################
   # Get the disable errors flag #
   ###############################
