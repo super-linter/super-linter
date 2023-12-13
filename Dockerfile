@@ -192,6 +192,27 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-gli
 COPY scripts/install-lintr.sh /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh
 
+#################################
+# Install luacheck and luarocks #
+#################################
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
+
+#####################################
+# Build python virtual environments #
+#####################################
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh
+# Set work directory back to root because some scripts depend on it
+WORKDIR /
+
+##############################
+# Install Phive dependencies #
+##############################
+COPY scripts/install-phive.sh /
+RUN /install-phive.sh && rm -rf /install-phive.sh
+
 #####################
 # Install clj-kondo #
 #####################
@@ -206,22 +227,17 @@ ARG KTLINT_VERSION='0.47.1'
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 
+#################################################
+# Install Raku and additional Edge dependencies #
+#################################################
+RUN apk add --no-cache rakudo zef
+
 ####################
 # Install dart-sdk #
 ####################
 ARG DART_VERSION='2.8.4'
 COPY scripts/install-dart-sdk.sh /
 RUN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
-
-################################
-# Install Bash-Exec #
-################################
-COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
-
-#################################################
-# Install Raku and additional Edge dependencies #
-#################################################
-RUN apk add --no-cache rakudo zef
 
 ######################
 # Install CheckStyle #
@@ -235,29 +251,15 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh && rm -rf /instal
 COPY scripts/install-google-java-format.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf /install-google-java-format.sh
 
-#################################
-# Install luacheck and luarocks #
-#################################
-COPY scripts/install-lua.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
-
-##############################
-# Install Phive dependencies #
-##############################
-COPY scripts/install-phive.sh /
-RUN /install-phive.sh && rm -rf /install-phive.sh
-
-#####################################
-# Build python virtual environments #
-#####################################
-COPY dependencies/python/ /stage
-WORKDIR /stage
-RUN ./build-venvs.sh
-
 #########################
 # Clean to shrink image #
 #########################
 RUN find /usr/ -type f -name '*.md' -exec rm {} +
+
+#####################
+# Install Bash-Exec #
+#####################
+COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 
 ################################################################################
 # Grab small clean image to build slim ###################################
