@@ -851,6 +851,9 @@ SetupGithubComSshKeys
 ################################################
 UpdateLoopsForImage
 
+# Validate linters here because we need it even to generate the versions file
+ValidateLintersArray
+
 ##################################
 # Get and print all version info #
 ##################################
@@ -891,8 +894,6 @@ if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
-
-ValidateLintersArray
 
 #################################
 # Get the linter rules location #
