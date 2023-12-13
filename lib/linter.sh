@@ -892,6 +892,8 @@ else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
 
+ValidateLintersArray
+
 #################################
 # Get the linter rules location #
 #################################

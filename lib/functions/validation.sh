@@ -261,3 +261,13 @@ function ValidateDefaultGitBranch() {
     debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
   fi
 }
+
+function ValidateLintersArray() {
+  for LINTER in "${LINTER_NAMES_ARRAY[@]}"; do
+    if command -v "${LINTER}"; then
+      debug "${LINTER} command is available"
+    else
+      fatal "${LINTER} command is not available"
+    fi
+  done
+}
