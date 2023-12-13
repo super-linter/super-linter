@@ -285,8 +285,6 @@ RUN apk add --no-cache \
     jq \
     tar
 
-COPY --from=base_image /usr/glibc-compat/ /usr/glibc-compat/
-
 ##############################
 # Install Phive dependencies #
 ##############################
