@@ -8,9 +8,10 @@ set -euo pipefail
 
 url=$(set -euo pipefail;
   curl -s \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  https://api.github.com/repos/Azure/arm-ttk/releases/latest | jq -r '.tarball_url')
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
+    https://api.github.com/repos/Azure/arm-ttk/releases/latest | jq -r '.tarball_url'
+)
 mkdir -p /usr/lib/microsoft
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/vnd.github+json" \
