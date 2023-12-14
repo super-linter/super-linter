@@ -326,23 +326,17 @@ ENV PATH="${PATH}:/usr/lib/go/bin"
 # Configure TFLint plugin folder
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 
-# Initialize TFLint plugins
-RUN tflint --init -c /action/lib/.automation/.tflint.hcl
+# Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
+# Run to build version file and validate image
+RUN tflint --init -c /action/lib/.automation/.tflint.hcl \
+    && ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
 
-################################################
-# Run to build version file and validate image #
-################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
-
-######################
-# Set the entrypoint #
-######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 # Initialize Terrascan
 # Initialize ChkTeX config file
 RUN terrascan init \
-    && cd ~ && touch .chktexrc
+    && touch ~/.chktexrc
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
@@ -358,24 +352,17 @@ ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
 ENV BUILD_VERSION=$BUILD_VERSION
 
-################################################################################
-# Grab small clean image to build standard ###############################
-################################################################################
+##############################
+# Build the standard variant #
+##############################
 FROM slim as standard
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-
-###############
-# Set up args #
-###############
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
 
-################
-# Set ENV vars #
-################
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
@@ -410,7 +397,5 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
-########################################################################################
-# Run to build version file and validate image again because we installed more linters #
-########################################################################################
+# Run to build version file and validate image again because we installed more linters
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
