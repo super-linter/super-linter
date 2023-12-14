@@ -326,6 +326,9 @@ ENV PATH="${PATH}:/usr/lib/go/bin"
 # Configure TFLint plugin folder
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 
+# Initialize TFLint plugins
+RUN tflint --init -c /action/lib/.automation/.tflint.hcl
+
 ################################################
 # Run to build version file and validate image #
 ################################################
