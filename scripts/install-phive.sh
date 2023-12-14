@@ -47,13 +47,7 @@ chmod +x phive.phar
 mv phive.phar /usr/local/bin/phive
 rm phive.phar.asc
 
-# Install PHARs
+# Install the PHARs listed in phive.xml
 phive --no-progress install \
-  --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5,5E6DDE998AB73B8E,51C67305FFC2E5C0 \
-  --target /usr/bin \
-  phpstan@^1.10.48 \
-  psalm@^5.17.0 \
-  phpcs@^3.8.0
-
-# Install composer
-curl --retry 5 --retry-delay 5 -sLO https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+  --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5,5E6DDE998AB73B8E,51C67305FFC2E5C0,CBB3D576F2A0946F \
+  --target /usr/bin

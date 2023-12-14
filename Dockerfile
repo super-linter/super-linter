@@ -4,6 +4,8 @@
 ###########################################
 ###########################################
 
+ARG GLIBC_VERSION='2.34-r0'
+
 #########################################
 # Get dependency images as build stages #
 #########################################
@@ -26,7 +28,19 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
-FROM python:3.12.1-alpine3.19 as base_image
+FROM python:3.12.1-alpine3.19 as slim
+
+LABEL com.github.actions.name="Super-Linter" \
+    com.github.actions.description="A collection of code linters and analyzers." \
+    com.github.actions.icon="code" \
+    com.github.actions.color="red" \
+    maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
+    org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
+    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.vendor="GitHub" \
+    org.opencontainers.image.description="A collection of code linters and analyzers."
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
@@ -44,36 +58,52 @@ RUN apk add --no-cache \
     coreutils \
     curl \
     file \
-    gcc \
     g++ \
-    git git-lfs \
+    gcc \
+    git \
+    git-lfs \
     gnupg \
     icu-libs \
     jpeg-dev \
     jq \
     krb5-libs \
-    libc-dev libcurl libffi-dev libgcc \
-    libintl libssl3 libstdc++ \
-    libxml2-dev libxml2-utils \
+    libc-dev \
+    libcurl \
+    libffi-dev \
+    libgcc \
+    libintl \
+    libssl3 \
+    libstdc++ \
+    libxml2-dev \
+    libxml2-utils \
     linux-headers \
     lttng-ust-dev \
     make \
     musl-dev \
     net-snmp-dev \
-    npm nodejs-current \
+    nodejs-current \
+    npm \
     openjdk17-jre \
     openssh-client \
     openssl-dev \
     parallel \
-    perl perl-dev \
-    py3-setuptools python3-dev  \
+    perl \
+    perl-dev \
     py3-pyflakes \
-    R R-dev R-doc \
+    py3-setuptools \
+    python3-dev  \
+    R \
+    R-dev \
+    R-doc \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc \
+    ruby \
+    ruby-bundler \
+    ruby-dev \
+    ruby-rdoc \
     rustup \
     tar \
-    zlib zlib-dev \
+    zlib \
+    zlib-dev \
     zstd
 
 COPY dependencies/ /
@@ -182,7 +212,7 @@ COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 #################
 # Install glibc #
 #################
-ARG GLIBC_VERSION='2.34-r0'
+ARG GLIBC_VERSION
 COPY scripts/install-glibc.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-glibc.sh
 
@@ -261,63 +291,6 @@ RUN find /usr/ -type f -name '*.md' -exec rm {} +
 #####################
 COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 
-################################################################################
-# Grab small clean image to build slim ###################################
-################################################################################
-FROM alpine:3.19.0 as slim
-
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
-
-LABEL com.github.actions.name="GitHub Super-Linter" \
-    com.github.actions.description="Lint your code base with GitHub Actions" \
-    com.github.actions.icon="code" \
-    com.github.actions.color="red" \
-    maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
-    org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
-    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.vendor="GitHub" \
-    org.opencontainers.image.description="Lint your code base with GitHub Actions"
-
-ENV IMAGE="slim"
-
-###############################
-# Install common dependencies #
-###############################
-RUN apk add --no-cache \
-    bash \
-    ca-certificates \
-    curl \
-    git \
-    git-lfs \
-    gnupg \
-    jq \
-    tar
-
-#################################
-# Copy the libraries into image #
-#################################
-COPY --from=base_image /usr/bin/ /usr/bin/
-COPY --from=base_image /usr/local/bin/ /usr/local/bin/
-COPY --from=base_image /usr/local/lib/ /usr/local/lib/
-COPY --from=base_image /usr/local/share/ /usr/local/share/
-COPY --from=base_image /usr/local/include/ /usr/local/include/
-COPY --from=base_image /usr/lib/ /usr/lib/
-COPY --from=base_image /usr/libexec/ /usr/libexec/
-COPY --from=base_image /usr/share/ /usr/share/
-COPY --from=base_image /usr/include/ /usr/include/
-COPY --from=base_image /lib/ /lib/
-COPY --from=base_image /bin/ /bin/
-COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /home/r-library /home/r-library
-COPY --from=base_image /root/.phive/ /root/.phive/
-COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
-COPY --from=base_image /venvs/ /venvs/
-# Update this when updating the installed PHP package in scripts/install-phive.sh
-COPY --from=base_image /etc/php82/ /etc/php82/
-
 #################################
 # Copy super-linter executables #
 #################################
@@ -328,9 +301,12 @@ COPY lib /action/lib
 ###################################
 COPY TEMPLATES /action/lib/.automation
 
-##################
-# Configure PATH #
-##################
+#########################
+# Configure Environment #
+#########################
+# Set image variant
+ENV IMAGE="slim"
+
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
 ENV PATH="${PATH}:/venvs/cfn-lint/bin"
@@ -359,6 +335,11 @@ RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /
 # Set the entrypoint #
 ######################
 ENTRYPOINT ["/action/lib/linter.sh"]
+
+# Initialize Terrascan
+# Initialize ChkTeX config file
+RUN terrascan init \
+    && cd ~ && touch .chktexrc
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments

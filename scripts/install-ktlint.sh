@@ -13,5 +13,3 @@ curl --retry 5 --retry-delay 5 -sL -o "/usr/bin/ktlint" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
   "${url}"
 chmod a+x /usr/bin/ktlint
-terrascan init
-cd ~ && touch .chktexrc

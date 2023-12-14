@@ -77,7 +77,7 @@ inspec: inspec-check ## Run InSpec tests
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e IMAGE=$(IMAGE) \
 		-w="/workspace" \
-		chef/inspec exec test/inspec/super-linter\
+		chef/inspec exec test/inspec/super-linter \
 		--chef-license=accept \
 		--diagnose \
 		--log-level=debug \
