@@ -77,6 +77,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Pull the latest super-linter image from the registry
+        run: |
+          make docker-pull
+
+      - name: Print info about the system
+        run: |
+          make info
+
       - name: Build Image
         uses: docker/build-push-action@v5
         with:
