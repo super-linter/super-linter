@@ -299,9 +299,9 @@ function LintCodebase() {
           cd "${WORKSPACE_PATH}" || exit
           RENOVATE_CONFIG_FILE="${FILE}" ${LINTER_COMMAND} 2>&1
         )
-      ############################################################################################
-      # Corner case for TERRAFORM_TFLINT as it cant use the full path and needs to fetch modules #
-      ############################################################################################
+      #############################################################################################
+      # Corner case for TERRAFORM_TFLINT as it can't use the full path and needs to fetch modules #
+      #############################################################################################
       elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
         # Check the cache to see if we've already prepped this directory for tflint
         if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then

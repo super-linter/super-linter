@@ -119,6 +119,17 @@ export VERSION_FILE                                       # Workaround SC2034
 
 debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
 
+# Set the log level
+TF_LOG_LEVEL="info"
+if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
+  TF_LOG_LEVEL="debug"
+fi
+export TF_LOG_LEVEL
+debug "TF_LOG_LEVEL: ${TF_LOG_LEVEL}"
+TFLINT_LOG="${TF_LOG_LEVEL}"
+export TFLINT_LOG
+debug "TFLINT_LOG: ${TFLINT_LOG}"
+
 ###############
 # Rules files #
 ###############
