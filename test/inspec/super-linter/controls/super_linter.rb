@@ -269,9 +269,12 @@ control "super-linter-installed-ruby-gems" do
   gems = [
     "rubocop",
     "rubocop-github",
+    "rubocop-minitest",
     "rubocop-performance",
     "rubocop-rails",
-    "rubocop-rspec"
+    "rubocop-rake",
+    "rubocop-rspec",
+    "standard"
   ]
 
   gems.each do |item|
@@ -279,7 +282,6 @@ control "super-linter-installed-ruby-gems" do
       it { should be_installed }
     end
   end
-
 end
 
 ###############################################
@@ -295,38 +297,61 @@ control "super-linter-installed-npm-packages" do
     "@babel/preset-react",
     "@babel/preset-typescript",
     "@coffeelint/cli",
+    "@react-native-community/eslint-config",
+    "@react-native-community/eslint-plugin",
     "@stoplight/spectral-cli",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "asl-validator",
-    #"axios",
-    #"eslint",
+    "axios",
+    "eslint",
     "eslint-config-airbnb",
+    "eslint-config-airbnb-typescript",
     "eslint-config-prettier",
     "eslint-plugin-jest",
     "eslint-plugin-json",
     "eslint-plugin-jsonc",
     "eslint-plugin-jsx-a11y",
     "eslint-plugin-prettier",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-vue",
     "gherkin-lint",
     "htmlhint",
-    #"immer",
-    #"ini",
+    "immer",
+    "ini",
     "jscpd",
-    #"lodash",
+    "lodash",
     "markdownlint-cli",
-    #"node-fetch",
+    "next",
+    "next-pwa",
+    "node-fetch",
     "npm-groovy-lint",
+    "postcss-less",
     "prettier",
     "prettyjson",
-    #"pug",
+    "pug",
+    "react",
+    "react-dom",
+    "react-intl",
+    "react-redux",
+    "react-router-dom",
+    "renovate",
     "sql-lint",
     "standard",
     "stylelint",
+    "stylelint-config-recommended-scss",
     "stylelint-config-sass-guidelines",
     "stylelint-config-standard",
-    #"stylelint-scss",
+    "stylelint-config-standard-scss",
+    "stylelint-prettier",
+    "stylelint-scss",
     "tekton-lint",
+    "textlint",
+    "textlint-filter-rule-allowlist",
+    "textlint-filter-rule-comments",
+    "textlint-rule-terminology",
+    "ts-standard",
     "typescript"
   ]
 
@@ -335,7 +360,37 @@ control "super-linter-installed-npm-packages" do
       it { should be_installed }
     end
   end
+end
 
+###############################################
+# Check to see if PyPi packages are installed #
+###############################################
+control "super-linter-installed-pypi-packages" do
+  impact 1
+  title "Super-Linter installed PyPi packages check"
+  desc "Check that PyPi packages that Super-Linter needs are installed."
+
+  pypi_packages = [
+    "ansible-lint",
+    "black",
+    "cfn-lint",
+    "cpplint",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "snakefmt",
+    "snakemake",
+    "sqlfluff",
+    "yamllint",
+    "yq"
+  ]
+
+  pypi_packages.each do |item|
+    describe pip(item, "/venvs/#{item}/bin/pip") do
+      it { should be_installed }
+    end
+  end
 end
 
 #####################################
