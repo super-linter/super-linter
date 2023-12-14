@@ -94,3 +94,47 @@ fatal() {
   log "true" "$*" "FATAL"
   exit 1
 }
+
+# shellcheck disable=SC2034  # Variable is referenced in other files
+SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE="Super-Linter initialization"
+GITHUB_ACTIONS_LOG_GROUP_MARKER_START="start"
+GITHUB_ACTIONS_LOG_GROUP_MARKER_END="end"
+
+writeGitHubActionsLogGroupMarker() {
+  local LOG_GROUP_MARKER_MODE="${1}"
+  shift
+  local GROUP_TITLE="${1}"
+
+  if [ -z "${GROUP_TITLE}" ]; then
+    fatal "GitHub Actions log group title variable is empty."
+  fi
+
+  if [ -z "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}" ]; then
+    fatal "GitHub Actions enable log group title variable is empty."
+  fi
+
+  if [[ "${LOG_GROUP_MARKER_MODE}" != "${GITHUB_ACTIONS_LOG_GROUP_MARKER_START}" ]] &&
+    [[ "${LOG_GROUP_MARKER_MODE}" != "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" ]]; then
+    fatal "Unsupported LOG_GROUP_MARKER_MODE (${LOG_GROUP_MARKER_MODE}) for group: ${GROUP_TITLE}"
+  fi
+
+  if [[ "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}" == "true" ]]; then
+    if [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_START}" ]]; then
+      echo "::group::${GROUP_TITLE}"
+      debug "Started GitHub Actions log group: ${GROUP_TITLE}"
+    elif [[ "${LOG_GROUP_MARKER_MODE}" == "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" ]]; then
+      debug "Ending GitHub Actions log group: ${GROUP_TITLE}"
+      echo "::endgroup::"
+    fi
+  else
+    debug "Skipped GitHub Actions log group ${LOG_GROUP_MARKER_MODE} for group: ${GROUP_TITLE}"
+  fi
+}
+
+startGitHubActionsLogGroup() {
+  writeGitHubActionsLogGroupMarker "${GITHUB_ACTIONS_LOG_GROUP_MARKER_START}" "${1}"
+}
+
+endGitHubActionsLogGroup() {
+  writeGitHubActionsLogGroupMarker "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" "${1}"
+}

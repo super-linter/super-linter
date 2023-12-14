@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels inspec test-find ## Run tests
+test: info validate-container-image-labels inspec lint-codebase test-find test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -63,6 +63,8 @@ ifeq ($(BUILD_VERSION),)
 BUILD_VERSION := $(shell git rev-parse HEAD)
 endif
 
+GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
+
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
@@ -85,12 +87,12 @@ inspec: inspec-check ## Run InSpec tests
 
 .phony: docker
 docker: ## Build the container image
-	@if [ -z "${GITHUB_TOKEN}" ]; then echo "GITHUB_TOKEN environment variable not set. Please set your GitHub Personal Access Token."; exit 1; fi
+	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
-		--secret id=GITHUB_TOKEN,env=GITHUB_TOKEN \
+		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
 
 .phony: docker-pull
@@ -111,7 +113,35 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: lint-codebase
+lint-codebase: ## Lint the entire codebase
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-v "$(CURDIR):/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-linters
+test-linters: ## Run the linters test suite
+	docker run \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ANSIBLE_DIRECTORY=.automation/test/ansible \
+		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-e RUN_LOCAL=true \
+		-e TEST_CASE_RUN=true \
+		-e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
+		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)

@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter (Lint all the code) @admiralawkbar ####################
-################################################################################
-################################################################################
-
 ##################################################################
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
@@ -68,6 +62,33 @@ for batch_worker_script in /action/lib/functions/experimental-batch-workers/*.sh
   # shellcheck source=/dev/null
   source "$batch_worker_script"
 done
+
+# Initialize RUN_LOCAL early because we need it for logging
+DEFAULT_RUN_LOCAL='false'
+
+if [ -z "${RUN_LOCAL}" ]; then
+  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
+fi
+
+# Convert string to lowercase
+RUN_LOCAL="${RUN_LOCAL,,}"
+
+# Dynamically set the default behavior for GitHub Actions log markers because
+# we want to give users a chance to enable this even when running locally, but
+# we still want to provide a default value in case they don't want to explictly
+# configure it.
+if [[ "${RUN_LOCAL}" == "true" ]]; then
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
+else
+  DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
+fi
+# Let users configure GitHub Actions log markers regardless of running locally or not
+ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
+
+startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
+debug "RUN_LOCAL: ${RUN_LOCAL}"
+debug "ENABLE_GITHUB_ACTIONS_GROUP_TITLE: ${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
 
 ###########
 # GLOBALS #
@@ -363,6 +384,7 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 # GitHub ENV Vars #
 ###################
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
+MULTI_STATUS="${MULTI_STATUS,,}"           # Convert string to lowercase
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
@@ -377,7 +399,6 @@ debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
 DEFAULT_VALIDATE_ALL_CODEBASE='true'                                        # Default value for validate all files
 DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
-DEFAULT_RUN_LOCAL='false'                                                   # Default value for debugging locally
 DEFAULT_TEST_CASE_RUN='false'                                               # Flag to tell code to run only test cases
 
 if [ -z "${TEST_CASE_RUN}" ]; then
@@ -387,14 +408,6 @@ fi
 # Convert string to lowercase
 TEST_CASE_RUN="${TEST_CASE_RUN,,}"
 debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
-
-if [ -z "${RUN_LOCAL}" ]; then
-  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
-fi
-
-# Convert string to lowercase
-RUN_LOCAL="${RUN_LOCAL,,}"
-debug "RUN_LOCAL: ${RUN_LOCAL}"
 
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
@@ -473,13 +486,14 @@ GetGitHubVars() {
     fi
 
     if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-      fatal "Provided volume is not a directory!"
+      fatal "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
     fi
 
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}. Setting VALIDATE_ALL_CODEBASE to: ${VALIDATE_ALL_CODEBASE}"
+    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}"
+    debug "Setting VALIDATE_ALL_CODEBASE to ${VALIDATE_ALL_CODEBASE} because we are not running on GitHub Actions"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
@@ -494,6 +508,9 @@ GetGitHubVars() {
     else
       debug "Skip the initalization of GITHUB_SHA because we don't need it"
     fi
+
+    MULTI_STATUS="false"
+    debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
@@ -568,34 +585,20 @@ GetGitHubVars() {
     fi
   fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
-    error "Failed to get [GITHUB_TOKEN]!"
-    error "[${GITHUB_TOKEN}]"
-    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
+  if [ "${MULTI_STATUS}" == "true" ]; then
 
-    ################################################################################
-    # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
-    ################################################################################
-    MULTI_STATUS='false'
-  else
-    info "Successfully found:${F[W]}[GITHUB_TOKEN]"
-  fi
+    if [[ ${RUN_LOCAL} == "true" ]]; then
+      # Safety check. This shouldn't occur because we forcefully set MULTI_STATUS=false above
+      # when RUN_LOCAL=true
+      fatal "Cannot enable status reports when running locally."
+    fi
 
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  MULTI_STATUS="${MULTI_STATUS,,}"
+    if [ -z "${GITHUB_TOKEN}" ]; then
+      fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
+    else
+      info "Successfully found:${F[W]}[GITHUB_TOKEN]."
+    fi
 
-  #######################################################################
-  # Check to see if the multi status is set, and we have a token to use #
-  #######################################################################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ]; then
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_REPOSITORY}" ]; then
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
@@ -603,15 +606,14 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_RUN_ID}" ]; then
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
     else
       info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
     fi
+  else
+    debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
 }
 ################################################################################
@@ -1057,7 +1059,10 @@ else
   EXPERIMENTAL_BATCH_WORKER="false"
 fi
 
+endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  startGitHubActionsLogGroup "${LANGUAGE}"
   debug "Running linter for the ${LANGUAGE} language..."
   VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
   debug "Setting VALIDATE_LANGUAGE_VARIABLE_NAME to ${VALIDATE_LANGUAGE_VARIABLE_NAME}..."
@@ -1106,6 +1111,7 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
     LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${EXPERIMENTAL_BATCH_WORKER}" "${!LANGUAGE_FILE_ARRAY}"
   fi
+  endGitHubActionsLogGroup "${LANGUAGE}"
 done
 
 ##########

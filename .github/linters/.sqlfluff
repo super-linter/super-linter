@@ -1,8 +1,8 @@
 ## This /.sqlfluff file can be used to configure the SQLFluff linter when
-## used via the GitHub Super Linter. Copy it to the .github/linters folder of
+## used via the Super Linter. Copy it to the .github/linters folder of
 ## your repo, and uncomment the necessary lines to configure the Super Linter.
 ##
-## IMPORTANT NOTE: The GitHub Super Linter configuration file for SQLFluff
+## IMPORTANT NOTE: The Super Linter configuration file for SQLFluff
 ## supersedes any local configuration files you might have in within your
 ## codebase. For this reason it should only be used when you want the same
 ## configuration for your entire code base. If you need different configuration
