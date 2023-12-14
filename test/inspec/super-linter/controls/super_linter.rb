@@ -134,7 +134,7 @@ control "super-linter-installed-commands" do
     { linter_name: "eslint"},
     { linter_name: "flake8"},
     { linter_name: "gherkin-lint", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
-    { linter_name: "gitleaks"},
+    { linter_name: "gitleaks", version_option: "version"},
     { linter_name: "golangci-lint"},
     { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
     { linter_name: "hadolint"},
@@ -160,7 +160,7 @@ control "super-linter-installed-commands" do
             lintr_ver <- packageVersion('lintr'); \
             glue::glue('lintr { lintr_ver } on { r_ver }')\""},
     { linter_name: "raku", version_command: "raku --version | strings -n 8"},
-    { linter_name: "renovate-config-validator"},
+    { linter_name: "renovate-config-validator", version_command: "renovate --version"},
     { linter_name: "rubocop"},
     { linter_name: "rustfmt"},
     { linter_name: "scalafmt"},
