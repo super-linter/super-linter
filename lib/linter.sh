@@ -384,6 +384,7 @@ LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that w
 # GitHub ENV Vars #
 ###################
 MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
+MULTI_STATUS="${MULTI_STATUS,,}"           # Convert string to lowercase
 DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
 debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
@@ -491,7 +492,8 @@ GetGitHubVars() {
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}. Setting VALIDATE_ALL_CODEBASE to: ${VALIDATE_ALL_CODEBASE}"
+    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}"
+    debug "Setting VALIDATE_ALL_CODEBASE to ${VALIDATE_ALL_CODEBASE} because we are not running on GitHub Actions"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
@@ -506,6 +508,9 @@ GetGitHubVars() {
     else
       debug "Skip the initalization of GITHUB_SHA because we don't need it"
     fi
+
+    MULTI_STATUS="false"
+    debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
       error "Failed to get [GITHUB_WORKSPACE]!"
@@ -580,34 +585,20 @@ GetGitHubVars() {
     fi
   fi
 
-  ############################
-  # Validate we have a value #
-  ############################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -z "${GITHUB_TOKEN}" ] && [[ ${RUN_LOCAL} == "false" ]]; then
-    error "Failed to get [GITHUB_TOKEN]!"
-    error "[${GITHUB_TOKEN}]"
-    error "Please set a [GITHUB_TOKEN] from the main workflow environment to take advantage of multiple status reports!"
+  if [ "${MULTI_STATUS}" == "true" ]; then
 
-    ################################################################################
-    # Need to set MULTI_STATUS to false as we cant hit API endpoints without token #
-    ################################################################################
-    MULTI_STATUS='false'
-  else
-    info "Successfully found:${F[W]}[GITHUB_TOKEN]"
-  fi
+    if [[ ${RUN_LOCAL} == "true" ]]; then
+      # Safety check. This shouldn't occur because we forcefully set MULTI_STATUS=false above
+      # when RUN_LOCAL=true
+      fatal "Cannot enable status reports when running locally."
+    fi
 
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  MULTI_STATUS="${MULTI_STATUS,,}"
+    if [ -z "${GITHUB_TOKEN}" ]; then
+      fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
+    else
+      info "Successfully found:${F[W]}[GITHUB_TOKEN]."
+    fi
 
-  #######################################################################
-  # Check to see if the multi status is set, and we have a token to use #
-  #######################################################################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ]; then
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_REPOSITORY}" ]; then
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
@@ -615,15 +606,14 @@ GetGitHubVars() {
       info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
     if [ -z "${GITHUB_RUN_ID}" ]; then
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
     else
       info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
     fi
+  else
+    debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
 }
 ################################################################################
