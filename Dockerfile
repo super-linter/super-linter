@@ -130,7 +130,6 @@ COPY --from=terraform /bin/terraform /usr/bin/
 # Install TFLint #
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
-COPY --from=tflint /root/.tflint.d /root/.tflint.d
 
 #####################
 # Install Terrascan #
