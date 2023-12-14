@@ -23,7 +23,7 @@ url=$(
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
     "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
-  jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-musl-" + $target)) | .url'
+    jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-musl-" + $target)) | .url'
 )
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \

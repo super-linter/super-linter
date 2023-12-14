@@ -14,7 +14,7 @@ url=$(
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
     https://api.github.com/repos/cvega/luarocks/releases/latest |
-  jq -r '.tarball_url'
+    jq -r '.tarball_url'
 )
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/vnd.github+json" \
