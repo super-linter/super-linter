@@ -276,11 +276,18 @@ function BuildFileList() {
     done
 
     if [ "${BASE_FILE}" == "go.mod" ]; then
-      debug "Found ${FILE}. Considering ${FILE_DIR_NAME} as a Go module."
-      FILE_ARRAY_GO_MODULES+=("${FILE_DIR_NAME}")
+      debug "Found ${FILE}. Checking if individual Go file linting is enabled as well."
       if [ "${VALIDATE_GO}" == "true" ]; then
-        fatal "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
+        debug "Checking if we are running tests. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+        if [ "${TEST_CASE_RUN}" == "true" ]; then
+          debug "Skipping the failure due to individual Go files and Go modules linting being enabled at the same time because we're in test mode."
+        else
+          fatal "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
+        fi
+      else
+        debug "Considering ${FILE_DIR_NAME} as a Go module."
       fi
+      FILE_ARRAY_GO_MODULES+=("${FILE_DIR_NAME}")
     fi
 
     #######################

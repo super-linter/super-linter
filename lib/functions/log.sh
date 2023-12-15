@@ -85,8 +85,6 @@ log() {
   fi
 }
 
-ALREADY_INVOKED_FATAL="false"
-
 trace() { log "${LOG_TRACE:-}" "$*" "TRACE"; }
 debug() { log "${LOG_DEBUG:-}" "$*" "DEBUG"; }
 info() { log "${LOG_VERBOSE:-}" "$*" "INFO"; }
@@ -95,18 +93,6 @@ warn() { log "${LOG_WARN:-}" "$*" "WARN"; }
 error() { log "${LOG_ERROR:-}" "$*" "ERROR"; }
 fatal() {
   log "true" "$*" "FATAL"
-
-  # We need this check because the endGitHubActionsLogGroup calls the fatal function
-  # in case its parameters are not valid. This can happen in the case where we
-  # wrongly call the endGitHubActionsLogGroup function from inside the fatal
-  # function, causing infinite recursion.
-  if [ "${ALREADY_INVOKED_FATAL}" == "true" ]; then
-    ALREADY_INVOKED_FATAL="true"
-    endGitHubActionsLogGroup "Fatal error, closing the open group"
-  else
-    warn "Breaking inifinite recursion in the 'fatal' function when trying to close a log group."
-  fi
-
   exit 1
 }
 
