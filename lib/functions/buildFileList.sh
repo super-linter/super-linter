@@ -279,7 +279,7 @@ function BuildFileList() {
       debug "Found ${FILE}. Considering ${FILE_DIR_NAME} as a Go module."
       FILE_ARRAY_GO_MODULES+=("${FILE_DIR_NAME}")
       if [ "${VALIDATE_GO}" == "true" ]; then
-        warn "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
+        fatal "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
       fi
     fi
 
