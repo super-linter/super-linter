@@ -149,6 +149,6 @@ jobs:
               title: "Failed to deploy to production",
               body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               assignees: [
-                "zkoppert", "Hanse00"
+                "zkoppert", "Hanse00", "ferrarimarco"
               ]
             })

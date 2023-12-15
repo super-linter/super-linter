@@ -6,10 +6,13 @@ set -euo pipefail
 # Reference https://github.com/Azure/arm-ttk
 # Reference https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit
 
-url=$(curl -s \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  https://api.github.com/repos/Azure/arm-ttk/releases/latest | jq -r '.tarball_url')
+url=$(
+  set -euo pipefail
+  curl -s \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
+    https://api.github.com/repos/Azure/arm-ttk/releases/latest | jq -r '.tarball_url'
+)
 mkdir -p /usr/lib/microsoft
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/vnd.github+json" \

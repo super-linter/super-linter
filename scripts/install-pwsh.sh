@@ -10,8 +10,6 @@ case $TARGETARCH in
 amd64)
   target=x64
   ;;
-# arm64)
-# only on ubuntu
 *)
   echo "$TARGETARCH is not supported"
   exit 1
@@ -19,11 +17,14 @@ amd64)
 esac
 
 mkdir -p "${PWSH_DIRECTORY}"
-url=$(curl -s \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-  "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
-  jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-musl-" + $target)) | .url')
+url=$(
+  set -euo pipefail
+  curl -s \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
+    "https://api.github.com/repos/powershell/powershell/releases/${PWSH_VERSION}" |
+    jq --arg target "${target}" -r '.assets | .[] | select(.name | contains("linux-musl-" + $target)) | .url'
+)
 curl --retry 5 --retry-delay 5 -sL \
   -H "Accept: application/octet-stream" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \

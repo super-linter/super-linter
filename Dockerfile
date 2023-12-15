@@ -4,6 +4,8 @@
 ###########################################
 ###########################################
 
+ARG GLIBC_VERSION='2.34-r0'
+
 #########################################
 # Get dependency images as build stages #
 #########################################
@@ -16,7 +18,7 @@ FROM ghcr.io/terraform-linters/tflint:v0.48.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
 FROM golangci/golangci-lint:v1.55.2 as golangci-lint
-FROM hadolint/hadolint:latest-alpine as dockerfile-lint
+FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.6.5 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
@@ -26,72 +28,84 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.46.3 as protolint
 
-##################
-# Get base image #
-##################
-FROM python:3.11.5-alpine3.17 as base_image
+FROM python:3.12.1-alpine3.19 as slim
 
-################################
-# Set ARG values used in Build #
-################################
-ARG CLJ_KONDO_VERSION='2023.05.18'
-# Dart Linter
-## stable dart sdk: https://dart.dev/get-dart#release-channels
-ARG DART_VERSION='2.8.4'
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
-ARG KTLINT_VERSION='0.47.1'
-# PowerShell & PSScriptAnalyzer linter
-ARG PSSA_VERSION='1.21.0'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PWSH_VERSION='v7.3.1'
+LABEL com.github.actions.name="Super-Linter" \
+    com.github.actions.description="A collection of code linters and analyzers." \
+    com.github.actions.icon="code" \
+    com.github.actions.color="red" \
+    maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
+    org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
+    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
+    org.opencontainers.image.vendor="GitHub" \
+    org.opencontainers.image.description="A collection of code linters and analyzers."
+
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
-####################
-# Run APK installs #
-####################
+# Install bash first so we can use it
 RUN apk add --no-cache \
-    bash \
+    bash
+
+SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
+
+RUN apk add --no-cache \
     ca-certificates \
     cargo \
     cmake \
     coreutils \
     curl \
     file \
-    gcc \
     g++ \
-    git git-lfs \
+    gcc \
+    git \
+    git-lfs \
     gnupg \
     icu-libs \
     jpeg-dev \
     jq \
     krb5-libs \
-    libc-dev libcurl libffi-dev libgcc \
-    libintl libssl1.1 libstdc++ \
-    libxml2-dev libxml2-utils \
+    libc-dev \
+    libcurl \
+    libffi-dev \
+    libgcc \
+    libintl \
+    libssl3 \
+    libstdc++ \
+    libxml2-dev \
+    libxml2-utils \
     linux-headers \
     lttng-ust-dev \
     make \
     musl-dev \
     net-snmp-dev \
-    npm nodejs-current \
+    nodejs-current \
+    npm \
     openjdk17-jre \
     openssh-client \
     openssl-dev \
     parallel \
-    perl perl-dev \
-    py3-setuptools python3-dev  \
+    perl \
+    perl-dev \
     py3-pyflakes \
-    R R-dev R-doc \
+    py3-setuptools \
+    python3-dev  \
+    R \
+    R-dev \
+    R-doc \
     readline-dev \
-    ruby ruby-dev ruby-bundler ruby-rdoc \
+    ruby \
+    ruby-bundler \
+    ruby-dev \
+    ruby-rdoc \
     rustup \
-    zlib zlib-dev
+    tar \
+    zlib \
+    zlib-dev \
+    zstd
 
-########################################
-# Copy dependencies files to container #
-########################################
 COPY dependencies/ /
 
 ###################################################################
@@ -191,43 +205,69 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 ######################
 COPY --from=kubeconfrm /kubeconform /usr/bin/
 
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+
+#################
+# Install glibc #
+#################
+ARG GLIBC_VERSION
+COPY scripts/install-glibc.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-glibc.sh
+
 #################
 # Install Lintr #
 #################
 COPY scripts/install-lintr.sh /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh
 
+#################################
+# Install luacheck and luarocks #
+#################################
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
+
+#####################################
+# Build python virtual environments #
+#####################################
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh
+# Set work directory back to root because some scripts depend on it
+WORKDIR /
+
+##############################
+# Install Phive dependencies #
+##############################
+COPY scripts/install-phive.sh /
+RUN /install-phive.sh && rm -rf /install-phive.sh
+
 #####################
 # Install clj-kondo #
 #####################
+ARG CLJ_KONDO_VERSION='2023.05.18'
 COPY scripts/install-clj-kondo.sh /
 RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
-
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
 ##################
 # Install ktlint #
 ##################
+ARG KTLINT_VERSION='0.47.1'
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
-
-####################
-# Install dart-sdk #
-####################
-COPY scripts/install-dart-sdk.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
-
-################################
-# Install Bash-Exec #
-################################
-COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 
 #################################################
 # Install Raku and additional Edge dependencies #
 #################################################
 RUN apk add --no-cache rakudo zef
+
+####################
+# Install dart-sdk #
+####################
+ARG DART_VERSION='2.8.4'
+COPY scripts/install-dart-sdk.sh /
+RUN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
 
 ######################
 # Install CheckStyle #
@@ -241,118 +281,32 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh && rm -rf /instal
 COPY scripts/install-google-java-format.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf /install-google-java-format.sh
 
-#################################
-# Install luacheck and luarocks #
-#################################
-COPY scripts/install-lua.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
-
 #########################
 # Clean to shrink image #
 #########################
 RUN find /usr/ -type f -name '*.md' -exec rm {} +
 
-################################################################################
-# Grab small clean image to build python packages ##############################
-################################################################################
-FROM python:3.11.5-alpine3.17 as python_builder
-RUN apk add --no-cache bash g++ git libffi-dev
-COPY dependencies/python/ /stage
-WORKDIR /stage
-RUN ./build-venvs.sh
+#####################
+# Install Bash-Exec #
+#####################
+COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 
-################################################################################
-# Grab small clean image to build slim ###################################
-################################################################################
-FROM alpine:3.19.0 as slim
+#################################
+# Copy super-linter executables #
+#################################
+COPY lib /action/lib
 
-############################
-# Get the build arguements #
-############################
-ARG BUILD_DATE
-ARG BUILD_REVISION
-ARG BUILD_VERSION
-## install alpine-pkg-glibc (glibc compatibility layer package for Alpine Linux)
-ARG GLIBC_VERSION='2.34-r0'
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
+###################################
+# Copy linter configuration files #
+###################################
+COPY TEMPLATES /action/lib/.automation
 
-#########################################
-# Label the instance and set maintainer #
-#########################################
-LABEL com.github.actions.name="GitHub Super-Linter" \
-    com.github.actions.description="Lint your code base with GitHub Actions" \
-    com.github.actions.icon="code" \
-    com.github.actions.color="red" \
-    maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
-    org.opencontainers.image.created=$BUILD_DATE \
-    org.opencontainers.image.revision=$BUILD_REVISION \
-    org.opencontainers.image.version=$BUILD_VERSION \
-    org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
-    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.vendor="GitHub" \
-    org.opencontainers.image.description="Lint your code base with GitHub Actions"
-
-#################################################
-# Set ENV values used for debugging the version #
-#################################################
-ENV BUILD_DATE=$BUILD_DATE
-ENV BUILD_REVISION=$BUILD_REVISION
-ENV BUILD_VERSION=$BUILD_VERSION
+#########################
+# Configure Environment #
+#########################
+# Set image variant
 ENV IMAGE="slim"
 
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-
-###############
-# Install Git #
-###############
-RUN apk add --no-cache bash git git-lfs
-
-##############################
-# Install Phive dependencies #
-##############################
-COPY scripts/install-phive.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-phive.sh && rm -rf /install-phive.sh
-
-####################################################
-# Install Composer after all Libs have been copied #
-####################################################
-RUN sh -c 'curl --retry 5 --retry-delay 5 --show-error -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer'
-
-#################################
-# Copy the libraries into image #
-#################################
-COPY --from=base_image /usr/bin/ /usr/bin/
-COPY --from=base_image /usr/local/bin/ /usr/local/bin/
-COPY --from=base_image /usr/local/lib/ /usr/local/lib/
-COPY --from=base_image /usr/local/share/ /usr/local/share/
-COPY --from=base_image /usr/local/include/ /usr/local/include/
-COPY --from=base_image /usr/lib/ /usr/lib/
-COPY --from=base_image /usr/share/ /usr/share/
-COPY --from=base_image /usr/include/ /usr/include/
-COPY --from=base_image /lib/ /lib/
-COPY --from=base_image /bin/ /bin/
-COPY --from=base_image /node_modules/ /node_modules/
-COPY --from=base_image /home/r-library /home/r-library
-COPY --from=python_builder /venvs/ /venvs/
-
-##################################
-# Configure TFLint plugin folder #
-##################################
-ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
-
-########################################
-# Add node packages to path and dotnet #
-########################################
-ENV PATH="${PATH}:/node_modules/.bin"
-
-###############################
-# Add python packages to path #
-###############################
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
 ENV PATH="${PATH}:/venvs/cfn-lint/bin"
@@ -366,55 +320,49 @@ ENV PATH="${PATH}:/venvs/snakemake/bin"
 ENV PATH="${PATH}:/venvs/sqlfluff/bin"
 ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
-
-##################
-# Add go to path #
-##################
+ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 
-#############################
-# Copy scripts to container #
-#############################
-COPY lib /action/lib
+# Configure TFLint plugin folder
+ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 
-##################################
-# Copy linter rules to container #
-##################################
-COPY TEMPLATES /action/lib/.automation
+# Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
+# Run to build version file and validate image
+RUN tflint --init -c /action/lib/.automation/.tflint.hcl \
+    && ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
 
-################
-# Pull in libs #
-################
-COPY --from=base_image /usr/libexec/ /usr/libexec/
-
-################################################
-# Run to build version file and validate image #
-################################################
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
-
-######################
-# Set the entrypoint #
-######################
 ENTRYPOINT ["/action/lib/linter.sh"]
 
-################################################################################
-# Grab small clean image to build standard ###############################
-################################################################################
+# Initialize Terrascan
+# Initialize ChkTeX config file
+RUN terrascan init \
+    && touch ~/.chktexrc
+
+# Set build metadata here so we don't invalidate the container image cache if we
+# change the values of these arguments
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION
+
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
+
+##############################
+# Build the standard variant #
+##############################
 FROM slim as standard
 
-###############
-# Set up args #
-###############
-ARG GITHUB_TOKEN
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 ARG PWSH_VERSION='latest'
 ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
-# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG TARGETARCH
 
-################
-# Set ENV vars #
-################
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
@@ -449,7 +397,5 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
-########################################################################################
-# Run to build version file and validate image again because we installed more linters #
-########################################################################################
+# Run to build version file and validate image again because we installed more linters
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh

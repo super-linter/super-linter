@@ -132,6 +132,7 @@ jobs:
               body: "Automation has failed us! Failed to push release ${{ env.RELEASE_VERSION }}\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               assignees: [
                 'zkoppert',
-                'Hanse00'
+                'Hanse00',
+                'ferrarimarco'
               ]
             })
