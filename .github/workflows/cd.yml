@@ -129,7 +129,7 @@ jobs:
       - name: Update ${{ matrix.images.environment }} Deployment
         uses: bobheadxi/deployments@v1.4.0
         # We depend on the 'deployment' step outputs, so we can't run this step
-        # if we the 'deployment' step didn't run. This can happen if any step
+        # if the 'deployment' step didn't run. This can happen if any step
         # before the 'deployment' step fails. That's why 'always()' is not
         # suitable here.
         if: steps.deployment.conclusion != 'cancelled' && steps.deployment.conclusion != 'skipped'
