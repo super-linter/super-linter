@@ -504,18 +504,12 @@ function RunAdditionalInstalls() {
   if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ "${#FILE_ARRAY_TERRAFORM_TFLINT[@]}" -ne 0 ]; then
     info "Detected TFLint Language files to lint."
     info "Trying to install the TFLint init inside:[${WORKSPACE_PATH}]"
-    # Set the log level
-    TF_LOG_LEVEL="info"
-    if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
-      TF_LOG_LEVEL="debug"
-    fi
-    debug "Set the tflint log level to: ${TF_LOG_LEVEL}"
     #########################
     # Run the build command #
     #########################
     BUILD_CMD=$(
       cd "${WORKSPACE_PATH}" || exit 0
-      TFLINT_LOG="${TF_LOG_LEVEL}" tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
+      tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
     )
 
     ##############
@@ -527,10 +521,10 @@ function RunAdditionalInstalls() {
     # Check the shell for errors #
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
-      fatal "ERROR! Failed to run:[tflint --init] at location:[${WORKSPACE_PATH}]. BUILD_CMD:[${BUILD_CMD}]"
+      fatal "ERROR! Failed to initialize tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file: ${BUILD_CMD}"
     else
-      info "Successfully ran:[tflint --init] in workspace:[${WORKSPACE_PATH}]"
-      debug "BUILD_CMD:[${BUILD_CMD}]"
+      info "Successfully initialized tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file"
+      debug "Tflint output: ${BUILD_CMD}"
     fi
   fi
 }

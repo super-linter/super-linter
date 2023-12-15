@@ -12,7 +12,7 @@ FROM alpine/terragrunt:1.6.5 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint-bundle:v0.48.0.0 as tflint
+FROM ghcr.io/terraform-linters/tflint:v0.48.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
 FROM golangci/golangci-lint:v1.55.2 as golangci-lint
@@ -130,7 +130,6 @@ COPY --from=terraform /bin/terraform /usr/bin/
 # Install TFLint #
 ##################
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
-COPY --from=tflint /root/.tflint.d /root/.tflint.d
 
 #####################
 # Install Terrascan #
@@ -339,7 +338,6 @@ COPY --from=base_image /lib/ /lib/
 COPY --from=base_image /bin/ /bin/
 COPY --from=base_image /node_modules/ /node_modules/
 COPY --from=base_image /home/r-library /home/r-library
-COPY --from=base_image /root/.tflint.d/ /root/.tflint.d/
 COPY --from=python_builder /venvs/ /venvs/
 
 ##################################
