@@ -117,6 +117,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
+          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}
           load: false
           push: true
           secrets: |
