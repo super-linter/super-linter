@@ -14,8 +14,12 @@ control "super-linter-installed-packages" do
   packages = [
     "bash",
     "ca-certificates",
+    "cargo",
+    "cmake",
     "coreutils",
     "curl",
+    "file",
+    "g++",
     "gcc",
     "git-lfs",
     "git",
@@ -23,6 +27,7 @@ control "super-linter-installed-packages" do
     "gnupg",
     "go",
     "icu-libs",
+    "jpeg-dev",
     "jq",
     "krb5-libs",
     "libc-dev",
@@ -30,7 +35,7 @@ control "super-linter-installed-packages" do
     "libffi-dev",
     "libgcc",
     "libintl",
-    "libssl1.1",
+    "libssl3",
     "libstdc++",
     "libxml2-dev",
     "libxml2-utils",
@@ -38,28 +43,44 @@ control "super-linter-installed-packages" do
     "lttng-ust-dev",
     "make",
     "musl-dev",
-    "npm",
     "nodejs-current",
+    "npm",
+    "net-snmp-dev",
     "openjdk17-jre",
+    "openssh-client",
     "openssl-dev",
+    "parallel",
     "perl-dev",
     "perl",
+    "php82",
+    "php82-ctype",
+    "php82-curl",
+    "php82-dom",
+    "php82-iconv",
+    "php82-mbstring",
+    "php82-openssl",
+    "php82-phar",
+    "php82-simplexml",
+    "php82-tokenizer",
+    "php82-xmlwriter",
     "py3-pyflakes",
     "py3-setuptools",
     "python3-dev",
-    "rakudo",
     "R-dev",
     "R-doc",
     "R",
+    "rakudo",
     "readline-dev",
     "ruby-bundler",
     "ruby-dev",
     "ruby-rdoc",
     "ruby",
     "rustup",
+    "tar",
     "zef",
     "zlib-dev",
-    "zlib"
+    "zlib",
+    "zstd"
   ]
 
   # Removed linters from slim image
@@ -94,26 +115,28 @@ control "super-linter-installed-commands" do
     { linter_name: "actionlint"},
     { linter_name: "ansible-lint", expected_stdout_regex: /(.*)/},
     { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs"},
-    { linter_name: "asl-validator", expected_exit_status: 0},
+    { linter_name: "asl-validator"},
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "black"},
-    { linter_name: "clang-format"},
     { linter_name: "cfn-lint"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
-    { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
     { linter_name: "chktex"},
+    { linter_name: "clang-format"},
     { linter_name: "clippy", linter_command: "clippy", version_command: "cargo-clippy --version"},
     { linter_name: "clj-kondo"},
     { linter_name: "coffeelint"},
+    { linter_name: "composer"},
     { linter_name: "cpplint"},
     { linter_name: "dart"},
-    { linter_name: "dotnet"},
     { linter_name: "dotenv-linter"},
+    { linter_name: "dotnet"},
     { linter_name: "editorconfig-checker", version_option: "-version"},
     { linter_name: "eslint"},
     { linter_name: "flake8"},
     { linter_name: "gherkin-lint", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
+    { linter_name: "gitleaks", version_option: "version"},
     { linter_name: "golangci-lint"},
+    { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
     { linter_name: "hadolint"},
     { linter_name: "htmlhint"},
     { linter_name: "isort"},
@@ -128,6 +151,7 @@ control "super-linter-installed-commands" do
     { linter_name: "php"},
     { linter_name: "phpcs"},
     { linter_name: "phpstan"},
+    { linter_name: "prettier"},
     { linter_name: "protolint", version_option: "version"},
     { linter_name: "psalm"},
     { linter_name: "pwsh"},
@@ -136,6 +160,7 @@ control "super-linter-installed-commands" do
             lintr_ver <- packageVersion('lintr'); \
             glue::glue('lintr { lintr_ver } on { r_ver }')\""},
     { linter_name: "raku", version_command: "raku --version | strings -n 8"},
+    { linter_name: "renovate-config-validator", version_command: "renovate --version"},
     { linter_name: "rubocop"},
     { linter_name: "rustfmt"},
     { linter_name: "scalafmt"},
@@ -152,7 +177,9 @@ control "super-linter-installed-commands" do
     { linter_name: "terraform"},
     { linter_name: "terragrunt"},
     { linter_name: "terrascan", version_option: "version"},
+    { linter_name: "textlint"},
     { linter_name: "tflint"},
+    { linter_name: "ts-standard"},
     { linter_name: "xmllint"},
     { linter_name: "yamllint"},
   ]
@@ -242,9 +269,12 @@ control "super-linter-installed-ruby-gems" do
   gems = [
     "rubocop",
     "rubocop-github",
+    "rubocop-minitest",
     "rubocop-performance",
     "rubocop-rails",
-    "rubocop-rspec"
+    "rubocop-rake",
+    "rubocop-rspec",
+    "standard"
   ]
 
   gems.each do |item|
@@ -252,7 +282,6 @@ control "super-linter-installed-ruby-gems" do
       it { should be_installed }
     end
   end
-
 end
 
 ###############################################
@@ -268,38 +297,61 @@ control "super-linter-installed-npm-packages" do
     "@babel/preset-react",
     "@babel/preset-typescript",
     "@coffeelint/cli",
+    "@react-native-community/eslint-config",
+    "@react-native-community/eslint-plugin",
     "@stoplight/spectral-cli",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "asl-validator",
-    #"axios",
-    #"eslint",
+    "axios",
+    "eslint",
     "eslint-config-airbnb",
+    "eslint-config-airbnb-typescript",
     "eslint-config-prettier",
     "eslint-plugin-jest",
     "eslint-plugin-json",
     "eslint-plugin-jsonc",
     "eslint-plugin-jsx-a11y",
     "eslint-plugin-prettier",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-vue",
     "gherkin-lint",
     "htmlhint",
-    #"immer",
-    #"ini",
+    "immer",
+    "ini",
     "jscpd",
-    #"lodash",
+    "lodash",
     "markdownlint-cli",
-    #"node-fetch",
+    "next",
+    "next-pwa",
+    "node-fetch",
     "npm-groovy-lint",
+    "postcss-less",
     "prettier",
     "prettyjson",
-    #"pug",
+    "pug",
+    "react",
+    "react-dom",
+    "react-intl",
+    "react-redux",
+    "react-router-dom",
+    "renovate",
     "sql-lint",
     "standard",
     "stylelint",
+    "stylelint-config-recommended-scss",
     "stylelint-config-sass-guidelines",
     "stylelint-config-standard",
-    #"stylelint-scss",
+    "stylelint-config-standard-scss",
+    "stylelint-prettier",
+    "stylelint-scss",
     "tekton-lint",
+    "textlint",
+    "textlint-filter-rule-allowlist",
+    "textlint-filter-rule-comments",
+    "textlint-rule-terminology",
+    "ts-standard",
     "typescript"
   ]
 
@@ -308,7 +360,37 @@ control "super-linter-installed-npm-packages" do
       it { should be_installed }
     end
   end
+end
 
+###############################################
+# Check to see if PyPi packages are installed #
+###############################################
+control "super-linter-installed-pypi-packages" do
+  impact 1
+  title "Super-Linter installed PyPi packages check"
+  desc "Check that PyPi packages that Super-Linter needs are installed."
+
+  pypi_packages = [
+    "ansible-lint",
+    "black",
+    "cfn-lint",
+    "cpplint",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "snakefmt",
+    "snakemake",
+    "sqlfluff",
+    "yamllint",
+    "yq"
+  ]
+
+  pypi_packages.each do |item|
+    describe pip(item, "/venvs/#{item}/bin/pip") do
+      it { should be_installed }
+    end
+  end
 end
 
 #####################################

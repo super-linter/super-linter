@@ -117,6 +117,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
+          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}
           load: false
           push: true
           secrets: |
@@ -148,6 +149,6 @@ jobs:
               title: "Failed to deploy to production",
               body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               assignees: [
-                "zkoppert", "Hanse00"
+                "zkoppert", "Hanse00", "ferrarimarco"
               ]
             })

@@ -6,12 +6,16 @@
     "src",
     "tests",
     "tools",
-    "/tmp/lint/.automation/test"
+    "/tmp/lint/test/linters"
   ],
   "overrides": [
     {
-      "extends": ["plugin:@typescript-eslint/disable-type-checked"],
-      "files": ["./**/*.{ts,tsx}"]
+      "extends": [
+        "plugin:@typescript-eslint/disable-type-checked"
+      ],
+      "files": [
+        "./**/*.{ts,tsx}"
+      ]
     }
   ]
 }

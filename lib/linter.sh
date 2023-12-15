@@ -119,6 +119,17 @@ export VERSION_FILE                                       # Workaround SC2034
 
 debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
 
+# Set the log level
+TF_LOG_LEVEL="info"
+if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
+  TF_LOG_LEVEL="debug"
+fi
+export TF_LOG_LEVEL
+debug "TF_LOG_LEVEL: ${TF_LOG_LEVEL}"
+TFLINT_LOG="${TF_LOG_LEVEL}"
+export TFLINT_LOG
+debug "TFLINT_LOG: ${TFLINT_LOG}"
+
 ###############
 # Rules files #
 ###############
@@ -416,10 +427,10 @@ DEFAULT_DISABLE_ERRORS='false'                                  # Default to ena
 export DEFAULT_DISABLE_ERRORS                                   # Workaround SC2034
 ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
 export ERROR_ON_MISSING_EXEC_BIT
-RAW_FILE_ARRAY=()                   # Array of all files that were changed
-export RAW_FILE_ARRAY               # Workaround SC2034
-TEST_CASE_FOLDER='.automation/test' # Folder for test cases we should always ignore
-export TEST_CASE_FOLDER             # Workaround SC2034
+RAW_FILE_ARRAY=()               # Array of all files that were changed
+export RAW_FILE_ARRAY           # Workaround SC2034
+TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
+export TEST_CASE_FOLDER         # Workaround SC2034
 
 ##########################
 # Array of changed files #

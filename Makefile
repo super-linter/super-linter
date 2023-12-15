@@ -77,7 +77,7 @@ inspec: inspec-check ## Run InSpec tests
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e IMAGE=$(IMAGE) \
 		-w="/workspace" \
-		chef/inspec exec test/inspec/super-linter\
+		chef/inspec exec test/inspec/super-linter \
 		--chef-license=accept \
 		--diagnose \
 		--log-level=debug \
@@ -135,7 +135,7 @@ lint-codebase: ## Lint the entire codebase
 test-linters: ## Run the linters test suite
 	docker run \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ANSIBLE_DIRECTORY=.automation/test/ansible \
+		-e ANSIBLE_DIRECTORY=test/linters/ansible \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
