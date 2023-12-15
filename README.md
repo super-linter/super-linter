@@ -11,6 +11,7 @@ adhering to those conventions.
 Super-linter analyzes source code files using several tools, and reports the
 issues that those tools find as console output, and as
 [GitHub Actions status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks).
+You can also [run super-linter outside GitHub Actions](#run-super-linter-outside-github-actions).
 
 Super-linter is licensed under a
 [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
@@ -232,7 +233,7 @@ You can configure super-linter using the following environment variables:
 | **VALIDATE_GHERKIN**                            | `true`                          | Flag to enable or disable the linting process of the Gherkin language.                                                                                                                                               |
 | **VALIDATE_GITHUB_ACTIONS**                     | `true`                          | Flag to enable or disable the linting process of the GitHub Actions.                                                                                                                                                 |
 | **VALIDATE_GITLEAKS**                           | `true`                          | Flag to enable or disable the linting process of the secrets.                                                                                                                                                        |
-| **VALIDATE_GO**                                 | `true`                          | Flag to enable or disable the linting process of the individual Golang files. Consider setting this to `false` if you want to lint Go modules. See the `VALIDATE_GO_MODULES` variable.                               |
+| **VALIDATE_GO**                                 | `true`                          | Flag to enable or disable the linting process of the individual Golang files. Set this to `false` if you want to lint Go modules. See the `VALIDATE_GO_MODULES` variable.                                            |
 | **VALIDATE_GO_MODULES**                         | `true`                          | Flag to enable or disable the linting process of Go modules. Super-linter considers a directory to be a Go module if it contains a file named `go.mod`.                                                              |
 | **VALIDATE_GOOGLE_JAVA_FORMAT**                 | `true`                          | Flag to enable or disable the linting process of the Java language. (Utilizing: google-java-format)                                                                                                                  |
 | **VALIDATE_GROOVY**                             | `true`                          | Flag to enable or disable the linting process of the language.                                                                                                                                                       |
