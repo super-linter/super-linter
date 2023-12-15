@@ -7,9 +7,9 @@ new tool, it should include:
   - `README.md`
 - Provide test cases:
 
-  1. Create the `.automation/test/<LANGUGAGE>` directory.
-  2. Provide at least one test case with a file that is supposed to pass validation: `.automation/test/<LANGUAGE>/<name-of-tool>-good.ext`
-  3. Provide at least one test case with a file that is supposed to fail validation: `.automation/test/<LANGUAGE>/<name-of-tool>-bad.ext`
+  1. Create the `test/linters/<LANGUGAGE>` directory.
+  2. Provide at least one test case with a file that is supposed to pass validation: `test/linters/<LANGUAGE>/<name-of-tool>-good`
+  3. Provide at least one test case with a file that is supposed to fail validation: `test/linters/<LANGUAGE>/<name-of-tool>-bad`
 
 - Update the test suite to check for installed packages, the commands that your new tool needs in the `PATH`, and the expected version command:
 

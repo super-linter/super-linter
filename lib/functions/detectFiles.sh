@@ -14,7 +14,7 @@ DetectActions() {
   debug "Checking if ${FILE} is a GitHub Actions file..."
 
   # Check if in the users .github, or the super linter test suite
-  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] || [[ "$(dirname "${FILE}")" == *".automation/test/github_actions"* ]]; then
+  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] || [[ "$(dirname "${FILE}")" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
     debug "${FILE} is GitHub Actions file."
     return 0
   else

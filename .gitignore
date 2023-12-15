@@ -85,5 +85,5 @@ test/reports
 
 # Test leftovers
 .lintr
-.automation/test/rust_clippy/**/Cargo.lock
-.automation/test/rust_clippy/**/target/**
+test/linters/rust_clippy/**/Cargo.lock
+test/linters/rust_clippy/**/target/**
