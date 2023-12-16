@@ -84,6 +84,7 @@ log() {
     echo -e "${MESSAGE_FOR_LOG_FILE}" >>"${LOG_TEMP}"
   fi
 }
+
 trace() { log "${LOG_TRACE:-}" "$*" "TRACE"; }
 debug() { log "${LOG_DEBUG:-}" "$*" "DEBUG"; }
 info() { log "${LOG_VERBOSE:-}" "$*" "INFO"; }
