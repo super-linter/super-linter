@@ -127,7 +127,7 @@ function GetValidationInfo() {
       debug "Setting Ansible directory to the default: ${DEFAULT_ANSIBLE_DIRECTORY}"
     else
       ANSIBLE_DIRECTORY="${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
-      debug "Setting Ansible directory to the default for test cases: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
+      debug "Setting Ansible directory to the default for test cases: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}. ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
     fi
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   else
