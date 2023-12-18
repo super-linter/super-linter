@@ -1,0 +1,10 @@
+{
+  "absolute": true,
+  "ignore": [
+    "**/workflows/cd.yml"
+  ],
+  "reporters": [
+    "consoleFull"
+  ],
+  "threshold": 0
+}

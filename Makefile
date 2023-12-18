@@ -117,6 +117,7 @@ validate-container-image-labels: ## Validate container image labels
 		$(BUILD_REVISION) \
 		$(BUILD_VERSION)
 
+# Mount a directory that doesn't have too many files to keep this test short
 .phony: test-find
 test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
@@ -126,7 +127,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
-		-v "$(CURDIR)/.github":/tmp/lint \
+		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: lint-codebase
