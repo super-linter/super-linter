@@ -1,0 +1,10 @@
+{
+  "name": "commitlint-container-image",
+  "private": true,
+  "version": "0.0.1-local",
+  "dependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3"
+  },
+  "license": "MIT"
+}
