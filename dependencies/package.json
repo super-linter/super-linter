@@ -43,7 +43,7 @@
     "react-dom": "^18.2.0",
     "react-intl": "^6.5.5",
     "react-redux": "^9.0.4",
-    "react-router-dom": "^6.20.1",
+    "react-router-dom": "^6.21.0",
     "renovate": "^37.102.0",
     "sql-lint": "1.0.0",
     "standard": "^17.1.0",
