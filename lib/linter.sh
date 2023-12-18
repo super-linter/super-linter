@@ -884,7 +884,7 @@ debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 ############################
 GetValidationInfo
 
-if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
   debug "Validate the local Git environment"
   ValidateLocalGitRepository
   ValidateGitShaReference
