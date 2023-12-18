@@ -14,7 +14,7 @@ FROM alpine/terragrunt:1.6.5 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint:v0.48.0 as tflint
+FROM ghcr.io/terraform-linters/tflint:v0.49.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
 FROM golangci/golangci-lint:v1.55.2 as golangci-lint
