@@ -63,6 +63,7 @@ function LintCodebase() {
   if [ ${SKIP_FLAG} -eq 0 ]; then
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
+      debug "TEST_CASE_FOLDER: ${TEST_CASE_FOLDER}"
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
     debug "Workspace path: ${WORKSPACE_PATH}"
@@ -74,7 +75,7 @@ function LintCodebase() {
     info "----------------------------------------------"
     info "----------------------------------------------"
 
-    debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE} files to lint: ${FILE_ARRAY[*]}"
+    debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, files to lint: ${FILE_ARRAY[*]}"
 
     if [ "${TEST_CASE_RUN}" = "true" ]; then
       info "Testing Codebase [${FILE_TYPE}] files..."
@@ -203,7 +204,7 @@ function LintCodebase() {
       if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
         # These linters expect files inside a directory, not a directory. So we add a trailing slash
         TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
-        debug "${FILE_TYPE} expects to lint individual files. Updated TEST_CASE_DIRECTORY to: ${TEST_CASE_DIRECTORY}"
+        debug "Updated TEST_CASE_DIRECTORY for ${FILE_TYPE} to: ${TEST_CASE_DIRECTORY}"
       fi
 
       if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
@@ -282,6 +283,15 @@ function LintCodebase() {
           cd "${DIR_NAME}" || exit
           ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
           exit "${PIPESTATUS[0]}"
+        )
+      ###########################################################################################
+      # Corner case for GO_MODULES because it expects that the working directory is a Go module #
+      ###########################################################################################
+      elif [[ ${FILE_TYPE} == "GO_MODULES" ]]; then
+        debug "Linting a Go module. Changing the working directory to ${FILE} before running the linter."
+        LINT_CMD=$(
+          cd "${FILE}" || exit 1
+          ${LINTER_COMMAND} 2>&1
         )
       #######################################################
       # Corner case for KTLINT as it cant use the full path #

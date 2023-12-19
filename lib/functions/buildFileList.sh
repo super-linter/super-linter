@@ -176,15 +176,16 @@ function BuildFileList() {
   info "------ File list to check: ------"
   info "---------------------------------"
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
-    # Extract just the file extension
+    # Get the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
-    # get the baseFile for additonal logic, lowercase
+    # Get the name of the file (lowercase) and the containing directory path
     BASE_FILE=$(basename "${FILE,,}")
+    FILE_DIR_NAME="$(dirname "${FILE}")"
 
     ##############
     # Print file #
     ##############
-    debug "File:[${FILE}], File_type:[${FILE_TYPE}], Base_file:[${BASE_FILE}]"
+    debug "FILE: ${FILE}, FILE_TYPE: ${FILE_TYPE}, BASE_FILE: ${BASE_FILE}, FILE_DIR_NAME: ${FILE_DIR_NAME}"
 
     ##########################################################
     # Check if the file exists on the filesystem, or skip it #
@@ -273,6 +274,21 @@ function BuildFileList() {
         break
       fi
     done
+
+    if [ "${BASE_FILE}" == "go.mod" ]; then
+      debug "Found ${FILE}. Checking if individual Go file linting is enabled as well."
+      if [ "${VALIDATE_GO}" == "true" ]; then
+        debug "Checking if we are running tests. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+        if [ "${TEST_CASE_RUN}" == "true" ]; then
+          debug "Skipping the failure due to individual Go files and Go modules linting being enabled at the same time because we're in test mode."
+        else
+          fatal "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
+        fi
+      else
+        debug "Considering ${FILE_DIR_NAME} as a Go module."
+      fi
+      FILE_ARRAY_GO_MODULES+=("${FILE_DIR_NAME}")
+    fi
 
     #######################
     # Get the shell files #

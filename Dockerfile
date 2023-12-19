@@ -9,24 +9,24 @@ ARG GLIBC_VERSION='2.34-r0'
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.5 as terrascan
-FROM alpine/terragrunt:1.6.5 as terragrunt
+FROM tenable/terrascan:1.18.9 as terrascan
+FROM alpine/terragrunt:1.6.6 as terragrunt
 FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
-FROM ghcr.io/terraform-linters/tflint:v0.48.0 as tflint
+FROM ghcr.io/terraform-linters/tflint:v0.49.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
 FROM golangci/golangci-lint:v1.55.2 as golangci-lint
 FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.6.5 as terraform
+FROM hashicorp/terraform:1.6.6 as terraform
 FROM koalaman/shellcheck:v0.9.0 as shellcheck
 FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
 FROM mvdan/shfmt:v3.7.0 as shfmt
 FROM rhysd/actionlint:1.6.26 as actionlint
 FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
-FROM yoheimuta/protolint:0.46.3 as protolint
+FROM yoheimuta/protolint:0.47.0 as protolint
 
 FROM python:3.12.1-alpine3.19 as slim
 
