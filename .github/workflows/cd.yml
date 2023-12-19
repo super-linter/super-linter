@@ -100,14 +100,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.4.0
-        id: deployment
-        with:
-          step: start
-          token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{ matrix.images.environment }}
-
       - name: Build and Push Image
         uses: docker/build-push-action@v5
         with:
@@ -125,21 +117,6 @@ jobs:
           tags: |
             ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
-
-      - name: Update ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.4.0
-        # We depend on the 'deployment' step outputs, so we can't run this step
-        # if the 'deployment' step didn't run. This can happen if any step
-        # before the 'deployment' step fails. That's why 'always()' is not
-        # suitable here.
-        if: steps.deployment.conclusion != 'cancelled' && steps.deployment.conclusion != 'skipped'
-        with:
-          step: finish
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/super-linter/super-linter
 
       - name: Create Issue on Failure
         uses: actions/github-script@v7

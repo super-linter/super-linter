@@ -73,14 +73,6 @@ jobs:
             echo "SEMVER_MAJOR_VERSION_WITH_PREFIX=${SEMVER_MAJOR_VERSION_WITH_PREFIX}"
           } >> "${GITHUB_ENV}"
 
-      - name: Start ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.4.0
-        id: deployment
-        with:
-          step: start
-          token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{ matrix.images.environment }}
-
       # We don't rebuild the image to avoid that the latest tag and the release tags don't point to what the release tag is pointing to.
       # Instead, we pull the latest image and tag it.
       - name: Retag and Push Images
@@ -107,17 +99,6 @@ jobs:
           git tag --force "${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "${RELEASE_VERSION}^{}"
           git tag --force latest "${RELEASE_VERSION}^{}"
           git push --force origin "refs/tags/${SEMVER_MAJOR_VERSION_WITH_PREFIX}" "refs/tags/latest"
-
-      - name: Update ${{ matrix.images.environment }} Deployment
-        uses: bobheadxi/deployments@v1.4.0
-        if: always()
-        with:
-          step: finish
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/super-linter/super-linter/releases/tag/${{ env.RELEASE_VERSION }}
 
       - name: Create Issue on Failure
         if: failure()
