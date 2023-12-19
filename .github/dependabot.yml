@@ -5,6 +5,8 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    commit-message:
+      prefix: "build(github-actions)"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -12,6 +14,8 @@ updates:
 
   # Maintain dependencies for js with npm
   - package-ecosystem: "npm"
+    commit-message:
+      prefix: "build(npm)"
     directory: "/dependencies"
     schedule:
       interval: "weekly"
@@ -19,6 +23,8 @@ updates:
 
   # Maintain dependencies for ruby with bundler
   - package-ecosystem: "bundler"
+    commit-message:
+      prefix: "build(bundler)"
     directory: "/dependencies"
     schedule:
       interval: "weekly"
@@ -26,6 +32,8 @@ updates:
 
   # Maintain dependencies for docker
   - package-ecosystem: "docker"
+    commit-message:
+      prefix: "build(docker)"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -33,6 +41,8 @@ updates:
 
   # Maintain dependencies for python with pip
   - package-ecosystem: "pip"
+    commit-message:
+      prefix: "build(python)"
     directory: "/dependencies/python/"
     schedule:
       interval: "weekly"
@@ -40,12 +50,35 @@ updates:
 
   # Maintain dependencies for Java
   - package-ecosystem: "gradle"
+    commit-message:
+      prefix: "build(java)"
     directory: "/dependencies/checkstyle"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+
   - package-ecosystem: "gradle"
+    commit-message:
+      prefix: "build(java)"
     directory: "/dependencies/google-java-format"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Maintain dev dependencies for docker
+  - package-ecosystem: "docker"
+    commit-message:
+      prefix: "build(dev-docker)"
+    directory: "/dev-dependencies"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Maintain dev dependencies for js with npm
+  - package-ecosystem: "npm"
+    commit-message:
+      prefix: "build(dev-npm)"
+    directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10

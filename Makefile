@@ -63,7 +63,17 @@ ifeq ($(BUILD_VERSION),)
 BUILD_VERSION := $(shell git rev-parse HEAD)
 endif
 
+ifeq ($(FROM_INTERVAL_COMMITLINT),)
+FROM_INTERVAL_COMMITLINT := "HEAD~1"
+endif
+
+ifeq ($(TO_INTERVAL_COMMITLINT),)
+TO_INTERVAL_COMMITLINT := "HEAD"
+endif
+
 GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
+
+COMMIT_LINTER_CONTAINER_URL := "conventional-changelog/commitlint:latest"
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
@@ -145,3 +155,19 @@ test-linters: ## Run the linters test suite
 		-e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: build-commit-linter-container-image
+build-commit-linter-container-image: ## Build commit linter container image
+	DOCKER_BUILDKIT=1 docker buildx build --load \
+		-t ${COMMIT_LINTER_CONTAINER_URL} "${CURDIR}/dev-dependencies"
+
+.phony: lint-commits
+lint-commits: build-commit-linter-container-image ## Lint commits
+	docker run \
+		-v "$(CURDIR):/source-repository" \
+		${COMMIT_LINTER_CONTAINER_URL} \
+		--config .github/linters/commitlint.config.js \
+		--cwd /source-repository \
+		--from ${FROM_INTERVAL_COMMITLINT} \
+		--to ${TO_INTERVAL_COMMITLINT} \
+		--verbose
