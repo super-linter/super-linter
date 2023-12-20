@@ -118,6 +118,7 @@ jobs:
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}
+          cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
           push: true
           secrets: |
@@ -163,7 +164,7 @@ jobs:
       - test
     runs-on: ubuntu-latest
     concurrency:
-      group: ${{ github.workflow }}-main-${{ matrix.images.environment }}
+      group: ${{ github.workflow }}-main-release
       cancel-in-progress: true
     permissions:
       contents: write
@@ -171,14 +172,8 @@ jobs:
       issues: write
       packages: write
       pull-requests: write
-    strategy:
-      fail-fast: false
-      matrix:
-        images:
-          - environment: Release-SLIM
-            prefix: slim-
-          - environment: Release
-            prefix: ""
+    env:
+      RELEASE_ENVIRONMENT: "Release"
     timeout-minutes: 60
     steps:
       - uses: google-github-actions/release-please-action@v4
@@ -188,16 +183,17 @@ jobs:
           manifest-file: .github/release-please/.release-please-manifest.json
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start ${{ matrix.images.environment }} Deployment
+      - name: Start deployment
         if: steps.release.outputs.release_created
         uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{ matrix.images.environment }}
+          env: ${{ env.RELEASE_ENVIRONMENT }}
 
       - name: Configure release metedata
+        if: steps.release.outputs.release_created
         # shellcheck disable=SC2062
         run: |
           RELEASE_VERSION="${{ steps.release.outputs.tag_name }}"
@@ -233,10 +229,19 @@ jobs:
         if: steps.release.outputs.release_created
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
+          src: ghcr.io/super-linter/super-linter:latest
           dst: |
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION }}
-            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
+            ghcr.io/super-linter/super-linter:${{ env.SEMVER_MAJOR_VERSION }}
+            ghcr.io/super-linter/super-linter:${{ env.RELEASE_VERSION }}
+
+      - name: Retag and Push Images slim
+        if: steps.release.outputs.release_created
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: ghcr.io/super-linter/super-linter:slim-latest
+          dst: |
+            ghcr.io/super-linter/super-linter:slim-${{ env.SEMVER_MAJOR_VERSION }}
+            ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}
 
       # No need to tag major.minor.patch because that tag is automatically created when creating the release
       - name: Tag major, minor, and latest versions
@@ -248,7 +253,7 @@ jobs:
           git push --force origin ${{ env.SEMVER_MAJOR_VERSION }}
           git push --force origin latest
 
-      - name: Update ${{ matrix.images.environment }} Deployment
+      - name: Update deployment
         uses: bobheadxi/deployments@v1.4.0
         # We depend on the 'deployment' step outputs, so we can't run this step
         # if the 'deployment' step didn't run. This can happen if any step
