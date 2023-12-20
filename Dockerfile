@@ -28,7 +28,7 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.47.0 as protolint
 
-FROM python:3.12.1-alpine3.19 as slim
+FROM python:3.12.1-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
     com.github.actions.description="A collection of code linters and analyzers." \
@@ -338,6 +338,8 @@ ENTRYPOINT ["/action/lib/linter.sh"]
 RUN terrascan init \
     && touch ~/.chktexrc
 
+FROM base_image as slim
+
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
 ARG BUILD_DATE
@@ -399,3 +401,17 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-a
 
 # Run to build version file and validate image again because we installed more linters
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
+
+# Set build metadata here so we don't invalidate the container image cache if we
+# change the values of these arguments
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.revision=$BUILD_REVISION \
+    org.opencontainers.image.version=$BUILD_VERSION
+
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION

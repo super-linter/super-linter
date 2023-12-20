@@ -21,11 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - environment: Production-SLIM
-            prefix: slim-
+          - prefix: slim-
             target: slim
-          - environment: Production
-            prefix: ""
+          - prefix: ""
             target: standard
     timeout-minutes: 60
     env:
@@ -101,13 +99,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start ${{ matrix.images.environment }} Deployment
+      - name: Start deployment
         uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{ matrix.images.environment }}
+          env: Production
 
       - name: Build and Push Image
         uses: docker/build-push-action@v5
@@ -128,7 +126,7 @@ jobs:
             ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
 
-      - name: Update ${{ matrix.images.environment }} Deployment
+      - name: Update deployment
         uses: bobheadxi/deployments@v1.4.0
         # We depend on the 'deployment' step outputs, so we can't run this step
         # if the 'deployment' step didn't run. This can happen if any step
@@ -173,8 +171,6 @@ jobs:
       issues: write
       packages: write
       pull-requests: write
-    env:
-      RELEASE_ENVIRONMENT: "Release"
     timeout-minutes: 60
     steps:
       - uses: google-github-actions/release-please-action@v4
@@ -191,7 +187,7 @@ jobs:
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{ env.RELEASE_ENVIRONMENT }}
+          env: Release
 
       - name: Configure release metedata
         if: steps.release.outputs.release_created
