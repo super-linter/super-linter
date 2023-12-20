@@ -82,7 +82,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
-          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}
+          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
           load: true
           push: false
           secrets: |
@@ -118,7 +118,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
-          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}
+          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
           push: true
