@@ -156,3 +156,125 @@ jobs:
                 "zkoppert", "Hanse00", "ferrarimarco"
               ]
             })
+
+  release:
+    name: Release
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-main-${{ matrix.images.environment }}
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      deployments: write
+      issues: write
+      packages: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        images:
+          - environment: Release-SLIM
+            prefix: slim-
+          - environment: Release
+            prefix: ""
+    timeout-minutes: 60
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          config-file: .github/release-please/release-please-config.json
+          manifest-file: .github/release-please/.release-please-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start ${{ matrix.images.environment }} Deployment
+        if: steps.release.outputs.release_created
+        uses: bobheadxi/deployments@v1.4.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ matrix.images.environment }}
+
+      - name: Configure release metedata
+        # shellcheck disable=SC2062
+        run: |
+          RELEASE_VERSION="${{ steps.release.outputs.tag_name }}"
+
+          if [ -z "${RELEASE_VERSION}" ]; then
+            echo "Error RELEASE_VERSION is empty. Exiting..."
+            exit 1
+          fi
+
+          if ! echo "${RELEASE_VERSION}" | grep -E -o "v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+"; then
+            echo "Error: RELEASE_VERSION doesn't look like a semantic version: ${RELEASE_VERSION}"
+            exit 2
+          fi
+
+          SEMVER_MAJOR_VERSION=v${{ steps.release.outputs.major }}
+
+          {
+            echo "RELEASE_VERSION=${RELEASE_VERSION}"
+            echo "SEMVER_MAJOR_VERSION=${SEMVER_MAJOR_VERSION}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Login to GHCR
+        if: steps.release.outputs.release_created
+        uses: docker/login-action@v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # We don't rebuild the image to avoid that the latest tag and the release tags don't point to the very same container image.
+      # Instead, we pull the latest image and tag it.
+      - name: Retag and Push Images
+        if: steps.release.outputs.release_created
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest
+          dst: |
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.SEMVER_MAJOR_VERSION }}
+            ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}${{ env.RELEASE_VERSION }}
+
+      # No need to tag major.minor.patch because that tag is automatically created when creating the release
+      - name: Tag major, minor, and latest versions
+        if: steps.release.outputs.release_created
+        run: |
+          git tag --annotate --force ${{ env.SEMVER_MAJOR_VERSION }} -m "Release ${{ env.SEMVER_MAJOR_VERSION }}"
+          git tag --annotate --force latest -m "Release latest (${{ env.RELEASE_VERSION }})"
+
+          git push --force origin ${{ env.SEMVER_MAJOR_VERSION }}
+          git push --force origin latest
+
+      - name: Update ${{ matrix.images.environment }} Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        # We depend on the 'deployment' step outputs, so we can't run this step
+        # if the 'deployment' step didn't run. This can happen if any step
+        # before the 'deployment' step fails. That's why 'always()' is not
+        # suitable here.
+        if: steps.deployment.conclusion != 'cancelled' && steps.deployment.conclusion != 'skipped'
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://github.com/super-linter/super-linter
+
+      - name: Create Issue on Failure
+        uses: actions/github-script@v7
+        if: failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to deploy to production",
+              body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              assignees: [
+                "zkoppert", "Hanse00", "ferrarimarco"
+              ]
+            })
