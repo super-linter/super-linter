@@ -219,8 +219,8 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-gli
 #################
 # Install Lintr #
 #################
-COPY scripts/install-lintr.sh /
-RUN /install-lintr.sh && rm -rf /install-lintr.sh
+COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
+RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
 
 #################################
 # Install luacheck and luarocks #
