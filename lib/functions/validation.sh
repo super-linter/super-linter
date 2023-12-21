@@ -119,18 +119,11 @@ function GetValidationInfo() {
   ##############################
   # Validate Ansible Directory #
   ##############################
-  # No Value, need to default
   if [ -z "${ANSIBLE_DIRECTORY}" ]; then
-
-    if [ "${TEST_CASE_RUN}" != "true" ]; then
-      ANSIBLE_DIRECTORY="${DEFAULT_ANSIBLE_DIRECTORY}"
-      debug "Setting Ansible directory to the default: ${DEFAULT_ANSIBLE_DIRECTORY}"
-    else
-      ANSIBLE_DIRECTORY="${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
-      debug "Setting Ansible directory to the default for test cases: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}. ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
-    fi
-    debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
+    ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
+    debug "Set ANSIBLE_DIRECTORY to the default: ${ANSIBLE_DIRECTORY}"
   else
+    debug "ANSIBLE_DIRECTORY before considering corner cases: ${ANSIBLE_DIRECTORY}"
     # Check if first char is '/'
     if [[ ${ANSIBLE_DIRECTORY:0:1} == "/" ]]; then
       # Remove first char
@@ -274,4 +267,19 @@ function CheckovConfigurationFileContainsDirectoryOption() {
     debug "${CHECKOV_LINTER_RULES_PATH} doesn't contain a '${CONFIGURATION_OPTION_KEY}' statement"
     return 1
   fi
+}
+
+function WarnIfVariableIsSet() {
+  local INPUT_VARIABLE="${1}"
+  shift
+  local INPUT_VARIABLE_NAME="${1}"
+
+  if [ -n "${INPUT_VARIABLE:-}" ]; then
+    warn "${INPUT_VARIABLE_NAME} environment variable is set, it's deprecated, and super-linter will ignore it. Remove it from your configuration. This warning may turn in a fatal error in the future."
+  fi
+}
+
+function ValidateDeprecatedVariables() {
+  WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER}" "EXPERIMENTAL_BATCH_WORKER"
+  WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE}" "VALIDATE_JSCPD_ALL_CODEBASE"
 }

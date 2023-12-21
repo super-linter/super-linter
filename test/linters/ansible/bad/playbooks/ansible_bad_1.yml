@@ -1,0 +1,8 @@
+---
+- name: Remove temp files
+  become: true
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/tmp/test-1"

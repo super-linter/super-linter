@@ -119,6 +119,11 @@ To run super-linter as a GitHub Action, you do the following:
 1. Push the new commit to the remote repository.
 1. Create a new pull request to observe the results.
 
+## Upgrade to newer super-linter versions
+
+For more information about upgrading super-linter to a new major version, see
+the [upgrade guide](docs/upgrade-guide.md).
+
 ## Add Super-Linter badge in your repository README
 
 You can show Super-Linter status with a badge in your repository README:
@@ -165,7 +170,6 @@ You can configure super-linter using the following environment variables:
 | **EDITORCONFIG_FILE_NAME**                      | `.ecrc`                         | Filename for [editorconfig-checker configuration](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                                      |
 | **ENABLE_GITHUB_ACTIONS_GROUP_TITLE**           | `false` if `RUN_LOCAL=true`, `true` otherwise | Flag to enable [GitHub Actions log grouping](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#grouping-log-lines).                                              |
 | **ERROR_ON_MISSING_EXEC_BIT**                   | `false`                         | If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an error instead.                                          |
-| **EXPERIMENTAL_BATCH_WORKER**                   | `false`                         | Flag to enable experimental parallel and batched worker. As of current only `eslint` and `cfn-lint` are supported, if there is no support, original version is used as fallback                                      |
 | **FILTER_REGEX_EXCLUDE**                        | `none`                          | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`)                                                                                                                          |
 | **FILTER_REGEX_INCLUDE**                        | `all`                           | Regular expression defining which files will be processed by linters (ex: `.*src/.*`)                                                                                                                                |
 | **GITHUB_ACTIONS_CONFIG_FILE**                  | `actionlint.yml`                | Filename for [Actionlint configuration](https://github.com/rhysd/actionlint/blob/main/docs/config.md) (ex: `actionlint.yml`)                                                                                         |
@@ -215,7 +219,6 @@ You can configure super-linter using the following environment variables:
 | **TYPESCRIPT_STANDARD_TSCONFIG_FILE**           | `${DEFAULT_WORKSPACE}/tsconfig.json` | Path to the [TypeScript project configuration](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) in [ts-standard](https://github.com/standard/ts-standard). The path is relative to `DEFAULT_WORKSPACE` |
 | **USE_FIND_ALGORITHM**                          | `false`                         | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                              |
 | **VALIDATE_ALL_CODEBASE**                       | `true`                          | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to `false`, only **new** or **edited** files will be parsed for validation.                                     |
-| **VALIDATE_JSCPD_ALL_CODEBASE**                 | `false`                         | If set to `true`, will lint the whole codebase with JSCPD. If set to `false`, JSCPD will only lint files one by one.                                                                                                 |
 | **VALIDATE_ANSIBLE**                            | `true`                          | Flag to enable or disable the linting process of the Ansible language.                                                                                                                                               |
 | **VALIDATE_ARM**                                | `true`                          | Flag to enable or disable the linting process of the ARM language.                                                                                                                                                   |
 | **VALIDATE_BASH**                               | `true`                          | Flag to enable or disable the linting process of the Bash language.                                                                                                                                                  |
