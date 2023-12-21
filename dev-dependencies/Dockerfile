@@ -11,10 +11,13 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN jq '.dependencies | to_entries[] | select(.key | startswith("@commitlint/")) | .key + "@" + .value' package.json > commitlint-packages.txt \
-  && xargs npm install -g < commitlint-packages.txt \
-  && rm package.json commitlint-packages.txt \
-  && commitlint --version \
-  && git config --global --add safe.directory /source-repository
+ENV NPM_PACKAGES_FILE_PATH="npm-packages.txt"
 
-ENTRYPOINT [ "commitlint" ]
+RUN jq '.dependencies | to_entries[] | select(.key | startswith("@commitlint/")) | .key + "@" + .value' package.json >> "${NPM_PACKAGES_FILE_PATH}" \
+  && jq '.dependencies | to_entries[] | select(.key | startswith("release-please")) | .key + "@" + .value' package.json >> "${NPM_PACKAGES_FILE_PATH}" \
+  && xargs npm install -g < "${NPM_PACKAGES_FILE_PATH}" \
+  && rm package.json "${NPM_PACKAGES_FILE_PATH}"
+
+RUN commitlint --version \
+  && release-please --version \
+  && git config --global --add safe.directory /source-repository

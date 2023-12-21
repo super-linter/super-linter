@@ -1,5 +1,31 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "changelog-sections": [
+    {
+      "section": "⬆️ Dependency updates",
+      "type": "deps"
+    },
+    {
+      "section": "🚀 Features",
+      "type": "feat"
+    },
+    {
+      "section": "🐛 Bug fixes",
+      "type": "fix"
+    },
+    {
+      "section": "🧰 Maintenance",
+      "type": "build"
+    },
+    {
+      "section": "🧰 Maintenance",
+      "type": "chore"
+    },
+    {
+      "section": "🧰 Maintenance",
+      "type": "ci"
+    }
+  ],
   "packages": {
     ".": {
       "changelog-path": "CHANGELOG.md",

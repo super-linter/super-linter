@@ -73,9 +73,20 @@ endif
 
 GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
 
-COMMIT_LINTER_CONTAINER_URL := "conventional-changelog/commitlint:latest"
+DEV_CONTAINER_URL := "super-linter/dev-container:latest"
 
-.PHONY: inspec
+
+ifeq ($(GITHUB_HEAD_REF),)
+RELEASE_PLEASE_TARGET_BRANCH := "$(shell git branch --show-current)"
+else
+RELEASE_PLEASE_TARGET_BRANCH := "${GITHUB_HEAD_REF}"
+endif
+
+.phony: check-github-token
+check-github-token:
+	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
+
+.phony: inspec
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME); fi && \
@@ -96,8 +107,7 @@ inspec: inspec-check ## Run InSpec tests
 	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME)
 
 .phony: docker
-docker: ## Build the container image
-	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
+docker: check-github-token ## Build the container image
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
@@ -157,18 +167,35 @@ test-linters: ## Run the linters test suite
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: build-commit-linter-container-image
-build-commit-linter-container-image: ## Build commit linter container image
+.phony: build-dev-container-image
+build-dev-container-image: ## Build commit linter container image
 	DOCKER_BUILDKIT=1 docker buildx build --load \
-		-t ${COMMIT_LINTER_CONTAINER_URL} "${CURDIR}/dev-dependencies"
+		-t ${DEV_CONTAINER_URL} "${CURDIR}/dev-dependencies"
 
 .phony: lint-commits
-lint-commits: build-commit-linter-container-image ## Lint commits
+lint-commits: build-dev-container-image ## Lint commits
 	docker run \
 		-v "$(CURDIR):/source-repository" \
-		${COMMIT_LINTER_CONTAINER_URL} \
+		${DEV_CONTAINER_URL} \
+		commitlint \
 		--config .github/linters/commitlint.config.js \
 		--cwd /source-repository \
 		--from ${FROM_INTERVAL_COMMITLINT} \
 		--to ${TO_INTERVAL_COMMITLINT} \
 		--verbose
+
+.phony: release-please-dry-run
+release-please-dry-run: build-dev-container-image check-github-token ## Run release-please in dry-run mode to preview the release pull request
+	@echo "Running release-please against branch: ${RELEASE_PLEASE_TARGET_BRANCH}"; \
+	docker run \
+		-v "$(CURDIR):/source-repository" \
+		${DEV_CONTAINER_URL} \
+		release-please \
+		release-pr \
+		--config-file .github/release-please/release-please-config.json \
+		--dry-run \
+		--manifest-file .github/release-please/.release-please-manifest.json \
+		--repo-url super-linter/super-linter \
+		--target-branch ${RELEASE_PLEASE_TARGET_BRANCH} \
+		--token "$(shell cat "${GITHUB_TOKEN_PATH}")" \
+		--trace \
