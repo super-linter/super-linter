@@ -114,3 +114,19 @@ jobs:
 
       - name: Run Test Suite
         run: make test
+
+  preview-release-notes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup authentication token
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" > .github-personal-access-token
+
+      - name: Generate a preview of the release notes
+        run: |
+          make release-please-dry-run

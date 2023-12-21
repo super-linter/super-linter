@@ -81,8 +81,6 @@ More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) ava
 
 To run super-linter as a GitHub Action, you do the following:
 
-<!-- x-release-please-start-major -->
-
 1. Create a new [GitHub Actions workflow](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows) in your repository with the following content:
 
     ```yaml
@@ -109,7 +107,7 @@ To run super-linter as a GitHub Action, you do the following:
             uses: actions/checkout@v4
 
           - name: Super-linter
-            uses: super-linter/super-linter@v5
+            uses: super-linter/super-linter@v5.7.2  # x-release-please-version
             env:
               DEFAULT_BRANCH: main
               # To report GitHub Actions status checks
@@ -120,8 +118,6 @@ To run super-linter as a GitHub Action, you do the following:
 1. Commit that file to a new branch.
 1. Push the new commit to the remote repository.
 1. Create a new pull request to observe the results.
-
-<!-- x-release-please-end -->
 
 ## Add Super-Linter badge in your repository README
 
