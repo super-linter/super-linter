@@ -169,6 +169,20 @@ function BuildFileList() {
     debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
   fi
 
+  if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
+    debug "No need to configure the directories to check for Checkov."
+  else
+    debug "Checking if we are in test mode before configuring the list of directories to lint with Checkov"
+    if [ "${TEST_CASE_RUN}" == "true" ]; then
+      debug "We are running in test mode. Adding test case directories to the list of directories to analyze with Checkov."
+      FILE_ARRAY_CHECKOV+=("${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}/bad")
+      FILE_ARRAY_CHECKOV+=("${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}/good")
+    else
+      debug "We are not running in test mode (${TEST_CASE_RUN}). Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with Checkov."
+      FILE_ARRAY_CHECKOV+=("${GITHUB_WORKSPACE}")
+    fi
+  fi
+
   ################################################
   # Iterate through the array of all files found #
   ################################################

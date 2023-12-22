@@ -5,6 +5,9 @@ on:
   merge_group:
   workflow_dispatch:
 
+# Don't grant any access by default
+permissions: {}
+
 jobs:
   test:
     name: Build and Test
@@ -118,6 +121,8 @@ jobs:
   preview-release-notes:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+        contents: read
     steps:
       - uses: actions/checkout@v4
         with:

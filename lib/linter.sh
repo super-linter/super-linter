@@ -137,6 +137,7 @@ debug "TFLINT_LOG: ${TFLINT_LOG}"
 ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ARM_FILE_NAME=".arm-ttk.psd1"
+CHECKOV_FILE_NAME="${CHECKOV_FILE_NAME:-".checkov.yaml"}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 CLOJURE_FILE_NAME=".clj-kondo/config.edn"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -293,7 +294,7 @@ fi
 ##################
 # Language array #
 ##################
-LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CLANG_FORMAT'
+LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CHECKOV' 'CLANG_FORMAT'
   'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS' 'DART'
   'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GITHUB_ACTIONS'
   'GITLEAKS' 'GHERKIN' 'GO' 'GO_MODULES' 'GOOGLE_JAVA_FORMAT' 'GROOVY' 'HTML' 'JAVA'
@@ -315,6 +316,7 @@ LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
 LINTER_NAMES_ARRAY['ARM']="arm-ttk"
 LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_NAMES_ARRAY['CHECKOV']="checkov"
 LINTER_NAMES_ARRAY['CLANG_FORMAT']="clang-format"
 LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
 LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
@@ -871,10 +873,16 @@ ConfigureGitSafeDirectories
 ########################################################
 # Initialize variables that depend on GitHub variables #
 ########################################################
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"                               # Default Ansible Directory
-export DEFAULT_ANSIBLE_DIRECTORY                                                      # Workaround SC2034
-DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible" # Default Ansible directory when running test cases
-export DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY                                            # Workaround SC2034
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
+debug "DEFAULT_ANSIBLE_DIRECTORY: ${DEFAULT_ANSIBLE_DIRECTORY}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible"
+debug "DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
+
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+DEFAULT_CHECKOV_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/checkov"
+debug "DEFAULT_CHECKOV_TEST_CASE_DIRECTORY: ${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}"
 
 TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
 debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
@@ -923,6 +931,15 @@ else
   LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources --severity=${BASH_SEVERITY}"
 fi
 LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_COMMANDS_ARRAY['CHECKOV']="checkov --config-file ${CHECKOV_LINTER_RULES}"
+
+if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
+  debug "No need to update the Checkov command."
+else
+  debug "Adding the '--directory' option to the Checkov command."
+  LINTER_COMMANDS_ARRAY['CHECKOV']="${LINTER_COMMANDS_ARRAY['CHECKOV']} --directory"
+fi
+
 LINTER_COMMANDS_ARRAY['CLANG_FORMAT']="clang-format --Werror --dry-run"
 LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
 LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"

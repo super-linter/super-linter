@@ -31,7 +31,7 @@ FROM yoheimuta/protolint:0.47.2 as protolint
 FROM python:3.12.1-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
-    com.github.actions.description="A collection of code linters and analyzers." \
+    com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
     com.github.actions.icon="code" \
     com.github.actions.color="red" \
     maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
@@ -39,7 +39,6 @@ LABEL com.github.actions.name="Super-Linter" \
     org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
     org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
     org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.vendor="GitHub" \
     org.opencontainers.image.description="A collection of code linters and analyzers."
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
@@ -309,6 +308,7 @@ ENV IMAGE="slim"
 
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
+ENV PATH="${PATH}:/venvs/checkov/bin"
 ENV PATH="${PATH}:/venvs/cfn-lint/bin"
 ENV PATH="${PATH}:/venvs/cpplint/bin"
 ENV PATH="${PATH}:/venvs/flake8/bin"
