@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels inspec lint-codebase test-find test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-find test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -150,6 +150,17 @@ lint-codebase: ## Lint the entire codebase
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-v "$(CURDIR):/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-lib
+test-lib: test-build-file-list ## Test super-linter
+
+.phony: test-build-file-list
+test-build-file-list: ## Test buildFileList
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-linters

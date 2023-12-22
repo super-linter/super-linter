@@ -1,24 +1,28 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter Build File List Functions @admiralawkbar ##############
-################################################################################
-################################################################################
-########################## FUNCTION CALLS BELOW ################################
-################################################################################
-
-################################################################################
-#### Function BuildFileList ####################################################
 function IssueHintForFullGitHistory() {
   info "Check that you have the full git history, the checkout is not shallow, etc"
   info "Is shallow repository: $(git -C "${GITHUB_WORKSPACE}" rev-parse --is-shallow-repository)"
   info "See https://github.com/super-linter/super-linter#example-connecting-github-action-workflow"
 }
 
-################################################################################
-#### Function GenerateFileDiff #################################################
 function GenerateFileDiff() {
+  DIFF_GIT_DEFAULT_BRANCH_CMD="git -C \"${GITHUB_WORKSPACE}\" diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+  DIFF_TREE_CMD="git -C \"${GITHUB_WORKSPACE}\" diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} ${GITHUB_BEFORE_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
+
+  if [ "${GITHUB_EVENT_NAME:-}" == "push" ]; then
+    RunFileDiffCommand "${DIFF_TREE_CMD}"
+    if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
+      debug "----------------------------------------------"
+      debug "Generating the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
+      RunFileDiffCommand "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
+    fi
+  else
+    RunFileDiffCommand "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
+  fi
+}
+
+function RunFileDiffCommand() {
   CMD="${1}"
   debug "Generating Diff with:[$CMD]"
 
@@ -49,8 +53,6 @@ function GenerateFileDiff() {
   debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
-################################################################################
-#### Function BuildFileList ####################################################
 function BuildFileList() {
   debug "Building file list..."
 
@@ -70,29 +72,7 @@ function BuildFileList() {
     debug "----------------------------------------------"
     debug "Build the list of all changed files"
 
-    DIFF_GIT_DEFAULT_BRANCH_CMD="git -C ${GITHUB_WORKSPACE} diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-
-    if [ "${GITHUB_EVENT_NAME}" == "push" ]; then
-      ################
-      # push event   #
-      ################
-      DIFF_TREE_CMD="git -C ${GITHUB_WORKSPACE} diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-      GenerateFileDiff "${DIFF_TREE_CMD}"
-
-      ###############################################################
-      # Need to see if the array is empty, if so, try the other way #
-      ###############################################################
-      if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
-        debug "----------------------------------------------"
-        debug "Generating the file array with diff-tree produced [0] items, trying with git diff against the default branch..."
-        GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
-      fi
-    else
-      ################
-      # PR event     #
-      ################
-      GenerateFileDiff "${DIFF_GIT_DEFAULT_BRANCH_CMD}"
-    fi
+    GenerateFileDiff
   else
     WORKSPACE_PATH="${GITHUB_WORKSPACE}"
     if [ "${TEST_CASE_RUN}" == "true" ]; then
@@ -131,8 +111,9 @@ function BuildFileList() {
         2>&1 | sort)
     else
       debug "----------------------------------------------"
-      debug "Populating the file list with:[git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\"]"
-      mapfile -t RAW_FILE_ARRAY < <(git -C "${WORKSPACE_PATH}" ls-tree -r --name-only HEAD | xargs -I % sh -c "echo ${WORKSPACE_PATH}/%" 2>&1)
+      DIFF_GIT_VALIDATE_ALL_CODEBASE="git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\" 2>&1"
+      debug "Populating the file list with: ${DIFF_GIT_VALIDATE_ALL_CODEBASE}"
+      mapfile -t RAW_FILE_ARRAY < <(eval "set -eo pipefail; ${DIFF_GIT_VALIDATE_ALL_CODEBASE}; set +eo pipefail")
       debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
     fi
   fi

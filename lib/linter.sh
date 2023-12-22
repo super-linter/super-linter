@@ -569,6 +569,21 @@ GetGitHubVars() {
         fatal "[Output: ${GITHUB_SHA}]"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
+    elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
+      debug "This is a GitHub push event."
+
+      GITHUB_BEFORE_SHA=$(jq -r .push.before <"$GITHUB_EVENT_PATH")
+      ERROR_CODE=$?
+      debug "GITHUB_BEFORE_SHA initialization error code: ${ERROR_CODE}"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
+      fi
+
+      if [ -z "${GITHUB_BEFORE_SHA}" ]; then
+        fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA}]"
+      else
+        info "Successfully found:${F[W]}[GITHUB_BEFORE_SHA]${F[B]}, value:${F[W]}[${GITHUB_BEFORE_SHA}]"
+      fi
     fi
 
     ############################
