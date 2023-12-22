@@ -939,7 +939,7 @@ if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" = "null" ]; then
 else
   LINTER_COMMANDS_ARRAY['GITHUB_ACTIONS']="actionlint -config-file ${GITHUB_ACTIONS_LINTER_RULES} ${GITHUB_ACTIONS_COMMAND_ARGS}"
 fi
-LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks detect --no-banner --no-git -c ${GITLEAKS_LINTER_RULES} -v -s"
+LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks detect --no-banner --no-git --redact --config ${GITLEAKS_LINTER_RULES} --verbose --source"
 LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['GO_MODULES']="golangci-lint run -c ${GO_LINTER_RULES}"
 LINTER_COMMANDS_ARRAY['GO']="${LINTER_COMMANDS_ARRAY['GO_MODULES']} --fast"
