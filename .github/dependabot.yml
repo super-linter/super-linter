@@ -65,6 +65,14 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
 
+  - package-ecosystem: "gradle"
+    commit-message:
+      prefix: "deps(java)"
+    directory: "/dependencies/ktlint"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
   # Maintain dev dependencies for docker
   - package-ecosystem: "docker"
     commit-message:

@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+KTLINT_VERSION="$(
+  set -euo pipefail
+  grep <"ktlint/build.gradle" "ktlint" | awk -F ':' '{print $3}' | tr -d "'"
+)"
+echo "Installing Ktlint: ${KTLINT_VERSION}"
+
 url=$(
   set -euo pipefail
   curl -s \

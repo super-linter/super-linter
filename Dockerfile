@@ -252,7 +252,6 @@ RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
 ##################
 # Install ktlint #
 ##################
-ARG KTLINT_VERSION='0.47.1'
 COPY scripts/install-ktlint.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
 

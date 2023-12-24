@@ -1,0 +1,12 @@
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+// Hold this dependency here so we can get automated updates using DependaBot
+dependencies {
+  implementation 'com.pinterest.ktlint:ktlint-cli:0.47.1'
+}
+
+group 'com.github.super-linter'
+version '1.0.0-SNAPSHOT'
