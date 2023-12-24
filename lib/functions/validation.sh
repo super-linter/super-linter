@@ -282,4 +282,5 @@ function WarnIfVariableIsSet() {
 function ValidateDeprecatedVariables() {
   WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER}" "EXPERIMENTAL_BATCH_WORKER"
   WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE}" "VALIDATE_JSCPD_ALL_CODEBASE"
+  WarnIfVariableIsSet "${VALIDATE_KOTLIN_ANDROID}" "VALIDATE_KOTLIN_ANDROID"
 }

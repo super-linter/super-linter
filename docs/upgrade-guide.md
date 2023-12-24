@@ -39,3 +39,8 @@ This section helps you migrate from super-linter `v5` to `v6`.
   `IGNORE_GENERATED_FILES`, `IGNORE_GITIGNORED_FILES` variables. For more
   information about how to ignore files with textlint, see
   [the textlint documentation](https://textlint.github.io/docs/ignore.html).
+
+### VALIDATE_KOTLIN_ANDROID
+
+- The `VALIDATE_KOTLIN_ANDROID` variable has been deprecated. If you set it in
+  your configuration, change it to `VALIDATE_KOTLIN`.
