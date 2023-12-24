@@ -9,9 +9,9 @@ Fixes #
 
 ## Proposed Changes
 
-1. ...
-2. ...
-3. ...
+- ...
+- ...
+- ...
 
 ## Readiness Checklist
 
@@ -23,6 +23,7 @@ In order to have this pull request merged, complete the following tasks.
 - [ ] I provided the necessary tests.
 - [ ] I squashed all the commits into a single commit.
 - [ ] I followed the [Conventional Commit v1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/).
+- [ ] If this is a breaking change, write upgrade instructions in the [upgrade guide](../docs/upgrade-guide.md).
 
 ### Super-linter maintainer tasks
 

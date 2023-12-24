@@ -149,6 +149,7 @@ lint-codebase: ## Lint the entire codebase
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
@@ -167,11 +168,11 @@ test-build-file-list: ## Test buildFileList
 test-linters: ## Run the linters test suite
 	docker run \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ANSIBLE_DIRECTORY=test/linters/ansible \
 		-e CHECKOV_FILE_NAME=".checkov-test-linters.yaml" \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e RUN_LOCAL=true \
 		-e TEST_CASE_RUN=true \

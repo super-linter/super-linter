@@ -1,0 +1,11 @@
+---
+- name: Test playbook
+  hosts: all
+  tasks:
+    - name: Remove temp files
+      become: true
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/tmp/test-1"

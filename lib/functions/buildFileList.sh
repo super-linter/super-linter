@@ -65,9 +65,6 @@ function BuildFileList() {
   TEST_CASE_RUN="${2}"
   debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
-  ANSIBLE_DIRECTORY="${3}"
-  debug "ANSIBLE_DIRECTORY: ${ANSIBLE_DIRECTORY}"
-
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "----------------------------------------------"
     debug "Build the list of all changed files"
@@ -140,14 +137,67 @@ function BuildFileList() {
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
   fi
 
-  #########################################
-  # Check if the Ansible directory exists #
-  #########################################
-  if [ -d "${ANSIBLE_DIRECTORY}" ]; then
-    debug "Adding ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) to the list of files and directories to lint."
-    FILE_ARRAY_ANSIBLE+=("${ANSIBLE_DIRECTORY}")
+  ####################################################
+  # Configure linters that scan the entire workspace #
+  ####################################################
+  debug "Checking if we are in test mode before configuring the list of directories to lint"
+  if [ "${TEST_CASE_RUN}" == "true" ]; then
+    debug "We are running in test mode."
+
+    debug "Adding test case directories to the list of directories to analyze with ansible-lint."
+    DEFAULT_ANSIBLE_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible"
+    debug "DEFAULT_ANSIBLE_TEST_CASE_DIRECTORY: ${DEFAULT_ANSIBLE_TEST_CASE_DIRECTORY}"
+    FILE_ARRAY_ANSIBLE+=("${DEFAULT_ANSIBLE_TEST_CASE_DIRECTORY}/bad")
+    FILE_ARRAY_ANSIBLE+=("${DEFAULT_ANSIBLE_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with Checkov."
+    DEFAULT_CHECKOV_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/checkov"
+    debug "DEFAULT_CHECKOV_TEST_CASE_DIRECTORY: ${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}"
+    FILE_ARRAY_CHECKOV+=("${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}/bad")
+    FILE_ARRAY_CHECKOV+=("${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with Gitleaks."
+    DEFAULT_GITLEAKS_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/gitleaks"
+    debug "DEFAULT_GITLEAKS_TEST_CASE_DIRECTORY: ${DEFAULT_GITLEAKS_TEST_CASE_DIRECTORY}"
+    FILE_ARRAY_GITLEAKS+=("${DEFAULT_GITLEAKS_TEST_CASE_DIRECTORY}/bad")
+    FILE_ARRAY_GITLEAKS+=("${DEFAULT_GITLEAKS_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with Checkov."
+    DEFAULT_JSCPD_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/jscpd"
+    debug "DEFAULT_JSCPD_TEST_CASE_DIRECTORY: ${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}"
+    FILE_ARRAY_JSCPD+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/bad")
+    FILE_ARRAY_JSCPD+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with textlint."
+    DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/natural_language"
+    debug "DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY: ${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}"
+    FILE_ARRAY_NATURAL_LANGUAGE+=("${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}/bad")
+    FILE_ARRAY_NATURAL_LANGUAGE+=("${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}/good")
   else
-    debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+    debug "We are not running in test mode (${TEST_CASE_RUN})."
+
+    if [ -d "${ANSIBLE_DIRECTORY}" ]; then
+      debug "Adding ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) to the list of files and directories to lint."
+      FILE_ARRAY_ANSIBLE+=("${ANSIBLE_DIRECTORY}")
+    else
+      debug "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) does NOT exist."
+    fi
+
+    if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
+      debug "No need to configure the directories to check for Checkov."
+    else
+      debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with Checkov."
+      FILE_ARRAY_CHECKOV+=("${GITHUB_WORKSPACE}")
+    fi
+
+    debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with Gitleaks."
+    FILE_ARRAY_GITLEAKS+=("${GITHUB_WORKSPACE}")
+
+    debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with JSCPD."
+    FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
+
+    debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with textlint."
+    FILE_ARRAY_NATURAL_LANGUAGE+=("${GITHUB_WORKSPACE}")
   fi
 
   if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
@@ -238,22 +288,6 @@ function BuildFileList() {
 
     # Editorconfig-checker should check every file
     FILE_ARRAY_EDITORCONFIG+=("${FILE}")
-
-    # Textlint should check every file
-    FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
-
-    if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
-      debug "Not adding ${FILE} to FILE_ARRAY_JSCPD because we're going to lint the whole codebase anyway."
-    else
-      # jscpd also runs an all files
-      FILE_ARRAY_JSCPD+=("${FILE}")
-    fi
-    # Need to make sure we dont check the secrets paterns
-    # for secrets, as it will pop!
-    if [ "${BASE_FILE}" != ".gitleaks.toml" ]; then
-      # GitLeaks also runs an all files
-      FILE_ARRAY_GITLEAKS+=("${FILE}")
-    fi
 
     # See https://docs.renovatebot.com/configuration-options/
     if [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
@@ -799,11 +833,6 @@ function BuildFileList() {
     ##########################################
     debug ""
   done
-
-  if [ "${VALIDATE_JSCPD_ALL_CODEBASE}" == "true" ]; then
-    debug "Adding the root of the workspaces to the list of files and directories to lint with JSCPD..."
-    FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
-  fi
 
   ################
   # Footer print #

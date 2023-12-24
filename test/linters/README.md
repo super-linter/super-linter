@@ -15,9 +15,9 @@ language they refer to.
 The name of each test case denotes its nature:
 
 - Test cases that are expected to pass validation contain the `good` string in
-  their file name, or path. Example: `markdown_good_5.md`
+  their filename, or path. Example: `markdown_good_5.md`
 - Test cases that are expected to fail validation contain the `bad` string in
-  their file name, or path. Example: `markdown_bad_5.md`
+  their filename, or path. Example: `markdown_bad_5.md`
 
 ## Notes about specific tests
 
@@ -26,7 +26,7 @@ In this section, we explain the peculiarities of certain test cases.
 ### SQL Fluff test cases
 
 From version 0.12.0 SQLFluff requires a dialect to be set, and no longer sets a
-default. This can be provided as a command line argument, or a `.sqlfluff`
+default. This can be provided as a command-line argument, or a `.sqlfluff`
 config file (either in the usualy place for SQLFluff config files, or within the
 folder containg the SQL).
 

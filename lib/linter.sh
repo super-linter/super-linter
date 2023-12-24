@@ -57,11 +57,6 @@ source /action/lib/functions/validation.sh # Source the function script(s)
 source /action/lib/functions/worker.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/setupSSH.sh # Source the function script(s)
-# shellcheck source=/dev/null
-for batch_worker_script in /action/lib/functions/experimental-batch-workers/*.sh; do
-  # shellcheck source=/dev/null
-  source "$batch_worker_script"
-done
 
 # Initialize RUN_LOCAL early because we need it for logging
 DEFAULT_RUN_LOCAL='false'
@@ -888,17 +883,6 @@ ConfigureGitSafeDirectories
 ########################################################
 # Initialize variables that depend on GitHub variables #
 ########################################################
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-DEFAULT_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
-debug "DEFAULT_ANSIBLE_DIRECTORY: ${DEFAULT_ANSIBLE_DIRECTORY}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ansible"
-debug "DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY: ${DEFAULT_TEST_CASE_ANSIBLE_DIRECTORY}"
-
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-DEFAULT_CHECKOV_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/checkov"
-debug "DEFAULT_CHECKOV_TEST_CASE_DIRECTORY: ${DEFAULT_CHECKOV_TEST_CASE_DIRECTORY}"
-
 TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
 debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 
@@ -915,6 +899,8 @@ if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" =
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
+
+ValidateDeprecatedVariables
 
 #################################
 # Get the linter rules location #
@@ -1067,15 +1053,10 @@ debug "---------------------------------------------"
 #################################
 CheckSSLCert
 
-# Check if we need to lint the whole codebase with JSCPD
-VALIDATE_JSCPD_ALL_CODEBASE="${VALIDATE_JSCPD_ALL_CODEBASE:-"false"}"
-export VALIDATE_JSCPD_ALL_CODEBASE
-debug "VALIDATE_JSCPD_ALL_CODEBASE: ${VALIDATE_JSCPD_ALL_CODEBASE}"
-
 ###########################################
 # Build the list of files for each linter #
 ###########################################
-BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}" "${ANSIBLE_DIRECTORY}"
+BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
 
 #####################################
 # Run additional Installs as needed #
@@ -1096,13 +1077,6 @@ PRINTENV=$(printenv | sort)
 debug "ENV:"
 debug "${PRINTENV}"
 debug "------------------------------------"
-
-if [ "${EXPERIMENTAL_BATCH_WORKER}" == "true" ]; then
-  # we have showed citation once, so every other parallel call will use --will-cite
-  info parallel --citation
-else
-  EXPERIMENTAL_BATCH_WORKER="false"
-fi
 
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
@@ -1154,7 +1128,7 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
 
     debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${EXPERIMENTAL_BATCH_WORKER}" "${!LANGUAGE_FILE_ARRAY}"
+    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
   fi
   endGitHubActionsLogGroup "${LANGUAGE}"
 done
