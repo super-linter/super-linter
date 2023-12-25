@@ -7,6 +7,10 @@ function GetValidationInfo() {
   info "--------------------------------------------"
   info "Gathering user validation information..."
 
+  if [[ "${USE_FIND_ALGORITHM}" == "true" ]] && [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
+    fail "Setting USE_FIND_ALGORITHM to true and VALIDATE_ALL_CODEBASE to false is not supported because super-linter relies on Git to validate changed files."
+  fi
+
   ###########################################
   # Skip validation if were running locally #
   ###########################################

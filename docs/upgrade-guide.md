@@ -40,7 +40,19 @@ This section helps you migrate from super-linter `v5` to `v6`.
   information about how to ignore files with textlint, see
   [the textlint documentation](https://textlint.github.io/docs/ignore.html).
 
+### USE_FIND_ALGORITHM and VALIDATE_ALL_CODEBASE used together
+
+- Setting `USE_FIND_ALGORITHM` to `true` and `VALIDATE_ALL_CODEBASE` to `false`
+  is an unsupported configuration. super-linter `v5` and earlier silently
+  ignored `VALIDATE_ALL_CODEBASE` when `USE_FIND_ALGORITHM` is set to `true`,
+  leading to potentially confusing behavior for users. super-linter `v6`
+  explicitly fail in this case. Remove one of the two from your configuration,
+  depending on the desired behavior.
+
 ### VALIDATE_KOTLIN_ANDROID
 
-- The `VALIDATE_KOTLIN_ANDROID` variable has been deprecated. If you set it in
-  your configuration, change it to `VALIDATE_KOTLIN`.
+- The `VALIDATE_KOTLIN_ANDROID` variable has been deprecated because ktlint
+  handles linting Kotlin files for Android using a configuration option, so
+  super-linter doesn't need to account for this special case anymore. If you
+  set `VALIDATE_KOTLIN_ANDROID` in your configuration, change it to
+  `VALIDATE_KOTLIN` and configure ktlint to lint Android files.
