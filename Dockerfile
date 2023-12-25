@@ -27,6 +27,7 @@ FROM rhysd/actionlint:1.6.26 as actionlint
 FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.47.3 as protolint
+FROM ghcr.io/clj-kondo/clj-kondo:2023.05.18-alpine as clj-kondo
 
 FROM python:3.12.1-alpine3.19 as base_image
 
@@ -215,6 +216,11 @@ ARG GLIBC_VERSION
 COPY scripts/install-glibc.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-glibc.sh
 
+#####################
+# Install clj-kondo #
+#####################
+COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
+
 #################
 # Install Lintr #
 #################
@@ -241,13 +247,6 @@ WORKDIR /
 ##############################
 COPY scripts/install-phive.sh /
 RUN /install-phive.sh && rm -rf /install-phive.sh
-
-#####################
-# Install clj-kondo #
-#####################
-ARG CLJ_KONDO_VERSION='2023.05.18'
-COPY scripts/install-clj-kondo.sh /
-RUN /install-clj-kondo.sh && rm -rf /install-clj-kondo.sh
 
 ##################
 # Install ktlint #
