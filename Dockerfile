@@ -28,6 +28,7 @@ FROM scalameta/scalafmt:v3.7.17 as scalafmt
 FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.47.3 as protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2023.05.18-alpine as clj-kondo
+FROM dart:3.2.4-sdk as dart
 
 FROM python:3.12.1-alpine3.19 as base_image
 
@@ -221,6 +222,13 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-gli
 #####################
 COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 
+####################
+# Install dart-sdk #
+####################
+ENV DART_SDK /usr/lib/dart
+COPY --from=dart "${DART_SDK}" "${DART_SDK}"
+RUN chmod 755 "${DART_SDK}" && chmod 755 "${DART_SDK}/bin"
+
 #################
 # Install Lintr #
 #################
@@ -258,13 +266,6 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-kt
 # Install Raku and additional Edge dependencies #
 #################################################
 RUN apk add --no-cache rakudo zef
-
-####################
-# Install dart-sdk #
-####################
-ARG DART_VERSION='2.8.4'
-COPY scripts/install-dart-sdk.sh /
-RUN /install-dart-sdk.sh && rm -rf /install-dart-sdk.sh
 
 ######################
 # Install CheckStyle #
@@ -320,6 +321,7 @@ ENV PATH="${PATH}:/venvs/yamllint/bin"
 ENV PATH="${PATH}:/venvs/yq/bin"
 ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
+ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 
 # Configure TFLint plugin folder
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"

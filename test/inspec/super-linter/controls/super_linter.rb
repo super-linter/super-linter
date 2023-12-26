@@ -483,7 +483,6 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",
-    "/action/lib/.automation/analysis_options.yml",
     "/action/lib/.automation/phpcs.xml",
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",

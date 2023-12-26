@@ -8,6 +8,15 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 This section helps you migrate from super-linter `v5` to `v6`.
 
+### Dart
+
+- super-linter doesn't include a default configuration file for `dart analyzer`
+  because the Dart SDK doesn't support running `dart analyzer` against an
+  arbitrary configuration file anymore. For more information about how to
+  customize static analysis of Dart files, see
+  [Customizing static analysis](https://dart.dev/tools/analysis) in the Dart SDK
+  documentation.
+
 ### Experimental batch workers
 
 - Experimental batch support is deprecated. You can safely remove the
