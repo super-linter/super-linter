@@ -32,6 +32,13 @@ rm "glibc-${GLIBC_VERSION}.apk"
 
 # Install zlib
 mkdir /tmp/libz
+
+apk add --no-cache --virtual .glibc-build-deps \
+  tar \
+  zstd
+
 curl --retry 5 --retry-delay 5 -sL https://www.archlinux.org/packages/core/${target}/zlib/download | tar -x --zstd -C /tmp/libz
 mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib
 rm -rf /tmp/libz
+
+apk del --no-network --purge .glibc-build-deps

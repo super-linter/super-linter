@@ -8,6 +8,12 @@
 #####################
 set -euo pipefail
 
+apk add --no-cache --virtual .python-build-deps \
+  gcc \
+  linux-headers \
+  musl-dev \
+  python3-dev
+
 ############################
 # Create staging directory #
 ############################
@@ -32,9 +38,13 @@ for DEP_FILE in *.txt; do
   virtualenv .
   # shellcheck disable=SC1091
   source bin/activate
-  pip install -r requirements.txt
+  pip install \
+    --no-cache-dir \
+    --requirement requirements.txt
   # deactivate the python virtualenv
   deactivate
   # pop the stack
   popd
 done
+
+apk del --no-network --purge .python-build-deps

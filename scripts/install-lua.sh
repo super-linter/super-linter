@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+apk add --no-cache --virtual .lua-build-deps \
+  gcc \
+  make \
+  musl-dev \
+  readline-dev
+
 curl --retry 5 --retry-delay 5 -s https://www.lua.org/ftp/lua-5.3.5.tar.gz | tar -xz
 cd lua-5.3.5
 make linux
@@ -30,3 +36,5 @@ rm -r cvega-luarocks-6b1aee6
 luarocks install luacheck
 luarocks install argparse
 luarocks install luafilesystem
+
+apk del --no-network --purge .lua-build-deps
