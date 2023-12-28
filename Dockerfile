@@ -9,7 +9,6 @@
 #########################################
 FROM tenable/terrascan:1.18.11 as terrascan
 FROM alpine/terragrunt:1.6.6 as terragrunt
-FROM ghcr.io/assignuser/chktex-alpine:v0.2.0 as chktex
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint:v0.50.0 as tflint
@@ -129,6 +128,14 @@ RUN apk add --no-cache --virtual .perl-build-deps \
     Perl::Critic::Tics \
     && apk del --no-network --purge .perl-build-deps
 
+##################
+# Install chktex #
+##################
+COPY scripts/install-chktex.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-chktex.sh && rm -rf /install-chktex.sh
+# Set work directory back to root because some scripts depend on it
+WORKDIR /
+
 ######################
 # Install shellcheck #
 ######################
@@ -178,11 +185,6 @@ COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 # Install hadolint dockerfile #
 ###############################
 COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
-
-##################
-# Install chktex #
-##################
-COPY --from=chktex /usr/bin/chktex /usr/bin/
 
 #################
 # Install shfmt #
