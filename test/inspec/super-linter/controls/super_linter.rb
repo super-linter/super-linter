@@ -14,43 +14,20 @@ control "super-linter-installed-packages" do
   packages = [
     "bash",
     "ca-certificates",
-    "cargo",
-    "cmake",
     "coreutils",
     "curl",
     "file",
-    "g++",
-    "gcc",
     "git-lfs",
     "git",
     "glibc",
-    "gnupg",
     "go",
-    "icu-libs",
-    "jpeg-dev",
     "jq",
-    "krb5-libs",
-    "libc-dev",
-    "libcurl",
-    "libffi-dev",
-    "libgcc",
-    "libintl",
-    "libssl3",
-    "libstdc++",
-    "libxml2-dev",
     "libxml2-utils",
-    "linux-headers",
-    "lttng-ust-dev",
-    "make",
-    "musl-dev",
     "nodejs-current",
     "npm",
-    "net-snmp-dev",
     "openjdk17-jre",
     "openssh-client",
-    "openssl-dev",
     "parallel",
-    "perl-dev",
     "perl",
     "php82",
     "php82-ctype",
@@ -63,29 +40,19 @@ control "super-linter-installed-packages" do
     "php82-simplexml",
     "php82-tokenizer",
     "php82-xmlwriter",
-    "py3-pyflakes",
-    "py3-setuptools",
-    "python3-dev",
-    "R-dev",
-    "R-doc",
     "R",
     "rakudo",
-    "readline-dev",
-    "ruby-bundler",
-    "ruby-dev",
-    "ruby-rdoc",
     "ruby",
-    "rustup",
+    "rust-clippy",
+    "rustfmt",
     "tar",
-    "zef",
-    "zlib-dev",
-    "zlib",
-    "zstd"
+    "zef"
   ]
 
   # Removed linters from slim image
   SLIM_IMAGE_REMOVED_PACKAGES=%w(
-    rustup
+    rust-clippy
+    rustfmt
   )
 
   packages.each do |item|
@@ -95,6 +62,36 @@ control "super-linter-installed-packages" do
       describe package(item) do
         it { should be_installed }
       end
+    end
+  end
+end
+
+control "super-linter-uninstalled-packages" do
+  impact 1
+  title "Super-Linter uninstalled packages check"
+  desc "Check that packages that Super-Linter doesn't need are not installed."
+
+  packages = [
+    "cmake",
+    "g++",
+    "gnupg",
+    "libc-dev",
+    "libxml2-dev",
+    "linux-headers",
+    "make",
+    "perl-dev",
+    "python3-dev",
+    "R-dev",
+    "R-doc",
+    "readline-dev",
+    "ruby-bundler",
+    "ruby-dev",
+    "ruby-rdoc"
+  ]
+
+  packages.each do |item|
+    describe package(item) do
+      it { should_not be_installed }
     end
   end
 end

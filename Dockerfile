@@ -1,10 +1,8 @@
-###########################################
-###########################################
-## Dockerfile to run GitHub Super-Linter ##
-###########################################
-###########################################
-
-ARG GLIBC_VERSION='2.34-r0'
+####################################
+####################################
+## Dockerfile to run Super-Linter ##
+####################################
+####################################
 
 #########################################
 # Get dependency images as build stages #
@@ -47,79 +45,89 @@ LABEL com.github.actions.name="Super-Linter" \
 ARG TARGETARCH
 
 # Install bash first so we can use it
+# This is also a super-linter runtime dependency
 RUN apk add --no-cache \
     bash
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
+# Install super-linter runtime dependencies
 RUN apk add --no-cache \
     ca-certificates \
-    cargo \
-    cmake \
     coreutils \
     curl \
     file \
-    g++ \
-    gcc \
     git \
     git-lfs \
-    gnupg \
-    icu-libs \
-    jpeg-dev \
     jq \
-    krb5-libs \
-    libc-dev \
-    libcurl \
-    libffi-dev \
-    libgcc \
-    libintl \
-    libssl3 \
-    libstdc++ \
-    libxml2-dev \
     libxml2-utils \
-    linux-headers \
-    lttng-ust-dev \
-    make \
-    musl-dev \
-    net-snmp-dev \
     nodejs-current \
-    npm \
     openjdk17-jre \
     openssh-client \
-    openssl-dev \
-    parallel \
     perl \
-    perl-dev \
-    py3-pyflakes \
-    py3-setuptools \
-    python3-dev  \
+    php82 \
+    php82-ctype \
+    php82-curl \
+    php82-dom \
+    php82-iconv \
+    php82-mbstring \
+    php82-openssl \
+    php82-phar \
+    php82-simplexml \
+    php82-tokenizer \
+    php82-xmlwriter \
     R \
-    R-dev \
-    R-doc \
-    readline-dev \
+    rakudo \
     ruby \
+    zef
+
+# Install Node tools
+# The chown fixes broken uid/gid in ast-types-flow dependency
+# (see https://github.com/super-linter/super-linter/issues/3901)
+# Npm is not a runtime dependency but we need it to ensure that npm packages
+# are installed when we run the test suite. If we decide to remove it, add
+# the following command to the RUN instruction below:
+# apk del --no-network --purge .node-build-deps
+COPY dependencies/package.json dependencies/package-lock.json /
+RUN apk add --no-cache --virtual .node-build-deps \
+    npm \
+    && npm install \
+    && npm cache clean --force \
+    && chown -R "$(id -u)":"$(id -g)" node_modules \
+    && rm -rfv package.json package-lock.json
+
+# Install Ruby tools
+COPY dependencies/Gemfile dependencies/Gemfile.lock /
+RUN apk add --no-cache --virtual .ruby-build-deps \
+    gcc \
+    make \
+    musl-dev \
     ruby-bundler \
     ruby-dev \
     ruby-rdoc \
-    rustup \
-    tar \
-    zlib \
-    zlib-dev \
-    zstd
-
-COPY dependencies/ /
-
-###################################################################
-# Install Dependencies                                            #
-# The chown fixes broken uid/gid in ast-types-flow dependency     #
-# (see https://github.com/super-linter/super-linter/issues/3901)  #
-###################################################################
-RUN npm install && chown -R "$(id -u)":"$(id -g)" node_modules && bundle install
+    && bundle install \
+    && apk del --no-network --purge .ruby-build-deps \
+    && rm -rf Gemfile Gemfile.lock
 
 ##############################
 # Installs Perl dependencies #
 ##############################
-RUN curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ | perl - -nq --no-wget Perl::Critic Perl::Critic::Community Perl::Critic::More Perl::Critic::Bangs Perl::Critic::Lax Perl::Critic::StricterSubs Perl::Critic::Swift Perl::Critic::Tics
+RUN apk add --no-cache --virtual .perl-build-deps \
+    gcc \
+    make \
+    musl-dev \
+    perl-dev \
+    && curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ \
+    | perl - -nq --no-wget \
+    Perl::Critic \
+    Perl::Critic::Bangs \
+    Perl::Critic::Community \
+    Perl::Critic::Lax \
+    Perl::Critic::More \
+    Perl::Critic::StricterSubs \
+    Perl::Critic::Swift \
+    Perl::Critic::Tics \
+    && apk del --no-network --purge .perl-build-deps
 
 ######################
 # Install shellcheck #
@@ -206,16 +214,16 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 ######################
 COPY --from=kubeconfrm /kubeconform /usr/bin/
 
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-
 #################
 # Install glibc #
 #################
-ARG GLIBC_VERSION
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+ARG GLIBC_VERSION='2.34-r0'
 COPY scripts/install-glibc.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh && rm -rf /install-glibc.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh \
+    && rm -rf /install-glibc.sh /sgerrand.rsa.pub
 
 #####################
 # Install clj-kondo #
@@ -246,43 +254,41 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.s
 #####################################
 COPY dependencies/python/ /stage
 WORKDIR /stage
-RUN ./build-venvs.sh
+RUN ./build-venvs.sh && rm -rfv /stage
 # Set work directory back to root because some scripts depend on it
 WORKDIR /
 
 ##############################
 # Install Phive dependencies #
 ##############################
+COPY dependencies/phive.xml /phive.xml
 COPY scripts/install-phive.sh /
-RUN /install-phive.sh && rm -rf /install-phive.sh
+RUN /install-phive.sh \
+    && rm -rfv /install-phive.sh /phive.xml
 
 ##################
 # Install ktlint #
 ##################
 COPY scripts/install-ktlint.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh && rm -rf /install-ktlint.sh
-
-#################################################
-# Install Raku and additional Edge dependencies #
-#################################################
-RUN apk add --no-cache rakudo zef
+COPY dependencies/ktlint /ktlint
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh \
+    && rm -rfv /install-ktlint.sh /ktlint
 
 ######################
 # Install CheckStyle #
 ######################
 COPY scripts/install-checkstyle.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh && rm -rf /install-checkstyle.sh
+COPY dependencies/checkstyle /checkstyle
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh \
+    && rm -rfv /install-checkstyle.sh /checkstyle
 
 ##############################
 # Install google-java-format #
 ##############################
 COPY scripts/install-google-java-format.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh && rm -rf /install-google-java-format.sh
-
-#########################
-# Clean to shrink image #
-#########################
-RUN find /usr/ -type f -name '*.md' -exec rm {} +
+COPY dependencies/google-java-format /google-java-format
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
+    && rm -rfv /install-google-java-format.sh /google-java-format
 
 #####################
 # Install Bash-Exec #
@@ -327,16 +333,16 @@ ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
-# Run to build version file and validate image
-RUN tflint --init -c /action/lib/.automation/.tflint.hcl \
-    && ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
-
-ENTRYPOINT ["/action/lib/linter.sh"]
-
 # Initialize Terrascan
 # Initialize ChkTeX config file
-RUN terrascan init \
+RUN tflint --init -c /action/lib/.automation/.tflint.hcl \
+    && terrascan init \
     && touch ~/.chktexrc
+
+# Run to build version file and validate image
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
+
+ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image as slim
 
@@ -369,6 +375,14 @@ ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
+# Install super-linter runtime dependencies
+RUN apk add --no-cache \
+    rust-clippy \
+    rustfmt
+
+COPY scripts/clippy.sh /usr/bin/clippy
+RUN chmod +x /usr/bin/clippy
+
 #########################
 # Install dotenv-linter #
 #########################
@@ -379,13 +393,6 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 ###################################
 COPY scripts/install-dotnet.sh /
 RUN /install-dotnet.sh && rm -rf /install-dotnet.sh
-
-##############################
-# Install rustfmt & clippy   #
-##############################
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
-COPY scripts/install-rustfmt.sh /
-RUN /install-rustfmt.sh && rm -rf /install-rustfmt.sh
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #

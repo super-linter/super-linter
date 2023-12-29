@@ -2,10 +2,8 @@
 
 set -euo pipefail
 
-# Install PHP
-apk add --no-cache \
-  php82 php82-curl php82-ctype php82-dom php82-iconv php82-mbstring \
-  php82-openssl php82-phar php82-simplexml php82-tokenizer php82-xmlwriter
+apk add --no-cache --virtual .php-build-deps \
+  gnupg
 
 # Install phive
 curl --retry 5 --retry-delay 5 -sLO https://phar.io/releases/phive.phar
@@ -20,3 +18,5 @@ rm phive.phar.asc
 phive --no-progress install \
   --trust-gpg-keys 31C7E470E2138192,CF1A108D0E7AE720,8A03EA3B385DBAA1,12CE0F1D262429A5,5E6DDE998AB73B8E,51C67305FFC2E5C0,CBB3D576F2A0946F \
   --target /usr/bin
+
+apk del --no-network --purge .php-build-deps
