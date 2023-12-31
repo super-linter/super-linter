@@ -8,6 +8,14 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 This section helps you migrate from super-linter `v5` to `v6`.
 
+### eslint-config-airbnb-typescript
+
+- eslint-config-airbnb-typescript (a library to add TypeScript support to
+  Airbnb's ESLint config)
+  [appears to be unmaintained](https://github.com/iamturns/eslint-config-airbnb-typescript/issues/314).
+  We had to remove it from super-linter because it was blocking updates to other
+  dependencies, such as ESLint.
+
 ### Checkstyle
 
 - Checkstyle

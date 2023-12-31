@@ -305,7 +305,6 @@ control "super-linter-installed-npm-packages" do
     "axios",
     "eslint",
     "eslint-config-airbnb",
-    "eslint-config-airbnb-typescript",
     "eslint-config-prettier",
     "eslint-plugin-jest",
     "eslint-plugin-json",
