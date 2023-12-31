@@ -113,6 +113,7 @@ docker: check-github-token ## Build the container image
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
 		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
+		--target $(IMAGE) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
 
 .phony: docker-pull
