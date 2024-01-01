@@ -1,6 +1,11 @@
 @SuppressWarnings("checkstyle:hideutilityclassconstructor")
 public class Application {
 
+  protected StringUtils() {
+    // prevents calls from subclass
+    throw new UnsupportedOperationException();
+  }
+
   /**
    * main.
    *

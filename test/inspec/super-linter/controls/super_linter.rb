@@ -484,8 +484,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.yaml-lint.yml",
     "/action/lib/.automation/phpcs.xml",
     "/action/lib/.automation/phpstan.neon",
-    "/action/lib/.automation/psalm.xml",
-    "/action/lib/.automation/sun_checks.xml"
+    "/action/lib/.automation/psalm.xml"
   ]
 
   files.each do |item|
