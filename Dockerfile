@@ -10,7 +10,6 @@
 FROM tenable/terrascan:1.18.11 as terrascan
 FROM alpine/terragrunt:1.6.6 as terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
-FROM ghcr.io/awkbar-devops/clang-format:v1.0.2 as clang-format
 FROM ghcr.io/terraform-linters/tflint:v0.50.0 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.21.5-alpine as golang
@@ -26,6 +25,33 @@ FROM zricethezav/gitleaks:v8.18.1 as gitleaks
 FROM yoheimuta/protolint:0.47.4 as protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2023.12.15-alpine as clj-kondo
 FROM dart:3.2.4-sdk as dart
+
+FROM python:3.12.1-alpine3.19 as clang-format
+
+RUN apk add --no-cache \
+    build-base \
+    clang17 \
+    cmake \
+    git \
+    llvm17-dev \
+    ninja-is-really-ninja
+
+WORKDIR /tmp
+RUN git clone \
+    --branch "llvmorg-$(llvm-config  --version)" \
+    --depth 1 \
+    https://github.com/llvm/llvm-project.git
+
+WORKDIR /tmp/llvm-project/llvm/build
+RUN cmake \
+    -G Ninja \
+    -DCMAKE_BUILD_TYPE=MinSizeRel \
+    -DLLVM_BUILD_STATIC=ON \
+    -DLLVM_ENABLE_PROJECTS=clang \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ .. \
+    && ninja clang-format \
+    && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
 FROM python:3.12.1-alpine3.19 as base_image
 
@@ -191,11 +217,6 @@ COPY --from=dockerfile-lint /bin/hadolint /usr/bin/hadolint
 #################
 COPY --from=shfmt /bin/shfmt /usr/bin/
 
-########################
-# Install clang-format #
-########################
-COPY --from=clang-format /usr/bin/clang-format /usr/bin/
-
 ####################
 # Install GitLeaks #
 ####################
@@ -238,6 +259,11 @@ COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 ENV DART_SDK /usr/lib/dart
 COPY --from=dart "${DART_SDK}" "${DART_SDK}"
 RUN chmod 755 "${DART_SDK}" && chmod 755 "${DART_SDK}/bin"
+
+########################
+# Install clang-format #
+########################
+COPY --from=clang-format /usr/bin/clang-format /usr/bin/
 
 #################
 # Install Lintr #

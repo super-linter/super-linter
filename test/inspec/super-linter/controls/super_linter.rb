@@ -73,6 +73,7 @@ control "super-linter-uninstalled-packages" do
 
   packages = [
     "cmake",
+    "clang17-extra-tools",
     "g++",
     "gnupg",
     "libc-dev",
