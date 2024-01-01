@@ -141,8 +141,8 @@ For more information, see
 
 Super-Linter provides several variants:
 
-- `standard`: `super-linter/super-linter:[VERSION]`: includes all supported linters.
-- `slim`: `super-linter/super-linter:slim-[VERSION]`: includes all supported linters except:
+- `standard`: `super-linter/super-linter@[VERSION]`: includes all supported linters.
+- `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported linters except:
 
   - `rust` linters
   - `dotenv` linters
