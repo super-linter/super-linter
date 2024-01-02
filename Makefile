@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-find test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -162,6 +162,21 @@ test-build-file-list: ## Test buildFileList
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+# Run this test against a small directory because we're only interested in
+# loading default configuration files. The directory that we run super-linter
+# against should not be .github because that includes default linter rules.
+.phony: test-default-config-files
+test-default-config-files: ## Test default configuration files loading
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/docs":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-linters

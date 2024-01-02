@@ -450,6 +450,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.ansible-lint.yml",
     "/action/lib/.automation/.arm-ttk.psd1",
     "/action/lib/.automation/.cfnlintrc.yml",
+    "/action/lib/.automation/.checkov.yaml",
     "/action/lib/.automation/.chktexrc",
     "/action/lib/.automation/.clj-kondo",
     "/action/lib/.automation/.coffee-lint.json",
