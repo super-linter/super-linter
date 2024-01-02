@@ -1,0 +1,4 @@
+---
+# Don't report passed checks in output
+quiet: true
+...
