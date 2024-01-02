@@ -8,6 +8,15 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 This section helps you migrate from super-linter `v5` to `v6`.
 
+### Checkstyle
+
+- Checkstyle
+  [embeds some configuration files](https://checkstyle.sourceforge.io/cmdline.html#Command_line_usage),
+  such as `sun_checks.xml` and `google_checks.xml`. There is no need to provide
+  your own checkstyle configuration files if it matches one of the embedded
+  ones. You can safely remove your Checkstyle configuration file if it matches
+  one of the embedded ones.
+
 ### Dart
 
 - super-linter doesn't include a default configuration file for `dart analyzer`
