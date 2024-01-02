@@ -161,8 +161,20 @@ GetLinterRules() {
     # Found the rules file
     debug "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) exists."
   else
-    # Here we expect a rules file, so fail if not available.
-    fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exist. Terminating..."
+    local LANGUAGE_LINTER_RULES_BASENAME
+    LANGUAGE_LINTER_RULES_BASENAME="$(basename "${!LANGUAGE_LINTER_RULES}")"
+    debug "LANGUAGE_LINTER_RULES_BASENAME: ${LANGUAGE_LINTER_RULES_BASENAME}"
+    # checkstyle embeds some configuration files, such as google_checks.xml and sun_checks.xml.
+    # If we or the user specified one of those files and the file is missing, fall back to
+    # the embedded one.
+    if [[ "${LANGUAGE_NAME}" == "JAVA" && ("${LANGUAGE_LINTER_RULES_BASENAME}" == "google_checks.xml" || "${LANGUAGE_LINTER_RULES_BASENAME}" == "sun_checks.xml") ]]; then
+      debug "${!LANGUAGE_LINTER_RULES} for ${LANGUAGE_NAME} doesn't exist. Falling back to ${LANGUAGE_LINTER_RULES_BASENAME} that the linter ships."
+      eval "${LANGUAGE_LINTER_RULES}=/${LANGUAGE_LINTER_RULES_BASENAME}"
+      debug "Updated ${LANGUAGE_LINTER_RULES}: ${!LANGUAGE_LINTER_RULES}"
+    else
+      # Here we expect a rules file, so fail if not available.
+      fatal "  -> ${LANGUAGE_LINTER_RULES} rules file (${!LANGUAGE_LINTER_RULES}) doesn't exist. Terminating..."
+    fi
   fi
 
   ######################
