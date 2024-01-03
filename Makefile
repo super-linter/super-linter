@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -150,6 +150,43 @@ lint-codebase: ## Lint the entire codebase
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e VALIDATE_ALL_CODEBASE=true \
+		-v "$(CURDIR):/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+# This is a smoke test to check how much time it takes to lint only a small
+# subset of files, compared to linting the whole codebase.
+.phony: lint-subset-files
+lint-subset-files: lint-subset-files-enable-only-one-type lint-subset-files-enable-expensive-io-checks
+
+.phony: lint-subset-files-enable-only-one-type
+lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the codebase by enabling only one linter
+	time docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_MARKDOWN=true \
+		-v "$(CURDIR):/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: lint-subset-files-enable-expensive-io-checks
+lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in the codebase and keep expensive I/O operations to check file types enabled
+	time docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_ARM=true \
+		-e VALIDATE_CLOUDFORMATION=true \
+		-e VALIDATE_KUBERNETES_KUBECONFORM=true \
+		-e VALIDATE_MARKDOWN=true \
+		-e VALIDATE_OPENAPI=true \
+		-e VALIDATE_STATES=true \
+		-e VALIDATE_TEKTON=true \
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
