@@ -1,19 +1,8 @@
-<!-- Start: issue fix section -->
-<!-- Link to issue if there is one, otherwise remove the "issue fix" section -->
-<!-- markdownlint-disable -->
+# Proposed changes
 
-Fixes #
+_describe the proposed changes and remove this template text_
 
-<!-- markdownlint-restore -->
-<!-- End: issue fix section -->
-
-## Proposed Changes
-
-- ...
-- ...
-- ...
-
-## Readiness Checklist
+## Readiness checklist
 
 In order to have this pull request merged, complete the following tasks.
 
@@ -23,7 +12,9 @@ In order to have this pull request merged, complete the following tasks.
 - [ ] I provided the necessary tests.
 - [ ] I squashed all the commits into a single commit.
 - [ ] I followed the [Conventional Commit v1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/).
-- [ ] If this is a breaking change, write upgrade instructions in the [upgrade guide](../docs/upgrade-guide.md).
+- [ ] I wrote the necessary upgrade instructions in the [upgrade guide](../docs/upgrade-guide.md).
+- [ ] If this pull request is about and existing issue,
+  I added the `Fix #ISSUE_NUMBER` label to the description of the pull request.
 
 ### Super-linter maintainer tasks
 

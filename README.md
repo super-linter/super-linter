@@ -105,6 +105,10 @@ To run super-linter as a GitHub Action, you do the following:
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
+            with:
+              # super-linter needs the full git history to get the
+              # list of files that changed across commits
+              fetch-depth: 0
 
           - name: Super-linter
             uses: super-linter/super-linter@v5.7.2  # x-release-please-version
