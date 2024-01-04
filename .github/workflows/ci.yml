@@ -16,7 +16,7 @@ jobs:
     permissions:
         contents: read
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.images.target }}
+      group: ${{ github.workflow }}-${{ github.ref }}-{{ github.event_name }}-${{ matrix.images.target }}
       cancel-in-progress: true
     strategy:
       fail-fast: false
