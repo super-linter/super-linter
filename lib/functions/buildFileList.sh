@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 function IssueHintForFullGitHistory() {
-  info "Check that you have the full git history, the checkout is not shallow, etc"
+  info "Check that the local repository has the full history and that the repository is not shallow."
+  info "See https://github.com/super-linter/super-linter#get-started"
   info "Is shallow repository: $(git -C "${GITHUB_WORKSPACE}" rev-parse --is-shallow-repository)"
-  info "See https://github.com/super-linter/super-linter#example-connecting-github-action-workflow"
 }
 
 function GenerateFileDiff() {

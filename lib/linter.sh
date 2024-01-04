@@ -519,21 +519,23 @@ GetGitHubVars() {
     debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
     if [ -z "${GITHUB_WORKSPACE}" ]; then
-      error "Failed to get [GITHUB_WORKSPACE]!"
-      fatal "[${GITHUB_WORKSPACE}]"
+      fatal "Failed to get GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
     else
       info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
     fi
 
+    # Ensure that Git can access the local repository
+    ConfigureGitSafeDirectories
+
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
-      error "Failed to get [GITHUB_EVENT_PATH]!"
-      fatal "[${GITHUB_EVENT_PATH}]"
+      fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}"
+      debug "${GITHUB_EVENT_PATH} contents: $(cat "${GITHUB_EVENT_PATH}")"
     fi
 
     if [ -z "${GITHUB_SHA}" ]; then
-      fatal "Failed to get the value for the GITHUB_SHA variable [${GITHUB_SHA}]"
+      fatal "Failed to get GITHUB_SHA: ${GITHUB_SHA}"
     else
       info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
     fi
@@ -542,38 +544,46 @@ GetGitHubVars() {
     # Need to pull the GitHub Vars from the env file #
     ##################################################
 
-    ######################
-    # Get the GitHub Org #
-    ######################
     GITHUB_ORG=$(jq -r '.repository.owner.login' <"${GITHUB_EVENT_PATH}")
 
-    ########################
-    # Fix SHA for PR event #
-    ########################
     # Github sha on PR events is not the latest commit.
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
     if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-      debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD sha"
+      debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
       GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH")
       ERROR_CODE=$?
       debug "GITHUB_SHA update error code: ${ERROR_CODE}"
 
       if [ ${ERROR_CODE} -ne 0 ]; then
-        error "Failed to update GITHUB_SHA for pull request event."
-        fatal "[Output: ${GITHUB_SHA}]"
+        fatal "Failed to update GITHUB_SHA for pull request event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
     elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       debug "This is a GitHub push event."
 
-      GITHUB_BEFORE_SHA=$(jq -r .push.before <"$GITHUB_EVENT_PATH")
+      GITHUB_IS_FORCE_PUSH="$(jq -r .forced <"$GITHUB_EVENT_PATH")"
+      ERROR_CODE=$?
+      debug "GITHUB_IS_FORCE_PUSH initialization error code: ${ERROR_CODE}"
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        fatal "Failed to initialize GITHUB_IS_FORCE_PUSH for a push event. Output: ${GITHUB_IS_FORCE_PUSH}"
+      else
+        debug "Initialized GITHUB_IS_FORCE_PUSH: ${GITHUB_IS_FORCE_PUSH}"
+      fi
+
+      if [ "${GITHUB_IS_FORCE_PUSH}" == "true" ]; then
+        debug "This is a forced push. Get the hash of the previous commit from Git because the previous commit referenced in the GitHub event payload may not exist anymore"
+        GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD^)
+      else
+        debug "This isn't a forced push. Get the hash of the previous commit from the GitHub event that triggered this workflow"
+        GITHUB_BEFORE_SHA=$(jq -r .before <"$GITHUB_EVENT_PATH")
+      fi
       ERROR_CODE=$?
       debug "GITHUB_BEFORE_SHA initialization error code: ${ERROR_CODE}"
       if [ ${ERROR_CODE} -ne 0 ]; then
         fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
       fi
 
-      if [ -z "${GITHUB_BEFORE_SHA}" ]; then
+      if [ -z "${GITHUB_BEFORE_SHA}" ] || [ "${GITHUB_BEFORE_SHA}" == "null" ]; then
         fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA}]"
       else
         info "Successfully found:${F[W]}[GITHUB_BEFORE_SHA]${F[B]}, value:${F[W]}[${GITHUB_BEFORE_SHA}]"
