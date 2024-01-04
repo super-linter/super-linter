@@ -4,6 +4,7 @@
     "**/ISSUE_TEMPLATE/bug_report.yml",
     "**/ISSUE_TEMPLATE/feature_request.yml",
     "**/node_modules/**",
+    "**/test/data/**",
     "**/test/linters/ansible/**",
     "**/test/linters/clojure",
     "**/test/linters/cloudformation",

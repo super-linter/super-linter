@@ -154,7 +154,7 @@ lint-codebase: ## Lint the entire codebase
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-lib
-test-lib: test-build-file-list ## Test super-linter
+test-lib: test-build-file-list test-github-event test-validation ## Test super-linter
 
 .phony: test-build-file-list
 test-build-file-list: ## Test buildFileList
@@ -162,6 +162,22 @@ test-build-file-list: ## Test buildFileList
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-github-event
+test-github-event: ## Test githubEvent
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/githubEventTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-validation
+test-validation: ## Test validation
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/validationTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # Run this test against a small directory because we're only interested in
@@ -228,4 +244,4 @@ release-please-dry-run: build-dev-container-image check-github-token ## Run rele
 		--repo-url super-linter/super-linter \
 		--target-branch ${RELEASE_PLEASE_TARGET_BRANCH} \
 		--token "$(shell cat "${GITHUB_TOKEN_PATH}")" \
-		--trace \
+		--trace

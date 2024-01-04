@@ -57,6 +57,8 @@ source /action/lib/functions/validation.sh # Source the function script(s)
 source /action/lib/functions/worker.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/setupSSH.sh # Source the function script(s)
+# shellcheck source=/dev/null
+source /action/lib/functions/githubEvent.sh
 
 # Initialize RUN_LOCAL early because we need it for logging
 DEFAULT_RUN_LOCAL='false'
@@ -561,33 +563,24 @@ GetGitHubVars() {
     elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       debug "This is a GitHub push event."
 
-      GITHUB_IS_FORCE_PUSH="$(jq -r .forced <"$GITHUB_EVENT_PATH")"
-      ERROR_CODE=$?
-      debug "GITHUB_IS_FORCE_PUSH initialization error code: ${ERROR_CODE}"
-      if [ ${ERROR_CODE} -ne 0 ]; then
-        fatal "Failed to initialize GITHUB_IS_FORCE_PUSH for a push event. Output: ${GITHUB_IS_FORCE_PUSH}"
-      else
-        debug "Initialized GITHUB_IS_FORCE_PUSH: ${GITHUB_IS_FORCE_PUSH}"
+      GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
+      if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
+        fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
       fi
+      info "Successfully found:${F[W]}[GITHUB_PUSH_COMMIT_COUNT]${F[B]}, value:${F[W]}[${GITHUB_PUSH_COMMIT_COUNT}]"
 
-      if [ "${GITHUB_IS_FORCE_PUSH}" == "true" ]; then
-        debug "This is a forced push. Get the hash of the previous commit from Git because the previous commit referenced in the GitHub event payload may not exist anymore"
-        GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD^)
-      else
-        debug "This isn't a forced push. Get the hash of the previous commit from the GitHub event that triggered this workflow"
-        GITHUB_BEFORE_SHA=$(jq -r .before <"$GITHUB_EVENT_PATH")
-      fi
+      # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+      debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
+      # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
+      GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT})
       ERROR_CODE=$?
       debug "GITHUB_BEFORE_SHA initialization error code: ${ERROR_CODE}"
       if [ ${ERROR_CODE} -ne 0 ]; then
         fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
       fi
 
-      if [ -z "${GITHUB_BEFORE_SHA}" ] || [ "${GITHUB_BEFORE_SHA}" == "null" ]; then
-        fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA}]"
-      else
-        info "Successfully found:${F[W]}[GITHUB_BEFORE_SHA]${F[B]}, value:${F[W]}[${GITHUB_BEFORE_SHA}]"
-      fi
+      ValidateGitBeforeShaReference
+      info "Successfully found:${F[W]}[GITHUB_BEFORE_SHA]${F[B]}, value:${F[W]}[${GITHUB_BEFORE_SHA}]"
     fi
 
     ############################
