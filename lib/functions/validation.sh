@@ -231,14 +231,50 @@ function ValidateLocalGitRepository() {
   debug "Git branches: $(git -C "${GITHUB_WORKSPACE}" branch -a)"
 }
 
+function CheckIfGitRefExists() {
+  local GIT_REF=${1}
+  if git -C "${GITHUB_WORKSPACE}" cat-file -e "${GIT_REF}"; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+function IsUnsignedInteger() {
+  case ${1} in
+  '' | *[!0-9]*)
+    return 1
+    ;;
+  *)
+    return 0
+    ;;
+  esac
+}
+
 function ValidateGitShaReference() {
   debug "Git HEAD: $(git -C "${GITHUB_WORKSPACE}" show HEAD --stat)"
 
   debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
-  if ! git -C "${GITHUB_WORKSPACE}" cat-file -e "${GITHUB_SHA}"; then
+  if ! CheckIfGitRefExists "${GITHUB_SHA}"; then
     fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
   else
     debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
+  fi
+}
+
+function ValidateGitBeforeShaReference() {
+  debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  if [ -z "${GITHUB_BEFORE_SHA}" ] ||
+    [ "${GITHUB_BEFORE_SHA}" == "null" ] ||
+    [ "${GITHUB_BEFORE_SHA}" == "0000000000000000000000000000000000000000" ]; then
+    fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA}]"
+  fi
+
+  debug "Validate that the GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this Git repository."
+  if ! CheckIfGitRefExists "${GITHUB_BEFORE_SHA}"; then
+    fatal "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) doesn't exist in this Git repository"
+  else
+    debug "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this repository"
   fi
 }
 
