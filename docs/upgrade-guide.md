@@ -59,13 +59,6 @@ This section helps you migrate from super-linter `v5` to `v6`.
   information about how to ignore files with Jscpd, see
   [the Jscpd documentation](https://github.com/kucherenko/jscpd/tree/master/packages/jscpd).
 
-### textlint
-
-- textlint doesn't consider the `FILTER_REGEX_EXCLUDE`, `FILTER_REGEX_INCLUDE`,
-  `IGNORE_GENERATED_FILES`, `IGNORE_GITIGNORED_FILES` variables. For more
-  information about how to ignore files with textlint, see
-  [the textlint documentation](https://textlint.github.io/docs/ignore.html).
-
 ### USE_FIND_ALGORITHM and VALIDATE_ALL_CODEBASE used together
 
 - Setting `USE_FIND_ALGORITHM` to `true` and `VALIDATE_ALL_CODEBASE` to `false`
