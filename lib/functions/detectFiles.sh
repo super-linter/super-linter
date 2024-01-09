@@ -172,41 +172,25 @@ function CheckFileType() {
 
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
+  local FILE_TYPE_MESSAGE
+
   if [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
-    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
-      warn "Found ruby script without extension:[.rb]"
-      info "Please update file with proper extensions."
-    fi
-    ################################
-    # Append the file to the array #
-    ################################
-    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_TYPE_MESSAGE="Found Ruby script without extension (${FILE}). Rename the file with proper extension for Ruby files."
     FILE_ARRAY_RUBY+=("${FILE}")
   elif [[ ${GET_FILE_TYPE_CMD} == *"Python script"* ]]; then
-    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
-      warn "Found Python script without extension:[.py]"
-      info "Please update file with proper extensions."
-    fi
-    ################################
-    # Append the file to the array #
-    ################################
-    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_TYPE_MESSAGE="Found Python script without extension (${FILE}). Rename the file with proper extension for Python files."
     FILE_ARRAY_PYTHON+=("${FILE}")
   elif [[ ${GET_FILE_TYPE_CMD} == *"Perl script"* ]]; then
-    if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
-      warn "Found Perl script without extension:[.pl]"
-      info "Please update file with proper extensions."
-    fi
-    ################################
-    # Append the file to the array #
-    ################################
-    FILE_ARRAY_JSCPD+=("${FILE}")
+    FILE_TYPE_MESSAGE="Found Perl script without extension (${FILE}). Rename the file with proper extension for Perl files."
     FILE_ARRAY_PERL+=("${FILE}")
   else
-    ############################
-    # Extension was not found! #
-    ############################
-    debug "Failed to get filetype for:[${FILE}]!"
+    FILE_TYPE_MESSAGE="Failed to get file type for: ${FILE}"
+  fi
+
+  if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+    warn "${FILE_TYPE_MESSAGE}"
+  else
+    debug "${FILE_TYPE_MESSAGE}"
   fi
 }
 
