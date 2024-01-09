@@ -348,26 +348,10 @@ function LintCodebase() {
         # Check the shell for errors #
         ##############################
         if [ ${ERROR_CODE} -ne 0 ]; then
-          debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
-          if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
-            ########
-            # WARN #
-            ########
-            warn "Warnings found in [${LINTER_NAME}] linter!"
-            warn "${LINT_CMD}"
-          else
-            #########
-            # Error #
-            #########
-            error "Found errors in [${LINTER_NAME}] linter!"
-            error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-            # Increment the error count
-            (("ERRORS_FOUND_${FILE_TYPE}++"))
-          fi
+          error "Found errors when running ${LINTER_NAME} on ${FILE}. Error code: ${ERROR_CODE}. File type: ${FILE_TYPE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
+          # Increment the error count
+          (("ERRORS_FOUND_${FILE_TYPE}++"))
         else
-          ###########
-          # Success #
-          ###########
           info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
           if [ -n "${LINT_CMD}" ]; then
             info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"

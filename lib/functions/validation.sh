@@ -320,6 +320,9 @@ function WarnIfVariableIsSet() {
 }
 
 function ValidateDeprecatedVariables() {
+
+  # The following variables have been deprecated in v6
+  WarnIfVariableIsSet "${ERROR_ON_MISSING_EXEC_BIT}" "ERROR_ON_MISSING_EXEC_BIT"
   WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER}" "EXPERIMENTAL_BATCH_WORKER"
   WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE}" "VALIDATE_JSCPD_ALL_CODEBASE"
   WarnIfVariableIsSet "${VALIDATE_KOTLIN_ANDROID}" "VALIDATE_KOTLIN_ANDROID"

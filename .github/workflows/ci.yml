@@ -107,7 +107,6 @@ jobs:
         env:
           ACTIONS_RUNNER_DEBUG: true
           CREATE_LOG_FILE: true
-          ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main

@@ -134,7 +134,6 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -148,7 +147,6 @@ lint-codebase: ## Lint the entire codebase
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -166,7 +164,6 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_MARKDOWN=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -179,7 +176,6 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \
@@ -226,7 +222,6 @@ test-default-config-files: ## Test default configuration files loading
 	docker run \
 		-e RUN_LOCAL=true \
 		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -240,7 +235,6 @@ test-linters: ## Run the linters test suite
 		-e CHECKOV_FILE_NAME=".checkov-test-linters.yaml" \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e RUN_LOCAL=true \

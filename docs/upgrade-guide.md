@@ -34,6 +34,14 @@ This section helps you migrate from super-linter `v5` to `v6`.
   [Customizing static analysis](https://dart.dev/tools/analysis) in the Dart SDK
   documentation.
 
+### ERROR_ON_MISSING_EXEC_BIT
+
+- `ERROR_ON_MISSING_EXEC_BIT` has been deprecated to align the
+  `VALIDATE_BASH_EXEC` check to the other linters, removing a surprising corner
+  case. If `VALIDATE_BASH_EXEC` is set to `true` and a shell script is not
+  marked as executable, the script will not pass validation. You can remove the
+  `ERROR_ON_MISSING_EXEC_BIT` variable from your super-linter configuration.
+
 ### Experimental batch workers
 
 - Experimental batch support is deprecated. You can safely remove the
