@@ -16,7 +16,10 @@ jobs:
     permissions:
         contents: read
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-{{ github.event_name }}-${{ matrix.images.target }}
+      # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+      # github.head_ref: head_ref or source branch of the pull request
+      # github.ref: ref of the branch that triggered the workflow
+      group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ github.event_name }}-${{ matrix.images.target }}
       cancel-in-progress: true
     strategy:
       fail-fast: false
