@@ -826,6 +826,16 @@ UpdateLoopsForImage() {
 # shellcheck disable=SC2317
 cleanup() {
   local -ri EXIT_CODE=$?
+
+  debug "Removing temporary files and directories"
+  rm -rfv \
+    "${GITHUB_WORKSPACE}/logback.log"
+
+  if [ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE}" == "true" ]; then
+    debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
+    rm -rfv "${R_RULES_FILE_PATH_IN_ROOT}"
+  fi
+
   # Define this variable here so we can rely on it as soon as possible
   local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
   debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
@@ -885,6 +895,9 @@ ConfigureGitSafeDirectories
 ########################################################
 TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
 debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
+
+R_RULES_FILE_PATH_IN_ROOT="${GITHUB_WORKSPACE}/${R_FILE_NAME}"
+debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
 
 ############################
 # Validate the environment #
@@ -1097,9 +1110,11 @@ for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
         debug "No .editorconfig found at: $EDITORCONFIG_FILE_PATH. Skipping ${LANGUAGE} linting..."
         continue
       fi
-    elif [ "${LANGUAGE}" = "R" ] && [ ! -f "${GITHUB_WORKSPACE}/.lintr" ] && ((${#FILE_ARRAY_R[@]})); then
+    elif [ "${LANGUAGE}" = "R" ] && [ ! -f "${R_RULES_FILE_PATH_IN_ROOT}" ] && ((${#FILE_ARRAY_R[@]})); then
       info "No .lintr configuration file found, using defaults."
       cp "$R_LINTER_RULES" "$GITHUB_WORKSPACE"
+      # shellcheck disable=SC2034
+      SUPER_LINTER_COPIED_R_LINTER_RULES_FILE="true"
     # Check if there's local configuration for the Raku linter
     elif [ "${LANGUAGE}" = "RAKU" ] && [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
       cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
