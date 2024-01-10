@@ -420,10 +420,8 @@ debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
 ###############################################################
 # Default Vars that are called in Subs and need to be ignored #
 ###############################################################
-DEFAULT_DISABLE_ERRORS='false'                                  # Default to enabling errors
-export DEFAULT_DISABLE_ERRORS                                   # Workaround SC2034
-ERROR_ON_MISSING_EXEC_BIT="${ERROR_ON_MISSING_EXEC_BIT:-false}" # Default to report a warning if a shell script doesn't have the executable bit set to 1
-export ERROR_ON_MISSING_EXEC_BIT
+DEFAULT_DISABLE_ERRORS='false'  # Default to enabling errors
+export DEFAULT_DISABLE_ERRORS   # Workaround SC2034
 RAW_FILE_ARRAY=()               # Array of all files that were changed
 export RAW_FILE_ARRAY           # Workaround SC2034
 TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
