@@ -90,120 +90,40 @@ function LintCodebase() {
     ##################
     for FILE in "${LIST_FILES[@]}"; do
       debug "Linting FILE: ${FILE}"
-      ###################################
-      # Get the file name and directory #
-      ###################################
-      FILE_NAME=$(basename "${FILE}" 2>&1)
-      DIR_NAME=$(dirname "${FILE}" 2>&1)
 
-      ############################
-      # Get the file pass status #
-      ############################
-      # Example: markdown_good_1.md -> good
-      FILE_STATUS=$(echo "${FILE_NAME}" | cut -f2 -d'_')
-      # Example: clan_format_good_1.md -> good
-      SECONDARY_STATUS=$(echo "${FILE_NAME}" | cut -f3 -d'_')
+      local INDIVIDUAL_TEST_FOLDER
+      # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
+      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}"
+      debug "INDIVIDUAL_TEST_FOLDER for ${FILE}: ${INDIVIDUAL_TEST_FOLDER}"
 
-      ####################################
-      # Catch edge cases of double names #
-      ####################################
-      if [ "${SECONDARY_STATUS}" == 'good' ] || [ "${SECONDARY_STATUS}" == 'bad' ]; then
-        FILE_STATUS="${SECONDARY_STATUS}"
-      fi
-
-      ###################
-      # Check if docker #
-      ###################
-      if [[ ${FILE_TYPE} == *"DOCKER"* ]]; then
-        debug "FILE_TYPE for FILE ${FILE} is related to Docker: ${FILE_TYPE}"
-        if [[ ${FILE} == *"good"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
-          #############
-          # Good file #
-          #############
-          FILE_STATUS='good'
-        elif [[ ${FILE} == *"bad"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
-          ############
-          # Bad file #
-          ############
-          FILE_STATUS='bad'
-        fi
-      fi
-
-      #####################
-      # Check if Renovate #
-      #####################
-      if [[ ${FILE_TYPE} == *"RENOVATE"* ]]; then
-        debug "FILE_TYPE for FILE ${FILE} is related to Renovate: ${FILE_TYPE}"
-        if [[ ${FILE} == *"good"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
-          #############
-          # Good file #
-          #############
-          FILE_STATUS='good'
-        elif [[ ${FILE} == *"bad"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
-          ############
-          # Bad file #
-          ############
-          FILE_STATUS='bad'
-        fi
-      fi
-
-      #######################################
-      # Check if Cargo.toml for Rust Clippy #
-      #######################################
-      if [[ ${FILE_TYPE} == *"RUST"* ]] && [[ ${LINTER_NAME} == "clippy" ]]; then
-        debug "FILE_TYPE for FILE ${FILE} is related to Rust Clippy: ${FILE_TYPE}"
-        if [[ ${FILE} == *"good"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'good'"
-          #############
-          # Good file #
-          #############
-          FILE_STATUS='good'
-        elif [[ ${FILE} == *"bad"* ]]; then
-          debug "Setting FILE_STATUS for FILE ${FILE} to 'bad'"
-          ############
-          # Bad file #
-          ############
-          FILE_STATUS='bad'
-        fi
-      fi
-
-      #########################################################
-      # If not found, assume it should be linted successfully #
-      #########################################################
-      if [ -z "${FILE_STATUS}" ] || { [ "${FILE_STATUS}" != "good" ] && [ "${FILE_STATUS}" != "bad" ]; }; then
-        debug "FILE_STATUS (${FILE_STATUS}) is empty, or not set to 'good' or 'bad'. Assuming it should be linted correctly. Setting FILE_STATUS to 'good'..."
-        FILE_STATUS="good"
-      fi
-
-      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}" # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
+      local TEST_CASE_DIRECTORY
       TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
-      debug "File: ${FILE}, FILE_NAME: ${FILE_NAME}, DIR_NAME:${DIR_NAME}, FILE_STATUS: ${FILE_STATUS}, INDIVIDUAL_TEST_FOLDER: ${INDIVIDUAL_TEST_FOLDER}, TEST_CASE_DIRECTORY: ${TEST_CASE_DIRECTORY}"
+      debug "TEST_CASE_DIRECTORY for ${FILE}: ${TEST_CASE_DIRECTORY}"
 
-      if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
-        # These linters expect files inside a directory, not a directory. So we add a trailing slash
-        TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
-        debug "Updated TEST_CASE_DIRECTORY for ${FILE_TYPE} to: ${TEST_CASE_DIRECTORY}"
+      if [[ "${TEST_CASE_RUN}" == "true" ]]; then
+        if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
+          # These linters expect files inside a directory, not a directory. So we add a trailing slash
+          TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
+          debug "Updated TEST_CASE_DIRECTORY for ${FILE_TYPE} to: ${TEST_CASE_DIRECTORY}"
+        fi
+
+        if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]]; then
+          debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
+          continue
+        fi
       fi
 
-      if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]] && [ "${TEST_CASE_RUN}" == "true" ]; then
-        debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
-        continue
-      fi
+      local FILE_NAME
+      FILE_NAME=$(basename "${FILE}" 2>&1)
+      debug "FILE_NAME for ${FILE}: ${FILE_NAME}"
 
-      ##################################
-      # Increase the linted file index #
-      ##################################
+      local DIR_NAME
+      DIR_NAME=$(dirname "${FILE}" 2>&1)
+      debug "DIR_NAME for ${FILE}: ${DIR_NAME}"
+
       (("INDEX++"))
 
-      ##############
-      # File print #
-      ##############
-      info "---------------------------"
-      info "File:[${FILE}]"
+      info "File: ${FILE}"
 
       #################################
       # Add the language to the array #
@@ -340,13 +260,25 @@ function LintCodebase() {
       ########################################
       # Check for if it was supposed to pass #
       ########################################
+
+      local FILE_STATUS
+      # Assume that the file should pass linting checks
+      FILE_STATUS="good"
+
+      if [[ "${TEST_CASE_RUN}" == "true" ]]; then
+        if [[ ${FILE} == *"bad"* ]]; then
+          FILE_STATUS="bad"
+          debug "We are running in test mode. Updating the expected FILE_STATUS for ${FILE} to: ${FILE_STATUS}"
+        fi
+      fi
+
+      ########################################
+      # File status = good, this should pass #
+      ########################################
       if [[ ${FILE_STATUS} == "good" ]]; then
         # Increase the good test cases count
         (("GOOD_TEST_CASES_COUNT++"))
 
-        ##############################
-        # Check the shell for errors #
-        ##############################
         if [ ${ERROR_CODE} -ne 0 ]; then
           debug "Found errors. Error code: ${ERROR_CODE}, File type: ${FILE_TYPE}, Error on missing exec bit: ${ERROR_ON_MISSING_EXEC_BIT}"
           if [[ ${FILE_TYPE} == "BASH_EXEC" ]] && [[ "${ERROR_ON_MISSING_EXEC_BIT}" == "false" ]]; then
@@ -378,12 +310,12 @@ function LintCodebase() {
         # File status = bad, this should fail #
         #######################################
 
-        # Increase the bad test cases count
+        if [[ "${TEST_CASE_RUN}" == "false" ]]; then
+          fatal "All files are supposed to pass linting checks when not running in test mode. TEST_CASE_RUN: ${TEST_CASE_RUN}"
+        fi
+
         (("BAD_TEST_CASES_COUNT++"))
 
-        ##############################
-        # Check the shell for errors #
-        ##############################
         if [ ${ERROR_CODE} -eq 0 ]; then
           #########
           # Error #
@@ -394,10 +326,7 @@ function LintCodebase() {
           # Increment the error count
           (("ERRORS_FOUND_${FILE_TYPE}++"))
         else
-          ###########
-          # Success #
-          ###########
-          info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
+          info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} as expected"
         fi
       fi
       debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
