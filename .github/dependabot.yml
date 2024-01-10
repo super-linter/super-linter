@@ -4,58 +4,53 @@
 #################################
 version: 2
 updates:
+
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
+
   - package-ecosystem: github-actions
     commit-message:
       prefix: "deps(github-actions)"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dependencies for js with npm
   - package-ecosystem: "npm"
     commit-message:
       prefix: "deps(npm)"
     directory: "/dependencies"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dependencies for ruby with bundler
   - package-ecosystem: "bundler"
     commit-message:
       prefix: "deps(bundler)"
     directory: "/dependencies"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dependencies for docker
   - package-ecosystem: "docker"
     commit-message:
       prefix: "deps(docker)"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dependencies for python with pip
   - package-ecosystem: "pip"
     commit-message:
       prefix: "deps(python)"
     directory: "/dependencies/python/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dependencies for Java
   - package-ecosystem: "gradle"
     commit-message:
       prefix: "deps(java)"
     directory: "/dependencies/checkstyle"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -63,7 +58,6 @@ updates:
     directory: "/dependencies/google-java-format"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -71,22 +65,17 @@ updates:
     directory: "/dependencies/ktlint"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dev dependencies for docker
   - package-ecosystem: "docker"
     commit-message:
       prefix: "deps(dev-docker)"
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
 
-  # Maintain dev dependencies for js with npm
   - package-ecosystem: "npm"
     commit-message:
       prefix: "deps(dev-npm)"
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10

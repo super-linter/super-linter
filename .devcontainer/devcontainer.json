@@ -1,10 +1,41 @@
 {
   "name": "Super-Linter",
-  "context": "..",
   "image": "ghcr.io/super-linter/super-linter:latest",
-  "extensions": [
-    "github.vscode-pull-request-github",
-    "rogalmic.bash-debug",
-    "EditorConfig.EditorConfig"
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "DavidAnson.vscode-markdownlint",
+        "EditorConfig.EditorConfig",
+        "GitHub.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "mads-hartmann.bash-ide-vscode",
+        "mkhl.shfmt",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.makefile-tools",
+        "timonwong.shellcheck"
+      ]
+    }
+  },
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}/TEMPLATES",
+      "target": "/action/lib/.automation",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/lib/linter.sh",
+      "target": "/action/lib/linter.sh",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/lib/functions",
+      "target": "/action/lib/functions",
+      "type": "bind"
+    }
+  ],
+  "runArgs": [
+    "--env-file",
+    ".devcontainer/devcontainer.env"
   ]
 }
