@@ -30,10 +30,6 @@ function RunFileDiffCommand() {
   # Get the Array of files changed in the commits #
   #################################################
   CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail")
-
-  #######################
-  # Load the error code #
-  #######################
   ERROR_CODE=$?
   debug "Diff command return code: ${ERROR_CODE}"
 
@@ -56,9 +52,6 @@ function RunFileDiffCommand() {
 function BuildFileList() {
   debug "Building file list..."
 
-  ################
-  # Pull in vars #
-  ################
   VALIDATE_ALL_CODEBASE="${1}"
   debug "VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
 
@@ -76,13 +69,7 @@ function BuildFileList() {
       WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
     fi
 
-    #############################
-    # Use the find on all files #
-    #############################
     if [ "${USE_FIND_ALGORITHM}" == 'true' ]; then
-      ################
-      # print header #
-      ################
       debug "----------------------------------------------"
       debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace using FIND algorithm"
       mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
@@ -115,25 +102,12 @@ function BuildFileList() {
     fi
   fi
 
-  #######################
-  # Load the error code #
-  #######################
   ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
   if [ ${ERROR_CODE} -ne 0 ]; then
     fatal "Failed to gain a list of all files changed! Error code: ${ERROR_CODE}"
   fi
 
-  ##########################################################################
-  # Check to make sure the raw file array is not empty or throw a warning! #
-  ##########################################################################
   if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
-    ###############################
-    # No files were found to lint #
-    ###############################
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
   fi
 
@@ -167,12 +141,6 @@ function BuildFileList() {
     debug "DEFAULT_JSCPD_TEST_CASE_DIRECTORY: ${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}"
     FILE_ARRAY_JSCPD+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/bad")
     FILE_ARRAY_JSCPD+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/good")
-
-    debug "Adding test case directories to the list of directories to analyze with textlint."
-    DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/natural_language"
-    debug "DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY: ${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}"
-    FILE_ARRAY_NATURAL_LANGUAGE+=("${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}/bad")
-    FILE_ARRAY_NATURAL_LANGUAGE+=("${DEFAULT_NATURAL_LANGUAGE_TEST_CASE_DIRECTORY}/good")
   else
     debug "We are not running in test mode (${TEST_CASE_RUN})."
 
@@ -195,9 +163,6 @@ function BuildFileList() {
 
     debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with JSCPD."
     FILE_ARRAY_JSCPD+=("${GITHUB_WORKSPACE}")
-
-    debug "Adding ${GITHUB_WORKSPACE} to the list of directories to analyze with textlint."
-    FILE_ARRAY_NATURAL_LANGUAGE+=("${GITHUB_WORKSPACE}")
   fi
 
   if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
@@ -227,14 +192,8 @@ function BuildFileList() {
     BASE_FILE=$(basename "${FILE,,}")
     FILE_DIR_NAME="$(dirname "${FILE}")"
 
-    ##############
-    # Print file #
-    ##############
     debug "FILE: ${FILE}, FILE_TYPE: ${FILE_TYPE}, BASE_FILE: ${BASE_FILE}, FILE_DIR_NAME: ${FILE_DIR_NAME}"
 
-    ##########################################################
-    # Check if the file exists on the filesystem, or skip it #
-    ##########################################################
     if [ ! -f "${FILE}" ]; then
       # File not found in workspace
       warn "File:{$FILE} existed in commit data, but not found on file system, skipping..."
@@ -323,9 +282,6 @@ function BuildFileList() {
     # Get the shell files #
     #######################
     if IsValidShellScript "${FILE}"; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_BASH+=("${FILE}")
       FILE_ARRAY_BASH_EXEC+=("${FILE}")
       FILE_ARRAY_SHELL_SHFMT+=("${FILE}")
@@ -335,9 +291,6 @@ function BuildFileList() {
     #########################
     elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
       [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_CLOJURE+=("${FILE}")
     #####################
     # Get the C++ files #
@@ -348,9 +301,6 @@ function BuildFileList() {
       [ "${FILE_TYPE}" == "hxx" ] || [ "${FILE_TYPE}" == "c++" ] ||
       [ "${FILE_TYPE}" == "hh" ] || [ "${FILE_TYPE}" == "h++" ] ||
       [ "${FILE_TYPE}" == "cuh" ] || [ "${FILE_TYPE}" == "c" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_CPP+=("${FILE}")
       FILE_ARRAY_CLANG_FORMAT+=("${FILE}")
 
@@ -358,18 +308,12 @@ function BuildFileList() {
     # Get the COFFEE files #
     ########################
     elif [ "${FILE_TYPE}" == "coffee" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_COFFEESCRIPT+=("${FILE}")
 
     ########################
     # Get the CSHARP files #
     ########################
     elif [ "${FILE_TYPE}" == "cs" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_CSHARP+=("${FILE}")
 
     #####################
@@ -377,18 +321,12 @@ function BuildFileList() {
     #####################
     elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
       [ "${FILE_TYPE}" == "sass" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_CSS+=("${FILE}")
 
     ######################
     # Get the DART files #
     ######################
     elif [ "${FILE_TYPE}" == "dart" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_DART+=("${FILE}")
 
     ########################
@@ -399,37 +337,24 @@ function BuildFileList() {
       [[ "${FILE_TYPE}" != "yaml" ]] && [[ "${FILE_TYPE}" != "json" ]] &&
       [[ "${FILE_TYPE}" != "xml" ]] &&
       [[ "${BASE_FILE}" =~ ^(.+\.)?(contain|dock)erfile$ ]]; then
-
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_DOCKERFILE_HADOLINT+=("${FILE}")
 
     #####################
     # Get the ENV files #
     #####################
     elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_ENV+=("${FILE}")
 
     #########################
     # Get the Gherkin files #
     #########################
     elif [ "${FILE_TYPE}" == "feature" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_GHERKIN+=("${FILE}")
 
     ########################
     # Get the Golang files #
     ########################
     elif [ "${FILE_TYPE}" == "go" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_GO+=("${FILE}")
 
     ########################
@@ -439,27 +364,18 @@ function BuildFileList() {
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
       [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ] ||
       [[ "$BASE_FILE" =~ .*jenkinsfile.* ]]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_GROOVY+=("$FILE")
 
     ######################
     # Get the HTML files #
     ######################
     elif [ "${FILE_TYPE}" == "html" ]; then
-      ################################
-      # Append the file to the array #
-      ##############################p##
       FILE_ARRAY_HTML+=("${FILE}")
 
     ######################
     # Get the Java files #
     ######################
     elif [ "${FILE_TYPE}" == "java" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_JAVA+=("${FILE}")
       FILE_ARRAY_GOOGLE_JAVA_FORMAT+=("${FILE}")
 
@@ -467,9 +383,6 @@ function BuildFileList() {
     # Get the JavaScript files #
     ############################
     elif [ "${FILE_TYPE}" == "js" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_JAVASCRIPT_ES+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_STANDARD+=("${FILE}")
       FILE_ARRAY_JAVASCRIPT_PRETTIER+=("${FILE}")
@@ -478,54 +391,36 @@ function BuildFileList() {
     # Get the JSONC files #
     #######################
     elif [ "$FILE_TYPE" == "jsonc" ] || [ "$FILE_TYPE" == "json5" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_JSONC+=("${FILE}")
 
     ######################
     # Get the JSON files #
     ######################
     elif [ "${FILE_TYPE}" == "json" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_JSON+=("${FILE}")
 
       ############################
       # Check if file is OpenAPI #
       ############################
       if DetectOpenAPIFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_OPENAPI+=("${FILE}")
       fi
       ########################
       # Check if file is ARM #
       ########################
       if DetectARMFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_ARM+=("${FILE}")
       fi
       #####################################
       # Check if the file is CFN template #
       #####################################
       if DetectCloudFormationFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
       ############################################
       # Check if the file is AWS States Language #
       ############################################
       if DetectAWSStatesFIle "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_STATES+=("${FILE}")
       fi
 
@@ -533,54 +428,37 @@ function BuildFileList() {
     # Get the JSX files #
     #####################
     elif [ "${FILE_TYPE}" == "jsx" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_JSX+=("${FILE}")
 
     ########################
     # Get the KOTLIN files #
     ########################
     elif [ "${FILE_TYPE}" == "kt" ] || [ "${FILE_TYPE}" == "kts" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_KOTLIN+=("${FILE}")
 
     #####################
     # Get the LUA files #
     #####################
     elif [ "$FILE_TYPE" == "lua" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_LUA+=("$FILE")
 
     #######################
     # Get the LaTeX files #
     #######################
     elif [ "${FILE_TYPE}" == "tex" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_LATEX+=("${FILE}")
 
     ##########################
     # Get the MARKDOWN files #
     ##########################
     elif [ "${FILE_TYPE}" == "md" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_MARKDOWN+=("${FILE}")
+      FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     ######################
     # Get the PHP files #
     ######################
     elif [ "${FILE_TYPE}" == "php" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_PHP_BUILTIN+=("${FILE}")
       FILE_ARRAY_PHP_PHPCS+=("${FILE}")
       FILE_ARRAY_PHP_PHPSTAN+=("${FILE}")
@@ -591,9 +469,6 @@ function BuildFileList() {
     ######################
     elif [ "${FILE_TYPE}" == "pl" ] || [ "${FILE_TYPE}" == "pm" ] ||
       [ "${FILE_TYPE}" == "t" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_PERL+=("${FILE}")
 
     ############################
@@ -606,27 +481,18 @@ function BuildFileList() {
       [ "${FILE_TYPE}" == "pssc" ] ||
       [ "${FILE_TYPE}" == "psrc" ] ||
       [ "${FILE_TYPE}" == "cdxml" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_POWERSHELL+=("${FILE}")
 
     #################################
     # Get the PROTOCOL BUFFER files #
     #################################
     elif [ "${FILE_TYPE}" == "proto" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_PROTOBUF+=("${FILE}")
 
     ########################
     # Get the PYTHON files #
     ########################
     elif [ "${FILE_TYPE}" == "py" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_PYTHON_BLACK+=("${FILE}")
       FILE_ARRAY_PYTHON_FLAKE8+=("${FILE}")
       FILE_ARRAY_PYTHON_ISORT+=("${FILE}")
@@ -639,36 +505,24 @@ function BuildFileList() {
     elif [ "${FILE_TYPE}" == "raku" ] || [ "${FILE_TYPE}" == "rakumod" ] ||
       [ "${FILE_TYPE}" == "rakutest" ] || [ "${FILE_TYPE}" == "pm6" ] ||
       [ "${FILE_TYPE}" == "pl6" ] || [ "${FILE_TYPE}" == "p6" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_RAKU+=("${FILE}")
 
     ####################
     # Get the R files  #
     ####################
     elif [ "${FILE_TYPE}" == "r" ] || [ "${FILE_TYPE}" == "rmd" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_R+=("${FILE}")
 
     ######################
     # Get the RUBY files #
     ######################
     elif [ "${FILE_TYPE}" == "rb" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_RUBY+=("${FILE}")
 
     ######################
     # Get the RUST files #
     ######################
     elif [ "${FILE_TYPE}" == "rs" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_RUST_2015+=("${FILE}")
       FILE_ARRAY_RUST_2018+=("${FILE}")
       FILE_ARRAY_RUST_2021+=("${FILE}")
@@ -686,18 +540,12 @@ function BuildFileList() {
     # Get the SCALA files #
     ###########################
     elif [ "${FILE_TYPE}" == "scala" ] || [ "${FILE_TYPE}" == "sc" ] || [ "${BASE_FILE}" == "??????" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_SCALAFMT+=("${FILE}")
 
     ###########################
     # Get the SNAKEMAKE files #
     ###########################
     elif [ "${FILE_TYPE}" == "smk" ] || [ "${BASE_FILE}" == "snakefile" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_SNAKEMAKE_LINT+=("${FILE}")
       FILE_ARRAY_SNAKEMAKE_SNAKEFMT+=("${FILE}")
 
@@ -705,9 +553,6 @@ function BuildFileList() {
     # Get the SQL files #
     #####################
     elif [ "${FILE_TYPE}" == "sql" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_SQL+=("${FILE}")
       FILE_ARRAY_SQLFLUFF+=("${FILE}")
 
@@ -715,9 +560,6 @@ function BuildFileList() {
     # Get the Terraform files #
     ###########################
     elif [ "${FILE_TYPE}" == "tf" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_TERRAFORM_TFLINT+=("${FILE}")
       FILE_ARRAY_TERRAFORM_TERRASCAN+=("${FILE}")
       FILE_ARRAY_TERRAFORM_FMT+=("${FILE}")
@@ -726,18 +568,12 @@ function BuildFileList() {
     # Get the Terragrunt files #
     ############################
     elif [ "${FILE_TYPE}" == "hcl" ] && [[ ${FILE} != *".tflint.hcl"* ]] && [[ ${FILE} != *".pkr.hcl"* ]]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_TERRAGRUNT+=("${FILE}")
 
     ############################
     # Get the TypeScript files #
     ############################
     elif [ "${FILE_TYPE}" == "ts" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_TYPESCRIPT_ES+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_STANDARD+=("${FILE}")
       FILE_ARRAY_TYPESCRIPT_PRETTIER+=("${FILE}")
@@ -746,36 +582,26 @@ function BuildFileList() {
     # Get the TSX files #
     #####################
     elif [ "${FILE_TYPE}" == "tsx" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_TSX+=("${FILE}")
+    elif [ "${FILE_TYPE}" == "txt" ]; then
+      FILE_ARRAY_NATURAL_LANGUAGE+=("${FILE}")
 
     #####################
     # Get the XML files #
     #####################
     elif [ "${FILE_TYPE}" == "xml" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_XML+=("${FILE}")
 
     ################################
     # Get the CLOUDFORMATION files #
     ################################
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
-      ################################
-      # Append the file to the array #
-      ################################
       FILE_ARRAY_YAML+=("${FILE}")
 
       ###################################
       # Check if file is GitHub Actions #
       ###################################
       if DetectActions "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_GITHUB_ACTIONS+=("${FILE}")
       fi
 
@@ -783,9 +609,6 @@ function BuildFileList() {
       # Check if the file is CFN template #
       #####################################
       if DetectCloudFormationFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_CLOUDFORMATION+=("${FILE}")
       fi
 
@@ -793,9 +616,6 @@ function BuildFileList() {
       # Check if file is OpenAPI #
       ############################
       if DetectOpenAPIFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_OPENAPI+=("${FILE}")
       fi
 
@@ -803,9 +623,6 @@ function BuildFileList() {
       # Check if the file is Tekton template #
       ########################################
       if DetectTektonFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_TEKTON+=("${FILE}")
       fi
 
@@ -813,9 +630,6 @@ function BuildFileList() {
       # Check if the file is Kubernetes template #
       ############################################
       if DetectKubernetesFile "${FILE}"; then
-        ################################
-        # Append the file to the array #
-        ################################
         FILE_ARRAY_KUBERNETES_KUBECONFORM+=("${FILE}")
       fi
     ########################################################################
