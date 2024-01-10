@@ -53,6 +53,48 @@ RUN cmake \
     && ninja clang-format \
     && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
+FROM python:3.12.1-alpine3.19 as python-builder
+
+RUN apk add --no-cache \
+    bash
+
+SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
+
+COPY dependencies/python/ /stage
+WORKDIR /stage
+RUN ./build-venvs.sh && rm -rfv /stage
+
+FROM python:3.12.1-alpine3.19 as npm-builder
+
+RUN apk add --no-cache \
+    bash \
+    nodejs-current
+
+# The chown fixes broken uid/gid in ast-types-flow dependency
+# (see https://github.com/super-linter/super-linter/issues/3901)
+# Npm is not a runtime dependency but we need it to ensure that npm packages
+# are installed when we run the test suite. If we decide to remove it, add
+# the following command to the RUN instruction below:
+# apk del --no-network --purge .node-build-deps
+COPY dependencies/package.json dependencies/package-lock.json /
+RUN apk add --no-cache --virtual .node-build-deps \
+    npm \
+    && npm install \
+    && npm cache clean --force \
+    && chown -R "$(id -u)":"$(id -g)" node_modules \
+    && rm -rfv package.json package-lock.json
+
+FROM tflint as tflint-plugins
+
+# Configure TFLint plugin folder
+ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
+
+# Copy TFlint configuration file because it contains plugin definitions
+COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
+
+# Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
+RUN tflint --init -c /action/lib/.automation/.tflint.hcl
+
 FROM python:3.12.1-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
@@ -77,6 +119,8 @@ RUN apk add --no-cache \
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
 # Install super-linter runtime dependencies
+# Npm is not a runtime dependency but we need it to ensure that npm packages
+# are installed when we run the test suite.
 RUN apk add --no-cache \
     ca-certificates \
     coreutils \
@@ -86,6 +130,7 @@ RUN apk add --no-cache \
     git-lfs \
     jq \
     libxml2-utils \
+    npm \
     nodejs-current \
     openjdk17-jre \
     openssh-client \
@@ -105,21 +150,6 @@ RUN apk add --no-cache \
     rakudo \
     ruby \
     zef
-
-# Install Node tools
-# The chown fixes broken uid/gid in ast-types-flow dependency
-# (see https://github.com/super-linter/super-linter/issues/3901)
-# Npm is not a runtime dependency but we need it to ensure that npm packages
-# are installed when we run the test suite. If we decide to remove it, add
-# the following command to the RUN instruction below:
-# apk del --no-network --purge .node-build-deps
-COPY dependencies/package.json dependencies/package-lock.json /
-RUN apk add --no-cache --virtual .node-build-deps \
-    npm \
-    && npm install \
-    && npm cache clean --force \
-    && chown -R "$(id -u)":"$(id -g)" node_modules \
-    && rm -rfv package.json package-lock.json
 
 # Install Ruby tools
 COPY dependencies/Gemfile dependencies/Gemfile.lock /
@@ -154,6 +184,17 @@ RUN apk add --no-cache --virtual .perl-build-deps \
     Perl::Critic::Tics \
     && apk del --no-network --purge .perl-build-deps
 
+#################
+# Install glibc #
+#################
+# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# Store the key here because the above host is sometimes down, and breaks our builds
+COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+ARG GLIBC_VERSION='2.34-r0'
+COPY scripts/install-glibc.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh \
+    && rm -rf /install-glibc.sh /sgerrand.rsa.pub
+
 ##################
 # Install chktex #
 ##################
@@ -161,6 +202,53 @@ COPY scripts/install-chktex.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-chktex.sh && rm -rf /install-chktex.sh
 # Set work directory back to root because some scripts depend on it
 WORKDIR /
+
+#################
+# Install Lintr #
+#################
+COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
+RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
+
+#################################
+# Install luacheck and luarocks #
+#################################
+COPY scripts/install-lua.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
+
+##############################
+# Install Phive dependencies #
+##############################
+COPY dependencies/phive.xml /phive.xml
+COPY scripts/install-phive.sh /
+RUN /install-phive.sh \
+    && rm -rfv /install-phive.sh /phive.xml
+
+##################
+# Install ktlint #
+##################
+COPY scripts/install-ktlint.sh /
+COPY dependencies/ktlint /ktlint
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh \
+    && rm -rfv /install-ktlint.sh /ktlint
+
+######################
+# Install CheckStyle #
+######################
+COPY scripts/install-checkstyle.sh /
+COPY dependencies/checkstyle /checkstyle
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh \
+    && rm -rfv /install-checkstyle.sh /checkstyle
+
+##############################
+# Install google-java-format #
+##############################
+COPY scripts/install-google-java-format.sh /
+COPY dependencies/google-java-format /google-java-format
+RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
+    && rm -rfv /install-google-java-format.sh /google-java-format
+
+# Copy Node tools
+COPY --from=npm-builder /node_modules /node_modules
 
 ######################
 # Install shellcheck #
@@ -185,7 +273,10 @@ COPY --from=terraform /bin/terraform /usr/bin/
 ##################
 # Install TFLint #
 ##################
+# Configure TFLint plugin folder
+ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
+COPY --from=tflint-plugins "${TFLINT_PLUGIN_DIR}" "${TFLINT_PLUGIN_DIR}"
 
 #####################
 # Install Terrascan #
@@ -237,17 +328,6 @@ COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 ######################
 COPY --from=kubeconfrm /kubeconform /usr/bin/
 
-#################
-# Install glibc #
-#################
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-ARG GLIBC_VERSION='2.34-r0'
-COPY scripts/install-glibc.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh \
-    && rm -rf /install-glibc.sh /sgerrand.rsa.pub
-
 #####################
 # Install clj-kondo #
 #####################
@@ -265,73 +345,15 @@ RUN chmod 755 "${DART_SDK}" && chmod 755 "${DART_SDK}/bin"
 ########################
 COPY --from=clang-format /usr/bin/clang-format /usr/bin/
 
-#################
-# Install Lintr #
-#################
-COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
-RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
-
-#################################
-# Install luacheck and luarocks #
-#################################
-COPY scripts/install-lua.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
-
-#####################################
-# Build python virtual environments #
-#####################################
-COPY dependencies/python/ /stage
-WORKDIR /stage
-RUN ./build-venvs.sh && rm -rfv /stage
-# Set work directory back to root because some scripts depend on it
-WORKDIR /
-
-##############################
-# Install Phive dependencies #
-##############################
-COPY dependencies/phive.xml /phive.xml
-COPY scripts/install-phive.sh /
-RUN /install-phive.sh \
-    && rm -rfv /install-phive.sh /phive.xml
-
-##################
-# Install ktlint #
-##################
-COPY scripts/install-ktlint.sh /
-COPY dependencies/ktlint /ktlint
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh \
-    && rm -rfv /install-ktlint.sh /ktlint
-
-######################
-# Install CheckStyle #
-######################
-COPY scripts/install-checkstyle.sh /
-COPY dependencies/checkstyle /checkstyle
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh \
-    && rm -rfv /install-checkstyle.sh /checkstyle
-
-##############################
-# Install google-java-format #
-##############################
-COPY scripts/install-google-java-format.sh /
-COPY dependencies/google-java-format /google-java-format
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
-    && rm -rfv /install-google-java-format.sh /google-java-format
+########################
+# Install python tools #
+########################
+COPY --from=python-builder /venvs /venvs
 
 #####################
 # Install Bash-Exec #
 #####################
 COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
-
-#################################
-# Copy super-linter executables #
-#################################
-COPY lib /action/lib
-
-###################################
-# Copy linter configuration files #
-###################################
-COPY TEMPLATES /action/lib/.automation
 
 #########################
 # Configure Environment #
@@ -357,15 +379,20 @@ ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 
-# Configure TFLint plugin folder
-ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
-
-# Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 # Initialize Terrascan
 # Initialize ChkTeX config file
-RUN tflint --init -c /action/lib/.automation/.tflint.hcl \
-    && terrascan init \
+RUN terrascan init \
     && touch ~/.chktexrc
+
+###################################
+# Copy linter configuration files #
+###################################
+COPY TEMPLATES /action/lib/.automation
+
+#################################
+# Copy super-linter executables #
+#################################
+COPY lib /action/lib
 
 # Run to build version file and validate image
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh

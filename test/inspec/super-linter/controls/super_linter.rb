@@ -400,6 +400,9 @@ control "super-linter-validate-directories" do
     "/action/lib",
     "/action/lib/functions",
     "/action/lib/.automation",
+    "/root/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-aws",
+    "/root/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-azurerm",
+    "/root/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-google",
     "/usr/local/lib/",
     "/usr/local/share/"
   ]
