@@ -490,10 +490,7 @@ GetGitHubVars() {
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
       debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
-      GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)
-      ERROR_CODE=$?
-      debug "GITHUB_SHA initalization return code: ${ERROR_CODE}"
-      if [ ${ERROR_CODE} -ne 0 ]; then
+      if ! GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD); then
         fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
       fi
       debug "GITHUB_SHA: ${GITHUB_SHA}"
@@ -532,11 +529,8 @@ GetGitHubVars() {
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
     if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
       debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
-      GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH")
-      ERROR_CODE=$?
-      debug "GITHUB_SHA update error code: ${ERROR_CODE}"
 
-      if [ ${ERROR_CODE} -ne 0 ]; then
+      if ! GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH"); then
         fatal "Failed to update GITHUB_SHA for pull request event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
@@ -552,10 +546,7 @@ GetGitHubVars() {
       # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
       debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
       # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
-      GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT})
-      ERROR_CODE=$?
-      debug "GITHUB_BEFORE_SHA initialization error code: ${ERROR_CODE}"
-      if [ ${ERROR_CODE} -ne 0 ]; then
+      if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT}); then
         fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
       fi
 
@@ -660,7 +651,7 @@ CallStatusAPI() {
     ##############################################
     # Call the status API to create status check #
     ##############################################
-    SEND_STATUS_CMD=$(
+    if ! SEND_STATUS_CMD=$(
       curl -f -s --show-error -X POST \
         --url "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
         -H 'accept: application/vnd.github.v3+json' \
@@ -670,19 +661,7 @@ CallStatusAPI() {
         \"target_url\": \"https://${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
         \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
       }" 2>&1
-    )
-
-    #######################
-    # Load the error code #
-    #######################
-    ERROR_CODE=$?
-
-    debug "Send status comd output: [$SEND_STATUS_CMD]"
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ "${ERROR_CODE}" -ne 0 ]; then
+    ); then
       info "Failed to call GitHub Status API: ${SEND_STATUS_CMD}"
     fi
   fi

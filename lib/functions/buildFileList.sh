@@ -23,30 +23,20 @@ function GenerateFileDiff() {
 }
 
 function RunFileDiffCommand() {
+  local CMD
   CMD="${1}"
   debug "Generating Diff with:[$CMD]"
 
   #################################################
   # Get the Array of files changed in the commits #
   #################################################
-  CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail")
-  ERROR_CODE=$?
-  debug "Diff command return code: ${ERROR_CODE}"
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
+  if ! CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail"); then
     error "Failed to get Diff with:[$CMD]"
     IssueHintForFullGitHistory
-    fatal "[Diff command output: ${CMD_OUTPUT}]"
+    fatal "Diff command output: ${CMD_OUTPUT}"
   fi
 
-  ###################################################
-  # Map command output to an array to proper handle #
-  ###################################################
   mapfile -t RAW_FILE_ARRAY < <(echo -n "$CMD_OUTPUT")
-  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 }
 
 function BuildFileList() {
@@ -72,7 +62,7 @@ function BuildFileList() {
     if [ "${USE_FIND_ALGORITHM}" == 'true' ]; then
       debug "----------------------------------------------"
       debug "Populating the file list with all the files in the ${WORKSPACE_PATH} workspace using FIND algorithm"
-      mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
+      if ! mapfile -t RAW_FILE_ARRAY < <(find "${WORKSPACE_PATH}" \
         -not \( -path '*/\.git' -prune \) \
         -not \( -path '*/\.pytest_cache' -prune \) \
         -not \( -path '*/\.rbenv' -prune \) \
@@ -92,20 +82,21 @@ function BuildFileList() {
         -not -name "*.woff2" \
         -not -name "*.zip" \
         -type f \
-        2>&1 | sort)
+        2>&1 | sort); then
+        fatal "Failed to get a list of changed files. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+      fi
+
     else
       debug "----------------------------------------------"
       DIFF_GIT_VALIDATE_ALL_CODEBASE="git -C \"${WORKSPACE_PATH}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${WORKSPACE_PATH}/%\" 2>&1"
       debug "Populating the file list with: ${DIFF_GIT_VALIDATE_ALL_CODEBASE}"
-      mapfile -t RAW_FILE_ARRAY < <(eval "set -eo pipefail; ${DIFF_GIT_VALIDATE_ALL_CODEBASE}; set +eo pipefail")
-      debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+      if ! mapfile -t RAW_FILE_ARRAY < <(eval "set -eo pipefail; ${DIFF_GIT_VALIDATE_ALL_CODEBASE}; set +eo pipefail"); then
+        fatal "Failed to get a list of changed files. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+      fi
     fi
   fi
 
-  ERROR_CODE=$?
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    fatal "Failed to gain a list of all files changed! Error code: ${ERROR_CODE}"
-  fi
+  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
 
   if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
