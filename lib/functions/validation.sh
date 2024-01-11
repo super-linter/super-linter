@@ -1,51 +1,45 @@
 #!/usr/bin/env bash
 
+function ValidateBooleanConfigurationVariables() {
+  ValidateBooleanVariable "ACTIONS_RUNNER_DEBUG" "${ACTIONS_RUNNER_DEBUG}"
+  ValidateBooleanVariable "CREATE_LOG_FILE" "${CREATE_LOG_FILE}"
+  ValidateBooleanVariable "DISABLE_ERRORS" "${DISABLE_ERRORS}"
+  ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
+  ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
+  ValidateBooleanVariable "IGNORE_GITIGNORED_FILES" "${IGNORE_GITIGNORED_FILES}"
+  ValidateBooleanVariable "MULTI_STATUS" "${MULTI_STATUS}"
+  ValidateBooleanVariable "RUN_LOCAL" "${RUN_LOCAL}"
+  ValidateBooleanVariable "SSH_INSECURE_NO_VERIFY_GITHUB_KEY" "${SSH_INSECURE_NO_VERIFY_GITHUB_KEY}"
+  ValidateBooleanVariable "SSH_SETUP_GITHUB" "${SSH_SETUP_GITHUB}"
+  ValidateBooleanVariable "SUPPRESS_FILE_TYPE_WARN" "${SUPPRESS_FILE_TYPE_WARN}"
+  ValidateBooleanVariable "SUPPRESS_POSSUM" "${SUPPRESS_POSSUM}"
+  ValidateBooleanVariable "USE_FIND_ALGORITHM" "${USE_FIND_ALGORITHM}"
+  ValidateBooleanVariable "TEST_CASE_RUN" "${TEST_CASE_RUN}"
+  ValidateBooleanVariable "VALIDATE_ALL_CODEBASE" "${VALIDATE_ALL_CODEBASE}"
+  ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
+  ValidateBooleanVariable "WRITE_LINTER_VERSIONS_FILE" "${WRITE_LINTER_VERSIONS_FILE}"
+}
+
+function ValidateGitHubWorkspace() {
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="${1}"
+  if [ -z "${GITHUB_WORKSPACE}" ]; then
+    fatal "Failed to get GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+  fi
+
+  if [ ! -d "${GITHUB_WORKSPACE}" ]; then
+    fatal "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
+  fi
+  info "Successfully validated GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+}
+
 function GetValidationInfo() {
-  ############################################
-  # Print headers for user provided env vars #
-  ############################################
   info "--------------------------------------------"
-  info "Gathering user validation information..."
+  info "Validating the configuration"
 
   if [[ "${USE_FIND_ALGORITHM}" == "true" ]] && [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
     fatal "Setting USE_FIND_ALGORITHM to true and VALIDATE_ALL_CODEBASE to false is not supported because super-linter relies on Git to validate changed files."
   fi
-
-  ###########################################
-  # Skip validation if were running locally #
-  ###########################################
-  if [[ ${RUN_LOCAL} != "true" ]]; then
-    ###############################
-    # Convert string to lowercase #
-    ###############################
-    VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE,,}"
-    ######################################
-    # Validate we should check all files #
-    ######################################
-    if [[ ${VALIDATE_ALL_CODEBASE} != "false" ]]; then
-      # Set to true
-      VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-      info "- Validating ALL files in code base..."
-    else
-      info "- Only validating [new], or [edited] files in code base..."
-    fi
-  fi
-
-  ######################
-  # Create Print Array #
-  ######################
-  PRINT_ARRAY=()
-
-  ################################
-  # Convert strings to lowercase #
-  ################################
-  # Loop through all languages
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
-    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    # Set the value of the var to lowercase
-    eval "${VALIDATE_LANGUAGE}=${!VALIDATE_LANGUAGE,,}"
-  done
 
   ################################################
   # Determine if any linters were explicitly set #
@@ -53,12 +47,14 @@ function GetValidationInfo() {
   ANY_SET="false"
   ANY_TRUE="false"
   ANY_FALSE="false"
-  # Loop through all languages
+
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
+    local VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    # Check to see if the variable was set
+    debug "Set VALIDATE_LANGUAGE while validating the configuration: ${VALIDATE_LANGUAGE}"
     if [ -n "${!VALIDATE_LANGUAGE}" ]; then
+      # Validate if user provided a string representing a valid boolean
+      ValidateBooleanVariable "${VALIDATE_LANGUAGE}" "${!VALIDATE_LANGUAGE}"
       # It was set, need to set flag
       ANY_SET="true"
       if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
@@ -66,6 +62,8 @@ function GetValidationInfo() {
       elif [ "${!VALIDATE_LANGUAGE}" == "false" ]; then
         ANY_FALSE="true"
       fi
+    else
+      debug "Configuration didn't provide a custom value for ${VALIDATE_LANGUAGE}"
     fi
   done
 
@@ -76,13 +74,10 @@ function GetValidationInfo() {
   #########################################################
   # Validate if we should check/omit individual languages #
   #########################################################
-  # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
+    local VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    # Check if ANY_SET was set
     if [[ ${ANY_SET} == "true" ]]; then
-      # Check to see if the variable was set
       if [ -z "${!VALIDATE_LANGUAGE}" ]; then
         # Flag was not set, default to:
         # if ANY_TRUE then set to false
@@ -101,11 +96,10 @@ function GetValidationInfo() {
   #######################################
   # Loop through all languages
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
+    local VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     if [[ ${!VALIDATE_LANGUAGE} == "true" ]]; then
-      # We need to validate
-      PRINT_ARRAY+=("- Validating [${LANGUAGE}] files in code base...")
+      debug "- Validating [${LANGUAGE}] files in code base..."
 
       debug "Defining variables for ${LANGUAGE} linter..."
 
@@ -115,8 +109,7 @@ function GetValidationInfo() {
       debug "Exporting ${ERRORS_VARIABLE_NAME} variable..."
       eval "export ${ERRORS_VARIABLE_NAME}"
     else
-      # We are skipping the language
-      PRINT_ARRAY+=("- Excluding [$LANGUAGE] files in code base...")
+      debug "- Excluding [$LANGUAGE] files in code base..."
     fi
   done
 
@@ -147,65 +140,9 @@ function GetValidationInfo() {
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
 
-  ###############################
-  # Get the disable errors flag #
-  ###############################
-  if [ -z "${DISABLE_ERRORS}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    DISABLE_ERRORS="${DEFAULT_DISABLE_ERRORS}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  DISABLE_ERRORS="${DISABLE_ERRORS,,}"
-
-  ############################
-  # Set to false if not true #
-  ############################
-  if [ "${DISABLE_ERRORS}" != "true" ]; then
-    DISABLE_ERRORS="false"
-  fi
-
-  ############################
-  # Get the run verbose flag #
-  ############################
-  if [ -z "${ACTIONS_RUNNER_DEBUG}" ]; then
-    ##################################
-    # No flag passed, set to default #
-    ##################################
-    ACTIONS_RUNNER_DEBUG="${DEFAULT_ACTIONS_RUNNER_DEBUG}"
-  fi
-
-  ###############################
-  # Convert string to lowercase #
-  ###############################
-  ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG,,}"
-
-  ############################
-  # Set to true if not false #
-  ############################
-  if [ "${ACTIONS_RUNNER_DEBUG}" != "false" ]; then
-    ACTIONS_RUNNER_DEBUG="true"
-  fi
-
-  ###########################
-  # Print the validate info #
-  ###########################
-  for LINE in "${PRINT_ARRAY[@]}"; do
-    debug "${LINE}"
-  done
-
-  debug "--- DEBUG INFO ---"
-  debug "---------------------------------------------"
-  RUNNER=$(id -un 2>/dev/null)
-  debug "Runner:[${RUNNER}]"
-  PRINTENV=$(printenv | sort)
+  debug "Runner: $(id -un 2>/dev/null)"
   debug "ENV:"
-  debug "${PRINTENV}"
-  debug "---------------------------------------------"
+  debug "$(printenv | sort)"
 }
 
 function CheckIfGitBranchExists() {
@@ -217,6 +154,20 @@ function CheckIfGitBranchExists() {
   else
     debug "The ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
     return 0
+  fi
+}
+
+function ValidateBooleanVariable() {
+  local VAR_NAME
+  VAR_NAME="${1}"
+
+  local VAR_VALUE
+  VAR_VALUE="${2}"
+
+  if [[ "${VAR_VALUE}" != "true" ]] && [[ "${VAR_VALUE}" != "false" ]]; then
+    fatal "Set ${VAR_NAME} to either true or false. It was set to: ${VAR_VALUE}"
+  else
+    debug "${VAR_NAME} has a valid boolean string value: ${VAR_VALUE}"
   fi
 }
 
