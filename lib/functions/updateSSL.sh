@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function CheckSSLCert() {
-  if [ -z "${SSL_CERT_SECRET}" ]; then
+  if [ -z "${SSL_CERT_SECRET:-}" ]; then
     # No cert was passed
     debug "User did not provide a SSL_CERT_SECRET"
   else

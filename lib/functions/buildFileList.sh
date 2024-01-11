@@ -10,10 +10,12 @@ function IssueHintForFullGitHistory() {
 }
 
 function GenerateFileDiff() {
+  local DIFF_GIT_DEFAULT_BRANCH_CMD
   DIFF_GIT_DEFAULT_BRANCH_CMD="git -C \"${GITHUB_WORKSPACE}\" diff --diff-filter=d --name-only ${DEFAULT_BRANCH}...${GITHUB_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-  DIFF_TREE_CMD="git -C \"${GITHUB_WORKSPACE}\" diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} ${GITHUB_BEFORE_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
 
   if [ "${GITHUB_EVENT_NAME:-}" == "push" ]; then
+    local DIFF_TREE_CMD
+    DIFF_TREE_CMD="git -C \"${GITHUB_WORKSPACE}\" diff-tree --no-commit-id --name-only -r ${GITHUB_SHA} ${GITHUB_BEFORE_SHA} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
     RunFileDiffCommand "${DIFF_TREE_CMD}"
     if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
       debug "Generating the file array with diff-tree produced [0] items, trying with git diff against the default branch..."

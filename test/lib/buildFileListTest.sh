@@ -5,6 +5,11 @@ set -o nounset
 set -o pipefail
 
 # shellcheck disable=SC2034
+CREATE_LOG_FILE=false
+# Default log level
+# shellcheck disable=SC2034
+LOG_LEVEL="DEBUG"
+# shellcheck disable=SC2034
 LOG_DEBUG="true"
 # shellcheck disable=SC2034
 LOG_VERBOSE="true"
@@ -24,9 +29,6 @@ DEFAULT_BRANCH=main
 git config --global init.defaultBranch "${DEFAULT_BRANCH}"
 git config --global user.email "super-linter@example.com"
 git config --global user.name "Super-linter"
-
-# shellcheck disable=SC2034
-CREATE_LOG_FILE=false
 
 function InitGitRepositoryAndCommitFiles() {
   local REPOSITORY_PATH="${1}" && shift

@@ -5,6 +5,11 @@ set -o nounset
 set -o pipefail
 
 # shellcheck disable=SC2034
+CREATE_LOG_FILE=false
+# Default log level
+# shellcheck disable=SC2034
+LOG_LEVEL="DEBUG"
+# shellcheck disable=SC2034
 LOG_TRACE="true"
 # shellcheck disable=SC2034
 LOG_DEBUG="true"
@@ -19,9 +24,6 @@ LOG_ERROR="true"
 
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
-
-# shellcheck disable=SC2034
-CREATE_LOG_FILE=false
 
 GITHUB_DOMAIN="github.com"
 # shellcheck disable=SC2034

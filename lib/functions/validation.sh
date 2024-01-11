@@ -51,7 +51,7 @@ function GetValidationInfo() {
     local VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     debug "Set VALIDATE_LANGUAGE while validating the configuration: ${VALIDATE_LANGUAGE}"
-    if [ -n "${!VALIDATE_LANGUAGE}" ]; then
+    if [ -n "${!VALIDATE_LANGUAGE:-}" ]; then
       # Validate if user provided a string representing a valid boolean
       ValidateBooleanVariable "${VALIDATE_LANGUAGE}" "${!VALIDATE_LANGUAGE}"
       # It was set, need to set flag
@@ -77,7 +77,7 @@ function GetValidationInfo() {
     local VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     if [[ ${ANY_SET} == "true" ]]; then
-      if [ -z "${!VALIDATE_LANGUAGE}" ]; then
+      if [ -z "${!VALIDATE_LANGUAGE:-}" ]; then
         # Flag was not set, default to:
         # if ANY_TRUE then set to false
         # if ANY_FALSE then set to true
@@ -107,7 +107,7 @@ function GetValidationInfo() {
   ##############################
   # Validate Ansible Directory #
   ##############################
-  if [ -z "${ANSIBLE_DIRECTORY}" ]; then
+  if [ -z "${ANSIBLE_DIRECTORY:-}" ]; then
     ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
     debug "Set ANSIBLE_DIRECTORY to the default: ${ANSIBLE_DIRECTORY}"
   else
