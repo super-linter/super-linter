@@ -91,9 +91,10 @@ function LintCodebase() {
     for FILE in "${LIST_FILES[@]}"; do
       debug "Linting FILE: ${FILE}"
 
-      local INDIVIDUAL_TEST_FOLDER
+      # We want a lowercase value
+      local -l INDIVIDUAL_TEST_FOLDER
       # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
-      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE,,}"
+      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE}"
       debug "INDIVIDUAL_TEST_FOLDER for ${FILE}: ${INDIVIDUAL_TEST_FOLDER}"
 
       local TEST_CASE_DIRECTORY

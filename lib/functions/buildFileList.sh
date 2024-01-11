@@ -188,8 +188,10 @@ function BuildFileList() {
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     # Get the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
-    # Get the name of the file (lowercase) and the containing directory path
-    BASE_FILE=$(basename "${FILE,,}")
+    # We want a lowercase value
+    local -l BASE_FILE
+    # Get the name of the file and the containing directory path
+    BASE_FILE=$(basename "${FILE}")
     FILE_DIR_NAME="$(dirname "${FILE}")"
 
     debug "FILE: ${FILE}, FILE_TYPE: ${FILE_TYPE}, BASE_FILE: ${BASE_FILE}, FILE_DIR_NAME: ${FILE_DIR_NAME}"

@@ -4,8 +4,9 @@
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-false}" # Boolean to see even more info (debug)
-IMAGE="${IMAGE:-standard}"                            # Version of the Super-linter (standard,slim,etc)
+declare -l ACTIONS_RUNNER_DEBUG
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}" # Boolean to see even more info (debug)
+IMAGE="${IMAGE:-standard}"                              # Version of the Super-linter (standard,slim,etc)
 
 ##################################################################
 # Log Vars                                                       #
@@ -13,8 +14,8 @@ IMAGE="${IMAGE:-standard}"                            # Version of the Super-lin
 ##################################################################
 LOG_FILE="${LOG_FILE:-"super-linter.log"}" # Default log file name (located in GITHUB_WORKSPACE folder)
 LOG_LEVEL="${LOG_LEVEL:-VERBOSE}"          # Default log level (VERBOSE, DEBUG, TRACE)
+declare -l CREATE_LOG_FILE
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
-export CREATE_LOG_FILE
 
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
 # Boolean to see trace logs
@@ -60,15 +61,10 @@ source /action/lib/functions/setupSSH.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/githubEvent.sh
 
+# We want a lowercase value
+declare -l RUN_LOCAL
 # Initialize RUN_LOCAL early because we need it for logging
-DEFAULT_RUN_LOCAL='false'
-
-if [ -z "${RUN_LOCAL}" ]; then
-  RUN_LOCAL="${DEFAULT_RUN_LOCAL}"
-fi
-
-# Convert string to lowercase
-RUN_LOCAL="${RUN_LOCAL,,}"
+RUN_LOCAL="${RUN_LOCAL:-"false"}"
 
 # Dynamically set the default behavior for GitHub Actions log markers because
 # we want to give users a chance to enable this even when running locally, but
@@ -84,37 +80,85 @@ ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAU
 
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
-debug "RUN_LOCAL: ${RUN_LOCAL}"
-debug "ENABLE_GITHUB_ACTIONS_GROUP_TITLE: ${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
+# We want a lowercase value
+declare -l DISABLE_ERRORS
+DISABLE_ERRORS="${DISABLE_ERRORS:-"false"}"
+
+# We want a lowercase value
+declare -l IGNORE_GENERATED_FILES
+# Do not ignore generated files by default for backwards compatibility
+IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
+
+# We want a lowercase value
+declare -l IGNORE_GITIGNORED_FILES
+IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+
+# We want a lowercase value
+declare -l MULTI_STATUS
+MULTI_STATUS="${MULTI_STATUS:-true}"
+
+# We want a lowercase value
+declare -l SSH_INSECURE_NO_VERIFY_GITHUB_KEY
+SSH_INSECURE_NO_VERIFY_GITHUB_KEY="${SSH_INSECURE_NO_VERIFY_GITHUB_KEY:-false}"
+
+# We want a lowercase value
+declare -l SSH_SETUP_GITHUB
+SSH_SETUP_GITHUB="${SSH_SETUP_GITHUB:-false}"
+
+# We want a lowercase value
+declare -l SUPPRESS_FILE_TYPE_WARN
+SUPPRESS_FILE_TYPE_WARN="${SUPPRESS_FILE_TYPE_WARN:-false}"
+
+# We want a lowercase value
+declare -l SUPPRESS_POSSUM
+SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
+
+# We want a lowercase value
+declare -l TEST_CASE_RUN
+# Option to tell code to run only test cases
+TEST_CASE_RUN="${TEST_CASE_RUN:-"false"}"
+
+# We want a lowercase value
+declare -l USE_FIND_ALGORITHM
+USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
+
+# We want a lowercase value
+declare -l VALIDATE_ALL_CODEBASE
+VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE:-"true"}"
+
+# We want a lowercase value
+declare -l YAML_ERROR_ON_WARNING
+YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
+
+declare -l WRITE_LINTER_VERSIONS_FILE
+WRITE_LINTER_VERSIONS_FILE="${WRITE_LINTER_VERSIONS_FILE:-"false"}"
+
+ValidateBooleanConfigurationVariables
 
 ###########
 # GLOBALS #
 ###########
+DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"
+DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
+DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
+DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
+FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
+FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
 # GitHub API root url
-if [ -n "$GITHUB_CUSTOM_API_URL" ]; then
-  GITHUB_API_URL="${GITHUB_CUSTOM_API_URL}"
-elif [ -z "$GITHUB_API_URL" ]; then
-  GITHUB_API_URL="https://api.github.com"
-fi
+GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.github.com"}"
 # Remove trailing slash if present
 GITHUB_API_URL="${GITHUB_API_URL%/}"
-
-# GitHub server url
-if [ -n "$GITHUB_DOMAIN" ]; then
-  GITHUB_SERVER_URL="${GITHUB_DOMAIN}"
-elif [ -z "$GITHUB_SERVER_URL" ]; then
-  GITHUB_SERVER_URL="https://github.com"
-fi
+GITHUB_SERVER_URL="${GITHUB_DOMAIN:-"https://github.com"}"
 # Extract domain name from URL
 GITHUB_SERVER_URL=$(echo "$GITHUB_SERVER_URL" | cut -d '/' -f 3)
-
-# Default Vars
-DEFAULT_RULES_LOCATION='/action/lib/.automation'          # Default rules files location
+LINTED_LANGUAGES_ARRAY=()                                 # Will be filled at run time with all languages that were linted
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
-VERSION_FILE='/action/lib/functions/linterVersions.txt'   # File to store linter versions
-export VERSION_FILE                                       # Workaround SC2034
-
-debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
+# shellcheck disable=SC2034 # Variable is referenced in other scripts
+RAW_FILE_ARRAY=() # Array of all files that were changed
+# shellcheck disable=SC2034 # Variable is referenced in other scripts
+TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
+# shellcheck disable=SC2034  # Variable is referenced in other scripts
+VERSION_FILE='/action/lib/functions/linterVersions.txt' # File to store linter versions
 
 # Set the log level
 TF_LOG_LEVEL="info"
@@ -215,15 +259,6 @@ SCALAFMT_FILE_NAME="${SCALAFMT_CONFIG_FILE:-.scalafmt.conf}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SNAKEMAKE_SNAKEFMT_FILE_NAME="${SNAKEMAKE_SNAKEFMT_CONFIG_FILE:-.snakefmt.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-SUPPRESS_FILE_TYPE_WARN="${SUPPRESS_FILE_TYPE_WARN:-false}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
-# SSH_KEY="${SSH_KEY}"
-SSH_SETUP_GITHUB="${SSH_SETUP_GITHUB:-false}"
-SSH_INSECURE_NO_VERIFY_GITHUB_KEY="${SSH_INSECURE_NO_VERIFY_GITHUB_KEY:-false}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-# SSL_CERT_SECRET="${SSL_CERT_SECRET}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
 SQL_FILE_NAME="${SQL_CONFIG_FILE:-.sql-config.json}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 SQLFLUFF_FILE_NAME="${SQLFLUFF_CONFIG_FILE:-/.sqlfluff}"
@@ -242,13 +277,7 @@ TYPESCRIPT_STYLE=''      # Variable for the style
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"
-debug "USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
-
-# shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
 
 #################################################
 # Parse if we are using JS standard or prettier #
@@ -383,50 +412,6 @@ LINTER_NAMES_ARRAY["${TYPESCRIPT_STYLE_NAME}"]="${TYPESCRIPT_STYLE}"
 LINTER_NAMES_ARRAY['XML']="xmllint"
 LINTER_NAMES_ARRAY['YAML']="yamllint"
 
-############################################
-# Array for all languages that were linted #
-############################################
-LINTED_LANGUAGES_ARRAY=() # Will be filled at run time with all languages that were linted
-
-###################
-# GitHub ENV Vars #
-###################
-MULTI_STATUS="${MULTI_STATUS:-true}"       # Multiple status are created for each check ran
-MULTI_STATUS="${MULTI_STATUS,,}"           # Convert string to lowercase
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}" # Default Git Branch to use (master by default)
-IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
-debug "IGNORE_GITIGNORED_FILES: ${IGNORE_GITIGNORED_FILES}"
-
-# Do not ignore generated files by default for backwards compatibility
-IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
-debug "IGNORE_GENERATED_FILES: ${IGNORE_GENERATED_FILES}"
-
-################
-# Default Vars #
-################
-DEFAULT_VALIDATE_ALL_CODEBASE='true'                                        # Default value for validate all files
-DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
-DEFAULT_TEST_CASE_RUN='false'                                               # Flag to tell code to run only test cases
-
-if [ -z "${TEST_CASE_RUN}" ]; then
-  TEST_CASE_RUN="${DEFAULT_TEST_CASE_RUN}"
-fi
-
-# Convert string to lowercase
-TEST_CASE_RUN="${TEST_CASE_RUN,,}"
-debug "TEST_CASE_RUN: ${TEST_CASE_RUN}"
-
-###############################################################
-# Default Vars that are called in Subs and need to be ignored #
-###############################################################
-DEFAULT_DISABLE_ERRORS='false'  # Default to enabling errors
-export DEFAULT_DISABLE_ERRORS   # Workaround SC2034
-RAW_FILE_ARRAY=()               # Array of all files that were changed
-export RAW_FILE_ARRAY           # Workaround SC2034
-TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
-export TEST_CASE_FOLDER         # Workaround SC2034
-
 ##########################
 # Array of changed files #
 ##########################
@@ -462,6 +447,13 @@ Header() {
   info "The Super-Linter source code can be found at:"
   info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
+
+  if [[ ${VALIDATE_ALL_CODEBASE} != "false" ]]; then
+    VALIDATE_ALL_CODEBASE="true"
+    info "- Validating all files in code base..."
+  else
+    info "- Validating changed files in code base..."
+  fi
 }
 
 ConfigureGitSafeDirectories() {
@@ -491,15 +483,9 @@ GetGitHubVars() {
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
     fi
 
-    if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-      fatal "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
-    fi
+    ValidateGitHubWorkspace "${GITHUB_WORKSPACE}"
 
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
-
-    VALIDATE_ALL_CODEBASE="${DEFAULT_VALIDATE_ALL_CODEBASE}"
-    info "Linting all files in mapped directory: ${GITHUB_WORKSPACE}"
-    debug "Setting VALIDATE_ALL_CODEBASE to ${VALIDATE_ALL_CODEBASE} because we are not running on GitHub Actions"
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       ConfigureGitSafeDirectories
@@ -518,11 +504,7 @@ GetGitHubVars() {
     MULTI_STATUS="false"
     debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
-    if [ -z "${GITHUB_WORKSPACE}" ]; then
-      fatal "Failed to get GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-    else
-      info "Successfully found:${F[W]}[GITHUB_WORKSPACE]${F[B]}, value:${F[W]}[${GITHUB_WORKSPACE}]"
-    fi
+    ValidateGitHubWorkspace "${GITHUB_WORKSPACE}"
 
     # Ensure that Git can access the local repository
     ConfigureGitSafeDirectories
@@ -1083,9 +1065,8 @@ EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
 ####################################
 debug "--- ENV (before running linters) ---"
 debug "------------------------------------"
-PRINTENV=$(printenv | sort)
 debug "ENV:"
-debug "${PRINTENV}"
+debug "$(printenv | sort)"
 debug "------------------------------------"
 
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"

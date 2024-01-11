@@ -212,15 +212,10 @@ function CheckFileType() {
 
 function GetFileExtension() {
   FILE="$1"
-
-  ###########################
-  # Get the files extension #
-  ###########################
-  # Extract just the file extension
+  # We want a lowercase value
+  local -l FILE_TYPE
+  # Extract the file extension
   FILE_TYPE=${FILE##*.}
-  # To lowercase
-  FILE_TYPE=${FILE_TYPE,,}
-
   echo "$FILE_TYPE"
 }
 
