@@ -418,7 +418,7 @@ ENV BUILD_VERSION=$BUILD_VERSION
 ##############################
 # Build the standard variant #
 ##############################
-FROM slim as standard
+FROM base_image as standard
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
