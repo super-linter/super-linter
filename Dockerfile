@@ -394,12 +394,12 @@ COPY TEMPLATES /action/lib/.automation
 #################################
 COPY lib /action/lib
 
-# Run to build version file and validate image
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
-
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image as slim
+
+# Run to build version file and validate image
+RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
