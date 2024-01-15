@@ -98,8 +98,11 @@ fatal() {
 
 # shellcheck disable=SC2034  # Variable is referenced in other files
 SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE="Super-Linter initialization"
+export SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE
 GITHUB_ACTIONS_LOG_GROUP_MARKER_START="start"
+export GITHUB_ACTIONS_LOG_GROUP_MARKER_START
 GITHUB_ACTIONS_LOG_GROUP_MARKER_END="end"
+export GITHUB_ACTIONS_LOG_GROUP_MARKER_END
 
 writeGitHubActionsLogGroupMarker() {
   local LOG_GROUP_MARKER_MODE="${1}"
@@ -139,3 +142,16 @@ startGitHubActionsLogGroup() {
 endGitHubActionsLogGroup() {
   writeGitHubActionsLogGroupMarker "${GITHUB_ACTIONS_LOG_GROUP_MARKER_END}" "${1}"
 }
+
+# We need these functions to be available when using parallel to run subprocesses
+export -f debug
+export -f endGitHubActionsLogGroup
+export -f error
+export -f fatal
+export -f info
+export -f log
+export -f notice
+export -f startGitHubActionsLogGroup
+export -f trace
+export -f warn
+export -f writeGitHubActionsLogGroupMarker

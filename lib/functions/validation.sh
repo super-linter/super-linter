@@ -13,11 +13,11 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "SSH_SETUP_GITHUB" "${SSH_SETUP_GITHUB}"
   ValidateBooleanVariable "SUPPRESS_FILE_TYPE_WARN" "${SUPPRESS_FILE_TYPE_WARN}"
   ValidateBooleanVariable "SUPPRESS_POSSUM" "${SUPPRESS_POSSUM}"
-  ValidateBooleanVariable "USE_FIND_ALGORITHM" "${USE_FIND_ALGORITHM}"
   ValidateBooleanVariable "TEST_CASE_RUN" "${TEST_CASE_RUN}"
+  ValidateBooleanVariable "USE_FIND_ALGORITHM" "${USE_FIND_ALGORITHM}"
   ValidateBooleanVariable "VALIDATE_ALL_CODEBASE" "${VALIDATE_ALL_CODEBASE}"
-  ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
   ValidateBooleanVariable "WRITE_LINTER_VERSIONS_FILE" "${WRITE_LINTER_VERSIONS_FILE}"
+  ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
 }
 
 function ValidateGitHubWorkspace() {
@@ -100,14 +100,6 @@ function GetValidationInfo() {
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
     if [[ ${!VALIDATE_LANGUAGE} == "true" ]]; then
       debug "- Validating [${LANGUAGE}] files in code base..."
-
-      debug "Defining variables for ${LANGUAGE} linter..."
-
-      ERRORS_VARIABLE_NAME="ERRORS_FOUND_${LANGUAGE}"
-      debug "Setting ${ERRORS_VARIABLE_NAME} variable value to 0..."
-      eval "${ERRORS_VARIABLE_NAME}=0"
-      debug "Exporting ${ERRORS_VARIABLE_NAME} variable..."
-      eval "export ${ERRORS_VARIABLE_NAME}"
     else
       debug "- Excluding [$LANGUAGE] files in code base..."
     fi
@@ -139,10 +131,6 @@ function GetValidationInfo() {
     ANSIBLE_DIRECTORY="${TEMP_ANSIBLE_DIRECTORY}"
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
-
-  debug "Runner: $(id -un 2>/dev/null)"
-  debug "ENV:"
-  debug "$(printenv | sort)"
 }
 
 function CheckIfGitBranchExists() {
@@ -170,6 +158,7 @@ function ValidateBooleanVariable() {
     debug "${VAR_NAME} has a valid boolean string value: ${VAR_VALUE}"
   fi
 }
+export -f ValidateBooleanVariable
 
 function ValidateLocalGitRepository() {
   debug "Check if ${GITHUB_WORKSPACE} is a Git repository"
@@ -251,6 +240,10 @@ function CheckovConfigurationFileContainsDirectoryOption() {
   local CONFIGURATION_OPTION_KEY="directory:"
   debug "Checking if ${CHECKOV_LINTER_RULES_PATH} contains a '${CONFIGURATION_OPTION_KEY}' configuration option"
 
+  if [ ! -e "${CHECKOV_LINTER_RULES_PATH}" ]; then
+    fatal "${CHECKOV_LINTER_RULES_PATH} doesn't exist. Cannot check if it contains a '${CONFIGURATION_OPTION_KEY}' configuration option"
+  fi
+
   if grep -q "${CONFIGURATION_OPTION_KEY}" "${CHECKOV_LINTER_RULES_PATH}"; then
     debug "${CHECKOV_LINTER_RULES_PATH} contains a '${CONFIGURATION_OPTION_KEY}' statement"
     return 0
@@ -259,6 +252,7 @@ function CheckovConfigurationFileContainsDirectoryOption() {
     return 1
   fi
 }
+export -f CheckovConfigurationFileContainsDirectoryOption
 
 function WarnIfVariableIsSet() {
   local INPUT_VARIABLE="${1}"

@@ -77,6 +77,7 @@ else
 fi
 # Let users configure GitHub Actions log markers regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
+export ENABLE_GITHUB_ACTIONS_GROUP_TITLE
 
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
@@ -88,10 +89,12 @@ DISABLE_ERRORS="${DISABLE_ERRORS:-"false"}"
 declare -l IGNORE_GENERATED_FILES
 # Do not ignore generated files by default for backwards compatibility
 IGNORE_GENERATED_FILES="${IGNORE_GENERATED_FILES:-false}"
+export IGNORE_GENERATED_FILES
 
 # We want a lowercase value
 declare -l IGNORE_GITIGNORED_FILES
 IGNORE_GITIGNORED_FILES="${IGNORE_GITIGNORED_FILES:-false}"
+export IGNORE_GITIGNORED_FILES
 
 # We want a lowercase value
 declare -l MULTI_STATUS
@@ -151,7 +154,6 @@ GITHUB_API_URL="${GITHUB_API_URL%/}"
 GITHUB_SERVER_URL="${GITHUB_DOMAIN:-"https://github.com"}"
 # Extract domain name from URL
 GITHUB_SERVER_URL=$(echo "$GITHUB_SERVER_URL" | cut -d '/' -f 3)
-LINTED_LANGUAGES_ARRAY=()                                 # Will be filled at run time with all languages that were linted
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 RAW_FILE_ARRAY=() # Array of all files that were changed
@@ -610,6 +612,9 @@ GetGitHubVars() {
   else
     debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
+
+  # We need this for parallel
+  export GITHUB_WORKSPACE
 }
 ################################################################################
 #### Function CallStatusAPI ####################################################
@@ -666,84 +671,62 @@ CallStatusAPI() {
     fi
   fi
 }
-################################################################################
-#### Function Footer ###########################################################
+
 Footer() {
   info "----------------------------------------------"
   info "----------------------------------------------"
-  info "The script has completed"
-  info "----------------------------------------------"
-  info "----------------------------------------------"
 
-  ####################################################
-  # Need to clean up the lanuage array of duplicates #
-  ####################################################
-  mapfile -t UNIQUE_LINTED_ARRAY < <(for LANG in "${LINTED_LANGUAGES_ARRAY[@]}"; do echo "${LANG}"; done | sort -u)
-  export UNIQUE_LINTED_ARRAY # Workaround SC2034
+  local ANY_LINTER_SUCCESS
+  ANY_LINTER_SUCCESS="false"
 
-  ##############################
-  # Prints for errors if found #
-  ##############################
+  local SUPER_LINTER_EXIT_CODE
+  SUPER_LINTER_EXIT_CODE=0
+
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    ###########################
-    # Build the error counter #
-    ###########################
-    ERROR_COUNTER="ERRORS_FOUND_${LANGUAGE}"
+    # This used to be the count of errors found for a given LANGUAGE, but since
+    # after we switched to running linters against a batch of files, it may not
+    # represent the actual number of files that didn't pass the validation,
+    # but a number that's less than that because of how GNU parallel returns
+    # exit codes.
+    # Ref: https://www.gnu.org/software/parallel/parallel.html#exit-status
+    ERROR_COUNTER_FILE_PATH="/tmp/super-linter-parallel-command-exit-code-${LANGUAGE}"
+    if [ ! -f "${ERROR_COUNTER_FILE_PATH}" ]; then
+      debug "Error counter ${ERROR_COUNTER_FILE_PATH} doesn't exist"
+    else
+      ERROR_COUNTER=$(<"${ERROR_COUNTER_FILE_PATH}")
+      debug "ERROR_COUNTER for ${LANGUAGE}: ${ERROR_COUNTER}"
 
-    ##################
-    # Print if not 0 #
-    ##################
-    if [[ ${!ERROR_COUNTER} -ne 0 ]]; then
-      # We found errors in the language
-      ###################
-      # Print the goods #
-      ###################
-      error "ERRORS FOUND in ${LANGUAGE}:[${!ERROR_COUNTER}]"
-
-      #########################################
-      # Create status API for Failed language #
-      #########################################
-      CallStatusAPI "${LANGUAGE}" "error"
-      ######################################
-      # Check if we validated the language #
-      ######################################
-    elif [[ ${!ERROR_COUNTER} -eq 0 ]]; then
-      if CheckInArray "${LANGUAGE}"; then
-        # No errors found when linting the language
+      if [[ ${ERROR_COUNTER} -ne 0 ]]; then
+        error "Errors found in ${LANGUAGE}"
+        CallStatusAPI "${LANGUAGE}" "error"
+        SUPER_LINTER_EXIT_CODE=1
+        debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
+      elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
+        notice "Successfully linted ${LANGUAGE}"
         CallStatusAPI "${LANGUAGE}" "success"
+        ANY_LINTER_SUCCESS="true"
+        debug "Set ANY_LINTER_SUCCESS to ${ANY_LINTER_SUCCESS} because ${LANGUAGE} reported a success"
       fi
     fi
   done
 
-  ##################################
-  # Exit with 0 if errors disabled #
-  ##################################
-  if [ "${DISABLE_ERRORS}" == "true" ]; then
-    warn "Exiting with exit code:[0] as:[DISABLE_ERRORS] was set to:[${DISABLE_ERRORS}]"
-    exit 0
+  if [[ "${ANY_LINTER_SUCCESS}" == "true" ]] && [[ ${SUPER_LINTER_EXIT_CODE} -ne 0 ]]; then
+    SUPER_LINTER_EXIT_CODE=2
+    debug "There was at least one linter that reported a success. Setting the super-linter exit code to: ${SUPER_LINTER_EXIT_CODE}"
   fi
 
-  ###############################
-  # Exit with 1 if errors found #
-  ###############################
-  # Loop through all languages
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    # build the variable
-    ERRORS_FOUND_LANGUAGE="ERRORS_FOUND_${LANGUAGE}"
-    # Check if error was found
-    if [[ ${!ERRORS_FOUND_LANGUAGE} -ne 0 ]]; then
-      # Failed exit
-      fatal "Exiting with errors found!"
-    fi
-  done
+  if [ "${DISABLE_ERRORS}" == "true" ]; then
+    warn "The super-linter exit code is ${SUPER_LINTER_EXIT_CODE}. Forcibly setting it to 0 because DISABLE_ERRORS is set to: ${DISABLE_ERRORS}"
+    SUPER_LINTER_EXIT_CODE=0
+  fi
 
-  ########################
-  # Footer prints Exit 0 #
-  ########################
-  notice "All file(s) linted successfully with no errors detected"
-  info "----------------------------------------------"
-  # Successful exit
-  exit 0
+  if [[ ${SUPER_LINTER_EXIT_CODE} -eq 0 ]]; then
+    notice "All files and directories linted successfully"
+  else
+    error "Super-linter detected linting errors"
+  fi
+
+  exit ${SUPER_LINTER_EXIT_CODE}
 }
 ################################################################################
 #### Function UpdateLoopsForImage ##############################################
@@ -892,133 +875,6 @@ done
 # Load rules for special cases
 GetStandardRules "javascript"
 
-##########################
-# Define linter commands #
-##########################
-declare -A LINTER_COMMANDS_ARRAY
-LINTER_COMMANDS_ARRAY['ANSIBLE']="ansible-lint -c ${ANSIBLE_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['ARM']="Import-Module ${ARM_TTK_PSD1} ; \${config} = \$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath"
-if [ -z "${BASH_SEVERITY}" ]; then
-  LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources"
-else
-  LINTER_COMMANDS_ARRAY['BASH']="shellcheck --color --external-sources --severity=${BASH_SEVERITY}"
-fi
-LINTER_COMMANDS_ARRAY['BASH_EXEC']="bash-exec"
-LINTER_COMMANDS_ARRAY['CHECKOV']="checkov --config-file ${CHECKOV_LINTER_RULES}"
-
-if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
-  debug "No need to update the Checkov command."
-else
-  debug "Adding the '--directory' option to the Checkov command."
-  LINTER_COMMANDS_ARRAY['CHECKOV']="${LINTER_COMMANDS_ARRAY['CHECKOV']} --directory"
-fi
-
-LINTER_COMMANDS_ARRAY['CLANG_FORMAT']="clang-format --Werror --dry-run"
-LINTER_COMMANDS_ARRAY['CLOJURE']="clj-kondo --config ${CLOJURE_LINTER_RULES} --lint"
-LINTER_COMMANDS_ARRAY['CLOUDFORMATION']="cfn-lint --config-file ${CLOUDFORMATION_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['COFFEESCRIPT']="coffeelint -f ${COFFEESCRIPT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['CPP']="cpplint"
-LINTER_COMMANDS_ARRAY['CSHARP']="dotnet format whitespace --folder --verify-no-changes --exclude / --include"
-LINTER_COMMANDS_ARRAY['CSS']="stylelint --config ${CSS_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['DART']="dart analyze --fatal-infos --fatal-warnings"
-LINTER_COMMANDS_ARRAY['DOCKERFILE_HADOLINT']="hadolint -c ${DOCKERFILE_HADOLINT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['EDITORCONFIG']="editorconfig-checker -config ${EDITORCONFIG_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['ENV']="dotenv-linter"
-if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" = "null" ]; then
-  LINTER_COMMANDS_ARRAY['GITHUB_ACTIONS']="actionlint -config-file ${GITHUB_ACTIONS_LINTER_RULES}"
-else
-  LINTER_COMMANDS_ARRAY['GITHUB_ACTIONS']="actionlint -config-file ${GITHUB_ACTIONS_LINTER_RULES} ${GITHUB_ACTIONS_COMMAND_ARGS}"
-fi
-LINTER_COMMANDS_ARRAY['GITLEAKS']="gitleaks detect --no-banner --no-git --redact --config ${GITLEAKS_LINTER_RULES} --verbose --source"
-LINTER_COMMANDS_ARRAY['GHERKIN']="gherkin-lint -c ${GHERKIN_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['GO_MODULES']="golangci-lint run -c ${GO_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['GO']="${LINTER_COMMANDS_ARRAY['GO_MODULES']} --fast"
-LINTER_COMMANDS_ARRAY['GOOGLE_JAVA_FORMAT']="java -jar /usr/bin/google-java-format --dry-run --set-exit-if-changed"
-LINTER_COMMANDS_ARRAY['GROOVY']="npm-groovy-lint -c ${GROOVY_LINTER_RULES} --failon warning --no-insight"
-LINTER_COMMANDS_ARRAY['HTML']="htmlhint --config ${HTML_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JAVA']="java -jar /usr/bin/checkstyle -c ${JAVA_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JAVASCRIPT_ES']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JAVASCRIPT_STANDARD']="standard ${JAVASCRIPT_STANDARD_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JAVASCRIPT_PRETTIER']="prettier --check"
-LINTER_COMMANDS_ARRAY['JSCPD']="jscpd --config ${JSCPD_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['JSON']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json"
-LINTER_COMMANDS_ARRAY['JSONC']="eslint --no-eslintrc -c ${JAVASCRIPT_ES_LINTER_RULES} --ext .json5,.jsonc"
-LINTER_COMMANDS_ARRAY['JSX']="eslint --no-eslintrc -c ${JSX_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['KOTLIN']="ktlint"
-if [ "${KUBERNETES_KUBECONFORM_OPTIONS}" == "null" ] || [ -z "${KUBERNETES_KUBECONFORM_OPTIONS}" ]; then
-  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform -strict"
-else
-  LINTER_COMMANDS_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform -strict ${KUBERNETES_KUBECONFORM_OPTIONS}"
-fi
-LINTER_COMMANDS_ARRAY['LATEX']="chktex -q -l ${LATEX_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['LUA']="luacheck --config ${LUA_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['MARKDOWN']="markdownlint -c ${MARKDOWN_LINTER_RULES}"
-if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
-  IFS="," read -r -a MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY <<<"${MARKDOWN_CUSTOM_RULE_GLOBS}"
-  for glob in "${MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY[@]}"; do
-    if [ -z "${LINTER_RULES_PATH}" ]; then
-      LINTER_COMMANDS_ARRAY['MARKDOWN']="${LINTER_COMMANDS_ARRAY['MARKDOWN']} -r ${GITHUB_WORKSPACE}/${glob}"
-    else
-      LINTER_COMMANDS_ARRAY['MARKDOWN']="${LINTER_COMMANDS_ARRAY['MARKDOWN']} -r ${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${glob}"
-    fi
-  done
-fi
-LINTER_COMMANDS_ARRAY['NATURAL_LANGUAGE']="textlint -c ${NATURAL_LANGUAGE_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['OPENAPI']="spectral lint -r ${OPENAPI_LINTER_RULES} -D"
-if [ "${PERL_PERLCRITIC_OPTIONS}" == "null" ] || [ -z "${PERL_PERLCRITIC_OPTIONS}" ]; then
-  LINTER_COMMANDS_ARRAY['PERL']="perlcritic"
-else
-  LINTER_COMMANDS_ARRAY['PERL']="perlcritic ${PERL_PERLCRITIC_OPTIONS}"
-fi
-LINTER_COMMANDS_ARRAY['PHP_BUILTIN']="php -l -c ${PHP_BUILTIN_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PHP_PHPCS']="phpcs --standard=${PHP_PHPCS_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PHP_PHPSTAN']="phpstan analyse --no-progress --no-ansi --memory-limit 1G -c ${PHP_PHPSTAN_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PHP_PSALM']="psalm --config=${PHP_PSALM_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['POWERSHELL']="Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path"
-LINTER_COMMANDS_ARRAY['PROTOBUF']="protolint lint --config_path ${PROTOBUF_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PYTHON_BLACK']="black --config ${PYTHON_BLACK_LINTER_RULES} --diff --check"
-LINTER_COMMANDS_ARRAY['PYTHON_PYLINT']="pylint --rcfile ${PYTHON_PYLINT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PYTHON_FLAKE8']="flake8 --config=${PYTHON_FLAKE8_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PYTHON_ISORT']="isort --check --diff --sp ${PYTHON_ISORT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['PYTHON_MYPY']="mypy --config-file ${PYTHON_MYPY_LINTER_RULES} --install-types --non-interactive"
-LINTER_COMMANDS_ARRAY['R']="lintr"
-LINTER_COMMANDS_ARRAY['RAKU']="raku"
-LINTER_COMMANDS_ARRAY['RENOVATE']="renovate-config-validator --strict"
-LINTER_COMMANDS_ARRAY['RUBY']="rubocop -c ${RUBY_LINTER_RULES} --force-exclusion --ignore-unrecognized-cops"
-LINTER_COMMANDS_ARRAY['RUST_2015']="rustfmt --check --edition 2015"
-LINTER_COMMANDS_ARRAY['RUST_2018']="rustfmt --check --edition 2018"
-LINTER_COMMANDS_ARRAY['RUST_2021']="rustfmt --check --edition 2021"
-LINTER_COMMANDS_ARRAY['RUST_CLIPPY']="clippy"
-LINTER_COMMANDS_ARRAY['SCALAFMT']="scalafmt --config ${SCALAFMT_LINTER_RULES} --test"
-LINTER_COMMANDS_ARRAY['SHELL_SHFMT']="shfmt -d"
-LINTER_COMMANDS_ARRAY['SNAKEMAKE_LINT']="snakemake --lint -s"
-LINTER_COMMANDS_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt --config ${SNAKEMAKE_SNAKEFMT_LINTER_RULES} --check --compact-diff"
-LINTER_COMMANDS_ARRAY['STATES']="asl-validator --json-path"
-LINTER_COMMANDS_ARRAY['SQL']="sql-lint --config ${SQL_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['SQLFLUFF']="sqlfluff lint --config ${SQLFLUFF_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TEKTON']="tekton-lint"
-LINTER_COMMANDS_ARRAY['TERRAFORM_FMT']="terraform fmt -check -diff"
-LINTER_COMMANDS_ARRAY['TERRAFORM_TFLINT']="tflint -c ${TERRAFORM_TFLINT_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TERRAFORM_TERRASCAN']="terrascan scan -i terraform -t all -c ${TERRAFORM_TERRASCAN_LINTER_RULES} -f"
-LINTER_COMMANDS_ARRAY['TERRAGRUNT']="terragrunt hclfmt --terragrunt-check --terragrunt-log-level error --terragrunt-hclfmt-file"
-LINTER_COMMANDS_ARRAY['TSX']="eslint --no-eslintrc -c ${TSX_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TYPESCRIPT_ES']="eslint --no-eslintrc -c ${TYPESCRIPT_ES_LINTER_RULES}"
-LINTER_COMMANDS_ARRAY['TYPESCRIPT_STANDARD']="ts-standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin --project ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
-LINTER_COMMANDS_ARRAY['TYPESCRIPT_PRETTIER']="prettier --check"
-LINTER_COMMANDS_ARRAY['XML']="xmllint"
-if [ "${YAML_ERROR_ON_WARNING}" == 'false' ]; then
-  LINTER_COMMANDS_ARRAY['YAML']="yamllint -c ${YAML_LINTER_RULES} -f parsable"
-else
-  LINTER_COMMANDS_ARRAY['YAML']="yamllint --strict -c ${YAML_LINTER_RULES} -f parsable"
-fi
-
-debug "--- Linter commands ---"
-debug "-----------------------"
-for i in "${!LINTER_COMMANDS_ARRAY[@]}"; do
-  debug "Linter key: $i, command: ${LINTER_COMMANDS_ARRAY[$i]}"
-done
-debug "---------------------------------------------"
-
 #################################
 # Check for SSL cert and update #
 #################################
@@ -1034,76 +890,73 @@ BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
 #####################################
 RunAdditionalInstalls
 
-###############
-# Run linters #
-###############
-EDITORCONFIG_FILE_PATH="${GITHUB_WORKSPACE}"/.editorconfig
-
 ####################################
 # Print ENV before running linters #
 ####################################
 debug "--- ENV (before running linters) ---"
 debug "------------------------------------"
 debug "ENV:"
-debug "$(printenv | sort)"
+debug "$(printenv)"
 debug "------------------------------------"
 
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
-for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  startGitHubActionsLogGroup "${LANGUAGE}"
-  debug "Running linter for the ${LANGUAGE} language..."
-  VALIDATE_LANGUAGE_VARIABLE_NAME="VALIDATE_${LANGUAGE}"
-  debug "Setting VALIDATE_LANGUAGE_VARIABLE_NAME to ${VALIDATE_LANGUAGE_VARIABLE_NAME}..."
-  VALIDATE_LANGUAGE_VARIABLE_VALUE="${!VALIDATE_LANGUAGE_VARIABLE_NAME}"
-  debug "Setting VALIDATE_LANGUAGE_VARIABLE_VALUE to ${VALIDATE_LANGUAGE_VARIABLE_VALUE}..."
+###############
+# Run linters #
+###############
+declare PARALLEL_RESULTS_FILE_PATH
+PARALLEL_RESULTS_FILE_PATH="/tmp/super-linter-results.json"
+debug "PARALLEL_RESULTS_FILE_PATH: ${PARALLEL_RESULTS_FILE_PATH}"
 
-  if [ "${VALIDATE_LANGUAGE_VARIABLE_VALUE}" = "true" ]; then
-    # Check if we need an .editorconfig file
-    # shellcheck disable=SC2153
-    if [ "${LANGUAGE}" = "EDITORCONFIG" ] || [ "${LANGUAGE}" = "SHELL_SHFMT" ]; then
-      if [ -e "${EDITORCONFIG_FILE_PATH}" ]; then
-        debug "Found an EditorConfig file at ${EDITORCONFIG_FILE_PATH}"
-      else
-        debug "No .editorconfig found at: $EDITORCONFIG_FILE_PATH. Skipping ${LANGUAGE} linting..."
-        continue
-      fi
-    elif [ "${LANGUAGE}" = "R" ] && [ ! -f "${R_RULES_FILE_PATH_IN_ROOT}" ] && ((${#FILE_ARRAY_R[@]})); then
-      info "No .lintr configuration file found, using defaults."
-      cp "$R_LINTER_RULES" "$GITHUB_WORKSPACE"
-      # shellcheck disable=SC2034
-      SUPER_LINTER_COPIED_R_LINTER_RULES_FILE="true"
-    # Check if there's local configuration for the Raku linter
-    elif [ "${LANGUAGE}" = "RAKU" ] && [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
-      cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
-    fi
+declare -a PARALLEL_COMMAND
+PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$(($(nproc) * 1))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
 
-    LINTER_NAME="${LINTER_NAMES_ARRAY["${LANGUAGE}"]}"
-    if [ -z "${LINTER_NAME}" ]; then
-      fatal "Cannot find the linter name for ${LANGUAGE} language."
-    else
-      debug "Setting LINTER_NAME to ${LINTER_NAME}..."
-    fi
+# Run one LANGUAGE per process. Each of these processes will run more processees in parellel if supported
+PARALLEL_COMMAND+=(--max-lines 1)
 
-    LINTER_COMMAND="${LINTER_COMMANDS_ARRAY["${LANGUAGE}"]}"
-    if [ -z "${LINTER_COMMAND}" ]; then
-      fatal "Cannot find the linter command for ${LANGUAGE} language."
-    else
-      debug "Setting LINTER_COMMAND to ${LINTER_COMMAND}..."
-    fi
+if [ "${LOG_DEBUG}" == "true" ]; then
+  debug "LOG_DEBUG is enabled. Enable verbose ouput for parallel"
+  PARALLEL_COMMAND+=(--verbose)
+fi
 
-    FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
-    debug "Setting FILE_ARRAY_VARIABLE_NAME to ${FILE_ARRAY_VARIABLE_NAME}..."
+PARALLEL_COMMAND+=("LintCodebase" "{}" "\"${TEST_CASE_RUN}\"")
+debug "PARALLEL_COMMAND: ${PARALLEL_COMMAND[*]}"
 
-    # shellcheck disable=SC2125
-    LANGUAGE_FILE_ARRAY="${FILE_ARRAY_VARIABLE_NAME}"[@]
-    debug "${FILE_ARRAY_VARIABLE_NAME} file array contents: ${!LANGUAGE_FILE_ARRAY}"
+PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${LANGUAGE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
+PARALLEL_COMMAND_RETURN_CODE=$?
+debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
+debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when running linters:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
 
-    debug "Invoking ${LINTER_NAME} linter. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-    LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
-  fi
-  endGitHubActionsLogGroup "${LANGUAGE}"
-done
+RESULTS_OBJECT=
+if ! RESULTS_OBJECT=$(jq -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+  fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
+fi
+debug "RESULTS_OBJECT when running linters:\n${RESULTS_OBJECT}"
+
+# Get raw output so we can strip quotes from the data we load
+if ! STDOUT_LINTERS="$(jq --raw-output '.[].Stdout' <<<"${RESULTS_OBJECT}")"; then
+  fatal "Error when loading stdout when running linters:\n${STDOUT_LINTERS}"
+fi
+
+if [ -n "${STDOUT_LINTERS}" ]; then
+  info "Command output when running linters:\n------\n${STDOUT_LINTERS}\n------"
+else
+  debug "Stdout when running linters is empty"
+fi
+
+if ! STDERR_LINTERS="$(jq --raw-output '.[].Stderr' <<<"${RESULTS_OBJECT}")"; then
+  fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTERS}"
+fi
+
+if [ -n "${STDERR_LINTERS}" ]; then
+  info "Command output for ${FILE_TYPE}:\n------\n${STDERR_LINTERS}\n------"
+else
+  debug "Stderr when running linters is empty"
+fi
+
+if [[ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]]; then
+  fatal "Error when running linters. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}"
+fi
 
 ##########
 # Footer #

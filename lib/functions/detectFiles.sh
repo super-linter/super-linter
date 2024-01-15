@@ -139,21 +139,6 @@ DetectAWSStatesFIle() {
   return 1
 }
 
-CheckInArray() {
-  NEEDLE="$1" # Language we need to match
-
-  ######################################
-  # Check if Language was in the array #
-  ######################################
-  for LANG in "${UNIQUE_LINTED_ARRAY[@]}"; do
-    if [[ "${LANG}" == "${NEEDLE}" ]]; then
-      return 0
-    fi
-  done
-
-  return 1
-}
-
 function GetFileType() {
   # Need to run the file through the 'file' exec to help determine
   # The type of file being parsed
@@ -168,21 +153,23 @@ function CheckFileType() {
   # Need to run the file through the 'file' exec to help determine
   # The type of file being parsed
 
+  local FILE
   FILE="$1"
 
+  local GET_FILE_TYPE_CMD
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
   local FILE_TYPE_MESSAGE
 
   if [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
     FILE_TYPE_MESSAGE="Found Ruby script without extension (${FILE}). Rename the file with proper extension for Ruby files."
-    FILE_ARRAY_RUBY+=("${FILE}")
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY"
   elif [[ ${GET_FILE_TYPE_CMD} == *"Python script"* ]]; then
     FILE_TYPE_MESSAGE="Found Python script without extension (${FILE}). Rename the file with proper extension for Python files."
-    FILE_ARRAY_PYTHON+=("${FILE}")
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON"
   elif [[ ${GET_FILE_TYPE_CMD} == *"Perl script"* ]]; then
     FILE_TYPE_MESSAGE="Found Perl script without extension (${FILE}). Rename the file with proper extension for Perl files."
-    FILE_ARRAY_PERL+=("${FILE}")
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PERL"
   else
     FILE_TYPE_MESSAGE="Failed to get file type for: ${FILE}"
   fi
@@ -266,11 +253,30 @@ function IsGenerated() {
   fi
 }
 
+# We need these functions when building the file list with paralle
+export -f CheckFileType
+export -f DetectActions
+export -f DetectARMFile
+export -f DetectAWSStatesFIle
+export -f DetectCloudFormationFile
+export -f DetectKubernetesFile
+export -f DetectOpenAPIFile
+export -f DetectTektonFile
+export -f GetFileExtension
+export -f GetFileType
+export -f IsValidShellScript
+export -f IsGenerated
+
 function RunAdditionalInstalls() {
+
+  if [ -z "${FILE_ARRAYS_DIRECTORY_PATH}" ] || [ ! -d "${FILE_ARRAYS_DIRECTORY_PATH}" ]; then
+    fatal "FILE_ARRAYS_DIRECTORY_PATH (set to ${FILE_ARRAYS_DIRECTORY_PATH}) is empty or doesn't exist"
+  fi
+
   ##################################
   # Run installs for Psalm and PHP #
   ##################################
-  if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ "${#FILE_ARRAY_PHP_PSALM[@]}" -ne 0 ]; then
+  if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM" ]; then
     # found PHP files and were validating it, need to composer install
     info "Found PHP files to validate, and [VALIDATE_PHP_PSALM] set to true, need to run composer install"
     info "looking for composer.json in the users repository..."
@@ -311,13 +317,13 @@ function RunAdditionalInstalls() {
   ###############################
   # Run installs for R language #
   ###############################
-  if [ "${VALIDATE_R}" == "true" ] && [ "${#FILE_ARRAY_R[@]}" -ne 0 ]; then
+  if [ "${VALIDATE_R}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-R" ]; then
     info "Detected R Language files to lint."
-    info "Trying to install the R package inside:[${WORKSPACE_PATH}]"
+    info "Trying to install the R package inside:[${GITHUB_WORKSPACE}]"
     #########################
     # Run the build command #
     #########################
-    BUILD_CMD=$(R CMD build "${WORKSPACE_PATH}" 2>&1)
+    BUILD_CMD=$(R CMD build "${GITHUB_WORKSPACE}" 2>&1)
 
     ##############
     # Error code #
@@ -329,19 +335,19 @@ function RunAdditionalInstalls() {
     ##############################
     if [ "${ERROR_CODE}" -ne 0 ]; then
       # Error
-      warn "ERROR! Failed to run:[R CMD build] at location:[${WORKSPACE_PATH}]"
+      warn "ERROR! Failed to run:[R CMD build] at location:[${GITHUB_WORKSPACE}]"
       warn "BUILD_CMD:[${BUILD_CMD}]"
     else
       # Get the build package
       BUILD_PKG=$(
-        cd "${WORKSPACE_PATH}" || exit 0
+        cd "${GITHUB_WORKSPACE}" || exit 0
         echo *.tar.gz 2>&1
       )
       ##############################
       # Install the build packages #
       ##############################
       INSTALL_CMD=$(
-        cd "${WORKSPACE_PATH}" || exit 0
+        cd "${GITHUB_WORKSPACE}" || exit 0
         R -e "remotes::install_local('.', dependencies=T)" 2>&1
       )
 
@@ -358,19 +364,26 @@ function RunAdditionalInstalls() {
         warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
       fi
     fi
+
+    if [ ! -f "${R_RULES_FILE_PATH_IN_ROOT}" ]; then
+      info "No .lintr configuration file found, using defaults."
+      cp "$R_LINTER_RULES" "$GITHUB_WORKSPACE"
+      # shellcheck disable=SC2034
+      SUPER_LINTER_COPIED_R_LINTER_RULES_FILE="true"
+    fi
   fi
 
   ####################################
   # Run installs for TFLINT language #
   ####################################
-  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ "${#FILE_ARRAY_TERRAFORM_TFLINT[@]}" -ne 0 ]; then
+  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT" ]; then
     info "Detected TFLint Language files to lint."
-    info "Trying to install the TFLint init inside:[${WORKSPACE_PATH}]"
+    info "Trying to install the TFLint init inside:[${GITHUB_WORKSPACE}]"
     #########################
     # Run the build command #
     #########################
     BUILD_CMD=$(
-      cd "${WORKSPACE_PATH}" || exit 0
+      cd "${GITHUB_WORKSPACE}" || exit 0
       tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
     )
 
@@ -388,5 +401,44 @@ function RunAdditionalInstalls() {
       info "Successfully initialized tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file"
       debug "Tflint output: ${BUILD_CMD}"
     fi
+
+    # Array to track directories where tflint was run
+    local -A TFLINT_SEEN_DIRS
+    TFLINT_SEEN_DIRS=()
+    for FILE in "${FILE_ARRAY_TERRAFORM_TFLINT[@]}"; do
+      local DIR_NAME
+      DIR_NAME=$(dirname "${FILE}" 2>&1)
+      debug "DIR_NAME for ${FILE}: ${DIR_NAME}"
+      # Check the cache to see if we've already prepped this directory for tflint
+      if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
+        debug "Configuring Terraform data directory for ${DIR_NAME}"
+
+        # Define the path to an empty Terraform data directory
+        # (def: https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_data_dir)
+        # in case the user has a Terraform data directory already, and we don't
+        # want to modify it.
+        # TFlint considers this variable as well.
+        # Ref: https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/compatibility.md#environment-variables
+        TF_DATA_DIR="/tmp/.terraform-${TERRAFORM_TFLINT}-${DIR_NAME}"
+
+        # Fetch Terraform modules
+        debug "Fetch Terraform modules for ${FILE} in ${DIR_NAME} in ${TF_DATA_DIR}"
+        local FETCH_TERRAFORM_MODULES_CMD
+        if ! FETCH_TERRAFORM_MODULES_CMD="$(terraform get)"; then
+          fatal "Error when fetching Terraform modules while linting ${FILE}. Command output: ${FETCH_TERRAFORM_MODULES_CMD}"
+        fi
+        debug "Fetch Terraform modules command for ${FILE} output: ${FETCH_TERRAFORM_MODULES_CMD}"
+        # Let the cache know we've seen this before
+        # Set the value to an arbitrary non-empty string.
+        TFLINT_SEEN_DIRS[${DIR_NAME}]="false"
+      else
+        debug "Skip fetching Terraform modules for ${FILE} because we already did that for ${DIR_NAME}"
+      fi
+    done
+  fi
+
+  # Check if there's local configuration for the Raku linter
+  if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
+    cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
 }

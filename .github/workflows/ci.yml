@@ -110,6 +110,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
+          GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
           TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
 
