@@ -1,22 +1,10 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter linting Functions @admiralawkbar ######################
-################################################################################
-################################################################################
-#### Function GetLinterVersions ################################################
 GetLinterVersions() {
-  #########################
-  # Print version headers #
-  #########################
-  debug "---------------------------------------------"
   debug "WRITE_LINTER_VERSIONS_FILE: ${WRITE_LINTER_VERSIONS_FILE}"
-  debug "VERSION_FILE: ${VERSION_FILE}"
-  debug "Linter Version Info:"
 
   if [ "${WRITE_LINTER_VERSIONS_FILE}" = "true" ]; then
-    debug "Building linter version file..."
+    debug "Building linter version file: ${VERSION_FILE}"
     if BuildLinterVersions "${VERSION_FILE}" "${LINTER_NAMES_ARRAY[@]}"; then
       info "Linter version file built correctly."
       exit
@@ -27,37 +15,19 @@ GetLinterVersions() {
     debug "Skipping versions file build..."
   fi
 
-  ################################
-  # Cat the linter versions file #
-  ################################
-  CAT_CMD=$(cat "${VERSION_FILE}" 2>&1)
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # Failure
-    fatal "Failed to view version file:[${VERSION_FILE}]"
-  else
-    # Success
-    debug "${CAT_CMD}"
+  if ! cat "${VERSION_FILE}"; then
+    fatal "Failed to view version file: ${VERSION_FILE}."
   fi
-
-  #########################
-  # Print version footers #
-  #########################
-  debug "---------------------------------------------"
 }
 ################################################################################
 #### Function BuildLinterVersions ##############################################
 BuildLinterVersions() {
   VERSION_FILE="${1}" && shift
   LINTER_ARRAY=("$@")
+
+  # Start with an empty file. We might have built this file in a previous build
+  # stage, so we start fresh here.
+  rm -rfv "${VERSION_FILE}"
 
   debug "Building linter version file ${VERSION_FILE} for the following linters: ${LINTER_ARRAY[*]}..."
 
@@ -66,15 +36,14 @@ BuildLinterVersions() {
   ##########################################################
   for LINTER in "${LINTER_ARRAY[@]}"; do
     if [ -n "${LINTER}" ]; then
-      ####################
-      # Get the versions #
-      ####################
+
+      # Some linters need to account for special commands to get their version
+
       if [[ ${LINTER} == "arm-ttk" ]]; then
-        # Need specific command for ARM
         GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1)"
-      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]] || [[ ${LINTER} == "asl-validator" ]]; then
-        # Need specific command for Protolint and editorconfig-checker
-        GET_VERSION_CMD="$(echo "--version not supported")"
+      # Some linters don't support a "get version" command
+      elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
+        GET_VERSION_CMD="Version command not supported"
       elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
         GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
       elif [[ ${LINTER} == "clippy" ]]; then
@@ -91,63 +60,32 @@ BuildLinterVersions() {
       elif [[ ${LINTER} == "protolint" ]] || [[ ${LINTER} == "gitleaks" ]]; then
         GET_VERSION_CMD="$(${LINTER} version)"
       elif [[ ${LINTER} == "lua" ]]; then
-        # Semi standardversion command
         GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
       elif [[ ${LINTER} == "renovate-config-validator" ]]; then
         GET_VERSION_CMD="$(renovate --version 2>&1)"
       elif [[ ${LINTER} == "terrascan" ]]; then
         GET_VERSION_CMD="$("${LINTER}" version 2>&1)"
       else
-        # Standard version command
-        GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
+        # Unset TF_LOG_LEVEL so that the version file doesn't contain debug log when running
+        # commands that read TF_LOG_LEVEL or TFLINT_LOG, which are likely set to DEBUG when
+        # building the versions file
+        GET_VERSION_CMD="$(
+          unset TF_LOG_LEVEL
+          unset TFLINT_LOG
+          "${LINTER}" --version 2>&1
+        )"
       fi
 
-      #######################
-      # Load the error code #
-      #######################
       ERROR_CODE=$?
 
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      debug "Linter version for ${LINTER}: ${GET_VERSION_CMD}. Error code: ${ERROR_CODE}"
       if [ ${ERROR_CODE} -ne 0 ]; then
-        fatal "[${LINTER}]: Failed to get version info: ${GET_VERSION_CMD}"
+        fatal "[${LINTER}]: Failed to get version info. Exit code: ${ERROR_CODE}. Output: ${GET_VERSION_CMD}"
       else
-        ##########################
-        # Print the version info #
-        ##########################
-        info "Successfully found version for ${F[W]}[${LINTER}]${F[B]}: ${F[W]}${GET_VERSION_CMD}"
-        WriteFile "${LINTER}" "${GET_VERSION_CMD}" "${VERSION_FILE}"
+        info "Successfully found version for ${LINTER}: ${GET_VERSION_CMD}"
+        if ! echo "${LINTER}: ${GET_VERSION_CMD}" >>"${VERSION_FILE}" 2>&1; then
+          fatal "Failed to write data to file!"
+        fi
       fi
     fi
   done
-}
-################################################################################
-#### Function WriteFile ########################################################
-WriteFile() {
-  ##############
-  # Read Input #
-  ##############
-  LINTER="$1"     # Name of the linter
-  VERSION="$2"    # Version returned from check
-  VERSION_FILE=$3 # Version file path
-
-  #################################
-  # Write the data to output file #
-  #################################
-  echo "${LINTER}: ${VERSION}" >>"${VERSION_FILE}" 2>&1
-
-  #######################
-  # Load the error code #
-  #######################
-  # shellcheck disable=SC2320
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ $ERROR_CODE -ne 0 ]; then
-    fatal "Failed to write data to file!"
-  fi
 }

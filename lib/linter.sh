@@ -512,14 +512,14 @@ GetGitHubVars() {
     if [ -z "${GITHUB_EVENT_PATH}" ]; then
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
-      info "Successfully found:${F[W]}[GITHUB_EVENT_PATH]${F[B]}, value:${F[W]}[${GITHUB_EVENT_PATH}]${F[B]}"
+      info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
       debug "${GITHUB_EVENT_PATH} contents: $(cat "${GITHUB_EVENT_PATH}")"
     fi
 
     if [ -z "${GITHUB_SHA}" ]; then
       fatal "Failed to get GITHUB_SHA: ${GITHUB_SHA}"
     else
-      info "Successfully found:${F[W]}[GITHUB_SHA]${F[B]}, value:${F[W]}[${GITHUB_SHA}]"
+      info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
     fi
 
     ##################################################
@@ -547,7 +547,7 @@ GetGitHubVars() {
       if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
         fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
       fi
-      info "Successfully found:${F[W]}[GITHUB_PUSH_COMMIT_COUNT]${F[B]}, value:${F[W]}[${GITHUB_PUSH_COMMIT_COUNT}]"
+      info "Successfully found GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
 
       # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
       debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
@@ -560,7 +560,7 @@ GetGitHubVars() {
       fi
 
       ValidateGitBeforeShaReference
-      info "Successfully found:${F[W]}[GITHUB_BEFORE_SHA]${F[B]}, value:${F[W]}[${GITHUB_BEFORE_SHA}]"
+      info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
     fi
 
     ############################
@@ -570,7 +570,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_ORG]!"
       fatal "[${GITHUB_ORG}]"
     else
-      info "Successfully found:${F[W]}[GITHUB_ORG]${F[B]}, value:${F[W]}[${GITHUB_ORG}]"
+      info "Successfully found GITHUB_ORG: ${GITHUB_ORG}"
     fi
 
     #######################
@@ -585,7 +585,7 @@ GetGitHubVars() {
       error "Failed to get [GITHUB_REPO]!"
       fatal "[${GITHUB_REPO}]"
     else
-      info "Successfully found:${F[W]}[GITHUB_REPO]${F[B]}, value:${F[W]}[${GITHUB_REPO}]"
+      info "Successfully found GITHUB_REPO: ${GITHUB_REPO}"
     fi
   fi
 
@@ -600,21 +600,21 @@ GetGitHubVars() {
     if [ -z "${GITHUB_TOKEN}" ]; then
       fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
     else
-      info "Successfully found:${F[W]}[GITHUB_TOKEN]."
+      info "Successfully found GITHUB_TOKEN."
     fi
 
     if [ -z "${GITHUB_REPOSITORY}" ]; then
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
     else
-      info "Successfully found:${F[W]}[GITHUB_REPOSITORY]${F[B]}, value:${F[W]}[${GITHUB_REPOSITORY}]"
+      info "Successfully found GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
     fi
 
     if [ -z "${GITHUB_RUN_ID}" ]; then
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
     else
-      info "Successfully found:${F[W]}[GITHUB_RUN_ID]${F[B]}, value:${F[W]}[${GITHUB_RUN_ID}]"
+      info "Successfully found GITHUB_RUN_ID ${GITHUB_RUN_ID}"
     fi
   else
     debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
@@ -719,7 +719,7 @@ Footer() {
       ###################
       # Print the goods #
       ###################
-      error "ERRORS FOUND${NC} in ${LANGUAGE}:[${!ERROR_COUNTER}]"
+      error "ERRORS FOUND in ${LANGUAGE}:[${!ERROR_COUNTER}]"
 
       #########################################
       # Create status API for Failed language #
@@ -780,22 +780,22 @@ UpdateLoopsForImage() {
       "RUST_2021" "RUST_CLIPPY")
 
     # Remove from LANGUAGE_ARRAY
-    echo "Removing Languages from LANGUAGE_ARRAY for slim image..."
+    debug "Removing Languages from LANGUAGE_ARRAY for slim image..."
     for REMOVE_LANGUAGE in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LANGUAGE_ARRAY[@]}"; do
         if [[ ${LANGUAGE_ARRAY[INDEX]} = "${REMOVE_LANGUAGE}" ]]; then
-          echo "found item:[${REMOVE_LANGUAGE}], removing Language..."
+          debug "found item:[${REMOVE_LANGUAGE}], removing Language..."
           unset 'LANGUAGE_ARRAY[INDEX]'
         fi
       done
     done
 
     # Remove from LINTER_NAMES_ARRAY
-    echo "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
+    debug "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
     for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
       for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
         if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
-          echo "found item:[${REMOVE_LINTER}], removing linter..."
+          debug "found item:[${REMOVE_LINTER}], removing linter..."
           unset 'LINTER_NAMES_ARRAY[$INDEX]'
         fi
       done

@@ -1,363 +1,213 @@
 #!/usr/bin/env bash
 
-################################################################################
-################################################################################
-########### Super-Linter linting Functions @admiralawkbar ######################
-################################################################################
-################################################################################
-########################## FUNCTION CALLS BELOW ################################
-################################################################################
-################################################################################
-#### Function LintCodebase #####################################################
 function LintCodebase() {
-  # Call comes through as:
-  # LintCodebase "${LANGUAGE}" "${LINTER_NAME}" "${LINTER_COMMAND}" "${FILTER_REGEX_INCLUDE}" "${FILTER_REGEX_EXCLUDE}" "${TEST_CASE_RUN}" "${!LANGUAGE_FILE_ARRAY}"
-  ####################
-  # Pull in the vars #
-  ####################
-  FILE_TYPE="${1}" && shift            # Pull the variable and remove from array path  (Example: JSON)
-  LINTER_NAME="${1}" && shift          # Pull the variable and remove from array path  (Example: jsonlint)
-  LINTER_COMMAND="${1}" && shift       # Pull the variable and remove from array path  (Example: jsonlint -c ConfigFile /path/to/file)
-  FILTER_REGEX_INCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */src/*,*/test/*)
-  FILTER_REGEX_EXCLUDE="${1}" && shift # Pull the variable and remove from array path  (Example: */examples/*,*/test/*.test)
-  TEST_CASE_RUN="${1}" && shift        # Flag for if running in test cases
-  FILE_ARRAY=("$@")                    # Array of files to validate                    (Example: ${FILE_ARRAY_JSON})
+  FILE_TYPE="${1}" && shift
+  LINTER_NAME="${1}" && shift
+  LINTER_COMMAND="${1}" && shift
+  FILTER_REGEX_INCLUDE="${1}" && shift
+  FILTER_REGEX_EXCLUDE="${1}" && shift
+  TEST_CASE_RUN="${1}" && shift
+  FILE_ARRAY=("$@")
 
-  ##########################
-  # Initialize empty Array #
-  ##########################
-  LIST_FILES=()
-
-  ###################################################
-  # Array to track directories where tflint was run #
-  ###################################################
+  # Array to track directories where tflint was run
   declare -A TFLINT_SEEN_DIRS
 
-  ################
-  # Set the flag #
-  ################
-  SKIP_FLAG=0
+  # To count how many files were checked for a given FILE_TYPE
   INDEX=0
 
-  # We use these flags to check how many "bad" and "good" test cases we ran
+  # To check how many "bad" and "good" test cases we ran
   BAD_TEST_CASES_COUNT=0
   GOOD_TEST_CASES_COUNT=0
 
-  ############################################################
-  # Check to see if we need to go through array or all files #
-  ############################################################
-  if [ ${#FILE_ARRAY[@]} -eq 0 ]; then
-    SKIP_FLAG=1
-    debug " - No files found in changeset to lint for language:[${FILE_TYPE}]"
-  else
-    # We have files added to array of files to check
-    LIST_FILES=("${FILE_ARRAY[@]}") # Copy the array into list
+  WORKSPACE_PATH="${GITHUB_WORKSPACE}"
+  if [ "${TEST_CASE_RUN}" == "true" ]; then
+    WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
   fi
+  debug "Workspace path: ${WORKSPACE_PATH}"
 
-  debug "SKIP_FLAG: ${SKIP_FLAG}, list of files to lint: ${LIST_FILES[*]}"
+  info ""
+  info "----------------------------------------------"
+  info "----------------------------------------------"
+  debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, files to lint: ${FILE_ARRAY[*]}"
+  info "Linting ${FILE_TYPE} files..."
+  info "----------------------------------------------"
+  info "----------------------------------------------"
 
-  ###############################
-  # Check if any data was found #
-  ###############################
-  if [ ${SKIP_FLAG} -eq 0 ]; then
-    WORKSPACE_PATH="${GITHUB_WORKSPACE}"
-    if [ "${TEST_CASE_RUN}" == "true" ]; then
-      debug "TEST_CASE_FOLDER: ${TEST_CASE_FOLDER}"
-      WORKSPACE_PATH="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}"
-    fi
-    debug "Workspace path: ${WORKSPACE_PATH}"
+  for FILE in "${FILE_ARRAY[@]}"; do
+    info "Checking file: ${FILE}"
 
-    ################
-    # print header #
-    ################
-    info ""
-    info "----------------------------------------------"
-    info "----------------------------------------------"
-
-    debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. Linter name: ${LINTER_NAME}, linter command: ${LINTER_COMMAND}, TEST_CASE_RUN: ${TEST_CASE_RUN}, FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, files to lint: ${FILE_ARRAY[*]}"
-
-    if [ "${TEST_CASE_RUN}" = "true" ]; then
-      info "Testing Codebase [${FILE_TYPE}] files..."
-    else
-      info "Linting [${FILE_TYPE}] files..."
-    fi
-
-    info "----------------------------------------------"
-    info "----------------------------------------------"
-
-    ##################
-    # Lint the files #
-    ##################
-    for FILE in "${LIST_FILES[@]}"; do
-      debug "Linting FILE: ${FILE}"
-
-      # We want a lowercase value
-      local -l INDIVIDUAL_TEST_FOLDER
-      # Folder for specific tests. By convention, it's the lowercased FILE_TYPE
-      INDIVIDUAL_TEST_FOLDER="${FILE_TYPE}"
-      debug "INDIVIDUAL_TEST_FOLDER for ${FILE}: ${INDIVIDUAL_TEST_FOLDER}"
-
+    if [[ "${TEST_CASE_RUN}" == "true" ]]; then
+      # Folder for specific tests. By convention, the last part of the path is the lowercased FILE_TYPE
       local TEST_CASE_DIRECTORY
-      TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${INDIVIDUAL_TEST_FOLDER}"
+      TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${FILE_TYPE,,}/"
       debug "TEST_CASE_DIRECTORY for ${FILE}: ${TEST_CASE_DIRECTORY}"
 
-      if [[ "${TEST_CASE_RUN}" == "true" ]]; then
-        if [[ ${FILE_TYPE} != "ANSIBLE" ]]; then
-          # These linters expect files inside a directory, not a directory. So we add a trailing slash
-          TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
-          debug "Updated TEST_CASE_DIRECTORY for ${FILE_TYPE} to: ${TEST_CASE_DIRECTORY}"
-        fi
-
-        if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]]; then
-          debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
-          continue
-        fi
+      if [[ ${FILE} != *"${TEST_CASE_DIRECTORY}"* ]]; then
+        debug "Skipping ${FILE} because it's not in the test case directory for ${FILE_TYPE}..."
+        continue
       fi
+    fi
 
-      local FILE_NAME
-      FILE_NAME=$(basename "${FILE}" 2>&1)
-      debug "FILE_NAME for ${FILE}: ${FILE_NAME}"
+    local FILE_NAME
+    FILE_NAME=$(basename "${FILE}" 2>&1)
+    debug "FILE_NAME for ${FILE}: ${FILE_NAME}"
 
-      local DIR_NAME
-      DIR_NAME=$(dirname "${FILE}" 2>&1)
-      debug "DIR_NAME for ${FILE}: ${DIR_NAME}"
+    local DIR_NAME
+    DIR_NAME=$(dirname "${FILE}" 2>&1)
+    debug "DIR_NAME for ${FILE}: ${DIR_NAME}"
 
-      (("INDEX++"))
+    (("INDEX++"))
 
-      info "File: ${FILE}"
+    LINTED_LANGUAGES_ARRAY+=("${FILE_TYPE}")
+    local LINT_CMD
+    LINT_CMD=''
 
-      #################################
-      # Add the language to the array #
-      #################################
-      LINTED_LANGUAGES_ARRAY+=("${FILE_TYPE}")
-
-      ####################
-      # Set the base Var #
-      ####################
-      LINT_CMD=''
-
-      #####################
-      # Check for ansible #
-      #####################
-      if [[ ${FILE_TYPE} == "ANSIBLE" ]]; then
-        LINT_CMD=$(
-          cd "${FILE}" || exit
-          # Don't pass the file to lint to enable ansible-lint autodetection mode.
-          # See https://ansible-lint.readthedocs.io/usage for details
-          ${LINTER_COMMAND} 2>&1
-        )
-      ####################################
-      # Corner case for pwsh subshell    #
-      #  - PowerShell (PSScriptAnalyzer) #
-      #  - ARM        (arm-ttk)          #
-      ####################################
-      elif [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
-        ################################
-        # Lint the file with the rules #
-        ################################
-        # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} \"${FILE}\"; if (\${Error}.Count) { exit 1 }"
-          exit $? 2>&1
-        )
-      ###############################################################################
-      # Corner case for R as we have to pass it to R                                #
-      ###############################################################################
-      elif [[ ${FILE_TYPE} == "R" ]]; then
-        #######################################
-        # Lint the file with the updated path #
-        #######################################
-        if [ ! -f "${DIR_NAME}/.lintr" ]; then
-          r_dir="${WORKSPACE_PATH}"
-        else
-          r_dir="${DIR_NAME}"
-        fi
-        LINT_CMD=$(
-          cd "$r_dir" || exit
-          R --slave -e "lints <- lintr::lint('$FILE');print(lints);errors <- purrr::keep(lints, ~ .\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
-        )
-      #########################################################
-      # Corner case for C# as it writes to tty and not stdout #
-      #########################################################
-      elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
-          exit "${PIPESTATUS[0]}"
-        )
-      ###########################################################################################
-      # Corner case for GO_MODULES because it expects that the working directory is a Go module #
-      ###########################################################################################
-      elif [[ ${FILE_TYPE} == "GO_MODULES" ]]; then
-        debug "Linting a Go module. Changing the working directory to ${FILE} before running the linter."
-        LINT_CMD=$(
-          cd "${FILE}" || exit 1
-          ${LINTER_COMMAND} 2>&1
-        )
-      #######################################################
-      # Corner case for KTLINT as it cant use the full path #
-      #######################################################
-      elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
-        )
-      ######################
-      # Check for Renovate #
-      ######################
-      elif [[ ${FILE_TYPE} == "RENOVATE" ]]; then
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          RENOVATE_CONFIG_FILE="${FILE}" ${LINTER_COMMAND} 2>&1
-        )
-      #############################################################################################
-      # Corner case for TERRAFORM_TFLINT as it can't use the full path and needs to fetch modules #
-      #############################################################################################
-      elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
-        # Check the cache to see if we've already prepped this directory for tflint
-        if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
-          debug "  Setting up TERRAFORM_TFLINT cache for ${DIR_NAME}"
-
-          TF_DOT_DIR="${DIR_NAME}/.terraform"
-          if [ -d "${TF_DOT_DIR}" ]; then
-            # Just in case there's something in the .terraform folder, keep a copy of it
-            TF_BACKUP_DIR="/tmp/.terraform-tflint-backup${DIR_NAME}"
-            debug "  Backing up ${TF_DOT_DIR} to ${TF_BACKUP_DIR}"
-
-            mkdir -p "${TF_BACKUP_DIR}"
-            cp -r "${TF_DOT_DIR}" "${TF_BACKUP_DIR}"
-            # Store the destination directory so we can restore from our copy later
-            TFLINT_SEEN_DIRS[${DIR_NAME}]="${TF_BACKUP_DIR}"
-          else
-            # Just let the cache know we've seen this before
-            TFLINT_SEEN_DIRS[${DIR_NAME}]='false'
-          fi
-
-          (
-            cd "${DIR_NAME}" || exit
-            terraform get >/dev/null
-          )
-        fi
-
-        LINT_CMD=$(
-          cd "${DIR_NAME}" || exit
-          ${LINTER_COMMAND} --filter="${FILE_NAME}" 2>&1
-        )
+    if [[ ${FILE_TYPE} == "POWERSHELL" ]] || [[ ${FILE_TYPE} == "ARM" ]]; then
+      # Need to run PowerShell commands using pwsh -c, also exit with exit code from inner subshell
+      LINT_CMD=$(
+        cd "${WORKSPACE_PATH}" || exit
+        pwsh -NoProfile -NoLogo -Command "${LINTER_COMMAND} \"${FILE}\"; if (\${Error}.Count) { exit 1 }"
+        exit $? 2>&1
+      )
+    elif [[ ${FILE_TYPE} == "R" ]]; then
+      local r_dir
+      if [ ! -f "${DIR_NAME}/.lintr" ]; then
+        r_dir="${WORKSPACE_PATH}"
       else
-        ################################
-        # Lint the file with the rules #
-        ################################
-        LINT_CMD=$(
-          cd "${WORKSPACE_PATH}" || exit
-          ${LINTER_COMMAND} "${FILE}" 2>&1
-        )
+        r_dir="${DIR_NAME}"
       fi
-      #######################
-      # Load the error code #
-      #######################
-      ERROR_CODE=$?
+      LINT_CMD=$(
+        cd "$r_dir" || exit
+        R --slave -e "lints <- lintr::lint('$FILE');print(lints);errors <- purrr::keep(lints, ~ .\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)" 2>&1
+      )
+    elif [[ ${FILE_TYPE} == "CSHARP" ]]; then
+      # Because the C# linter writes to tty and not stdout
+      LINT_CMD=$(
+        cd "${DIR_NAME}" || exit
+        ${LINTER_COMMAND} "${FILE_NAME}" | tee /dev/tty2 2>&1
+        exit "${PIPESTATUS[0]}"
+      )
+    elif [[ ${FILE_TYPE} == "ANSIBLE" ]] ||
+      [[ ${FILE_TYPE} == "GO_MODULES" ]]; then
+      debug "Linting ${FILE_TYPE}. Changing the working directory to ${FILE} before running the linter."
+      # Because it expects that the working directory is a Go module (GO_MODULES) or
+      # because we want to enable ansible-lint autodetection mode.
+      # Ref: https://ansible-lint.readthedocs.io/usage
+      LINT_CMD=$(
+        cd "${FILE}" || exit 1
+        ${LINTER_COMMAND} 2>&1
+      )
+    elif [[ ${FILE_TYPE} == "KOTLIN" ]]; then
+      # Because it needs to change directory to where the file to lint is
+      LINT_CMD=$(
+        cd "${DIR_NAME}" || exit
+        ${LINTER_COMMAND} "${FILE_NAME}" 2>&1
+      )
+    elif [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
+      # Check the cache to see if we've already prepped this directory for tflint
+      if [[ ! -v "TFLINT_SEEN_DIRS[${DIR_NAME}]" ]]; then
+        debug "Configuring Terraform data directory for ${DIR_NAME}"
 
-      ########################################
-      # Check for if it was supposed to pass #
-      ########################################
+        # Define the path to an empty Terraform data directory
+        # (def: https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_data_dir)
+        # in case the user has a Terraform data directory already, and we don't
+        # want to modify it.
+        # TFlint considers this variable as well.
+        # Ref: https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/compatibility.md#environment-variables
+        local TF_DATA_DIR
+        TF_DATA_DIR="/tmp/.terraform-${FILE_TYPE}-${DIR_NAME}"
+        export TF_DATA_DIR
+        # Let the cache know we've seen this before
+        # Set the value to an arbitrary non-empty string.
 
-      local FILE_STATUS
-      # Assume that the file should pass linting checks
-      FILE_STATUS="good"
-
-      if [[ "${TEST_CASE_RUN}" == "true" ]]; then
-        if [[ ${FILE} == *"bad"* ]]; then
-          FILE_STATUS="bad"
-          debug "We are running in test mode. Updating the expected FILE_STATUS for ${FILE} to: ${FILE_STATUS}"
-        fi
-      fi
-
-      ########################################
-      # File status = good, this should pass #
-      ########################################
-      if [[ ${FILE_STATUS} == "good" ]]; then
-        # Increase the good test cases count
-        (("GOOD_TEST_CASES_COUNT++"))
-
+        # Fetch Terraform modules
+        debug "Fetch Terraform modules for ${DIR_NAME} in ${TF_DATA_DIR}"
+        local FETCH_TERRAFORM_MODULES_CMD
+        FETCH_TERRAFORM_MODULES_CMD="$(terraform get)"
+        ERROR_CODE=$?
+        debug "Fetch Terraform modules. Exit code: ${ERROR_CODE}. Command output: ${FETCH_TERRAFORM_MODULES_CMD}"
         if [ ${ERROR_CODE} -ne 0 ]; then
-          error "Found errors when running ${LINTER_NAME} on ${FILE}. Error code: ${ERROR_CODE}. File type: ${FILE_TYPE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-          # Increment the error count
-          (("ERRORS_FOUND_${FILE_TYPE}++"))
-        else
-          info " - File:${F[W]}[${FILE_NAME}]${F[B]} was linted with ${F[W]}[${LINTER_NAME}]${F[B]} successfully"
-          if [ -n "${LINT_CMD}" ]; then
-            info "   - Command output:${NC}\n------\n${LINT_CMD}\n------"
-          fi
+          fatal "Error when fetching Terraform modules while linting ${FILE}"
         fi
+        TFLINT_SEEN_DIRS[${DIR_NAME}]="false"
+      fi
+
+      # Because it needs to change the directory to where the file to lint is
+      LINT_CMD=$(
+        cd "${DIR_NAME}" || exit
+        ${LINTER_COMMAND} --filter="${FILE_NAME}" 2>&1
+      )
+    else
+      LINT_CMD=$(
+        cd "${WORKSPACE_PATH}" || exit
+        ${LINTER_COMMAND} "${FILE}" 2>&1
+      )
+    fi
+
+    ERROR_CODE=$?
+
+    local FILE_STATUS
+    # Assume that the file should pass linting checks
+    FILE_STATUS="good"
+
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ ${FILE} == *"bad"* ]]; then
+      FILE_STATUS="bad"
+      debug "We are running in test mode. Updating the expected FILE_STATUS for ${FILE} to: ${FILE_STATUS}"
+    fi
+
+    debug "Results for ${FILE}. Exit code: ${ERROR_CODE}. Command output:\n------\n${LINT_CMD}\n------"
+
+    ########################################
+    # File status = good, this should pass #
+    ########################################
+    if [[ ${FILE_STATUS} == "good" ]]; then
+      (("GOOD_TEST_CASES_COUNT++"))
+
+      if [ ${ERROR_CODE} -ne 0 ]; then
+        error "Found errors when linting ${FILE_NAME}. Exit code: ${ERROR_CODE}. Command output:\n------\n${LINT_CMD}\n------"
+        (("ERRORS_FOUND_${FILE_TYPE}++"))
       else
-        #######################################
-        # File status = bad, this should fail #
-        #######################################
-
-        if [[ "${TEST_CASE_RUN}" == "false" ]]; then
-          fatal "All files are supposed to pass linting checks when not running in test mode. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-        fi
-
-        (("BAD_TEST_CASES_COUNT++"))
-
-        if [ ${ERROR_CODE} -eq 0 ]; then
-          #########
-          # Error #
-          #########
-          error "Found errors in [${LINTER_NAME}] linter!"
-          error "This file should have failed test case!"
-          error "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-          # Increment the error count
-          (("ERRORS_FOUND_${FILE_TYPE}++"))
-        else
-          info " - File:${F[W]}[${FILE_NAME}]${F[B]} failed test case (Error code: ${ERROR_CODE}) with ${F[W]}[${LINTER_NAME}]${F[B]} as expected"
+        notice "${FILE} was linted successfully"
+        if [ -n "${LINT_CMD}" ]; then
+          info "Command output for ${FILE_NAME}:\n------\n${LINT_CMD}\n------"
         fi
       fi
-      debug "Error code: ${ERROR_CODE}. Command output:${NC}\n------\n${LINT_CMD}\n------"
-    done
-  fi
-
-  # Clean up after TFLINT
-  for TF_DIR in "${!TFLINT_SEEN_DIRS[@]}"; do
-    (
-      cd "${TF_DIR}" || exit
-      rm -rf .terraform
-
-      # Check to see if there was a .terraform folder there before we got started, restore it if so
-      POTENTIAL_BACKUP_DIR="${TFLINT_SEEN_DIRS[${TF_DIR}]}"
-      if [[ "${POTENTIAL_BACKUP_DIR}" != 'false' ]]; then
-        # Put the copy back in place
-        debug "  Restoring ${TF_DIR}/.terraform from ${POTENTIAL_BACKUP_DIR}"
-        mv "${POTENTIAL_BACKUP_DIR}/.terraform" .terraform
+    #######################################
+    # File status = bad, this should fail #
+    #######################################
+    else
+      if [[ "${TEST_CASE_RUN}" == "false" ]]; then
+        fatal "All files are supposed to pass linting checks when not running in test mode."
       fi
-    )
+
+      (("BAD_TEST_CASES_COUNT++"))
+
+      if [ ${ERROR_CODE} -eq 0 ]; then
+        error "${FILE} should have failed test case."
+        (("ERRORS_FOUND_${FILE_TYPE}++"))
+      else
+        notice "${FILE} failed the test case as expected"
+      fi
+    fi
   done
 
   if [ "${TEST_CASE_RUN}" = "true" ]; then
 
-    debug "The ${LINTER_NAME} (linter: ${LINTER_NAME}) test suite has ${INDEX} test, of which ${BAD_TEST_CASES_COUNT} 'bad' (supposed to fail), ${GOOD_TEST_CASES_COUNT} 'good' (supposed to pass)."
+    debug "${LINTER_NAME} test suite has ${INDEX} test(s), of which ${BAD_TEST_CASES_COUNT} 'bad' (expected to fail), ${GOOD_TEST_CASES_COUNT} 'good' (expected to pass)."
 
     # Check if we ran at least one test
     if [ "${INDEX}" -eq 0 ]; then
-      error "Failed to find any tests ran for the Linter:[${LINTER_NAME}]!"
-      fatal "Validate logic and that tests exist for linter: ${LINTER_NAME}"
+      fatal "Failed to find any tests ran for: ${LINTER_NAME}. Check that tests exist for linter: ${LINTER_NAME}"
     fi
 
-    # Check if we ran 'bad' tests
+    # Check if we ran at least one 'bad' test
     if [ "${BAD_TEST_CASES_COUNT}" -eq 0 ]; then
-      if [ "${FILE_TYPE}" = "ANSIBLE" ]; then
-        debug "There are no 'bad' tests for ${FILE_TYPE}, but it's a corner case that we allow because ${LINTER_NAME} is supposed to lint entire directories and the test suite doesn't support this corner case for 'bad' tests yet."
-      else
-        error "Failed to find any tests that are expected to fail for the Linter:[${LINTER_NAME}]!"
-        fatal "Validate logic and that tests that are expected to fail exist for linter: ${LINTER_NAME}"
-      fi
+      fatal "Failed to find any tests that are expected to fail for: ${LINTER_NAME}. Check that tests that are expected to fail exist for linter: ${LINTER_NAME}"
     fi
 
-    # Check if we ran 'good' tests
+    # Check if we ran at least one 'good' test
     if [ "${GOOD_TEST_CASES_COUNT}" -eq 0 ]; then
-      error "Failed to find any tests that are expected to pass for the Linter:[${LINTER_NAME}]!"
-      fatal "Validate logic and that tests that are expected to pass exist for linter: ${LINTER_NAME}"
+      fatal "Failed to find any tests that are expected to pass for: ${LINTER_NAME}. Check that tests that are expected to pass exist for linter: ${LINTER_NAME}"
     fi
   fi
 }
