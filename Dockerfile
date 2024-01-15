@@ -358,9 +358,6 @@ COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 #########################
 # Configure Environment #
 #########################
-# Set image variant
-ENV IMAGE="slim"
-
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
 ENV PATH="${PATH}:/venvs/checkov/bin"
@@ -384,6 +381,10 @@ ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 RUN terrascan init \
     && touch ~/.chktexrc
 
+ENTRYPOINT ["/action/lib/linter.sh"]
+
+FROM base_image as slim
+
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -394,9 +395,7 @@ COPY TEMPLATES /action/lib/.automation
 #################################
 COPY lib /action/lib
 
-ENTRYPOINT ["/action/lib/linter.sh"]
-
-FROM base_image as slim
+ENV IMAGE="slim"
 
 # Run to build version file and validate image
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
@@ -427,7 +426,6 @@ ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
 ARG PSSA_VERSION='1.21.0'
 
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
-ENV IMAGE="standard"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
 # Install super-linter runtime dependencies
@@ -460,6 +458,18 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh
 #############################################################
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
+
+###################################
+# Copy linter configuration files #
+###################################
+COPY TEMPLATES /action/lib/.automation
+
+#################################
+# Copy super-linter executables #
+#################################
+COPY lib /action/lib
+
+ENV IMAGE="standard"
 
 # Run to build version file and validate image again because we installed more linters
 RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
