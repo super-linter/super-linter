@@ -36,7 +36,7 @@ jobs:
         REPOSITORY: super-linter/super-linter
 
     - name: Create issue
-      uses: peter-evans/create-issue-from-file@v4
+      uses: peter-evans/create-issue-from-file@v5
       with:
         title: Thank you super-linter contributors (${{ env.START_DATE }}..${{ env.END_DATE }})
         token: ${{ secrets.GITHUB_TOKEN }}
