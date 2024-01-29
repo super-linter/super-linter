@@ -3,6 +3,15 @@
 # PUll in env vars passed
 image = ENV["IMAGE"]
 
+version_file_path = "/action/linterVersions.txt"
+
+control "super-linter-environment-variables" do
+
+  describe os_env("VERSION_FILE") do
+    its("content") { should eq version_file_path }
+  end
+end
+
 ##################################################
 # Check to see all system packages are installed #
 ##################################################
@@ -438,8 +447,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/githubEvent.sh",
     "/action/lib/functions/linterCommands.sh",
     "/action/lib/functions/linterRules.sh",
-    "/action/lib/functions/linterVersions.sh",
-    "/action/lib/functions/linterVersions.txt",
+    version_file_path,
     "/action/lib/functions/log.sh",
     "/action/lib/functions/possum.sh",
     "/action/lib/functions/updateSSL.sh",

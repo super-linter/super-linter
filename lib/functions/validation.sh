@@ -16,7 +16,6 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "TEST_CASE_RUN" "${TEST_CASE_RUN}"
   ValidateBooleanVariable "USE_FIND_ALGORITHM" "${USE_FIND_ALGORITHM}"
   ValidateBooleanVariable "VALIDATE_ALL_CODEBASE" "${VALIDATE_ALL_CODEBASE}"
-  ValidateBooleanVariable "WRITE_LINTER_VERSIONS_FILE" "${WRITE_LINTER_VERSIONS_FILE}"
   ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
 }
 

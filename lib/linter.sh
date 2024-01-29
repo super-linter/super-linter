@@ -47,8 +47,6 @@ source /action/lib/functions/detectFiles.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/linterRules.sh # Source the function script(s)
 # shellcheck source=/dev/null
-source /action/lib/functions/linterVersions.sh # Source the function script(s)
-# shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/updateSSL.sh # Source the function script(s)
@@ -133,9 +131,6 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE:-"true"}"
 declare -l YAML_ERROR_ON_WARNING
 YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
 
-declare -l WRITE_LINTER_VERSIONS_FILE
-WRITE_LINTER_VERSIONS_FILE="${WRITE_LINTER_VERSIONS_FILE:-"false"}"
-
 ValidateBooleanConfigurationVariables
 
 ###########
@@ -159,8 +154,6 @@ LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directo
 RAW_FILE_ARRAY=() # Array of all files that were changed
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
-# shellcheck disable=SC2034  # Variable is referenced in other scripts
-VERSION_FILE='/action/lib/functions/linterVersions.txt' # File to store linter versions
 
 # Set the log level
 TF_LOG_LEVEL="info"
@@ -211,7 +204,6 @@ JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_DEFAULT_STYLE="${JAVASCRIPT_DEFAULT_STYLE:-standard}"
 JAVASCRIPT_STYLE_NAME='' # Variable for the style
-JAVASCRIPT_STYLE=''      # Variable for the style
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_STANDARD_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -275,7 +267,6 @@ TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-ts-standard}"
 TYPESCRIPT_STYLE_NAME='' # Variable for the style
-TYPESCRIPT_STYLE=''      # Variable for the style
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -292,11 +283,9 @@ JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '
 if [ "${JAVASCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
   # Set to prettier
   JAVASCRIPT_STYLE_NAME='JAVASCRIPT_PRETTIER'
-  JAVASCRIPT_STYLE='prettier'
 else
   # Default to standard
   JAVASCRIPT_STYLE_NAME='JAVASCRIPT_STANDARD'
-  JAVASCRIPT_STYLE='standard'
 fi
 
 #################################################
@@ -310,11 +299,9 @@ TYPESCRIPT_DEFAULT_STYLE=$(echo "${TYPESCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '
 if [ "${TYPESCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
   # Set to prettier
   TYPESCRIPT_STYLE_NAME='TYPESCRIPT_PRETTIER'
-  TYPESCRIPT_STYLE='prettier'
 else
   # Default to standard
   TYPESCRIPT_STYLE_NAME='TYPESCRIPT_STANDARD'
-  TYPESCRIPT_STYLE='ts-standard'
 fi
 
 ##################
@@ -333,86 +320,6 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CHECKOV' 'CLANG_FORMAT'
   'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'SQLFLUFF' 'TEKTON'
   'TERRAFORM_FMT' 'TERRAFORM_TFLINT' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX'
   'TYPESCRIPT_ES' "${TYPESCRIPT_STYLE_NAME}" 'XML' 'YAML')
-
-##############################
-# Linter command names array #
-##############################
-declare -A LINTER_NAMES_ARRAY
-LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
-LINTER_NAMES_ARRAY['ARM']="arm-ttk"
-LINTER_NAMES_ARRAY['BASH']="shellcheck"
-LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
-LINTER_NAMES_ARRAY['CHECKOV']="checkov"
-LINTER_NAMES_ARRAY['CLANG_FORMAT']="clang-format"
-LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
-LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
-LINTER_NAMES_ARRAY['COFFEESCRIPT']="coffeelint"
-LINTER_NAMES_ARRAY['CPP']="cpplint"
-LINTER_NAMES_ARRAY['CSHARP']="dotnet"
-LINTER_NAMES_ARRAY['CSS']="stylelint"
-LINTER_NAMES_ARRAY['DART']="dart"
-LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
-LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
-LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
-LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
-LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
-LINTER_NAMES_ARRAY['GHERKIN']="gherkin-lint"
-LINTER_NAMES_ARRAY['GO']="golangci-lint"
-LINTER_NAMES_ARRAY['GO_MODULES']="${LINTER_NAMES_ARRAY['GO']}"
-LINTER_NAMES_ARRAY['GOOGLE_JAVA_FORMAT']="google-java-format"
-LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
-LINTER_NAMES_ARRAY['HTML']="htmlhint"
-LINTER_NAMES_ARRAY['JAVA']="checkstyle"
-LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY["${JAVASCRIPT_STYLE_NAME}"]="${JAVASCRIPT_STYLE}"
-LINTER_NAMES_ARRAY['JSCPD']="jscpd"
-LINTER_NAMES_ARRAY['JSON']="eslint"
-LINTER_NAMES_ARRAY['JSONC']="eslint"
-LINTER_NAMES_ARRAY['JSX']="eslint"
-LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
-LINTER_NAMES_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform"
-LINTER_NAMES_ARRAY['LATEX']="chktex"
-LINTER_NAMES_ARRAY['LUA']="lua"
-LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
-LINTER_NAMES_ARRAY['NATURAL_LANGUAGE']="textlint"
-LINTER_NAMES_ARRAY['OPENAPI']="spectral"
-LINTER_NAMES_ARRAY['PERL']="perl"
-LINTER_NAMES_ARRAY['PHP_BUILTIN']="php"
-LINTER_NAMES_ARRAY['PHP_PHPCS']="phpcs"
-LINTER_NAMES_ARRAY['PHP_PHPSTAN']="phpstan"
-LINTER_NAMES_ARRAY['PHP_PSALM']="psalm"
-LINTER_NAMES_ARRAY['POWERSHELL']="pwsh"
-LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
-LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
-LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
-LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
-LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
-LINTER_NAMES_ARRAY['PYTHON_MYPY']="mypy"
-LINTER_NAMES_ARRAY['R']="R"
-LINTER_NAMES_ARRAY['RAKU']="raku"
-LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
-LINTER_NAMES_ARRAY['RUBY']="rubocop"
-LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
-LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
-LINTER_NAMES_ARRAY['RUST_2021']="rustfmt"
-LINTER_NAMES_ARRAY['RUST_CLIPPY']="clippy"
-LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
-LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
-LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
-LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
-LINTER_NAMES_ARRAY['STATES']="asl-validator"
-LINTER_NAMES_ARRAY['SQL']="sql-lint"
-LINTER_NAMES_ARRAY['SQLFLUFF']="sqlfluff"
-LINTER_NAMES_ARRAY['TEKTON']="tekton-lint"
-LINTER_NAMES_ARRAY['TERRAFORM_FMT']="terraform"
-LINTER_NAMES_ARRAY['TERRAFORM_TFLINT']="tflint"
-LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
-LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
-LINTER_NAMES_ARRAY['TSX']="eslint"
-LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY["${TYPESCRIPT_STYLE_NAME}"]="${TYPESCRIPT_STYLE}"
-LINTER_NAMES_ARRAY['XML']="xmllint"
-LINTER_NAMES_ARRAY['YAML']="yamllint"
 
 ##########################
 # Array of changed files #
@@ -751,17 +658,6 @@ UpdateLoopsForImage() {
         fi
       done
     done
-
-    # Remove from LINTER_NAMES_ARRAY
-    debug "Removing Linters from LINTER_NAMES_ARRAY for slim image..."
-    for REMOVE_LINTER in "${REMOVE_ARRAY[@]}"; do
-      for INDEX in "${!LINTER_NAMES_ARRAY[@]}"; do
-        if [[ ${INDEX} = "${REMOVE_LINTER}" ]]; then
-          debug "found item:[${REMOVE_LINTER}], removing linter..."
-          unset 'LINTER_NAMES_ARRAY[$INDEX]'
-        fi
-      done
-    done
   fi
 }
 
@@ -817,10 +713,9 @@ SetupGithubComSshKeys
 ################################################
 UpdateLoopsForImage
 
-##################################
-# Get and print all version info #
-##################################
-GetLinterVersions
+if ! cat "${VERSION_FILE}"; then
+  fatal "Failed to view version file: ${VERSION_FILE}"
+fi
 
 #######################
 # Get GitHub Env Vars #
