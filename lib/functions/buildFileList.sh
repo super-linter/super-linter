@@ -569,7 +569,11 @@ function BuildFileList() {
     ############################
     # Get the Terragrunt files #
     ############################
-    elif [ "${FILE_TYPE}" == "hcl" ] && [[ ${FILE} != *".tflint.hcl"* ]] && [[ ${FILE} != *".pkr.hcl"* ]]; then
+    elif [ "${FILE_TYPE}" == "hcl" ] &&
+      [[ ${FILE} != *".tflint.hcl"* ]] &&
+      [[ ${FILE} != *".pkr.hcl"* ]] &&
+      [[ ${FILE} != *"docker-bake.hcl"* ]] &&
+      [[ ${FILE} != *"docker-bake.override.hcl"* ]]; then
       FILE_ARRAY_TERRAGRUNT+=("${FILE}")
 
     ############################
