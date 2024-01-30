@@ -194,22 +194,8 @@ GetStandardRules() {
   #########################################
   # Only env vars that are marked as true
   GET_ENV_ARRAY=()
-  if [[ ${LINTER} == "javascript" ]]; then
-    mapfile -t GET_ENV_ARRAY < <(yq .env "${JAVASCRIPT_STANDARD_LINTER_RULES}" | grep true)
-  fi
-
-  #######################
-  # Load the error code #
-  #######################
-  ERROR_CODE=$?
-
-  ##############################
-  # Check the shell for errors #
-  ##############################
-  if [ ${ERROR_CODE} -ne 0 ]; then
-    # ERROR
-    error "Failed to gain list of ENV vars to load!"
-    fatal "[${GET_ENV_ARRAY[*]}]"
+  if [[ ${LINTER} == "javascript" ]] && ! mapfile -t GET_ENV_ARRAY < <(yq .env "${JAVASCRIPT_STANDARD_LINTER_RULES}" | grep true); then
+    fatal "Failed to gain list of ENV vars to load: [${GET_ENV_ARRAY[*]}]"
   fi
 
   ##########################
@@ -218,14 +204,8 @@ GetStandardRules() {
   # Set IFS back to Orig
   IFS="${ORIG_IFS}"
 
-  ######################
-  # Set the env string #
-  ######################
   ENV_STRING=''
 
-  #############################
-  # Pull out the envs to load #
-  #############################
   for ENV in "${GET_ENV_ARRAY[@]}"; do
     #############################
     # remove spaces from return #

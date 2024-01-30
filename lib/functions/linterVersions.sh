@@ -16,7 +16,7 @@ GetLinterVersions() {
   fi
 
   if ! cat "${VERSION_FILE}"; then
-    fatal "Failed to view version file: ${VERSION_FILE}."
+    fatal "Failed to view version file: ${VERSION_FILE}"
   fi
 }
 ################################################################################
