@@ -52,10 +52,6 @@ This section helps you migrate from super-linter `v5` to `v6`.
 - If you defined secret patterns in `.gitleaks.toml`, Gitleaks may report errors
   about that file. If this happens, you can
   [configure Gitleaks to ignore that file](https://github.com/gitleaks/gitleaks/tree/master?tab=readme-ov-file#gitleaksignore).
-- Gitleaks doesn't consider the `FILTER_REGEX_EXCLUDE`, `FILTER_REGEX_INCLUDE`,
-  `IGNORE_GENERATED_FILES`, `IGNORE_GITIGNORED_FILES` variables. For more
-  information about how to ignore files with Gitleaks, see
-  [the Gitleaks documentation](https://github.com/gitleaks/gitleaks/tree/master?tab=readme-ov-file#gitleaksignore).
 
 ### Jscpd
 

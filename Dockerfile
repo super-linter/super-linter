@@ -134,6 +134,7 @@ RUN apk add --no-cache \
     nodejs-current \
     openjdk17-jre \
     openssh-client \
+    parallel \
     perl \
     php82 \
     php82-ctype \

@@ -1,9 +1,0 @@
-.github-personal-access-token:github-fine-grained-pat:1
-/github/workspace/.github-personal-access-token:github-fine-grained-pat:1
-/github/workspace/test/linters/gitleaks/bad/gitleaks_bad_01.txt:aws-access-token:1
-/github/workspace/test/linters/gitleaks/bad/gitleaks_bad_01.txt:generic-api-key:2
-/tmp/lint/.github-personal-access-token:github-fine-grained-pat:1
-/tmp/lint/test/linters/gitleaks/bad/gitleaks_bad_01.txt:aws-access-token:1
-/tmp/lint/test/linters/gitleaks/bad/gitleaks_bad_01.txt:generic-api-key:2
-test/linters/gitleaks/bad/gitleaks_bad_01.txt:aws-access-token:1
-test/linters/gitleaks/bad/gitleaks_bad_01.txt:generic-api-key:2

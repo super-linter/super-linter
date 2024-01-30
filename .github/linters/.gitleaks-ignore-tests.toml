@@ -1,0 +1,13 @@
+
+title = "gitleaks config"
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/zricethezav/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allow secrets in test files"
+paths = [
+  '''.*/test/linters/gitleaks/bad/.*'''
+]

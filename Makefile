@@ -164,6 +164,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
 		-e DEFAULT_BRANCH=main \
 		-e IGNORE_GENERATED_FILES=true \
 		-e IGNORE_GITIGNORED_FILES=true \
@@ -178,6 +179,8 @@ lint-codebase: ## Lint the entire codebase
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
+		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -195,6 +198,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_MARKDOWN=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -207,6 +211,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \
@@ -272,19 +277,19 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-linters
-test-linters: ## Run the linters test suite
-	docker run \
-		-e ACTIONS_RUNNER_DEBUG=true \
-		-e CHECKOV_FILE_NAME=".checkov-test-linters.yaml" \
-		-e DEFAULT_BRANCH=main \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" \
-		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
-		-e RUN_LOCAL=true \
-		-e TEST_CASE_RUN=true \
-		-e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" \
-		-v "$(CURDIR):/tmp/lint" \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
+test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite
+
+.phony: test-linters-expect-success
+test-linters-expect-success: ## Run the linters test suite expecting successes
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_success"
+
+.phony: test-linters-expect-failure
+test-linters-expect-failure: ## Run the linters test suite expecting failures
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_failure"
 
 .phony: build-dev-container-image
 build-dev-container-image: ## Build commit linter container image
