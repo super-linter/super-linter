@@ -1,3 +1,4 @@
+CHANGELOG.md
 test/linters/jscpd/good/markdown_good_1.md
 test/linters/markdown/markdown_bad_1.md
 test/linters/markdown/markdown_bad_1.md
