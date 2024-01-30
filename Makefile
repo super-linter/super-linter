@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-non-default-workdir test-git-flags test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -256,6 +256,18 @@ test-default-config-files: ## Test default configuration files loading
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/docs":/tmp/lint \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-custom-ssl-cert
+test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
+	docker run \
+		-e RUN_LOCAL=true \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
