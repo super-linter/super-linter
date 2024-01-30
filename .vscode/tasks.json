@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run super-linter",
+      "type": "shell",
+      "command": "/action/lib/linter.sh"
+    }
+  ]
+}
