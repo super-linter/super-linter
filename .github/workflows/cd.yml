@@ -243,6 +243,10 @@ jobs:
             ghcr.io/super-linter/super-linter:slim-${{ env.SEMVER_MAJOR_VERSION }}
             ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}
 
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       # No need to tag major.minor.patch because that tag is automatically created when creating the release
       - name: Tag major, minor, and latest versions
         if: steps.release.outputs.release_created
