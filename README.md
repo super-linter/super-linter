@@ -111,7 +111,7 @@ To run super-linter as a GitHub Action, you do the following:
               fetch-depth: 0
 
           - name: Super-linter
-            uses: super-linter/super-linter@v5.7.2  # x-release-please-version
+            uses: super-linter/super-linter@v6.0.0  # x-release-please-version
             env:
               DEFAULT_BRANCH: main
               # To report GitHub Actions status checks
