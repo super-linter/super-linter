@@ -164,7 +164,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e ERROR_ON_MISSING_EXEC_BIT=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e DEFAULT_BRANCH=main \
 		-e IGNORE_GENERATED_FILES=true \
 		-e IGNORE_GITIGNORED_FILES=true \
@@ -179,7 +179,7 @@ lint-codebase: ## Lint the entire codebase
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e VALIDATE_ALL_CODEBASE=true \
@@ -198,7 +198,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_MARKDOWN=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -211,7 +211,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e ACTIONS_RUNNER_DEBUG=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*/test/linters/.*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \
