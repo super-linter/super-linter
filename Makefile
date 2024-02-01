@@ -73,6 +73,10 @@ endif
 
 GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
 
+ifeq ($(GITHUB_TOKEN),)
+GITHUB_TOKEN="$(shell cat "${GITHUB_TOKEN_PATH}")"
+endif
+
 DEV_CONTAINER_URL := "super-linter/dev-container:latest"
 
 
@@ -224,7 +228,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-lib
-test-lib: test-build-file-list test-github-event test-validation ## Test super-linter
+test-lib: test-build-file-list test-github-event test-setup-ssh test-validation ## Test super-linter
 
 .phony: test-build-file-list
 test-build-file-list: ## Test buildFileList
@@ -240,6 +244,15 @@ test-github-event: ## Test githubEvent
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/githubEventTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.phony: test-setup-ssh
+test-setup-ssh: ## Test setupSSH
+	@docker run \
+		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/setupSSHTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .phony: test-validation
@@ -323,5 +336,5 @@ release-please-dry-run: build-dev-container-image check-github-token ## Run rele
 		--manifest-file .github/release-please/.release-please-manifest.json \
 		--repo-url super-linter/super-linter \
 		--target-branch ${RELEASE_PLEASE_TARGET_BRANCH} \
-		--token "$(shell cat "${GITHUB_TOKEN_PATH}")" \
+		--token "${GITHUB_TOKEN}" \
 		--trace

@@ -142,13 +142,14 @@ DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fa
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
 FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
 FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
+GITHUB_DOMAIN="${GITHUB_DOMAIN:-"github.com"}"
+GITHUB_DOMAIN="${GITHUB_DOMAIN%/}" # Remove trailing slash if present
 # GitHub API root url
-GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.github.com"}"
-# Remove trailing slash if present
-GITHUB_API_URL="${GITHUB_API_URL%/}"
-GITHUB_SERVER_URL="${GITHUB_DOMAIN:-"https://github.com"}"
-# Extract domain name from URL
-GITHUB_SERVER_URL=$(echo "$GITHUB_SERVER_URL" | cut -d '/' -f 3)
+GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.${GITHUB_DOMAIN}"}"
+GITHUB_API_URL="${GITHUB_API_URL%/}" # Remove trailing slash if present
+GITHUB_SERVER_URL="https://${GITHUB_DOMAIN}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+GITHUB_META_URL="${GITHUB_API_URL}/meta"
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 RAW_FILE_ARRAY=() # Array of all files that were changed
@@ -516,6 +517,12 @@ GetGitHubVars() {
     else
       info "Successfully found GITHUB_RUN_ID ${GITHUB_RUN_ID}"
     fi
+
+    GITHUB_STATUS_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+    debug "GitHub Status URL: ${GITHUB_STATUS_URL}"
+
+    GITHUB_STATUS_TARGET_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+    debug "GitHub Status target URL: ${GITHUB_STATUS_TARGET_URL}"
   else
     debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
@@ -558,19 +565,17 @@ CallStatusAPI() {
       STATUS="success"
     fi
 
-    debug "Status URL: ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
-
     ##############################################
     # Call the status API to create status check #
     ##############################################
     if ! SEND_STATUS_CMD=$(
       curl -f -s --show-error -X POST \
-        --url "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
+        --url "${GITHUB_STATUS_URL}" \
         -H 'accept: application/vnd.github.v3+json' \
         -H "authorization: Bearer ${GITHUB_TOKEN}" \
         -H 'content-type: application/json' \
         -d "{ \"state\": \"${STATUS}\",
-        \"target_url\": \"https://${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
+        \"target_url\": \"${GITHUB_STATUS_TARGET_URL}\",
         \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
       }" 2>&1
     ); then
@@ -702,12 +707,6 @@ trap 'cleanup' 0 1 2 3 6 14 15
 ##########
 Header
 
-############################################
-# Create SSH agent and add key if provided #
-############################################
-SetupSshAgent
-SetupGithubComSshKeys
-
 ################################################
 # Need to update the loops for the image style #
 ################################################
@@ -727,6 +726,12 @@ GetGitHubVars
 # Ensure that Git safe directories are configured because we don't do this in
 # all cases when initializing variables
 ConfigureGitSafeDirectories
+
+############################################
+# Create SSH agent and add key if provided #
+############################################
+SetupSshAgent
+SetupGithubComSshKeys
 
 ########################################################
 # Initialize variables that depend on GitHub variables #
