@@ -157,7 +157,7 @@ function BuildFileList() {
 
   local STDOUT_BUILD_FILE_LIST
   # Get raw output so we can strip quotes from the data we load
-  if ! STDOUT_BUILD_FILE_LIST="$(jq --raw-output '.[].Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDOUT_BUILD_FILE_LIST="$(jq --raw-output '.[] | select(.Stdout[:-1] | length > 0) | .Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stdout when building the file list: ${STDOUT_BUILD_FILE_LIST}"
   fi
 
@@ -168,7 +168,7 @@ function BuildFileList() {
   fi
 
   local STDERR_BUILD_FILE_LIST
-  if ! STDERR_BUILD_FILE_LIST="$(jq --raw-output '.[].Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDERR_BUILD_FILE_LIST="$(jq --raw-output '.[] | select(.Stderr[:-1] | length > 0) | .Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stderr when building the file list:\n${STDERR_BUILD_FILE_LIST}"
   fi
 

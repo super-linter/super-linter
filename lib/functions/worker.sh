@@ -188,7 +188,7 @@ function LintCodebase() {
 
   local STDOUT_LINTER
   # Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
-  if ! STDOUT_LINTER="$(jq --raw-output '.[].Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDOUT_LINTER="$(jq --raw-output '.[] | select(.Stdout[:-1] | length > 0) | .Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stdout for ${FILE_TYPE}:\n${STDOUT_LINTER}"
   fi
 
@@ -199,7 +199,7 @@ function LintCodebase() {
   fi
 
   local STDERR_LINTER
-  if ! STDERR_LINTER="$(jq --raw-output '.[].Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDERR_LINTER="$(jq --raw-output '.[] | select(.Stderr[:-1] | length > 0) | .Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTER}"
   fi
 

@@ -102,7 +102,7 @@ jobs:
             ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
 
-      - name: Test Local Action
+      - name: Test Local Action (debug log)
         uses: ./
         env:
           ACTIONS_RUNNER_DEBUG: true
@@ -119,6 +119,16 @@ jobs:
         run: |
           sudo cat super-linter.log
           sudo rm -v super-linter.log
+
+      - name: Test Local Action (default log)
+        uses: ./
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
+          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
+          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
 
       - name: Run Test Suite
         run: make test
