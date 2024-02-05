@@ -96,6 +96,6 @@ new tool, it should include:
   - If the tool needs to take into account special cases:
 
     - Provide new runtime validation checks in `lib/validation.sh`.
-    - Customize the logic to get the installed version of the tool: `lib/linterVersions.sh`
+    - Customize the logic to get the installed version of the tool: `scripts/linterVersions.sh`
     - Provide custom logic to load configuration files: `lib/linterRules.sh`
     - Provide custom logic for test cases and to run the tool: `lib/worker.sh`

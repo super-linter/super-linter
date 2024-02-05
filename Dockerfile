@@ -377,6 +377,10 @@ ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 
+# File to store linter versions
+ENV VERSION_FILE="/action/linterVersions.txt"
+RUN mkdir /action
+
 # Initialize Terrascan
 # Initialize ChkTeX config file
 RUN terrascan init --log-level "debug" \
@@ -385,6 +389,12 @@ RUN terrascan init --log-level "debug" \
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image as slim
+
+# Run to build version file and validate image
+ENV IMAGE="slim"
+COPY scripts/linterVersions.sh /
+RUN /linterVersions.sh \
+    && rm -rfv /linterVersions.sh
 
 ###################################
 # Copy linter configuration files #
@@ -395,11 +405,6 @@ COPY TEMPLATES /action/lib/.automation
 # Copy super-linter executables #
 #################################
 COPY lib /action/lib
-
-ENV IMAGE="slim"
-
-# Run to build version file and validate image
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
@@ -460,6 +465,12 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
+# Run to build version file and validate image again because we installed more linters
+ENV IMAGE="standard"
+COPY scripts/linterVersions.sh /
+RUN /linterVersions.sh \
+    && rm -rfv /linterVersions.sh
+
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -469,11 +480,6 @@ COPY TEMPLATES /action/lib/.automation
 # Copy super-linter executables #
 #################################
 COPY lib /action/lib
-
-ENV IMAGE="standard"
-
-# Run to build version file and validate image again because we installed more linters
-RUN ACTIONS_RUNNER_DEBUG=true WRITE_LINTER_VERSIONS_FILE=true IMAGE="${IMAGE}" /action/lib/linter.sh
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
