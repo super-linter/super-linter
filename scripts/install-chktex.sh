@@ -11,12 +11,13 @@ apk add --no-cache --virtual .chktex-build-deps \
   libtool \
   make
 
-git clone https://git.savannah.gnu.org/git/chktex.git &&
-  cd chktex/chktex &&
-  ./autogen.sh --prefix=/usr/bin &&
-  ./configure &&
-  make &&
-  install chktex /usr/bin
+git clone https://git.savannah.gnu.org/git/chktex.git
+
+cd chktex/chktex
+./autogen.sh --prefix=/usr/bin
+./configure
+make
+install chktex /usr/bin
 
 rm -rfv /chktex
 
