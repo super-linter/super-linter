@@ -173,7 +173,7 @@ function LintCodebase() {
 
   local RESULTS_OBJECT
   RESULTS_OBJECT=
-  if ! RESULTS_OBJECT=$(jq -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+  if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
     fatal "Error loading results for ${FILE_TYPE}: ${RESULTS_OBJECT}"
   fi
   debug "RESULTS_OBJECT for ${FILE_TYPE}:\n${RESULTS_OBJECT}"
@@ -187,8 +187,8 @@ function LintCodebase() {
   debug "Set INDEX for ${FILE_TYPE} to: ${INDEX}"
 
   local STDOUT_LINTER
-  # Get raw output so we can strip quotes from the data we load
-  if ! STDOUT_LINTER="$(jq --raw-output '.[].Stdout' <<<"${RESULTS_OBJECT}")"; then
+  # Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
+  if ! STDOUT_LINTER="$(jq --raw-output '.[].Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stdout for ${FILE_TYPE}:\n${STDOUT_LINTER}"
   fi
 
@@ -199,12 +199,12 @@ function LintCodebase() {
   fi
 
   local STDERR_LINTER
-  if ! STDERR_LINTER="$(jq --raw-output '.[].Stderr' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDERR_LINTER="$(jq --raw-output '.[].Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTER}"
   fi
 
   if [ -n "${STDERR_LINTER}" ]; then
-    info "Command output for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
+    info "Stderr contents for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
   else
     debug "Stderr for ${FILE_TYPE} is empty"
   fi

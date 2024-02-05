@@ -379,7 +379,7 @@ ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 
 # Initialize Terrascan
 # Initialize ChkTeX config file
-RUN terrascan init \
+RUN terrascan init --log-level "debug" \
     && touch ~/.chktexrc
 
 ENTRYPOINT ["/action/lib/linter.sh"]

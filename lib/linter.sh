@@ -929,13 +929,13 @@ debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMA
 debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when running linters:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
 
 RESULTS_OBJECT=
-if ! RESULTS_OBJECT=$(jq -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
   fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
 fi
 debug "RESULTS_OBJECT when running linters:\n${RESULTS_OBJECT}"
 
-# Get raw output so we can strip quotes from the data we load
-if ! STDOUT_LINTERS="$(jq --raw-output '.[].Stdout' <<<"${RESULTS_OBJECT}")"; then
+# Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
+if ! STDOUT_LINTERS="$(jq --raw-output '.[].Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
   fatal "Error when loading stdout when running linters:\n${STDOUT_LINTERS}"
 fi
 
@@ -945,12 +945,12 @@ else
   debug "Stdout when running linters is empty"
 fi
 
-if ! STDERR_LINTERS="$(jq --raw-output '.[].Stderr' <<<"${RESULTS_OBJECT}")"; then
+if ! STDERR_LINTERS="$(jq --raw-output '.[].Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
   fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTERS}"
 fi
 
 if [ -n "${STDERR_LINTERS}" ]; then
-  info "Command output for ${FILE_TYPE}:\n------\n${STDERR_LINTERS}\n------"
+  info "Stderr when running linters:\n------\n${STDERR_LINTERS}\n------"
 else
   debug "Stderr when running linters is empty"
 fi

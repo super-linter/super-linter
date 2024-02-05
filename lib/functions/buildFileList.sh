@@ -150,14 +150,14 @@ function BuildFileList() {
 
   local RESULTS_OBJECT
   RESULTS_OBJECT=
-  if ! RESULTS_OBJECT=$(jq -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+  if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
     fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
   fi
   debug "RESULTS_OBJECT for ${FILE_TYPE}:\n${RESULTS_OBJECT}"
 
   local STDOUT_BUILD_FILE_LIST
   # Get raw output so we can strip quotes from the data we load
-  if ! STDOUT_BUILD_FILE_LIST="$(jq --raw-output '.[].Stdout' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDOUT_BUILD_FILE_LIST="$(jq --raw-output '.[].Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stdout when building the file list: ${STDOUT_BUILD_FILE_LIST}"
   fi
 
@@ -168,12 +168,12 @@ function BuildFileList() {
   fi
 
   local STDERR_BUILD_FILE_LIST
-  if ! STDERR_BUILD_FILE_LIST="$(jq --raw-output '.[].Stderr' <<<"${RESULTS_OBJECT}")"; then
+  if ! STDERR_BUILD_FILE_LIST="$(jq --raw-output '.[].Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
     fatal "Error when loading stderr when building the file list:\n${STDERR_BUILD_FILE_LIST}"
   fi
 
   if [ -n "${STDERR_BUILD_FILE_LIST}" ]; then
-    info "Command output when building the file list:\n------\n${STDERR_BUILD_FILE_LIST}\n------"
+    info "Stderr when building the file list:\n------\n${STDERR_BUILD_FILE_LIST}\n------"
   else
     debug "Stderr when building the file list is empty"
   fi
