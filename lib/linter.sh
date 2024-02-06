@@ -136,7 +136,6 @@ ValidateBooleanConfigurationVariables
 ###########
 # GLOBALS #
 ###########
-DEFAULT_BRANCH="${DEFAULT_BRANCH:-master}"
 DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
 DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
@@ -385,6 +384,9 @@ GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
+  local GITHUB_REPOSITORY_DEFAULT_BRANCH
+  GITHUB_REPOSITORY_DEFAULT_BRANCH="master"
+
   if [[ ${RUN_LOCAL} != "false" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
 
@@ -487,7 +489,22 @@ GetGitHubVars() {
     else
       info "Successfully found GITHUB_REPO: ${GITHUB_REPO}"
     fi
+
+    GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_PATH}")
   fi
+
+  if [ -z "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]; then
+    fatal "Failed to get GITHUB_REPOSITORY_DEFAULT_BRANCH"
+  else
+    debug "Successfully detected the default branch for this repository: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+  fi
+
+  DEFAULT_BRANCH="${DEFAULT_BRANCH:-${GITHUB_REPOSITORY_DEFAULT_BRANCH}}"
+
+  if [[ "${DEFAULT_BRANCH}" != "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]]; then
+    debug "The default branch for this repository was set to ${GITHUB_REPOSITORY_DEFAULT_BRANCH}, but it was explicitly overridden using the DEFAULT_BRANCH variable, and set to: ${DEFAULT_BRANCH}"
+  fi
+  info "The default branch for this repository is set to: ${DEFAULT_BRANCH}"
 
   if [ "${MULTI_STATUS}" == "true" ]; then
 

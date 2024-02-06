@@ -43,3 +43,22 @@ function GetGithubPushEventCommitCountTest() {
 }
 
 GetGithubPushEventCommitCountTest
+
+function GetGithubRepositoryDefaultBranchTest() {
+  local GITHUB_REPOSITORY_DEFAULT_BRANCH
+  GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "test/data/github-event/github-event-push.json")
+
+  debug "GITHUB_REPOSITORY_DEFAULT_BRANCH: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+
+  local EXPECTED_GITHUB_REPOSITORY_DEFAULT_BRANCH
+  EXPECTED_GITHUB_REPOSITORY_DEFAULT_BRANCH="main"
+
+  if [ "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" != "${EXPECTED_GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]; then
+    fatal "GITHUB_REPOSITORY_DEFAULT_BRANCH (${GITHUB_REPOSITORY_DEFAULT_BRANCH}) is not equal to: ${EXPECTED_GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+  fi
+
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  notice "${FUNCTION_NAME} PASS"
+}
+
+GetGithubRepositoryDefaultBranchTest

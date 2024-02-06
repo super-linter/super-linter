@@ -113,7 +113,6 @@ To run super-linter as a GitHub Action, you do the following:
           - name: Super-linter
             uses: super-linter/super-linter@v6.0.0  # x-release-please-version
             env:
-              DEFAULT_BRANCH: main
               # To report GitHub Actions status checks
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ...
@@ -167,8 +166,8 @@ You can configure super-linter using the following environment variables:
 | **CHECKOV_FILE_NAME**                           | `.checkov.yaml`                 | Configuration filename for Checkov.                                                                                                                                                                                  |
 | **CREATE_LOG_FILE**                             | `false`                         | If set to `true`, it creates the log file. You can set the log filename using the `LOG_FILE` environment variable. This overrides any existing log files.                                                            |
 | **CSS_FILE_NAME**                               | `.stylelintrc.json`             | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                         |
-| **DEFAULT_BRANCH**                              | `master`                        | The name of the repository default branch.                                                                                                                                                                           |
-| **DEFAULT_WORKSPACE**                           | `/tmp/lint`                     | The location containing files to lint if you are running locally. Defaults to `GITHUB_WORKSPACE` when running in GitHub Actions. There's no need to configure this variable when running in GitHub Actions.          |
+| **DEFAULT_BRANCH**                              | Default repository branch when running on GitHub Actions, `master` otherwise | The name of the repository default branch. There's no need to configure this variable when running on GitHub Actions                                                    |
+| **DEFAULT_WORKSPACE**                           | `/tmp/lint`                     | The location containing files to lint if you are running locally. Defaults to `GITHUB_WORKSPACE` when running in GitHub Actions. There's no need to configure this variable when running on GitHub Actions.          |
 | **DISABLE_ERRORS**                              | `false`                         | Flag to have the linter complete with exit code 0 even if errors were detected.                                                                                                                                      |
 | **DOCKERFILE_HADOLINT_FILE_NAME**               | `.hadolint.yaml`                | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                                                             |
 | **EDITORCONFIG_FILE_NAME**                      | `.ecrc`                         | Filename for [editorconfig-checker configuration](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                                      |
