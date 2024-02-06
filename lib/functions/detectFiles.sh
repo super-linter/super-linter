@@ -314,6 +314,13 @@ function RunAdditionalInstalls() {
     fi
   fi
 
+  if [ "${VALIDATE_PYTHON_MYPY}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY" ]; then
+    local MYPY_CACHE_DIRECTORY_PATH
+    MYPY_CACHE_DIRECTORY_PATH="${GITHUB_WORKSPACE}/.mypy_cache"
+    debug "Create MyPy cache directory: ${MYPY_CACHE_DIRECTORY_PATH}"
+    mkdir -v "${MYPY_CACHE_DIRECTORY_PATH}"
+  fi
+
   ###############################
   # Run installs for R language #
   ###############################
