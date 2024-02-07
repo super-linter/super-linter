@@ -6,6 +6,9 @@ image = ENV["IMAGE"]
 version_file_path = "/action/linterVersions.txt"
 
 control "super-linter-environment-variables" do
+  impact 1
+  title "Super-Linter environment variables check"
+  desc "Check that environment variables that Super-Linter needs are defined."
 
   describe os_env("VERSION_FILE") do
     its("content") { should eq version_file_path }
@@ -13,6 +16,12 @@ control "super-linter-environment-variables" do
 
   describe os_env("IMAGE") do
     its("content") { should match(/^(standard|slim)$/) }
+  end
+
+  if (image == "standard")
+    describe os_env("POWERSHELL_TELEMETRY_OPTOUT") do
+      its("content") { should eq "1" }
+    end
   end
 end
 
