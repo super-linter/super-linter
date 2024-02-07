@@ -95,6 +95,17 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN tflint --init -c /action/lib/.automation/.tflint.hcl
 
+FROM python:3.12.1-alpine3.19 as lintr-installer
+
+RUN apk add --no-cache \
+    bash \
+    R
+
+SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
+
+COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
+RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
+
 FROM python:3.12.1-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
@@ -203,12 +214,6 @@ COPY scripts/install-chktex.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-chktex.sh && rm -rf /install-chktex.sh
 # Set work directory back to root because some scripts depend on it
 WORKDIR /
-
-#################
-# Install Lintr #
-#################
-COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
-RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
 
 #################################
 # Install luacheck and luarocks #
@@ -350,6 +355,11 @@ COPY --from=clang-format /usr/bin/clang-format /usr/bin/
 # Install python tools #
 ########################
 COPY --from=python-builder /venvs /venvs
+
+#################
+# Install Lintr #
+#################
+COPY --from=lintr-installer /usr/lib/R /usr/lib/R
 
 #####################
 # Install Bash-Exec #
