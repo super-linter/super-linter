@@ -156,7 +156,7 @@ function BuildFileList() {
   if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
     fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
   fi
-  debug "RESULTS_OBJECT for ${FILE_TYPE}:\n${RESULTS_OBJECT}"
+  debug "RESULTS_OBJECT when building the file list:\n${RESULTS_OBJECT}"
 
   local STDOUT_BUILD_FILE_LIST
   # Get raw output so we can strip quotes from the data we load
