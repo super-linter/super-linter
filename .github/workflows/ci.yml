@@ -109,7 +109,6 @@ jobs:
           CREATE_LOG_FILE: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
@@ -125,7 +124,6 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
           TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
