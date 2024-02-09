@@ -201,7 +201,7 @@ function IsValidShellScript() {
   FILE_EXTENSION="$(GetFileExtension "$FILE")"
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
-  trace "File:[${FILE}], File extension:[${FILE_EXTENSION}], File type: [${GET_FILE_TYPE_CMD}]"
+  debug "File:[${FILE}], File extension:[${FILE_EXTENSION}], File type: [${GET_FILE_TYPE_CMD}]"
 
   if [[ "${FILE_EXTENSION}" == "zsh" ]] ||
     [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
@@ -227,7 +227,7 @@ function IsValidShellScript() {
     return 0
   fi
 
-  trace "$FILE is NOT a supported shell script. Skipping"
+  debug "$FILE is NOT a supported shell script. Skipping"
   return 1
 }
 
@@ -240,15 +240,15 @@ function IsGenerated() {
   fi
 
   if ! grep -q "@generated" "$FILE"; then
-    trace "File:[${FILE}] is not generated, because it doesn't have @generated marker"
+    debug "File:[${FILE}] is not generated, because it doesn't have @generated marker"
     return 1
   fi
 
   if grep -q "@not-generated" "$FILE"; then
-    trace "File:[${FILE}] is not-generated because it has @not-generated marker"
+    debug "File:[${FILE}] is not-generated because it has @not-generated marker"
     return 1
   else
-    trace "File:[${FILE}] is generated because it has @generated marker"
+    debug "File:[${FILE}] is generated because it has @generated marker"
     return 0
   fi
 }

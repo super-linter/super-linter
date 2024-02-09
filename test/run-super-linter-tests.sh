@@ -7,7 +7,7 @@ set -o pipefail
 SUPER_LINTER_TEST_CONTAINER_URL="${1}"
 TEST_FUNCTION_NAME="${2}"
 
-COMMAND_TO_RUN=(docker run -e ACTIONS_RUNNER_DEBUG=true -e DEFAULT_BRANCH=main -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" -v "$(pwd):/tmp/lint")
+COMMAND_TO_RUN=(docker run -e DEFAULT_BRANCH=main -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" -v "$(pwd):/tmp/lint")
 
 run_test_cases_expect_failure() {
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/bad" -e CHECKOV_FILE_NAME=".checkov-test-linters-failure.yaml" -e FILTER_REGEX_INCLUDE=".*bad.*")
@@ -18,8 +18,15 @@ run_test_cases_expect_success() {
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/good" -e CHECKOV_FILE_NAME=".checkov-test-linters-success.yaml" -e FILTER_REGEX_INCLUDE=".*good.*")
 }
 
+run_test_cases_log_level() {
+  run_test_cases_expect_success
+  LOG_LEVEL="NOTICE"
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
+
+COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 

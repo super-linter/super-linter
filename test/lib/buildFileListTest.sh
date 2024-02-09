@@ -5,8 +5,6 @@ set -o nounset
 set -o pipefail
 
 # shellcheck disable=SC2034
-LOG_TRACE="true"
-# shellcheck disable=SC2034
 LOG_DEBUG="true"
 # shellcheck disable=SC2034
 LOG_VERBOSE="true"

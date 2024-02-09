@@ -85,7 +85,6 @@ log() {
   fi
 }
 
-trace() { log "${LOG_TRACE:-}" "$*" "TRACE"; }
 debug() { log "${LOG_DEBUG:-}" "$*" "DEBUG"; }
 info() { log "${LOG_VERBOSE:-}" "$*" "INFO"; }
 notice() { log "${LOG_NOTICE:-}" "$*" "NOTICE"; }
@@ -152,6 +151,5 @@ export -f info
 export -f log
 export -f notice
 export -f startGitHubActionsLogGroup
-export -f trace
 export -f warn
 export -f writeGitHubActionsLogGroupMarker
