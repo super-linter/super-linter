@@ -10,6 +10,10 @@ control "super-linter-environment-variables" do
   describe os_env("VERSION_FILE") do
     its("content") { should eq version_file_path }
   end
+
+  describe os_env("IMAGE") do
+    its("content") { should match(/^(standard|slim)$/) }
+  end
 end
 
 ##################################################

@@ -259,15 +259,37 @@ function WarnIfVariableIsSet() {
   local INPUT_VARIABLE_NAME="${1}"
 
   if [ -n "${INPUT_VARIABLE:-}" ]; then
-    warn "${INPUT_VARIABLE_NAME} environment variable is set, it's deprecated, and super-linter will ignore it. Remove it from your configuration. This warning may turn in a fatal error in the future."
+    warn "${INPUT_VARIABLE_NAME} environment variable is set, it's deprecated, and super-linter will ignore it. Remove it from your configuration. This warning may turn in a fatal error in the future. For more information, see the upgrade guide: https://github.com/super-linter/super-linter/blob/main/docs/upgrade-guide.md"
+  fi
+}
+
+function WarnIfDeprecatedValueForConfigurationVariableIsSet() {
+  local INPUT_VARIABLE_VALUE
+  INPUT_VARIABLE_VALUE="${1}"
+  shift
+  local DEPRECATED_VARIABLE_VALUE
+  DEPRECATED_VARIABLE_VALUE="${1}"
+  shift
+  local INPUT_VARIABLE_NAME
+  INPUT_VARIABLE_NAME="${1}"
+  shift
+  local VALUE_TO_UPDATE_TO
+  VALUE_TO_UPDATE_TO="${1}"
+
+  if [[ "${INPUT_VARIABLE_VALUE}" == "${DEPRECATED_VARIABLE_VALUE}" ]]; then
+    warn "${INPUT_VARIABLE_NAME} is set to a deprecated value: ${DEPRECATED_VARIABLE_VALUE}. Set it to ${VALUE_TO_UPDATE_TO} instead. Falling back to ${VALUE_TO_UPDATE_TO}. This warning may turn in a fatal error in the future."
   fi
 }
 
 function ValidateDeprecatedVariables() {
 
   # The following variables have been deprecated in v6
-  WarnIfVariableIsSet "${ERROR_ON_MISSING_EXEC_BIT}" "ERROR_ON_MISSING_EXEC_BIT"
-  WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER}" "EXPERIMENTAL_BATCH_WORKER"
-  WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE}" "VALIDATE_JSCPD_ALL_CODEBASE"
-  WarnIfVariableIsSet "${VALIDATE_KOTLIN_ANDROID}" "VALIDATE_KOTLIN_ANDROID"
+  WarnIfVariableIsSet "${ERROR_ON_MISSING_EXEC_BIT:-}" "ERROR_ON_MISSING_EXEC_BIT"
+  WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER:-}" "EXPERIMENTAL_BATCH_WORKER"
+  WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE:-}" "VALIDATE_JSCPD_ALL_CODEBASE"
+  WarnIfVariableIsSet "${VALIDATE_KOTLIN_ANDROID:-}" "VALIDATE_KOTLIN_ANDROID"
+
+  # The following values have been deprecated in v6.1.0
+  WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "TRACE" "LOG_LEVEL" "DEBUG"
+  WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "VERBOSE" "LOG_LEVEL" "INFO"
 }
