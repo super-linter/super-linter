@@ -318,7 +318,7 @@ function RunAdditionalInstalls() {
     local MYPY_CACHE_DIRECTORY_PATH
     MYPY_CACHE_DIRECTORY_PATH="${GITHUB_WORKSPACE}/.mypy_cache"
     debug "Create MyPy cache directory: ${MYPY_CACHE_DIRECTORY_PATH}"
-    mkdir -v "${MYPY_CACHE_DIRECTORY_PATH}"
+    mkdir -p "${MYPY_CACHE_DIRECTORY_PATH}"
   fi
 
   ###############################
