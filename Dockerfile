@@ -391,11 +391,6 @@ ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 ENV VERSION_FILE="/action/linterVersions.txt"
 RUN mkdir /action
 
-# Initialize Terrascan
-# Initialize ChkTeX config file
-RUN terrascan init --log-level "debug" \
-    && touch ~/.chktexrc
-
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image as slim
