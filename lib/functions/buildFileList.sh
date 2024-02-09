@@ -471,7 +471,8 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TSX"
     elif [ "${FILE_TYPE}" == "txt" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TXT"
-    elif [ "${FILE_TYPE}" == "xml" ]; then
+    elif [ "${FILE_TYPE}" == "xml" ] ||
+      [ "${FILE_TYPE}" == "xsd" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-XML"
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML"
