@@ -1,0 +1,6 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!-- $Header: /cvsroot/ebxmlrr/ebxmlrr-spec/misc/3.0/schema/rim.xsd,v 1.20 2005/02/03 19:28:15 farrukh_najmi Exp $ -->
+<schema targetNamespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:tns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace" />
