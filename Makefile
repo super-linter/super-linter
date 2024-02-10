@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters-expect-failure-log-level-notice test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -315,6 +315,12 @@ test-log-level: ## Run a test to check if there are conflicts with the LOG_LEVEL
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_log_level"
+
+.phony: test-linters-expect-failure-log-level-notice
+test-linters-expect-failure-log-level-notice: ## Run the linters test suite expecting failures with a LOG_LEVEL set to NOTICE
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_failure_notice_log"
 
 .phony: build-dev-container-image
 build-dev-container-image: ## Build commit linter container image

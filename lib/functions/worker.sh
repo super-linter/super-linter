@@ -193,7 +193,16 @@ function LintCodebase() {
   fi
 
   if [ -n "${STDOUT_LINTER}" ]; then
-    info "Command output for ${FILE_TYPE}:\n------\n${STDOUT_LINTER}\n------"
+    local STDOUT_LINTER_LOG_MESSAGE
+    STDOUT_LINTER_LOG_MESSAGE="Command output for ${FILE_TYPE}:\n------\n${STDOUT_LINTER}\n------"
+    info "${STDOUT_LINTER_LOG_MESSAGE}"
+
+    if [ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]; then
+      local STDOUT_LINTER_FILE_PATH
+      STDOUT_LINTER_FILE_PATH="/tmp/super-linter-parallel-stdout-${FILE_TYPE}"
+      debug "Saving stdout for ${FILE_TYPE} to ${STDOUT_LINTER_FILE_PATH} in case we need it later"
+      printf '%s\n' "${STDOUT_LINTER_LOG_MESSAGE}" >"${STDOUT_LINTER_FILE_PATH}"
+    fi
   else
     debug "Stdout for ${FILE_TYPE} is empty"
   fi
@@ -204,7 +213,15 @@ function LintCodebase() {
   fi
 
   if [ -n "${STDERR_LINTER}" ]; then
-    info "Stderr contents for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
+    local STDERR_LINTER_LOG_MESSAGE
+    STDERR_LINTER_LOG_MESSAGE="Stderr contents for ${FILE_TYPE}:\n------\n${STDERR_LINTER}\n------"
+    info "${STDERR_LINTER_LOG_MESSAGE}"
+    if [ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]; then
+      local STDERR_LINTER_FILE_PATH
+      STDERR_LINTER_FILE_PATH="/tmp/super-linter-parallel-stderr-${FILE_TYPE}"
+      debug "Saving stderr for ${FILE_TYPE} to ${STDERR_LINTER_FILE_PATH} in case we need it later"
+      printf '%s\n' "${STDERR_LINTER_LOG_MESSAGE}" >"${STDERR_LINTER_FILE_PATH}"
+    fi
   else
     debug "Stderr for ${FILE_TYPE} is empty"
   fi

@@ -23,6 +23,11 @@ run_test_cases_log_level() {
   LOG_LEVEL="NOTICE"
 }
 
+run_test_cases_expect_failure_notice_log() {
+  run_test_cases_expect_failure
+  LOG_LEVEL="NOTICE"
+}
+
 run_test_cases_non_default_home() {
   run_test_cases_expect_success
   COMMAND_TO_RUN+=(-e HOME=/tmp)

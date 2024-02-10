@@ -626,6 +626,25 @@ Footer() {
 
       if [[ ${ERROR_COUNTER} -ne 0 ]]; then
         error "Errors found in ${LANGUAGE}"
+        # Print output as error in case users disabled the INFO level so they
+        # get feedback
+        if [[ "${LOG_VERBOSE}" != "true" ]]; then
+          local STDOUT_LINTER_FILE_PATH
+          STDOUT_LINTER_FILE_PATH="/tmp/super-linter-parallel-stdout-${LANGUAGE}"
+          if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
+            error "$(cat "${STDOUT_LINTER_FILE_PATH}")"
+          else
+            debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
+          fi
+
+          local STDERR_LINTER_FILE_PATH
+          STDERR_LINTER_FILE_PATH="/tmp/super-linter-parallel-stderr-${LANGUAGE}"
+          if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
+            error "$(cat "${STDERR_LINTER_FILE_PATH}")"
+          else
+            debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
+          fi
+        fi
         CallStatusAPI "${LANGUAGE}" "error"
         SUPER_LINTER_EXIT_CODE=1
         debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
@@ -687,13 +706,13 @@ cleanup() {
   local -ri EXIT_CODE=$?
 
   debug "Removing temporary files and directories"
-  rm -rfv \
+  rm -rf \
     "${GITHUB_WORKSPACE}/.mypy_cache" \
     "${GITHUB_WORKSPACE}/logback.log"
 
   if [ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE}" == "true" ]; then
     debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
-    rm -rfv "${R_RULES_FILE_PATH_IN_ROOT}"
+    rm -rf "${R_RULES_FILE_PATH_IN_ROOT}"
   fi
 
   # Define this variable here so we can rely on it as soon as possible
@@ -703,7 +722,6 @@ cleanup() {
     debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
     mv \
       --force \
-      --verbose \
       "${LOG_TEMP}" "${LOG_FILE_PATH}"
   else
     debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
