@@ -25,6 +25,8 @@ FROM zricethezav/gitleaks:v8.18.2 as gitleaks
 FROM yoheimuta/protolint:0.47.5 as protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2023.12.15-alpine as clj-kondo
 FROM dart:3.2.6-sdk as dart
+FROM mcr.microsoft.com/dotnet/sdk:8.0.101-alpine3.19 as dotnet-sdk
+FROM mcr.microsoft.com/powershell:7.3-alpine-3.17 as powershell
 
 FROM python:3.12.1-alpine3.19 as clang-format
 
@@ -105,6 +107,12 @@ SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
 COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
+
+FROM powershell as powershell-installer
+
+# Copy the value of the PowerShell install directory to a file so we can reuse it
+# when copying PowerShell stuff in the main image
+RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
 FROM python:3.12.1-alpine3.19 as base_image
 
@@ -432,9 +440,6 @@ FROM base_image as standard
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG PWSH_VERSION='latest'
-ARG PWSH_DIRECTORY='/usr/lib/microsoft/powershell'
-ARG PSSA_VERSION='1.21.0'
 
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
@@ -455,14 +460,24 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 ###################################
 # Install DotNet and Dependencies #
 ###################################
-COPY scripts/install-dotnet.sh /
-RUN /install-dotnet.sh && rm -rf /install-dotnet.sh
+COPY --from=dotnet-sdk /usr/share/dotnet /usr/share/dotnet
+# Trigger first run experience by running arbitrary cmd
+RUN dotnet help
 
 #########################################
 # Install Powershell + PSScriptAnalyzer #
 #########################################
-COPY scripts/install-pwsh.sh /
-RUN --mount=type=secret,id=GITHUB_TOKEN /install-pwsh.sh && rm -rf /install-pwsh.sh
+COPY --from=powershell-installer /tmp/PS_INSTALL_FOLDER /tmp/PS_INSTALL_FOLDER
+COPY --from=powershell /opt/microsoft/powershell /opt/microsoft/powershell
+# Disable Powershell telemetry
+ENV POWERSHELL_TELEMETRY_OPTOUT=1
+ARG PSSA_VERSION='1.21.0'
+RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
+    && echo "PS_INSTALL_FOLDER: ${PS_INSTALL_FOLDER}" \
+    && ln -s "${PS_INSTALL_FOLDER}/pwsh" /usr/bin/pwsh \
+    && chmod a+x,o-w "${PS_INSTALL_FOLDER}/pwsh" \
+    && pwsh -c "Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force" \
+    && rm -rf /tmp/PS_INSTALL_FOLDER
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
