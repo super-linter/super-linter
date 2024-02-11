@@ -231,6 +231,22 @@ function IsValidShellScript() {
   return 1
 }
 
+# HasNoShebang returns true if a file has no shebang line
+function HasNoShebang() {
+  local FILE SHEBANG FIRST_TWO
+
+  FILE="${1}"
+  SHEBANG='#!'
+  IFS= read -rn2 FIRST_TWO <"${FILE}"
+
+  if [[ ${FIRST_TWO} == "${SHEBANG}" ]]; then
+    return 1
+  fi
+
+  debug "${FILE} doesn't contain a shebang"
+  return 0
+}
+
 function IsGenerated() {
   FILE="$1"
 
@@ -265,6 +281,7 @@ export -f DetectTektonFile
 export -f GetFileExtension
 export -f GetFileType
 export -f IsValidShellScript
+export -f HasNoShebang
 export -f IsGenerated
 
 function RunAdditionalInstalls() {

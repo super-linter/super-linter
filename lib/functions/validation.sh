@@ -2,6 +2,7 @@
 
 function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "ACTIONS_RUNNER_DEBUG" "${ACTIONS_RUNNER_DEBUG}"
+  ValidateBooleanVariable "BASH_EXEC_IGNORE_LIBRARIES" "${BASH_EXEC_IGNORE_LIBRARIES}"
   ValidateBooleanVariable "CREATE_LOG_FILE" "${CREATE_LOG_FILE}"
   ValidateBooleanVariable "DISABLE_ERRORS" "${DISABLE_ERRORS}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"

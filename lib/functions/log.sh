@@ -15,6 +15,7 @@ LOG_FILE="${LOG_FILE:-"super-linter.log"}"
 LOG_LEVEL="${LOG_LEVEL:-"INFO"}"
 declare -l CREATE_LOG_FILE
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
+export CREATE_LOG_FILE
 
 if [[ ${ACTIONS_RUNNER_DEBUG} == true ]] ||
   [[ ${ACTIONS_STEPS_DEBUG} == true ]] ||
