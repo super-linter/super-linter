@@ -17,6 +17,34 @@ Super-linter is licensed under a
 
 [![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/cd.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
+Here are some notable Super-linter features:
+
+- **MIT License**: Super-linter is licensed under a [MIT License](LICENSE).
+- **Independent project**: Super-linter is maintained by a team if independent
+  developers, and is not commercially backed by any entity that might influence
+  the course of the project.
+- **Widely used**: Super-linter is the
+  [most widely used](https://github.com/super-linter/super-linter/network/dependents)
+  and [forked](https://github.com/super-linter/super-linter/forks) project of
+  this kind.
+- **Runs linters in parallel**: Since `v6`, Super-linter parallelizes
+  running all the included linters, leading to scanning massive code
+  repositories in seconds.
+- **Highly curated set of linters**: Avoid including linters that implement
+  overlapping checks, reducing bloat, scanning times, and container image size.
+- **Run on GitHub Actions or other environments**: Super-linter runs
+  [on GitHub Actions](#get-started) and
+  [other runtime environments](#run-using-a-container-runtime-engine), with the
+  only dependency of an OCI-compatible container runtime engine, such as Docker.
+- **Lean codebase**: Super-linter doesn't reinvent the wheel, and builds on top
+  of established tools and standards, such as
+  [GNU Parallel](https://www.gnu.org/software/parallel/).
+- **Extensive test suite**: Super-linter includes and extensive test suite that
+  covers every single linter and analyzer that Super-linter ships.
+- **Original design**: to the best of our knowledge, Super-linter is the first
+  open-source, fully-containerized linting suite. Other projects borrow ideas
+  and design choices from Super-linter (and we're cool with that :).
+
 ## Supported linters and code analyzers
 
 Super-linter supports the following tools:
