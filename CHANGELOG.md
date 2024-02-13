@@ -1,5 +1,74 @@
 # Changelog
 
+## [6.1.0](https://github.com/super-linter/super-linter/compare/v6.0.0...v6.1.0) (2024-02-13)
+
+
+### 🚀 Features
+
+* automatically set the default branch ([#5242](https://github.com/super-linter/super-linter/issues/5242)) ([fe6e29b](https://github.com/super-linter/super-linter/commit/fe6e29b68595815676874fe5db0b240c215f7d48))
+* lint xsd files ([#5250](https://github.com/super-linter/super-linter/issues/5250)) ([a26db6d](https://github.com/super-linter/super-linter/commit/a26db6d34d51090d35ad15a57ce619afdec2e9eb)), closes [#5248](https://github.com/super-linter/super-linter/issues/5248)
+* remove mypy cache ([#5210](https://github.com/super-linter/super-linter/issues/5210)) ([ef9449e](https://github.com/super-linter/super-linter/commit/ef9449e2b0369fcb124127ba0986c51982321f7a))
+* show error output when info is disabled ([#5251](https://github.com/super-linter/super-linter/issues/5251)) ([091eaa7](https://github.com/super-linter/super-linter/commit/091eaa71e334a000b4b411531b06bd0bd24f12eb))
+
+
+### 🐛 Bugfixes
+
+* create mypy cache directory ([#5240](https://github.com/super-linter/super-linter/issues/5240)) ([38edbe5](https://github.com/super-linter/super-linter/commit/38edbe557a40199e2bbb2b014cc88455322ef224))
+* don't add unnecessary empty lines ([#5221](https://github.com/super-linter/super-linter/issues/5221)) ([eded427](https://github.com/super-linter/super-linter/commit/eded42747b4512364eb30228b610b9c648aa0082))
+* don't print empty lines with default logging ([#5238](https://github.com/super-linter/super-linter/issues/5238)) ([20ded71](https://github.com/super-linter/super-linter/commit/20ded7178b0b0084f04fec11e40943e69cefd6a1))
+* initialize GitHub domain variable ([#5216](https://github.com/super-linter/super-linter/issues/5216)) ([6fd6830](https://github.com/super-linter/super-linter/commit/6fd6830fb4a277ab1eefd57b10e2d05fd978d929))
+* initialize terrascan at runtime ([#5246](https://github.com/super-linter/super-linter/issues/5246)) ([5b5e54a](https://github.com/super-linter/super-linter/commit/5b5e54ad5ced66a1dff4260f8144c1a36b271a4b))
+* rely on default pylint configuration ([#5252](https://github.com/super-linter/super-linter/issues/5252)) ([a0cf6b5](https://github.com/super-linter/super-linter/commit/a0cf6b5c25444c1c2f5c2deb9b128c5e7a15cedf))
+* unset the log_level variable ([#5249](https://github.com/super-linter/super-linter/issues/5249)) ([83eca1d](https://github.com/super-linter/super-linter/commit/83eca1df43450dc9b7bf67830d27cc7c485d9613)), closes [#5217](https://github.com/super-linter/super-linter/issues/5217)
+* write hint about fetch-depth ([#5241](https://github.com/super-linter/super-linter/issues/5241)) ([787b63d](https://github.com/super-linter/super-linter/commit/787b63ddb2b5a8632a7169cd6ad71dca4a6af8d2))
+
+
+### ⬆️ Dependency updates
+
+* **dev-docker:** bump node in /dev-dependencies ([#5230](https://github.com/super-linter/super-linter/issues/5230)) ([0b5a56d](https://github.com/super-linter/super-linter/commit/0b5a56dff83affc264886fe5252d6c67d977083a))
+* **docker:** bump alpine/terragrunt from 1.7.1 to 1.7.2 ([#5234](https://github.com/super-linter/super-linter/issues/5234)) ([31c3195](https://github.com/super-linter/super-linter/commit/31c31958389e9cdf8aa81abb7f8c82885f0eccbc))
+* **docker:** bump alpine/terragrunt from 1.7.2 to 1.7.3 ([#5275](https://github.com/super-linter/super-linter/issues/5275)) ([d4f6d04](https://github.com/super-linter/super-linter/commit/d4f6d04fe1e7572d0a4360cf94881e493aa7b955))
+* **docker:** bump clj-kondo/clj-kondo ([#5260](https://github.com/super-linter/super-linter/issues/5260)) ([02e9da5](https://github.com/super-linter/super-linter/commit/02e9da59ae0baedd6410192b46e14418ab50357f))
+* **docker:** bump dart from 3.2.5-sdk to 3.2.6-sdk ([#5233](https://github.com/super-linter/super-linter/issues/5233)) ([ee53371](https://github.com/super-linter/super-linter/commit/ee5337123fb1500f3512641e0e9f9a514da0f354))
+* **docker:** bump golang from 1.21.6-alpine to 1.22.0-alpine ([#5274](https://github.com/super-linter/super-linter/issues/5274)) ([acc794f](https://github.com/super-linter/super-linter/commit/acc794fd565a157e02b5ec332b0516d4f64dc001))
+* **docker:** bump golangci/golangci-lint from v1.55.2 to v1.56.1 ([#5256](https://github.com/super-linter/super-linter/issues/5256)) ([edd813a](https://github.com/super-linter/super-linter/commit/edd813ae5521d2a6f19089cf9f3f9df1fad13491))
+* **docker:** bump hashicorp/terraform from 1.7.1 to 1.7.2 ([#5231](https://github.com/super-linter/super-linter/issues/5231)) ([27bb6ab](https://github.com/super-linter/super-linter/commit/27bb6abc569a490977a00a9243efaa530e9cca0f))
+* **docker:** bump hashicorp/terraform from 1.7.2 to 1.7.3 ([#5273](https://github.com/super-linter/super-linter/issues/5273)) ([e4bcc5d](https://github.com/super-linter/super-linter/commit/e4bcc5d47dd81ecf9ddbf4ea3d557381590a76d0))
+* **docker:** bump mvdan/shfmt from v3.7.0 to v3.8.0 ([#5257](https://github.com/super-linter/super-linter/issues/5257)) ([9b1e936](https://github.com/super-linter/super-linter/commit/9b1e9361ee7f1a1e0e495f0014cbf8b61bc26727))
+* **docker:** bump powershell from 7.3-alpine-3.17 to 7.4-alpine-3.17 ([#5279](https://github.com/super-linter/super-linter/issues/5279)) ([3e6a272](https://github.com/super-linter/super-linter/commit/3e6a272033d933930f7dae58f7504e59c1a02dd5))
+* **docker:** bump python from 3.12.1-alpine3.19 to 3.12.2-alpine3.19 ([#5259](https://github.com/super-linter/super-linter/issues/5259)) ([07e5032](https://github.com/super-linter/super-linter/commit/07e5032e39cd32bf662a5d48ca12a8688ab6e122))
+* **docker:** bump terraform-linters/tflint from v0.50.2 to v0.50.3 ([#5258](https://github.com/super-linter/super-linter/issues/5258)) ([5dc9a6a](https://github.com/super-linter/super-linter/commit/5dc9a6a8fa6bc40e55feb412f9c61f1315c18898))
+* **docker:** bump zricethezav/gitleaks from v8.18.1 to v8.18.2 ([#5232](https://github.com/super-linter/super-linter/issues/5232)) ([299dbf0](https://github.com/super-linter/super-linter/commit/299dbf00a2d0326bc5abf0685c7a80ddcbc0bce0))
+* **npm:** bump @babel/eslint-parser in /dependencies ([#5226](https://github.com/super-linter/super-linter/issues/5226)) ([3b12f82](https://github.com/super-linter/super-linter/commit/3b12f82c30f442041c69ec7d12fa7a08e6b3f599))
+* **npm:** bump @typescript-eslint/eslint-plugin in /dependencies ([#5268](https://github.com/super-linter/super-linter/issues/5268)) ([e54b770](https://github.com/super-linter/super-linter/commit/e54b77095e45ce9e2277ed59343c855a6d77f6bf))
+* **npm:** bump eslint-plugin-vue from 9.20.1 to 9.21.1 in /dependencies ([#5228](https://github.com/super-linter/super-linter/issues/5228)) ([7a2ac4f](https://github.com/super-linter/super-linter/commit/7a2ac4fa03c5718945e5f24b3d228369beafaa40))
+* **npm:** bump npm-groovy-lint from 14.2.0 to 14.2.1 in /dependencies ([#5270](https://github.com/super-linter/super-linter/issues/5270)) ([53ab9a2](https://github.com/super-linter/super-linter/commit/53ab9a2b9ae61df779b6fb54ff20cf218323f77f))
+* **npm:** bump prettier from 3.2.4 to 3.2.5 in /dependencies ([#5227](https://github.com/super-linter/super-linter/issues/5227)) ([bdc05b4](https://github.com/super-linter/super-linter/commit/bdc05b4eb3cb34e369c48f3b5afd902f4d5e150e))
+* **npm:** bump react-router-dom from 6.21.3 to 6.22.0 in /dependencies ([#5225](https://github.com/super-linter/super-linter/issues/5225)) ([1bd6c0d](https://github.com/super-linter/super-linter/commit/1bd6c0d35df9b8a66e95788f2f43b7d67c936fe4))
+* **npm:** bump renovate from 37.161.0 to 37.173.0 in /dependencies ([#5229](https://github.com/super-linter/super-linter/issues/5229)) ([5b10868](https://github.com/super-linter/super-linter/commit/5b108687703f9f6d1a3c1ff735e17d3719692483))
+* **npm:** bump renovate from 37.173.0 to 37.183.2 in /dependencies ([#5266](https://github.com/super-linter/super-linter/issues/5266)) ([370d982](https://github.com/super-linter/super-linter/commit/370d9824115264beab90b2a5859e22154638b2c9))
+* **npm:** bump renovate from 37.183.2 to 37.186.1 in /dependencies ([#5276](https://github.com/super-linter/super-linter/issues/5276)) ([4361db8](https://github.com/super-linter/super-linter/commit/4361db80ed850b72560c5532772e7f08506b183c))
+* **npm:** bump textlint from 13.4.1 to 14.0.2 in /dependencies ([#5267](https://github.com/super-linter/super-linter/issues/5267)) ([f72605f](https://github.com/super-linter/super-linter/commit/f72605f03ada08540ef0881c72c3fc607f50095e))
+* **python:** bump ansible-lint in /dependencies/python ([#5263](https://github.com/super-linter/super-linter/issues/5263)) ([e058597](https://github.com/super-linter/super-linter/commit/e058597f290322d21fb3dc2595c17f51fd6ee40f))
+* **python:** bump black from 24.1.1 to 24.2.0 in /dependencies/python ([#5280](https://github.com/super-linter/super-linter/issues/5280)) ([11860a0](https://github.com/super-linter/super-linter/commit/11860a0d6027518b5f24142264cbe2f67ff06863))
+* **python:** bump cfn-lint in /dependencies/python ([#5265](https://github.com/super-linter/super-linter/issues/5265)) ([09e6e2b](https://github.com/super-linter/super-linter/commit/09e6e2bbd6fcf993883332cc544071230ad2e298))
+* **python:** bump checkov from 3.2.1 to 3.2.8 in /dependencies/python ([#5235](https://github.com/super-linter/super-linter/issues/5235)) ([5f511c3](https://github.com/super-linter/super-linter/commit/5f511c3a9d50ee761143ab665d546949d05eedab))
+* **python:** bump checkov from 3.2.8 to 3.2.20 in /dependencies/python ([#5264](https://github.com/super-linter/super-linter/issues/5264)) ([b147157](https://github.com/super-linter/super-linter/commit/b147157b9e3366f9b14a6f7016f481fa509e5e80))
+* **python:** bump snakefmt from 0.9.0 to 0.10.0 in /dependencies/python ([#5236](https://github.com/super-linter/super-linter/issues/5236)) ([924b193](https://github.com/super-linter/super-linter/commit/924b19397ae9daac3a2473a14367cbcedeb830e4))
+* **python:** bump snakemake from 8.4.1 to 8.4.3 in /dependencies/python ([#5237](https://github.com/super-linter/super-linter/issues/5237)) ([b0183dc](https://github.com/super-linter/super-linter/commit/b0183dce186b180ef450698f65e8aa24501c8298))
+* **python:** bump snakemake from 8.4.3 to 8.4.8 in /dependencies/python ([#5261](https://github.com/super-linter/super-linter/issues/5261)) ([fbd27fe](https://github.com/super-linter/super-linter/commit/fbd27feb8835e05869110490661b4c91b4ea62c1))
+* **python:** bump yamllint in /dependencies/python ([#5262](https://github.com/super-linter/super-linter/issues/5262)) ([9b0427e](https://github.com/super-linter/super-linter/commit/9b0427ea6cbbe304fa53e46e7f53467febe398e3))
+
+
+### 🧰 Maintenance
+
+* clone the repository before tagging ([#5208](https://github.com/super-linter/super-linter/issues/5208)) ([5c67776](https://github.com/super-linter/super-linter/commit/5c67776f9d9d3065efda30d47aef21b332fa2173))
+* fail on errors when installing chktex ([#5214](https://github.com/super-linter/super-linter/issues/5214)) ([92e9cb3](https://github.com/super-linter/super-linter/commit/92e9cb3c85af9f774355c7e7057e7760802695ca))
+* install dotnet and powershell from images ([#5245](https://github.com/super-linter/super-linter/issues/5245)) ([49320c8](https://github.com/super-linter/super-linter/commit/49320c834ba153699196b8d45f27d61c6a819292)), closes [#5243](https://github.com/super-linter/super-linter/issues/5243)
+* install lintr in a dedicated stage ([#5247](https://github.com/super-linter/super-linter/issues/5247)) ([1f2fbb1](https://github.com/super-linter/super-linter/commit/1f2fbb14cde98f44fb4c6913769e7a2726864a1e))
+* move linter verions logic outside runtime ([#5197](https://github.com/super-linter/super-linter/issues/5197)) ([d7790e4](https://github.com/super-linter/super-linter/commit/d7790e4f1cba52debbceac83c5324cee61860cff))
+* take package-lock into account in devcontainer ([#5278](https://github.com/super-linter/super-linter/issues/5278)) ([7a6ab11](https://github.com/super-linter/super-linter/commit/7a6ab115a6366deadb6b20223f3d331bb0d4da76))
+
 ## [6.0.0](https://github.com/super-linter/super-linter/compare/v5.7.2...v6.0.0) (2024-01-31)
 
 
