@@ -7,16 +7,16 @@ RUN apt-get update \
   jq \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+ENV APP_DIR=/app
+WORKDIR "${APP_DIR}"
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-ENV NPM_PACKAGES_FILE_PATH="npm-packages.txt"
+RUN npm ci \
+  && rm -rf ~/.npm
 
-RUN jq '.dependencies | to_entries[] | select(.key | startswith("@commitlint/")) | .key + "@" + .value' package.json >> "${NPM_PACKAGES_FILE_PATH}" \
-  && jq '.dependencies | to_entries[] | select(.key | startswith("release-please")) | .key + "@" + .value' package.json >> "${NPM_PACKAGES_FILE_PATH}" \
-  && xargs npm install -g < "${NPM_PACKAGES_FILE_PATH}" \
-  && rm package.json "${NPM_PACKAGES_FILE_PATH}"
+ENV NODE_PATH="${APP_DIR}/node_modules"
+ENV PATH="${NODE_PATH}/.bin:${PATH}"
 
 # Split this from the previous RUN instruction so we can cache the costly installation step
 # hadolint ignore=DL3059
