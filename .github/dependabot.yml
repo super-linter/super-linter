@@ -9,6 +9,7 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    open-pull-requests-limit: 100
 
   - package-ecosystem: github-actions
     commit-message:
@@ -16,6 +17,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "npm"
     commit-message:
@@ -23,6 +25,7 @@ updates:
     directory: "/dependencies"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "bundler"
     commit-message:
@@ -30,6 +33,7 @@ updates:
     directory: "/dependencies"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "docker"
     commit-message:
@@ -37,6 +41,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "pip"
     commit-message:
@@ -44,6 +49,7 @@ updates:
     directory: "/dependencies/python/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -51,6 +57,7 @@ updates:
     directory: "/dependencies/checkstyle"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -58,6 +65,7 @@ updates:
     directory: "/dependencies/google-java-format"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -65,6 +73,7 @@ updates:
     directory: "/dependencies/ktlint"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "docker"
     commit-message:
@@ -72,6 +81,7 @@ updates:
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
 
   - package-ecosystem: "npm"
     commit-message:
@@ -79,3 +89,4 @@ updates:
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 100
