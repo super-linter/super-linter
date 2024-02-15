@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters-expect-failure-log-level-notice test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters-expect-failure-log-level-notice test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -134,11 +134,44 @@ validate-container-image-labels: ## Validate container image labels
 
 # For some cases, mount a directory that doesn't have too many files to keep tests short
 
+.PHONY: test-actions-runner-debug
+test-actions-runner-debug: ## Run super-linter with ACTIONS_RUNNER_DEBUG=true
+	docker run \
+		-e ACTIONS_RUNNER_DEBUG=true \
+		-e RUN_LOCAL=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-actions-steps-debug
+test-actions-steps-debug: ## Run super-linter with ACTIONS_STEPS_DEBUG=true
+	docker run \
+		-e ACTIONS_STEPS_DEBUG=true \
+		-e RUN_LOCAL=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-runner-debug
+test-runner-debug: ## Run super-linter with RUNNER_DEBUG=1
+	docker run \
+		-e RUNNER_DEBUG=1 \
+		-e RUN_LOCAL=true \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e DEFAULT_BRANCH=main \
+		-e USE_FIND_ALGORITHM=true \
+		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
 .phony: test-find
 test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -151,8 +184,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e DEFAULT_WORKSPACE=/tmp/not-default-workspace \
@@ -165,8 +197,7 @@ test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 test-git-flags: ## Run super-linter with different git-related flags
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
-		-e ERROR_ON_MISSING_EXEC_BIT=true \
+		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e DEFAULT_BRANCH=main \
@@ -180,7 +211,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 lint-codebase: ## Lint the entire codebase
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
@@ -199,7 +230,7 @@ lint-subset-files: lint-subset-files-enable-only-one-type lint-subset-files-enab
 lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the codebase by enabling only one linter
 	time docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
@@ -212,7 +243,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in the codebase and keep expensive I/O operations to check file types enabled
 	time docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
@@ -270,7 +301,7 @@ test-validation: ## Test validation
 test-default-config-files: ## Test default configuration files loading
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -281,7 +312,7 @@ test-default-config-files: ## Test default configuration files loading
 test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 	docker run \
 		-e RUN_LOCAL=true \
-		-e ACTIONS_RUNNER_DEBUG=true \
+		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \

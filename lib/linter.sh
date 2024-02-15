@@ -4,9 +4,18 @@
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
 ##################################################################
+# GitHub Actions variables to enable workflow debug logging
+# Ref: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
+# Ref: https://github.com/actions/runner/pull/253
 declare -l ACTIONS_RUNNER_DEBUG
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}" # Boolean to see even more info (debug)
-IMAGE="${IMAGE:-standard}"                              # Version of the Super-linter (standard,slim,etc)
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}"
+declare -l ACTIONS_STEPS_DEBUG
+ACTIONS_STEPS_DEBUG="${ACTIONS_STEPS_DEBUG:-"false"}"
+declare -i RUNNER_DEBUG
+RUNNER_DEBUG="${RUNNER_DEBUG:-0}"
+
+# Version of the Super-linter (standard,slim,etc)
+IMAGE="${IMAGE:-standard}"
 
 ##################################################################
 # Log Vars                                                       #
@@ -17,7 +26,12 @@ LOG_LEVEL="${LOG_LEVEL:-"INFO"}"
 declare -l CREATE_LOG_FILE
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
 
-if [[ ${ACTIONS_RUNNER_DEBUG} == true ]]; then LOG_LEVEL="DEBUG"; fi
+if [[ ${ACTIONS_RUNNER_DEBUG} == true ]] ||
+  [[ ${ACTIONS_STEPS_DEBUG} == true ]] ||
+  [[ ${RUNNER_DEBUG} -eq 1 ]]; then
+  LOG_LEVEL="DEBUG"
+  echo "ACTIONS_RUNNER_DEBUG: ${ACTIONS_RUNNER_DEBUG}. ACTIONS_STEPS_DEBUG: ${ACTIONS_STEPS_DEBUG}. RUNNER_DEBUG: ${RUNNER_DEBUG}. Setting LOG_LEVEL to: ${LOG_LEVEL}"
+fi
 # Boolean to see debug logs
 LOG_DEBUG=$(if [[ ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
 export LOG_DEBUG
