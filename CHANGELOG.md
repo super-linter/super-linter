@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/super-linter/super-linter/compare/v6.1.0...v6.1.1) (2024-02-15)
+
+
+### 🧰 Maintenance
+
+* configure git user and email ([#5284](https://github.com/super-linter/super-linter/issues/5284)) ([5451412](https://github.com/super-linter/super-linter/commit/54514126f23ac0044fcecb97ef7ee38085ad5a38)), closes [#5283](https://github.com/super-linter/super-linter/issues/5283)
+
 ## [6.1.0](https://github.com/super-linter/super-linter/compare/v6.0.0...v6.1.0) (2024-02-13)
 
 
