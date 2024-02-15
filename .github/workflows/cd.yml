@@ -253,6 +253,9 @@ jobs:
       - name: Tag major, minor, and latest versions
         if: steps.release.outputs.release_created
         run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
           git tag --annotate --force ${{ env.SEMVER_MAJOR_VERSION }} -m "Release ${{ env.SEMVER_MAJOR_VERSION }}"
           git tag --annotate --force latest -m "Release latest (${{ env.RELEASE_VERSION }})"
 
