@@ -7,15 +7,5 @@
     "tests",
     "tools",
     "/tmp/lint/test/linters"
-  ],
-  "overrides": [
-    {
-      "extends": [
-        "plugin:@typescript-eslint/disable-type-checked"
-      ],
-      "files": [
-        "./**/*.{ts,tsx}"
-      ]
-    }
   ]
 }
