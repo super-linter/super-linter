@@ -20,8 +20,8 @@ Super-linter is licensed under a
 Here are some notable Super-linter features:
 
 - **MIT License**: Super-linter is licensed under a [MIT License](LICENSE).
-- **Independent project**: Super-linter is maintained by a team if independent
-  developers, and is not commercially backed by any entity that might influence
+- **Independent project**: Super-linter is maintained by a team of independent
+  developers and is not commercially backed by any entity that might influence
   the course of the project.
 - **Widely used**: Super-linter is the
   [most widely used](https://github.com/super-linter/super-linter/network/dependents)
