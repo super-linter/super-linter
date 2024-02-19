@@ -33,6 +33,7 @@ jobs:
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
+      CONTAINER_IMAGE_OUTPUT_IMAGE_NAME: "super-linter-${{ matrix.images.prefix }}latest"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -94,13 +95,20 @@ jobs:
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
-          load: true
+          outputs: type=docker,dest=/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
             ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
+
+      # Load the image here because the docker/build-push-action doesn't support multiple exporters yet
+      # Ref: https://github.com/docker/build-push-action/issues/413
+      # Ref: https://github.com/moby/buildkit/issues/1555
+      - name: Load image
+        run: |
+          docker load <"/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar"
 
       - name: Test Local Action (debug log)
         uses: ./
@@ -128,8 +136,81 @@ jobs:
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
           TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
 
-      - name: Run Test Suite
-        run: make test
+      # Validate the container image labels here so we don't have to pass the expected
+      # label values to other build jobs
+      - name: Validate container image labels
+        run: make validate-container-image-labels
+
+      - name: Upload ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
+          path: /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+
+  build-test-suite-matrix:
+    name: Build test suite matrix
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.test-cases }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate test cases matrix
+        id: generate-matrix
+        run: |
+          TEST_TARGETS=$(make -pRrq 2>&1 | grep 'test:' | tr -d '\n' | sed -e "s/^test: //" | jq --raw-input --slurp --compact-output 'split(" ")')
+          echo "TEST_TARGETS: ${TEST_TARGETS}"
+          echo "test-cases=${TEST_TARGETS}" >> "${GITHUB_OUTPUT}"
+
+  run-test-suite:
+    name: Run test cases
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: build-test-suite-matrix
+    strategy:
+      matrix:
+        test-case: ${{ fromJson(needs.build-test-suite-matrix.outputs.matrix) }}
+        images:
+          - container-image-id: super-linter-latest
+            prefix: ""
+            target: standard
+          - container-image-id: super-linter-slim-latest
+            prefix: slim-
+            target: slim
+        exclude:
+          # Don't validate container image labels because we do that when building the image
+          - test-case: validate-container-image-labels
+    env:
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
+      CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
+      CONTAINER_IMAGE_OUTPUT_IMAGE_NAME: "super-linter-${{ matrix.images.prefix }}latest"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
+        uses: actions/download-artifact@v4.1.2
+        with:
+          name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
+          path: /tmp
+
+      - name: Load ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
+        run: |
+          docker load --input /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+          docker image ls -a
+
+      - name: "Test case: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} - ${{ matrix.test-case }}"
+        run: |
+          echo "Running: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} - ${{ matrix.test-case }}"
+          make ${{ matrix.test-case }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
