@@ -139,7 +139,7 @@ To run super-linter as a GitHub Action, you do the following:
               fetch-depth: 0
 
           - name: Super-linter
-            uses: super-linter/super-linter@v6.1.1  # x-release-please-version
+            uses: super-linter/super-linter@v6.2.0  # x-release-please-version
             env:
               # To report GitHub Actions status checks
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
