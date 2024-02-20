@@ -187,7 +187,6 @@ You can configure super-linter using the following environment variables:
 
 | **Environment variable**                        | **Default Value**               | **Description**                                                                                                                                                                                                      |
 |-------------------------------------------------|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **ACTIONS_RUNNER_DEBUG**                        | `false`                         | Flag to enable additional information about the linter, versions, and additional output.                                                                                                                             |
 | **ANSIBLE_CONFIG_FILE**                         | `.ansible-lint.yml`             | Filename for [Ansible-lint configuration](https://ansible.readthedocs.io/projects/lint/configuring/) (ex: `.ansible-lint`, `.ansible-lint.yml`)                                                                      |
 | **ANSIBLE_DIRECTORY**                           | `/ansible`                      | Flag to set the root directory for Ansible file location(s), relative to `DEFAULT_WORKSPACE`. Set to `.` to use the top-level of the `DEFAULT_WORKSPACE`.                                                            |
 | **BASH_SEVERITY**                               | `style`                         | Specify the minimum severity of errors to consider in shellcheck. Valid values in order of severity are error, warning, info and style.                                                                              |
@@ -407,7 +406,7 @@ super-linter from a shell:
 
 ```bash
 docker run \
-  -e ACTIONS_RUNNER_DEBUG=true \
+  -e LOG_LEVEL=DEBUG \
   -e RUN_LOCAL=true \
   -v /path/to/local/codebase:/tmp/lint \
   ghcr.io/super-linter/super-linter:latest

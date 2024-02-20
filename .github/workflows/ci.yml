@@ -105,7 +105,7 @@ jobs:
       - name: Test Local Action (debug log)
         uses: ./
         env:
-          ACTIONS_RUNNER_DEBUG: true
+          LOG_LEVEL: DEBUG
           CREATE_LOG_FILE: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

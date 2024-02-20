@@ -9,7 +9,7 @@ You can run the container locally with the following configuration options to ru
 
 ```bash
 docker run \
-  -e ACTIONS_RUNNER_DEBUG=true \
+  -e LOG_LEVEL=DEBUG \
   -e RUN_LOCAL=true \
   -v /path/to/local/codebase:/tmp/lint \
   --rm \
