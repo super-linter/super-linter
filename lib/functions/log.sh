@@ -95,6 +95,8 @@ fatal() {
   exit 1
 }
 
+debug "LOG_LEVEL is set to: ${LOG_LEVEL}"
+
 # shellcheck disable=SC2034  # Variable is referenced in other files
 SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE="Super-Linter initialization"
 export SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE

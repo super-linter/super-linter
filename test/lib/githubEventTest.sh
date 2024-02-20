@@ -5,6 +5,11 @@ set -o nounset
 set -o pipefail
 
 # shellcheck disable=SC2034
+CREATE_LOG_FILE=false
+# Default log level
+# shellcheck disable=SC2034
+LOG_LEVEL="DEBUG"
+# shellcheck disable=SC2034
 LOG_DEBUG="true"
 # shellcheck disable=SC2034
 LOG_VERBOSE="true"
@@ -17,9 +22,6 @@ LOG_ERROR="true"
 
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
-
-# shellcheck disable=SC2034
-CREATE_LOG_FILE=false
 
 # shellcheck source=/dev/null
 source "lib/functions/validation.sh"

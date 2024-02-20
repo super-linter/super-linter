@@ -278,38 +278,21 @@ function RunAdditionalInstalls() {
   ##################################
   if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM" ]; then
     # found PHP files and were validating it, need to composer install
-    info "Found PHP files to validate, and [VALIDATE_PHP_PSALM] set to true, need to run composer install"
-    info "looking for composer.json in the users repository..."
-    mapfile -t COMPOSER_FILE_ARRAY < <(find / -name composer.json 2>&1)
-    debug "COMPOSER_FILE_ARRAY contents:[${COMPOSER_FILE_ARRAY[*]}]"
-    ############################################
-    # Check if we found the file in the system #
-    ############################################
+    info "Found PHP files to validate, and VALIDATE_PHP_PSALM is set to ${VALIDATE_PHP_PSALM}. Check if we need to run composer install"
+    mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
+    debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
+        local COMPOSER_PATH
         COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
-        info "Found [composer.json] at:[${LINE}]"
-        COMPOSER_CMD=$(
-          cd "${COMPOSER_PATH}" || exit 1
-          composer install --no-progress -q 2>&1
-        )
-
-        ##############
-        # Error code #
-        ##############
-        ERROR_CODE=$?
-
-        ##############################
-        # Check the shell for errors #
-        ##############################
-        if [ "${ERROR_CODE}" -ne 0 ]; then
-          # Error
-          error "ERROR! Failed to run composer install at location:[${COMPOSER_PATH}]"
-          fatal "ERROR:[${COMPOSER_CMD}]"
+        info "Found Composer file: ${LINE}"
+        local COMPOSER_CMD
+        if ! COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --no-progress -q 2>&1); then
+          fatal "Failed to run composer install for ${COMPOSER_PATH}. Output: ${COMPOSER_CMD}"
         else
-          # Success
-          info "Successfully ran:[composer install] for PHP validation"
+          info "Successfully ran composer install."
         fi
+        debug "Composer install output: ${COMPOSER_CMD}"
       done
     fi
   fi
@@ -326,50 +309,21 @@ function RunAdditionalInstalls() {
   ###############################
   if [ "${VALIDATE_R}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-R" ]; then
     info "Detected R Language files to lint."
-    info "Trying to install the R package inside:[${GITHUB_WORKSPACE}]"
-    #########################
-    # Run the build command #
-    #########################
-    BUILD_CMD=$(R CMD build "${GITHUB_WORKSPACE}" 2>&1)
-
-    ##############
-    # Error code #
-    ##############
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ "${ERROR_CODE}" -ne 0 ]; then
-      # Error
-      warn "ERROR! Failed to run:[R CMD build] at location:[${GITHUB_WORKSPACE}]"
-      warn "BUILD_CMD:[${BUILD_CMD}]"
+    info "Installing the R package in: ${GITHUB_WORKSPACE}"
+    local BUILD_CMD
+    if ! BUILD_CMD=$(R CMD build "${GITHUB_WORKSPACE}" 2>&1); then
+      warn "Failed to build R package in ${GITHUB_WORKSPACE}. Output: ${BUILD_CMD}"
     else
-      # Get the build package
-      BUILD_PKG=$(
-        cd "${GITHUB_WORKSPACE}" || exit 0
-        echo *.tar.gz 2>&1
-      )
-      ##############################
-      # Install the build packages #
-      ##############################
-      INSTALL_CMD=$(
-        cd "${GITHUB_WORKSPACE}" || exit 0
-        R -e "remotes::install_local('.', dependencies=T)" 2>&1
-      )
-
-      ##############
-      # Error code #
-      ##############
-      ERROR_CODE=$?
-
-      ##############################
-      # Check the shell for errors #
-      ##############################
-      debug "INSTALL_CMD:[${INSTALL_CMD}]"
-      if [ "${ERROR_CODE}" -ne 0 ]; then
-        warn "ERROR: Failed to install the build package at:[${BUILD_PKG}]"
+      local BUILD_PKG
+      if ! BUILD_PKG=$(cd "${GITHUB_WORKSPACE}" && echo *.tar.gz 2>&1); then
+        warn "Failed to echo R archives. Output: ${BUILD_PKG}"
       fi
+      debug "echo R archives output: ${BUILD_PKG}"
+      local INSTALL_CMD
+      if ! INSTALL_CMD=$(cd "${GITHUB_WORKSPACE}" && R -e "remotes::install_local('.', dependencies=T)" 2>&1); then
+        warn "Failed to install the R package. Output: ${BUILD_PKG}]"
+      fi
+      debug "R package install output: ${INSTALL_CMD}"
     fi
 
     if [ ! -f "${R_RULES_FILE_PATH_IN_ROOT}" ]; then
@@ -385,24 +339,9 @@ function RunAdditionalInstalls() {
   ####################################
   if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT" ]; then
     info "Detected TFLint Language files to lint."
-    info "Trying to install the TFLint init inside:[${GITHUB_WORKSPACE}]"
-    #########################
-    # Run the build command #
-    #########################
-    BUILD_CMD=$(
-      cd "${GITHUB_WORKSPACE}" || exit 0
-      tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1
-    )
-
-    ##############
-    # Error code #
-    ##############
-    ERROR_CODE=$?
-
-    ##############################
-    # Check the shell for errors #
-    ##############################
-    if [ "${ERROR_CODE}" -ne 0 ]; then
+    info "Initializing TFLint in ${GITHUB_WORKSPACE}"
+    local BUILD_CMD
+    if ! BUILD_CMD=$(cd "${GITHUB_WORKSPACE}" && tflint --init -c "${TERRAFORM_TFLINT_LINTER_RULES}" 2>&1); then
       fatal "ERROR! Failed to initialize tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file: ${BUILD_CMD}"
     else
       info "Successfully initialized tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file"

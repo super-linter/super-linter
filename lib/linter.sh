@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 ##################################################################
 # Debug Vars                                                     #
 # Define these early, so we can use debug logging ASAP if needed #
@@ -47,8 +51,6 @@ export LOG_WARN
 # Boolean to see error logs
 LOG_ERROR=$(if [[ ${LOG_LEVEL} == "ERROR" || ${LOG_LEVEL} == "WARN" || ${LOG_LEVEL} == "NOTICE" || ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
 export LOG_ERROR
-
-unset LOG_LEVEL
 
 #########################
 # Source Function Files #
@@ -170,7 +172,7 @@ TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
 
 # Set the log level
 TF_LOG_LEVEL="info"
-if [ "${ACTIONS_RUNNER_DEBUG}" = "true" ]; then
+if [[ "${LOG_DEBUG}" == "true" ]]; then
   TF_LOG_LEVEL="debug"
 fi
 export TF_LOG_LEVEL
@@ -186,6 +188,7 @@ debug "TFLINT_LOG: ${TFLINT_LOG}"
 ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ARM_FILE_NAME=".arm-ttk.psd1"
+BASH_SEVERITY="${BASH_SEVERITY:-""}"
 CHECKOV_FILE_NAME="${CHECKOV_FILE_NAME:-".checkov.yaml"}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 CLOJURE_FILE_NAME=".clj-kondo/config.edn"
@@ -229,6 +232,7 @@ KUBERNETES_KUBECONFORM_OPTIONS="${KUBERNETES_KUBECONFORM_OPTIONS:-null}"
 LATEX_FILE_NAME=".chktexrc"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 LUA_FILE_NAME=".luacheckrc"
+MARKDOWN_CUSTOM_RULE_GLOBS="${MARKDOWN_CUSTOM_RULE_GLOBS:-""}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 MARKDOWN_FILE_NAME="${MARKDOWN_CONFIG_FILE:-.markdown-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
@@ -339,31 +343,20 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CHECKOV' 'CLANG_FORMAT'
 ##########################
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
-  debug "Setting ${FILE_ARRAY_VARIABLE_NAME} variable..."
+  debug "Initializing ${FILE_ARRAY_VARIABLE_NAME}"
   eval "${FILE_ARRAY_VARIABLE_NAME}=()"
 done
 
-################################################################################
-########################## FUNCTIONS BELOW #####################################
-################################################################################
-################################################################################
-#### Function Header ###########################################################
 Header() {
-  ###############################
-  # Give them the possum action #
-  ###############################
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
     /bin/bash /action/lib/functions/possum.sh
   fi
 
-  ##########
-  # Prints #
-  ##########
   info "---------------------------------------------"
   info "--- GitHub Actions Multi Language Linter ----"
-  info " - Image Creation Date:[${BUILD_DATE}]"
-  info " - Image Revision:[${BUILD_REVISION}]"
-  info " - Image Version:[${BUILD_VERSION}]"
+  info " - Image Creation Date: ${BUILD_DATE}"
+  info " - Image Revision: ${BUILD_REVISION}"
+  info " - Image Version: ${BUILD_VERSION}"
   info "---------------------------------------------"
   info "---------------------------------------------"
   info "The Super-Linter source code can be found at:"
@@ -389,12 +382,7 @@ ConfigureGitSafeDirectories() {
   done
 }
 
-################################################################################
-#### Function GetGitHubVars ####################################################
 GetGitHubVars() {
-  ##########
-  # Prints #
-  ##########
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
@@ -404,7 +392,7 @@ GetGitHubVars() {
   if [[ ${RUN_LOCAL} != "false" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
 
-    if [ -z "${GITHUB_WORKSPACE}" ]; then
+    if [ -z "${GITHUB_WORKSPACE:-}" ]; then
       GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
     fi
 
@@ -560,12 +548,8 @@ GetGitHubVars() {
   # We need this for parallel
   export GITHUB_WORKSPACE
 }
-################################################################################
-#### Function CallStatusAPI ####################################################
+
 CallStatusAPI() {
-  ####################
-  # Pull in the vars #
-  ####################
   LANGUAGE="${1}" # language that was validated
   STATUS="${2}"   # success | error
   SUCCESS_MSG='No errors were found in the linting process'
@@ -689,8 +673,7 @@ Footer() {
 
   exit ${SUPER_LINTER_EXIT_CODE}
 }
-################################################################################
-#### Function UpdateLoopsForImage ##############################################
+
 UpdateLoopsForImage() {
   ######################################################################
   # Need to clean the array lists of the linters removed for the image #
@@ -719,36 +702,36 @@ UpdateLoopsForImage() {
 cleanup() {
   local -ri EXIT_CODE=$?
 
-  debug "Removing temporary files and directories"
-  rm -rf \
-    "${GITHUB_WORKSPACE}/.mypy_cache" \
-    "${GITHUB_WORKSPACE}/logback.log"
+  if [ -n "${GITHUB_WORKSPACE:-}" ]; then
+    debug "Removing temporary files and directories"
+    rm -rf \
+      "${GITHUB_WORKSPACE}/.mypy_cache" \
+      "${GITHUB_WORKSPACE}/logback.log"
 
-  if [ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE}" == "true" ]; then
-    debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
-    rm -rf "${R_RULES_FILE_PATH_IN_ROOT}"
-  fi
+    if [[ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE:-}" == "true" ]]; then
+      debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
+      rm -rf "${R_RULES_FILE_PATH_IN_ROOT}"
+    fi
 
-  # Define this variable here so we can rely on it as soon as possible
-  local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
-  debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
-  if [ "${CREATE_LOG_FILE}" = "true" ]; then
-    debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
-    mv \
-      --force \
-      "${LOG_TEMP}" "${LOG_FILE_PATH}"
+    # Define this variable here so we can rely on it as soon as possible
+    local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
+    debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
+    if [ "${CREATE_LOG_FILE}" = "true" ]; then
+      debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
+      mv \
+        --force \
+        "${LOG_TEMP}" "${LOG_FILE_PATH}"
+    else
+      debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
+    fi
   else
-    debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
+    debug "GITHUB_WORKSPACE is not set. Skipping filesystem cleanup steps"
   fi
 
   exit "${EXIT_CODE}"
   trap - 0 1 2 3 6 14 15
 }
 trap 'cleanup' 0 1 2 3 6 14 15
-
-################################################################################
-############################### MAIN ###########################################
-################################################################################
 
 ##########
 # Header #
@@ -805,6 +788,11 @@ else
 fi
 
 ValidateDeprecatedVariables
+
+# After checking if LOG_LEVEL is set to a deprecated value (see the ValidateDeprecatedVariables function),
+# we can unset it so other programs that rely on this variable, such as Checkov and renovate-config-validator
+# don't get confused.
+unset LOG_LEVEL
 
 #################################
 # Get the linter rules location #

@@ -2,7 +2,7 @@
 
 function SetupSshAgent() {
   # Check to see if a SSH_KEY_SECRET was passed
-  if [ -n "${SSH_KEY}" ]; then
+  if [ -n "${SSH_KEY:-}" ]; then
     info "--------------------------------------------"
     info "SSH key found, setting up agent..."
     export SSH_AUTH_SOCK=/tmp/ssh_agent.sock
@@ -30,7 +30,7 @@ function GetGitHubSshRsaKeyFingerprint() {
 export -f GetGitHubSshRsaKeyFingerprint
 
 function SetupGithubComSshKeys() {
-  if [[ -n "${SSH_KEY}" || "${SSH_SETUP_GITHUB}" == "true" ]]; then
+  if [[ -n "${SSH_KEY:-}" || "${SSH_SETUP_GITHUB}" == "true" ]]; then
     info "Adding ${GITHUB_DOMAIN} SSH keys"
     # Fetched out of band from
     # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
