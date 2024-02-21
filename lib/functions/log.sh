@@ -1,52 +1,74 @@
 #!/usr/bin/env bash
 
-# Background colors:
-# Blue
-# Cyan
-# Green
-# Black
-# Magenta
-# Red
-# White
-# Yellow
-declare -Agr B=(
-  [B]=$(echo -e "\e[44m")
-  [C]=$(echo -e "\e[46m")
-  [G]=$(echo -e "\e[42m")
-  [K]=$(echo -e "\e[40m")
-  [M]=$(echo -e "\e[45m")
-  [R]=$(echo -e "\e[41m")
-  [W]=$(echo -e "\e[47m")
-  [Y]=$(echo -e "\e[43m")
-)
+# GitHub Actions variables to enable workflow debug logging
+# Ref: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
+# Ref: https://github.com/actions/runner/pull/253
+declare -l ACTIONS_RUNNER_DEBUG
+ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}"
+declare -l ACTIONS_STEPS_DEBUG
+ACTIONS_STEPS_DEBUG="${ACTIONS_STEPS_DEBUG:-"false"}"
+declare -i RUNNER_DEBUG
+RUNNER_DEBUG="${RUNNER_DEBUG:-0}"
 
-# Foreground colors:
-# Blue
-# Cyan
-# Green
-# Black
-# Magenta
-# Red
-# White
-# Yellow
-declare -Agr F=(
-  [B]=$(echo -e "\e[0;34m")
-  [C]=$(echo -e "\e[0;36m")
-  [G]=$(echo -e "\e[0;32m")
-  [K]=$(echo -e "\e[0;30m")
-  [M]=$(echo -e "\e[0;35m")
-  [R]=$(echo -e "\e[0;31m")
-  [W]=$(echo -e "\e[0;37m")
-  [Y]=$(echo -e "\e[0;33m")
-)
+# Default log file name (located in GITHUB_WORKSPACE folder)
+LOG_FILE="${LOG_FILE:-"super-linter.log"}"
+LOG_LEVEL="${LOG_LEVEL:-"INFO"}"
+declare -l CREATE_LOG_FILE
+CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
 
-# Reset
-NC=$(echo -e "\e[0m")
-readonly NC
+if [[ ${ACTIONS_RUNNER_DEBUG} == true ]] ||
+  [[ ${ACTIONS_STEPS_DEBUG} == true ]] ||
+  [[ ${RUNNER_DEBUG} -eq 1 ]]; then
+  LOG_LEVEL="DEBUG"
+  echo "ACTIONS_RUNNER_DEBUG: ${ACTIONS_RUNNER_DEBUG}. ACTIONS_STEPS_DEBUG: ${ACTIONS_STEPS_DEBUG}. RUNNER_DEBUG: ${RUNNER_DEBUG}. Setting LOG_LEVEL to: ${LOG_LEVEL}"
+fi
 
-export B
-export F
-export NC
+declare -l LOG_DEBUG
+LOG_DEBUG="false"
+declare -l LOG_ERROR
+LOG_VERBOSE="false"
+declare -l LOG_ERROR
+LOG_NOTICE="false"
+declare -l LOG_ERROR
+LOG_WARN="false"
+declare -l LOG_ERROR
+LOG_ERROR="false"
+
+if [[ ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then
+  LOG_DEBUG="true"
+  LOG_VERBOSE="true"
+  LOG_NOTICE="true"
+  LOG_WARN="true"
+  LOG_ERROR="true"
+fi
+
+if [[ ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" ]]; then
+  LOG_VERBOSE="true"
+  LOG_NOTICE="true"
+  LOG_WARN="true"
+  LOG_ERROR="true"
+fi
+
+if [[ ${LOG_LEVEL} == "NOTICE" ]]; then
+  LOG_NOTICE="true"
+  LOG_WARN="true"
+  LOG_ERROR="true"
+fi
+
+if [[ ${LOG_LEVEL} == "WARN" ]]; then
+  LOG_WARN="true"
+  LOG_ERROR="true"
+fi
+
+if [[ ${LOG_LEVEL} == "ERROR" ]]; then
+  LOG_ERROR="true"
+fi
+
+export LOG_DEBUG
+export LOG_VERBOSE
+export LOG_NOTICE
+export LOG_WARN
+export LOG_ERROR
 
 LOG_TEMP=$(mktemp) || echo "Failed to create temporary log file."
 export LOG_TEMP
@@ -59,14 +81,22 @@ log() {
   local LOG_MESSAGE_DATE
   LOG_MESSAGE_DATE="$(date +"%F %T")"
   local COLOR_MARKER
-  COLOR_MARKER="${F[B]}"
+  # Set foreground color to blue
+  COLOR_MARKER=$(echo -e "\e[0;34m")
+
+  # Reset colors
+  local NC
+  NC=$(echo -e "\e[0m")
 
   if [ "${LOG_LEVEL_LABEL}" == "NOTICE" ]; then
-    COLOR_MARKER="${F[G]}"
+    # Set foreground color to green
+    COLOR_MARKER=$(echo -e "\e[0;32m")
   elif [ "${LOG_LEVEL_LABEL}" == "WARN" ]; then
-    COLOR_MARKER="${F[Y]}"
+    # Set foreground color to yellow
+    COLOR_MARKER=$(echo -e "\e[0;33m")
   elif [ "${LOG_LEVEL_LABEL}" == "ERROR" ] || [ "${LOG_LEVEL_LABEL}" == "FATAL" ]; then
-    COLOR_MARKER="${F[R]}"
+    # Set foreground color to red
+    COLOR_MARKER=$(echo -e "\e[0;31m")
   fi
 
   LOG_LEVEL_LABEL="[${LOG_LEVEL_LABEL}]"
