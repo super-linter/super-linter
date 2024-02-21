@@ -4,65 +4,22 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-##################################################################
-# Debug Vars                                                     #
-# Define these early, so we can use debug logging ASAP if needed #
-##################################################################
-# GitHub Actions variables to enable workflow debug logging
-# Ref: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
-# Ref: https://github.com/actions/runner/pull/253
-declare -l ACTIONS_RUNNER_DEBUG
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}"
-declare -l ACTIONS_STEPS_DEBUG
-ACTIONS_STEPS_DEBUG="${ACTIONS_STEPS_DEBUG:-"false"}"
-declare -i RUNNER_DEBUG
-RUNNER_DEBUG="${RUNNER_DEBUG:-0}"
-
 # Version of the Super-linter (standard,slim,etc)
 IMAGE="${IMAGE:-standard}"
-
-##################################################################
-# Log Vars                                                       #
-# Define these early, so we can use debug logging ASAP if needed #
-##################################################################
-LOG_FILE="${LOG_FILE:-"super-linter.log"}" # Default log file name (located in GITHUB_WORKSPACE folder)
-LOG_LEVEL="${LOG_LEVEL:-"INFO"}"
-declare -l CREATE_LOG_FILE
-CREATE_LOG_FILE="${CREATE_LOG_FILE:-"false"}"
-
-if [[ ${ACTIONS_RUNNER_DEBUG} == true ]] ||
-  [[ ${ACTIONS_STEPS_DEBUG} == true ]] ||
-  [[ ${RUNNER_DEBUG} -eq 1 ]]; then
-  LOG_LEVEL="DEBUG"
-  echo "ACTIONS_RUNNER_DEBUG: ${ACTIONS_RUNNER_DEBUG}. ACTIONS_STEPS_DEBUG: ${ACTIONS_STEPS_DEBUG}. RUNNER_DEBUG: ${RUNNER_DEBUG}. Setting LOG_LEVEL to: ${LOG_LEVEL}"
-fi
-# Boolean to see debug logs
-LOG_DEBUG=$(if [[ ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_DEBUG
-# Boolean to see info logs
-LOG_VERBOSE=$(if [[ ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_VERBOSE
-# Boolean to see notice logs
-LOG_NOTICE=$(if [[ ${LOG_LEVEL} == "NOTICE" || ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_NOTICE
-# Boolean to see warn logs
-LOG_WARN=$(if [[ ${LOG_LEVEL} == "WARN" || ${LOG_LEVEL} == "NOTICE" || ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_WARN
-# Boolean to see error logs
-LOG_ERROR=$(if [[ ${LOG_LEVEL} == "ERROR" || ${LOG_LEVEL} == "WARN" || ${LOG_LEVEL} == "NOTICE" || ${LOG_LEVEL} == "INFO" || ${LOG_LEVEL} == "VERBOSE" || ${LOG_LEVEL} == "DEBUG" || ${LOG_LEVEL} == "TRACE" ]]; then echo "true"; fi)
-export LOG_ERROR
 
 #########################
 # Source Function Files #
 #########################
+# Source log functions and variables early so we can use them ASAP
+# shellcheck source=/dev/null
+source /action/lib/functions/log.sh # Source the function script(s)
+
 # shellcheck source=/dev/null
 source /action/lib/functions/buildFileList.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/detectFiles.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/linterRules.sh # Source the function script(s)
-# shellcheck source=/dev/null
-source /action/lib/functions/log.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/updateSSL.sh # Source the function script(s)
 # shellcheck source=/dev/null
