@@ -8,6 +8,7 @@ function IssueHintForFullGitHistory() {
   info "See https://github.com/super-linter/super-linter#get-started"
   info "Is shallow repository: $(git -C "${GITHUB_WORKSPACE}" rev-parse --is-shallow-repository)"
 }
+export -f IssueHintForFullGitHistory
 
 function GenerateFileDiff() {
   local DIFF_GIT_DEFAULT_BRANCH_CMD

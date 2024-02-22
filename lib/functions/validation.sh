@@ -200,6 +200,7 @@ function ValidateGitShaReference() {
 
   debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
   if ! CheckIfGitRefExists "${GITHUB_SHA}"; then
+    IssueHintForFullGitHistory
     fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
   else
     debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
