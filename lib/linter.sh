@@ -108,6 +108,7 @@ declare -l YAML_ERROR_ON_WARNING
 YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
 
 ValidateBooleanConfigurationVariables
+ValidatePlatformArchitecture
 
 ###########
 # GLOBALS #
