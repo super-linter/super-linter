@@ -25,11 +25,11 @@ fi
 
 declare -l LOG_DEBUG
 LOG_DEBUG="false"
-declare -l LOG_ERROR
+declare -l LOG_VERBOSE
 LOG_VERBOSE="false"
-declare -l LOG_ERROR
+declare -l LOG_NOTICE
 LOG_NOTICE="false"
-declare -l LOG_ERROR
+declare -l LOG_WARN
 LOG_WARN="false"
 declare -l LOG_ERROR
 LOG_ERROR="false"
@@ -74,8 +74,8 @@ LOG_TEMP=$(mktemp) || echo "Failed to create temporary log file."
 export LOG_TEMP
 
 log() {
-  local TOTERM=${1:-}
-  local MESSAGE=${2:-}
+  local PRINT_TO_STDOUT="${1}"
+  local MESSAGE="${2}"
   local LOG_LEVEL_LABEL="${3}"
 
   local LOG_MESSAGE_DATE
@@ -106,7 +106,7 @@ log() {
   local MESSAGE_FOR_LOG_FILE
   MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
 
-  if [[ -n ${TOTERM} ]]; then
+  if [[ "${PRINT_TO_STDOUT}" == "true" ]]; then
     echo -e "${COLORED_MESSAGE}"
   fi
 
@@ -115,17 +115,18 @@ log() {
   fi
 }
 
-debug() { log "${LOG_DEBUG:-}" "$*" "DEBUG"; }
-info() { log "${LOG_VERBOSE:-}" "$*" "INFO"; }
-notice() { log "${LOG_NOTICE:-}" "$*" "NOTICE"; }
-warn() { log "${LOG_WARN:-}" "$*" "WARN"; }
-error() { log "${LOG_ERROR:-}" "$*" "ERROR"; }
+debug() { log "${LOG_DEBUG}" "$*" "DEBUG"; }
+info() { log "${LOG_VERBOSE}" "$*" "INFO"; }
+notice() { log "${LOG_NOTICE}" "$*" "NOTICE"; }
+warn() { log "${LOG_WARN}" "$*" "WARN"; }
+error() { log "${LOG_ERROR}" "$*" "ERROR"; }
 fatal() {
   log "true" "$*" "FATAL"
   exit 1
 }
 
 debug "LOG_LEVEL is set to: ${LOG_LEVEL}"
+debug "Log level variables. LOG_DEBUG: ${LOG_DEBUG}, LOG_VERBOSE: ${LOG_VERBOSE}, LOG_NOTICE: ${LOG_NOTICE}. LOG_WARN: ${LOG_WARN}, LOG_ERROR: ${LOG_ERROR}"
 
 # shellcheck disable=SC2034  # Variable is referenced in other files
 SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE="Super-Linter initialization"
