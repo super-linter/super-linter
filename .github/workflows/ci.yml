@@ -14,7 +14,7 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     permissions:
-        contents: read
+      contents: read
     concurrency:
       # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
       # github.head_ref: head_ref or source branch of the pull request
@@ -82,6 +82,9 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /usr/share/dotnet
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -95,8 +98,9 @@ jobs:
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
-          outputs: type=docker,dest=/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+          outputs: type=oci,dest=/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
           push: false
+          platforms: linux/amd64,linux/arm64/v8
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
@@ -218,7 +222,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
-        contents: read
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
