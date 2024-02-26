@@ -207,13 +207,9 @@ RUN apk add --no-cache --virtual .perl-build-deps \
 #################
 # Install glibc #
 #################
-# Source: https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# Store the key here because the above host is sometimes down, and breaks our builds
-COPY dependencies/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-ARG GLIBC_VERSION='2.34-r0'
 COPY scripts/install-glibc.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh \
-    && rm -rf /install-glibc.sh /sgerrand.rsa.pub
+    && rm -rf /install-glibc.sh
 
 ##################
 # Install chktex #
