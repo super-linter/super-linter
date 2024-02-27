@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -o errexit
 set -o nounset
 set -o pipefail
 
@@ -658,6 +657,7 @@ UpdateLoopsForImage() {
 # shellcheck disable=SC2317
 cleanup() {
   local -ri EXIT_CODE=$?
+  debug "Captured exit code: ${EXIT_CODE}"
 
   if [ -n "${GITHUB_WORKSPACE:-}" ]; then
     debug "Removing temporary files and directories"
