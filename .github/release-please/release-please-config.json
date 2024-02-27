@@ -24,6 +24,10 @@
     {
       "section": "🧰 Maintenance",
       "type": "ci"
+    },
+    {
+      "section": "🧰 Maintenance",
+      "type": "docs"
     }
   ],
   "packages": {
