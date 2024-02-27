@@ -51,6 +51,10 @@ export ENABLE_GITHUB_ACTIONS_GROUP_TITLE
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
 # We want a lowercase value
+declare -l BASH_EXEC_IGNORE_LIBRARIES
+BASH_EXEC_IGNORE_LIBRARIES="${BASH_EXEC_IGNORE_LIBRARIES:-false}"
+
+# We want a lowercase value
 declare -l DISABLE_ERRORS
 DISABLE_ERRORS="${DISABLE_ERRORS:-"false"}"
 

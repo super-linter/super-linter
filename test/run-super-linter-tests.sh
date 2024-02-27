@@ -33,6 +33,16 @@ run_test_cases_non_default_home() {
   COMMAND_TO_RUN+=(-e HOME=/tmp)
 }
 
+run_test_case_bash_exec_library_expect_failure() {
+  run_test_cases_expect_failure
+  COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
+}
+
+run_test_case_bash_exec_library_expect_success() {
+  run_test_cases_expect_success
+  COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 

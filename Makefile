@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters-expect-failure-log-level-notice test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-log-level test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -86,11 +86,11 @@ else
 RELEASE_PLEASE_TARGET_BRANCH := "${GITHUB_HEAD_REF}"
 endif
 
-.phony: check-github-token
+.PHONY: check-github-token
 check-github-token:
 	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
 
-.phony: inspec
+.PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
 	DOCKER_CONTAINER_STATE="$$(docker inspect --format "{{.State.Running}}" $(SUPER_LINTER_TEST_CONTAINER_NAME) 2>/dev/null || echo "")"; \
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME); fi && \
@@ -110,7 +110,7 @@ inspec: inspec-check ## Run InSpec tests
 	&& docker ps \
 	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME)
 
-.phony: docker
+.PHONY: docker
 docker: check-github-token ## Build the container image
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
@@ -120,11 +120,11 @@ docker: check-github-token ## Build the container image
 		--target $(IMAGE) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
 
-.phony: docker-pull
+.PHONY: docker-pull
 docker-pull: ## Pull the container image from registry
 	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: validate-container-image-labels
+.PHONY: validate-container-image-labels
 validate-container-image-labels: ## Validate container image labels
 	$(CURDIR)/test/validate-docker-labels.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
@@ -167,7 +167,7 @@ test-runner-debug: ## Run super-linter with RUNNER_DEBUG=1
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-find
+.PHONY: test-find
 test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
@@ -180,7 +180,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 
 # We need to set USE_FIND_ALGORITHM=true because the DEFALUT_WORKSPACE is not
 # a Git directory in this test case
-.phony: test-non-default-workdir
+.PHONY: test-non-default-workdir
 test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 	docker run \
 		-e RUN_LOCAL=true \
@@ -193,7 +193,7 @@ test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 		-v $(CURDIR)/.github:/tmp/not-default-workspace/.github \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-git-flags
+.PHONY: test-git-flags
 test-git-flags: ## Run super-linter with different git-related flags
 	docker run \
 		-e RUN_LOCAL=true \
@@ -207,7 +207,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-v "$(CURDIR)":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: lint-codebase
+.PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
 	docker run \
 		-e RUN_LOCAL=true \
@@ -223,10 +223,10 @@ lint-codebase: ## Lint the entire codebase
 
 # This is a smoke test to check how much time it takes to lint only a small
 # subset of files, compared to linting the whole codebase.
-.phony: lint-subset-files
+.PHONY: lint-subset-files
 lint-subset-files: lint-subset-files-enable-only-one-type lint-subset-files-enable-expensive-io-checks
 
-.phony: lint-subset-files-enable-only-one-type
+.PHONY: lint-subset-files-enable-only-one-type
 lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the codebase by enabling only one linter
 	time docker run \
 		-e RUN_LOCAL=true \
@@ -239,7 +239,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: lint-subset-files-enable-expensive-io-checks
+.PHONY: lint-subset-files-enable-expensive-io-checks
 lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in the codebase and keep expensive I/O operations to check file types enabled
 	time docker run \
 		-e RUN_LOCAL=true \
@@ -258,10 +258,10 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-lib
-test-lib: test-build-file-list test-github-event test-setup-ssh test-validation ## Test super-linter
+.PHONY: test-lib
+test-lib: test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation ## Test super-linter
 
-.phony: test-build-file-list
+.PHONY: test-build-file-list
 test-build-file-list: ## Test buildFileList
 	docker run \
 		-v "$(CURDIR):/tmp/lint" \
@@ -269,7 +269,15 @@ test-build-file-list: ## Test buildFileList
 		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-github-event
+.PHONY: test-detect-files
+test-detect-files: ## Test detectFiles
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/detectFilesTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-github-event
 test-github-event: ## Test githubEvent
 	docker run \
 		-v "$(CURDIR):/tmp/lint" \
@@ -277,7 +285,7 @@ test-github-event: ## Test githubEvent
 		--entrypoint /tmp/lint/test/lib/githubEventTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-setup-ssh
+.PHONY: test-setup-ssh
 test-setup-ssh: ## Test setupSSH
 	@docker run \
 		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
@@ -286,7 +294,7 @@ test-setup-ssh: ## Test setupSSH
 		--entrypoint /tmp/lint/test/lib/setupSSHTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-validation
+.PHONY: test-validation
 test-validation: ## Test validation
 	docker run \
 		-v "$(CURDIR):/tmp/lint" \
@@ -297,7 +305,7 @@ test-validation: ## Test validation
 # Run this test against a small directory because we're only interested in
 # loading default configuration files. The directory that we run super-linter
 # against should not be .github because that includes default linter rules.
-.phony: test-default-config-files
+.PHONY: test-default-config-files
 test-default-config-files: ## Test default configuration files loading
 	docker run \
 		-e RUN_LOCAL=true \
@@ -308,7 +316,7 @@ test-default-config-files: ## Test default configuration files loading
 		-v "$(CURDIR)/docs":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-custom-ssl-cert
+.PHONY: test-custom-ssl-cert
 test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 	docker run \
 		-e RUN_LOCAL=true \
@@ -320,47 +328,59 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		-v "$(CURDIR)/docs":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.phony: test-non-default-home-directory
+.PHONY: test-non-default-home-directory
 test-non-default-home-directory: ## Test a non-default HOME directory
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_non_default_home"
 
-.phony: test-linters
+.PHONY: test-linters
 test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite
 
-.phony: test-linters-expect-success
+.PHONY: test-linters-expect-success
 test-linters-expect-success: ## Run the linters test suite expecting successes
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_expect_success"
 
-.phony: test-linters-expect-failure
+.PHONY: test-linters-expect-failure
 test-linters-expect-failure: ## Run the linters test suite expecting failures
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_expect_failure"
 
-.phony: test-log-level
+.PHONY: test-log-level
 test-log-level: ## Run a test to check if there are conflicts with the LOG_LEVEL variable
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_log_level"
 
-.phony: test-linters-expect-failure-log-level-notice
+.PHONY: test-linters-expect-failure-log-level-notice
 test-linters-expect-failure-log-level-notice: ## Run the linters test suite expecting failures with a LOG_LEVEL set to NOTICE
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_expect_failure_notice_log"
 
-.phony: build-dev-container-image
+.PHONY: test-bash-exec-library-expect-success
+test-bash-exec-library-expect-success: ## Run the linters test cases for BASH_EXEC expecting successes with BASH_EXEC_IGNORE_LIBRARIES set to true
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_bash_exec_library_expect_success"
+
+.PHONY: test-bash-exec-library-expect-failure
+test-bash-exec-library-expect-failure: ## Run the linters test cases for BASH_EXEC expecting failures with BASH_EXEC_IGNORE_LIBRARIES set to true
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_bash_exec_library_expect_failure"
+
+.PHONY: build-dev-container-image
 build-dev-container-image: ## Build commit linter container image
 	DOCKER_BUILDKIT=1 docker buildx build --load \
 		--build-arg GID=$(shell id -g) \
 		--build-arg UID=$(shell id -u) \
 		-t ${DEV_CONTAINER_URL} "${CURDIR}/dev-dependencies"
 
-.phony: lint-commits
+.PHONY: lint-commits
 lint-commits: build-dev-container-image ## Lint commits
 	docker run \
 		-v "$(CURDIR):/source-repository" \
@@ -372,7 +392,7 @@ lint-commits: build-dev-container-image ## Lint commits
 		--to ${TO_INTERVAL_COMMITLINT} \
 		--verbose
 
-.phony: release-please-dry-run
+.PHONY: release-please-dry-run
 release-please-dry-run: build-dev-container-image check-github-token ## Run release-please in dry-run mode to preview the release pull request
 	@echo "Running release-please against branch: ${RELEASE_PLEASE_TARGET_BRANCH}"; \
 	docker run \
