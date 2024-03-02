@@ -368,6 +368,22 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GHERKIN"
     elif [ "${FILE_TYPE}" == "go" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO"
+
+      # find go.mod
+      debug "Looking for go.mod for ${FILE_DIR_NAME}"
+      local dir_name
+      dir_name="${FILE_DIR_NAME}"
+      while [ "${dir_name}" != "$(dirname "${GITHUB_WORKSPACE}")" ] && [ "${dir_name}" != "/" ]; do
+        local go_mod_filename
+        go_mod_filename="${dir_name}/go.mod"
+        if [ -f "${go_mod_filename}" ]; then
+          if ! grep -Fxq "${go_mod_filename}" "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_MODULES"; then
+            echo "${go_mod_filename}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_MODULES"
+          fi
+          break
+        fi
+        dir_name=$(dirname "${dir_name}")
+      done
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
       [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ] ||
