@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1-local",
   "dependencies": {
-    "@commitlint/cli": "^18.6.1",
+    "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^18.6.2",
     "release-please": "^16.9.0"
   },
