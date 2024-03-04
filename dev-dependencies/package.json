@@ -4,7 +4,7 @@
   "version": "0.0.1-local",
   "dependencies": {
     "@commitlint/cli": "^18.6.1",
-    "@commitlint/config-conventional": "^18.6.2",
+    "@commitlint/config-conventional": "^19.0.3",
     "release-please": "^16.9.0"
   },
   "license": "MIT"
