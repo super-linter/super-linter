@@ -8,7 +8,7 @@
     "@ibm/tekton-lint": "^1.0.0-beta.9",
     "@react-native/eslint-config": "^0.73.2",
     "@stoplight/spectral-cli": "^6.11.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
     "asl-validator": "^3.8.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
