@@ -229,7 +229,7 @@ jobs:
       # Instead, we pull the latest image and tag it.
       - name: Retag and Push Images
         if: steps.release.outputs.release_created
-        uses: akhilerm/tag-push-action@v2.1.0
+        uses: akhilerm/tag-push-action@v2.2.0
         with:
           src: ghcr.io/super-linter/super-linter:latest
           dst: |
@@ -238,7 +238,7 @@ jobs:
 
       - name: Retag and Push Images slim
         if: steps.release.outputs.release_created
-        uses: akhilerm/tag-push-action@v2.1.0
+        uses: akhilerm/tag-push-action@v2.2.0
         with:
           src: ghcr.io/super-linter/super-linter:slim-latest
           dst: |
