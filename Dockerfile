@@ -81,7 +81,7 @@ RUN apk add --no-cache \
 COPY dependencies/package.json dependencies/package-lock.json /
 RUN apk add --no-cache --virtual .node-build-deps \
     npm \
-    && npm install \
+    && npm install --strict-peer-deps \
     && npm cache clean --force \
     && chown -R "$(id -u)":"$(id -g)" node_modules \
     && rm -rfv package.json package-lock.json
