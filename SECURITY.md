@@ -1,4 +1,4 @@
-# Reporting Security Issues
+8# Reporting Security Issues
 
 The super-linter team and community take security bugs seriously. We appreciate
 your efforts to responsibly disclose your findings, and will make every effort
