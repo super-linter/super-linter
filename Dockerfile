@@ -202,6 +202,7 @@ RUN apk add --no-cache --virtual .perl-build-deps \
     Perl::Critic::StricterSubs \
     Perl::Critic::Swift \
     Perl::Critic::Tics \
+    && rm -rf /root/.cpanm \
     && apk del --no-network --purge .perl-build-deps
 
 #################
