@@ -31,7 +31,7 @@ else
   debug "Adding the '--directory' option to the Checkov command."
   LINTER_COMMANDS_ARRAY_CHECKOV+=(--directory)
 fi
-LINTER_COMMANDS_ARRAY_CLANG_FORMAT=(clang-format --Werror --dry-run)
+LINTER_COMMANDS_ARRAY_CLANG_FORMAT=(clang-format --style=file:"${CLANG_FORMAT_LINTER_RULES}" --Werror --dry-run)
 LINTER_COMMANDS_ARRAY_CLOJURE=(clj-kondo --config "${CLOJURE_LINTER_RULES}" --lint)
 LINTER_COMMANDS_ARRAY_CLOUDFORMATION=(cfn-lint --config-file "${CLOUDFORMATION_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_COFFEESCRIPT=(coffeelint -f "${COFFEESCRIPT_LINTER_RULES}")
