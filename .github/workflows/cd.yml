@@ -105,7 +105,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start deployment
-        uses: bobheadxi/deployments@v1.4.0
+        uses: bobheadxi/deployments@v1.5.0
         id: deployment
         with:
           step: start
@@ -132,7 +132,7 @@ jobs:
           target: "${{ matrix.images.target }}"
 
       - name: Update deployment
-        uses: bobheadxi/deployments@v1.4.0
+        uses: bobheadxi/deployments@v1.5.0
         # We depend on the 'deployment' step outputs, so we can't run this step
         # if the 'deployment' step didn't run. This can happen if any step
         # before the 'deployment' step fails. That's why 'always()' is not
@@ -187,7 +187,7 @@ jobs:
 
       - name: Start deployment
         if: steps.release.outputs.release_created
-        uses: bobheadxi/deployments@v1.4.0
+        uses: bobheadxi/deployments@v1.5.0
         id: deployment
         with:
           step: start
@@ -263,7 +263,7 @@ jobs:
           git push --force origin latest
 
       - name: Update deployment
-        uses: bobheadxi/deployments@v1.4.0
+        uses: bobheadxi/deployments@v1.5.0
         # We depend on the 'deployment' step outputs, so we can't run this step
         # if the 'deployment' step didn't run. This can happen if any step
         # before the 'deployment' step fails. That's why 'always()' is not
