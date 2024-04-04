@@ -788,15 +788,6 @@ BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
 #####################################
 RunAdditionalInstalls
 
-####################################
-# Print ENV before running linters #
-####################################
-debug "--- ENV (before running linters) ---"
-debug "------------------------------------"
-debug "ENV:"
-debug "$(printenv)"
-debug "------------------------------------"
-
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 
 ###############
