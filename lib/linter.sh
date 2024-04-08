@@ -93,6 +93,7 @@ SUPPRESS_POSSUM="${SUPPRESS_POSSUM:-false}"
 declare -l TEST_CASE_RUN
 # Option to tell code to run only test cases
 TEST_CASE_RUN="${TEST_CASE_RUN:-"false"}"
+export TEST_CASE_RUN
 
 # We want a lowercase value
 declare -l USE_FIND_ALGORITHM
