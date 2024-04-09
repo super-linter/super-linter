@@ -5,7 +5,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.24.1",
     "@coffeelint/cli": "^5.2.11",
-    "@ibm/tekton-lint": "^1.0.1",
+    "@ibm/tekton-lint": "^1.0.2",
     "@react-native/eslint-config": "^0.73.2",
     "@stoplight/spectral-cli": "^6.11.1",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
