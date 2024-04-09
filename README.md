@@ -119,6 +119,8 @@ To run super-linter as a GitHub Action, you do the following:
       push: null
       pull_request: null
 
+    permissions: { }
+
     jobs:
       build:
         name: Lint
