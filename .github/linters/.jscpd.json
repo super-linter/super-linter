@@ -27,6 +27,7 @@
     "**/test/linters/python_isort",
     "**/test/linters/python_mypy",
     "**/test/linters/python_pylint",
+    "**/test/linters/python_ruff",
     "**/test/linters/r",
     "**/test/linters/ruby",
     "**/test/linters/rust_2015",

@@ -1,0 +1,5 @@
+# Same as .flake8
+line-length = 120
+
+[lint]
+ignore = ["E203"]
