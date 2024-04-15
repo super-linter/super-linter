@@ -51,6 +51,7 @@ LINTER_COMMANDS_ARRAY_GHERKIN=(gherkin-lint -c "${GHERKIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast)
 # Consume the input as we do with ANSIBLE
 LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}" "&& echo \"Linted: {}\"")
+LINTER_COMMANDS_ARRAY_GO_RELEASER=(goreleaser check)
 LINTER_COMMANDS_ARRAY_GOOGLE_JAVA_FORMAT=(java -jar /usr/bin/google-java-format --dry-run --set-exit-if-changed)
 LINTER_COMMANDS_ARRAY_GROOVY=(npm-groovy-lint -c "${GROOVY_LINTER_RULES}" --failon warning --no-insight)
 LINTER_COMMANDS_ARRAY_HTML=(htmlhint --config "${HTML_LINTER_RULES}")

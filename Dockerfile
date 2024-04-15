@@ -14,6 +14,7 @@ FROM ghcr.io/terraform-linters/tflint:v0.50.3 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
 FROM golang:1.22.2-alpine as golang
 FROM golangci/golangci-lint:v1.57.2 as golangci-lint
+FROM goreleaser/goreleaser:v1.25.1 as goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.7.5 as terraform
 FROM koalaman/shellcheck:v0.10.0 as shellcheck
@@ -275,6 +276,11 @@ COPY --from=golang /usr/local/go/lib/ /usr/lib/go/lib/
 COPY --from=golang /usr/local/go/pkg/ /usr/lib/go/pkg/
 COPY --from=golang /usr/local/go/src/ /usr/lib/go/src/
 COPY --from=golangci-lint /usr/bin/golangci-lint /usr/bin/
+
+######################
+# Install GoReleaser #
+######################
+COPY --from=goreleaser /usr/bin/goreleaser /usr/bin/
 
 #####################
 # Install Terraform #

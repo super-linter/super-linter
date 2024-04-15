@@ -481,6 +481,8 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "xml" ] ||
       [ "${FILE_TYPE}" == "xsd" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-XML"
+    elif [[ "${FILE}" =~ .?goreleaser.+ya?ml ]]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_RELEASER"
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML"
       if DetectActions "${FILE}"; then
