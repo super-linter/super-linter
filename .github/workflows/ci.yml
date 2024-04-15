@@ -217,7 +217,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   preview-release-notes:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name == 'super-linter/super-linter'
     runs-on: ubuntu-latest
     permissions:
         contents: read
