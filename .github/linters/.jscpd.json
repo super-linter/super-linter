@@ -36,6 +36,7 @@
     "**/test/linters/scalafmt",
     "**/test/linters/tekton/**",
     "**/test/linters/typescript_es/**",
+    "**/github_conf/**",
     "**/workflows/cd.yml"
   ],
   "reporters": [
