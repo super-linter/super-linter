@@ -29,7 +29,7 @@ FROM dart:3.3.3-sdk as dart
 FROM mcr.microsoft.com/dotnet/sdk:8.0.203-alpine3.19 as dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 as powershell
 
-FROM python:3.12.2-alpine3.19 as clang-format
+FROM python:3.12.3-alpine3.19 as clang-format
 
 RUN apk add --no-cache \
     build-base \
@@ -56,7 +56,7 @@ RUN cmake \
     && ninja clang-format \
     && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.12.2-alpine3.19 as python-builder
+FROM python:3.12.3-alpine3.19 as python-builder
 
 RUN apk add --no-cache \
     bash
@@ -67,7 +67,7 @@ COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.12.2-alpine3.19 as npm-builder
+FROM python:3.12.3-alpine3.19 as npm-builder
 
 RUN apk add --no-cache \
     bash \
@@ -98,7 +98,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.12.2-alpine3.19 as lintr-installer
+FROM python:3.12.3-alpine3.19 as lintr-installer
 
 RUN apk add --no-cache \
     bash \
@@ -115,7 +115,7 @@ FROM powershell as powershell-installer
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
-FROM python:3.12.2-alpine3.19 as base_image
+FROM python:3.12.3-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
     com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
