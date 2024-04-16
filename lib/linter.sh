@@ -385,18 +385,25 @@ GetGitHubVars() {
     # Ensure that Git can access the local repository
     ConfigureGitSafeDirectories
 
-    if [ -z "${GITHUB_EVENT_PATH}" ]; then
+    if [ -z "${GITHUB_EVENT_PATH:-}" ]; then
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
       debug "${GITHUB_EVENT_PATH} contents: $(cat "${GITHUB_EVENT_PATH}")"
     fi
 
-    if [ -z "${GITHUB_SHA}" ]; then
+    if [ -z "${GITHUB_SHA:-}" ]; then
       fatal "Failed to get GITHUB_SHA: ${GITHUB_SHA}"
     else
       info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
     fi
+
+    if ! GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${GITHUB_SHA}")"; then
+      fatal "Failed to get the root commit: ${GIT_ROOT_COMMIT_SHA}"
+    else
+      debug "Successfully found the root commit: ${GIT_ROOT_COMMIT_SHA}"
+    fi
+    export GIT_ROOT_COMMIT_SHA
 
     ##################################################
     # Need to pull the GitHub Vars from the env file #
@@ -416,21 +423,26 @@ GetGitHubVars() {
     elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
       debug "This is a GitHub push event."
 
-      GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
-      if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
-        fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
-      fi
-      info "Successfully found GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
+      if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
+        debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there no commit before the initial commit"
+      else
+        debug "${GITHUB_SHA} is not the initial commit"
+        GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
+        if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
+          fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
+        fi
+        info "Successfully found GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
 
-      # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
-      debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
-      # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
-      if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT}); then
-        fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
-      fi
+        # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+        debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
+        # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
+        if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT}); then
+          fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
+        fi
 
-      ValidateGitBeforeShaReference
-      info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+        ValidateGitBeforeShaReference
+        info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+      fi
     fi
 
     ############################
@@ -482,20 +494,20 @@ GetGitHubVars() {
       fatal "Cannot enable status reports when running locally."
     fi
 
-    if [ -z "${GITHUB_TOKEN}" ]; then
+    if [ -z "${GITHUB_TOKEN:-}" ]; then
       fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
     else
       info "Successfully found GITHUB_TOKEN."
     fi
 
-    if [ -z "${GITHUB_REPOSITORY}" ]; then
+    if [ -z "${GITHUB_REPOSITORY:-}" ]; then
       error "Failed to get [GITHUB_REPOSITORY]!"
       fatal "[${GITHUB_REPOSITORY}]"
     else
       info "Successfully found GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
     fi
 
-    if [ -z "${GITHUB_RUN_ID}" ]; then
+    if [ -z "${GITHUB_RUN_ID:-}" ]; then
       error "Failed to get [GITHUB_RUN_ID]!"
       fatal "[${GITHUB_RUN_ID}]"
     else

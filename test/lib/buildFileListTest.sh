@@ -32,12 +32,19 @@ git config --global user.name "Super-linter"
 
 function InitGitRepositoryAndCommitFiles() {
   local REPOSITORY_PATH="${1}" && shift
-  local FILES_TO_COMMIT="${1}"
+  local FILES_TO_COMMIT="${1}" && shift
+  local COMMIT_FILE_INITIAL_COMMIT="${1}"
 
   git -C "${REPOSITORY_PATH}" init
+  if [[ "${COMMIT_FILE_INITIAL_COMMIT}" == "true" ]]; then
+    touch "${REPOSITORY_PATH}/test-initial-commit.txt"
+    git -C "${REPOSITORY_PATH}" add .
+  fi
   git -C "${REPOSITORY_PATH}" commit --allow-empty -m "Initial commit"
   GITHUB_BEFORE_SHA=$(git -C "${REPOSITORY_PATH}" rev-parse HEAD)
   debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  GIT_ROOT_COMMIT_SHA="${GITHUB_BEFORE_SHA}"
+  debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
 
   git -C "${REPOSITORY_PATH}" checkout -b test-branch
 
@@ -56,9 +63,13 @@ function InitGitRepositoryAndCommitFiles() {
 function GenerateFileDiffOneFileTest() {
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
+  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+  trap "rm -fr '${GITHUB_WORKSPACE}'" EXIT
   echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 
-  InitGitRepositoryAndCommitFiles "${GITHUB_WORKSPACE}" 1
+  local FILES_TO_COMMIT="${FILES_TO_COMMIT:-1}"
+  local COMMIT_FILE_INITIAL_COMMIT="${COMMIT_FILE_INITIAL_COMMIT:-"false"}"
+  InitGitRepositoryAndCommitFiles "${GITHUB_WORKSPACE}" "${FILES_TO_COMMIT}" "${COMMIT_FILE_INITIAL_COMMIT}"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"
@@ -78,16 +89,28 @@ function GenerateFileDiffOneFileTest() {
 function GenerateFileDiffOneFilePushEventTest() {
   # shellcheck disable=SC2034
   local GITHUB_EVENT_NAME="push"
+  local FILES_TO_COMMIT=1
+  local COMMIT_FILE_INITIAL_COMMIT="false"
+  GenerateFileDiffOneFileTest "${FUNCNAME[0]}"
+}
+
+function GenerateFileDiffInitialCommitPushEventTest() {
+  # shellcheck disable=SC2034
+  local GITHUB_EVENT_NAME="push"
+  local FILES_TO_COMMIT=0
+  local COMMIT_FILE_INITIAL_COMMIT="true"
   GenerateFileDiffOneFileTest "${FUNCNAME[0]}"
 }
 
 function GenerateFileDiffTwoFilesTest() {
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
+  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+  trap "rm -fr '${GITHUB_WORKSPACE}'" EXIT
   debug "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
   local FILES_TO_COMMIT=2
 
-  InitGitRepositoryAndCommitFiles "${GITHUB_WORKSPACE}" ${FILES_TO_COMMIT}
+  InitGitRepositoryAndCommitFiles "${GITHUB_WORKSPACE}" ${FILES_TO_COMMIT} "false"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"
@@ -114,3 +137,4 @@ GenerateFileDiffOneFileTest
 GenerateFileDiffOneFilePushEventTest
 GenerateFileDiffTwoFilesTest
 GenerateFileDiffTwoFilesPushEventTest
+GenerateFileDiffInitialCommitPushEventTest

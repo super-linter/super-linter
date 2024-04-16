@@ -7,14 +7,22 @@ set -o pipefail
 SUPER_LINTER_TEST_CONTAINER_URL="${1}"
 TEST_FUNCTION_NAME="${2}"
 
-COMMAND_TO_RUN=(docker run -e DEFAULT_BRANCH=main -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e RUN_LOCAL=true -e TEST_CASE_RUN=true -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json" -v "$(pwd):/tmp/lint")
+DEFAULT_BRANCH="main"
+
+COMMAND_TO_RUN=(docker run -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
+
+configure_linters_for_test_cases() {
+  COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
+}
 
 run_test_cases_expect_failure() {
+  configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/bad" -e CHECKOV_FILE_NAME=".checkov-test-linters-failure.yaml" -e FILTER_REGEX_INCLUDE=".*bad.*")
   EXPECTED_EXIT_CODE=1
 }
 
 run_test_cases_expect_success() {
+  configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/good" -e CHECKOV_FILE_NAME=".checkov-test-linters-success.yaml" -e FILTER_REGEX_INCLUDE=".*good.*")
 }
 
@@ -43,11 +51,39 @@ run_test_case_bash_exec_library_expect_success() {
   COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
 }
 
+run_test_case_git_initial_commit() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+  trap "rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+
+  git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH}"
+  git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
+  git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
+  cp -v test/data/github-event/github-event-push.json "${GIT_REPOSITORY_PATH}/"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: initial commit"
+
+  local TEST_GITHUB_SHA
+  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+
+  RUN_LOCAL=false
+  SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
+  COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
+  COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="push")
+  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/github-event-push.json")
+  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+  COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
+  COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
 COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
-
+COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
+COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE:-$(pwd)}:/tmp/lint")
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 
 declare -i EXPECTED_EXIT_CODE
