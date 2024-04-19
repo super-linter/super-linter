@@ -75,7 +75,7 @@ LOG_TEMP=$(mktemp) || echo "Failed to create temporary log file."
 export LOG_TEMP
 
 log() {
-  local PRINT_TO_STDOUT="${1}"
+  local EMIT_LOG_MESSAGE="${1}"
   local MESSAGE="${2}"
   local LOG_LEVEL_LABEL="${3}"
 
@@ -107,12 +107,17 @@ log() {
   local MESSAGE_FOR_LOG_FILE
   MESSAGE_FOR_LOG_FILE="${LOG_MESSAGE_DATE} ${LOG_LEVEL_LABEL}   ${MESSAGE}"
 
-  if [[ "${PRINT_TO_STDOUT}" == "true" ]]; then
-    echo -e "${COLORED_MESSAGE}"
-  fi
+  if [[ "${EMIT_LOG_MESSAGE}" == "true" ]]; then
+    # Emit colors only if there's a terminal
+    if [ -t 0 ]; then
+      echo -e "${COLORED_MESSAGE}"
+    else
+      echo -e "${MESSAGE_FOR_LOG_FILE}"
+    fi
 
-  if [ "${CREATE_LOG_FILE}" = "true" ]; then
-    echo -e "${MESSAGE_FOR_LOG_FILE}" >>"${LOG_TEMP}"
+    if [ "${CREATE_LOG_FILE}" = "true" ]; then
+      echo -e "${MESSAGE_FOR_LOG_FILE}" >>"${LOG_TEMP}"
+    fi
   fi
 }
 
