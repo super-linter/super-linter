@@ -315,7 +315,7 @@ done
 
 Header() {
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
-    /bin/bash /action/lib/functions/possum.sh
+    info "$(/bin/bash /action/lib/functions/possum.sh)"
   fi
 
   info "---------------------------------------------"
@@ -722,9 +722,8 @@ Header
 ################################################
 UpdateLoopsForImage
 
-if ! cat "${VERSION_FILE}"; then
-  fatal "Failed to view version file: ${VERSION_FILE}"
-fi
+# Print linter versions
+info "$(cat "${VERSION_FILE}")"
 
 #######################
 # Get GitHub Env Vars #
