@@ -109,3 +109,21 @@ if [ ${SUPER_LINTER_EXIT_CODE} -ne ${EXPECTED_EXIT_CODE} ]; then
 else
   echo "Super-linter exited with the expected code: ${SUPER_LINTER_EXIT_CODE}"
 fi
+
+# Check if super-linter leaves leftovers behind
+declare -a TEMP_ITEMS_TO_CLEAN
+TEMP_ITEMS_TO_CLEAN=()
+TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.lintr")
+TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.mypy_cache")
+TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.ruff_cache")
+TEMP_ITEMS_TO_CLEAN+=("$(pwd)/logback.log")
+
+for item in "${TEMP_ITEMS_TO_CLEAN[@]}"; do
+  echo "Check if ${item} exists"
+  if [[ -e "${item}" ]]; then
+    echo "Error: ${item} exists and it should have been deleted"
+    exit 1
+  else
+    echo "${item} does not exist as expected"
+  fi
+done
