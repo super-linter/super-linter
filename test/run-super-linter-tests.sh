@@ -9,7 +9,7 @@ TEST_FUNCTION_NAME="${2}"
 
 DEFAULT_BRANCH="main"
 
-COMMAND_TO_RUN=(docker run -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
+COMMAND_TO_RUN=(docker run -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
 
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
@@ -28,6 +28,7 @@ run_test_cases_expect_success() {
 
 run_test_cases_log_level() {
   run_test_cases_expect_success
+  CREATE_LOG_FILE="true"
   LOG_LEVEL="NOTICE"
 }
 
@@ -81,6 +82,9 @@ run_test_case_git_initial_commit() {
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
+CREATE_LOG_FILE="${CREATE_LOG_FILE:-false}"
+
+COMMAND_TO_RUN+=(-e CREATE_LOG_FILE="${CREATE_LOG_FILE}")
 COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
 COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE:-$(pwd)}:/tmp/lint")
@@ -102,6 +106,20 @@ SUPER_LINTER_EXIT_CODE=$?
 set -o errexit
 
 echo "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"
+
+if [[ "${CREATE_LOG_FILE}" == true ]]; then
+  LOG_FILE_PATH="$(pwd)/super-linter.log"
+  if [ ! -e "${LOG_FILE_PATH}" ]; then
+    echo "Log file was requested but it's not available"
+    exit 1
+  else
+    sudo chown -R "$(id -u)":"$(id -g)" "${LOG_FILE_PATH}"
+    echo "Log file contents:"
+    cat "${LOG_FILE_PATH}"
+  fi
+else
+  echo "Log file was not requested. CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
+fi
 
 if [ ${SUPER_LINTER_EXIT_CODE} -ne ${EXPECTED_EXIT_CODE} ]; then
   echo "Super-linter exited with an unexpected code: ${SUPER_LINTER_EXIT_CODE}"
