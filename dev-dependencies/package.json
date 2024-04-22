@@ -5,7 +5,7 @@
   "dependencies": {
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-conventional": "^19.1.0",
-    "release-please": "^16.10.1"
+    "release-please": "^16.10.2"
   },
   "license": "MIT"
 }
