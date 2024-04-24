@@ -13,8 +13,12 @@
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}" "&& echo \"Linted: {}\"")
 LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
-LINTER_COMMANDS_ARRAY_BASH=(shellcheck --color --external-sources)
+LINTER_COMMANDS_ARRAY_BASH=(shellcheck --color --rcfile "${BASH_LINTER_RULES}")
+# This check and the BASH_SEVERITY variable are needed until Shellcheck supports
+# setting severity using its config file.
+# Ref: https://github.com/koalaman/shellcheck/issues/2178
 if [ -n "${BASH_SEVERITY}" ]; then
+  export BASH_SEVERITY
   LINTER_COMMANDS_ARRAY_BASH+=(--severity="${BASH_SEVERITY}")
 fi
 LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec '{}')
@@ -44,6 +48,7 @@ LINTER_COMMANDS_ARRAY_EDITORCONFIG=(editorconfig-checker -config "${EDITORCONFIG
 LINTER_COMMANDS_ARRAY_ENV=(dotenv-linter)
 LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=(actionlint -config-file "${GITHUB_ACTIONS_LINTER_RULES}")
 if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMMAND_ARGS}" ]; then
+  export GITHUB_ACTIONS_COMMAND_ARGS
   LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS+=("${GITHUB_ACTIONS_COMMAND_ARGS}")
 fi
 LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose --source)
@@ -66,6 +71,7 @@ LINTER_COMMANDS_ARRAY_JSX=(eslint --no-eslintrc -c "${JSX_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_KOTLIN=(ktlint "{/}")
 LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=(kubeconform -strict)
 if [ "${KUBERNETES_KUBECONFORM_OPTIONS}" != "null" ] && [ -n "${KUBERNETES_KUBECONFORM_OPTIONS}" ]; then
+  export KUBERNETES_KUBECONFORM_OPTIONS
   LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM+=("${KUBERNETES_KUBECONFORM_OPTIONS}")
 fi
 LINTER_COMMANDS_ARRAY_LATEX=(chktex -q -l "${LATEX_LINTER_RULES}")
@@ -85,6 +91,7 @@ LINTER_COMMANDS_ARRAY_NATURAL_LANGUAGE=(textlint -c "${NATURAL_LANGUAGE_LINTER_R
 LINTER_COMMANDS_ARRAY_OPENAPI=(spectral lint -r "${OPENAPI_LINTER_RULES}" -D)
 LINTER_COMMANDS_ARRAY_PERL=(perlcritic)
 if [ "${PERL_PERLCRITIC_OPTIONS}" != "null" ] && [ -n "${PERL_PERLCRITIC_OPTIONS}" ]; then
+  export PERL_PERLCRITIC_OPTIONS
   LINTER_COMMANDS_ARRAY_PERL+=("${PERL_PERLCRITIC_OPTIONS}")
 fi
 LINTER_COMMANDS_ARRAY_PHP_BUILTIN=(php -l -c "${PHP_BUILTIN_LINTER_RULES}")
