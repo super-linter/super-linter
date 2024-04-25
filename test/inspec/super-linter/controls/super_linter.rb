@@ -501,6 +501,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.ruby-lint.yml",
     "/action/lib/.automation/.ruff.toml",
     "/action/lib/.automation/.scalafmt.conf",
+    "/action/lib/.automation/.shellcheckrc",
     "/action/lib/.automation/.snakefmt.toml",
     "/action/lib/.automation/.sql-config.json",
     "/action/lib/.automation/.sqlfluff",

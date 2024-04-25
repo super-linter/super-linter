@@ -149,6 +149,7 @@ debug "TFLINT_LOG: ${TFLINT_LOG}"
 ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ARM_FILE_NAME=".arm-ttk.psd1"
+BASH_FILE_NAME="${BASH_FILE_NAME:-".shellcheckrc"}"
 BASH_SEVERITY="${BASH_SEVERITY:-""}"
 CHECKOV_FILE_NAME="${CHECKOV_FILE_NAME:-".checkov.yaml"}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
