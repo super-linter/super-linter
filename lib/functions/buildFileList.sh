@@ -320,21 +320,6 @@ BuildFileArrays() {
       fi
     done
 
-    if [ "${BASE_FILE}" == "go.mod" ]; then
-      debug "Found ${FILE}. Checking if individual Go file linting is enabled as well."
-      if [ "${VALIDATE_GO}" == "true" ]; then
-        debug "Checking if we are running tests. TEST_CASE_RUN: ${TEST_CASE_RUN}"
-        if [ "${TEST_CASE_RUN}" == "true" ]; then
-          debug "Skipping the failure due to individual Go files and Go modules linting being enabled at the same time because we're in test mode."
-        else
-          fatal "Set VALIDATE_GO to false to avoid false positives due to analyzing Go files in the ${FILE_DIR_NAME} directory individually instead of considering them in the context of a Go module."
-        fi
-      else
-        debug "Considering ${FILE_DIR_NAME} as a Go module."
-      fi
-      echo "${FILE_DIR_NAME}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_MODULES"
-    fi
-
     if IsValidShellScript "${FILE}"; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
@@ -370,8 +355,42 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ENV"
     elif [ "${FILE_TYPE}" == "feature" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GHERKIN"
-    elif [ "${FILE_TYPE}" == "go" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO"
+    elif [ "${FILE_TYPE}" == "go" ] ||
+      [[ "${BASE_FILE}" == "go.mod" ]]; then
+
+      # Check if we should lint a Go module
+      local GO_MOD_FILE_PATH=""
+      if [ "${BASE_FILE}" == "go.mod" ]; then
+        GO_MOD_FILE_PATH="${FILE}"
+        debug "${BASE_FILE} is a Go module file. Setting the go.mod file path to ${GO_MOD_FILE_PATH}"
+      else
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO"
+        debug "${BASE_FILE} is a Go file. Trying to find out if it's part of a Go module"
+        local dir_name
+        dir_name="${FILE_DIR_NAME}"
+        while [ "${dir_name}" != "$(dirname "${GITHUB_WORKSPACE}")" ] && [ "${dir_name}" != "/" ]; do
+          local potential_go_mod_file_path="${dir_name}/go.mod"
+          if [ -f "${potential_go_mod_file_path}" ]; then
+            GO_MOD_FILE_PATH="${potential_go_mod_file_path}"
+            break
+          fi
+          dir_name=$(dirname "${dir_name}")
+        done
+      fi
+
+      if [[ -n "${GO_MOD_FILE_PATH:-}" ]]; then
+        debug "Considering ${FILE_DIR_NAME} as a Go module because it contains ${GO_MOD_FILE_PATH}"
+        local FILE_ARRAY_GO_MODULES_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_MODULES"
+
+        if [[ ! -e "${FILE_ARRAY_GO_MODULES_PATH}" ]] || ! grep -Fxq "${FILE_DIR_NAME}" "${FILE_ARRAY_GO_MODULES_PATH}"; then
+          echo "${FILE_DIR_NAME}" >>"${FILE_ARRAY_GO_MODULES_PATH}"
+          debug "Added ${GO_MOD_FILE_PATH} directory (${FILE_DIR_NAME}) to the list of Go modules to lint"
+        else
+          debug "Skip adding ${GO_MOD_FILE_PATH} directory (${FILE_DIR_NAME}) to the list of Go modules to lint because it's already in that list"
+        fi
+      else
+        debug "${FILE} is not considered to be part of a Go module"
+      fi
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
     elif [ "$FILE_TYPE" == "groovy" ] || [ "$FILE_TYPE" == "jenkinsfile" ] ||
       [ "$FILE_TYPE" == "gradle" ] || [ "$FILE_TYPE" == "nf" ] ||
