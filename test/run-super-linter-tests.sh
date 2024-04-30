@@ -11,6 +11,10 @@ DEFAULT_BRANCH="main"
 
 COMMAND_TO_RUN=(docker run -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
 
+ignore_test_cases() {
+  COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*")
+}
+
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
 }
@@ -77,6 +81,12 @@ run_test_case_git_initial_commit() {
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
   COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
   COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+}
+
+run_test_case_use_find_and_ignore_gitignored_files() {
+  ignore_test_cases
+  COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES=true)
+  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM=true)
 }
 
 # Run the test setup function
