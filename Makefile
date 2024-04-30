@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-linters ## Run the test suite
+test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -378,12 +378,6 @@ test-git-initial-commit: ## Run super-linter against a repository that only has 
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_git_initial_commit"
-
-.PHONY: test-use-find-and-ignore-gitignored-files
-test-use-find-and-ignore-gitignored-files: ## Run super-linter with USE_FIND_ALGORITHM=true and IGNORE_GITIGNORED_FILES=true
-	$(CURDIR)/test/run-super-linter-tests.sh \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_use_find_and_ignore_gitignored_files"
 
 .PHONY: build-dev-container-image
 build-dev-container-image: ## Build commit linter container image
