@@ -760,8 +760,14 @@ GetValidationInfo
 if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
   debug "Validate the local Git environment"
   ValidateLocalGitRepository
-  ValidateGitShaReference
-  ValidateDefaultGitBranch
+
+  # We need to validate the commit SHA reference and the default branch only when
+  # using Git to get the list of files to lint
+  if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+    debug "Validate the Git SHA and branch references"
+    ValidateGitShaReference
+    ValidateDefaultGitBranch
+  fi
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
 fi
