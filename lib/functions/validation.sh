@@ -25,6 +25,24 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
 }
 
+function ValidatePlatformArchitecture() {
+  local PLATFORM_ARCHITECTURE
+  PLATFORM_ARCHITECTURE=$(uname -m)
+  debug "Platform architecture: ${PLATFORM_ARCHITECTURE}"
+
+  if [[ "${PLATFORM_ARCHITECTURE}" == "x86_64" ]]; then
+    return 0
+  fi
+
+  if [[ "${PLATFORM_ARCHITECTURE}" == "aarch64" || "${PLATFORM_ARCHITECTURE}" == "arm64" ]]; then
+    eval "export VALIDATE_SCALAFMT='false'"
+    eval "export VALIDATE_POWERSHELL='false'"
+    return 0
+  fi
+
+  fatal "Unsupported platform architecture: ${PLATFORM_ARCHITECTURE}"
+}
+
 function ValidateGitHubWorkspace() {
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="${1}"
