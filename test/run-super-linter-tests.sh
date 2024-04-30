@@ -79,6 +79,12 @@ run_test_case_git_initial_commit() {
   COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
 }
 
+run_test_case_use_find_and_ignore_gitignored_files() {
+  COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES=true)
+  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM=true)
+  SUPER_LINTER_WORKSPACE="$(pwd)/.github"
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
