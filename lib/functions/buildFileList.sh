@@ -73,6 +73,7 @@ function BuildFileList() {
         -not \( -path '*/\__pycache__' -prune \) \
         -not \( -path '*/\node_modules' -prune \) \
         -not -name ".DS_Store" \
+        -not -name "*.avif" \
         -not -name "*.gif" \
         -not -name "*.ico" \
         -not -name "*.jpg" \
