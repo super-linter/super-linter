@@ -21,8 +21,13 @@ jobs:
     if: ${{ github.event_name == 'schedule' }}
     timeout-minutes: 60
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+        with:
+          egress-policy: audit
+
       - name: Mark issue stale
-        uses: actions/stale@v9
+        uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity.\nIt will be closed in 14 days if no further activity occurs.\nThank you for your contributions.\n\nIf you think this issue should stay open, please remove the `O: stale 🤖` label or comment on the issue.\n\nIf you're a maintainer, you can stop the bot to mark this issue as stale in the future by adding the `O: backlog 🤖` label`."
@@ -43,8 +48,13 @@ jobs:
     if: "${{ github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'O: stale 🤖') && github.event.issue.user.type != 'Bot' }}"
     timeout-minutes: 60
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+        with:
+          egress-policy: audit
+
       - name: Mark issue not stale
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             github.rest.issues.removeLabel({

@@ -14,6 +14,11 @@ jobs:
 
     steps:
 
+    - name: Harden Runner
+      uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+      with:
+        egress-policy: audit
+
     - name: Get dates for last month
       shell: bash
       run: |
@@ -28,7 +33,7 @@ jobs:
         echo "END_DATE=$end_date" >> "$GITHUB_ENV"
 
     - name: Run contributor action
-      uses: github/contributors@v1
+      uses: github/contributors@832b6518181710ef277bc9ddafda6696e6b312bd # v1.3.0
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         START_DATE: ${{ env.START_DATE }}
@@ -36,7 +41,7 @@ jobs:
         REPOSITORY: super-linter/super-linter
 
     - name: Create issue
-      uses: peter-evans/create-issue-from-file@v5
+      uses: peter-evans/create-issue-from-file@24452a72d85239eacf1468b0f1982a9f3fec4c94 # v5.0.0
       with:
         title: Thank you super-linter contributors (${{ env.START_DATE }}..${{ env.END_DATE }})
         token: ${{ secrets.GITHUB_TOKEN }}
