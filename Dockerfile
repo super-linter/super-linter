@@ -7,29 +7,29 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.11 as terrascan
-FROM alpine/terragrunt:1.8.2 as terragrunt
-FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
-FROM ghcr.io/terraform-linters/tflint:v0.50.3 as tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.4 as kubeconfrm
-FROM golang:1.22.2-alpine as golang
-FROM golangci/golangci-lint:v1.57.2 as golangci-lint
-FROM goreleaser/goreleaser:v1.25.1 as goreleaser
-FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.8.2 as terraform
-FROM koalaman/shellcheck:v0.10.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
-FROM mvdan/shfmt:v3.8.0 as shfmt
-FROM rhysd/actionlint:1.6.27 as actionlint
-FROM scalameta/scalafmt:v3.8.1 as scalafmt
-FROM zricethezav/gitleaks:v8.18.2 as gitleaks
-FROM yoheimuta/protolint:0.49.6 as protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2024.03.13-alpine as clj-kondo
-FROM dart:3.3.4-sdk as dart
-FROM mcr.microsoft.com/dotnet/sdk:8.0.204-alpine3.19 as dotnet-sdk
-FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 as powershell
+FROM tenable/terrascan:1.18.11@sha256:1d4ca51a6090f83aa86997a35a0265706c9dffb3c0b883f5531d6302792bce27 as terrascan
+FROM alpine/terragrunt:1.8.2@sha256:fa7407d835f738ff05e25e60d35c324f5e5f0d0c7405380abe8218dcac7885e8 as terragrunt
+FROM dotenvlinter/dotenv-linter:3.3.0@sha256:dbed7d0829e65e0e3f27530e68d2f788f90095dcf44ae21e74688b78828713e6 as dotenv-linter
+FROM ghcr.io/terraform-linters/tflint:v0.50.3@sha256:5496858a1b091c090267a33d4e99f75ca1067b58bcfe7bb34745b222a260e1b6 as tflint
+FROM ghcr.io/yannh/kubeconform:v0.6.4@sha256:e68a0b638c6e9b76f1b7d58b4ec94340ef3b6601db25b2e40b29e3ac2d68e4bf as kubeconfrm
+FROM golang:1.22.2-alpine@sha256:cdc86d9f363e8786845bea2040312b4efa321b828acdeb26f393faa864d887b0 as golang
+FROM golangci/golangci-lint:v1.57.2@sha256:8f3a60a00a83bb7d599d2e028ac0c3573dc2b9ec0842590f1c2e59781c821da7 as golangci-lint
+FROM goreleaser/goreleaser:v1.25.1@sha256:5990c37d2d3b345e4071ff46b0b1f00fa72948178bbb9dd1c0206eb0305c8d3a as goreleaser
+FROM hadolint/hadolint:v2.12.0-alpine@sha256:3c206a451cec6d486367e758645269fd7d696c5ccb6ff59d8b03b0e45268a199 as dockerfile-lint
+FROM hashicorp/terraform:1.8.2@sha256:86fccae19de7153c57a908a3dce2dd74ac17cc98aa0a185bca8c27d75da9eaf8 as terraform
+FROM koalaman/shellcheck:v0.10.0@sha256:2097951f02e735b613f4a34de20c40f937a6c8f18ecb170612c88c34517221fb as shellcheck
+FROM mstruebing/editorconfig-checker:2.7.2@sha256:51036dbf4e04da68b5be60f9b3f4c9480e801366b6a2aa2773c7746155cbe3df as editorconfig-checker
+FROM mvdan/shfmt:v3.8.0@sha256:7443e0094a8af5f764f0e8619a64c3b6169d716da68c175fb08ba28a99235c8a as shfmt
+FROM rhysd/actionlint:1.6.27@sha256:d84eca815fc24f72546ec1f2f416d9500ad3349ce7db098cf7a52256f5fd4384 as actionlint
+FROM scalameta/scalafmt:v3.8.1@sha256:a3ebe2752fb4f626a962cc43c9b3fd7a55c722b7a1127c399e3836bcefa513dd as scalafmt
+FROM zricethezav/gitleaks:v8.18.2@sha256:eadfe256fa18d6a78a717abc9ed454c8e03865d1c46d627bca83977f4424901a as gitleaks
+FROM yoheimuta/protolint:0.49.6@sha256:d34e0c671869327e95ee46a15fc60d4973139889a4d7c7c81a7e7afd3971ee33 as protolint
+FROM ghcr.io/clj-kondo/clj-kondo:2024.03.13-alpine@sha256:90cf302eac38eee223a76933aed5521a224b025d399b6f4f9c3c0fbb0cf7e9e2 as clj-kondo
+FROM dart:3.3.4-sdk@sha256:816fee592c641f61ff42461d23cfc3bee301f21e2288cb6818ab961c44c6efc0 as dart
+FROM mcr.microsoft.com/dotnet/sdk:8.0.204-alpine3.19@sha256:c4273e19738132e5cf1038a273644cadb0aa8ab1932e9fb7ca5491025e0e07fe as dotnet-sdk
+FROM mcr.microsoft.com/powershell:7.4-alpine-3.17@sha256:c4ab12df1e484deb13f72def16c58b78dfc665e4877522d764f8c884f0bff130 as powershell
 
-FROM python:3.12.3-alpine3.19 as clang-format
+FROM python:3.12.3-alpine3.19@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb as clang-format
 
 RUN apk add --no-cache \
     build-base \
@@ -56,7 +56,7 @@ RUN cmake \
     && ninja clang-format \
     && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.12.3-alpine3.19 as python-builder
+FROM python:3.12.3-alpine3.19@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb as python-builder
 
 RUN apk add --no-cache \
     bash
@@ -67,7 +67,7 @@ COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.12.3-alpine3.19 as npm-builder
+FROM python:3.12.3-alpine3.19@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb as npm-builder
 
 RUN apk add --no-cache \
     bash \
@@ -98,7 +98,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.12.3-alpine3.19 as lintr-installer
+FROM python:3.12.3-alpine3.19@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb as lintr-installer
 
 RUN apk add --no-cache \
     bash \
@@ -115,7 +115,7 @@ FROM powershell as powershell-installer
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
-FROM python:3.12.3-alpine3.19 as base_image
+FROM python:3.12.3-alpine3.19@sha256:ef097620baf1272e38264207003b0982285da3236a20ed829bf6bbf1e85fe3cb as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
     com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \

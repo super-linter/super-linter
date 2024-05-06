@@ -90,3 +90,28 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 100
+
+  - package-ecosystem: docker
+    directory: /test/linters/dockerfile_hadolint/bad
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/linters/dockerfile_hadolint/good
+    schedule:
+      interval: daily
+
+  - package-ecosystem: gomod
+    directory: /test/linters/go_modules/go_modules_bad
+    schedule:
+      interval: daily
+
+  - package-ecosystem: gomod
+    directory: /test/linters/go_modules/go_modules_good
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /test/linters/jscpd/good
+    schedule:
+      interval: daily
