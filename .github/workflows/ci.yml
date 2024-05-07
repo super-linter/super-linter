@@ -14,7 +14,7 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     permissions:
-        contents: read
+      contents: read
     concurrency:
       # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
       # github.head_ref: head_ref or source branch of the pull request
