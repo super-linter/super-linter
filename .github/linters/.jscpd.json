@@ -37,7 +37,8 @@
     "**/test/linters/tekton/**",
     "**/test/linters/typescript_es/**",
     "**/github_conf/**",
-    "**/workflows/cd.yml"
+    "**/workflows/cd.yml",
+    "**/workflows/ci.yml"
   ],
   "reporters": [
     "consoleFull"
