@@ -17,7 +17,6 @@ jobs:
       cancel-in-progress: true
     permissions:
       contents: read
-      deployments: write
       issues: write
       packages: write
     strategy:
@@ -106,14 +105,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start deployment
-        uses: bobheadxi/deployments@v1.5.0
-        id: deployment
-        with:
-          step: start
-          token: ${{ secrets.GITHUB_TOKEN }}
-          env: Production
-
       - name: Build and Push Image
         uses: docker/build-push-action@v5
         with:
@@ -132,21 +123,6 @@ jobs:
           tags: |
             ${{ env.CONTAINER_IMAGE_ID }}
           target: "${{ matrix.images.target }}"
-
-      - name: Update deployment
-        uses: bobheadxi/deployments@v1.5.0
-        # We depend on the 'deployment' step outputs, so we can't run this step
-        # if the 'deployment' step didn't run. This can happen if any step
-        # before the 'deployment' step fails. That's why 'always()' is not
-        # suitable here.
-        if: steps.deployment.conclusion != 'cancelled' && steps.deployment.conclusion != 'skipped'
-        with:
-          step: finish
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/super-linter/super-linter
 
       - name: Create Issue on Failure
         uses: actions/github-script@v7
@@ -174,7 +150,6 @@ jobs:
       cancel-in-progress: true
     permissions:
       contents: write
-      deployments: write
       issues: write
       packages: write
       pull-requests: write
@@ -186,15 +161,6 @@ jobs:
           config-file: .github/release-please/release-please-config.json
           manifest-file: .github/release-please/.release-please-manifest.json
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Start deployment
-        if: steps.release.outputs.release_created
-        uses: bobheadxi/deployments@v1.5.0
-        id: deployment
-        with:
-          step: start
-          token: ${{ secrets.GITHUB_TOKEN }}
-          env: Release
 
       - name: Configure release metedata
         if: steps.release.outputs.release_created
@@ -263,21 +229,6 @@ jobs:
 
           git push --force origin ${{ env.SEMVER_MAJOR_VERSION }}
           git push --force origin latest
-
-      - name: Update deployment
-        uses: bobheadxi/deployments@v1.5.0
-        # We depend on the 'deployment' step outputs, so we can't run this step
-        # if the 'deployment' step didn't run. This can happen if any step
-        # before the 'deployment' step fails. That's why 'always()' is not
-        # suitable here.
-        if: steps.deployment.conclusion != 'cancelled' && steps.deployment.conclusion != 'skipped'
-        with:
-          step: finish
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.deployment.outputs.env }}
-          env_url: https://github.com/super-linter/super-linter
 
       - name: Create Issue on Failure
         uses: actions/github-script@v7
