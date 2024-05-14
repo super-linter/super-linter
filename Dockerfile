@@ -18,7 +18,7 @@ FROM goreleaser/goreleaser:v1.25.1 as goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
 FROM hashicorp/terraform:1.8.3 as terraform
 FROM koalaman/shellcheck:v0.10.0 as shellcheck
-FROM mstruebing/editorconfig-checker:2.7.2 as editorconfig-checker
+FROM mstruebing/editorconfig-checker:v3.0.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.8.0 as shfmt
 FROM rhysd/actionlint:1.6.27 as actionlint
 FROM scalameta/scalafmt:v3.8.1 as scalafmt
