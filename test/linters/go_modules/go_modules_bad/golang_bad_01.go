@@ -8,3 +8,11 @@ import (
 if len(in) == 0 {
   return "", fmt.Errorf("Input is empty")
 }
+
+x := 0
+{
+  var x int
+  x++
+}
+
+fmt.Println(x)
