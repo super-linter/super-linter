@@ -104,7 +104,7 @@ Super-linter supports the following tools:
 | **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                                                                           |
 | **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                     |
 
-## Get started
+## Get started with GitHub
 
 More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) available
 
@@ -152,6 +152,27 @@ To run super-linter as a GitHub Action, you do the following:
 1. Commit that file to a new branch.
 1. Push the new commit to the remote repository.
 1. Create a new pull request to observe the results.
+
+## Get started with GitLab
+
+To run super-linter as a GitLab CI Component, you do the following:
+
+1. Add the following to a .gitlab-ci.yml:
+
+   ```yaml
+   include:
+     - component: gitlab.com/components/super-linter/super-linter@1.2.0
+   ```
+
+1. Commit the changed .gitlab-ci.yml.
+
+### GitLab Details   
+
+If you are in a branch with a Merge Request, the report results file will create a new heading in the MR called "Super Linter Test Results"
+
+The documentation and latest available component version is here: https://gitlab.com/explore/catalog/guided-explorations/ci-components/super-linter
+
+The documentation contains some information on how to customize the Super Linter options.
 
 ## Upgrade to newer super-linter versions
 

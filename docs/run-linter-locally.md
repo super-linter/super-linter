@@ -33,7 +33,7 @@ Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-lint
 
 ### GitLab
 
-Check out this [snippet](https://gitlab.com/snippets/1988376) and this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
+Check out this GitLab CI Component which only requires a single line of code: [GitLab CI Component for Super-Linter](https://gitlab.com/explore/catalog/guided-explorations/ci-components/super-linter)
 
 ### Run on Codespaces and Visual Studio Code
 
@@ -62,9 +62,9 @@ them accordingly:
     ```
 
 1. Load the super-linter configuration file when running in GitHub Actions by
-  adding the following step to the GitHub Actions workflow that runs
-  super-linter, after checking out your repository and before running
-  super-linter:
+    adding the following step to the GitHub Actions workflow that runs
+    super-linter, after checking out your repository and before running
+    super-linter:
 
     ```yaml
     - name: Load super-linter configuration
