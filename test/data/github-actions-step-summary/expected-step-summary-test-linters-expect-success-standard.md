@@ -30,6 +30,7 @@
 | HTML | Pass ✅ |
 | JAVA | Pass ✅ |
 | JAVASCRIPT_ES | Pass ✅ |
+| JAVASCRIPT_PRETTIER | Pass ✅ |
 | JAVASCRIPT_STANDARD | Pass ✅ |
 | JSCPD | Pass ✅ |
 | JSON | Pass ✅ |
@@ -77,6 +78,7 @@
 | TERRAGRUNT | Pass ✅ |
 | TSX | Pass ✅ |
 | TYPESCRIPT_ES | Pass ✅ |
+| TYPESCRIPT_PRETTIER | Pass ✅ |
 | TYPESCRIPT_STANDARD | Pass ✅ |
 | XML | Pass ✅ |
 | YAML | Pass ✅ |

@@ -30,6 +30,7 @@
 | HTML | Fail ❌ |
 | JAVA | Fail ❌ |
 | JAVASCRIPT_ES | Fail ❌ |
+| JAVASCRIPT_PRETTIER | Fail ❌ |
 | JAVASCRIPT_STANDARD | Fail ❌ |
 | JSCPD | Fail ❌ |
 | JSON | Fail ❌ |
@@ -77,6 +78,7 @@
 | TERRAGRUNT | Fail ❌ |
 | TSX | Fail ❌ |
 | TYPESCRIPT_ES | Fail ❌ |
+| TYPESCRIPT_PRETTIER | Fail ❌ |
 | TYPESCRIPT_STANDARD | Fail ❌ |
 | XML | Fail ❌ |
 | YAML | Fail ❌ |
