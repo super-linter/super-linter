@@ -27,13 +27,24 @@ Notes:
 - If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
 - You can add as many configuration options as needed. Configuration options are documented in the [README](../README.md#configure-super-linter).
 
-### Azure
-
-Check out this [article](https://blog.tyang.org/2020/06/27/use-github-super-linter-in-azure-pipelines/)
-
 ### GitLab
 
-Check out this [snippet](https://gitlab.com/snippets/1988376) and this Guided Exploration: [GitLab CI CD Extension for Super-Linter](https://gitlab.com/guided-explorations/ci-cd-plugin-extensions/ci-cd-plugin-extension-github-action-super-linter)
+To run Super-linter in your GitLab CI/CD pipeline, You can use the following
+snippet:
+
+```yaml
+super-linter:
+  # More info at https://github.com/super-linter/super-linter
+  stage: Super-linter
+  # Use a specific Super-linter version instead of latest for more reproducible builds
+  image: super-linter/super-linter:latest
+  script: [ "true" ]
+  variables:
+    RUN_LOCAL: "true"
+    DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+```
+
+Note that this is a high-level example that you should customize for your needs.
 
 ### Run on Codespaces and Visual Studio Code
 
