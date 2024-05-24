@@ -13,8 +13,34 @@ body:
       label: Is there an existing issue for this?
       description: Search to see if an issue already exists for the bug you encountered.
       options:
-      - label: I have searched the existing issues
-        required: true
+        - label: I have searched the existing issues
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Are you using the latest Super-linter version available?
+      description: |
+        Ensure that you're using the latest Super-linter version.
+        https://github.com/super-linter/super-linter/releases/latest
+      options:
+        - label: I am using the latest Super-linter version.
+          required: true
+        - label: |
+            I can reproduce the issue running Super-linter using complete version identifier (example: vX.Y.Z), and not just with a partial one (example: vX)
+          required: true
+        - label: |
+            I am using the super-linter/super-linter action or container image, and not the deprecated github/super-linter action or container image.
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Are you resonably sure that it's a Super-linter issue, and not an issue related to a tool that Super-linter runs?
+      description: |
+        If you encounter a specific issue, ensure that the issue is about
+        Super-linter, and not about a tool that Super-linter runs. For example,
+        if a linter reports an unexpected or a surprising error, you may check
+        if there are similar issues reported in that linter's issue tracker.
+      options:
+        - label: I think that this is a Super-linter issue.
+          required: true
   - type: textarea
     attributes:
       label: Current Behavior
@@ -45,6 +71,7 @@ body:
         Copy and paste any relevant log output.
         This will be automatically formatted into code, so no need for backticks.
         Enable debug logging, either on GitHub Actions, or when running locally.
+        Not attaching debug logging will delay the issue triaging process.
       render: shell
     validations:
       required: true
@@ -67,7 +94,5 @@ body:
       label: Anything else?
       description: |
         Links? References? Anything that will give us more context about the issue you are encountering!
-
-        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
     validations:
       required: false
