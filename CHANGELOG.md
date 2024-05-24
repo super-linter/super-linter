@@ -1,5 +1,26 @@
 # Changelog
 
+## [6.5.1](https://github.com/super-linter/super-linter/compare/v6.5.0...v6.5.1) (2024-05-24)
+
+
+### 🐛 Bugfixes
+
+* fix a shadowing setting in .golangci.yml ([#5654](https://github.com/super-linter/super-linter/issues/5654)) ([03b4aa0](https://github.com/super-linter/super-linter/commit/03b4aa0798b7e1e4b45d918d1577ca56f634a855))
+
+
+### ⬆️ Dependency updates
+
+* **docker:** bump dotnet/sdk ([#5662](https://github.com/super-linter/super-linter/issues/5662)) ([0f6e4fb](https://github.com/super-linter/super-linter/commit/0f6e4fbf0b1b893a7326911c5a0405ea60fe5068))
+* **npm:** bump react-intl from 6.6.6 to 6.6.8 in /dependencies ([#5665](https://github.com/super-linter/super-linter/issues/5665)) ([e3faa97](https://github.com/super-linter/super-linter/commit/e3faa97fecd9c4aeda996b8e023c14730e386835))
+* **python:** bump checkov from 3.2.91 to 3.2.98 in /dependencies/python ([#5669](https://github.com/super-linter/super-linter/issues/5669)) ([df39abd](https://github.com/super-linter/super-linter/commit/df39abd805dc2a02adf4ea3660ec54b8783fa1c2))
+* **python:** bump snakemake in /dependencies/python ([#5670](https://github.com/super-linter/super-linter/issues/5670)) ([457e0f5](https://github.com/super-linter/super-linter/commit/457e0f58c96006c15a91ba0775ad1ba0912641f5))
+
+
+### 🧰 Maintenance
+
+* move local action test to a dedicated job ([#5629](https://github.com/super-linter/super-linter/issues/5629)) ([90f3fef](https://github.com/super-linter/super-linter/commit/90f3fef29d4e463c132fabc263ce4583bf1d0426))
+* update gitlab and azure docs ([#5677](https://github.com/super-linter/super-linter/issues/5677)) ([c5e4fe1](https://github.com/super-linter/super-linter/commit/c5e4fe14a1931d1aacb0c36a1d56e586e6744030))
+
 ## [6.5.0](https://github.com/super-linter/super-linter/compare/v6.4.1...v6.5.0) (2024-05-15)
 
 
