@@ -155,7 +155,7 @@ jobs:
       - name: Update action.yml
         run: |
           echo "yq version: $(yq --version)"
-          yq '.runs.image = env(CONTAINER_IMAGE_ID)' -i action.yml
+          yq '.runs.image = "docker://" + env(CONTAINER_IMAGE_ID)' -i action.yml
           echo "Action file contents:"
           cat action.yml
 
@@ -252,6 +252,25 @@ jobs:
           make ${{ matrix.test-case }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # The purpose of this job is to run only when the run-test-suite job runs to completion.
+  # We can use this job as a required status check in a branch protection rule without
+  # having to select each individual job that dynamically add to the test matrix.
+  test-success-placeholder:
+    name: Check if all the tests passed
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs:
+      - run-test-suite
+      - test-local-action
+    steps:
+      - name: Test suite success
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: exit 0
+      - name: Test suite failures
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
 
   preview-release-notes:
     if: github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name && github.repository == 'super-linter/super-linter'
