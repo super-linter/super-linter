@@ -16,7 +16,7 @@ FROM golang:1.22.3-alpine as golang
 FROM golangci/golangci-lint:v1.58.2 as golangci-lint
 FROM goreleaser/goreleaser:v1.26.2 as goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
-FROM hashicorp/terraform:1.8.3 as terraform
+FROM hashicorp/terraform:1.8.4 as terraform
 FROM koalaman/shellcheck:v0.10.0 as shellcheck
 FROM mstruebing/editorconfig-checker:v3.0.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.8.0 as shfmt
