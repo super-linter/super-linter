@@ -12,6 +12,7 @@ FROM alpine/terragrunt:1.8.4 as terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.51.1 as tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.6 as kubeconfrm
+FROM alpine/helm:3.14.4 as helm
 FROM golang:1.22.3-alpine as golang
 FROM golangci/golangci-lint:v1.59.0 as golangci-lint
 FROM goreleaser/goreleaser:v1.26.2 as goreleaser
@@ -258,6 +259,11 @@ COPY scripts/install-google-java-format.sh /
 COPY dependencies/google-java-format /google-java-format
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
     && rm -rfv /install-google-java-format.sh /google-java-format
+
+################
+# Install Helm #
+################
+COPY --from=helm /usr/bin/helm /usr/bin/
 
 # Copy Node tools
 COPY --from=npm-builder /node_modules /node_modules
