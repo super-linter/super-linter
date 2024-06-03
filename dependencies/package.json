@@ -3,7 +3,7 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.24.5",
     "@babel/preset-react": "^7.24.6",
-    "@babel/preset-typescript": "^7.24.1",
+    "@babel/preset-typescript": "^7.24.6",
     "@coffeelint/cli": "^5.2.11",
     "@ibm/tekton-lint": "^1.1.0",
     "@react-native/eslint-config": "^0.73.2",
