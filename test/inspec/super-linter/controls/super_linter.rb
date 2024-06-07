@@ -160,6 +160,7 @@ control "super-linter-installed-commands" do
     { linter_name: "goreleaser"},
     { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
     { linter_name: "hadolint"},
+    { linter_name: "helm", version_option: "version"}, # not used as linter, needed for checkov's helm framework
     { linter_name: "htmlhint"},
     { linter_name: "isort"},
     { linter_name: "jscpd"},
@@ -510,7 +511,8 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.yaml-lint.yml",
     "/action/lib/.automation/phpcs.xml",
     "/action/lib/.automation/phpstan.neon",
-    "/action/lib/.automation/psalm.xml"
+    "/action/lib/.automation/psalm.xml",
+    "/usr/bin/helm", # needed for checkov's helm framework
   ]
 
   files.each do |item|

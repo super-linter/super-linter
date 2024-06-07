@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  name: "test"
+
+service:
+  port: 80
