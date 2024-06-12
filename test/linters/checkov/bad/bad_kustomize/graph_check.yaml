@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-proxy-deployment
+  labels:
+    app: internal-proxy
+spec:
+  selector:
+    matchLabels:
+      app: internal-proxy
+  template:
+    metadata:
+      labels:
+        app: internal-proxy
+    spec:
+      containers:
+        - name: internal-api
+          image: test-image
+          resources:
+            limits:
+              cpu: 30m
+              memory: 40Mi
+            requests:
+              cpu: 30m
+              memory: 40Mi
+          ports:
+            - containerPort: 3000
+...

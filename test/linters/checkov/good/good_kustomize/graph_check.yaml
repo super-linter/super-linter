@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-proxy-deployment
+  labels:
+    app: internal-proxy
+spec:
+  selector:
+    matchLabels:
+      app: internal-proxy
+  template:
+    metadata:
+      labels:
+        app: internal-proxy
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: internal-api
+          image: test-image
+          livenessProbe:
+            path: /testLivenessProbe
+          readinessProbe:
+            path: /testReadinessProbe
+          resources:
+            limits:
+              cpu: 30m
+              memory: 40Mi
+            requests:
+              cpu: 30m
+              memory: 40Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsUser: 10001
+          ports:
+            - containerPort: 3000
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+...
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: internal-proxy
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - ipBlock:
+          cidr: 172.17.0.0/16
+...
