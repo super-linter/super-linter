@@ -116,6 +116,12 @@ FROM powershell as powershell-installer
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
+FROM rust:1.78.0-alpine3.19 as rust
+
+RUN apk add --no-cache \
+    rust-clippy \
+    rustfmt
+
 FROM python:3.12.3-alpine3.19 as base_image
 
 LABEL com.github.actions.name="Super-Linter" \
@@ -360,8 +366,35 @@ COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 # Install dart-sdk #
 ####################
 ENV DART_SDK /usr/lib/dart
-COPY --from=dart "${DART_SDK}" "${DART_SDK}"
-RUN chmod 755 "${DART_SDK}" && chmod 755 "${DART_SDK}/bin"
+# These COPY directives may be compacted after --parents is supported
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/version" \
+    "${DART_SDK}"/
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/bin/dart" \
+    "${DART_SDK}/bin/dart.sym" \
+    "${DART_SDK}/bin"/
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/bin/snapshots/analysis_server.dart.snapshot" \
+    "${DART_SDK}/bin/snapshots/dartdev.dart.snapshot" \
+    "${DART_SDK}/bin/snapshots/frontend_server_aot.dart.snapshot" \
+    "${DART_SDK}/bin/snapshots"/
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/lib/_internal" \
+    "${DART_SDK}/lib/_internal"
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/lib/async" \
+    "${DART_SDK}/lib/async"
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/lib/convert" \
+    "${DART_SDK}/lib/convert"
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/lib/core" \
+    "${DART_SDK}/lib/core"
+COPY --from=dart --chmod=0755 \
+    "${DART_SDK}/lib/io" \
+    "${DART_SDK}/lib/io"
+
 
 ########################
 # Install clang-format #
@@ -454,14 +487,6 @@ ARG TARGETARCH
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
-# Install super-linter runtime dependencies
-RUN apk add --no-cache \
-    rust-clippy \
-    rustfmt
-
-COPY scripts/clippy.sh /usr/bin/clippy
-RUN chmod +x /usr/bin/clippy
-
 #########################
 # Install dotenv-linter #
 #########################
@@ -494,6 +519,24 @@ RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
 #############################################################
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
+
+# Install Rust linters
+COPY --from=rust \
+    /usr/bin/cargo \
+    /usr/bin/cargo-clippy \
+    /usr/bin/clippy-driver \
+    /usr/bin/cargo-fmt \
+    /usr/bin/rustc \
+    /usr/bin/rustfmt \
+    /usr/bin/
+COPY --from=rust \
+    /usr/lib/libLLVM-17.so \
+    /usr/lib/librustc_driver-56e2d9f25bcc525c.so \
+    /usr/lib/libscudo.so \
+    /usr/lib/libstd-01072ff1a54ef56b.so \
+    /usr/lib/
+
+COPY --chmod=0755 scripts/clippy.sh /usr/bin/clippy
 
 # Run to build version file and validate image again because we installed more linters
 ENV IMAGE="standard"

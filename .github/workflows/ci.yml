@@ -159,6 +159,10 @@ jobs:
           echo "Action file contents:"
           cat action.yml
 
+      - name: Print environment info
+        run: |
+          make info
+
       - name: Test Local Action (debug log)
         uses: ./
         env:

@@ -14,14 +14,6 @@ ifeq ($(INTERACTIVE), 1)
 	DOCKER_FLAGS += -t
 endif
 
-.PHONY: info
-info: ## Gather information about the runtime environment
-	echo "whoami: $$(whoami)"; \
-	echo "pwd: $$(pwd)"; \
-	echo "ls -ahl: $$(ls -ahl)"; \
-	docker images; \
-	docker ps
-
 .PHONY: help
 help: ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -79,12 +71,28 @@ endif
 
 DEV_CONTAINER_URL := "super-linter/dev-container:latest"
 
-
 ifeq ($(GITHUB_HEAD_REF),)
 RELEASE_PLEASE_TARGET_BRANCH := "$(shell git branch --show-current)"
 else
 RELEASE_PLEASE_TARGET_BRANCH := "${GITHUB_HEAD_REF}"
 endif
+
+.PHONY: info
+info: ## Gather information about the runtime environment
+	echo "whoami: $$(whoami)"; \
+	echo "pwd: $$(pwd)"; \
+	echo "IMAGE:" $(IMAGE) \
+	echo "SUPER_LINTER_TEST_CONTAINER_URL:" $(SUPER_LINTER_TEST_CONTAINER_URL) \
+	echo "ls -ahl: $$(ls -ahl)"; \
+	docker images; \
+	docker ps; \
+	echo "Container image layers size:"; \
+	docker history \
+		--human \
+		--no-trunc \
+		--format "{{.Size}} {{.CreatedSince}} {{.CreatedBy}}" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		| sort --human
 
 .PHONY: check-github-token
 check-github-token:
