@@ -5,15 +5,7 @@ set -o nounset
 set -o pipefail
 
 # shellcheck disable=SC2034
-LOG_DEBUG="true"
-# shellcheck disable=SC2034
-LOG_VERBOSE="true"
-# shellcheck disable=SC2034
-LOG_NOTICE="true"
-# shellcheck disable=SC2034
-LOG_WARN="true"
-# shellcheck disable=SC2034
-LOG_ERROR="true"
+LOG_LEVEL="DEBUG"
 
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
@@ -102,9 +94,29 @@ function RecognizeShebangWithBlankTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function IsAnsibleDirectoryTest() {
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  local FILE="${GITHUB_WORKSPACE}/ansible"
+  mkdir -p "${FILE}"
+  local ANSIBLE_DIRECTORY="/ansible"
+  export ANSIBLE_DIRECTORY
+
+  debug "Confirming that ${FILE} is an Ansible directory"
+
+  if ! IsAnsibleDirectory "${FILE}"; then
+    fatal "${FILE} is not considered to be an Ansible directory"
+  fi
+
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  notice "${FUNCTION_NAME} PASS"
+}
+
 RecognizeNoShebangTest
 RecognizeCommentIsNotShebangTest
 RecognizeIndentedShebangAsCommentTest
 RecognizeSecondLineShebangAsCommentTest
 RecognizeShebangTest
 RecognizeShebangWithBlankTest
+
+IsAnsibleDirectoryTest

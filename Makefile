@@ -124,6 +124,14 @@ docker: check-github-token ## Build the container image
 docker-pull: ## Pull the container image from registry
 	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)
 
+.PHONY: open-shell-super-linter-container
+open-shell-super-linter-container: ## Open a shell in the Super-linter container
+	docker run $(DOCKER_FLAGS) \
+		--interactive \
+		--entrypoint /bin/bash \
+		-v "$(CURDIR)":/tmp/lint \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
 .PHONY: validate-container-image-labels
 validate-container-image-labels: ## Validate container image labels
 	$(CURDIR)/test/validate-docker-labels.sh \

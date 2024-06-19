@@ -136,6 +136,7 @@ function GetValidationInfo() {
     ANSIBLE_DIRECTORY="${TEMP_ANSIBLE_DIRECTORY}"
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
+  export ANSIBLE_DIRECTORY
 }
 
 function CheckIfGitBranchExists() {

@@ -116,7 +116,9 @@ DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # De
 DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
 FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
+export FILTER_REGEX_INCLUDE
 FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
+export FILTER_REGEX_EXCLUDE
 GITHUB_DOMAIN="${GITHUB_DOMAIN:-"github.com"}"
 GITHUB_DOMAIN="${GITHUB_DOMAIN%/}" # Remove trailing slash if present
 # GitHub API root url
