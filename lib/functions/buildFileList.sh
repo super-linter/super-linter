@@ -148,7 +148,8 @@ function BuildFileList() {
   PARALLEL_COMMAND+=("BuildFileArrays")
   debug "PARALLEL_COMMAND to build the list of files and directories to lint: ${PARALLEL_COMMAND[*]}"
 
-  FILE_ARRAYS_DIRECTORY_PATH="$(mktemp -d)"
+  FILE_ARRAYS_DIRECTORY_PATH="/tmp/super-linter-file-arrays"
+  mkdir -p "${FILE_ARRAYS_DIRECTORY_PATH}"
   export FILE_ARRAYS_DIRECTORY_PATH
   debug "Created FILE_ARRAYS_DIRECTORY_PATH: ${FILE_ARRAYS_DIRECTORY_PATH}"
 
@@ -206,9 +207,6 @@ BuildFileArrays() {
   debug "Categorizing the following files: ${RAW_FILE_ARRAY[*]}"
   debug "FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
-  ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
-  ValidateBooleanVariable "IGNORE_GITIGNORED_FILES" "${IGNORE_GITIGNORED_FILES}"
-
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     # Get the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
@@ -247,7 +245,13 @@ BuildFileArrays() {
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
       fi
 
-      # No need to process this item furhter
+      # Handle the corner case where FILE=${GITHUB_WORKSPACE}, and the user set
+      # ANSIBLE_DIRECTORY=. or ANSIBLE_DIRECTORY=/
+      if IsAnsibleDirectory "${FILE}"; then
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
+      fi
+
+      debug "No need to further process ${FILE}"
       continue
     fi
 
@@ -294,7 +298,7 @@ BuildFileArrays() {
 
     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITLEAKS"
 
-    if [[ ("${FILE}" =~ .*${ANSIBLE_DIRECTORY}.*) ]] && [[ -d "${FILE}" ]]; then
+    if IsAnsibleDirectory "${FILE}"; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
     fi
 

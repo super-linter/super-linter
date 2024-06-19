@@ -269,7 +269,7 @@ function IsGenerated() {
   fi
 }
 
-# We need these functions when building the file list with paralle
+# We need these functions when building the file list with parallel
 export -f CheckFileType
 export -f DetectActions
 export -f DetectARMFile
@@ -421,3 +421,18 @@ function RunAdditionalInstalls() {
     cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
 }
+
+function IsAnsibleDirectory() {
+  local FILE
+  FILE="$1"
+
+  debug "Checking if ${FILE} is the Ansible directory (${ANSIBLE_DIRECTORY})"
+  if [[ ("${FILE}" =~ .*${ANSIBLE_DIRECTORY}.*) ]] && [[ -d "${FILE}" ]]; then
+    debug "${FILE} is the Ansible directory"
+    return 0
+  else
+    debug "${FILE} is not the Ansible directory"
+    return 1
+  fi
+}
+export -f IsAnsibleDirectory
