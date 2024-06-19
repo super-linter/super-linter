@@ -84,16 +84,18 @@ them accordingly:
 
 ## Build the container image and run the test suite locally
 
-To run the build and test process locally, do the following:
+To run the build and test process locally, in the top-level super-linter
+directory, do the following:
 
 1. [Create a fine-grained GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token).
-1. Create a file to store the personal access token on your machine:
+  The token only needs to have public/read-only access.
+
+1. Store the generated personal access token in a file in the top-level
+  directory (This file is ignored by Git).
 
     ```bash
-    touch .github-personal-access-token
+    echo "github_pat_XXXXXX_XXXXXX" > .github-personal-access-token
     ```
-
-    The file to store the personal access token is ignored by Git.
 
 1. Run the build process:
 
