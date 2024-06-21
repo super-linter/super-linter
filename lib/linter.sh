@@ -29,6 +29,12 @@ source /action/lib/functions/worker.sh # Source the function script(s)
 source /action/lib/functions/setupSSH.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/githubEvent.sh
+# shellcheck source=/dev/null
+source /action/lib/functions/githubDomain.sh
+
+if ! ValidateGitHubUrls; then
+  fatal "GitHub URLs failed validation"
+fi
 
 # We want a lowercase value
 declare -l RUN_LOCAL
@@ -119,14 +125,6 @@ FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
 export FILTER_REGEX_INCLUDE
 FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
 export FILTER_REGEX_EXCLUDE
-GITHUB_DOMAIN="${GITHUB_DOMAIN:-"github.com"}"
-GITHUB_DOMAIN="${GITHUB_DOMAIN%/}" # Remove trailing slash if present
-# GitHub API root url
-GITHUB_API_URL="${GITHUB_CUSTOM_API_URL:-"https://api.${GITHUB_DOMAIN}"}"
-GITHUB_API_URL="${GITHUB_API_URL%/}" # Remove trailing slash if present
-GITHUB_SERVER_URL="https://${GITHUB_DOMAIN}"
-# shellcheck disable=SC2034  # Variable is referenced indirectly
-GITHUB_META_URL="${GITHUB_API_URL}/meta"
 LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 RAW_FILE_ARRAY=() # Array of all files that were changed
