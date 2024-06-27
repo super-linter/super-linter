@@ -5,4 +5,18 @@ directory:
   - test/linters/checkov/good
 
 quiet: false
+
+skip-framework:
+  # The Kubernetes framework because it doesn't run Kustomize before running the
+  # scan, as expected. There's the Kustomize framework for that.
+  # If we don't skip the Kubernetes framework, Checkov reports issues against
+  # Kubernetes descriptors that we handle with Kustomize. For example, we set
+  # a non-default Kubernetes Namespace using Kustomize.
+  # Checkov doesn't currently support skipping checks only for a given set of
+  # frameworks, and the Kubernetes framework runs the same checks that the Helm
+  # and the Kustomize frameworks run. So, we skip the Kubernetes framework when
+  # running test cases. In case we need to implement new Kubernetes test cases,
+  # we have to do that as part of the test Helm chart or the test Kustomize
+  # "package".
+  - kubernetes
 ...

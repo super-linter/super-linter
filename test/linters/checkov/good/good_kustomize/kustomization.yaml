@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+  - name: test-image
+    newName: hello-world
+    newTag: linux
+    digest: sha256:b7d87b72c676fe7b704572ebdfdf080f112f7a4c68fb77055d475e42ebc3686f
+
+namespace: non-default-namespace
+
+resources:
+  - graph_check.yaml
+...

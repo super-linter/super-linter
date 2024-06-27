@@ -17,6 +17,7 @@ FROM golang:1.22.3-alpine as golang
 FROM golangci/golangci-lint:v1.59.0 as golangci-lint
 FROM goreleaser/goreleaser:v1.26.2 as goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
+FROM registry.k8s.io/kustomize/kustomize:v5.0.1 as kustomize
 FROM hashicorp/terraform:1.8.4 as terraform
 FROM koalaman/shellcheck:v0.10.0 as shellcheck
 FROM mstruebing/editorconfig-checker:v3.0.1 as editorconfig-checker
@@ -264,6 +265,8 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
 # Install Helm #
 ################
 COPY --from=helm /usr/bin/helm /usr/bin/
+
+COPY --from=kustomize /app/kustomize /usr/bin/
 
 # Copy Node tools
 COPY --from=npm-builder /node_modules /node_modules

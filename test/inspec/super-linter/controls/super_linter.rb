@@ -165,6 +165,7 @@ control "super-linter-installed-commands" do
     { linter_name: "isort"},
     { linter_name: "jscpd"},
     { linter_name: "ktlint"},
+    { linter_name: "kustomize", version_option: "version"}, # not used as linter, needed for checkov's kustomize checks
     { linter_name: "kubeconform", version_option: "-v"},
     { linter_name: "lua", version_option: "-v"},
     { linter_name: "markdownlint"},
@@ -513,6 +514,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",
     "/usr/bin/helm", # needed for checkov's helm framework
+    "/usr/bin/kustomize", # needed for checkov's kustomize checks
   ]
 
   files.each do |item|

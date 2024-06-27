@@ -17,7 +17,9 @@ quiet: true
 skip-path:
   - test/linters/ansible
   - test/linters/arm
-  - test/linters/checkov/bad
+  # We can't exclude just test/linters/checkov/bad because of
+  # https://github.com/bridgecrewio/checkov/issues/6468
+  - test/linters/checkov
   - test/linters/dockerfile_hadolint
   - test/linters/jscpd
   - test/linters/json
