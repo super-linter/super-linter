@@ -90,3 +90,7 @@ test/reports
 .lintr
 test/linters/rust_clippy/**/Cargo.lock
 test/linters/rust_clippy/**/target/**
+
+# Super-linter ouputs
+super-linter-output/
+custom-super-linter-output-directory-name/

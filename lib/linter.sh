@@ -80,6 +80,10 @@ declare -l MULTI_STATUS
 MULTI_STATUS="${MULTI_STATUS:-true}"
 
 # We want a lowercase value
+declare -l SAVE_SUPER_LINTER_OUTPUT
+SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT:-false}"
+
+# We want a lowercase value
 declare -l SSH_INSECURE_NO_VERIFY_GITHUB_KEY
 SSH_INSECURE_NO_VERIFY_GITHUB_KEY="${SSH_INSECURE_NO_VERIFY_GITHUB_KEY:-false}"
 
@@ -594,7 +598,7 @@ Footer() {
     # but a number that's less than that because of how GNU parallel returns
     # exit codes.
     # Ref: https://www.gnu.org/software/parallel/parallel.html#exit-status
-    ERROR_COUNTER_FILE_PATH="/tmp/super-linter-parallel-command-exit-code-${LANGUAGE}"
+    ERROR_COUNTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${LANGUAGE}"
     if [ ! -f "${ERROR_COUNTER_FILE_PATH}" ]; then
       debug "Error counter ${ERROR_COUNTER_FILE_PATH} doesn't exist"
     else
@@ -607,7 +611,7 @@ Footer() {
         # get feedback
         if [[ "${LOG_VERBOSE}" != "true" ]]; then
           local STDOUT_LINTER_FILE_PATH
-          STDOUT_LINTER_FILE_PATH="/tmp/super-linter-parallel-stdout-${LANGUAGE}"
+          STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${LANGUAGE}"
           if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
             error "$(cat "${STDOUT_LINTER_FILE_PATH}")"
           else
@@ -615,7 +619,7 @@ Footer() {
           fi
 
           local STDERR_LINTER_FILE_PATH
-          STDERR_LINTER_FILE_PATH="/tmp/super-linter-parallel-stderr-${LANGUAGE}"
+          STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${LANGUAGE}"
           if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
             error "$(cat "${STDERR_LINTER_FILE_PATH}")"
           else
@@ -702,8 +706,20 @@ cleanup() {
         --force \
         "${LOG_TEMP}" "${LOG_FILE_PATH}"
     else
-      debug "Skipping the moving of the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
+      debug "Skip moving the log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
     fi
+
+    if [ "${SAVE_SUPER_LINTER_OUTPUT}" = "true" ]; then
+      if [ -e "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}" ]; then
+        debug "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH} already exists. Deleting it before moving the new output directory there."
+        rm -fr "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+      fi
+      debug "Moving Super-linter output from ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH} to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+      mv "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}" "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+    else
+      debug "Skip moving the output directory from ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH} to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+    fi
+
   else
     debug "GITHUB_WORKSPACE is not set. Skipping filesystem cleanup steps"
   fi
@@ -751,6 +767,20 @@ debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
 
 R_RULES_FILE_PATH_IN_ROOT="${GITHUB_WORKSPACE}/${R_FILE_NAME}"
 debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
+
+DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
+SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
+export SUPER_LINTER_OUTPUT_DIRECTORY_NAME
+debug "Super-linter output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+
+SUPER_LINTER_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+export SUPER_LINTER_OUTPUT_DIRECTORY_PATH
+debug "Super-linter output directory path: ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+
+SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="/tmp/${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+export SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH
+debug "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
+mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 
 ############################
 # Validate the environment #
@@ -818,7 +848,7 @@ endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 # Run linters #
 ###############
 declare PARALLEL_RESULTS_FILE_PATH
-PARALLEL_RESULTS_FILE_PATH="/tmp/super-linter-results.json"
+PARALLEL_RESULTS_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-results.json"
 debug "PARALLEL_RESULTS_FILE_PATH: ${PARALLEL_RESULTS_FILE_PATH}"
 
 declare -a PARALLEL_COMMAND

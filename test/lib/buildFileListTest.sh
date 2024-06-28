@@ -137,7 +137,7 @@ function BuildFileArraysAnsibleGitHubWorkspaceTest() {
   local TEST_CASE_RUN=false
   # shellcheck disable=SC2034
   local IGNORE_GENERATED_FILES=false
-  local FILE_ARRAYS_DIRECTORY_PATH="/tmp/super-linter-file-arrays"
+  local FILE_ARRAYS_DIRECTORY_PATH="/tmp/super-linter-output/super-linter-file-arrays"
   mkdir -p "${FILE_ARRAYS_DIRECTORY_PATH}"
 
   # shellcheck disable=SC2034

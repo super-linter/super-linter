@@ -15,6 +15,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "LOG_WARN" "${LOG_WARN}"
   ValidateBooleanVariable "MULTI_STATUS" "${MULTI_STATUS}"
   ValidateBooleanVariable "RUN_LOCAL" "${RUN_LOCAL}"
+  ValidateBooleanVariable "SAVE_SUPER_LINTER_OUTPUT" "${SAVE_SUPER_LINTER_OUTPUT}"
   ValidateBooleanVariable "SSH_INSECURE_NO_VERIFY_GITHUB_KEY" "${SSH_INSECURE_NO_VERIFY_GITHUB_KEY}"
   ValidateBooleanVariable "SSH_SETUP_GITHUB" "${SSH_SETUP_GITHUB}"
   ValidateBooleanVariable "SUPPRESS_FILE_TYPE_WARN" "${SUPPRESS_FILE_TYPE_WARN}"
