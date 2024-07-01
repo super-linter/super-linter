@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.7.0](https://github.com/super-linter/super-linter/compare/v6.6.0...v6.7.0) (2024-07-01)
+
+
+### 🚀 Features
+
+* add the kustomize binary for checkov ([#5763](https://github.com/super-linter/super-linter/issues/5763)) ([d74351f](https://github.com/super-linter/super-linter/commit/d74351fda71d8741d88873e29622baa07e8ad6de))
+* checkov scans for helm charts ([#5631](https://github.com/super-linter/super-linter/issues/5631)) ([5b5d2f7](https://github.com/super-linter/super-linter/commit/5b5d2f7ef0c308f904d2e30528e6dddad0a3498a))
+* configure github server url ([#5792](https://github.com/super-linter/super-linter/issues/5792)) ([cef1776](https://github.com/super-linter/super-linter/commit/cef17760de240af6d67fc59739c2be585e090037)), closes [#5572](https://github.com/super-linter/super-linter/issues/5572)
+* save super-linter output if requested ([#5806](https://github.com/super-linter/super-linter/issues/5806)) ([94bb3f5](https://github.com/super-linter/super-linter/commit/94bb3f5563cd6c031c4eeff052d448bc8a6a0fe9)), closes [#5774](https://github.com/super-linter/super-linter/issues/5774)
+
+
+### 🐛 Bugfixes
+
+* don't skip processing ansible_directory pwd ([#5790](https://github.com/super-linter/super-linter/issues/5790)) ([c99ec77](https://github.com/super-linter/super-linter/commit/c99ec7784ac7ee89917055456f747c8085f5bf29))
+
+
+### 🧰 Maintenance
+
+* update docs to improve build locally ([#5788](https://github.com/super-linter/super-linter/issues/5788)) ([9d154f5](https://github.com/super-linter/super-linter/commit/9d154f5e68af77bf3f7fb08a89d4cdc0552dde80))
+
 ## [6.6.0](https://github.com/super-linter/super-linter/compare/v6.5.1...v6.6.0) (2024-06-03)
 
 
