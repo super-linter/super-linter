@@ -1,51 +1,18 @@
 ---
-#############################
-#############################
-## JavaScript Linter rules ##
-#############################
-#############################
-
-############
-# Env Vars #
-############
 env:
   browser: true
   es6: true
   jest: true
 
-###############
-# Global Vars #
-###############
-globals:
-  Atomics: readonly
-  SharedArrayBuffer: readonly
-
 ignorePatterns:
   - "!.*"
   - "**/node_modules/.*"
 
-###############
-# Parser vars #
-###############
 parser: '@typescript-eslint/parser'
-parserOptions:
-  ecmaVersion: 2018
-  sourceType: module
 
-###########
-# Plugins #
-###########
 plugins:
   - '@typescript-eslint'
 
-#########
-# Rules #
-#########
-rules: { }
-
-##############################
-# Overrides for JSON parsing #
-##############################
 overrides:
 
   # JSON files
