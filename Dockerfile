@@ -23,7 +23,7 @@ FROM koalaman/shellcheck:v0.10.0 as shellcheck
 FROM mstruebing/editorconfig-checker:v3.0.1 as editorconfig-checker
 FROM mvdan/shfmt:v3.8.0 as shfmt
 FROM rhysd/actionlint:1.7.1 as actionlint
-FROM scalameta/scalafmt:v3.8.1 as scalafmt
+FROM scalameta/scalafmt:v3.8.2 as scalafmt
 FROM zricethezav/gitleaks:v8.18.3 as gitleaks
 FROM yoheimuta/protolint:0.49.7 as protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2024.05.24-alpine as clj-kondo
