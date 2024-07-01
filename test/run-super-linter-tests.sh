@@ -89,14 +89,30 @@ run_test_case_use_find_and_ignore_gitignored_files() {
   COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM=true)
 }
 
+run_test_cases_save_super_linter_output() {
+  run_test_cases_expect_success
+  SAVE_SUPER_LINTER_OUTPUT="true"
+}
+
+run_test_cases_save_super_linter_output_custom_path() {
+  run_test_cases_save_super_linter_output
+  SUPER_LINTER_OUTPUT_DIRECTORY_NAME="custom-super-linter-output-directory-name"
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-false}"
+SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT:-false}"
+
+if [ -n "${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-}" ]; then
+  COMMAND_TO_RUN+=(-e SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}")
+fi
 
 COMMAND_TO_RUN+=(-e CREATE_LOG_FILE="${CREATE_LOG_FILE}")
 COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
+COMMAND_TO_RUN+=(-e SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT}")
 COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE:-$(pwd)}:/tmp/lint")
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 
@@ -120,7 +136,7 @@ echo "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"
 if [[ "${CREATE_LOG_FILE}" == true ]]; then
   LOG_FILE_PATH="$(pwd)/super-linter.log"
   if [ ! -e "${LOG_FILE_PATH}" ]; then
-    echo "Log file was requested but it's not available"
+    echo "Log file was requested but it's not available at ${LOG_FILE_PATH}"
     exit 1
   else
     sudo chown -R "$(id -u)":"$(id -g)" "${LOG_FILE_PATH}"
@@ -129,6 +145,23 @@ if [[ "${CREATE_LOG_FILE}" == true ]]; then
   fi
 else
   echo "Log file was not requested. CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
+fi
+
+if [[ "${SAVE_SUPER_LINTER_OUTPUT}" == true ]]; then
+
+  SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-"super-linter-output"}"
+
+  SUPER_LINTER_OUTPUT_PATH="$(pwd)/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+  if [ ! -d "${SUPER_LINTER_OUTPUT_PATH}" ]; then
+    echo "Super-linter output was requested but it's not available at ${SUPER_LINTER_OUTPUT_PATH}"
+    exit 1
+  else
+    sudo chown -R "$(id -u)":"$(id -g)" "${SUPER_LINTER_OUTPUT_PATH}"
+    echo "Super-linter output path (${SUPER_LINTER_OUTPUT_PATH}) contents:"
+    ls -alhR "${SUPER_LINTER_OUTPUT_PATH}"
+  fi
+else
+  echo "Super-linter output was not requested. SAVE_SUPER_LINTER_OUTPUT: ${SAVE_SUPER_LINTER_OUTPUT}"
 fi
 
 if [ ${SUPER_LINTER_EXIT_CODE} -ne ${EXPECTED_EXIT_CODE} ]; then

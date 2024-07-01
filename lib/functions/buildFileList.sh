@@ -131,7 +131,7 @@ function BuildFileList() {
   fi
 
   local PARALLEL_RESULTS_FILE_PATH
-  PARALLEL_RESULTS_FILE_PATH="/tmp/super-linter-parallel-results-build-file-list.json"
+  PARALLEL_RESULTS_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-results-build-file-list.json"
   debug "PARALLEL_RESULTS_FILE_PATH when building the file list: ${PARALLEL_RESULTS_FILE_PATH}"
 
   local -a PARALLEL_COMMAND
@@ -148,7 +148,7 @@ function BuildFileList() {
   PARALLEL_COMMAND+=("BuildFileArrays")
   debug "PARALLEL_COMMAND to build the list of files and directories to lint: ${PARALLEL_COMMAND[*]}"
 
-  FILE_ARRAYS_DIRECTORY_PATH="/tmp/super-linter-file-arrays"
+  FILE_ARRAYS_DIRECTORY_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-file-arrays"
   mkdir -p "${FILE_ARRAYS_DIRECTORY_PATH}"
   export FILE_ARRAYS_DIRECTORY_PATH
   debug "Created FILE_ARRAYS_DIRECTORY_PATH: ${FILE_ARRAYS_DIRECTORY_PATH}"

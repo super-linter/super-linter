@@ -240,6 +240,7 @@ You can configure super-linter using the following environment variables:
 | **PYTHON_RUFF_CONFIG_FILE**                     | `.ruff.toml`                    | Filename for [ruff configuration](https://docs.astral.sh/ruff/configuration/)                                                                                                                                        |
 | **RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES** | not set                         | Comma-separated filenames for [renovate shareable config preset](https://docs.renovatebot.com/config-presets/) (ex: `default.json`)                                                                                  |
 | **RUBY_CONFIG_FILE**                            | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
+| **SAVE_SUPER_LINTER_OUTPUT**                    | `false`                         | If set to `true`, super-linter will save its output to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}`                                                                                                  |
 | **SCALAFMT_CONFIG_FILE**                        | `.scalafmt.conf`                | Filename for [scalafmt configuration](https://scalameta.org/scalafmt/docs/configuration.html) (ex: `.scalafmt.conf`)                                                                                                 |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE**              | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
 | **SSL_CERT_SECRET**                             | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
@@ -248,6 +249,7 @@ You can configure super-linter using the following environment variables:
 | **SSH_INSECURE_NO_VERIFY_GITHUB_KEY**           | `false`                         | **INSECURE -** If set to `true`, does not verify the fingerprint of the github.com SSH key before adding this. This is not recommended!                                                                              |
 | **SQL_CONFIG_FILE**                             | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **SQLFLUFF_CONFIG_FILE**                        | `/.sqlfluff`                    | Filename for [SQLFLUFF configuration](https://docs.sqlfluff.com/en/stable/configuration.html) (ex: `/.sqlfluff`, `pyproject.toml`)                                                                                   |
+| **SUPER_LINTER_OUTPUT_DIRECTORY_NAME**          | `super-linter-output`           | Name of the directory where super-linter saves its output.                                                                                                                                                           |
 | **SUPPRESS_FILE_TYPE_WARN**                     | `false`                         | If set to `true`, will hide warning messages about files without their proper extensions. Default is `false`                                                                                                         |
 | **SUPPRESS_POSSUM**                             | `false`                         | If set to `true`, will hide the ASCII possum at top of log output. Default is `false`                                                                                                                                |
 | **TERRAFORM_TERRASCAN_CONFIG_FILE**             | `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`)                                                                                                                 |
@@ -450,6 +452,28 @@ path to the files that contains a CA that can be used to valide the certificate:
   env:
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
 ```
+
+## Super-linter outputs
+
+If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its output
+to `${DEFAULT_WORKSPACE}/${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}`, so you
+can further process it, if needed.
+
+Most outputs are in JSON format.
+
+The output of previous Super-linter runs is not preserved when running locally.
+
+## Linter reports and outputs
+
+Some linters support configuring the format of their outputs for further
+processing. To get access to that output, enable it using the respective linter
+configuration file. If a linter requires a path for the output directory, you
+can use the value of the `${DEFAULT_WORKSPACE}` variable.
+
+If a linter doesn't support setting an arbitrary output path as described in the
+previous paragraph, but only supports emitting results to standard output or
+standard error streams, you can
+[enable Super-linter outputs](#super-linter-outputs) and parse them.
 
 ## How to contribute
 
