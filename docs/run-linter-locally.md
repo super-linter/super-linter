@@ -25,7 +25,7 @@ Notes:
 - To run against a single file you can use: `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
 - You need to pass the `RUN_LOCAL` option to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint`.
 - If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
-- You can add as many configuration options as needed. Configuration options are documented in the [README](../README.md#configure-super-linter).
+- You can add as many configuration options as needed. Configuration options are documented in the [readme](../README.md#configure-super-linter).
 
 ### GitLab
 

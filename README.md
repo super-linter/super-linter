@@ -158,9 +158,9 @@ To run super-linter as a GitHub Action, you do the following:
 For more information about upgrading super-linter to a new major version, see
 the [upgrade guide](docs/upgrade-guide.md).
 
-## Add Super-Linter badge in your repository README
+## Add Super-Linter badge in your repository readme
 
-You can show Super-Linter status with a badge in your repository README:
+You can show Super-Linter status with a badge in your repository readme:
 
 Example:
 
@@ -268,7 +268,7 @@ You can configure super-linter using the following environment variables:
 | **VALIDATE_CLANG_FORMAT**                       | `true`                          | Flag to enable or disable the linting process of the C++/C language with clang-format.                                                                                                                               |
 | **VALIDATE_CLOJURE**                            | `true`                          | Flag to enable or disable the linting process of the Clojure language.                                                                                                                                               |
 | **VALIDATE_CLOUDFORMATION**                     | `true`                          | Flag to enable or disable the linting process of the AWS Cloud Formation language.                                                                                                                                   |
-| **VALIDATE_COFFEESCRIPT**                       | `true`                          | Flag to enable or disable the linting process of the Coffeescript language.                                                                                                                                          |
+| **VALIDATE_COFFEESCRIPT**                       | `true`                          | Flag to enable or disable the linting process of the CoffeeScript language.                                                                                                                                          |
 | **VALIDATE_CSHARP**                             | `true`                          | Flag to enable or disable the linting process of the C# language.                                                                                                                                                    |
 | **VALIDATE_CSS**                                | `true`                          | Flag to enable or disable the linting process of the CSS language.                                                                                                                                                   |
 | **VALIDATE_DART**                               | `true`                          | Flag to enable or disable the linting process of the Dart language.                                                                                                                                                  |
