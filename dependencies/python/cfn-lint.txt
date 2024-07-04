@@ -1,1 +1,1 @@
-cfn-lint==1.4.2
+cfn-lint==1.5.0
