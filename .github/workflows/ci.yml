@@ -258,6 +258,7 @@ jobs:
   # having to select each individual job that dynamically add to the test matrix.
   test-success-placeholder:
     name: Check if all the tests passed
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -266,10 +267,10 @@ jobs:
       - test-local-action
     steps:
       - name: Test suite success
-        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        if: ${{ !(contains(needs.*.result, 'failure')) && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
         run: exit 0
       - name: Test suite failures
-        if: ${{ contains(needs.*.result, 'failure') }}
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
         run: exit 1
 
   preview-release-notes:
