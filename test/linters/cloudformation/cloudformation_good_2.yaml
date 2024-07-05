@@ -13,7 +13,7 @@ Resources:
           VPCId: 'vpc-abcd1234'
           VPCRegion: 'ap-northeast-1'
         -
-          VPCId: 'vpc-efgh5678'
+          VPCId: 'vpc-abcd5678'
           VPCRegion: 'us-west-2'
       HostedZoneTags:
         -
