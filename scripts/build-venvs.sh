@@ -6,6 +6,7 @@ set -o pipefail
 
 apk add --no-cache --virtual .python-build-deps \
   gcc \
+  libffi-dev \
   linux-headers \
   musl-dev \
   python3-dev
