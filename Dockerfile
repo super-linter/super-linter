@@ -7,31 +7,31 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.11 as terrascan
-FROM alpine/terragrunt:1.9.0 as terragrunt
-FROM dotenvlinter/dotenv-linter:3.3.0 as dotenv-linter
-FROM ghcr.io/terraform-linters/tflint:v0.51.2 as tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.6 as kubeconfrm
-FROM alpine/helm:3.14.4 as helm
-FROM golang:1.22.5-alpine as golang
-FROM golangci/golangci-lint:v1.59.0 as golangci-lint
-FROM goreleaser/goreleaser:v1.26.2 as goreleaser
-FROM hadolint/hadolint:v2.12.0-alpine as dockerfile-lint
-FROM registry.k8s.io/kustomize/kustomize:v5.4.2 as kustomize
-FROM hashicorp/terraform:1.8.4 as terraform
-FROM koalaman/shellcheck:v0.10.0 as shellcheck
-FROM mstruebing/editorconfig-checker:v3.0.1 as editorconfig-checker
-FROM mvdan/shfmt:v3.8.0 as shfmt
-FROM rhysd/actionlint:1.7.1 as actionlint
-FROM scalameta/scalafmt:v3.8.1 as scalafmt
-FROM zricethezav/gitleaks:v8.18.3 as gitleaks
-FROM yoheimuta/protolint:0.50.2 as protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2024.05.24-alpine as clj-kondo
-FROM dart:3.4.2-sdk as dart
-FROM mcr.microsoft.com/dotnet/sdk:8.0.301-alpine3.19 as dotnet-sdk
-FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 as powershell
+FROM tenable/terrascan:1.18.11 AS terrascan
+FROM alpine/terragrunt:1.9.0 AS terragrunt
+FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
+FROM ghcr.io/terraform-linters/tflint:v0.51.2 AS tflint
+FROM ghcr.io/yannh/kubeconform:v0.6.6 AS kubeconfrm
+FROM alpine/helm:3.14.4 AS helm
+FROM golang:1.22.5-alpine AS golang
+FROM golangci/golangci-lint:v1.59.0 AS golangci-lint
+FROM goreleaser/goreleaser:v1.26.2 AS goreleaser
+FROM hadolint/hadolint:v2.12.0-alpine AS dockerfile-lint
+FROM registry.k8s.io/kustomize/kustomize:v5.4.2 AS kustomize
+FROM hashicorp/terraform:1.8.4 AS terraform
+FROM koalaman/shellcheck:v0.10.0 AS shellcheck
+FROM mstruebing/editorconfig-checker:v3.0.1 AS editorconfig-checker
+FROM mvdan/shfmt:v3.8.0 AS shfmt
+FROM rhysd/actionlint:1.7.1 AS actionlint
+FROM scalameta/scalafmt:v3.8.1 AS scalafmt
+FROM zricethezav/gitleaks:v8.18.3 AS gitleaks
+FROM yoheimuta/protolint:0.50.2 AS protolint
+FROM ghcr.io/clj-kondo/clj-kondo:2024.05.24-alpine AS clj-kondo
+FROM dart:3.4.2-sdk AS dart
+FROM mcr.microsoft.com/dotnet/sdk:8.0.301-alpine3.19 AS dotnet-sdk
+FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 AS powershell
 
-FROM python:3.12.3-alpine3.19 as clang-format
+FROM python:3.12.3-alpine3.19 AS clang-format
 
 RUN apk add --no-cache \
     build-base \
@@ -58,7 +58,7 @@ RUN cmake \
     && ninja clang-format \
     && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.12.3-alpine3.19 as python-builder
+FROM python:3.12.3-alpine3.19 AS python-builder
 
 RUN apk add --no-cache \
     bash
@@ -69,7 +69,7 @@ COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.12.3-alpine3.19 as npm-builder
+FROM python:3.12.3-alpine3.19 AS npm-builder
 
 RUN apk add --no-cache \
     bash \
@@ -89,7 +89,7 @@ RUN apk add --no-cache --virtual .node-build-deps \
     && chown -R "$(id -u)":"$(id -g)" node_modules \
     && rm -rfv package.json package-lock.json
 
-FROM tflint as tflint-plugins
+FROM tflint AS tflint-plugins
 
 # Configure TFLint plugin folder
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
@@ -100,7 +100,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.12.3-alpine3.19 as lintr-installer
+FROM python:3.12.3-alpine3.19 AS lintr-installer
 
 RUN apk add --no-cache \
     bash \
@@ -111,13 +111,13 @@ SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 COPY scripts/install-lintr.sh scripts/install-r-package-or-fail.R /
 RUN /install-lintr.sh && rm -rf /install-lintr.sh /install-r-package-or-fail.R
 
-FROM powershell as powershell-installer
+FROM powershell AS powershell-installer
 
 # Copy the value of the PowerShell install directory to a file so we can reuse it
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
-FROM python:3.12.3-alpine3.19 as base_image
+FROM python:3.12.3-alpine3.19 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
     com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
@@ -362,7 +362,7 @@ COPY --from=clj-kondo /bin/clj-kondo /usr/bin/
 ####################
 # Install dart-sdk #
 ####################
-ENV DART_SDK /usr/lib/dart
+ENV DART_SDK=/usr/lib/dart
 COPY --from=dart "${DART_SDK}" "${DART_SDK}"
 RUN chmod 755 "${DART_SDK}" && chmod 755 "${DART_SDK}/bin"
 
@@ -414,7 +414,7 @@ RUN mkdir /action
 
 ENTRYPOINT ["/action/lib/linter.sh"]
 
-FROM base_image as slim
+FROM base_image AS slim
 
 # Run to build version file and validate image
 ENV IMAGE="slim"
@@ -449,7 +449,7 @@ ENV BUILD_VERSION=$BUILD_VERSION
 ##############################
 # Build the standard variant #
 ##############################
-FROM base_image as standard
+FROM base_image AS standard
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
