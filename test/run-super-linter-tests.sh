@@ -6,6 +6,8 @@ set -o pipefail
 
 SUPER_LINTER_TEST_CONTAINER_URL="${1}"
 TEST_FUNCTION_NAME="${2}"
+SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
+echo "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
 DEFAULT_BRANCH="main"
 
@@ -23,11 +25,13 @@ run_test_cases_expect_failure() {
   configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/bad" -e CHECKOV_FILE_NAME=".checkov-test-linters-failure.yaml" -e FILTER_REGEX_INCLUDE=".*bad.*")
   EXPECTED_EXIT_CODE=1
+  EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH="test/data/github-actions-step-summary/expected-step-summary-test-linters-expect-failure-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 run_test_cases_expect_success() {
   configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/good" -e CHECKOV_FILE_NAME=".checkov-test-linters-success.yaml" -e FILTER_REGEX_INCLUDE=".*good.*")
+  EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH="test/data/github-actions-step-summary/expected-step-summary-test-linters-expect-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 run_test_cases_log_level() {
@@ -114,6 +118,20 @@ COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
 COMMAND_TO_RUN+=(-e SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT}")
 COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE:-$(pwd)}:/tmp/lint")
+
+if [ -n "${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH:-}" ]; then
+  echo "Expected Super-linter step summary file path: ${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH}"
+  SUPER_LINTER_STEP_SUMMARY_FILE="$(pwd)/super-linter-github-actions-step-summary-output.md"
+  echo "Create Super-linter step summary file: ${SUPER_LINTER_STEP_SUMMARY_FILE}"
+  # Remove eventual leftovers from previous tests
+  rm --force "${SUPER_LINTER_STEP_SUMMARY_FILE}"
+  touch "${SUPER_LINTER_STEP_SUMMARY_FILE}"
+  SUPER_LINTER_STEP_SUMMARY_FILE_INSIDE_CONTAINER="/tmp/lint/$(basename "${SUPER_LINTER_STEP_SUMMARY_FILE}")"
+  COMMAND_TO_RUN+=(-e GITHUB_STEP_SUMMARY="${SUPER_LINTER_STEP_SUMMARY_FILE_INSIDE_CONTAINER}")
+  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
+fi
+COMMAND_TO_RUN+=(-e ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"false"}")
+
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 
 declare -i EXPECTED_EXIT_CODE
@@ -162,6 +180,18 @@ if [[ "${SAVE_SUPER_LINTER_OUTPUT}" == true ]]; then
   fi
 else
   echo "Super-linter output was not requested. SAVE_SUPER_LINTER_OUTPUT: ${SAVE_SUPER_LINTER_OUTPUT}"
+fi
+
+if [ -n "${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH:-}" ]; then
+  # Remove eventual HTML comments from the expected file because we use them to disable certain linter rules
+  if ! diff "${SUPER_LINTER_STEP_SUMMARY_FILE}" <(grep -vE '^\s*<!--' "${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH}"); then
+    echo "Super-linter step summary (${SUPER_LINTER_STEP_SUMMARY_FILE}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH})"
+    exit 1
+  else
+    echo "Super-linter step summary (${SUPER_LINTER_STEP_SUMMARY_FILE}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_STEP_SUMMARY_FILE_PATH})"
+  fi
+else
+  echo "Super-linter step summary output was not requested."
 fi
 
 if [ ${SUPER_LINTER_EXIT_CODE} -ne ${EXPECTED_EXIT_CODE} ]; then
