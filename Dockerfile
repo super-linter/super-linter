@@ -28,10 +28,10 @@ FROM zricethezav/gitleaks:v8.18.3 AS gitleaks
 FROM yoheimuta/protolint:0.50.2 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2024.05.24-alpine AS clj-kondo
 FROM dart:3.4.2-sdk AS dart
-FROM mcr.microsoft.com/dotnet/sdk:8.0.301-alpine3.19 AS dotnet-sdk
+FROM mcr.microsoft.com/dotnet/sdk:8.0.302-alpine3.20 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 AS powershell
 
-FROM python:3.12.3-alpine3.19 AS clang-format
+FROM python:3.12.3-alpine3.20 AS clang-format
 
 RUN apk add --no-cache \
     build-base \
@@ -58,7 +58,7 @@ RUN cmake \
     && ninja clang-format \
     && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.12.3-alpine3.19 AS python-builder
+FROM python:3.12.3-alpine3.20 AS python-builder
 
 RUN apk add --no-cache \
     bash
@@ -69,7 +69,7 @@ COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.12.3-alpine3.19 AS npm-builder
+FROM python:3.12.3-alpine3.20 AS npm-builder
 
 RUN apk add --no-cache \
     bash \
@@ -100,7 +100,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.12.3-alpine3.19 AS lintr-installer
+FROM python:3.12.3-alpine3.20 AS lintr-installer
 
 RUN apk add --no-cache \
     bash \
@@ -117,7 +117,7 @@ FROM powershell AS powershell-installer
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
-FROM python:3.12.3-alpine3.19 AS base_image
+FROM python:3.12.3-alpine3.20 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
     com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
@@ -158,17 +158,17 @@ RUN apk add --no-cache \
     openssh-client \
     parallel \
     perl \
-    php82 \
-    php82-ctype \
-    php82-curl \
-    php82-dom \
-    php82-iconv \
-    php82-mbstring \
-    php82-openssl \
-    php82-phar \
-    php82-simplexml \
-    php82-tokenizer \
-    php82-xmlwriter \
+    php83 \
+    php83-ctype \
+    php83-curl \
+    php83-dom \
+    php83-iconv \
+    php83-mbstring \
+    php83-openssl \
+    php83-phar \
+    php83-simplexml \
+    php83-tokenizer \
+    php83-xmlwriter \
     R \
     rakudo \
     ruby \
