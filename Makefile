@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-linters ## Run the test suite
+test: info validate-container-image-labels docker-build-check test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -119,6 +119,11 @@ docker: check-github-token ## Build the container image
 		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
 		--target $(IMAGE) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
+
+.PHONY: docker-build-check ## Run Docker build checks
+docker-build-check:
+	DOCKER_BUILDKIT=1 docker buildx build --check \
+	.
 
 .PHONY: docker-pull
 docker-pull: ## Pull the container image from registry
