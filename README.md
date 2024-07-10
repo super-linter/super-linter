@@ -179,7 +179,6 @@ Super-Linter provides several variants:
 - `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported linters except:
 
   - `rust` linters
-  - `dotenv` linters
   - `armttk` linters
   - `pwsh` linters
   - `c#` linters

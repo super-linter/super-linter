@@ -214,7 +214,6 @@ control "super-linter-installed-commands" do
     arm-ttk
     clippy
     dotnet
-    dotenv-linter
     pwsh
     rustfmt
   )

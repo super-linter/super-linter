@@ -387,6 +387,11 @@ COPY --from=lintr-installer /usr/lib/R /usr/lib/R
 COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
 
 #########################
+# Install dotenv-linter #
+#########################
+COPY --from=dotenv-linter /dotenv-linter /usr/bin/
+
+#########################
 # Configure Environment #
 #########################
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
@@ -464,11 +469,6 @@ RUN apk add --no-cache \
 
 COPY scripts/clippy.sh /usr/bin/clippy
 RUN chmod +x /usr/bin/clippy
-
-#########################
-# Install dotenv-linter #
-#########################
-COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 
 ###################################
 # Install DotNet and Dependencies #
