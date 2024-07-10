@@ -152,6 +152,10 @@ jobs:
           docker load --input /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
           docker image ls -a
 
+      - name: Print environment info
+        run: |
+          make info
+
       - name: Update action.yml
         run: |
           echo "yq version: $(yq --version)"
