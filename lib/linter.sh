@@ -665,7 +665,7 @@ UpdateLoopsForImage() {
     #############################################
     # Need to remove linters for the slim image #
     #############################################
-    REMOVE_ARRAY=("ARM" "CSHARP" "ENV" "POWERSHELL" "RUST_2015" "RUST_2018"
+    REMOVE_ARRAY=("ARM" "CSHARP" "POWERSHELL" "RUST_2015" "RUST_2018"
       "RUST_2021" "RUST_CLIPPY")
 
     # Remove from LANGUAGE_ARRAY
