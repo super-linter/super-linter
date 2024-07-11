@@ -94,3 +94,4 @@ test/linters/rust_clippy/**/target/**
 # Super-linter ouputs
 super-linter-output/
 custom-super-linter-output-directory-name/
+super-linter-github-actions-step-summary-output*

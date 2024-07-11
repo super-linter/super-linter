@@ -353,7 +353,8 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 test-non-default-home-directory: ## Test a non-default HOME directory
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_non_default_home"
+		"run_test_cases_non_default_home" \
+		"$(IMAGE)"
 
 .PHONY: test-linters
 test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite
@@ -362,61 +363,71 @@ test-linters: test-linters-expect-success test-linters-expect-failure ## Run the
 test-linters-expect-success: ## Run the linters test suite expecting successes
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_expect_success"
+		"run_test_cases_expect_success" \
+		"$(IMAGE)"
 
 .PHONY: test-linters-expect-failure
 test-linters-expect-failure: ## Run the linters test suite expecting failures
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_expect_failure"
+		"run_test_cases_expect_failure" \
+		"$(IMAGE)"
 
 .PHONY: test-log-level
 test-log-level: ## Run a test to check if there are conflicts with the LOG_LEVEL variable
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_log_level"
+		"run_test_cases_log_level" \
+		"$(IMAGE)"
 
 .PHONY: test-linters-expect-failure-log-level-notice
 test-linters-expect-failure-log-level-notice: ## Run the linters test suite expecting failures with a LOG_LEVEL set to NOTICE
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_expect_failure_notice_log"
+		"run_test_cases_expect_failure_notice_log" \
+		"$(IMAGE)"
 
 .PHONY: test-bash-exec-library-expect-success
 test-bash-exec-library-expect-success: ## Run the linters test cases for BASH_EXEC expecting successes with BASH_EXEC_IGNORE_LIBRARIES set to true
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_bash_exec_library_expect_success"
+		"run_test_case_bash_exec_library_expect_success" \
+		"$(IMAGE)"
 
 .PHONY: test-bash-exec-library-expect-failure
 test-bash-exec-library-expect-failure: ## Run the linters test cases for BASH_EXEC expecting failures with BASH_EXEC_IGNORE_LIBRARIES set to true
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_bash_exec_library_expect_failure"
+		"run_test_case_bash_exec_library_expect_failure" \
+		"$(IMAGE)"
 
 .PHONY: test-git-initial-commit
 test-git-initial-commit: ## Run super-linter against a repository that only has one commit
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_git_initial_commit"
+		"run_test_case_git_initial_commit" \
+		"$(IMAGE)"
 
 .PHONY: test-use-find-and-ignore-gitignored-files
 test-use-find-and-ignore-gitignored-files: ## Run super-linter with USE_FIND_ALGORITHM=true and IGNORE_GITIGNORED_FILES=true
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_use_find_and_ignore_gitignored_files"
+		"run_test_case_use_find_and_ignore_gitignored_files" \
+		"$(IMAGE)"
 
 .PHONY: test-save-super-linter-output
 test-save-super-linter-output: ## Run super-linter with SAVE_SUPER_LINTER_OUTPUT=true
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_save_super_linter_output"
+		"run_test_cases_save_super_linter_output" \
+		"$(IMAGE)"
 
 .PHONY: test-save-super-linter-output-custom-path
 test-save-super-linter-output-custom-path: ## Run super-linter with SAVE_SUPER_LINTER_OUTPUT=true and save output in a custom directory
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_save_super_linter_output_custom_path"
+		"run_test_cases_save_super_linter_output_custom_path" \
+		"$(IMAGE)"
 
 .PHONY: docker-dev-container-build-check ## Run Docker build checks against the dev-container image
 docker-dev-container-build-check:

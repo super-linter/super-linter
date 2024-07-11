@@ -47,14 +47,23 @@ RUN_LOCAL="${RUN_LOCAL:-"false"}"
 # configure it.
 if [[ "${RUN_LOCAL}" == "true" ]]; then
   DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
+  DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="false"
 else
   DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
+  DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
 fi
 # Let users configure GitHub Actions log markers regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
 export ENABLE_GITHUB_ACTIONS_GROUP_TITLE
 
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
+# Let users configure GitHub Actions step summary regardless of running locally or not
+ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"}"
+export ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
+if ! ValidateGitHubActionsStepSummary; then
+  fatal "GitHub Actions job summary configuration failed validation"
+fi
 
 # We want a lowercase value
 declare -l BASH_EXEC_IGNORE_LIBRARIES
@@ -591,6 +600,16 @@ Footer() {
   local SUPER_LINTER_EXIT_CODE
   SUPER_LINTER_EXIT_CODE=0
 
+  if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+    debug "Saving GitHub Actions step summary to ${GITHUB_STEP_SUMMARY}"
+    {
+      echo "# Super-linter summary"
+      echo ""
+      echo "| Language               | Validation result |"
+      echo "| -----------------------|-------------------|"
+    } >>"${GITHUB_STEP_SUMMARY}"
+  fi
+
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     # This used to be the count of errors found for a given LANGUAGE, but since
     # after we switched to running linters against a batch of files, it may not
@@ -607,6 +626,11 @@ Footer() {
 
       if [[ ${ERROR_COUNTER} -ne 0 ]]; then
         error "Errors found in ${LANGUAGE}"
+
+        if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+          echo "| ${LANGUAGE} | Fail ❌ |" >>"${GITHUB_STEP_SUMMARY}"
+        fi
+
         # Print output as error in case users disabled the INFO level so they
         # get feedback
         if [[ "${LOG_VERBOSE}" != "true" ]]; then
@@ -631,6 +655,9 @@ Footer() {
         debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
       elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
         notice "Successfully linted ${LANGUAGE}"
+        if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+          echo "| ${LANGUAGE} | Pass ✅ |" >>"${GITHUB_STEP_SUMMARY}"
+        fi
         CallStatusAPI "${LANGUAGE}" "success"
         ANY_LINTER_SUCCESS="true"
         debug "Set ANY_LINTER_SUCCESS to ${ANY_LINTER_SUCCESS} because ${LANGUAGE} reported a success"
@@ -650,8 +677,24 @@ Footer() {
 
   if [[ ${SUPER_LINTER_EXIT_CODE} -eq 0 ]]; then
     notice "All files and directories linted successfully"
+    if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+      {
+        echo ""
+        echo "All files and directories linted successfully"
+      } >>"${GITHUB_STEP_SUMMARY}"
+    fi
   else
     error "Super-linter detected linting errors"
+    if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+      {
+        echo ""
+        echo "Super-linter detected linting errors"
+      } >>"${GITHUB_STEP_SUMMARY}"
+    fi
+  fi
+
+  if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+    debug "GitHub Actions step summary file (${GITHUB_STEP_SUMMARY}) contents:\n$(cat "${GITHUB_STEP_SUMMARY}")"
   fi
 
   exit ${SUPER_LINTER_EXIT_CODE}
