@@ -4,7 +4,7 @@ set -euo pipefail
 
 GOOGLE_JAVA_FORMAT_VERSION="$(
   set -euo pipefail
-  grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'"
+  awk -F "[:']" '/google-java-format/ {print $4}' "google-java-format/build.gradle"
 )"
 echo "Installing Google Java Format: ${GOOGLE_JAVA_FORMAT_VERSION}"
 
