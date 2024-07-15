@@ -4,7 +4,7 @@ set -euo pipefail
 
 CHECKSTYLE_VERSION="$(
   set -euo pipefail
-  grep <"checkstyle/build.gradle" "checkstyle" | awk -F ':' '{print $3}' | tr -d "'"
+  awk -F "[:']" '/checkstyle/ {print $4}' "checkstyle/build.gradle"
 )"
 echo "Installing Checkstyle: ${CHECKSTYLE_VERSION}"
 
