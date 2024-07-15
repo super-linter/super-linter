@@ -40,81 +40,15 @@ function ValidateGitHubWorkspace() {
   info "Successfully validated GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 }
 
-function GetValidationInfo() {
-  info "--------------------------------------------"
-  info "Validating the configuration"
-
+function ValidateFindMode() {
+  debug "Validating find mode. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
   if [[ "${USE_FIND_ALGORITHM}" == "true" ]] && [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
-    fatal "Setting USE_FIND_ALGORITHM to true and VALIDATE_ALL_CODEBASE to false is not supported because super-linter relies on Git to validate changed files."
+    error "Setting USE_FIND_ALGORITHM to true and VALIDATE_ALL_CODEBASE to false is not supported because super-linter relies on Git to validate changed files."
+    return 1
   fi
+}
 
-  ################################################
-  # Determine if any linters were explicitly set #
-  ################################################
-  ANY_SET="false"
-  ANY_TRUE="false"
-  ANY_FALSE="false"
-
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    local VALIDATE_LANGUAGE
-    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    debug "Set VALIDATE_LANGUAGE while validating the configuration: ${VALIDATE_LANGUAGE}"
-    if [ -n "${!VALIDATE_LANGUAGE:-}" ]; then
-      # Validate if user provided a string representing a valid boolean
-      ValidateBooleanVariable "${VALIDATE_LANGUAGE}" "${!VALIDATE_LANGUAGE}"
-      # It was set, need to set flag
-      ANY_SET="true"
-      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
-        ANY_TRUE="true"
-      elif [ "${!VALIDATE_LANGUAGE}" == "false" ]; then
-        ANY_FALSE="true"
-      fi
-    else
-      debug "Configuration didn't provide a custom value for ${VALIDATE_LANGUAGE}"
-    fi
-  done
-
-  if [ $ANY_TRUE == "true" ] && [ $ANY_FALSE == "true" ]; then
-    fatal "Behavior not supported, please either only include (VALIDATE=true) or exclude (VALIDATE=false) linters, but not both"
-  fi
-
-  #########################################################
-  # Validate if we should check/omit individual languages #
-  #########################################################
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    local VALIDATE_LANGUAGE
-    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    if [[ ${ANY_SET} == "true" ]]; then
-      if [ -z "${!VALIDATE_LANGUAGE:-}" ]; then
-        # Flag was not set, default to:
-        # if ANY_TRUE then set to false
-        # if ANY_FALSE then set to true
-        eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
-      fi
-    else
-      # No linter flags were set - default all to true
-      eval "${VALIDATE_LANGUAGE}='true'"
-    fi
-    eval "export ${VALIDATE_LANGUAGE}"
-  done
-
-  #######################################
-  # Print which linters we are enabling #
-  #######################################
-  # Loop through all languages
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-    local VALIDATE_LANGUAGE
-    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    if [[ ${!VALIDATE_LANGUAGE} == "true" ]]; then
-      debug "- Validating [${LANGUAGE}] files in code base..."
-    else
-      debug "- Excluding [$LANGUAGE] files in code base..."
-    fi
-  done
-
-  ##############################
-  # Validate Ansible Directory #
-  ##############################
+function ValidateAnsibleDirectory() {
   if [ -z "${ANSIBLE_DIRECTORY:-}" ]; then
     ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
     debug "Set ANSIBLE_DIRECTORY to the default: ${ANSIBLE_DIRECTORY}"
@@ -139,6 +73,69 @@ function GetValidationInfo() {
     debug "Setting Ansible directory to: ${ANSIBLE_DIRECTORY}"
   fi
   export ANSIBLE_DIRECTORY
+}
+
+function ValidateValidationVariables() {
+  ################################################
+  # Determine if any linters were explicitly set #
+  ################################################
+  local ANY_SET="false"
+  local ANY_TRUE="false"
+  local ANY_FALSE="false"
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    debug "Check if configuration provided a custom value to enable or disable ${LANGUAGE}"
+    local VALIDATE_LANGUAGE
+    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+    if [ -n "${!VALIDATE_LANGUAGE:-}" ]; then
+      debug "Configuration provided a custom value for ${VALIDATE_LANGUAGE}: ${!VALIDATE_LANGUAGE}"
+      # Validate if user provided a string representing a valid boolean
+      ValidateBooleanVariable "${VALIDATE_LANGUAGE}" "${!VALIDATE_LANGUAGE}"
+      ANY_SET="true"
+      if [ "${!VALIDATE_LANGUAGE}" == "true" ]; then
+        ANY_TRUE="true"
+      # We already checked that VALIDATE_LANGUAGE is either true or false
+      else
+        ANY_FALSE="true"
+      fi
+    else
+      debug "Configuration didn't provide a custom value for ${VALIDATE_LANGUAGE}"
+    fi
+  done
+
+  debug "ANY_SET: ${ANY_SET}, ANY_TRUE: ${ANY_TRUE}, ANY_FALSE: ${ANY_FALSE}"
+
+  if [ $ANY_TRUE == "true" ] && [ $ANY_FALSE == "true" ]; then
+    error "Behavior not supported, please either only include (VALIDATE=true) or exclude (VALIDATE=false) linters, but not both"
+    return 1
+  fi
+
+  #########################################################
+  # Validate if we should check/omit individual languages #
+  #########################################################
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    local VALIDATE_LANGUAGE
+    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+    if [[ ${ANY_SET} == "true" ]]; then
+      debug "Configuration contains at least one custom value to enable or disable linters."
+      if [ -z "${!VALIDATE_LANGUAGE:-}" ]; then
+        # Flag was not set, default to:
+        # if ANY_TRUE then set to false
+        # if ANY_FALSE then set to true
+        eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
+      fi
+    else
+      eval "${VALIDATE_LANGUAGE}='true'"
+      debug "Configuration doesn't include any custom values to enable or disable linters. Setting VALIDATE variable for ${LANGUAGE} to: ${!VALIDATE_LANGUAGE}"
+    fi
+
+    if [[ "${!VALIDATE_LANGUAGE}" == "true" ]]; then
+      debug "- Validating [${LANGUAGE}] files in code base..."
+    else
+      debug "- Excluding [$LANGUAGE] files in code base..."
+    fi
+
+    eval "export ${VALIDATE_LANGUAGE}"
+  done
 }
 
 function CheckIfGitBranchExists() {

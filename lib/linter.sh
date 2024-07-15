@@ -828,7 +828,17 @@ mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 ############################
 # Validate the environment #
 ############################
-GetValidationInfo
+info "--------------------------------------------"
+info "Validating the configuration"
+if ! ValidateFindMode; then
+  fatal "Error while validating the configuration."
+fi
+if ! ValidateValidationVariables; then
+  fatal "Error while validating the configuration of enabled linters"
+fi
+if ! ValidateAnsibleDirectory; then
+  fatal "Error while validating the configuration of enabled linters"
+fi
 
 if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
   debug "Validate the local Git environment"

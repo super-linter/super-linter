@@ -123,6 +123,9 @@ function GenerateFileDiffTwoFilesPushEventTest() {
 }
 
 function BuildFileArraysAnsibleGitHubWorkspaceTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   # shellcheck source=/dev/null
   source /action/lib/functions/detectFiles.sh
@@ -158,8 +161,6 @@ function BuildFileArraysAnsibleGitHubWorkspaceTest() {
     fatal "${FILE_ARRAY_ANSIBLE_PATH} doesn't contain ${ANSIBLE_DIRECTORY}"
   fi
 
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
   notice "${FUNCTION_NAME} PASS"
 }
 
