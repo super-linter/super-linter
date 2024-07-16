@@ -98,7 +98,7 @@ ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
-RUN tflint --init -c /action/lib/.automation/.tflint.hcl
+RUN --mount=type=secret,id=GITHUB_TOKEN GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN) tflint --init -c /action/lib/.automation/.tflint.hcl
 
 FROM python:3.12.3-alpine3.20 AS lintr-installer
 
