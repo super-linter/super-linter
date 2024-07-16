@@ -17,7 +17,9 @@ source "lib/functions/log.sh"
 source "lib/functions/validation.sh"
 
 function IsUnsignedIntegerSuccessTest() {
+  local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   if ! IsUnsignedInteger 1; then
     fatal "${FUNCTION_NAME} failed"
@@ -27,7 +29,9 @@ function IsUnsignedIntegerSuccessTest() {
 }
 
 function IsUnsignedIntegerFailureTest() {
+  local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   if IsUnsignedInteger "test"; then
     fatal "${FUNCTION_NAME} failed"
@@ -38,7 +42,9 @@ function IsUnsignedIntegerFailureTest() {
 
 # In the current implementation, there is no return value to assert
 function ValidateDeprecatedVariablesTest() {
+  local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   ERROR_ON_MISSING_EXEC_BIT="true" \
     ValidateDeprecatedVariables
@@ -57,7 +63,9 @@ function ValidateDeprecatedVariablesTest() {
 }
 
 function ValidateGitHubUrlsTest() {
+  local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
   DEFAULT_GITHUB_DOMAIN="github.com"
@@ -149,7 +157,9 @@ function ValidateGitHubUrlsTest() {
 }
 
 function ValidateGitHubActionsStepSummaryTest() {
+  local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
 
   ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="false"
   if ! ValidateGitHubActionsStepSummary; then
@@ -199,8 +209,201 @@ function ValidateGitHubActionsStepSummaryTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function ValidateFindModeTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  USE_FIND_ALGORITHM="true"
+  VALIDATE_ALL_CODEBASE="false"
+  if ValidateFindMode; then
+    fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} should have failed validation"
+  else
+    info "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} failed validation as expected"
+  fi
+  unset USE_FIND_ALGORITHM
+  unset VALIDATE_ALL_CODEBASE
+
+  USE_FIND_ALGORITHM="false"
+  VALIDATE_ALL_CODEBASE="false"
+  if ValidateFindMode; then
+    info "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} passed validation as expected"
+  else
+    fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} should have passed validation"
+  fi
+  unset USE_FIND_ALGORITHM
+  unset VALIDATE_ALL_CODEBASE
+
+  USE_FIND_ALGORITHM="false"
+  VALIDATE_ALL_CODEBASE="true"
+  if ValidateFindMode; then
+    info "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} passed validation as expected"
+  else
+    fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} should have passed validation"
+  fi
+  unset USE_FIND_ALGORITHM
+  unset VALIDATE_ALL_CODEBASE
+
+  USE_FIND_ALGORITHM="true"
+  VALIDATE_ALL_CODEBASE="true"
+  if ValidateFindMode; then
+    info "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} passed validation as expected"
+  else
+    fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} should have passed validation"
+  fi
+  unset USE_FIND_ALGORITHM
+  unset VALIDATE_ALL_CODEBASE
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function ValidateAnsibleDirectoryTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  GITHUB_WORKSPACE="/test-github-workspace"
+
+  ValidateAnsibleDirectory
+  EXPECTED_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"
+  if [[ "${ANSIBLE_DIRECTORY:-}" != "${EXPECTED_ANSIBLE_DIRECTORY}" ]]; then
+    fatal "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) is not equal to the expected value: ${EXPECTED_ANSIBLE_DIRECTORY}"
+  fi
+
+  ANSIBLE_DIRECTORY="."
+  ValidateAnsibleDirectory
+  EXPECTED_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}"
+  if [[ "${ANSIBLE_DIRECTORY:-}" != "${EXPECTED_ANSIBLE_DIRECTORY}" ]]; then
+    fatal "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) is not equal to the expected value: ${EXPECTED_ANSIBLE_DIRECTORY}"
+  fi
+
+  INPUT_ANSIBLE_DIRECTORY="/custom-ansible-directory"
+  ANSIBLE_DIRECTORY="${INPUT_ANSIBLE_DIRECTORY}"
+  ValidateAnsibleDirectory
+  EXPECTED_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}${INPUT_ANSIBLE_DIRECTORY}"
+  if [[ "${ANSIBLE_DIRECTORY:-}" != "${EXPECTED_ANSIBLE_DIRECTORY}" ]]; then
+    fatal "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) is not equal to the expected value: ${EXPECTED_ANSIBLE_DIRECTORY}"
+  fi
+
+  INPUT_ANSIBLE_DIRECTORY="custom-ansible-directory"
+  ANSIBLE_DIRECTORY="${INPUT_ANSIBLE_DIRECTORY}"
+  ValidateAnsibleDirectory
+  EXPECTED_ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/${INPUT_ANSIBLE_DIRECTORY}"
+  if [[ "${ANSIBLE_DIRECTORY:-}" != "${EXPECTED_ANSIBLE_DIRECTORY}" ]]; then
+    fatal "ANSIBLE_DIRECTORY (${ANSIBLE_DIRECTORY}) is not equal to the expected value: ${EXPECTED_ANSIBLE_DIRECTORY}"
+  fi
+
+  unset GITHUB_WORKSPACE
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function ValidateValidationVariablesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('A' 'B')
+
+  if ValidateValidationVariables; then
+    info "Providing no VALIDATE_xxx variables passed validation as expected"
+  else
+    fatal "Providing no VALIDATE_xxx variables should have passed validation"
+  fi
+
+  VALIDATE_A="true"
+  if ValidateValidationVariables; then
+    info "VALIDATE_A=${VALIDATE_A} passed validation as expected"
+  else
+    fatal "VALIDATE_A=${VALIDATE_A} should have passed validation"
+  fi
+  unset VALIDATE_A
+
+  # TODO: Refactor the ValidateBooleanVariable function to throw an error instead of a fatal
+  # VALIDATE_A="blah"
+  # if ! ValidateValidationVariables; then
+  #   info "VALIDATE_A=${VALIDATE_A} failed validation as expected"
+  # else
+  #   fatal "VALIDATE_A=${VALIDATE_A} should have failed validation"
+  # fi
+  # unset VALIDATE_A
+
+  VALIDATE_A="true"
+  VALIDATE_B="true"
+  if ValidateValidationVariables; then
+    info "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} passed validation as expected"
+  else
+    fatal "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} should have passed validation"
+  fi
+  unset VALIDATE_A
+  unset VALIDATE_B
+
+  VALIDATE_A="false"
+  VALIDATE_B="false"
+  if ValidateValidationVariables; then
+    info "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} passed validation as expected"
+  else
+    fatal "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} should have passed validation"
+  fi
+  unset VALIDATE_A
+  unset VALIDATE_B
+
+  VALIDATE_A="true"
+  VALIDATE_B="false"
+  if ! ValidateValidationVariables; then
+    info "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} failed validation as expected"
+  else
+    fatal "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} should have failed validation"
+  fi
+  unset VALIDATE_A
+  unset VALIDATE_B
+
+  VALIDATE_A="false"
+  VALIDATE_B="true"
+  if ! ValidateValidationVariables; then
+    info "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} failed validation as expected"
+  else
+    fatal "VALIDATE_A=${VALIDATE_A}, VALIDATE_B=${VALIDATE_B} should have failed validation"
+  fi
+  unset VALIDATE_A
+  unset VALIDATE_B
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function ValidationVariablesExportTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('A' 'B')
+
+  ValidateValidationVariables
+
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    local -n VALIDATE_LANGUAGE
+    VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
+    debug "VALIDATE_LANGUAGE (${LANGUAGE}) variable attributes: ${VALIDATE_LANGUAGE@a}"
+    if [[ "${VALIDATE_LANGUAGE@a}" == *x* ]]; then
+      info "VALIDATE_LANGUAGE for ${LANGUAGE} is exported as expected"
+    else
+      fatal "VALIDATE_LANGUAGE for ${LANGUAGE} should have been exported"
+    fi
+    unset -n VALIDATE_LANGUAGE
+  done
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerSuccessTest
 IsUnsignedIntegerFailureTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
 ValidateGitHubActionsStepSummaryTest
+ValidateFindModeTest
+ValidateAnsibleDirectoryTest
+ValidateValidationVariablesTest
+ValidationVariablesExportTest
