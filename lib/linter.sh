@@ -61,9 +61,6 @@ startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 # Let users configure GitHub Actions step summary regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"}"
 export ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-if ! ValidateGitHubActionsStepSummary; then
-  fatal "GitHub Actions job summary configuration failed validation"
-fi
 
 # We want a lowercase value
 declare -l BASH_EXEC_IGNORE_LIBRARIES
@@ -125,6 +122,10 @@ VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE:-"true"}"
 # We want a lowercase value
 declare -l YAML_ERROR_ON_WARNING
 YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
+
+# We want a lowercase value
+declare -l SAVE_SUPER_LINTER_SUMMARY
+SAVE_SUPER_LINTER_SUMMARY="${SAVE_SUPER_LINTER_SUMMARY:-false}"
 
 ValidateBooleanConfigurationVariables
 
@@ -562,14 +563,14 @@ Footer() {
   local SUPER_LINTER_EXIT_CODE
   SUPER_LINTER_EXIT_CODE=0
 
-  if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-    debug "Saving GitHub Actions step summary to ${GITHUB_STEP_SUMMARY}"
+  if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    debug "Saving Super-linter summary to ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
     {
       echo "# Super-linter summary"
       echo ""
       echo "| Language               | Validation result |"
       echo "| -----------------------|-------------------|"
-    } >>"${GITHUB_STEP_SUMMARY}"
+    } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
   fi
 
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
@@ -589,8 +590,8 @@ Footer() {
       if [[ ${ERROR_COUNTER} -ne 0 ]]; then
         error "Errors found in ${LANGUAGE}"
 
-        if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-          echo "| ${LANGUAGE} | Fail ❌ |" >>"${GITHUB_STEP_SUMMARY}"
+        if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+          echo "| ${LANGUAGE} | Fail ❌ |" >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
         fi
 
         # Print output as error in case users disabled the INFO level so they
@@ -617,8 +618,8 @@ Footer() {
         debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
       elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
         notice "Successfully linted ${LANGUAGE}"
-        if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-          echo "| ${LANGUAGE} | Pass ✅ |" >>"${GITHUB_STEP_SUMMARY}"
+        if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+          echo "| ${LANGUAGE} | Pass ✅ |" >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
         fi
         CallStatusAPI "${LANGUAGE}" "success"
         ANY_LINTER_SUCCESS="true"
@@ -639,24 +640,31 @@ Footer() {
 
   if [[ ${SUPER_LINTER_EXIT_CODE} -eq 0 ]]; then
     notice "All files and directories linted successfully"
-    if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+    if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
       {
         echo ""
         echo "All files and directories linted successfully"
-      } >>"${GITHUB_STEP_SUMMARY}"
+      } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
     fi
   else
     error "Super-linter detected linting errors"
-    if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+    if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
       {
         echo ""
         echo "Super-linter detected linting errors"
-      } >>"${GITHUB_STEP_SUMMARY}"
+      } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
     fi
   fi
 
+  if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    debug "Super-linter summary file (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) contents:\n$(cat "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}")"
+  fi
+
   if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-    debug "GitHub Actions step summary file (${GITHUB_STEP_SUMMARY}) contents:\n$(cat "${GITHUB_STEP_SUMMARY}")"
+    debug "Appending Super-linter summary to ${GITHUB_STEP_SUMMARY}"
+    if ! cat "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" >>"${GITHUB_STEP_SUMMARY}"; then
+      fatal "Error while appending the content of ${SUPER_LINTER_SUMMARY_OUTPUT_PATH} to ${GITHUB_STEP_SUMMARY}"
+    fi
   fi
 
   exit ${SUPER_LINTER_EXIT_CODE}
@@ -776,9 +784,13 @@ debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
 export SUPER_LINTER_OUTPUT_DIRECTORY_NAME
-debug "Super-linter output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+debug "Super-linter main output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
 
-SUPER_LINTER_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+export SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH
+debug "Super-linter main output directory path: ${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}"
+
+SUPER_LINTER_OUTPUT_DIRECTORY_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/super-linter"
 export SUPER_LINTER_OUTPUT_DIRECTORY_PATH
 debug "Super-linter output directory path: ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
 
@@ -786,6 +798,33 @@ SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="/tmp/${DEFAULT_SUPER_LINTER_OUTPUT_D
 export SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH
 debug "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
+
+SUPER_LINTER_SUMMARY_OUTPUT_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/${SUPER_LINTER_SUMMARY_FILE_NAME:-"super-linter-summary.md"}"
+export SUPER_LINTER_SUMMARY_OUTPUT_PATH
+debug "Super-linter summary output path: ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+
+if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]] && [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "false" ]]; then
+  debug "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}, but SAVE_SUPER_LINTER_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}"
+  SAVE_SUPER_LINTER_SUMMARY="true"
+  debug "Set SAVE_SUPER_LINTER_SUMMARY to ${SAVE_SUPER_LINTER_SUMMARY} because we need to append its contents to ${GITHUB_STEP_SUMMARY} later"
+fi
+
+# Ensure that the main output directory and files exist because the user might not have created them
+# before running Super-linter. These conditions list all the cases that require an output
+# directory to be there.
+if [[ "${SAVE_SUPER_LINTER_OUTPUT}" = "true" ]] ||
+  [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]] ||
+  [[ "${CREATE_LOG_FILE}" = "true" ]]; then
+  debug "Ensure that ${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH} exists"
+  mkdir -p "${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}"
+fi
+
+if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+  debug "Ensuring that ${SUPER_LINTER_SUMMARY_OUTPUT_PATH} exists."
+  if ! touch "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"; then
+    fatal "Cannot create Super-linter summary file: ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+  fi
+fi
 
 ############################
 # Validate the environment #
@@ -799,7 +838,16 @@ if ! ValidateValidationVariables; then
   fatal "Error while validating the configuration of enabled linters"
 fi
 if ! ValidateAnsibleDirectory; then
-  fatal "Error while validating the configuration of enabled linters"
+  fatal "Error while validating the configuration of the Ansible directory"
+fi
+
+if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]] ||
+  [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+  if ! ValidateSuperLinterSummaryOutputPath; then
+    fatal "Super-linter summary configuration failed validation"
+  fi
+else
+  debug "Super-linter summary is disabled. No need to validate its configuration."
 fi
 
 if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
