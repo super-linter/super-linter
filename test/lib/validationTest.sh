@@ -161,49 +161,28 @@ function ValidateGitHubActionsStepSummaryTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="false"
-  if ! ValidateGitHubActionsStepSummary; then
-    fatal "ValidateGitHubActionsStepSummary shouldn't fail when ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
-  else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} passed validation as expected"
-  fi
-
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
-  if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is not set"
-  else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} failed validation as expected"
-  fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
   GITHUB_STEP_SUMMARY="/non/existing/file"
   if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a non-existing file"
+    fatal "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a non-existing file"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
+    info "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
   fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
   unset GITHUB_STEP_SUMMARY
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
   GITHUB_STEP_SUMMARY="$(pwd)"
   if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a directory"
+    fatal "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a directory"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
+    info "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
   fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
   unset GITHUB_STEP_SUMMARY
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
   GITHUB_STEP_SUMMARY="${0}"
   if ! ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have passed validation when GITHUB_STEP_SUMMARY is set to a file"
+    fatal "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have passed validation when GITHUB_STEP_SUMMARY is set to a file"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} passed validation as expected"
+    info "GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} passed validation as expected"
   fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
   unset GITHUB_STEP_SUMMARY
 
   notice "${FUNCTION_NAME} PASS"

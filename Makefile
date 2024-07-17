@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-linters ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-github-step-summary test-linters ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -75,6 +75,10 @@ ifeq ($(GITHUB_HEAD_REF),)
 RELEASE_PLEASE_TARGET_BRANCH := "$(shell git branch --show-current)"
 else
 RELEASE_PLEASE_TARGET_BRANCH := "${GITHUB_HEAD_REF}"
+endif
+
+ifeq ($(GITHUB_ACTIONS),)
+GITHUB_ACTIONS="false"
 endif
 
 .PHONY: info
@@ -159,6 +163,7 @@ validate-container-image-labels: ## Validate container image labels
 test-actions-runner-debug: ## Run super-linter with ACTIONS_RUNNER_DEBUG=true
 	docker run \
 		-e ACTIONS_RUNNER_DEBUG=true \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e RUN_LOCAL=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
@@ -170,6 +175,7 @@ test-actions-runner-debug: ## Run super-linter with ACTIONS_RUNNER_DEBUG=true
 test-actions-steps-debug: ## Run super-linter with ACTIONS_STEPS_DEBUG=true
 	docker run \
 		-e ACTIONS_STEPS_DEBUG=true \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e RUN_LOCAL=true \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
@@ -182,6 +188,7 @@ test-runner-debug: ## Run super-linter with RUNNER_DEBUG=1
 	docker run \
 		-e RUNNER_DEBUG=1 \
 		-e RUN_LOCAL=true \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -193,6 +200,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 	docker run \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -206,6 +214,7 @@ test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 	docker run \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e DEFAULT_WORKSPACE=/tmp/not-default-workspace \
@@ -219,6 +228,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 	docker run \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e DEFAULT_BRANCH=main \
@@ -234,6 +244,7 @@ lint-codebase: ## Lint the entire codebase
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
@@ -253,6 +264,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
@@ -266,6 +278,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
@@ -331,6 +344,7 @@ test-default-config-files: ## Test default configuration files loading
 	docker run \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -342,6 +356,7 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 	docker run \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
+		-e GITHUB_ACTIONS=${GITHUB_ACTIONS} \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
@@ -427,6 +442,13 @@ test-save-super-linter-output-custom-path: ## Run super-linter with SAVE_SUPER_L
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_save_super_linter_output_custom_path" \
+		"$(IMAGE)"
+
+.PHONY: test-save-super-linter-custom-github-step-summary
+test-save-super-linter-custom-github-step-summary: ## Run super-linter with a custom GITHUB_STEP_SUMMARY
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_custom_github_step_summary" \
 		"$(IMAGE)"
 
 .PHONY: docker-dev-container-build-check ## Run Docker build checks against the dev-container image

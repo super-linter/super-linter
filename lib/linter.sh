@@ -61,9 +61,6 @@ startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 # Let users configure GitHub Actions step summary regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"}"
 export ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-if ! ValidateGitHubActionsStepSummary; then
-  fatal "GitHub Actions job summary configuration failed validation"
-fi
 
 # We want a lowercase value
 declare -l BASH_EXEC_IGNORE_LIBRARIES
@@ -537,6 +534,13 @@ GetGitHubVars() {
     debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
 
+  # GitHub Actions automatically set this variable.
+  # Ref: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+  # We need to initialize it in case we're running locally because we use it in
+  # a few checks.
+  GITHUB_ACTIONS="${GITHUB_ACTIONS:-"false"}"
+  ValidateBooleanVariable "GITHUB_ACTIONS" "${GITHUB_ACTIONS}"
+
   # We need this for parallel
   export GITHUB_WORKSPACE
 }
@@ -694,7 +698,7 @@ Footer() {
   fi
 
   if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-    debug "GitHub Actions step summary file (${GITHUB_STEP_SUMMARY}) contents:\n$(cat "${GITHUB_STEP_SUMMARY}")"
+    debug "Super-linter summary file (${GITHUB_STEP_SUMMARY}) contents:\n$(cat "${GITHUB_STEP_SUMMARY}")"
   fi
 
   exit ${SUPER_LINTER_EXIT_CODE}
@@ -741,7 +745,7 @@ cleanup() {
     fi
 
     # Define this variable here so we can rely on it as soon as possible
-    local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
+    local LOG_FILE_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/${LOG_FILE}"
     debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
     if [ "${CREATE_LOG_FILE}" = "true" ]; then
       debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
@@ -814,9 +818,13 @@ debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
 export SUPER_LINTER_OUTPUT_DIRECTORY_NAME
-debug "Super-linter output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+debug "Super-linter main output directory name: ${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
 
-SUPER_LINTER_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+export SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH
+debug "Super-linter main output directory path: ${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}"
+
+SUPER_LINTER_OUTPUT_DIRECTORY_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/super-linter"
 export SUPER_LINTER_OUTPUT_DIRECTORY_PATH
 debug "Super-linter output directory path: ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
 
@@ -824,6 +832,31 @@ SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="/tmp/${DEFAULT_SUPER_LINTER_OUTPUT_D
 export SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH
 debug "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
+
+# Ensure that the main output directory and files exist because the user might not have created them
+# before running Super-linter. These conditions list all the cases that require an output
+# directory to be there.
+if [[ "${SAVE_SUPER_LINTER_OUTPUT}" = "true" ]] ||
+  [[ ("${RUN_LOCAL}" == "true" && "${GITHUB_ACTIONS}" != "true" && "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true") ]] ||
+  [[ "${CREATE_LOG_FILE}" = "true" ]]; then
+  debug "Ensure that ${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH} exists"
+  mkdir -p "${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}"
+
+  # Save the summary to a file in the main output directory only if RUN_LOCAL=true AND
+  # we're not running on GitHub Actions, so tests don't break when running in GitHub Actions AND
+  # the configuration enabled the summary
+  if [[ "${RUN_LOCAL}" == "true" ]] &&
+    [[ "${GITHUB_ACTIONS}" != "true" ]] &&
+    [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
+    GITHUB_STEP_SUMMARY="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/${GITHUB_STEP_SUMMARY:-"super-linter-summary.md"}"
+    debug "Updated GITHUB_STEP_SUMMARY to: ${GITHUB_STEP_SUMMARY}"
+
+    debug "Ensuring that ${GITHUB_STEP_SUMMARY} exists."
+    if ! touch "${GITHUB_STEP_SUMMARY}"; then
+      fatal "Cannot create Super-linter summary file: ${GITHUB_STEP_SUMMARY}"
+    fi
+  fi
+fi
 
 ############################
 # Validate the environment #
@@ -837,7 +870,15 @@ if ! ValidateValidationVariables; then
   fatal "Error while validating the configuration of enabled linters"
 fi
 if ! ValidateAnsibleDirectory; then
-  fatal "Error while validating the configuration of enabled linters"
+  fatal "Error while validating the configuration of the Ansible directory"
+fi
+
+if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-}" == "true" ]]; then
+  if ! ValidateGitHubActionsStepSummary; then
+    fatal "Super-linter summary configuration failed validation"
+  fi
+else
+  debug "Super-linter summary is disabled because ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to: ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}). No need to validate its configuration."
 fi
 
 if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then

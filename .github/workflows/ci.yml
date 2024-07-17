@@ -177,8 +177,9 @@ jobs:
 
       - name: Get the contents of the log file
         run: |
-          sudo cat super-linter.log
-          sudo rm -v super-linter.log
+          SUPER_LINTER_LOG_FILE_PATH="super-linter-output/super-linter.log"
+          sudo cat "${SUPER_LINTER_LOG_FILE_PATH}"
+          sudo rm -v "${SUPER_LINTER_LOG_FILE_PATH}"
 
       - name: Test Local Action (default log)
         uses: ./

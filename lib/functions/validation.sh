@@ -292,23 +292,19 @@ function ValidateGitHubUrls() {
 }
 
 function ValidateGitHubActionsStepSummary() {
-  if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-}" == "true" ]]; then
-    debug "GitHub Actions step summary is enabled. ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
-    if [[ -z "${GITHUB_STEP_SUMMARY:-}" ]]; then
-      error "GITHUB_STEP_SUMMARY is not set."
-      return 1
-    fi
-    debug "GITHUB_STEP_SUMMARY is set to: ${GITHUB_STEP_SUMMARY}"
-    if [[ ! -e "${GITHUB_STEP_SUMMARY}" ]]; then
-      error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) doesn't exist."
-      return 1
-    fi
-    if [[ ! -f "${GITHUB_STEP_SUMMARY}" ]]; then
-      error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) is not a file."
-      return 1
-    fi
-  else
-    debug "GitHub Actions step summary is disabled because ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to: ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}). No need to validate its configuration."
+  debug "Validating GITHUB_STEP_SUMMARY"
+  if [[ -z "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    error "GITHUB_STEP_SUMMARY is not set."
+    return 1
+  fi
+  debug "GITHUB_STEP_SUMMARY is set to: ${GITHUB_STEP_SUMMARY}"
+  if [[ ! -e "${GITHUB_STEP_SUMMARY}" ]]; then
+    error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) doesn't exist."
+    return 1
+  fi
+  if [[ ! -f "${GITHUB_STEP_SUMMARY}" ]]; then
+    error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) is not a file."
+    return 1
   fi
 }
 
