@@ -6,7 +6,7 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 ## Upgrade from v5 to v6
 
-This section helps you migrate from super-linter `v5` to `v6`.
+This section helps you upgrade from super-linter `v5` to `v6`.
 
 ### eslint-config-airbnb-typescript
 

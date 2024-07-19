@@ -119,11 +119,12 @@ function ValidateValidationVariables() {
       debug "Configuration contains at least one custom value to enable or disable linters."
       if [ -z "${!VALIDATE_LANGUAGE:-}" ]; then
         # Flag was not set, default to:
-        # if ANY_TRUE then set to false
-        # if ANY_FALSE then set to true
+        # - true if the configuration provided any false value -> enable linters that the user didn't explicitly disable
+        # - false if the configuration didn't provid any false value -> disable linters that the user didn't explicitly enable
         eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
       fi
     else
+      # The user didn't provide and configuration value -> enable all linters by default
       eval "${VALIDATE_LANGUAGE}='true'"
       debug "Configuration doesn't include any custom values to enable or disable linters. Setting VALIDATE variable for ${LANGUAGE} to: ${!VALIDATE_LANGUAGE}"
     fi
@@ -342,7 +343,7 @@ function WarnIfDeprecatedValueForConfigurationVariableIsSet() {
 
 function ValidateDeprecatedVariables() {
 
-  # The following variables have been deprecated in v6
+  # The following variables have been deprecated in v6.0.0
   WarnIfVariableIsSet "${ERROR_ON_MISSING_EXEC_BIT:-}" "ERROR_ON_MISSING_EXEC_BIT"
   WarnIfVariableIsSet "${EXPERIMENTAL_BATCH_WORKER:-}" "EXPERIMENTAL_BATCH_WORKER"
   WarnIfVariableIsSet "${VALIDATE_JSCPD_ALL_CODEBASE:-}" "VALIDATE_JSCPD_ALL_CODEBASE"
@@ -351,4 +352,8 @@ function ValidateDeprecatedVariables() {
   # The following values have been deprecated in v6.1.0
   WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "TRACE" "LOG_LEVEL" "DEBUG"
   WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "VERBOSE" "LOG_LEVEL" "INFO"
+
+  # The following variables have been deprecated in v7.0.0
+  WarnIfVariableIsSet "${JAVASCRIPT_DEFAULT_STYLE:-}" "JAVASCRIPT_DEFAULT_STYLE"
+  WarnIfVariableIsSet "${TYPESCRIPT_DEFAULT_STYLE:-}" "TYPESCRIPT_DEFAULT_STYLE"
 }

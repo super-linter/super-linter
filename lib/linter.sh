@@ -195,9 +195,6 @@ JAVA_FILE_NAME="${JAVA_FILE_NAME:-sun_checks.xml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_ES_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-JAVASCRIPT_DEFAULT_STYLE="${JAVASCRIPT_DEFAULT_STYLE:-standard}"
-JAVASCRIPT_STYLE_NAME='' # Variable for the style
-# shellcheck disable=SC2034  # Variable is referenced indirectly
 JAVASCRIPT_STANDARD_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 JSCPD_FILE_NAME="${JSCPD_CONFIG_FILE:-.jscpd.json}"
@@ -261,44 +258,9 @@ NATURAL_LANGUAGE_FILE_NAME="${NATURAL_LANGUAGE_CONFIG_FILE:-.textlintrc}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 TSX_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
-TYPESCRIPT_DEFAULT_STYLE="${TYPESCRIPT_DEFAULT_STYLE:-ts-standard}"
-TYPESCRIPT_STYLE_NAME='' # Variable for the style
-# shellcheck disable=SC2034  # Variable is referenced indirectly
 TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-.eslintrc.yml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
-
-#################################################
-# Parse if we are using JS standard or prettier #
-#################################################
-# Remove spaces
-JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr -d ' ')
-# lowercase
-JAVASCRIPT_DEFAULT_STYLE=$(echo "${JAVASCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '[:lower:]')
-# Check and set
-if [ "${JAVASCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
-  # Set to prettier
-  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_PRETTIER'
-else
-  # Default to standard
-  JAVASCRIPT_STYLE_NAME='JAVASCRIPT_STANDARD'
-fi
-
-#################################################
-# Parse if we are using JS standard or prettier #
-#################################################
-# Remove spaces
-TYPESCRIPT_DEFAULT_STYLE=$(echo "${TYPESCRIPT_DEFAULT_STYLE}" | tr -d ' ')
-# lowercase
-TYPESCRIPT_DEFAULT_STYLE=$(echo "${TYPESCRIPT_DEFAULT_STYLE}" | tr '[:upper:]' '[:lower:]')
-# Check and set
-if [ "${TYPESCRIPT_DEFAULT_STYLE}" == "prettier" ]; then
-  # Set to prettier
-  TYPESCRIPT_STYLE_NAME='TYPESCRIPT_PRETTIER'
-else
-  # Default to standard
-  TYPESCRIPT_STYLE_NAME='TYPESCRIPT_STANDARD'
-fi
 
 ##################
 # Language array #
@@ -307,7 +269,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CHECKOV' 'CLANG_FORMAT'
   'CLOUDFORMATION' 'CLOJURE' 'COFFEESCRIPT' 'CPP' 'CSHARP' 'CSS' 'DART'
   'DOCKERFILE_HADOLINT' 'EDITORCONFIG' 'ENV' 'GITHUB_ACTIONS'
   'GITLEAKS' 'GHERKIN' 'GO' 'GO_MODULES' 'GO_RELEASER' 'GOOGLE_JAVA_FORMAT' 'GROOVY' 'HTML' 'JAVA'
-  'JAVASCRIPT_ES' "${JAVASCRIPT_STYLE_NAME}" 'JSCPD' 'JSON' 'JSONC' 'JSX'
+  'JAVASCRIPT_ES' 'JAVASCRIPT_PRETTIER' 'JAVASCRIPT_STANDARD' 'JSCPD' 'JSON' 'JSONC' 'JSX'
   'KUBERNETES_KUBECONFORM' 'KOTLIN' 'LATEX' 'LUA' 'MARKDOWN'
   'NATURAL_LANGUAGE' 'OPENAPI' 'PERL' 'PHP_BUILTIN' 'PHP_PHPCS' 'PHP_PHPSTAN'
   'PHP_PSALM' 'POWERSHELL' 'PROTOBUF' 'PYTHON_BLACK' 'PYTHON_PYLINT'
@@ -316,7 +278,7 @@ LANGUAGE_ARRAY=('ANSIBLE' 'ARM' 'BASH' 'BASH_EXEC' 'CHECKOV' 'CLANG_FORMAT'
   'RUST_2018' 'RUST_2021' 'RUST_CLIPPY' 'SCALAFMT' 'SHELL_SHFMT'
   'SNAKEMAKE_LINT' 'SNAKEMAKE_SNAKEFMT' 'STATES' 'SQL' 'SQLFLUFF' 'TEKTON'
   'TERRAFORM_FMT' 'TERRAFORM_TFLINT' 'TERRAFORM_TERRASCAN' 'TERRAGRUNT' 'TSX'
-  'TYPESCRIPT_ES' "${TYPESCRIPT_STYLE_NAME}" 'XML' 'YAML')
+  'TYPESCRIPT_ES' 'TYPESCRIPT_PRETTIER' 'TYPESCRIPT_STANDARD' 'XML' 'YAML')
 
 ##########################
 # Array of changed files #

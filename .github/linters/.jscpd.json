@@ -36,6 +36,8 @@
     "**/test/linters/scalafmt",
     "**/test/linters/tekton/**",
     "**/test/linters/typescript_es/**",
+    "**/test/linters/typescript_prettier/**",
+    "**/test/linters/typescript_standard/**",
     "**/github_conf/**",
     "**/workflows/cd.yml",
     "**/workflows/ci.yml"
