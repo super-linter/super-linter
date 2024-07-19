@@ -6,6 +6,8 @@ version: 2
 updates:
 
   - package-ecosystem: "devcontainers"
+    commit-message:
+      prefix: "chore(devcontainer)"
     directory: "/"
     schedule:
       interval: weekly
@@ -13,7 +15,7 @@ updates:
 
   - package-ecosystem: github-actions
     commit-message:
-      prefix: "deps(github-actions)"
+      prefix: "ci(github-actions)"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -77,7 +79,7 @@ updates:
 
   - package-ecosystem: "docker"
     commit-message:
-      prefix: "deps(dev-docker)"
+      prefix: "ci(dev-docker)"
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
@@ -85,7 +87,7 @@ updates:
 
   - package-ecosystem: "npm"
     commit-message:
-      prefix: "deps(dev-npm)"
+      prefix: "ci(dev-npm)"
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
