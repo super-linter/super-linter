@@ -64,6 +64,29 @@ body:
     validations:
       required: true
   - type: textarea
+    attributes:
+      label: Super-linter configuration
+      description: |
+        How you configured Super-linter to experience the issue.
+        If running on GitHub Actions, include the actions/checkout step
+        as well.
+      placeholder: |
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Super-linter
+          uses: super-linter/super-linter@vX.Y.Z
+          env:
+            # To report GitHub Actions status checks
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            ........
+            ........
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
     id: logs
     attributes:
       label: Relevant log output
