@@ -466,6 +466,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/linterRules.sh",
     version_file_path,
     "/action/lib/functions/log.sh",
+    "/action/lib/functions/output.sh",
     "/action/lib/functions/possum.sh",
     "/action/lib/functions/updateSSL.sh",
     "/action/lib/functions/validation.sh",

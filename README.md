@@ -476,6 +476,8 @@ The summary is in Markdown format. Super-linter supports the following formats:
 
 - Table (default)
 
+The summary output of previous Super-linter runs is not preserved.
+
 ### Super-linter outputs
 
 If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its output

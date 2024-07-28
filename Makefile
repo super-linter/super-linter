@@ -238,6 +238,7 @@ lint-codebase: ## Lint the entire codebase
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -280,7 +281,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-lib
-test-lib: test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation ## Test super-linter
+test-lib: test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation test-output ## Test super-linter
 
 .PHONY: test-build-file-list
 test-build-file-list: ## Test buildFileList
@@ -321,6 +322,14 @@ test-validation: ## Test validation
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/validationTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-output
+test-output: ## Test output
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/outputTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # Run this test against a small directory because we're only interested in
