@@ -1,3 +1,0 @@
-self-hosted-runner:
-  labels:
-    - ubuntu-20.04-8core-sl
