@@ -204,7 +204,7 @@ You can configure super-linter using the following environment variables:
 | **DOCKERFILE_HADOLINT_FILE_NAME**               | `.hadolint.yaml`                | Filename for [hadolint configuration](https://github.com/hadolint/hadolint) (ex: `.hadolintlintrc.yaml`)                                                                                                             |
 | **EDITORCONFIG_FILE_NAME**                      | `.ecrc`                         | Filename for [editorconfig-checker configuration](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                                      |
 | **ENABLE_GITHUB_ACTIONS_GROUP_TITLE**           | `false` if `RUN_LOCAL=true`, `true` otherwise | Flag to enable [GitHub Actions log grouping](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#grouping-log-lines).                                              |
-| **ENABLE_GITHUB_ACTIONS_STEP_SUMMARY**          | `false` if `RUN_LOCAL=true`, `true` otherwise | Flag to enable [GitHub Actions job summary](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary) for the Super-linter action.                 |
+| **ENABLE_GITHUB_ACTIONS_STEP_SUMMARY**          | `false` if `RUN_LOCAL=true`, `true` otherwise | Flag to enable [GitHub Actions job summary](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary) for the Super-linter action. For more information, see [Summary outputs](#summary-outputs). |
 | **FILTER_REGEX_EXCLUDE**                        | not set                         | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`). Not setting this variable means to process all files.                                                                   |
 | **FILTER_REGEX_INCLUDE**                        | not set                         | Regular expression defining which files will be processed by linters (ex: `.*src/.*`). Not setting this variable means to process all files. `FILTER_REGEX_INCLUDE` is evaluated before `FILTER_REGEX_EXCLUDE`.      |
 | **GITHUB_ACTIONS_CONFIG_FILE**                  | `actionlint.yml`                | Filename for [Actionlint configuration](https://github.com/rhysd/actionlint/blob/main/docs/config.md) (ex: `actionlint.yml`)                                                                                         |
@@ -220,14 +220,14 @@ You can configure super-linter using the following environment variables:
 | **JSCPD_CONFIG_FILE**                           | `.jscpd.json`                   | Filename for JSCPD configuration                                                                                                                                                                                     |
 | **KUBERNETES_KUBECONFORM_OPTIONS**              | `null`                          | Additional arguments to pass to the command-line when running **Kubernetes Kubeconform** (Example: --ignore-missing-schemas)                                                                                         |
 | **LINTER_RULES_PATH**                           | `.github/linters`               | Directory for all linter configuration rules.                                                                                                                                                                        |
-| **LOG_FILE**                                    | `super-linter.log`              | The filename for outputting logs. All output is sent to the log file regardless of `LOG_LEVEL`.                                                                                                                      |
+| **LOG_FILE**                                    | `super-linter.log`              | The filename for outputting logs. Super-linter saves the log file to `${DEFAULT_WORKSPACE}/${LOG_FILE}`.                                                                                                             |
 | **LOG_LEVEL**                                   | `INFO`                          | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `INFO`, or `DEBUG`.                                                                                                       |
 | **MARKDOWN_CONFIG_FILE**                        | `.markdown-lint.yml`            | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                           |
 | **MARKDOWN_CUSTOM_RULE_GLOBS**                  | `.markdown-lint/rules,rules/**` | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md). |
 | **MULTI_STATUS**                                | `true`                          | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                 |
 | **NATURAL_LANGUAGE_CONFIG_FILE**                | `.textlintrc`                   | Filename for [textlint configuration](https://textlint.github.io/docs/getting-started.html#configuration) (ex: `.textlintrc`)                                                                                        |
 | **PERL_PERLCRITIC_OPTIONS**                     | `null`                          | Additional arguments to pass to the command-line when running **perlcritic** (Example: --theme community)                                                                                                            |
-| **POWERSHELL_CONFIG_FILE**                      | `.powershell-psscriptanalyzer.psd1` | Filename for [PSScriptAnalyzer configuration](https://learn.microsoft.com/en-gb/powershell/utility-modules/psscriptanalyzer/using-scriptanalyzer)    (ex: `.powershell-psscriptanalyzer.psd1`, `PSScriptAnalyzerSettings.psd1`)               |
+| **POWERSHELL_CONFIG_FILE**                      | `.powershell-psscriptanalyzer.psd1` | Filename for [PSScriptAnalyzer configuration](https://learn.microsoft.com/en-gb/powershell/utility-modules/psscriptanalyzer/using-scriptanalyzer)                                                                |
 | **PHP_CONFIG_FILE**                             | `php.ini`                       | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                               |
 | **PHP_PHPCS_FILE_NAME**                         | `phpcs.xml`                     | Filename for [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) (ex: `.phpcs.xml`, `.phpcs.xml.dist`)                                                                                                   |
 | **PROTOBUF_CONFIG_FILE**                        | `.protolintrc.yml`              | Filename for [protolint configuration](https://github.com/yoheimuta/protolint/blob/master/_example/config/.protolint.yaml) (ex: `.protolintrc.yml`)                                                                  |
@@ -239,7 +239,8 @@ You can configure super-linter using the following environment variables:
 | **PYTHON_RUFF_CONFIG_FILE**                     | `.ruff.toml`                    | Filename for [ruff configuration](https://docs.astral.sh/ruff/configuration/)                                                                                                                                        |
 | **RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES** | not set                         | Comma-separated filenames for [renovate shareable config preset](https://docs.renovatebot.com/config-presets/) (ex: `default.json`)                                                                                  |
 | **RUBY_CONFIG_FILE**                            | `.ruby-lint.yml`                | Filename for [rubocop configuration](https://docs.rubocop.org/rubocop/configuration.html) (ex: `.ruby-lint.yml`, `.rubocop.yml`)                                                                                     |
-| **SAVE_SUPER_LINTER_OUTPUT**                    | `false`                         | If set to `true`, super-linter will save its output to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}`                                                                                                  |
+| **SAVE_SUPER_LINTER_OUTPUT**                    | `false`                         | If set to `true`, Super-linter will save its output in the workspace. For more information, see [Super-linter outputs](#super-linter-outputs).                                                                       |
+| **SAVE_SUPER_LINTER_SUMMARY**                   | `false`                         | If set to `true`, Super-linter will save a summary. For more information, see [Summary outputs](#summary-outputs).                                                                                                   |
 | **SCALAFMT_CONFIG_FILE**                        | `.scalafmt.conf`                | Filename for [scalafmt configuration](https://scalameta.org/scalafmt/docs/configuration.html) (ex: `.scalafmt.conf`)                                                                                                 |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE**              | `.snakefmt.toml`                | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                 |
 | **SSL_CERT_SECRET**                             | `none`                          | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                               |
@@ -249,6 +250,7 @@ You can configure super-linter using the following environment variables:
 | **SQL_CONFIG_FILE**                             | `.sql-config.json`              | Filename for [SQL-Lint configuration](https://sql-lint.readthedocs.io/en/latest/files/configuration.html) (ex: `sql-config.json` , `.config.json`)                                                                   |
 | **SQLFLUFF_CONFIG_FILE**                        | `/.sqlfluff`                    | Filename for [SQLFLUFF configuration](https://docs.sqlfluff.com/en/stable/configuration.html) (ex: `/.sqlfluff`, `pyproject.toml`)                                                                                   |
 | **SUPER_LINTER_OUTPUT_DIRECTORY_NAME**          | `super-linter-output`           | Name of the directory where super-linter saves its output.                                                                                                                                                           |
+| **SUPER_LINTER_SUMMARY_FILE_NAME**              | `super-linter-summary.md`       | Name of the file where to save the summary output. For more information, see [Summary outputs](#summary-outputs).                                                                                                    |
 | **SUPPRESS_FILE_TYPE_WARN**                     | `false`                         | If set to `true`, will hide warning messages about files without their proper extensions. Default is `false`                                                                                                         |
 | **SUPPRESS_POSSUM**                             | `false`                         | If set to `true`, will hide the ASCII possum at top of log output. Default is `false`                                                                                                                                |
 | **TERRAFORM_TERRASCAN_CONFIG_FILE**             | `terrascan.toml`                | Filename for [terrascan configuration](https://github.com/accurics/terrascan) (ex: `terrascan.toml`)                                                                                                                 |
@@ -454,17 +456,37 @@ path to the files that contains a CA that can be used to valide the certificate:
     SSL_CERT_SECRET: ${{ secrets.ROOT_CA }}
 ```
 
-## Super-linter outputs
+## Outputs
+
+Super-linter supports generating several outputs, and also supports exposing
+the output of individual linters.
+
+### Summary outputs
+
+Super-linter writes a summary of all the checks:
+
+- If `SAVE_SUPER_LINTER_SUMMARY` is set to `true`, Super-linter writes
+  a summary to
+  `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/${SUPER_LINTER_SUMMARY_FILE_NAME}`.
+- If `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` is set to `true`, Super-linter writes
+  a GitHub Actions job summary. Setting `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` to
+  `true`, implies setting `SAVE_SUPER_LINTER_SUMMARY` to `true`.
+
+The summary is in Markdown format. Super-linter supports the following formats:
+
+- Table (default)
+
+### Super-linter outputs
 
 If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its output
-to `${DEFAULT_WORKSPACE}/${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}`, so you
+to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter`, so you
 can further process it, if needed.
 
 Most outputs are in JSON format.
 
-The output of previous Super-linter runs is not preserved when running locally.
+The output of previous Super-linter runs is not preserved.
 
-## Linter reports and outputs
+### Linter reports and outputs
 
 Some linters support configuring the format of their outputs for further
 processing. To get access to that output, enable it using the respective linter

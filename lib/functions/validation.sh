@@ -17,6 +17,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "MULTI_STATUS" "${MULTI_STATUS}"
   ValidateBooleanVariable "RUN_LOCAL" "${RUN_LOCAL}"
   ValidateBooleanVariable "SAVE_SUPER_LINTER_OUTPUT" "${SAVE_SUPER_LINTER_OUTPUT}"
+  ValidateBooleanVariable "SAVE_SUPER_LINTER_SUMMARY" "${SAVE_SUPER_LINTER_SUMMARY}"
   ValidateBooleanVariable "SSH_INSECURE_NO_VERIFY_GITHUB_KEY" "${SSH_INSECURE_NO_VERIFY_GITHUB_KEY}"
   ValidateBooleanVariable "SSH_SETUP_GITHUB" "${SSH_SETUP_GITHUB}"
   ValidateBooleanVariable "SUPPRESS_FILE_TYPE_WARN" "${SUPPRESS_FILE_TYPE_WARN}"
@@ -292,25 +293,22 @@ function ValidateGitHubUrls() {
   fi
 }
 
-function ValidateGitHubActionsStepSummary() {
-  if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-}" == "true" ]]; then
-    debug "GitHub Actions step summary is enabled. ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
-    if [[ -z "${GITHUB_STEP_SUMMARY:-}" ]]; then
-      error "GITHUB_STEP_SUMMARY is not set."
-      return 1
-    fi
-    debug "GITHUB_STEP_SUMMARY is set to: ${GITHUB_STEP_SUMMARY}"
-    if [[ ! -e "${GITHUB_STEP_SUMMARY}" ]]; then
-      error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) doesn't exist."
-      return 1
-    fi
-    if [[ ! -f "${GITHUB_STEP_SUMMARY}" ]]; then
-      error "GITHUB_STEP_SUMMARY (${GITHUB_STEP_SUMMARY}) is not a file."
-      return 1
-    fi
-  else
-    debug "GitHub Actions step summary is disabled because ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to: ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}). No need to validate its configuration."
+function ValidateSuperLinterSummaryOutputPath() {
+  debug "Validating SUPER_LINTER_SUMMARY_OUTPUT_PATH"
+  if [[ -z "${SUPER_LINTER_SUMMARY_OUTPUT_PATH:-}" ]]; then
+    error "SUPER_LINTER_SUMMARY_OUTPUT_PATH is not set."
+    return 1
   fi
+  debug "SUPER_LINTER_SUMMARY_OUTPUT_PATH is set to: ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+  if [[ ! -e "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" ]]; then
+    error "SUPER_LINTER_SUMMARY_OUTPUT_PATH (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) doesn't exist."
+    return 1
+  fi
+  if [[ ! -f "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" ]]; then
+    error "SUPER_LINTER_SUMMARY_OUTPUT_PATH (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) is not a file."
+    return 1
+  fi
+  debug "Super-linter summary ouput path passed validation"
 }
 
 function WarnIfVariableIsSet() {

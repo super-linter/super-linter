@@ -156,55 +156,34 @@ function ValidateGitHubUrlsTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
-function ValidateGitHubActionsStepSummaryTest() {
+function ValidateSuperLinterSummaryOutputPathTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="false"
-  if ! ValidateGitHubActionsStepSummary; then
-    fatal "ValidateGitHubActionsStepSummary shouldn't fail when ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is ${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
+  SUPER_LINTER_SUMMARY_OUTPUT_PATH="/non/existing/file"
+  if ValidateSuperLinterSummaryOutputPath; then
+    fatal "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} should have failed validation when SUPER_LINTER_SUMMARY_OUTPUT_PATH is set to a non-existing file"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} passed validation as expected"
+    info "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} failed validation as expected"
   fi
+  unset SUPER_LINTER_SUMMARY_OUTPUT_PATH
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
-  if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is not set"
+  SUPER_LINTER_SUMMARY_OUTPUT_PATH="$(pwd)"
+  if ValidateSuperLinterSummaryOutputPath; then
+    fatal "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} should have failed validation when SUPER_LINTER_SUMMARY_OUTPUT_PATH is set to a directory"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY} failed validation as expected"
+    info "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} failed validation as expected"
   fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
+  unset SUPER_LINTER_SUMMARY_OUTPUT_PATH
 
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
-  GITHUB_STEP_SUMMARY="/non/existing/file"
-  if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a non-existing file"
+  SUPER_LINTER_SUMMARY_OUTPUT_PATH="${0}"
+  if ! ValidateSuperLinterSummaryOutputPath; then
+    fatal "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} should have passed validation when SUPER_LINTER_SUMMARY_OUTPUT_PATH is set to a file"
   else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
+    info "SUPER_LINTER_SUMMARY_OUTPUT_PATH=${SUPER_LINTER_SUMMARY_OUTPUT_PATH} passed validation as expected"
   fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-  unset GITHUB_STEP_SUMMARY
-
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
-  GITHUB_STEP_SUMMARY="$(pwd)"
-  if ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have failed validation when GITHUB_STEP_SUMMARY is set to a directory"
-  else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} failed validation as expected"
-  fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-  unset GITHUB_STEP_SUMMARY
-
-  ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
-  GITHUB_STEP_SUMMARY="${0}"
-  if ! ValidateGitHubActionsStepSummary; then
-    fatal "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} should have passed validation when GITHUB_STEP_SUMMARY is set to a file"
-  else
-    info "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY=${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}, GITHUB_STEP_SUMMARY=${GITHUB_STEP_SUMMARY} passed validation as expected"
-  fi
-  unset ENABLE_GITHUB_ACTIONS_STEP_SUMMARY
-  unset GITHUB_STEP_SUMMARY
+  unset SUPER_LINTER_SUMMARY_OUTPUT_PATH
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -402,7 +381,7 @@ IsUnsignedIntegerSuccessTest
 IsUnsignedIntegerFailureTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
-ValidateGitHubActionsStepSummaryTest
+ValidateSuperLinterSummaryOutputPathTest
 ValidateFindModeTest
 ValidateAnsibleDirectoryTest
 ValidateValidationVariablesTest
