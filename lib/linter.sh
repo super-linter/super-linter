@@ -31,6 +31,8 @@ source /action/lib/functions/setupSSH.sh # Source the function script(s)
 source /action/lib/functions/githubEvent.sh
 # shellcheck source=/dev/null
 source /action/lib/functions/githubDomain.sh
+# shellcheck source=/dev/null
+source /action/lib/functions/output.sh
 
 if ! ValidateGitHubUrls; then
   fatal "GitHub URLs failed validation"
@@ -565,12 +567,7 @@ Footer() {
 
   if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
     debug "Saving Super-linter summary to ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
-    {
-      echo "# Super-linter summary"
-      echo ""
-      echo "| Language               | Validation result |"
-      echo "| -----------------------|-------------------|"
-    } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+    WriteSummaryHeader "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
   fi
 
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
@@ -591,7 +588,7 @@ Footer() {
         error "Errors found in ${LANGUAGE}"
 
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
-          echo "| ${LANGUAGE} | Fail ❌ |" >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+          WriteSummaryLineFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
 
         # Print output as error in case users disabled the INFO level so they
@@ -619,7 +616,7 @@ Footer() {
       elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
         notice "Successfully linted ${LANGUAGE}"
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
-          echo "| ${LANGUAGE} | Pass ✅ |" >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+          WriteSummaryLineSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
         CallStatusAPI "${LANGUAGE}" "success"
         ANY_LINTER_SUCCESS="true"
@@ -641,18 +638,12 @@ Footer() {
   if [[ ${SUPER_LINTER_EXIT_CODE} -eq 0 ]]; then
     notice "All files and directories linted successfully"
     if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
-      {
-        echo ""
-        echo "All files and directories linted successfully"
-      } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+      WriteSummaryFooterSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
     fi
   else
     error "Super-linter detected linting errors"
     if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
-      {
-        echo ""
-        echo "Super-linter detected linting errors"
-      } >>"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+      WriteSummaryFooterFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
     fi
   fi
 
@@ -820,6 +811,9 @@ if [[ "${SAVE_SUPER_LINTER_OUTPUT}" = "true" ]] ||
 fi
 
 if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+  debug "Remove eventual ${SUPER_LINTER_SUMMARY_OUTPUT_PATH} leftover"
+  rm -f "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+
   debug "Ensuring that ${SUPER_LINTER_SUMMARY_OUTPUT_PATH} exists."
   if ! touch "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"; then
     fatal "Cannot create Super-linter summary file: ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
