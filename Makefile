@@ -81,8 +81,8 @@ endif
 info: ## Gather information about the runtime environment
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
-	echo "IMAGE:" $(IMAGE) \
-	echo "SUPER_LINTER_TEST_CONTAINER_URL:" $(SUPER_LINTER_TEST_CONTAINER_URL) \
+	echo "IMAGE:" $(IMAGE); \
+	echo "SUPER_LINTER_TEST_CONTAINER_URL:" $(SUPER_LINTER_TEST_CONTAINER_URL); \
 	echo "ls -ahl: $$(ls -ahl)"; \
 	docker images; \
 	docker ps; \
