@@ -90,6 +90,7 @@ new tool, it should include:
 - Update the orchestration scripts to run the new tool:
 
   - `lib/linter.sh`
+  - `globals/languages.sh`
   - `lib/functions/linterCommands.sh`
   - Provide the logic to populate the list of files or directories to examine: `lib/buildFileList.sh`
   - If necessary, provide elaborate logic to detect if the tool should examine a file or a directory: `lib/detectFiles.sh`
