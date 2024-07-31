@@ -89,9 +89,23 @@ new tool, it should include:
 
 - Update the orchestration scripts to run the new tool:
 
+  - `globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use the
+    "name" of the language, then a `_`, and finally the name of the linter. Example: `PYTHON_RUFF`
+  - Linter configuration:
+    - `globals/linterRules.sh`:
+      - If the new linter accepts a configuration files from the command line, add a new variable
+        with a default filename using the item that you added to the `LANGUAGES_ARRAY` as a prefix,
+        followed by the `CONFIG_FILE` suffix. Example:
+        `PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"`.
+      - If there are arguments that you can only pass using the command line, and you think users
+        might want to customize them, define a new variable using the item that
+        you added to the `LANGUAGES_ARRAY` as a prefix, followed by the
+        `COMMAND_ARGS` suffix. Example:
+        `GITHUB_ACTIONS_COMMAND_ARGS="${GITHUB_ACTIONS_COMMAND_ARGS:-""}"`
+    - Create a new minimal configuration file in the `TEMPLATES` directory with the same name as the
+      default configuration filename. Example: `TEMPLATES/.ruff.toml`.
   - `lib/linter.sh`
-  - `globals/languages.sh`
-  - `lib/functions/linterCommands.sh`
+  - `lib/functions/linterCommands.sh`: define a new array to invoke the new linter.
   - Provide the logic to populate the list of files or directories to examine: `lib/buildFileList.sh`
   - If necessary, provide elaborate logic to detect if the tool should examine a file or a directory: `lib/detectFiles.sh`
   - If the tool needs to take into account special cases:

@@ -52,7 +52,7 @@ function GenerateFileDiffOneFileTest() {
   GITHUB_WORKSPACE="$(mktemp -d)"
   # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
   trap "rm -fr '${GITHUB_WORKSPACE}'" EXIT
-  echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+  debug "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 
   local FILES_TO_COMMIT="${FILES_TO_COMMIT:-1}"
   local COMMIT_FILE_INITIAL_COMMIT="${COMMIT_FILE_INITIAL_COMMIT:-"false"}"
