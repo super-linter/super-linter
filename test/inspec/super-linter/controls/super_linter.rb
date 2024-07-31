@@ -471,6 +471,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/updateSSL.sh",
     "/action/lib/functions/validation.sh",
     "/action/lib/functions/worker.sh",
+    "/action/lib/globals/languages.sh",
     "/action/lib/.automation/actionlint.yml",
     "/action/lib/.automation/.ansible-lint.yml",
     "/action/lib/.automation/.arm-ttk.psd1",

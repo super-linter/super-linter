@@ -3,8 +3,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# shellcheck disable=SC2034
-CREATE_LOG_FILE=false
 # Default log level
 # shellcheck disable=SC2034
 LOG_LEVEL="DEBUG"

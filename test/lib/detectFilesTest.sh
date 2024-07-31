@@ -10,9 +10,6 @@ LOG_LEVEL="DEBUG"
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
 
-# shellcheck disable=SC2034
-CREATE_LOG_FILE=false
-
 # shellcheck source=/dev/null
 source "lib/functions/detectFiles.sh"
 
