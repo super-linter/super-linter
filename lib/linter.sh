@@ -410,8 +410,31 @@ GetGitHubVars() {
 
         # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
         debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
+
+        debug "Check if the commit is a merge commit by checking if it has more than one parent"
+        local GIT_COMMIT_PARENTS_COUNT
+        GIT_COMMIT_PARENTS_COUNT=$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)
+        debug "Git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
+        GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
+        debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
+
+        # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
+        local GIT_BEFORE_SHA_HEAD="HEAD"
+        if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
+          debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
+          GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
+          debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
+          GITHUB_PUSH_COMMIT_COUNT=$((GITHUB_PUSH_COMMIT_COUNT - 1))
+          debug "Remove one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
+        else
+          debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
+        fi
+
+        GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_PUSH_COMMIT_COUNT}"
+        debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
+
         # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
-        if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD~${GITHUB_PUSH_COMMIT_COUNT}); then
+        if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD}); then
           fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
         fi
 
