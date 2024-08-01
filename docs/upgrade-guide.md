@@ -2,7 +2,55 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from v6.7.0 to v6.8.0
+
+This section helps you upgrade from super-linter `v6.7.0` to `v6.8.0`.
+
+### JAVASCRIPT_DEFAULT_STYLE and TYPESCRIPT_DEFAULT_STYLE
+
+- The `JAVASCRIPT_DEFAULT_STYLE` and `TYPESCRIPT_DEFAULT_STYLE` have been
+  deprecated because they made the `VALIDATE_JAVASCRIPT_PRETTIER`,
+  `VALIDATE_JAVASCRIPT_STANDARD`, `VALIDATE_TYPESCRIPT_PRETTIER`, and
+  `VALIDATE_TYPESCRIPT_STANDARD` configuration variables break the documented
+  behavior of how
+  [`VALIDATE_xxx` variables work](https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter).
+  Unfortunately, a transparent configuration update is not feasible without
+  complicating the codebase to address all possible cases. If you only want to
+  run only one between Prettier and Standard, a possible migration strategy
+  could be:
+
+  - If you're explicitly enabling linters and formatters that you want
+    Super-linter to run by setting `VALIDATE_xxxx` variables to `true`:
+
+    - If you set `JAVASCRIPT_DEFAULT_STYLE=standard`, set
+      `VALIDATE_JAVASCRIPT_STANDARD=true`
+    - If you set `TYPESCRIPT_DEFAULT_STYLE=standard`, set
+      `VALIDATE_TYPESCRIPT_STANDARD=true`
+    - If you set `JAVASCRIPT_DEFAULT_STYLE=prettier`, set
+      `VALIDATE_JAVASCRIPT_PRETTIER=true`
+    - If you set `TYPESCRIPT_DEFAULT_STYLE=prettier`, set
+      `VALIDATE_TYPESCRIPT_PRETTIER=true`
+
+  - If you're explicitly disabling linters and formatters that you don't want
+    Super-linter to run by setting `VALIDATE_xxxx` variables to `false`:
+
+    - If you set `JAVASCRIPT_DEFAULT_STYLE=standard`, set
+      `VALIDATE_JAVASCRIPT_PRETTIER=false`
+
+    - If you set `TYPESCRIPT_DEFAULT_STYLE=standard`, set
+      `VALIDATE_TYPESCRIPT_PRETTIER=false`
+
+    - If you set `JAVASCRIPT_DEFAULT_STYLE=prettier`, set
+      `VALIDATE_JAVASCRIPT_STANDARD=false`
+
+    - If you set `TYPESCRIPT_DEFAULT_STYLE=prettier`, set
+      `VALIDATE_TYPESCRIPT_STANDARD=false`
+
+  Finally, you remove both `JAVASCRIPT_DEFAULT_STYLE` and
+  `TYPESCRIPT_DEFAULT_STYLE` from your Super-linter configuration.
 
 ## Upgrade from v5 to v6
 

@@ -351,7 +351,7 @@ function ValidateDeprecatedVariables() {
   WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "TRACE" "LOG_LEVEL" "DEBUG"
   WarnIfDeprecatedValueForConfigurationVariableIsSet "${LOG_LEVEL}" "VERBOSE" "LOG_LEVEL" "INFO"
 
-  # The following variables have been deprecated in v7.0.0
+  # The following variables have been deprecated in v6.8.0
   WarnIfVariableIsSet "${JAVASCRIPT_DEFAULT_STYLE:-}" "JAVASCRIPT_DEFAULT_STYLE"
   WarnIfVariableIsSet "${TYPESCRIPT_DEFAULT_STYLE:-}" "TYPESCRIPT_DEFAULT_STYLE"
 }
