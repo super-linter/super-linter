@@ -467,9 +467,6 @@ RUN apk add --no-cache \
     rust-clippy \
     rustfmt
 
-COPY scripts/clippy.sh /usr/bin/clippy
-RUN chmod +x /usr/bin/clippy
-
 ###################################
 # Install DotNet and Dependencies #
 ###################################
