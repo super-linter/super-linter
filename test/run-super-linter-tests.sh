@@ -62,31 +62,72 @@ run_test_case_bash_exec_library_expect_success() {
   COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
 }
 
-run_test_case_git_initial_commit() {
-  local GIT_REPOSITORY_PATH
-  GIT_REPOSITORY_PATH="$(mktemp -d)"
+initialize_git_repository_and_test_args() {
+  local GIT_REPOSITORY_PATH="${1}"
   # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
   trap "rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+
+  local GITHUB_EVENT_FILE_PATH="${2}"
 
   git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH}"
   git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
   git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
-  cp -v test/data/github-event/github-event-push.json "${GIT_REPOSITORY_PATH}/"
+  # Put an arbitrary JSON file in the repository to trigger some validation
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
   git -C "${GIT_REPOSITORY_PATH}" add .
   git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: initial commit"
-
-  local TEST_GITHUB_SHA
-  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
 
   RUN_LOCAL=false
   SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
   COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
   COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="push")
-  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/github-event-push.json")
-  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
   COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
   COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+}
+
+run_test_case_git_initial_commit() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
+
+  local TEST_GITHUB_SHA
+  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+}
+
+run_test_case_merge_commit_push() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json"
+
+  local NEW_BRANCH_NAME="branch-1"
+  git -C "${GIT_REPOSITORY_PATH}" switch --create "${NEW_BRANCH_NAME}"
+  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-1.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 1"
+  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-2.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 2"
+  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-3.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 3"
+  git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+  # Force the creation of a merge commit
+  git -C "${GIT_REPOSITORY_PATH}" merge \
+    -m "Merge commit" \
+    --no-ff \
+    "${NEW_BRANCH_NAME}"
+  git -C "${GIT_REPOSITORY_PATH}" branch -d "${NEW_BRANCH_NAME}"
+
+  git -C "${GIT_REPOSITORY_PATH}" log --all --graph --abbrev-commit --decorate --format=oneline
+
+  local TEST_GITHUB_SHA
+  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
 }
 
 run_test_case_use_find_and_ignore_gitignored_files() {
