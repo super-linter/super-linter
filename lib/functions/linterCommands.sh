@@ -113,7 +113,8 @@ LINTER_COMMANDS_ARRAY_RUBY=(rubocop -c "${RUBY_LINTER_RULES}" --force-exclusion 
 LINTER_COMMANDS_ARRAY_RUST_2015=(rustfmt --check --edition 2015)
 LINTER_COMMANDS_ARRAY_RUST_2018=(rustfmt --check --edition 2018)
 LINTER_COMMANDS_ARRAY_RUST_2021=(rustfmt --check --edition 2021)
-LINTER_COMMANDS_ARRAY_RUST_CLIPPY=(clippy)
+# Consume the input as we do with ANSIBLE
+LINTER_COMMANDS_ARRAY_RUST_CLIPPY=(cargo-clippy "&& echo \"Linted: {}\"")
 LINTER_COMMANDS_ARRAY_SCALAFMT=(scalafmt --config "${SCALAFMT_LINTER_RULES}" --test)
 LINTER_COMMANDS_ARRAY_SHELL_SHFMT=(shfmt -d)
 LINTER_COMMANDS_ARRAY_SNAKEMAKE_LINT=(snakemake --lint -s)

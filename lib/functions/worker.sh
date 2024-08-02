@@ -128,6 +128,7 @@ function LintCodebase() {
   if [[ ${FILE_TYPE} == "CSHARP" ]] ||
     [[ (${FILE_TYPE} == "R" && -f "$(dirname "${FILE}")/.lintr") ]] ||
     [[ ${FILE_TYPE} == "KOTLIN" ]] ||
+    [[ ${FILE_TYPE} == "RUST_CLIPPY" ]] ||
     [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
     LINTER_WORKING_DIRECTORY="{//}"
   elif [[ ${FILE_TYPE} == "ANSIBLE" ]] ||
