@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check test-lib inspec lint-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-linters ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check test-lib inspec lint-codebase fix-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-linters test-linters-fix-mode-expect-success ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -231,6 +231,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
 	docker run \
+		-e CREATE_LOG_FILE=true \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
@@ -238,10 +239,36 @@ lint-codebase: ## Lint the entire codebase
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
+		-e SAVE_SUPER_LINTER_OUTPUT=true \
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+# Return an error if there are changes to commit
+.PHONY: fix-codebase
+fix-codebase: ## Fix and format the entire codebase
+	docker run \
+		-e CREATE_LOG_FILE=true \
+		-e DEFAULT_BRANCH=main \
+		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FIX_ENV=true \
+		-e FIX_JAVASCRIPT_ES=true \
+		-e FIX_JAVASCRIPT_PRETTIER=true \
+		-e FIX_JSON=true \
+		-e FIX_MARKDOWN=true \
+		-e FIX_SHELL_SHFMT=true \
+		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
+		-e LOG_LEVEL=DEBUG \
+		-e RUN_LOCAL=true \
+		-e SAVE_SUPER_LINTER_OUTPUT=true \
+		-e SAVE_SUPER_LINTER_SUMMARY=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-v "$(CURDIR):/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+	&& /bin/bash -c "source test/testUtils.sh; if ! CheckUnexpectedGitChanges ${CURDIR}; then exit 1; fi"
+
 
 # This is a smoke test to check how much time it takes to lint only a small
 # subset of files, compared to linting the whole codebase.
@@ -388,6 +415,14 @@ test-non-default-home-directory: ## Test a non-default HOME directory
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_non_default_home" \
 		"$(IMAGE)"
+
+.PHONY: test-linters-fix-mode-expect-success
+test-linters-fix-mode-expect-success: ## Run the linters test suite (fix mode) expecting successes
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_fix_mode" \
+		"$(IMAGE)"
+
 
 .PHONY: test-linters
 test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite

@@ -140,6 +140,51 @@ function ValidateValidationVariables() {
   done
 }
 
+function ValidateCheckModeAndFixModeVariables() {
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    local FIX_MODE_OPTIONS_VARIABLE_NAME="${LANGUAGE}_FIX_MODE_OPTIONS"
+    local CHECK_ONLY_MODE_OPTIONS_VARIABLE_NAME="${LANGUAGE}_CHECK_ONLY_MODE_OPTIONS"
+    local FIX_MODE_VARIABLE_NAME="FIX_${LANGUAGE}"
+    debug "Check if ${LANGUAGE} supports fix mode by checking if ${FIX_MODE_OPTIONS_VARIABLE_NAME}, ${CHECK_ONLY_MODE_OPTIONS_VARIABLE_NAME}, or both variables are set."
+    if [[ -v "${FIX_MODE_OPTIONS_VARIABLE_NAME}" ]] ||
+      [[ -v "${CHECK_ONLY_MODE_OPTIONS_VARIABLE_NAME}" ]]; then
+      debug "Assuming that ${LANGUAGE} supports fix mode because ${FIX_MODE_OPTIONS_VARIABLE_NAME}, ${CHECK_ONLY_MODE_OPTIONS_VARIABLE_NAME}, or both variables are set."
+
+      local -n FIX_MODE_REF="${FIX_MODE_VARIABLE_NAME}"
+      if [[ -n "${FIX_MODE_REF:-}" ]]; then
+        debug "The configuration provided a value for ${FIX_MODE_VARIABLE_NAME}: ${FIX_MODE_REF}"
+      else
+        FIX_MODE_REF="false"
+        debug "The configuration didn't provide a value for ${FIX_MODE_VARIABLE_NAME} for ${LANGUAGE}. Setting it to: ${FIX_MODE_REF}"
+      fi
+
+      # TODO: After refactoring ValidateBooleanVariable to return an error instead
+      # of exiting the whole program, add a test case for when ValidateBooleanVariable fails
+      ValidateBooleanVariable "${!FIX_MODE_REF}" "${FIX_MODE_REF}"
+
+      local -n VALIDATE_MODE_REF="VALIDATE_${LANGUAGE}"
+
+      if [[ "${FIX_MODE_REF}" == "true" ]] && [[ "${VALIDATE_MODE_REF}" == "false" ]]; then
+        error "Cannot set ${!FIX_MODE_REF} to ${FIX_MODE_REF} when ${!VALIDATE_MODE_REF} is ${VALIDATE_MODE_REF}"
+        return 1
+      fi
+
+      export FIX_MODE_REF
+    else
+      debug "Assuming that ${LANGUAGE} doesn't support fix mode because it doesn't have ${FIX_MODE_OPTIONS_VARIABLE_NAME}, nor ${CHECK_ONLY_MODE_OPTIONS_VARIABLE_NAME} variables defined."
+      if [[ -v "${FIX_MODE_VARIABLE_NAME}" ]]; then
+        error "The configuration provided a value for ${FIX_MODE_VARIABLE_NAME} but it's not supported for ${LANGUAGE}"
+        return 1
+      else
+        debug "The configuration didn't provide a value for ${FIX_MODE_VARIABLE_NAME} for ${LANGUAGE}"
+      fi
+    fi
+
+    unset -n FIX_MODE_REF
+    unset -n VALIDATE_MODE_REF
+  done
+}
+
 function CheckIfGitBranchExists() {
   local BRANCH_NAME="${1}"
   debug "Check if the ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"

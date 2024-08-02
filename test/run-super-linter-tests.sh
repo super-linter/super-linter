@@ -4,6 +4,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# shellcheck source=/dev/null
+source "test/testUtils.sh"
+
 SUPER_LINTER_TEST_CONTAINER_URL="${1}"
 TEST_FUNCTION_NAME="${2}"
 SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
@@ -149,6 +152,48 @@ run_test_cases_save_super_linter_output_custom_path() {
 run_test_case_custom_summary() {
   run_test_cases_expect_success
   SUPER_LINTER_SUMMARY_FILE_NAME="custom-github-step-summary.md"
+}
+
+run_test_case_fix_mode() {
+  run_test_cases_expect_success
+  CREATE_LOG_FILE="true"
+  SAVE_SUPER_LINTER_OUTPUT="true"
+
+  COMMAND_TO_RUN+=(--env FIX_ANSIBLE="true")
+  COMMAND_TO_RUN+=(--env FIX_CLANG_FORMAT="true")
+  COMMAND_TO_RUN+=(--env FIX_CSHARP="true")
+  COMMAND_TO_RUN+=(--env FIX_CSS="true")
+  COMMAND_TO_RUN+=(--env FIX_ENV="true")
+  COMMAND_TO_RUN+=(--env FIX_GO_MODULES="true")
+  COMMAND_TO_RUN+=(--env FIX_GO="true")
+  COMMAND_TO_RUN+=(--env FIX_GOOGLE_JAVA_FORMAT="true")
+  COMMAND_TO_RUN+=(--env FIX_GROOVY="true")
+  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_ES="true")
+  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_PRETTIER="true")
+  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_STANDARD="true")
+  COMMAND_TO_RUN+=(--env FIX_JSON="true")
+  COMMAND_TO_RUN+=(--env FIX_JSONC="true")
+  COMMAND_TO_RUN+=(--env FIX_JSX="true")
+  COMMAND_TO_RUN+=(--env FIX_MARKDOWN="true")
+  COMMAND_TO_RUN+=(--env FIX_POWERSHELL="true")
+  COMMAND_TO_RUN+=(--env FIX_PROTOBUF="true")
+  COMMAND_TO_RUN+=(--env FIX_PYTHON_BLACK="true")
+  COMMAND_TO_RUN+=(--env FIX_PYTHON_ISORT="true")
+  COMMAND_TO_RUN+=(--env FIX_PYTHON_RUFF="true")
+  COMMAND_TO_RUN+=(--env FIX_RUBY="true")
+  COMMAND_TO_RUN+=(--env FIX_RUST_2015="true")
+  COMMAND_TO_RUN+=(--env FIX_RUST_2018="true")
+  COMMAND_TO_RUN+=(--env FIX_RUST_2021="true")
+  COMMAND_TO_RUN+=(--env FIX_RUST_CLIPPY="true")
+  COMMAND_TO_RUN+=(--env FIX_SCALAFMT="true")
+  COMMAND_TO_RUN+=(--env FIX_SHELL_SHFMT="true")
+  COMMAND_TO_RUN+=(--env FIX_SNAKEMAKE_SNAKEFMT="true")
+  COMMAND_TO_RUN+=(--env FIX_SQLFLUFF="true")
+  COMMAND_TO_RUN+=(--env FIX_TERRAFORM_FMT="true")
+  COMMAND_TO_RUN+=(--env FIX_TSX="true")
+  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_ES="true")
+  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_PRETTIER="true")
+  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_STANDARD="true")
 }
 
 # Run the test setup function
@@ -316,3 +361,8 @@ for item in "${TEMP_ITEMS_TO_CLEAN[@]}"; do
     echo "${item} does not exist as expected"
   fi
 done
+
+if ! CheckUnexpectedGitChanges "$(pwd)"; then
+  echo "There are unexpected modifications to the working directory after running tests."
+  exit 1
+fi
