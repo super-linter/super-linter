@@ -107,7 +107,7 @@ This section helps you upgrade from super-linter `v5` to `v6`.
   entire workspace instead of linting files one by one. You can safely remove
   the `VALIDATE_JSCPD_ALL_CODEBASE` variable from your configuration.
 - Jscpd doesn't consider the `FILTER_REGEX_EXCLUDE`, `FILTER_REGEX_INCLUDE`,
-  `IGNORE_GENERATED_FILES`, `IGNORE_GITIGNORED_FILES` variables. For more
+  `IGNORE_GENERATED_FILES` variables. For more
   information about how to ignore files with Jscpd, see
   [the Jscpd documentation](https://github.com/kucherenko/jscpd/tree/master/packages/jscpd).
 
