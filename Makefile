@@ -281,7 +281,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-lib
-test-lib: test-globals-languages test-linter-rules test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation test-output ## Test super-linter libs and globals
+test-lib: test-globals-languages test-linter-rules test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation test-output test-linter-commands ## Test super-linter libs and globals
 
 .PHONY: test-globals-languages
 test-globals-languages: ## Test globals/languages.sh
@@ -346,6 +346,14 @@ test-output: ## Test output
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/outputTest.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-linter-commands
+test-linter-commands: ## Test linterCommands
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/linterCommandsTest.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # Run this test against a small directory because we're only interested in
