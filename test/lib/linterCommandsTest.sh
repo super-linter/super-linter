@@ -71,4 +71,45 @@ function LinterCommandPresenceTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function IgnoreGitIgnoredFilesJscpdCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  IGNORE_GITIGNORED_FILES="true"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  EXPECTED_COMMAND=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTION}")
+
+  if [[ "${LINTER_COMMANDS_ARRAY_JSCPD[*]}" == "${EXPECTED_COMMAND[*]}" ]]; then
+    debug "Command (${LINTER_COMMANDS_ARRAY_JSCPD[*]}) matches with the expected one (${EXPECTED_COMMAND[*]})"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function JscpdCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  EXPECTED_COMMAND=(jscpd --config "${JSCPD_LINTER_RULES}")
+
+  if [[ "${LINTER_COMMANDS_ARRAY_JSCPD[*]}" == "${EXPECTED_COMMAND[*]}" ]]; then
+    debug "Command (${LINTER_COMMANDS_ARRAY_JSCPD[*]}) matches with the expected one (${EXPECTED_COMMAND[*]})"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 LinterCommandPresenceTest
+IgnoreGitIgnoredFilesJscpdCommandTest
+JscpdCommandTest

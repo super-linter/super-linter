@@ -65,6 +65,13 @@ LINTER_COMMANDS_ARRAY_JAVASCRIPT_ES=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_STANDARD=(standard "${JAVASCRIPT_STANDARD_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_PRETTIER=(prettier --check)
 LINTER_COMMANDS_ARRAY_JSCPD=(jscpd --config "${JSCPD_LINTER_RULES}")
+JSCPD_GITIGNORE_OPTION="--gitignore"
+if [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
+  debug "IGNORE_GITIGNORED_FILES is ${IGNORE_GITIGNORED_FILES}. Enable Jscpd option to ignore files that Git ignores (${JSCPD_GITIGNORE_OPTION})"
+  # Users can also add the '"gitignore": true' option in their Jscpd config files to achieve the same functionality
+  # but we want to respect IGNORE_GITIGNORED_FILES
+  LINTER_COMMANDS_ARRAY_JSCPD+=("${JSCPD_GITIGNORE_OPTION}")
+fi
 LINTER_COMMANDS_ARRAY_JSON=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}" --ext '.json')
 LINTER_COMMANDS_ARRAY_JSONC=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}" --ext '.json5,.jsonc')
 LINTER_COMMANDS_ARRAY_JSX=(eslint -c "${JSX_LINTER_RULES}")
