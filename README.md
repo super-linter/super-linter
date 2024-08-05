@@ -49,60 +49,65 @@ Here are some notable Super-linter features:
 
 Super-linter supports the following tools:
 
-| _Language_                       | _Linter_                                                                                                                                                                                                                |
-|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Ansible**                      | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                                                                 |
-| **AWS CloudFormation templates** | [cfn-lint](https://github.com/aws-cloudformation/cfn-python-lint/)                                                                                                                                                      |
-| **Azure Resource Manager (ARM)** | [arm-ttk](https://github.com/azure/arm-ttk)                                                                                                                                                                             |
-| **C++**                          | [cpp-lint](https://github.com/cpplint/cpplint) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                                                               |
-| **C#**                           | [dotnet format](https://github.com/dotnet/format) / [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)                                                                                            |
-| **CSS**                          | [stylelint](https://stylelint.io/)                                                                                                                                                                                      |
-| **Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)                                                                                                                                                                      |
-| **CoffeeScript**                 | [coffeelint](https://coffeelint.github.io/)                                                                                                                                                                             |
-| **Copy/paste detection**         | [jscpd](https://github.com/kucherenko/jscpd)                                                                                                                                                                            |
-| **Dart**                         | [dartanalyzer](https://dart.dev/guides/language/analysis-options)                                                                                                                                                       |
-| **Dockerfile**                   | [hadolint](https://github.com/hadolint/hadolint)                                                                                                                                                                        |
-| **EditorConfig**                 | [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)                                                                                                                                    |
-| **ENV**                          | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)                                                                                                                                                         |
-| **Gherkin**                      | [gherkin-lint](https://github.com/vsiakka/gherkin-lint)                                                                                                                                                                 |
-| **GitHub Actions**               | [actionlint](https://github.com/rhysd/actionlint)                                                                                                                                                                       |
-| **Golang**                       | [golangci-lint](https://github.com/golangci/golangci-lint)                                                                                                                                                              |
-| **GoReleaser**                   | [GoReleaser](https://github.com/goreleaser/goreleaser)                                                                                                                                                                       |
-| **Groovy**                       | [npm-groovy-lint](https://github.com/nvuillam/npm-groovy-lint)                                                                                                                                                          |
-| **HTML**                         | [HTMLHint](https://github.com/htmlhint/HTMLHint)                                                                                                                                                                        |
-| **Java**                         | [checkstyle](https://checkstyle.org) / [google-java-format](https://github.com/google/google-java-format)                                                                                                               |
-| **JavaScript**                   | [ESLint](https://eslint.org/) / [standard js](https://standardjs.com/)                                                                                                                                                  |
-| **JSON**                         | [eslint-plugin-json](https://www.npmjs.com/package/eslint-plugin-json)                                                                                                                                                  |
-| **JSONC**                        | [eslint-plugin-jsonc](https://www.npmjs.com/package/eslint-plugin-jsonc)                                                                                                                                                |
-| Infrastructure as code           | [Checkov](https://www.checkov.io/)                                                                                                                                                                                      |
-| **Kubernetes**                   | [kubeconform](https://github.com/yannh/kubeconform)                                                                                                                                                                     |
-| **Kotlin**                       | [ktlint](https://github.com/pinterest/ktlint)                                                                                                                                                                           |
-| **LaTeX**                        | [ChkTex](https://www.nongnu.org/chktex/)                                                                                                                                                                                |
-| **Lua**                          | [luacheck](https://github.com/luarocks/luacheck)                                                                                                                                                                        |
-| **Markdown**                     | [markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)                                                                                                                                                |
-| **Natural language**             | [textlint](https://textlint.github.io/)                                                                                                                                                                                 |
-| **OpenAPI**                      | [spectral](https://github.com/stoplightio/spectral)                                                                                                                                                                     |
-| **Perl**                         | [perlcritic](https://metacpan.org/pod/Perl::Critic)                                                                                                                                                                     |
-| **PHP**                          | [PHP built-in linter](https://www.php.net/manual/en/features.commandline.options.php) / [PHP CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) / [PHPStan](https://phpstan.org/) / [Psalm](https://psalm.dev/) |
-| **PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/Psscriptanalyzer)                                                                                                                                                      |
-| **Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)                                                                                                                                                                     |
-| **Python3**                      | [pylint](https://pylint.pycqa.org/) / [flake8](https://flake8.pycqa.org/en/latest/) / [black](https://github.com/psf/black) / [isort](https://pypi.org/project/isort/) / [ruff](https://github.com/astral-sh/ruff)                                                 |
-| **R**                            | [lintr](https://github.com/jimhester/lintr)                                                                                                                                                                             |
-| **Raku**                         | [Raku](https://raku.org)                                                                                                                                                                                                |
-| **Renovate**                     | [renovate-config-validator](https://docs.renovatebot.com/config-validation/)                                                                                                                                            |
-| **Ruby**                         | [RuboCop](https://github.com/rubocop-hq/rubocop)                                                                                                                                                                        |
-| **Rust**                         | [Rustfmt](https://github.com/rust-lang/rustfmt) / [Clippy](https://github.com/rust-lang/rust-clippy)                                                                                                                    |
-| **Scala**                        | [scalafmt](https://github.com/scalameta/scalafmt)                                                                                                                                                                       |
-| **Secrets**                      | [GitLeaks](https://github.com/zricethezav/gitleaks)                                                                                                                                                                     |
-| **Shell**                        | [ShellCheck](https://github.com/koalaman/shellcheck) / `executable bit check` / [shfmt](https://github.com/mvdan/sh)                                                                                                    |
-| **Snakemake**                    | [snakefmt](https://github.com/snakemake/snakefmt/) / [snakemake --lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)                                                   |
-| **SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint) / [sqlfluff](https://github.com/sqlfluff/sqlfluff)                                                                                                                  |
-| **Tekton**                       | [tekton-lint](https://github.com/IBM/tekton-lint)                                                                                                                                                                       |
-| **Terraform**                    | [fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) / [tflint](https://github.com/terraform-linters/tflint) / [terrascan](https://github.com/accurics/terrascan)                                          |
-| **Terragrunt**                   | [terragrunt](https://github.com/gruntwork-io/terragrunt)                                                                                                                                                                |
-| **TypeScript**                   | [ESLint](https://eslint.org/) / [standard js](https://standardjs.com/)                                                                                                                                                  |
-| **XML**                          | [LibXML](http://xmlsoft.org/)                                                                                                                                                                                           |
-| **YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                     |
+Language/Format                  | Linter
+---------------------------------|--------
+**Amazon States Language**       | [ASL Validator](https://github.com/ChristopheBougere/asl-validator)
+**Ansible**                      | [Ansible Lint](https://github.com/ansible/ansible-lint)
+**AWS CloudFormation templates** | [CloudFormation Lint](https://github.com/aws-cloudformation/cfn-python-lint/)
+**Azure Resource Manager (ARM)** | [ARM TTK](https://github.com/azure/arm-ttk) \*
+**C/C++**                        | [CPPLint](https://github.com/cpplint/cpplint), [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)
+**C#**                           | [dotnet format](https://github.com/dotnet/format) \*, [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)
+**CSS/SCSS/Sass/Less**           | [Stylelint](https://github.com/stylelint/stylelint)
+**Clojure**                      | [clj-kondo](https://github.com/borkdude/clj-kondo)
+**CoffeeScript**                 | [CoffeeLint](https://github.com/coffeelint/coffeelint)
+**Copy/paste detection**         | [jscpd](https://github.com/kucherenko/jscpd)
+**Dart**                         | [Dart Analyzer](https://dart.dev/tools/dart-analyze)
+**Dockerfile**                   | [Hadolint](https://github.com/hadolint/hadolint)
+**EditorConfig**                 | [EditorConfig Checker](https://github.com/editorconfig-checker/editorconfig-checker)
+**.env**                         | [dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
+**Gherkin**                      | [Gherkin Lint](https://github.com/vsiakka/gherkin-lint)
+**GitHub Actions**               | [Actionlint](https://github.com/rhysd/actionlint)
+**Go**                           | [GolangCI-Lint](https://github.com/golangci/golangci-lint)
+**GoReleaser**                   | [GoReleaser](https://github.com/goreleaser/goreleaser)
+**Groovy**                       | [npm-Groovy-Lint](https://github.com/nvuillam/npm-groovy-lint)
+**HTML**                         | [HTMLHint](https://github.com/htmlhint/HTMLHint)
+**Infrastructure as Code**       | [Checkov](https://github.com/bridgecrewio/checkov)
+**Java**                         | [Checkstyle](https://checkstyle.org), [Google Java Format](https://github.com/google/google-java-format)
+**JavaScript**                   | [ESLint](https://eslint.org/), [Standard JS](https://standardjs.com/), [Prettier](https://prettier.io/)
+**JSON**                         | [ESLint Plugin JSON](https://www.npmjs.com/package/eslint-plugin-json)
+**JSONC**                        | [ESLint Plugin JSONC](https://www.npmjs.com/package/eslint-plugin-jsonc)
+**JSX**                          | [ESLint](https://eslint.org/)
+**Kotlin**                       | [KtLint](https://github.com/pinterest/ktlint)
+**Kubernetes**                   | [kubeconform](https://github.com/yannh/kubeconform)
+**LaTeX**                        | [ChkTex](https://www.nongnu.org/chktex/)
+**Lua**                          | [luacheck](https://github.com/luarocks/luacheck)
+**Markdown**                     | [Markdownlint](https://github.com/igorshubovych/markdownlint-cli#readme)
+**Natural language**             | [textlint](https://textlint.github.io/)
+**OpenAPI**                      | [Spectral](https://github.com/stoplightio/spectral)
+**Perl**                         | [Perl Critic](https://metacpan.org/pod/Perl::Critic)
+**PHP**                          | [PHP Linter](https://www.php.net/manual/en/features.commandline.options.php), [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer), [PHPStan](https://phpstan.org/), [Psalm](https://psalm.dev/)
+**PowerShell**                   | [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) \*
+**Protocol Buffers**             | [protolint](https://github.com/yoheimuta/protolint)
+**Python**                       | [Pylint](https://pylint.pycqa.org/), [Flake8](https://flake8.pycqa.org/en/latest/), [Black](https://github.com/psf/black), [isort](https://pycqa.github.io/isort/), [mypy](https://mypy.readthedocs.io/), [ruff](https://github.com/astral-sh/ruff)
+**R**                            | [lintr](https://github.com/r-lib/lintr)
+**Raku**                         | [Raku](https://raku.org)
+**Renovate**                     | [Renovate Config Validator](https://docs.renovatebot.com/config-validation/)
+**Ruby**                         | [RuboCop](https://github.com/rubocop/rubocop)
+**Rust**                         | [Rustfmt](https://github.com/rust-lang/rustfmt) \*, [Clippy](https://github.com/rust-lang/rust-clippy) \*
+**Scala**                        | [scalafmt](https://github.com/scalameta/scalafmt)
+**Secrets**                      | [GitLeaks](https://github.com/gitleaks/gitleaks)
+**Shell**                        | [ShellCheck](https://github.com/koalaman/shellcheck), [shfmt](https://github.com/mvdan/sh), `executable bit check`
+**Snakemake**                    | [snakefmt](https://github.com/snakemake/snakefmt/), [Snakemake Lint](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html#best-practices)
+**SQL**                          | [sql-lint](https://github.com/joereynolds/sql-lint), [sqlfluff](https://github.com/sqlfluff/sqlfluff)
+**Tekton**                       | [Tekton Lint](https://github.com/IBM/tekton-lint)
+**Terraform**                    | [Terraform Format](https://developer.hashicorp.com/terraform/cli/commands/fmt), [TFLint](https://github.com/terraform-linters/tflint), [Terrascan](https://github.com/tenable/terrascan)
+**Terragrunt**                   | [Terragrunt](https://github.com/gruntwork-io/terragrunt)
+**TypeScript**                   | [ESLint](https://eslint.org/), [Standard JS](https://standardjs.com/), [Prettier](https://prettier.io/)
+**TSX**                          | [ESLint](https://eslint.org/)
+**XML**                          | [xmllint](https://gitlab.gnome.org/GNOME/libxml2/)
+**YAML**                         | [YamlLint](https://github.com/adrienverge/yamllint)
+
+\* Denotes linters not available in the _slim_ image.
 
 ## Get started
 
