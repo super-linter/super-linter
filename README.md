@@ -12,7 +12,7 @@ issues that those tools find as console output, and as
 [GitHub Actions status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks).
 You can also [run super-linter outside GitHub Actions](#run-super-linter-outside-github-actions).
 
-Super-linter is licensed under a
+Super-linter is licensed under an
 [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
 
 [![Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/cd.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
@@ -39,7 +39,7 @@ Here are some notable Super-linter features:
 - **Lean codebase**: Super-linter doesn't reinvent the wheel, and builds on top
   of established tools and standards, such as
   [GNU Parallel](https://www.gnu.org/software/parallel/).
-- **Extensive test suite**: Super-linter includes and extensive test suite that
+- **Extensive test suite**: Super-linter includes an extensive test suite that
   covers every single linter and analyzer that Super-linter ships.
 - **Original design**: to the best of our knowledge, Super-linter is the first
   open-source, fully-containerized linting suite. Other projects borrow ideas
@@ -436,7 +436,7 @@ For more information, see
 
 If you need to use your own SSH key to authenticate against private
 repositories, you can use the `SSH_KEY` environment variable. The value of that
-environment variable is expected to be be the private key of an SSH keypair that
+environment variable is expected to be the private key of an SSH keypair that
 has access to your private repositories.
 
 For example, you can configure this private key as an
@@ -450,7 +450,7 @@ and access it with the `secrets` parameter from your GitHub Actions workflow:
 
 If you need to inject a SSL certificate into the trust store, you can use the
 `SSL_CERT_SECRET` variable. The value of that variable is expected to be the
-path to the files that contains a CA that can be used to valide the certificate:
+path to the files that contains a CA that can be used to validate the certificate:
 
 ```yaml
   env:
