@@ -28,11 +28,11 @@ GEM
     parser (3.3.4.0)
       ast (~> 2.4.1)
       racc
-    racc (1.8.0)
-    rack (3.1.4)
+    racc (1.8.1)
+    rack (3.1.7)
     rainbow (3.1.1)
     regexp_parser (2.9.2)
-    rexml (3.3.2)
+    rexml (3.3.4)
       strscan
     rubocop (1.62.1)
       json (~> 2.3)
@@ -45,8 +45,12 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.3)
+    rubocop-ast (1.32.0)
       parser (>= 3.3.1.0)
+    rubocop-capybara (2.21.0)
+      rubocop (~> 1.41)
+    rubocop-factory_bot (2.26.1)
+      rubocop (~> 1.61)
     rubocop-github (0.20.0)
       rubocop (>= 1.37)
       rubocop-performance (>= 1.15)
@@ -64,8 +68,11 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (3.0.3)
+    rubocop-rspec (3.0.4)
       rubocop (~> 1.61)
+    rubocop-rspec_rails (2.30.0)
+      rubocop (~> 1.61)
+      rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.13.0)
     standard (1.35.1)
       language_server-protocol (~> 3.17.0.2)
@@ -85,17 +92,20 @@ GEM
     unicode-display_width (2.5.0)
 
 PLATFORMS
-  ruby
+  x86_64-linux-musl
 
 DEPENDENCIES
   rubocop (~> 1.62.1)
+  rubocop-capybara (~> 2.21)
+  rubocop-factory_bot (~> 2.26)
   rubocop-github (~> 0.20.0)
   rubocop-minitest (~> 0.35.1)
   rubocop-performance (~> 1.21.1)
   rubocop-rails (~> 2.25)
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.0.3)
+  rubocop-rspec_rails (~> 2.30)
   standard (~> 1.35)
 
 BUNDLED WITH
-  2.3.26
+  2.5.9
