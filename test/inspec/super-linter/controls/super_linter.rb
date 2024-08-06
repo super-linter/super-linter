@@ -291,13 +291,16 @@ control "super-linter-installed-ruby-gems" do
   desc "Check that Ruby gems that Super-Linter needs are installed."
 
   gems = [
-    "rubocop",
+    "rubocop-capybara",
+    "rubocop-factory_bot",
     "rubocop-github",
     "rubocop-minitest",
     "rubocop-performance",
     "rubocop-rails",
     "rubocop-rake",
+    "rubocop-rspec_rails",
     "rubocop-rspec",
+    "rubocop",
     "standard"
   ]
 
