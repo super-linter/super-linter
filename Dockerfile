@@ -11,7 +11,7 @@ FROM tenable/terrascan:1.18.11 AS terrascan
 FROM alpine/terragrunt:1.9.2 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.52.0 AS tflint
-FROM ghcr.io/yannh/kubeconform:v0.6.6 AS kubeconfrm
+FROM ghcr.io/yannh/kubeconform:v0.6.7 AS kubeconfrm
 FROM alpine/helm:3.15.3 AS helm
 FROM golang:1.22.5-alpine AS golang
 FROM golangci/golangci-lint:v1.59.1 AS golangci-lint
