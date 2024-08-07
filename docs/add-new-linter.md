@@ -57,7 +57,7 @@ new tool, it should include:
       You get the version of a dependency from `build.gradle`. Example:
 
         ```sh
-        GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
+        GOOGLE_JAVA_FORMAT_VERSION="$(awk -F "[:']" '/google-java-format/ {print $3}' "google-java-format/build.gradle")"
         ```
 
     6. Add the new to DependaBot configuration:

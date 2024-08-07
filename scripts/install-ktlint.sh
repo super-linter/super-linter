@@ -4,7 +4,7 @@ set -euo pipefail
 
 KTLINT_VERSION="$(
   set -euo pipefail
-  grep <"ktlint/build.gradle" "ktlint" | awk -F ':' '{print $3}' | tr -d "'"
+  awk -F "[:']" '/ktlint/ {print $4}' "ktlint/build.gradle"
 )"
 echo "Installing Ktlint: ${KTLINT_VERSION}"
 
