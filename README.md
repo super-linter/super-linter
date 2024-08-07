@@ -1,7 +1,7 @@
 # Super-Linter
 
 Super-linter is a ready-to-run collection of linters and code analyzers, to
-help validate your source code.
+help validate and fix your source code.
 
 The goal of super-linter is to help you establish best practices and consistent
 formatting across multiple programming languages, and ensure developers are
@@ -11,6 +11,8 @@ Super-linter analyzes source code files using several tools, and reports the
 issues that those tools find as console output, and as
 [GitHub Actions status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks).
 You can also [run super-linter outside GitHub Actions](#run-super-linter-outside-github-actions).
+
+Super-linter can also help you [fix linting and formatting issues](#fix-linting-and-formatting-issues).
 
 Super-linter is licensed under an
 [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
@@ -183,9 +185,9 @@ Super-Linter provides several variants:
   - `pwsh` linters
   - `c#` linters
 
-## Configure super-linter
+## Configure Super-linter
 
-You can configure super-linter using the following environment variables:
+You can configure Super-linter using the following environment variables:
 
 | **Environment variable**                        | **Default Value**               | **Description**                                                                                                                                                                                                      |
 |-------------------------------------------------|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -207,6 +209,41 @@ You can configure super-linter using the following environment variables:
 | **ENABLE_GITHUB_ACTIONS_STEP_SUMMARY**          | `false` if `RUN_LOCAL=true`, `true` otherwise | Flag to enable [GitHub Actions job summary](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary) for the Super-linter action. For more information, see [Summary outputs](#summary-outputs). |
 | **FILTER_REGEX_EXCLUDE**                        | not set                         | Regular expression defining which files will be excluded from linting  (ex: `.*src/test.*`). Not setting this variable means to process all files.                                                                   |
 | **FILTER_REGEX_INCLUDE**                        | not set                         | Regular expression defining which files will be processed by linters (ex: `.*src/.*`). Not setting this variable means to process all files. `FILTER_REGEX_INCLUDE` is evaluated before `FILTER_REGEX_EXCLUDE`.      |
+| **FIX_ANSIBLE**                                 | `false`                         | Option to enable fix mode for `ANSIBLE`.                                                                                                                                                                             |
+| **FIX_CLANG_FORMAT**                            | `false`                         | Option to enable fix mode for `CLANG_FORMAT`.                                                                                                                                                                        |
+| **FIX_CSHARP**                                  | `false`                         | Option to enable fix mode for `CSHARP`.                                                                                                                                                                              |
+| **FIX_CSS**                                     | `false`                         | Option to enable fix mode for `CSS`.                                                                                                                                                                                 |
+| **FIX_ENV**                                     | `false`                         | Option to enable fix mode for `ENV`.                                                                                                                                                                                 |
+| **FIX_GO**                                      | `false`                         | Option to enable fix mode for `GO`.                                                                                                                                                                                  |
+| **FIX_GO_MODULES**                              | `false`                         | Option to enable fix mode for `GO_MODULES`.                                                                                                                                                                          |
+| **FIX_GOOGLE_JAVA_FORMAT**                      | `false`                         | Option to enable fix mode for `GOOGLE_JAVA_FORMAT`.                                                                                                                                                                  |
+| **FIX_GROOVY**                                  | `false`                         | Option to enable fix mode for `GROOVY`.                                                                                                                                                                              |
+| **FIX_JAVASCRIPT_ES**                           | `false`                         | Option to enable fix mode for `JAVASCRIPT_ES`.                                                                                                                                                                       |
+| **FIX_JAVASCRIPT_PRETTIER**                     | `false`                         | Option to enable fix mode for `JAVASCRIPT_PRETTIER`.                                                                                                                                                                 |
+| **FIX_JAVASCRIPT_STANDARD**                     | `false`                         | Option to enable fix mode for `JAVASCRIPT_STANDARD`.                                                                                                                                                                 |
+| **FIX_JSON**                                    | `false`                         | Option to enable fix mode for `JSON`.                                                                                                                                                                                |
+| **FIX_JSONC**                                   | `false`                         | Option to enable fix mode for `JSONC`.                                                                                                                                                                               |
+| **FIX_JSX**                                     | `false`                         | Option to enable fix mode for `JSX`.                                                                                                                                                                                 |
+| **FIX_MARKDOWN**                                | `false`                         | Option to enable fix mode for `MARKDOWN`.                                                                                                                                                                            |
+| **FIX_POWERSHELL**                              | `false`                         | Option to enable fix mode for `POWERSHELL`.                                                                                                                                                                          |
+| **FIX_PROTOBUF**                                | `false`                         | Option to enable fix mode for `PROTOBUF`.                                                                                                                                                                            |
+| **FIX_PYTHON_BLACK**                            | `false`                         | Option to enable fix mode for `PYTHON_BLACK`.                                                                                                                                                                        |
+| **FIX_PYTHON_ISORT**                            | `false`                         | Option to enable fix mode for `PYTHON_ISORT`.                                                                                                                                                                        |
+| **FIX_PYTHON_RUFF**                             | `false`                         | Option to enable fix mode for `PYTHON_RUFF`.                                                                                                                                                                         |
+| **FIX_RUBY**                                    | `false`                         | Option to enable fix mode for `RUBY`.                                                                                                                                                                                |
+| **FIX_RUST_2015**                               | `false`                         | Option to enable fix mode for `RUST_2015`.                                                                                                                                                                           |
+| **FIX_RUST_2018**                               | `false`                         | Option to enable fix mode for `RUST_2018`.                                                                                                                                                                           |
+| **FIX_RUST_2021**                               | `false`                         | Option to enable fix mode for `RUST_2021`.                                                                                                                                                                           |
+| **FIX_RUST_CLIPPY**                             | `false`                         | Option to enable fix mode for `RUST_CLIPPY`.                                                                                                                                                                         |
+| **FIX_SCALAFMT**                                | `false`                         | Option to enable fix mode for `SCALAFMT`.                                                                                                                                                                            |
+| **FIX_SHELL_SHFMT**                             | `false`                         | Option to enable fix mode for `SHELL_SHFMT`.                                                                                                                                                                         |
+| **FIX_SNAKEMAKE_SNAKEFMT**                      | `false`                         | Option to enable fix mode for `SNAKEMAKE_SNAKEFMT`.                                                                                                                                                                  |
+| **FIX_SQLFLUFF**                                | `false`                         | Option to enable fix mode for `SQLFLUFF`.                                                                                                                                                                            |
+| **FIX_TERRAFORM_FMT**                           | `false`                         | Option to enable fix mode for `TERRAFORM_FMT`.                                                                                                                                                                       |
+| **FIX_TSX**                                     | `false`                         | Option to enable fix mode for `TSX`.                                                                                                                                                                                 |
+| **FIX_TYPESCRIPT_ES**                           | `false`                         | Option to enable fix mode for `TYPESCRIPT_ES`.                                                                                                                                                                       |
+| **FIX_TYPESCRIPT_PRETTIER**                     | `false`                         | Option to enable fix mode for `TYPESCRIPT_PRETTIER`.                                                                                                                                                                 |
+| **FIX_TYPESCRIPT_STANDARD**                     | `false`                         | Option to enable fix mode for `TYPESCRIPT_STANDARD`.                                                                                                                                                                 |
 | **GITHUB_ACTIONS_CONFIG_FILE**                  | `actionlint.yml`                | Filename for [Actionlint configuration](https://github.com/rhysd/actionlint/blob/main/docs/config.md) (ex: `actionlint.yml`)                                                                                         |
 | **GITHUB_ACTIONS_COMMAND_ARGS**                 | `null`                          | Additional arguments passed to `actionlint` command. Useful to [ignore some errors](https://github.com/rhysd/actionlint/blob/main/docs/usage.md#ignore-some-errors)                                                  |
 | **GITHUB_CUSTOM_API_URL**                       | `https://api.${GITHUB_DOMAIN}`  | Specify a custom GitHub API URL in case GitHub Enterprise is used: e.g. `https://github.myenterprise.com/api/v3`                                                                                                     |
@@ -351,9 +388,38 @@ The `VALIDATE_[LANGUAGE]` variables work as follows:
 - If you set any of the `VALIDATE_[LANGUAGE]` variables to `false`, super-linter defaults to leaving any unset variable to true (only exclude those languages).
 - If you set any of the `VALIDATE_[LANGUAGE]` variables to both `true` and `false`, super-linter fails reporting an error.
 
-For more information about reusing super-linter configuration across
+For more information about reusing Super-linter configuration across
 environments, see
 [Share Environment variables between environments](docs/run-linter-locally.md#share-environment-variables-between-environments).
+
+## Fix linting and formatting issues
+
+All the linters and formatters that Super-linter runs report errors if they
+detect linting or formatting issues without modifying your source
+code (_check only mode_). Check only mode is the default for all linters and
+formatters that Super-linter runs.
+
+Certain linters and formatters support automatically fixing issues in your code
+(_fix mode_). You can enable fix mode for a particular linter or formatter by
+setting the relevant `FIX_<language name>` variable to `true`. To know which
+linters and formatters support fix mode, refer to the
+[Configure Super-linter section](#configure-super-linter).
+
+Setting a `FIX_<language name>` variable to `true` implies setting the
+corresponding `VALIDATE_<language name>` to `true`. Setting a
+`FIX_<language name>` variable to `true` and the corresponding
+`VALIDATE_<language name>` to `false` is a configuration error. Super-linter
+reports that as a fatal error.
+
+Super-linter supports the following locations to deliver fixes:
+
+- In the current Super-linter workspace, so you can process the changes to your
+  files by yourself. For example:
+
+  - If you're running Super-linter in your CI environment, such as GitHub
+      Actions, you can commit and push changes as part of your workflow.
+  - If you're running Super-linter locally, you can commit the changes as you
+      would with any other change in your working directory.
 
 ## Configure linters
 

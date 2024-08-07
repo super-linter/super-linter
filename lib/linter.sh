@@ -788,6 +788,18 @@ done
 # Load rules for special cases
 GetStandardRules "javascript"
 
+#############################################################################
+# Validate the environment that depends on linter rules variables being set #
+#############################################################################
+
+# We need the variables defined in linterCommandsOptions to initialize FIX_....
+# variables.
+# shellcheck source=/dev/null
+source /action/lib/globals/linterCommandsOptions.sh
+if ! ValidateCheckModeAndFixModeVariables; then
+  fatal "Error while validating the configuration fix mode for linters that support that"
+fi
+
 #################################
 # Check for SSL cert and update #
 #################################

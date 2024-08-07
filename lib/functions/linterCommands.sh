@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2034 # Disable ununsed variables warning because we
+# source this script and use these variables as globals
+
+# Load linter commands options so we don't need to load it every time we source
+# source this file
+# shellcheck source=/dev/null
+source /action/lib/globals/linterCommandsOptions.sh
+
 ##########################
 # Define linter commands #
 ##########################
 
-# If there's no input argument, parallel adds a default {} at the end of the command.
-# In a few cases, such as ANSIBLE and GO_MODULES,
-# Consume the input before running the command because we need the input
-# to set the working directory, but we don't need it appended at the end of the command.
-# Setting -n 0 would not help in this case, because the input will not be passed
-# to the --workdir option as well.
-# shellcheck disable=SC2034 # Variable is referenced in other scripts
-LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}" "&& echo \"Linted: {}\"")
+LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
 LINTER_COMMANDS_ARRAY_BASH=(shellcheck --color --rcfile "${BASH_LINTER_RULES}")
 # This check and the BASH_SEVERITY variable are needed until Shellcheck supports
@@ -35,12 +36,12 @@ else
   debug "Adding the '--directory' option to the Checkov command."
   LINTER_COMMANDS_ARRAY_CHECKOV+=(--directory)
 fi
-LINTER_COMMANDS_ARRAY_CLANG_FORMAT=(clang-format --style=file:"${CLANG_FORMAT_LINTER_RULES}" --Werror --dry-run)
+LINTER_COMMANDS_ARRAY_CLANG_FORMAT=(clang-format --style=file:"${CLANG_FORMAT_LINTER_RULES}" --Werror)
 LINTER_COMMANDS_ARRAY_CLOJURE=(clj-kondo --config "${CLOJURE_LINTER_RULES}" --lint)
 LINTER_COMMANDS_ARRAY_CLOUDFORMATION=(cfn-lint --config-file "${CLOUDFORMATION_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_COFFEESCRIPT=(coffeelint -f "${COFFEESCRIPT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_CPP=(cpplint)
-LINTER_COMMANDS_ARRAY_CSHARP=(dotnet format whitespace --folder --verify-no-changes --exclude / --include "{/}")
+LINTER_COMMANDS_ARRAY_CSHARP=(dotnet format whitespace --folder --exclude / --include "{/}")
 LINTER_COMMANDS_ARRAY_CSS=(stylelint --config "${CSS_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_DART=(dart analyze --fatal-infos --fatal-warnings)
 LINTER_COMMANDS_ARRAY_DOCKERFILE_HADOLINT=(hadolint -c "${DOCKERFILE_HADOLINT_LINTER_RULES}")
@@ -54,16 +55,15 @@ fi
 LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose --source)
 LINTER_COMMANDS_ARRAY_GHERKIN=(gherkin-lint -c "${GHERKIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast)
-# Consume the input as we do with ANSIBLE
-LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}" "&& echo \"Linted: {}\"")
+LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO_RELEASER=(goreleaser check)
-LINTER_COMMANDS_ARRAY_GOOGLE_JAVA_FORMAT=(java -jar /usr/bin/google-java-format --dry-run --set-exit-if-changed)
+LINTER_COMMANDS_ARRAY_GOOGLE_JAVA_FORMAT=(java -jar /usr/bin/google-java-format)
 LINTER_COMMANDS_ARRAY_GROOVY=(npm-groovy-lint -c "${GROOVY_LINTER_RULES}" --failon warning --no-insight)
 LINTER_COMMANDS_ARRAY_HTML=(htmlhint --config "${HTML_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVA=(java -jar /usr/bin/checkstyle -c "${JAVA_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_ES=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_JAVASCRIPT_PRETTIER=(prettier)
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_STANDARD=(standard "${JAVASCRIPT_STANDARD_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_JAVASCRIPT_PRETTIER=(prettier --check)
 LINTER_COMMANDS_ARRAY_JSCPD=(jscpd --config "${JSCPD_LINTER_RULES}")
 JSCPD_GITIGNORE_OPTION="--gitignore"
 if [[ "${IGNORE_GITIGNORED_FILES}" == "true" ]]; then
@@ -105,41 +105,105 @@ LINTER_COMMANDS_ARRAY_PHP_BUILTIN=(php -l -c "${PHP_BUILTIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPCS=(phpcs --standard="${PHP_PHPCS_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPSTAN=(phpstan analyse --no-progress --no-ansi --memory-limit 1G -c "${PHP_PHPSTAN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PSALM=(psalm --config="${PHP_PSALM_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_POWERSHELL=(pwsh -NoProfile -NoLogo -Command "\"Invoke-ScriptAnalyzer -EnableExit -Settings ${POWERSHELL_LINTER_RULES} -Path '{}'; if (\\\${Error}.Count) { exit 1 }\"")
-LINTER_COMMANDS_ARRAY_PROTOBUF=(protolint lint --config_path "${PROTOBUF_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_PYTHON_BLACK=(black --config "${PYTHON_BLACK_LINTER_RULES}" --diff --check)
+LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES}" -Path '{}')
+LINTER_COMMANDS_ARRAY_PROTOBUF=(protolint lint -config_path "${PROTOBUF_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_PYTHON_BLACK=(black --config "${PYTHON_BLACK_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PYTHON_PYLINT=(pylint --rcfile "${PYTHON_PYLINT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PYTHON_FLAKE8=(flake8 --config="${PYTHON_FLAKE8_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_PYTHON_ISORT=(isort --check --diff --sp "${PYTHON_ISORT_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_PYTHON_ISORT=(isort --sp "${PYTHON_ISORT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PYTHON_MYPY=(mypy --config-file "${PYTHON_MYPY_LINTER_RULES}" --install-types --non-interactive)
 LINTER_COMMANDS_ARRAY_PYTHON_RUFF=(ruff check --config "${PYTHON_RUFF_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_R=(R --slave -e "\"lints <- lintr::lint('{}');print(lints);errors <- purrr::keep(lints, ~ .\\\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)\"")
 LINTER_COMMANDS_ARRAY_RAKU=(raku)
 LINTER_COMMANDS_ARRAY_RENOVATE=(renovate-config-validator --strict)
 LINTER_COMMANDS_ARRAY_RUBY=(rubocop -c "${RUBY_LINTER_RULES}" --force-exclusion --ignore-unrecognized-cops)
-LINTER_COMMANDS_ARRAY_RUST_2015=(rustfmt --check --edition 2015)
-LINTER_COMMANDS_ARRAY_RUST_2018=(rustfmt --check --edition 2018)
-LINTER_COMMANDS_ARRAY_RUST_2021=(rustfmt --check --edition 2021)
-# Consume the input as we do with ANSIBLE
-LINTER_COMMANDS_ARRAY_RUST_CLIPPY=(cargo-clippy "&& echo \"Linted: {}\"")
-LINTER_COMMANDS_ARRAY_SCALAFMT=(scalafmt --config "${SCALAFMT_LINTER_RULES}" --test)
-LINTER_COMMANDS_ARRAY_SHELL_SHFMT=(shfmt -d)
+LINTER_COMMANDS_ARRAY_RUST_2015=(rustfmt --edition 2015)
+LINTER_COMMANDS_ARRAY_RUST_2018=(rustfmt --edition 2018)
+LINTER_COMMANDS_ARRAY_RUST_2021=(rustfmt --edition 2021)
+LINTER_COMMANDS_ARRAY_RUST_CLIPPY=(cargo-clippy)
+LINTER_COMMANDS_ARRAY_SCALAFMT=(scalafmt --config "${SCALAFMT_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_SHELL_SHFMT=(shfmt)
 LINTER_COMMANDS_ARRAY_SNAKEMAKE_LINT=(snakemake --lint -s)
-LINTER_COMMANDS_ARRAY_SNAKEMAKE_SNAKEFMT=(snakefmt --config "${SNAKEMAKE_SNAKEFMT_LINTER_RULES}" --check --compact-diff)
+LINTER_COMMANDS_ARRAY_SNAKEMAKE_SNAKEFMT=(snakefmt --config "${SNAKEMAKE_SNAKEFMT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_STATES=(asl-validator --json-path)
 LINTER_COMMANDS_ARRAY_SQL=(sql-lint --config "${SQL_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_SQLFLUFF=(sqlfluff lint --config "${SQLFLUFF_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_SQLFLUFF=(sqlfluff)
 LINTER_COMMANDS_ARRAY_TEKTON=(tekton-lint)
-LINTER_COMMANDS_ARRAY_TERRAFORM_FMT=(terraform fmt -check -diff)
+LINTER_COMMANDS_ARRAY_TERRAFORM_FMT=(terraform fmt)
 LINTER_COMMANDS_ARRAY_TERRAFORM_TFLINT=("TF_DATA_DIR=\"/tmp/.terraform-TERRAFORM_TFLINT-{//}\"" tflint -c "${TERRAFORM_TFLINT_LINTER_RULES}" "--filter=\"{/}\"")
 LINTER_COMMANDS_ARRAY_TERRAFORM_TERRASCAN=(terrascan scan -i terraform -t all -c "${TERRAFORM_TERRASCAN_LINTER_RULES}" -f)
 LINTER_COMMANDS_ARRAY_TERRAGRUNT=(terragrunt hclfmt --terragrunt-check --terragrunt-log-level error --terragrunt-hclfmt-file)
 LINTER_COMMANDS_ARRAY_TSX=(eslint -c "${TSX_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_TYPESCRIPT_ES=(eslint -c "${TYPESCRIPT_ES_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_TYPESCRIPT_PRETTIER=(prettier)
 LINTER_COMMANDS_ARRAY_TYPESCRIPT_STANDARD=(ts-standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin --project "${TYPESCRIPT_STANDARD_TSCONFIG_FILE}")
-LINTER_COMMANDS_ARRAY_TYPESCRIPT_PRETTIER=(prettier --check)
 LINTER_COMMANDS_ARRAY_XML=(xmllint)
 LINTER_COMMANDS_ARRAY_YAML=(yamllint -c "${YAML_LINTER_RULES}" -f parsable)
 if [ "${YAML_ERROR_ON_WARNING}" == 'true' ]; then
   LINTER_COMMANDS_ARRAY_YAML+=(--strict)
 fi
+
+function InitFixModeOptionsAndCommands() {
+  local LANGUAGE="${1}"
+  local FIX_MODE_VARIABLE_NAME="FIX_${LANGUAGE}"
+  debug "Check if ${LANGUAGE} command needs check only mode or fix mode options or commands by checking if ${FIX_MODE_VARIABLE_NAME} variable is defined."
+
+  if [[ -v "${FIX_MODE_VARIABLE_NAME}" ]]; then
+    debug "${FIX_MODE_VARIABLE_NAME} is set. Check if we need to add check only mode options or fix mode options or commands."
+
+    local FIX_MODE_OPTIONS_REF_VARIABLE_NAME="${LANGUAGE}_FIX_MODE_OPTIONS"
+    local -n FIX_MODE_OPTIONS_REF="${FIX_MODE_OPTIONS_REF_VARIABLE_NAME}"
+
+    local OPTIONS_VARIABLE_NAME="${LANGUAGE}"
+
+    local -n FIX_MODE_REF="${FIX_MODE_VARIABLE_NAME}"
+    if [[ "${FIX_MODE_REF}" == "true" ]]; then
+      debug "Fix mode for ${LANGUAGE} is enabled. Check if ${LANGUAGE} needs options to enable fix mode."
+      OPTIONS_VARIABLE_NAME="${OPTIONS_VARIABLE_NAME}_FIX_MODE_OPTIONS"
+    else
+      debug "Fix mode for ${LANGUAGE} is not enabled. Check if ${LANGUAGE} needs options to enable check mode."
+      OPTIONS_VARIABLE_NAME="${OPTIONS_VARIABLE_NAME}_CHECK_ONLY_MODE_OPTIONS"
+    fi
+
+    local -a OPTIONS_TO_ADD_ARRAY
+    OPTIONS_TO_ADD_ARRAY=()
+    if [[ -v "${OPTIONS_VARIABLE_NAME}" ]]; then
+      local -n MODE_OPTIONS="${OPTIONS_VARIABLE_NAME}"
+      debug "${!MODE_OPTIONS} is defined. Contents: ${MODE_OPTIONS[*]}"
+      OPTIONS_TO_ADD_ARRAY=("${MODE_OPTIONS[@]}")
+      unset -n MODE_OPTIONS
+    else
+      debug "There are no options or commands for check only mode or fix mode to add at the end of the command for ${LANGUAGE}"
+    fi
+
+    local -n LINTER_COMMAND_ARRAY="LINTER_COMMANDS_ARRAY_${LANGUAGE}"
+    debug "Load command for ${LANGUAGE}: ${!LINTER_COMMAND_ARRAY}. Contents: ${LINTER_COMMAND_ARRAY[*]}"
+    if [[ "${#OPTIONS_TO_ADD_ARRAY[@]}" -gt 0 ]]; then
+      debug "There are ${#OPTIONS_TO_ADD_ARRAY[@]} options to add at the end of the command for ${LANGUAGE}: ${OPTIONS_TO_ADD_ARRAY[*]}"
+      LINTER_COMMAND_ARRAY=("${LINTER_COMMAND_ARRAY[@]}" "${OPTIONS_TO_ADD_ARRAY[@]}")
+      debug "Add options at the end of the command for ${LANGUAGE}. Result: ${LINTER_COMMAND_ARRAY[*]}"
+    else
+      debug "${LANGUAGE} doesn't need any further options or commands for fix mode or check mode."
+    fi
+
+    debug "Completed the initialization of linter command for ${LANGUAGE}. Result: ${LINTER_COMMAND_ARRAY[*]}"
+
+    unset -n LINTER_COMMAND_ARRAY
+    unset -n FIX_MODE_REF
+    unset -n FIX_MODE_OPTIONS_REF
+  else
+    debug "${FIX_MODE_VARIABLE_NAME} is not set. Don't add check only mode options or fix mode options or commands for ${LANGUAGE}."
+  fi
+}
+
+function InitInputConsumeCommands() {
+  LINTER_COMMANDS_ARRAY_ANSIBLE+=("${INPUT_CONSUME_COMMAND[@]}")
+  LINTER_COMMANDS_ARRAY_GO_MODULES+=("${INPUT_CONSUME_COMMAND[@]}")
+  LINTER_COMMANDS_ARRAY_RUST_CLIPPY+=("${INPUT_CONSUME_COMMAND[@]}")
+}
+
+function InitPowerShellCommand() {
+  debug "PowerShell command before initialization: ${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}"
+  LINTER_COMMANDS_ARRAY_POWERSHELL=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}; if (\\\${Error}.Count) { exit 1 }\"")
+  debug "PowerShell command after initialization: ${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}"
+}

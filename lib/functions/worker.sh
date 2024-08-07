@@ -142,6 +142,16 @@ function LintCodebase() {
 
   # shellcheck source=/dev/null
   source /action/lib/functions/linterCommands.sh
+  # Dynamically add arguments and commands to each linter command as needed
+  if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
+    fatal "Error while inizializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
+  fi
+  InitInputConsumeCommands
+
+  if [[ "${FILE_TYPE}" == "POWERSHELL" ]]; then
+    debug "Language: ${FILE_TYPE}. Initialize PowerShell command"
+    InitPowerShellCommand
+  fi
 
   local -n LINTER_COMMAND_ARRAY
   LINTER_COMMAND_ARRAY="LINTER_COMMANDS_ARRAY_${FILE_TYPE}"

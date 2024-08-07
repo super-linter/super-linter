@@ -8,8 +8,10 @@ new tool, it should include:
 - Provide test cases:
 
   1. Create the `test/linters/<LANGUGAGE>` directory.
-  2. Provide at least one test case with a file that is supposed to pass validation: `test/linters/<LANGUAGE>/<name-of-tool>-good`
-  3. Provide at least one test case with a file that is supposed to fail validation: `test/linters/<LANGUAGE>/<name-of-tool>-bad`
+  2. Provide at least one test case with a file that is supposed to pass validation,
+    with the right file extension if needed: `test/linters/<LANGUAGE>/<name-of-tool>-good`
+  3. Provide at least one test case with a file that is supposed to fail validation,
+    with the right file extension if needed: `test/linters/<LANGUAGE>/<name-of-tool>-bad`
 
 - Update the test suite to check for installed packages, the commands that your new tool needs in the `PATH`, and the expected version command:
 
@@ -89,28 +91,73 @@ new tool, it should include:
 
 - Update the orchestration scripts to run the new tool:
 
-  - `globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use the
-    "name" of the language, then a `_`, and finally the name of the linter. Example: `PYTHON_RUFF`
+  - `lib/globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use the
+    "name" of the language, then a `_`, and finally the name of the linter. Example: `PYTHON_RUFF`.
+    In the context of this document, to avoid repetitions we reference this new
+    item as `<LANGUAGE_NAME>`.
+
   - Linter configuration:
-    - `globals/linterRules.sh`:
-      - If the new linter accepts a configuration files from the command line, add a new variable
-        with a default filename using the item that you added to the `LANGUAGES_ARRAY` as a prefix,
-        followed by the `CONFIG_FILE` suffix. Example:
-        `PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"`.
-      - If there are arguments that you can only pass using the command line, and you think users
-        might want to customize them, define a new variable using the item that
-        you added to the `LANGUAGES_ARRAY` as a prefix, followed by the
-        `COMMAND_ARGS` suffix. Example:
-        `GITHUB_ACTIONS_COMMAND_ARGS="${GITHUB_ACTIONS_COMMAND_ARGS:-""}"`
     - Create a new minimal configuration file in the `TEMPLATES` directory with the same name as the
       default configuration filename. Example: `TEMPLATES/.ruff.toml`.
-  - `lib/linter.sh`
-  - `lib/functions/linterCommands.sh`: define a new array to invoke the new linter.
-  - Provide the logic to populate the list of files or directories to examine: `lib/buildFileList.sh`
-  - If necessary, provide elaborate logic to detect if the tool should examine a file or a directory: `lib/detectFiles.sh`
-  - If the tool needs to take into account special cases:
+    - `lib/globals/linterRules.sh`:
+      - If the new linter accepts a configuration files from the command line,
+        define a new variable:
+        `<LANGUAGE_NAME>_FILE_NAME="${<LANGUAGE_NAME>_CONFIG_FILE:-"default-config-file-name.conf"}"`
+        where `default-config-file-name.conf` is the name of the new,
+        minimal configuration for the linter. Example:
+        `PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"`.
+      - If there are arguments that you can only pass using the command line, and you think users
+        might want to customize them, define a new variable using
+        `<LANGUAGE_NAME>_COMMAND_ARGS` and add it to the command if the
+        configuration provides it. Example:
 
-    - Provide new runtime validation checks in `lib/validation.sh`.
-    - Customize the logic to get the installed version of the tool: `scripts/linterVersions.sh`
-    - Provide custom logic to load configuration files: `lib/linterRules.sh`
-    - Provide custom logic for test cases and to run the tool: `lib/worker.sh`
+          ```bash
+          <LANGUAGE_NAME>_COMMAND_ARGS="${<LANGUAGE_NAME>_COMMAND_ARGS:-""}"
+          if [ -n "${<LANGUAGE_NAME>_COMMAND_ARGS:-}" ]; then
+            export <LANGUAGE_NAME>_COMMAND_ARGS
+            LINTER_COMMANDS_ARRAY_<LANGUAGE_NAME>+=("${<LANGUAGE_NAME>_COMMAND_ARGS}")
+          fi
+          ```
+
+  - Define the command to invoke the new linter:
+
+    - `lib/functions/linterCommands.sh`: add the command to invoke the linter.
+      Define a new variable: `LINTER_COMMANDS_ARRAY_<LANGUAGE_NAME>`.
+      Example:
+      `LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")`
+
+      If the linter needs to load a configuration file, add the relevant options
+      and paths to the command you just defined. The path to the configuration
+      file is automatically initialized by Super-linter using in the
+      `<LANGUAGE_NAME>_LINTER_RULES` variable, as in the `GO_LINTER_RULES`
+      example above for the `GO` language.
+
+    - `lib/globals/linterCommandsOptions.sh`: add "check only mode" and "fix
+      linting and formatting issues mode" options if the linter supports it.
+      Super-linter will automatically add them to the command to run the linter.
+
+      - If the linter runs in "fix linting and formatting issues mode" by
+        default, define a new variable with the options to add to the linter
+        command to enable "check only mode":
+        `<LANGUAGE_NAME>_CHECK_ONLY_MODE_OPTIONS=(....)`.
+        Example: `PYTHON_BLACK_CHECK_ONLY_MODE_OPTIONS=(--diff --check)`
+
+      - If the linter runs in "check only mode" by
+        default, define a new variable with the options to add to the linter
+        command to enable "fix linting and formatting issues mode":
+        `<LANGUAGE_NAME>_FIX_MODE_OPTIONS=(...)`.
+        Example: `ANSIBLE_FIX_MODE_OPTIONS=(--fix)`
+
+  - Provide the logic to populate the list of files or directories to examine: `lib/functions/buildFileList.sh`
+  - If necessary, provide elaborate logic to detect if the tool should examine a file or a directory: `lib/functions/detectFiles.sh`
+  - If the tool needs to take into account special cases, reach out to the
+    maintainers by creating a draft pull request and ask relevant questions
+    there. For example, you might need to provide new logic or customize
+    the existing one to:
+
+    - Validate the runtime environment: `lib/functions/validation.sh`.
+    - Get the installed version of the linter: `scripts/linterVersions.sh`
+    - Load configuration files: `lib/functions/linterRules.sh`
+    - Run the linter: `lib/functions/worker.sh`
+    - Compose the linter command: `lib/functions/linterCommands.sh`
+    - Modify the core Super-linter logic: `lib/linter.sh`

@@ -475,6 +475,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/validation.sh",
     "/action/lib/functions/worker.sh",
     "/action/lib/globals/languages.sh",
+    "/action/lib/globals/linterCommandsOptions.sh",
     "/action/lib/globals/linterRules.sh",
     "/action/lib/.automation/actionlint.yml",
     "/action/lib/.automation/.ansible-lint.yml",

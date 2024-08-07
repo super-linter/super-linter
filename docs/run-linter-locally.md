@@ -139,3 +139,12 @@ To get the list of the available `Make` targets, run the following command:
 ```shell
 make help
 ```
+
+### Automatically fix formatting and linting issues
+
+To automatically fix linting and formatting issues when supported, run the
+following command:
+
+```shell
+make fix-codebase
+```

@@ -39,17 +39,14 @@ This section helps you upgrade from super-linter `v6.7.0` to `v6.8.0`.
 
     - If you set `JAVASCRIPT_DEFAULT_STYLE=standard`, set
       `VALIDATE_JAVASCRIPT_PRETTIER=false`
-
     - If you set `TYPESCRIPT_DEFAULT_STYLE=standard`, set
       `VALIDATE_TYPESCRIPT_PRETTIER=false`
-
     - If you set `JAVASCRIPT_DEFAULT_STYLE=prettier`, set
       `VALIDATE_JAVASCRIPT_STANDARD=false`
-
     - If you set `TYPESCRIPT_DEFAULT_STYLE=prettier`, set
       `VALIDATE_TYPESCRIPT_STANDARD=false`
 
-  Finally, you remove both `JAVASCRIPT_DEFAULT_STYLE` and
+  Finally, remove both `JAVASCRIPT_DEFAULT_STYLE` and
   `TYPESCRIPT_DEFAULT_STYLE` from your Super-linter configuration.
 
 ## Upgrade from v5 to v6

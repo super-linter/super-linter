@@ -363,7 +363,7 @@ function ValidationVariablesExportTest() {
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     local -n VALIDATE_LANGUAGE
     VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE}"
-    debug "VALIDATE_LANGUAGE (${LANGUAGE}) variable attributes: ${VALIDATE_LANGUAGE@a}"
+    debug "VALIDATE_LANGUAGE (Language: ${LANGUAGE}) variable attributes: ${VALIDATE_LANGUAGE@a}"
     if [[ "${VALIDATE_LANGUAGE@a}" == *x* ]]; then
       info "VALIDATE_LANGUAGE for ${LANGUAGE} is exported as expected"
     else
@@ -371,6 +371,130 @@ function ValidationVariablesExportTest() {
     fi
     unset -n VALIDATE_LANGUAGE
   done
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function ValidateCheckModeAndFixModeVariablesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('A' 'B' 'C' 'D')
+  # shellcheck disable=SC2034
+  A_FIX_MODE_OPTIONS=(--fixA)
+  # shellcheck disable=SC2034
+  A_CHECK_ONLY_MODE_OPTIONS=(--checkA)
+  # shellcheck disable=SC2034
+  B_FIX_MODE_OPTIONS=(--fixB)
+  # shellcheck disable=SC2034
+  C_CHECK_ONLY_MODE_OPTIONS=(--checkC)
+
+  # shellcheck disable=SC2034
+  VALIDATE_A="true"
+  # shellcheck disable=SC2034
+  VALIDATE_B="true"
+  # shellcheck disable=SC2034
+  VALIDATE_C="true"
+  # shellcheck disable=SC2034
+  FIX_B="true"
+
+  if ! ValidateCheckModeAndFixModeVariables; then
+    fatal "Error while validating fix mode variables"
+  fi
+
+  if [[ -v FIX_A ]]; then
+    debug "FIX_A variable is defined as expected"
+  else
+    fatal "FIX_A variable should have been defined"
+  fi
+
+  EXPECTED_FIX_A="false"
+  if [[ "${FIX_A}" == "${EXPECTED_FIX_A}" ]]; then
+    debug "FIX_A variable has the expected value: ${FIX_A}"
+  else
+    fatal "FIX_A (${FIX_A}) doesn't match with the expected value: ${EXPECTED_FIX_A}"
+  fi
+
+  if [[ -v FIX_C ]]; then
+    debug "FIX_C variable is defined as expected"
+  else
+    fatal "FIX_C variable should have been defined"
+  fi
+
+  EXPECTED_FIX_C="false"
+  if [[ "${FIX_C}" == "${EXPECTED_FIX_C}" ]]; then
+    debug "FIX_C variable has the expected value: ${FIX_C}"
+  else
+    fatal "FIX_C (${FIX_C}) doesn't match with the expected value: ${EXPECTED_FIX_C}"
+  fi
+
+  # No need to check if FIX_B is defined because we defined it earlier in this test function
+
+  if [[ ! -v FIX_D ]]; then
+    debug "FIX_D is not defined as expected"
+  else
+    fatal "FIX_D variable should have not been defined"
+  fi
+
+  debug "FIX_A variable attributes: ${FIX_A@a}"
+  if [[ "${FIX_A@a}" == *x* ]]; then
+    debug "FIX_A is exported as expected"
+  else
+    fatal "FIX_A should have been exported"
+  fi
+
+  debug "FIX_B variable attributes: ${FIX_B@a}"
+  if [[ "${FIX_B@a}" == *x* ]]; then
+    debug "FIX_B is exported as expected"
+  else
+    fatal "FIX_B should have been exported"
+  fi
+
+  debug "FIX_C variable attributes: ${FIX_C@a}"
+  if [[ "${FIX_C@a}" == *x* ]]; then
+    debug "FIX_C is exported as expected"
+  else
+    fatal "FIX_C should have been exported"
+  fi
+
+  unset FIX_A
+  unset FIX_B
+  unset FIX_C
+  unset FIX_D
+  unset VALIDATE_A
+  unset VALIDATE_B
+  unset VALIDATE_C
+
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('E')
+  # shellcheck disable=SC2034
+  E_FIX_MODE_OPTIONS=(--fixA)
+  FIX_E="true"
+  VALIDATE_E="false"
+
+  if ValidateCheckModeAndFixModeVariables; then
+    fatal "FIX_E (${FIX_E}) and VALIDATE_E (${VALIDATE_E}) should have failed validation"
+  else
+    debug "FIX_E (${FIX_E}) and VALIDATE_E (${VALIDATE_E}) failed validation as expected"
+  fi
+
+  unset FIX_E
+  unset VALIDATE_E
+
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('F')
+  FIX_F="true"
+
+  if ValidateCheckModeAndFixModeVariables; then
+    fatal "FIX_F (${FIX_F}) should have failed validation when it doesn't support fix mode or check only mode"
+  else
+    debug "FIX_F (${FIX_F}) failed validation as expected when it doesn't support fix mode or check only mode"
+  fi
+
+  unset FIX_F
+  unset VALIDATE_F
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -384,3 +508,4 @@ ValidateFindModeTest
 ValidateAnsibleDirectoryTest
 ValidateValidationVariablesTest
 ValidationVariablesExportTest
+ValidateCheckModeAndFixModeVariablesTest
