@@ -115,7 +115,7 @@ jobs:
         run: make validate-container-image-labels
 
       - name: Upload ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/upload-artifact@v4.3.4
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
