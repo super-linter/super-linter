@@ -1,7 +1,6 @@
-# Proposed changes
-
-_describe the proposed changes and remove this template text_
-
+<!-- Start with an H2 because GitHub automatically adds the commit description before the template, -->
+<!-- so contributors don't have to manually cut-paste the description after the H1. -->
+<!-- markdownlint-disable-next-line MD041 -->
 ## Readiness checklist
 
 In order to have this pull request merged, complete the following tasks.
@@ -21,4 +20,5 @@ In order to have this pull request merged, complete the following tasks.
 
 - [ ] Label as `breaking` if this change breaks compatibility with the previous released version.
 - [ ] Label as either: `automation`, `bug`, `documentation`, `enhancement`, `infrastructure`.
-- [ ] Add the pull request to a milestone, eventually creating one, that matches with the version that release-please proposes.
+- [ ] Add the pull request to a milestone, eventually creating one, that matches
+  with the version that release-please proposes in the `preview-release-notes` CI job.
