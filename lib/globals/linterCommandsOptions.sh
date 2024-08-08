@@ -77,3 +77,5 @@ SQLFLUFF_FIX_MODE_OPTIONS+=("${SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS[@]}")
 # Setting the -n 0 GNU Parallel would not help in this case, because the input
 # will not be passed to the --workdir option as well.
 INPUT_CONSUME_COMMAND=("&& echo \"Linted: {}\"")
+
+GITLEAKS_LOG_LEVEL_OPTIONS=("--log-level")

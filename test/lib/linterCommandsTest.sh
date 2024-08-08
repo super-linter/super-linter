@@ -61,6 +61,7 @@ source "lib/functions/linterCommands.sh"
 # Initialize the variables we're going to use to verify tests before running tests
 # because some tests modify LINTER_COMMANDS_xxx variables
 BASE_LINTER_COMMANDS_ARRAY_ANSIBLE=("${LINTER_COMMANDS_ARRAY_ANSIBLE[@]}")
+BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GO_MODULES=("${LINTER_COMMANDS_ARRAY_GO_MODULES[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
@@ -124,6 +125,59 @@ function JscpdCommandTest() {
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function GitleaksCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
+
+  if [[ "${EXPECTED_GITLEAKS_LOG_LEVEL:-}" ]]; then
+    # The gitleaks command ends with an option to specify the path
+    # to the file to check, so we need to append the log option before that.
+    local GITLEAKS_FILE_PATH_OPTION="${EXPECTED_COMMAND[-1]}"
+
+    # Remove the file path option so we can append the log option
+    unset 'EXPECTED_COMMAND[-1]'
+    # shellcheck disable=SC2034
+    GITLEAKS_LOG_LEVEL="${EXPECTED_GITLEAKS_LOG_LEVEL}"
+    EXPECTED_COMMAND+=("${GITLEAKS_LOG_LEVEL_OPTIONS[@]}" "${EXPECTED_GITLEAKS_LOG_LEVEL}")
+
+    # Add the file path option back
+    EXPECTED_COMMAND+=("${GITLEAKS_FILE_PATH_OPTION}")
+  fi
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  if [[ ! -v GITLEAKS_LOG_LEVEL_OPTIONS ]]; then
+    fatal "GITLEAKS_LOG_LEVEL_OPTIONS is not defined"
+  fi
+
+  if [[ "${#GITLEAKS_LOG_LEVEL_OPTIONS[@]}" -eq 0 ]]; then
+    fatal "GITLEAKS_LOG_LEVEL_OPTIONS is empty"
+  fi
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GITLEAKS" "EXPECTED_COMMAND"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function GitleaksCommandCustomLogLevelTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  EXPECTED_GITLEAKS_LOG_LEVEL="debug"
+  GitleaksCommandTest
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -231,6 +285,10 @@ function InitFixModeOptionsAndCommandsTest() {
 }
 
 function InitPowerShellCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
   # shellcheck disable=SC2034
   EXPECTED_LINTER_COMMANDS_ARRAY_POWERSHELL=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}; if (\\\${Error}.Count) { exit 1 }\"")
   InitPowerShellCommand
@@ -238,11 +296,15 @@ function InitPowerShellCommandTest() {
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_POWERSHELL" "EXPECTED_LINTER_COMMANDS_ARRAY_POWERSHELL"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
+
+  notice "${FUNCTION_NAME} PASS"
 }
 
 LinterCommandPresenceTest
 IgnoreGitIgnoredFilesJscpdCommandTest
 JscpdCommandTest
+GitleaksCommandTest
+GitleaksCommandCustomLogLevelTest
 InitInputConsumeCommandsTest
 InitFixModeOptionsAndCommandsTest
 InitPowerShellCommandTest

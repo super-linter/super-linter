@@ -52,7 +52,13 @@ if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMM
   export GITHUB_ACTIONS_COMMAND_ARGS
   LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS+=("${GITHUB_ACTIONS_COMMAND_ARGS}")
 fi
-LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose --source)
+LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose)
+if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
+  export GITLEAKS_LOG_LEVEL
+  LINTER_COMMANDS_ARRAY_GITLEAKS+=("${GITLEAKS_LOG_LEVEL_OPTIONS[@]}" "${GITLEAKS_LOG_LEVEL}")
+  debug "Add log options to the Gitleaks command: ${LINTER_COMMANDS_ARRAY_GITLEAKS[*]}"
+fi
+LINTER_COMMANDS_ARRAY_GITLEAKS+=(--source)
 LINTER_COMMANDS_ARRAY_GHERKIN=(gherkin-lint -c "${GHERKIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast)
 LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")

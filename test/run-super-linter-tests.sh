@@ -162,6 +162,13 @@ run_test_case_custom_summary() {
   SUPER_LINTER_SUMMARY_FILE_NAME="custom-github-step-summary.md"
 }
 
+run_test_case_gitleaks_custom_log_level() {
+  run_test_cases_expect_success
+  CREATE_LOG_FILE="true"
+  SAVE_SUPER_LINTER_OUTPUT="true"
+  COMMAND_TO_RUN+=(--env GITLEAKS_LOG_LEVEL="warn")
+}
+
 run_test_case_fix_mode() {
   CREATE_LOG_FILE="true"
   SAVE_SUPER_LINTER_OUTPUT="true"
