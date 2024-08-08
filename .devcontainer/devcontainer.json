@@ -24,13 +24,8 @@
       "type": "bind"
     },
     {
-      "source": "${localWorkspaceFolder}/lib/linter.sh",
-      "target": "/action/lib/linter.sh",
-      "type": "bind"
-    },
-    {
-      "source": "${localWorkspaceFolder}/lib/functions",
-      "target": "/action/lib/functions",
+      "source": "${localWorkspaceFolder}/lib",
+      "target": "/action/lib",
       "type": "bind"
     }
   ],
