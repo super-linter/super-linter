@@ -1,5 +1,35 @@
 # Changelog
 
+## [6.9.0](https://github.com/super-linter/super-linter/compare/v6.8.0...v6.9.0) (2024-08-08)
+
+
+### 🚀 Features
+
+* local fix mode ([#5978](https://github.com/super-linter/super-linter/issues/5978)) ([6fdc091](https://github.com/super-linter/super-linter/commit/6fdc0913612b8dfb8fb12cf4785b84827f243fc8))
+* support ignore_gitignored_files with jscpd ([#5958](https://github.com/super-linter/super-linter/issues/5958)) ([0dbe144](https://github.com/super-linter/super-linter/commit/0dbe14433636762a7001dfe1e96d2518d73f774d))
+
+
+### 🐛 Bugfixes
+
+* add missing rspec dependencies ([#5982](https://github.com/super-linter/super-linter/issues/5982)) ([633b8af](https://github.com/super-linter/super-linter/commit/633b8af60dae0ffe1d01a5f56a51183ca7a0855a)), closes [#5980](https://github.com/super-linter/super-linter/issues/5980)
+* adjust previous commit id on merge commits ([#5950](https://github.com/super-linter/super-linter/issues/5950)) ([928972f](https://github.com/super-linter/super-linter/commit/928972feeb5e4a7075b19074e713d3d40b5e6d4d)), closes [#5941](https://github.com/super-linter/super-linter/issues/5941)
+* define private output dir before using it ([#5949](https://github.com/super-linter/super-linter/issues/5949)) ([6d40b40](https://github.com/super-linter/super-linter/commit/6d40b40f8f93864d8406cd4cd150d143db19ec73))
+
+
+### 🧰 Maintenance
+
+* add info about standard and prettier ([#5948](https://github.com/super-linter/super-linter/issues/5948)) ([b09ac00](https://github.com/super-linter/super-linter/commit/b09ac00c68aa2da994b9dc09308e13a5808ee2fb))
+* add linter commands tests ([#5957](https://github.com/super-linter/super-linter/issues/5957)) ([16dbf17](https://github.com/super-linter/super-linter/commit/16dbf17306476db3158ea632d25d427f8ea49983))
+* add tests for linter rules path corner case ([#5981](https://github.com/super-linter/super-linter/issues/5981)) ([10e132a](https://github.com/super-linter/super-linter/commit/10e132a8f7fd50bf70a07bef793c5b50766f4d0b))
+* extract language array definition ([#5945](https://github.com/super-linter/super-linter/issues/5945)) ([d959232](https://github.com/super-linter/super-linter/commit/d9592327c6cfa469a0778ed2298f022c68e5cf45))
+* fix output formatting ([#5942](https://github.com/super-linter/super-linter/issues/5942)) ([55a47ff](https://github.com/super-linter/super-linter/commit/55a47ff317173467550f570dbeb819be6526fe2f))
+* fix two default values in readme ([#5944](https://github.com/super-linter/super-linter/issues/5944)) ([c5ba687](https://github.com/super-linter/super-linter/commit/c5ba6872c6a3f8f01efa5637080f25549e38936d))
+* fix typos in README ([#5959](https://github.com/super-linter/super-linter/issues/5959)) ([1ec0205](https://github.com/super-linter/super-linter/commit/1ec0205b4278f5aad5f82412ba5277ce36f14457))
+* mount the whole lib dir in the devcontainer ([#5984](https://github.com/super-linter/super-linter/issues/5984)) ([30fc3ae](https://github.com/super-linter/super-linter/commit/30fc3ae1997e7d8828f8d2d8013c433f4cef0dda))
+* move rules vars to a dedicated file ([#5946](https://github.com/super-linter/super-linter/issues/5946)) ([14a6ee6](https://github.com/super-linter/super-linter/commit/14a6ee6da668183c5382e24eb93c975020c1899e))
+* remove clippy script, run clippy directly ([#5953](https://github.com/super-linter/super-linter/issues/5953)) ([c46346c](https://github.com/super-linter/super-linter/commit/c46346c7743f7ce191073a49d90a1fa7b3d11996))
+* remove h1 from the pr template ([#5985](https://github.com/super-linter/super-linter/issues/5985)) ([d0219e3](https://github.com/super-linter/super-linter/commit/d0219e326d637c906e31d853b7fc2f9a98c93dad))
+
 ## [6.8.0](https://github.com/super-linter/super-linter/compare/v6.7.0...v6.8.0) (2024-07-31)
 
 
