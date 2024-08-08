@@ -39,31 +39,6 @@ GetLinterRules() {
   debug "Initializing LANGUAGE_LINTER_RULES value to an empty string..."
   eval "${LANGUAGE_LINTER_RULES}="
 
-  ##########################
-  # Get the file extension #
-  ##########################
-  FILE_EXTENSION=$(echo "${!LANGUAGE_FILE_NAME}" | rev | cut -d'.' -f1 | rev)
-  FILE_NAME=$(basename "${!LANGUAGE_FILE_NAME}" ".${FILE_EXTENSION}")
-  debug "${LANGUAGE_NAME} language rule file (${!LANGUAGE_FILE_NAME}) has ${FILE_NAME} name and ${FILE_EXTENSION} extension"
-
-  ########################################
-  # Set the secondary file name and path #
-  ########################################
-  debug "Initializing SECONDARY_FILE_NAME and SECONDARY_LANGUAGE_FILE_PATH..."
-  SECONDARY_FILE_NAME=''
-  SECONDARY_LANGUAGE_FILE_PATH=
-
-  #################################
-  # Check for secondary file name #
-  #################################
-  if [[ $FILE_EXTENSION == 'yml' ]]; then
-    # Need to see if yaml also exists
-    SECONDARY_FILE_NAME="$FILE_NAME.yaml"
-  elif [[ $FILE_EXTENSION == 'yaml' ]]; then
-    # need to see if yml also exists
-    SECONDARY_FILE_NAME="$FILE_NAME.yml"
-  fi
-
   ###############################
   # Set Flag for set Rules File #
   ###############################
@@ -97,34 +72,6 @@ GetLinterRules() {
     debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}]."
   fi
 
-  ####################################################
-  # Check if we have secondary file name to look for #
-  ####################################################
-  if [ -n "$SECONDARY_FILE_NAME" ] && [ "${SET_RULES}" -eq 0 ]; then
-    # Set the path
-    SECONDARY_LANGUAGE_FILE_PATH=''
-    if [ -z "${LINTER_RULES_PATH}" ]; then
-      SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${SECONDARY_FILE_NAME}"
-    else
-      SECONDARY_LANGUAGE_FILE_PATH="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}/${SECONDARY_FILE_NAME}"
-    fi
-    debug "${LANGUAGE_NAME} language rule file has a secondary rules file name to check (${SECONDARY_FILE_NAME}). Path:[${SECONDARY_LANGUAGE_FILE_PATH}]"
-
-    if [ -f "${SECONDARY_LANGUAGE_FILE_PATH}" ]; then
-      info "----------------------------------------------"
-      info "User provided file:[${SECONDARY_LANGUAGE_FILE_PATH}] exists, setting rules file..."
-
-      ########################################
-      # Update the path to the file location #
-      ########################################
-      eval "${LANGUAGE_LINTER_RULES}=${SECONDARY_LANGUAGE_FILE_PATH}"
-      ######################
-      # Set the rules flag #
-      ######################
-      SET_RULES=1
-    fi
-  fi
-
   ##############################################################
   # We didnt find rules from user, setting to default template #
   ##############################################################
@@ -133,7 +80,7 @@ GetLinterRules() {
     # No user default provided, using the template default #
     ########################################################
     eval "${LANGUAGE_LINTER_RULES}=${DEFAULT_RULES_LOCATION}/${!LANGUAGE_FILE_NAME}"
-    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}], nor the file:[${SECONDARY_LANGUAGE_FILE_PATH}], using Default rules at:[${!LANGUAGE_LINTER_RULES}]"
+    debug "  -> Codebase does NOT have file:[${LANGUAGE_FILE_PATH}], using default rules at:[${!LANGUAGE_LINTER_RULES}]"
     ######################
     # Set the rules flag #
     ######################
