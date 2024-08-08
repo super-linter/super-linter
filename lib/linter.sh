@@ -113,6 +113,10 @@ declare -l TEST_CASE_RUN
 TEST_CASE_RUN="${TEST_CASE_RUN:-"false"}"
 export TEST_CASE_RUN
 
+declare -l FIX_MODE_TEST_CASE_RUN
+FIX_MODE_TEST_CASE_RUN="${FIX_MODE_TEST_CASE_RUN:-"false"}"
+export FIX_MODE_TEST_CASE_RUN
+
 # We want a lowercase value
 declare -l USE_FIND_ALGORITHM
 USE_FIND_ALGORITHM="${USE_FIND_ALGORITHM:-false}"

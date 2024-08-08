@@ -1,12 +1,11 @@
 enum Test {
-    Hoo = 'hoo'
+  Hoo = "hoo"
 }
 
-const spiderman = (person: String) => {
-    return 'Hello, ' + person;
+const spiderman = (person: string): string => {
+  return `Hello, ${person}`
 }
 
-var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
-
-let user = 1;
-console.log(spiderman(user));
+const user = "Peter Parker"
+console.log(spiderman(user))
+console.log(Test.Hoo)

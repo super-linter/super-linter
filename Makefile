@@ -423,7 +423,6 @@ test-linters-fix-mode-expect-success: ## Run the linters test suite (fix mode) e
 		"run_test_case_fix_mode" \
 		"$(IMAGE)"
 
-
 .PHONY: test-linters
 test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite
 
