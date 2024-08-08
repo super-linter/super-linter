@@ -413,6 +413,10 @@ ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 
+# Renovate optionally requires re2, and will warn if its not present
+# Setting this envoronment variable disables this warning.
+ENV RENOVATE_X_IGNORE_RE2="true"
+
 # File to store linter versions
 ENV VERSION_FILE="/action/linterVersions.txt"
 RUN mkdir /action
