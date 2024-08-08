@@ -7,11 +7,16 @@ new tool, it should include:
   - `README.md`
 - Provide test cases:
 
-  1. Create the `test/linters/<LANGUGAGE>` directory.
+  1. Create the `test/linters/<LANGUAGE_NAME>` directory.
   2. Provide at least one test case with a file that is supposed to pass validation,
-    with the right file extension if needed: `test/linters/<LANGUAGE>/<name-of-tool>-good`
+    with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-good`
   3. Provide at least one test case with a file that is supposed to fail validation,
-    with the right file extension if needed: `test/linters/<LANGUAGE>/<name-of-tool>-bad`
+    with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-bad`.
+    If the linter supports fix mode, the test case supposed to fail validation
+    should only contain violations that the fix mode can automatically fix.
+    Avoid test cases that fail only because of syntax errors, when possible.
+  4. If the linter supports check-only mode or fix mode, add the `<LANGUGAGE>`
+    to the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
 
 - Update the test suite to check for installed packages, the commands that your new tool needs in the `PATH`, and the expected version command:
 

@@ -7,6 +7,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "DISABLE_ERRORS" "${DISABLE_ERRORS}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY" "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
+  ValidateBooleanVariable "FIX_MODE_TEST_CASE_RUN" "${FIX_MODE_TEST_CASE_RUN}"
   ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
   ValidateBooleanVariable "IGNORE_GITIGNORED_FILES" "${IGNORE_GITIGNORED_FILES}"
   ValidateBooleanVariable "LOG_DEBUG" "${LOG_DEBUG}"

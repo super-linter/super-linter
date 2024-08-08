@@ -1,4 +1,7 @@
+use std::fs::OpenOptions;
+use std::os::unix::fs::OpenOptionsExt;
+
 fn main() {
-    let x = 3.14;
-    let _y = 1_f64 / x;
+    let mut options = OpenOptions::new();
+    options.mode(644);
 }

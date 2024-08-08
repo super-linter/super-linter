@@ -1,6 +1,5 @@
 syntax = "proto3";
-// A broken example of the official reference
-// See https://developers.google.com/protocol-buffers/docs/reference/proto3-spec#proto_file
+
 package examplePb;
 
 option java_package = "com.example.foo";
@@ -34,14 +33,7 @@ message outer {
     message AccountForAdmin {}
   message SpecialEndOfSupport {}
   required inner inner_message = 7;
-  group Result = 8 {
-    string url = 9;
-  }
-  repeated group Result = 10 {
-  }
   repeated inner paper = 11;
-  repeated group Regular = 12 {
-  }
 }
 service SearchApi {
     rpc search (SearchRequest) returns (SearchResponse) {};

@@ -11,6 +11,64 @@ LOG_LEVEL="DEBUG"
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
 
+# TODO: use TEST_CASE_FOLDER instead of redefining this after we extract the
+# initialization of TEST_CASE_FOLDER from linter.sh
+# shellcheck disable=SC2034
+LINTERS_TEST_CASE_DIRECTORY="test/linters"
+
+# shellcheck disable=SC2034
+LANGUAGES_WITH_FIX_MODE=(
+  "ANSIBLE"
+  "CLANG_FORMAT"
+  "CSHARP"
+  "CSS"
+  "ENV"
+  "GO_MODULES"
+  "GO"
+  "GOOGLE_JAVA_FORMAT"
+  "GROOVY"
+  "JAVASCRIPT_ES"
+  "JAVASCRIPT_PRETTIER"
+  "JAVASCRIPT_STANDARD"
+  "JSON"
+  "JSONC"
+  "JSX"
+  "MARKDOWN"
+  "NATURAL_LANGUAGE"
+  "POWERSHELL"
+  "PROTOBUF"
+  "PYTHON_BLACK"
+  "PYTHON_ISORT"
+  "PYTHON_RUFF"
+  "RUBY"
+  "RUST_2015"
+  "RUST_2018"
+  "RUST_2021"
+  "RUST_CLIPPY"
+  "SCALAFMT"
+  "SHELL_SHFMT"
+  "SNAKEMAKE_SNAKEFMT"
+  "SQLFLUFF"
+  "TERRAFORM_FMT"
+  "TSX"
+  "TYPESCRIPT_ES"
+  "TYPESCRIPT_PRETTIER"
+  "TYPESCRIPT_STANDARD"
+)
+
+# TODO: extract this list from linter.sh (see REMOVE_ARRAY) instead of
+# redefining it here
+# shellcheck disable=SC2034
+LANGUAGES_NOT_IN_SLIM_IMAGE=(
+  "ARM"
+  "CSHARP"
+  "POWERSHELL"
+  "RUST_2015"
+  "RUST_2018"
+  "RUST_2021"
+  "RUST_CLIPPY"
+)
+
 function AssertArraysElementsContentMatch() {
   local ARRAY_1_VARIABLE_NAME="${1}"
   local ARRAY_2_VARIABLE_NAME="${2}"
@@ -40,5 +98,28 @@ function CheckUnexpectedGitChanges() {
     echo "There are unexpected changes in the working directory of the ${GIT_REPOSITORY_PATH} Git repository."
     git -C "${GIT_REPOSITORY_PATH}" status
     return 1
+  fi
+}
+
+AssertFileContentsMatch() {
+  local FILE_1_PATH="${1}"
+  local FILE_2_PATH="${2}"
+  if diff -r "${FILE_1_PATH}" "${FILE_2_PATH}"; then
+    echo "${FILE_1_PATH} contents match with ${FILE_2_PATH} contents"
+    return 0
+  else
+    echo "${FILE_1_PATH} contents don't match with ${FILE_2_PATH} contents"
+    return 1
+  fi
+}
+
+IsLanguageInSlimImage() {
+  local LANGUAGE="${1}"
+  if [[ " ${LANGUAGES_NOT_IN_SLIM_IMAGE[*]} " =~ [[:space:]]${LANGUAGE}[[:space:]] ]]; then
+    debug "${LANGUAGE} is not available in the Super-linter slim image"
+    return 1
+  else
+    debug "${LANGUAGE} is available in the Super-linter slim image"
+    return 0
   fi
 }

@@ -10,7 +10,7 @@ source "test/testUtils.sh"
 SUPER_LINTER_TEST_CONTAINER_URL="${1}"
 TEST_FUNCTION_NAME="${2}"
 SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
-echo "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
+debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
 DEFAULT_BRANCH="main"
 
@@ -22,8 +22,13 @@ ignore_test_cases() {
   COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*")
 }
 
+configure_typescript_for_test_cases() {
+  COMMAND_TO_RUN+=(--env TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
+}
+
 configure_linters_for_test_cases() {
-  COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" -e TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
+  COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
+  configure_typescript_for_test_cases
 }
 
 run_test_cases_expect_failure() {
@@ -68,7 +73,9 @@ run_test_case_bash_exec_library_expect_success() {
 initialize_git_repository_and_test_args() {
   local GIT_REPOSITORY_PATH="${1}"
   # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-  trap "rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+  trap "sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+
+  debug "GIT_REPOSITORY_PATH: ${GIT_REPOSITORY_PATH}"
 
   local GITHUB_EVENT_FILE_PATH="${2}"
 
@@ -87,7 +94,13 @@ initialize_git_repository_and_test_args() {
   COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
   COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
-  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+}
+
+initialize_github_sha() {
+  local GIT_REPOSITORY_PATH="${1}"
+  local TEST_GITHUB_SHA
+  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
 }
 
 run_test_case_git_initial_commit() {
@@ -95,10 +108,8 @@ run_test_case_git_initial_commit() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
-
-  local TEST_GITHUB_SHA
-  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
-  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
 }
 
 run_test_case_merge_commit_push() {
@@ -128,9 +139,8 @@ run_test_case_merge_commit_push() {
 
   git -C "${GIT_REPOSITORY_PATH}" log --all --graph --abbrev-commit --decorate --format=oneline
 
-  local TEST_GITHUB_SHA
-  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
-  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
 }
 
 run_test_case_use_find_and_ignore_gitignored_files() {
@@ -155,46 +165,54 @@ run_test_case_custom_summary() {
 }
 
 run_test_case_fix_mode() {
-  run_test_cases_expect_success
   CREATE_LOG_FILE="true"
   SAVE_SUPER_LINTER_OUTPUT="true"
 
-  COMMAND_TO_RUN+=(--env FIX_ANSIBLE="true")
-  COMMAND_TO_RUN+=(--env FIX_CLANG_FORMAT="true")
-  COMMAND_TO_RUN+=(--env FIX_CSHARP="true")
-  COMMAND_TO_RUN+=(--env FIX_CSS="true")
-  COMMAND_TO_RUN+=(--env FIX_ENV="true")
-  COMMAND_TO_RUN+=(--env FIX_GO_MODULES="true")
-  COMMAND_TO_RUN+=(--env FIX_GO="true")
-  COMMAND_TO_RUN+=(--env FIX_GOOGLE_JAVA_FORMAT="true")
-  COMMAND_TO_RUN+=(--env FIX_GROOVY="true")
-  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_ES="true")
-  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_PRETTIER="true")
-  COMMAND_TO_RUN+=(--env FIX_JAVASCRIPT_STANDARD="true")
-  COMMAND_TO_RUN+=(--env FIX_JSON="true")
-  COMMAND_TO_RUN+=(--env FIX_JSONC="true")
-  COMMAND_TO_RUN+=(--env FIX_JSX="true")
-  COMMAND_TO_RUN+=(--env FIX_MARKDOWN="true")
-  COMMAND_TO_RUN+=(--env FIX_POWERSHELL="true")
-  COMMAND_TO_RUN+=(--env FIX_PROTOBUF="true")
-  COMMAND_TO_RUN+=(--env FIX_PYTHON_BLACK="true")
-  COMMAND_TO_RUN+=(--env FIX_PYTHON_ISORT="true")
-  COMMAND_TO_RUN+=(--env FIX_PYTHON_RUFF="true")
-  COMMAND_TO_RUN+=(--env FIX_RUBY="true")
-  COMMAND_TO_RUN+=(--env FIX_RUST_2015="true")
-  COMMAND_TO_RUN+=(--env FIX_RUST_2018="true")
-  COMMAND_TO_RUN+=(--env FIX_RUST_2021="true")
-  # Temporarily disable fix mode for rust clippy due to a dependency on another PR
-  # COMMAND_TO_RUN+=(--env FIX_RUST_CLIPPY="true")
-  COMMAND_TO_RUN+=(--env FIX_SCALAFMT="true")
-  COMMAND_TO_RUN+=(--env FIX_SHELL_SHFMT="true")
-  COMMAND_TO_RUN+=(--env FIX_SNAKEMAKE_SNAKEFMT="true")
-  COMMAND_TO_RUN+=(--env FIX_SQLFLUFF="true")
-  COMMAND_TO_RUN+=(--env FIX_TERRAFORM_FMT="true")
-  COMMAND_TO_RUN+=(--env FIX_TSX="true")
-  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_ES="true")
-  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_PRETTIER="true")
-  COMMAND_TO_RUN+=(--env FIX_TYPESCRIPT_STANDARD="true")
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
+
+  local LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/${LINTERS_TEST_CASE_DIRECTORY}"
+  mkdir -p "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}"
+
+  for LANGUAGE in "${LANGUAGES_WITH_FIX_MODE[@]}"; do
+    if [[ "${SUPER_LINTER_CONTAINER_IMAGE_TYPE}" == "slim" ]] &&
+      ! IsLanguageInSlimImage "${LANGUAGE}"; then
+      debug "Skip ${LANGUAGE} because it's not available in the Super-linter ${SUPER_LINTER_CONTAINER_IMAGE_TYPE} image"
+      continue
+    fi
+    local -l LOWERCASE_LANGUAGE="${LANGUAGE}"
+    cp -rv "${LINTERS_TEST_CASE_DIRECTORY}/${LOWERCASE_LANGUAGE}" "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}/"
+    eval "COMMAND_TO_RUN+=(--env FIX_${LANGUAGE}=\"true\")"
+    eval "COMMAND_TO_RUN+=(--env VALIDATE_${LANGUAGE}=\"true\")"
+  done
+
+  # Copy gitignore so we don't commit eventual leftovers from previous runs
+  cp -v ".gitignore" "${GIT_REPOSITORY_PATH}/"
+
+  # Copy fix mode linter configuration files because default ones are not always
+  # suitable for fix mode
+  local FIX_MODE_LINTERS_CONFIG_DIR="${GIT_REPOSITORY_PATH}/.github/linters"
+  mkdir -p "${FIX_MODE_LINTERS_CONFIG_DIR}"
+  cp -rv "test/linters-config/fix-mode/." "${FIX_MODE_LINTERS_CONFIG_DIR}/"
+  cp -rv ".github/linters/tsconfig.json" "${FIX_MODE_LINTERS_CONFIG_DIR}/"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit --no-verify -m "feat: add fix mode test cases"
+  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+
+  CREATE_LOG_FILE="true"
+  SAVE_SUPER_LINTER_OUTPUT="true"
+  VERIFY_FIX_MODE="true"
+
+  # Enable test mode so we run linters and formatters only against their test
+  # cases
+  COMMAND_TO_RUN+=(--env FIX_MODE_TEST_CASE_RUN=true)
+  COMMAND_TO_RUN+=(--env TEST_CASE_RUN=true)
+  COMMAND_TO_RUN+=(--env ANSIBLE_DIRECTORY="/test/linters/ansible/bad")
+  configure_typescript_for_test_cases
+
+  # Some linters report a non-zero exit code even if they fix all the issues
+  EXPECTED_EXIT_CODE=2
 }
 
 # Run the test setup function
@@ -203,28 +221,30 @@ ${TEST_FUNCTION_NAME}
 CREATE_LOG_FILE="${CREATE_LOG_FILE:-false}"
 SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT:-false}"
 
+SUPER_LINTER_WORKSPACE="${SUPER_LINTER_WORKSPACE:-$(pwd)}"
+COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE}":"/tmp/lint")
+
 if [ -n "${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-}" ]; then
   COMMAND_TO_RUN+=(-e SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}")
 fi
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-"super-linter-output"}"
-SUPER_LINTER_MAIN_OUTPUT_PATH="$(pwd)/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
-echo "Super-linter main output path: ${SUPER_LINTER_MAIN_OUTPUT_PATH}"
+SUPER_LINTER_MAIN_OUTPUT_PATH="${SUPER_LINTER_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+debug "Super-linter main output path: ${SUPER_LINTER_MAIN_OUTPUT_PATH}"
 SUPER_LINTER_OUTPUT_PATH="${SUPER_LINTER_MAIN_OUTPUT_PATH}/super-linter"
-echo "Super-linter output path: ${SUPER_LINTER_OUTPUT_PATH}"
+debug "Super-linter output path: ${SUPER_LINTER_OUTPUT_PATH}"
 
 COMMAND_TO_RUN+=(-e CREATE_LOG_FILE="${CREATE_LOG_FILE}")
 COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
 COMMAND_TO_RUN+=(-e SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT}")
-COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE:-$(pwd)}":"/tmp/lint")
 
-SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH="$(pwd)/github-step-summary.md"
+SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH="${SUPER_LINTER_WORKSPACE}/github-step-summary.md"
 # We can't put this inside SUPER_LINTER_MAIN_OUTPUT_PATH because it doesn't exist
 # before Super-linter creates it, and we want to verify that as well.
-echo "SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
+debug "SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
 
 if [ -n "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH:-}" ]; then
-  echo "Expected Super-linter step summary file path: ${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"
+  debug "Expected Super-linter step summary file path: ${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"
   ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
   SAVE_SUPER_LINTER_SUMMARY="true"
 
@@ -240,71 +260,105 @@ if [ -n "${SUPER_LINTER_SUMMARY_FILE_NAME:-}" ]; then
   COMMAND_TO_RUN+=(-e SUPER_LINTER_SUMMARY_FILE_NAME="${SUPER_LINTER_SUMMARY_FILE_NAME}")
 fi
 SUPER_LINTER_SUMMARY_FILE_NAME="${SUPER_LINTER_SUMMARY_FILE_NAME:-"super-linter-summary.md"}"
-echo "SUPER_LINTER_SUMMARY_FILE_NAME: ${SUPER_LINTER_SUMMARY_FILE_NAME}"
+debug "SUPER_LINTER_SUMMARY_FILE_NAME: ${SUPER_LINTER_SUMMARY_FILE_NAME}"
 
 SUPER_LINTER_SUMMARY_FILE_PATH="${SUPER_LINTER_MAIN_OUTPUT_PATH}/${SUPER_LINTER_SUMMARY_FILE_NAME}"
-echo "Super-linter summary output path: ${SUPER_LINTER_SUMMARY_FILE_PATH}"
+debug "Super-linter summary output path: ${SUPER_LINTER_SUMMARY_FILE_PATH}"
 
-LOG_FILE_PATH="$(pwd)/super-linter.log"
+LOG_FILE_PATH="${SUPER_LINTER_WORKSPACE}/super-linter.log"
 
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 
 declare -i EXPECTED_EXIT_CODE
 EXPECTED_EXIT_CODE=${EXPECTED_EXIT_CODE:-0}
 
-echo "Cleaning eventual leftovers before running tests: ${LEFTOVERS_TO_CLEAN[*]}"
+debug "Cleaning eventual leftovers before running tests: ${LEFTOVERS_TO_CLEAN[*]}"
 LEFTOVERS_TO_CLEAN+=("${LOG_FILE_PATH}")
 LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")
 LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_MAIN_OUTPUT_PATH}")
 LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
+LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
+LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")
+LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
+LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
+LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
+# Delete leftovers in pwd in case the workspace is not pwd
+LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${LOG_FILE_PATH}")")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_MAIN_OUTPUT_PATH}")")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_SUMMARY_FILE_PATH}")")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
+LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
 sudo rm -rfv "${LEFTOVERS_TO_CLEAN[@]}"
 
 if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
-  echo "Creating GitHub Actions step summary file: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
+  debug "Creating GitHub Actions step summary file: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
   touch "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
 fi
 
-if [ ${EXPECTED_EXIT_CODE} -ne 0 ]; then
-  echo "Disable failures on error because the expected exit code is ${EXPECTED_EXIT_CODE}"
-  set +o errexit
-fi
+debug "Command to run: ${COMMAND_TO_RUN[*]}"
 
-echo "Command to run: ${COMMAND_TO_RUN[*]}"
+# Disable failures on error so we can continue with tests regardless
+# of the Super-linter exit code
+set +o errexit
 "${COMMAND_TO_RUN[@]}"
-
 SUPER_LINTER_EXIT_CODE=$?
-# Enable the errexit option in case we disabled it
+# Enable the errexit option that we check later
 set -o errexit
 
-echo "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"
+debug "Super-linter workspace: ${SUPER_LINTER_WORKSPACE}"
+debug "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"
 
 if [[ "${CREATE_LOG_FILE}" == true ]]; then
   if [ ! -e "${LOG_FILE_PATH}" ]; then
-    echo "Log file was requested but it's not available at ${LOG_FILE_PATH}"
+    debug "Log file was requested but it's not available at ${LOG_FILE_PATH}"
     exit 1
   else
     sudo chown -R "$(id -u)":"$(id -g)" "${LOG_FILE_PATH}"
-    echo "Log file contents:"
-    cat "${LOG_FILE_PATH}"
+    debug "Log file path: ${LOG_FILE_PATH}"
+    if [[ "${CI:-}" == "true" ]]; then
+      debug "Log file contents:"
+      cat "${LOG_FILE_PATH}"
+    else
+      debug "Not in CI environment, skip emitting log file (${LOG_FILE_PATH}) contents"
+    fi
+
+    if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
+      debug "Copying Super-linter log from the workspace (${SUPER_LINTER_WORKSPACE}) to the current working directory for easier inspection"
+      cp -v "${LOG_FILE_PATH}" "$(pwd)/"
+    fi
   fi
 else
-  echo "Log file was not requested. CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
+  debug "Log file was not requested. CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
 fi
 
 if [[ "${SAVE_SUPER_LINTER_OUTPUT}" == true ]]; then
   if [ ! -d "${SUPER_LINTER_OUTPUT_PATH}" ]; then
-    echo "Super-linter output was requested but it's not available at ${SUPER_LINTER_OUTPUT_PATH}"
+    debug "Super-linter output was requested but it's not available at ${SUPER_LINTER_OUTPUT_PATH}"
     exit 1
   else
     sudo chown -R "$(id -u)":"$(id -g)" "${SUPER_LINTER_OUTPUT_PATH}"
-    echo "Super-linter output path (${SUPER_LINTER_OUTPUT_PATH}) contents:"
-    ls -alhR "${SUPER_LINTER_OUTPUT_PATH}"
+    if [[ "${CI:-}" == "true" ]]; then
+      debug "Super-linter output path (${SUPER_LINTER_OUTPUT_PATH}) contents:"
+      ls -alhR "${SUPER_LINTER_OUTPUT_PATH}"
+    else
+      debug "Not in CI environment, skip emitting ${SUPER_LINTER_OUTPUT_PATH} contents"
+    fi
+
+    if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
+      debug "Copying Super-linter output from the workspace (${SUPER_LINTER_WORKSPACE}) to the current working directory for easier inspection"
+      SUPER_LINTER_OUTPUT_PATH_PWD="$(pwd)/super-linter-output/"
+      mkdir -p "${SUPER_LINTER_OUTPUT_PATH_PWD}"
+      cp -r "${SUPER_LINTER_OUTPUT_PATH}" "${SUPER_LINTER_OUTPUT_PATH_PWD}"
+    fi
   fi
 else
-  echo "Super-linter output was not requested. SAVE_SUPER_LINTER_OUTPUT: ${SAVE_SUPER_LINTER_OUTPUT}"
+  debug "Super-linter output was not requested. SAVE_SUPER_LINTER_OUTPUT: ${SAVE_SUPER_LINTER_OUTPUT}"
 
   if [ -e "${SUPER_LINTER_OUTPUT_PATH}" ]; then
-    echo "Super-linter output was not requested but it's available at ${SUPER_LINTER_OUTPUT_PATH}"
+    debug "Super-linter output was not requested but it's available at ${SUPER_LINTER_OUTPUT_PATH}"
     exit 1
   fi
 fi
@@ -312,37 +366,96 @@ fi
 if [ -n "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH:-}" ]; then
   # Remove eventual HTML comments from the expected file because we use them to disable certain linter rules
   if ! diff "${SUPER_LINTER_SUMMARY_FILE_PATH}" <(grep -vE '^\s*<!--' "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"); then
-    echo "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
+    debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else
-    echo "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
+    debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
   fi
 
   if ! diff "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" <(grep -vE '^\s*<!--' "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"); then
-    echo "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
+    debug "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else
-    echo "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
+    debug "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
+  fi
+
+  if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
+    debug "Copying Super-linter summary from the workspace (${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}) to the current working directory for easier inspection"
+    cp "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" "$(pwd)/"
+  fi
+  if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
+    debug "Copying Super-linter GitHub step summary from the workspace (${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}) to the current working directory for easier inspection"
+    cp "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" "$(pwd)/"
   fi
 else
-  echo "Super-linter summary output was not requested."
+  debug "Super-linter summary output was not requested."
 
   if [ -e "${SUPER_LINTER_SUMMARY_FILE_PATH}" ]; then
-    echo "Super-linter summary was not requested but it's available at ${SUPER_LINTER_SUMMARY_FILE_PATH}"
+    debug "Super-linter summary was not requested but it's available at ${SUPER_LINTER_SUMMARY_FILE_PATH}"
     exit 1
   fi
 
   if [ -e "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" ]; then
-    echo "Super-linter GitHub step summary was not requested but it's available at ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
+    debug "Super-linter GitHub step summary was not requested but it's available at ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
     exit 1
   fi
 fi
 
 if [ ${SUPER_LINTER_EXIT_CODE} -ne ${EXPECTED_EXIT_CODE} ]; then
-  echo "Super-linter exited with an unexpected code: ${SUPER_LINTER_EXIT_CODE}"
+  debug "Super-linter exited with an unexpected code: ${SUPER_LINTER_EXIT_CODE}"
   exit 1
 else
-  echo "Super-linter exited with the expected code: ${SUPER_LINTER_EXIT_CODE}"
+  debug "Super-linter exited with the expected code: ${SUPER_LINTER_EXIT_CODE}"
+fi
+
+VERIFY_FIX_MODE="${VERIFY_FIX_MODE:-"false"}"
+if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
+  debug "Verifying fix mode"
+  for LANGUAGE in "${LANGUAGES_WITH_FIX_MODE[@]}"; do
+    if [[ "${SUPER_LINTER_CONTAINER_IMAGE_TYPE}" == "slim" ]] &&
+      ! IsLanguageInSlimImage "${LANGUAGE}"; then
+      debug "Skip ${LANGUAGE} because it's not available in the Super-linter ${SUPER_LINTER_CONTAINER_IMAGE_TYPE} image"
+      continue
+    fi
+
+    declare -l LOWERCASE_LANGUAGE="${LANGUAGE}"
+    BAD_TEST_CASE_SOURCE_PATH="${LINTERS_TEST_CASE_DIRECTORY}/${LOWERCASE_LANGUAGE}"
+    debug "Source path to the ${LANGUAGE} test case expected to fail: ${BAD_TEST_CASE_SOURCE_PATH}"
+    BAD_TEST_CASE_DESTINATION_PATH="${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/${LOWERCASE_LANGUAGE}"
+    debug "Destination path to ${LANGUAGE} test case expected to fail: ${BAD_TEST_CASE_DESTINATION_PATH}"
+
+    if [[ ! -e "${BAD_TEST_CASE_SOURCE_PATH}" ]]; then
+      fatal "${BAD_TEST_CASE_SOURCE_PATH} doesn't exist"
+    fi
+
+    if [[ ! -e "${BAD_TEST_CASE_DESTINATION_PATH}" ]]; then
+      fatal "${BAD_TEST_CASE_DESTINATION_PATH} doesn't exist"
+    fi
+
+    if find "${BAD_TEST_CASE_DESTINATION_PATH}" \( -type f ! -readable -or -type d \( ! -readable -or ! -executable -or ! -writable \) \) -print | grep -q .; then
+      if [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
+        [[ "${LANGUAGE}" == "SHELL_SHFMT" ]] ||
+        [[ "${LANGUAGE}" == "SQLFLUFF" ]]; then
+        debug "${LANGUAGE} is a known case of a tool that doesn't preserve the ownership of files or directories in fix mode. Need to recursively change ownership of ${BAD_TEST_CASE_DESTINATION_PATH}"
+        sudo chown -R "$(id -u)":"$(id -g)" "${BAD_TEST_CASE_DESTINATION_PATH}"
+      else
+        ls -alR "${BAD_TEST_CASE_DESTINATION_PATH}"
+        fatal "Cannot verify fix mode for ${LANGUAGE}: ${BAD_TEST_CASE_DESTINATION_PATH} is not readable, or contains unreadable files."
+      fi
+    else
+      debug "${BAD_TEST_CASE_DESTINATION_PATH} and its contents are readable"
+    fi
+
+    if [[ "${LANGUAGE}" == "RUST_CLIPPY" ]]; then
+      rm -rf \
+        "${BAD_TEST_CASE_DESTINATION_PATH}"/*/Cargo.lock \
+        "${BAD_TEST_CASE_DESTINATION_PATH}"/*/target
+    fi
+
+    if AssertFileContentsMatch "${BAD_TEST_CASE_DESTINATION_PATH}" "${BAD_TEST_CASE_SOURCE_PATH}"; then
+      fatal "${BAD_TEST_CASE_DESTINATION_PATH} contents match ${BAD_TEST_CASE_SOURCE_PATH} contents and they should differ because fix mode for ${LANGUAGE} should have fixed linting and formatting issues."
+    fi
+  done
 fi
 
 # Check if super-linter leaves leftovers behind
@@ -354,16 +467,16 @@ TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.ruff_cache")
 TEMP_ITEMS_TO_CLEAN+=("$(pwd)/logback.log")
 
 for item in "${TEMP_ITEMS_TO_CLEAN[@]}"; do
-  echo "Check if ${item} exists"
+  debug "Check if ${item} exists"
   if [[ -e "${item}" ]]; then
-    echo "Error: ${item} exists and it should have been deleted"
+    debug "Error: ${item} exists and it should have been deleted"
     exit 1
   else
-    echo "${item} does not exist as expected"
+    debug "${item} does not exist as expected"
   fi
 done
 
 if ! CheckUnexpectedGitChanges "$(pwd)"; then
-  echo "There are unexpected modifications to the working directory after running tests."
+  debug "There are unexpected modifications to the working directory after running tests."
   exit 1
 fi

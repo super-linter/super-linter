@@ -1,8 +1,10 @@
-const spiderman = (person: String) => {
-    return 'Hello, ' + person;
+var teamId = "teamId"
+var booleanTest = false;
+
+function checkTeamIDVariable(teamId, booleanTest) {
+  if (typeof teamId != "undefined" || Boolean(!!booleanTest)) {
+    console.log(teamId)
+  }
 }
 
-var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
-
-let user = 1;
-console.log(spiderman(user));
+checkTeamIDVariable(teamId, booleanTest)

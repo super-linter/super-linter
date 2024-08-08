@@ -1,4 +1,5 @@
-a=1;b=2
-c=a+b
-BROKEN_VAR=BROKEN_VAR
+import pandas
+import numpy as np
+
+c = 1 + 2
 print(c)

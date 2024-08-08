@@ -1,1 +1,3 @@
-const element = <h1>Hello, world!
+import React from 'react';
+
+var Hello = <a target='_blank' href="https://example.com/"></a>

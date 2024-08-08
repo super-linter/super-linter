@@ -38,6 +38,7 @@
     "**/test/linters/typescript_es/**",
     "**/test/linters/typescript_prettier/**",
     "**/test/linters/typescript_standard/**",
+    "**/test/linters-config/**",
     "**/github_conf/**",
     "**/workflows/cd.yml",
     "**/workflows/ci.yml"

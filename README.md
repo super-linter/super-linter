@@ -234,7 +234,7 @@ You can configure Super-linter using the following environment variables:
 | **FIX_RUST_2015**                               | `false`                         | Option to enable fix mode for `RUST_2015`.                                                                                                                                                                           |
 | **FIX_RUST_2018**                               | `false`                         | Option to enable fix mode for `RUST_2018`.                                                                                                                                                                           |
 | **FIX_RUST_2021**                               | `false`                         | Option to enable fix mode for `RUST_2021`.                                                                                                                                                                           |
-| **FIX_RUST_CLIPPY**                             | `false`                         | Option to enable fix mode for `RUST_CLIPPY`.                                                                                                                                                                         |
+| **FIX_RUST_CLIPPY**                             | `false`                         | Option to enable fix mode for `RUST_CLIPPY`. When `FIX_RUST_CLIPPY` is `true`, Clippy is allowed to fix issues in the workspace even if there are unstaged and staged changes in the workspace.                      |
 | **FIX_SCALAFMT**                                | `false`                         | Option to enable fix mode for `SCALAFMT`.                                                                                                                                                                            |
 | **FIX_SHELL_SHFMT**                             | `false`                         | Option to enable fix mode for `SHELL_SHFMT`.                                                                                                                                                                         |
 | **FIX_SNAKEMAKE_SNAKEFMT**                      | `false`                         | Option to enable fix mode for `SNAKEMAKE_SNAKEFMT`.                                                                                                                                                                  |
@@ -420,6 +420,20 @@ Super-linter supports the following locations to deliver fixes:
       Actions, you can commit and push changes as part of your workflow.
   - If you're running Super-linter locally, you can commit the changes as you
       would with any other change in your working directory.
+
+### Fix mode for ansible-lint
+
+ansible-lint requires that the `yaml` rule is enabled to for the ansible-lint
+fix mode to work. The default ansible-lint configuration that Super-linter ships
+disables the `yaml` rule because it might not be compatible with yamllint. If
+you need to enable the ansible-lint fix mode, provide an ansible-lint
+configuration that doesn't ignore the `yaml` rule.
+
+### Fix mode file and directory ownership
+
+When fix mode is enabled, some linters and formatters don't maintain the
+original file or directory ownership, and use the user that Super-linter uses
+to run the linter or formatter.
 
 ## Configure linters
 

@@ -1,12 +1,8 @@
 var http = require('http')
 var createHandler = require( 'github-webhook-handler')
 
-var handler = createHandler( { path : /webhook, secret : (process.env.SECRET) })
+var userArray = ['user1']
 
-var userArray = [ 'user1' ]
-here is some garbage = that
-
-var teamDescription = Team of Robots
 var teamPrivacy = 'closed' // closed (visible) / secret (hidden) are options here
 
 var teamName = process.env.GHES_TEAM_NAME
@@ -62,8 +58,7 @@ function getTeamID (org) {
 
   const options = {
     hostname: (process.env.GHE_HOST),
-    port: 443
-    path: '/api/v3/orgs/' + org + '/teams',
+    port: 443,
     method: 'GET',
     headers: {
       Authorization: 'token ' + (process.env.GHE_TOKEN),
@@ -84,7 +79,7 @@ function getTeamID (org) {
     })
   })
 
-  req.on('error, (error) => {
+  req.on('error', (error) => {
     console.error(error)
   })
 
@@ -151,14 +146,14 @@ function reCreateTeam (org) {
   const data = JSON.stringify({
     name: teamName,
     description: teamDescription,
-    privacy: teamPrivacy
+    privacy: teamPrivacy,
     maintainers: userArray,
     repo_names: orgRepos
   })
 
   const options = {
     hostname: (process.env.GHE_HOST),
-    port: 443
+    port: 443,
     path: '/api/v3/orgs/' + org + '/teams',
     method: 'POST',
     headers: {
@@ -176,7 +171,7 @@ function reCreateTeam (org) {
         console.log('BODY: ' + chunk)
       })
     } else {
-      console.log('Added ' + teamName ' to ' + org)
+      console.log('Added ' + teamName + ' to ' + org)
     }
   })
 
