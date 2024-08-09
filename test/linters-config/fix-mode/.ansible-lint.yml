@@ -1,0 +1,9 @@
+---
+# Customize the ansible-lint configuration file because fix mode needs the
+# yaml rule not to be disabled, but we disable the yaml rule in the default
+# ansible-lint configuration
+parseable: true
+quiet: true
+use_default_rules: true
+verbosity: 1
+...

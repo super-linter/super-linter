@@ -32,13 +32,12 @@ BASH_EXEC_IGNORE_LIBRARIES="false"
 GITHUB_WORKSPACE="$(pwd)"
 # shellcheck disable=SC2034
 IGNORE_GITIGNORED_FILES="false"
-LINTER_RULES_PATH="TEMPLATES"
 # shellcheck disable=SC2034
 TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json"
 # shellcheck disable=SC2034
 YAML_ERROR_ON_WARNING="false"
 for LANGUAGE in "${LANGUAGE_ARRAY_FOR_LINTER_RULES[@]}"; do
-  GetLinterRules "${LANGUAGE}" "${LINTER_RULES_PATH}"
+  GetLinterRules "${LANGUAGE}" "TEMPLATES"
 done
 ValidateValidationVariables
 

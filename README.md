@@ -421,6 +421,20 @@ Super-linter supports the following locations to deliver fixes:
   - If you're running Super-linter locally, you can commit the changes as you
       would with any other change in your working directory.
 
+### Fix mode for ansible-lint
+
+ansible-lint requires that the `yaml` rule is enabled to for the ansible-lint
+fix mode to work. The default ansible-lint configuration that Super-linter ships
+disables the `yaml` rule because it might not be compatible with yamllint. If
+you need to enable the ansible-lint fix mode, provide an ansible-lint
+configuration that doesn't ignore the `yaml` rule.
+
+### Fix mode file and directory ownership
+
+When fix mode is enabled, some linters and formatters don't maintain the
+original file or directory ownership, and use the user that Super-linter uses
+to run the linter or formatter.
+
 ## Configure linters
 
 Super-linter provides default configurations for some linters in the [`TEMPLATES/`](TEMPLATES/)

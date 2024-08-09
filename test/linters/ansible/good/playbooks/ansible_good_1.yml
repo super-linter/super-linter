@@ -8,4 +8,4 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - "/tmp/test-1"
+        - /tmp/test-1

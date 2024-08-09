@@ -15,7 +15,12 @@ function LintCodebase() {
       unset -n VALIDATE_LANGUAGE
       return 0
     else
-      fatal "Don't disable any validation when running in test mode. VALIDATE_${FILE_TYPE} is set to: ${VALIDATE_LANGUAGE}. Set it to: true"
+      if [[ "${FIX_MODE_TEST_CASE_RUN}" == "true" ]]; then
+        debug "Don't fail the test even if VALIDATE_${FILE_TYPE} is set to ${VALIDATE_LANGUAGE} because ${FILE_TYPE} might not support fix mode"
+        return 0
+      else
+        fatal "Don't disable any validation when running in test mode. VALIDATE_${FILE_TYPE} is set to: ${VALIDATE_LANGUAGE}. Set it to: true"
+      fi
     fi
   fi
 
