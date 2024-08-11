@@ -69,7 +69,6 @@
 | SNAKEMAKE_LINT | Fail ❌ |
 | SNAKEMAKE_SNAKEFMT | Fail ❌ |
 | STATES | Fail ❌ |
-| SQL | Fail ❌ |
 | SQLFLUFF | Fail ❌ |
 | TEKTON | Fail ❌ |
 | TERRAFORM_FMT | Fail ❌ |

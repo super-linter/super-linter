@@ -62,7 +62,6 @@
 | SNAKEMAKE_LINT | Pass ✅ |
 | SNAKEMAKE_SNAKEFMT | Pass ✅ |
 | STATES | Pass ✅ |
-| SQL | Pass ✅ |
 | SQLFLUFF | Pass ✅ |
 | TEKTON | Pass ✅ |
 | TERRAFORM_FMT | Pass ✅ |

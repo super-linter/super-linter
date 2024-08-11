@@ -486,7 +486,6 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SNAKEMAKE_LINT"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SNAKEMAKE_SNAKEFMT"
     elif [ "${FILE_TYPE}" == "sql" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SQL"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SQLFLUFF"
     elif [ "${FILE_TYPE}" == "tf" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT"
