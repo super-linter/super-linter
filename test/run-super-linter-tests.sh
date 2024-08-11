@@ -184,7 +184,8 @@ run_test_case_fix_mode() {
   COMMAND_TO_RUN+=(--env FIX_RUST_2015="true")
   COMMAND_TO_RUN+=(--env FIX_RUST_2018="true")
   COMMAND_TO_RUN+=(--env FIX_RUST_2021="true")
-  COMMAND_TO_RUN+=(--env FIX_RUST_CLIPPY="true")
+  # Temporarily disable fix mode for rust clippy due to a dependency on another PR
+  # COMMAND_TO_RUN+=(--env FIX_RUST_CLIPPY="true")
   COMMAND_TO_RUN+=(--env FIX_SCALAFMT="true")
   COMMAND_TO_RUN+=(--env FIX_SHELL_SHFMT="true")
   COMMAND_TO_RUN+=(--env FIX_SNAKEMAKE_SNAKEFMT="true")
