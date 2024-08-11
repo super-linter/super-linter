@@ -109,7 +109,7 @@ for LINTER in "${LINTER_NAMES_ARRAY[@]}"; do
   elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
     GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1)"
   elif [[ ${LINTER} == "clippy" ]]; then
-    GET_VERSION_CMD="$(cargo-clippy --version 2>&1)"
+    GET_VERSION_CMD="$(cargo clippy --version 2>&1)"
   elif [[ ${LINTER} == "editorconfig-checker" ]]; then
     GET_VERSION_CMD="$(${LINTER} -version)"
   elif [[ ${LINTER} == "kubeconform" ]]; then

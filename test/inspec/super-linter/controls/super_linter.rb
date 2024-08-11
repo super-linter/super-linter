@@ -143,7 +143,7 @@ control "super-linter-installed-commands" do
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
     { linter_name: "chktex"},
     { linter_name: "clang-format"},
-    { linter_name: "clippy", linter_command: "cargo-clippy"},
+    { linter_name: "clippy", linter_command: "cargo clippy"},
     { linter_name: "clj-kondo"},
     { linter_name: "coffeelint"},
     { linter_name: "composer"},
