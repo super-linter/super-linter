@@ -24,7 +24,7 @@ control "super-linter-environment-variables" do
   
   if (image == "standard")
     describe os_env("POWERSHELL_TELEMETRY_OPTOUT") do
-      its("content") { should eq "true" }
+      its("content") { should eq "1" }
     end
   end
 end
