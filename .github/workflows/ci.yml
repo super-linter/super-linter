@@ -25,6 +25,9 @@ jobs:
       CONTAINER_IMAGE_BUILD_REVISION: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_REVISION }}
       CONTAINER_IMAGE_BUILD_VERSION: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Set build metadata
         id: set-container-image-build-metadata
         run: |
@@ -39,6 +42,13 @@ jobs:
             exit 1
           fi
 
+          . scripts/build-metadata.sh
+
+          if [ -z "${BUILD_DATE}" ]; then
+            echo "[ERROR] BUILD_DATE is empty"
+            exit 1
+          fi
+
           if [ -z "${BUILD_REVISION}" ]; then
             echo "[ERROR] BUILD_REVISION is empty"
             exit 1
@@ -49,11 +59,9 @@ jobs:
             exit 1
           fi
 
-          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-
-          echo "Build date: ${BUILD_DATE}"
-          echo "Build revision: ${BUILD_REVISION}"
-          echo "Build version: ${BUILD_VERSION}"
+          echo "Build date (GH Actions workflow): ${BUILD_DATE}"
+          echo "Build revision (GH Actions workflow): ${BUILD_REVISION}"
+          echo "Build version (GH Actions workflow): ${BUILD_VERSION}"
 
           {
             echo "BUILD_DATE=${BUILD_DATE}"

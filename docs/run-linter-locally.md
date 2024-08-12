@@ -100,11 +100,12 @@ directory, do the following:
 1. Run the build process:
 
     ```bash
-    make
+    . ./scripts/build-metadata.sh && make
     ```
 
-To avoid invalidating the build cache, and reuse it, you can set build metadata
-to arbitrary values before running `make`:
+To avoid invalidating the build cache because of changing values of build
+arguments, you can set build arguments to arbitrary values before running
+`make`, instead of sourcing `scripts/build-metadata.sh`:
 
 ```bash
 BUILD_DATE=2023-12-12T09:32:05Z \
