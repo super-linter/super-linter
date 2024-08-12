@@ -1,1 +1,3 @@
-DELETE from person;
+SELECT
+    a
+FROM foo AS zoo;

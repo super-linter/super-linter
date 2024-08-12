@@ -1,3 +1,7 @@
-if len(in) == 0 {
-  return "", fmt.Errorf("Input is empty")
+package main
+
+import "fmt"
+
+func main() {
+fmt.Println("hello world")
 }

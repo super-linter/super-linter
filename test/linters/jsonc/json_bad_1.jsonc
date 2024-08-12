@@ -1,11 +1,13 @@
 {
   "arrow_spacing": {
-    "level": ["ignore"]
+    "level": [
+      "ignore"
+    ]
   },
   // more test
   "braces_spacing": {
     "level": 'ignore',
-    "spaces": 0
+    "spaces": 0,
     "empty_object_spaces": 0
   }
 }
