@@ -1,1 +1,1 @@
-cfn-lint==1.6.1
+cfn-lint==1.9.7
