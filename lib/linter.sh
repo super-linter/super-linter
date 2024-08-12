@@ -180,15 +180,6 @@ source /action/lib/globals/linterRules.sh
 # shellcheck source=/dev/null
 source /action/lib/globals/languages.sh
 
-##########################
-# Array of changed files #
-##########################
-for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  FILE_ARRAY_VARIABLE_NAME="FILE_ARRAY_${LANGUAGE}"
-  debug "Initializing ${FILE_ARRAY_VARIABLE_NAME}"
-  eval "${FILE_ARRAY_VARIABLE_NAME}=()"
-done
-
 Header() {
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
     info "$(/bin/bash /action/lib/functions/possum.sh)"
