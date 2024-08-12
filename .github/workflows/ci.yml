@@ -10,11 +10,70 @@ on:
 permissions: {}
 
 jobs:
+  # Set build metadata before running any other job so we can reuse them for
+  # both the standandard and the slim images, and for verification as well.
+  # We can't run this as part of the build-container-image job because it
+  # runs multiple times due to its matrix configuration, leading to race
+  # conditions when verifying container image labels.
+  set-build-metadata:
+    name: Set build metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      CONTAINER_IMAGE_BUILD_DATE: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_DATE }}
+      CONTAINER_IMAGE_BUILD_REVISION: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_REVISION }}
+      CONTAINER_IMAGE_BUILD_VERSION: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
+    steps:
+      - name: Set build metadata
+        id: set-container-image-build-metadata
+        run: |
+          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event_name }} == 'merge_group' ]]; then
+            BUILD_REVISION=${{ github.sha }}
+            BUILD_VERSION=${{ github.sha }}
+          elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            BUILD_REVISION=${{ github.event.pull_request.head.sha }}
+            BUILD_VERSION=${{ github.event.pull_request.head.sha }}
+          else
+            echo "[ERROR] Event not supported when setting build revision and build version"
+            exit 1
+          fi
+
+          if [ -z "${BUILD_REVISION}" ]; then
+            echo "[ERROR] BUILD_REVISION is empty"
+            exit 1
+          fi
+
+          if [ -z "${BUILD_VERSION}" ]; then
+            echo "[ERROR] BUILD_VERSION is empty"
+            exit 1
+          fi
+
+          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+          echo "Build date: ${BUILD_DATE}"
+          echo "Build revision: ${BUILD_REVISION}"
+          echo "Build version: ${BUILD_VERSION}"
+
+          {
+            echo "BUILD_DATE=${BUILD_DATE}"
+            echo "BUILD_REVISION=${BUILD_REVISION}"
+            echo "BUILD_VERSION=${BUILD_VERSION}"
+          } >> "${GITHUB_ENV}"
+
+          {
+            echo "CONTAINER_IMAGE_BUILD_DATE=${BUILD_DATE}"
+            echo "CONTAINER_IMAGE_BUILD_REVISION=${BUILD_REVISION}"
+            echo "CONTAINER_IMAGE_BUILD_VERSION=${BUILD_VERSION}"
+          } >> "${GITHUB_OUTPUT}"
+
   build-container-image:
     name: Build and Test
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    needs:
+      - set-build-metadata
     concurrency:
       # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
       # github.head_ref: head_ref or source branch of the pull request
@@ -40,35 +99,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set build metadata
-        run: |
-          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event_name }} == 'merge_group' ]]; then
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          elif [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            BUILD_REVISION=${{ github.event.pull_request.head.sha }}
-            BUILD_VERSION=${{ github.event.pull_request.head.sha }}
-          else
-            echo "[ERROR] Event not supported when setting build revision and build version"
-            exit 1
-          fi
-
-          if [ -z "${BUILD_REVISION}" ]; then
-            echo "[ERROR] BUILD_REVISION is empty"
-            exit 1
-          fi
-
-          if [ -z "${BUILD_VERSION}" ]; then
-            echo "[ERROR] BUILD_VERSION is empty"
-            exit 1
-          fi
-
-          {
-            echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            echo "BUILD_REVISION=${BUILD_REVISION}"
-            echo "BUILD_VERSION=${BUILD_VERSION}"
-          } >> "${GITHUB_ENV}"
-
       - name: Free Disk space
         shell: bash
         run: |
@@ -86,9 +116,9 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ env.BUILD_REVISION }}
-            BUILD_VERSION=${{ env.BUILD_VERSION }}
+            BUILD_DATE=${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_DATE }}
+            BUILD_REVISION=${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_REVISION }}
+            BUILD_VERSION=${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
           outputs: type=docker,dest=/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
           push: false
@@ -108,11 +138,6 @@ jobs:
       - name: Print environment info
         run: |
           make info
-
-      # Validate the container image labels here so we don't have to pass the expected
-      # label values to other build jobs
-      - name: Validate container image labels
-        run: make validate-container-image-labels
 
       - name: Upload ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         uses: actions/upload-artifact@v4.3.4
@@ -214,6 +239,7 @@ jobs:
     permissions:
       contents: read
     needs:
+      - set-build-metadata
       - build-container-image
       - build-test-suite-matrix
     strategy:
@@ -226,13 +252,17 @@ jobs:
           - container-image-id: super-linter-slim-latest
             prefix: slim-
             target: slim
-        exclude:
-          # Don't validate container image labels because we do that when building the image
-          - test-case: validate-container-image-labels
+        include:
+          # Also run the test target to check if running the whole test suite
+          # in the same execution environment prevents it from succeeding
+          - test-case: test
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
       CONTAINER_IMAGE_OUTPUT_IMAGE_NAME: "super-linter-${{ matrix.images.prefix }}latest"
+      BUILD_DATE: ${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_DATE }}
+      BUILD_REVISION: ${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_REVISION }}
+      BUILD_VERSION: ${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

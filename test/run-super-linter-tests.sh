@@ -16,8 +16,6 @@ DEFAULT_BRANCH="main"
 
 COMMAND_TO_RUN=(docker run -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
 
-LEFTOVERS_TO_CLEAN=()
-
 ignore_test_cases() {
   COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*")
 }
@@ -167,10 +165,15 @@ run_test_case_custom_summary() {
 run_test_case_fix_mode() {
   CREATE_LOG_FILE="true"
   SAVE_SUPER_LINTER_OUTPUT="true"
+  VERIFY_FIX_MODE="true"
 
   GIT_REPOSITORY_PATH="$(mktemp -d)"
-
   initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
+
+  # Remove leftovers before copying test files because other tests might have
+  # created temporary files and caches as the root user, so commands that
+  # need access to those files might fail if they run as a non-root user.
+  RemoveTestLeftovers
 
   local LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/${LINTERS_TEST_CASE_DIRECTORY}"
   mkdir -p "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}"
@@ -199,10 +202,6 @@ run_test_case_fix_mode() {
   git -C "${GIT_REPOSITORY_PATH}" add .
   git -C "${GIT_REPOSITORY_PATH}" commit --no-verify -m "feat: add fix mode test cases"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
-
-  CREATE_LOG_FILE="true"
-  SAVE_SUPER_LINTER_OUTPUT="true"
-  VERIFY_FIX_MODE="true"
 
   # Enable test mode so we run linters and formatters only against their test
   # cases
@@ -266,32 +265,14 @@ SUPER_LINTER_SUMMARY_FILE_PATH="${SUPER_LINTER_MAIN_OUTPUT_PATH}/${SUPER_LINTER_
 debug "Super-linter summary output path: ${SUPER_LINTER_SUMMARY_FILE_PATH}"
 
 LOG_FILE_PATH="${SUPER_LINTER_WORKSPACE}/super-linter.log"
+debug "Super-linter log file path: ${LOG_FILE_PATH}"
 
 COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 
 declare -i EXPECTED_EXIT_CODE
 EXPECTED_EXIT_CODE=${EXPECTED_EXIT_CODE:-0}
 
-debug "Cleaning eventual leftovers before running tests: ${LEFTOVERS_TO_CLEAN[*]}"
-LEFTOVERS_TO_CLEAN+=("${LOG_FILE_PATH}")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_MAIN_OUTPUT_PATH}")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
-LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
-# Delete leftovers in pwd in case the workspace is not pwd
-LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${LOG_FILE_PATH}")")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_MAIN_OUTPUT_PATH}")")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_SUMMARY_FILE_PATH}")")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
-LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
-sudo rm -rfv "${LEFTOVERS_TO_CLEAN[@]}"
+RemoveTestLeftovers
 
 if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
   debug "Creating GitHub Actions step summary file: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
