@@ -18,9 +18,13 @@ control "super-linter-environment-variables" do
     its("content") { should match(/^(standard|slim)$/) }
   end
 
+  describe os_env("RENOVATE_X_IGNORE_RE2") do
+    its("content") { should match(/^(standard|slim)$/) }
+  end
+  
   if (image == "standard")
     describe os_env("POWERSHELL_TELEMETRY_OPTOUT") do
-      its("content") { should eq "1" }
+      its("content") { should eq "true" }
     end
   end
 end
