@@ -19,7 +19,7 @@ control "super-linter-environment-variables" do
   end
 
   describe os_env("RENOVATE_X_IGNORE_RE2") do
-    its("content") { should match(/^(standard|slim)$/) }
+    its("content") { should eq "true" }
   end
   
   if (image == "standard")
