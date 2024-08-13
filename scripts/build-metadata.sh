@@ -9,7 +9,12 @@ GetBuildDate() {
 }
 
 GetBuildRevision() {
-  git rev-parse HEAD
+  if [[ -v BUILD_REVISION ]]; then
+    # BUILD_REVISION is already set, no need to compute it
+    echo "${BUILD_REVISION}"
+  else
+    git rev-parse HEAD
+  fi
 }
 
 GetBuildVersion() {
@@ -21,6 +26,8 @@ GetBuildVersion() {
   if git diff-tree --no-commit-id --name-only -r "${BUILD_REVISION}" | grep -q "${VERSION_FILE_PATH}"; then
     cat "${VERSION_FILE_PATH}"
   else
+    # Fallback on the build revision to avoid that a non-release container image
+    # has BUILD_VERSION set to a release string
     GetBuildRevision
   fi
 }
