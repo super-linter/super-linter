@@ -48,6 +48,13 @@ jobs:
             exit 1
           fi
 
+          . scripts/build-metadata.sh
+
+          if [ -z "${BUILD_DATE}" ]; then
+            echo "[ERROR] BUILD_DATE is empty"
+            exit 1
+          fi
+
           if [ -z "${BUILD_REVISION}" ]; then
             echo "[ERROR] BUILD_REVISION is empty"
             exit 1
@@ -58,8 +65,12 @@ jobs:
             exit 1
           fi
 
+          echo "Build date (GH Actions workflow): ${BUILD_DATE}"
+          echo "Build revision (GH Actions workflow): ${BUILD_REVISION}"
+          echo "Build version (GH Actions workflow): ${BUILD_VERSION}"
+
           {
-            echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "BUILD_DATE=${BUILD_DATE}"
             echo "BUILD_REVISION=${BUILD_REVISION}"
             echo "BUILD_VERSION=${BUILD_VERSION}"
           } >> "${GITHUB_ENV}"
