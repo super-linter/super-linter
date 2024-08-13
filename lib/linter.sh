@@ -511,13 +511,13 @@ Footer() {
           WriteSummaryLineFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
 
-        # Print output as error in case users disabled the INFO level so they
-        # get feedback
+        # Print stdout and stderr in case the log level is higher than INFO
+        # so users still get feedback. Print output as error so it gets emitted
         if [[ "${LOG_VERBOSE}" != "true" ]]; then
           local STDOUT_LINTER_FILE_PATH
           STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${LANGUAGE}"
           if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
-            error "$(cat "${STDOUT_LINTER_FILE_PATH}")"
+            error "Stdout contents for ${LANGUAGE}:\n------\n$(cat "${STDOUT_LINTER_FILE_PATH}")\n------"
           else
             debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
           fi
@@ -525,7 +525,7 @@ Footer() {
           local STDERR_LINTER_FILE_PATH
           STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${LANGUAGE}"
           if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
-            error "$(cat "${STDERR_LINTER_FILE_PATH}")"
+            error "Stderr contents for ${LANGUAGE}:\n------\n$(cat "${STDERR_LINTER_FILE_PATH}")\n------"
           else
             debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
           fi
