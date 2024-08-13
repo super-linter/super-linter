@@ -23,6 +23,9 @@ control "super-linter-environment-variables" do
   end
 
   if (image == "standard")
+    describe os_env("DOTNET_CLI_TELEMETRY_OPTOUT") do
+      its("content") { should eq "1" }
+    end
     describe os_env("POWERSHELL_TELEMETRY_OPTOUT") do
       its("content") { should eq "1" }
     end

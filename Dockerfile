@@ -475,6 +475,7 @@ RUN apk add --no-cache \
 # Install DotNet and Dependencies #
 ###################################
 COPY --from=dotnet-sdk /usr/share/dotnet /usr/share/dotnet
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 # Trigger first run experience by running arbitrary cmd
 RUN dotnet help
 
