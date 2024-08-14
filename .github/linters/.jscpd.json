@@ -10,6 +10,7 @@
     "**/test/linters/cloudformation",
     "**/test/linters/coffeescript",
     "**/test/linters/css",
+    "**/test/linters/css_prettier",
     "**/test/linters/html",
     "**/test/linters/javascript_es",
     "**/test/linters/javascript_prettier",
