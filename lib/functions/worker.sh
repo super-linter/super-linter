@@ -37,6 +37,7 @@ function LintCodebase() {
   local -n FILE_ARRAY="FILE_ARRAY_${FILE_TYPE}"
   local FILE_ARRAY_LANGUAGE_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${FILE_TYPE}"
   if [[ -e "${FILE_ARRAY_LANGUAGE_PATH}" ]]; then
+    FILE_ARRAY=()
     while read -r FILE; do
       if [[ "${TEST_CASE_RUN}" == "true" ]]; then
         debug "Ensure that the list files to check for ${FILE_TYPE} doesn't include test cases for other languages"

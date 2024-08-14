@@ -343,7 +343,6 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "coffee" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-COFFEESCRIPT"
     elif [ "${FILE_TYPE}" == "cs" ]; then
-      FILE_ARRAY_CSHARP+=("${FILE}")
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CSHARP"
     elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
       [ "${FILE_TYPE}" == "sass" ]; then
@@ -413,7 +412,6 @@ BuildFileArrays() {
     elif [ "$FILE_TYPE" == "jsonc" ] || [ "$FILE_TYPE" == "json5" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSONC"
     elif [ "${FILE_TYPE}" == "json" ]; then
-      FILE_ARRAY_JSON+=("${FILE}")
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSON"
       if DetectOpenAPIFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-OPENAPI"
