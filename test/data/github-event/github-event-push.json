@@ -178,13 +178,7 @@
     "svn_url": "https://github.com/super-linter/super-linter",
     "tags_url": "https://api.github.com/repos/super-linter/super-linter/tags",
     "teams_url": "https://api.github.com/repos/super-linter/super-linter/teams",
-    "topics": [
-      "actions",
-      "ci",
-      "hacktoberfest",
-      "linter",
-      "quality-check"
-    ],
+    "topics": ["actions", "ci", "hacktoberfest", "linter", "quality-check"],
     "trees_url": "https://api.github.com/repos/super-linter/super-linter/git/trees{/sha}",
     "updated_at": "2024-01-04T16:38:53Z",
     "url": "https://github.com/super-linter/super-linter",

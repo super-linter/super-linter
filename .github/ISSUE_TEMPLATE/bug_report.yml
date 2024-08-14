@@ -59,7 +59,7 @@ body:
       description: |
         Super-Linter version where you observed this issue
       placeholder: |
-          vX.Y.Z
+        vX.Y.Z
       render: markdown
     validations:
       required: true

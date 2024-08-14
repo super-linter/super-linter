@@ -12,10 +12,10 @@ ignorePatterns:
   - "!.*"
   - "**/node_modules/.*"
 
-parser: '@typescript-eslint/parser'
+parser: "@typescript-eslint/parser"
 
 plugins:
-  - '@typescript-eslint'
+  - "@typescript-eslint"
 
 # Don't set the jsonSyntax parser option for JSON, JSON5, and JSONC
 # so we can use eslint-plugin-jsonc to automatically fix issues
@@ -41,4 +41,3 @@ overrides:
       - "*.tsx"
     extends:
       - plugin:react/recommended
-...

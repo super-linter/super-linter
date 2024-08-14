@@ -5,5 +5,3 @@ directory:
   - test/linters/checkov/bad
 
 quiet: false
-
-...

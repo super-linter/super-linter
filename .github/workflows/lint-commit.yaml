@@ -13,7 +13,7 @@ jobs:
   commitlint:
     runs-on: ubuntu-latest
     permissions:
-        contents: read
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -72,4 +72,3 @@ jobs:
       - name: Validate commits
         run: |
           make lint-commits
-...

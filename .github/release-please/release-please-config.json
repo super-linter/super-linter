@@ -34,11 +34,7 @@
     ".": {
       "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
-      "extra-files": [
-        "action.yml",
-        "README.md",
-        "slim/action.yml"
-      ]
+      "extra-files": ["action.yml", "README.md", "slim/action.yml"]
     }
   }
 }

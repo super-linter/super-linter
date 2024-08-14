@@ -29,14 +29,14 @@ quiet: true
 # Tags to skip #
 ################
 skip_list:
-  - 'empty-string-compare'  # Allow compare to empty string
-  - '204'  # Allow string length greater than 160 chars
-  - 'no-changed-when'  # False positives for running command shells
-  - 'command-instead-of-module'  # Allow git commands for push, add, etc...
-  - 'command-instead-of-shell'  # Allow use of shell when you want
-  - 'no-handler'  # Allow step to run like handler
-  - 'unnamed-task' # Allow tasks without a name
-  - 'yaml' # Disable YAML linting since it's done by yamllint
+  - "empty-string-compare" # Allow compare to empty string
+  - "204" # Allow string length greater than 160 chars
+  - "no-changed-when" # False positives for running command shells
+  - "command-instead-of-module" # Allow git commands for push, add, etc...
+  - "command-instead-of-shell" # Allow use of shell when you want
+  - "no-handler" # Allow step to run like handler
+  - "unnamed-task" # Allow tasks without a name
+  - "yaml" # Disable YAML linting since it's done by yamllint
 
 ##################
 # Tags to follow #

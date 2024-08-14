@@ -4,7 +4,6 @@
 #################################
 version: 2
 updates:
-
   - package-ecosystem: "devcontainers"
     commit-message:
       prefix: "chore(devcontainer)"
