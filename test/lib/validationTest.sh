@@ -499,6 +499,32 @@ function ValidateCheckModeAndFixModeVariablesTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+CheckIfFixModeIsEnabledTest() {
+  # shellcheck disable=SC2034
+  LANGUAGE_ARRAY=('A')
+
+  FIX_MODE_ENABLED="false"
+  FIX_A="true"
+  CheckIfFixModeIsEnabled
+  EXPECTED_FIX_MODE_ENABLED="true"
+  if [[ "${FIX_MODE_ENABLED}" == "${EXPECTED_FIX_MODE_ENABLED}" ]]; then
+    debug "FIX_MODE_ENABLED variable has the expected value: ${FIX_MODE_ENABLED}"
+  else
+    fatal "FIX_MODE_ENABLED (${FIX_MODE_ENABLED}) doesn't match with the expected value: ${EXPECTED_FIX_MODE_ENABLED}"
+  fi
+
+  FIX_MODE_ENABLED="false"
+  FIX_A="false"
+  CheckIfFixModeIsEnabled
+  EXPECTED_FIX_MODE_ENABLED="false"
+  if [[ "${FIX_MODE_ENABLED}" == "${EXPECTED_FIX_MODE_ENABLED}" ]]; then
+    debug "FIX_MODE_ENABLED variable has the expected value: ${FIX_MODE_ENABLED}"
+  else
+    fatal "FIX_MODE_ENABLED (${FIX_MODE_ENABLED}) doesn't match with the expected value: ${EXPECTED_FIX_MODE_ENABLED}"
+  fi
+
+}
+
 IsUnsignedIntegerSuccessTest
 IsUnsignedIntegerFailureTest
 ValidateDeprecatedVariablesTest
@@ -509,3 +535,4 @@ ValidateAnsibleDirectoryTest
 ValidateValidationVariablesTest
 ValidationVariablesExportTest
 ValidateCheckModeAndFixModeVariablesTest
+CheckIfFixModeIsEnabledTest

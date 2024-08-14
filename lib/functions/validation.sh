@@ -7,6 +7,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "DISABLE_ERRORS" "${DISABLE_ERRORS}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY" "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
+  ValidateBooleanVariable "FIX_MODE_ENABLED" "${FIX_MODE_ENABLED}"
   ValidateBooleanVariable "FIX_MODE_TEST_CASE_RUN" "${FIX_MODE_TEST_CASE_RUN}"
   ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
   ValidateBooleanVariable "IGNORE_GITIGNORED_FILES" "${IGNORE_GITIGNORED_FILES}"
@@ -184,6 +185,21 @@ function ValidateCheckModeAndFixModeVariables() {
     unset -n FIX_MODE_REF
     unset -n VALIDATE_MODE_REF
   done
+}
+
+function CheckIfFixModeIsEnabled() {
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    local FIX_MODE_VARIABLE_NAME="FIX_${LANGUAGE}"
+    local -n FIX_MODE_REF="${FIX_MODE_VARIABLE_NAME}"
+
+    if [[ -v "${FIX_MODE_VARIABLE_NAME}" ]] &&
+      [[ "${FIX_MODE_REF:-"false"}" == "true" ]]; then
+      FIX_MODE_ENABLED="true"
+      debug "Fix mode for ${LANGUAGE} is ${FIX_MODE_REF}. Set FIX_MODE_ENABLED to ${FIX_MODE_ENABLED}"
+    fi
+    unset -n FIX_MODE_REF
+  done
+  ValidateBooleanVariable "FIX_MODE_ENABLED" "${FIX_MODE_ENABLED}"
 }
 
 function CheckIfGitBranchExists() {

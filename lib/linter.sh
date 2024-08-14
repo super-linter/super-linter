@@ -144,6 +144,8 @@ export SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH
 debug "Super-linter private output directory path: ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 mkdir -p "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}"
 
+FIX_MODE_ENABLED="false"
+
 ValidateBooleanConfigurationVariables
 
 ###########
@@ -819,8 +821,19 @@ declare PARALLEL_RESULTS_FILE_PATH
 PARALLEL_RESULTS_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-results.json"
 debug "PARALLEL_RESULTS_FILE_PATH: ${PARALLEL_RESULTS_FILE_PATH}"
 
+declare -i LINTING_MAX_PROCS
+LINTING_MAX_PROCS=$(nproc)
+
+CheckIfFixModeIsEnabled
+if [[ "${FIX_MODE_ENABLED}" == "true" ]]; then
+  # This slows down the fix process, but avoids that linters that work on the same
+  # types of files try opening the same file at the same time
+  LINTING_MAX_PROCS=1
+  debug "Set LINTING_MAX_PROCS to ${LINTING_MAX_PROCS} to avoid that linters and formatters edit the same file at the same time."
+fi
+
 declare -a PARALLEL_COMMAND
-PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$(($(nproc) * 1))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
+PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$((LINTING_MAX_PROCS))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
 
 # Run one LANGUAGE per process. Each of these processes will run more processees in parellel if supported
 PARALLEL_COMMAND+=(--max-lines 1)
