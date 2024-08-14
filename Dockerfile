@@ -343,6 +343,7 @@ COPY --from=gitleaks /usr/bin/gitleaks /usr/bin/
 # Install scalafmt #
 ####################
 COPY --from=scalafmt /bin/scalafmt /usr/bin/
+RUN scalafmt --version | awk ' { print $2 }' > /tmp/scalafmt-version.txt
 
 ######################
 # Install actionlint #
@@ -436,6 +437,12 @@ RUN /linterVersions.sh \
 ###################################
 COPY TEMPLATES /action/lib/.automation
 
+# Dynamically set scalafmt version in the scalafmt configuration file
+# Ref: https://scalameta.org/scalafmt/docs/configuration.html#version
+COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
+RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
+    && rm /tmp/scalafmt-version.txt
+
 #################################
 # Copy super-linter executables #
 #################################
@@ -510,6 +517,12 @@ RUN /linterVersions.sh \
 # Copy linter configuration files #
 ###################################
 COPY TEMPLATES /action/lib/.automation
+
+# Dynamically set scalafmt version in the scalafmt configuration file
+# Ref: https://scalameta.org/scalafmt/docs/configuration.html#version
+COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
+RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
+    && rm /tmp/scalafmt-version.txt
 
 #################################
 # Copy super-linter executables #
