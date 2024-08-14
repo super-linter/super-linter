@@ -400,4 +400,8 @@ function ValidateDeprecatedVariables() {
   # The following variables have been deprecated in v6.8.0
   WarnIfVariableIsSet "${JAVASCRIPT_DEFAULT_STYLE:-}" "JAVASCRIPT_DEFAULT_STYLE"
   WarnIfVariableIsSet "${TYPESCRIPT_DEFAULT_STYLE:-}" "TYPESCRIPT_DEFAULT_STYLE"
+
+  # The following variables have been deprecated in v7.0.0
+  WarnIfVariableIsSet "${SQL_CONFIG_FILE:-}" "SQL_CONFIG_FILE"
+  WarnIfVariableIsSet "${VALIDATE_SQL:-}" "VALIDATE_SQL"
 }

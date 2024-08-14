@@ -107,7 +107,6 @@ function LintCodebase() {
     [[ "${FILE_TYPE}" == "GO_MODULES" ]] ||
     [[ "${FILE_TYPE}" == "JSCPD" ]] ||
     [[ "${FILE_TYPE}" == "KOTLIN" ]] ||
-    [[ "${FILE_TYPE}" == "SQL" ]] ||
     [[ "${FILE_TYPE}" == "SQLFLUFF" ]] ||
     [[ "${FILE_TYPE}" == "CHECKOV" ]] ||
     [[ "${FILE_TYPE}" == "POWERSHELL" ]] ||

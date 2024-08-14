@@ -2,8 +2,24 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from v6 to v7](#upgrade-from-v6-to-v7)
 - [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from v6 to v7
+
+This section helps you upgrade from super-linter `v6` to `v7`.
+
+### sql-lint, VALIDATE_SQL and SQL_CONFIG_FILE
+
+[sql-lint](https://github.com/joereynolds/sql-lint) appears to be unmaintained,
+and its dependencies are affected by known security vulnerabilities.
+For this reason, Super-linter `v7` doesn't include sql-lint anymore. If you
+are using sql-lint to check your SQL files, we recommend that you evaluate
+[sqlfluff](https://sqlfluff.com/), included in Super-linter since `v4.6.0`.
+
+You can remove the `VALIDATE_SQL` and `SQL_CONFIG_FILE` because they have no
+effect.
 
 ## Upgrade from v6.7.0 to v6.8.0
 
