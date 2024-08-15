@@ -1,6 +1,6 @@
 # How to add support for a new tool to super-linter
 
-If you want to propose a *Pull Request* to add **new** language support or a
+If you want to propose a _Pull Request_ to add **new** language support or a
 new tool, it should include:
 
 - Update documentation:
@@ -9,14 +9,14 @@ new tool, it should include:
 
   1. Create the `test/linters/<LANGUAGE_NAME>` directory.
   2. Provide at least one test case with a file that is supposed to pass validation,
-    with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-good`
+     with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-good`
   3. Provide at least one test case with a file that is supposed to fail validation,
-    with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-bad`.
-    If the linter supports fix mode, the test case supposed to fail validation
-    should only contain violations that the fix mode can automatically fix.
-    Avoid test cases that fail only because of syntax errors, when possible.
+     with the right file extension if needed: `test/linters/<LANGUAGE_NAME>/<name-of-tool>-bad`.
+     If the linter supports fix mode, the test case supposed to fail validation
+     should only contain violations that the fix mode can automatically fix.
+     Avoid test cases that fail only because of syntax errors, when possible.
   4. If the linter supports check-only mode or fix mode, add the `<LANGUGAGE>`
-    to the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
+     to the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
 
 - Update the test suite to check for installed packages, the commands that your new tool needs in the `PATH`, and the expected version command:
 
@@ -34,60 +34,60 @@ new tool, it should include:
     1. Create a directory named `dependencies/<name-of-tool>`.
     2. Create a `dependencies/<name-of-tool>/build.gradle` file with the following contents:
 
-        ```gradle
-        repositories {
-          mavenLocal()
-          mavenCentral()
-        }
+       ```gradle
+       repositories {
+         mavenLocal()
+         mavenCentral()
+       }
 
-        // Hold this dependency here so we can get automated updates using DependaBot
-        dependencies {
-          implementation 'your:dependency-here:version'
-        }
+       // Hold this dependency here so we can get automated updates using DependaBot
+       dependencies {
+         implementation 'your:dependency-here:version'
+       }
 
-        group 'com.github.super-linter'
-        version '1.0.0-SNAPSHOT'
-        ```
+       group 'com.github.super-linter'
+       version '1.0.0-SNAPSHOT'
+       ```
 
     3. Update the `dependencies` section in `dependencies/<name-of-tool>/build.gradle` to
-      install your dependencies.
+       install your dependencies.
     4. Add the following content to the `Dockerfile`:
 
-        ```dockerfile
-        COPY scripts/install-<name-of-tool>.sh /
-        RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
-        ```
+       ```dockerfile
+       COPY scripts/install-<name-of-tool>.sh /
+       RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
+       ```
 
     5. Create `scripts/install-<name-of-tool>.sh`, and implement the logic to install your tool.
-      You get the version of a dependency from `build.gradle`. Example:
+       You get the version of a dependency from `build.gradle`. Example:
 
-        ```sh
-        GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
-        ```
+       ```sh
+       GOOGLE_JAVA_FORMAT_VERSION="$(grep <"google-java-format/build.gradle" "google-java-format" | awk -F ':' '{print $3}' | tr -d "'")"
+       ```
 
     6. Add the new to DependaBot configuration:
 
-        ```yaml
-          - package-ecosystem: "gradle"
-            directory: "/dependencies/<name-of-tool>"
-            schedule:
-              interval: "weekly"
-            open-pull-requests-limit: 10
-        ```
+       ```yaml
+       - package-ecosystem: "gradle"
+         directory: "/dependencies/<name-of-tool>"
+         schedule:
+           interval: "weekly"
+         open-pull-requests-limit: 10
+       ```
 
   - If there is a container (Docker) image:
 
     1. Add a new build stage to get the image:
 
-        ```dockerfile
-        FROM your/image:version as <name-of-tool>
-        ```
+       ```dockerfile
+       FROM your/image:version as <name-of-tool>
+       ```
 
     1. Copy the necessary binaries and libraries to the relevant locations. Example:
 
-        ```sh
-        COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
-        ```
+       ```sh
+       COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
+       ```
 
 - Configure the new tool:
 
@@ -102,9 +102,11 @@ new tool, it should include:
     item as `<LANGUAGE_NAME>`.
 
   - Linter configuration:
+
     - Create a new minimal configuration file in the `TEMPLATES` directory with the same name as the
       default configuration filename. Example: `TEMPLATES/.ruff.toml`.
     - `lib/globals/linterRules.sh`:
+
       - If the new linter accepts a configuration files from the command line,
         define a new variable:
         `<LANGUAGE_NAME>_FILE_NAME="${<LANGUAGE_NAME>_CONFIG_FILE:-"default-config-file-name.conf"}"`
@@ -116,13 +118,13 @@ new tool, it should include:
         `<LANGUAGE_NAME>_COMMAND_ARGS` and add it to the command if the
         configuration provides it. Example:
 
-          ```bash
-          <LANGUAGE_NAME>_COMMAND_ARGS="${<LANGUAGE_NAME>_COMMAND_ARGS:-""}"
-          if [ -n "${<LANGUAGE_NAME>_COMMAND_ARGS:-}" ]; then
-            export <LANGUAGE_NAME>_COMMAND_ARGS
-            LINTER_COMMANDS_ARRAY_<LANGUAGE_NAME>+=("${<LANGUAGE_NAME>_COMMAND_ARGS}")
-          fi
-          ```
+        ```bash
+        <LANGUAGE_NAME>_COMMAND_ARGS="${<LANGUAGE_NAME>_COMMAND_ARGS:-""}"
+        if [ -n "${<LANGUAGE_NAME>_COMMAND_ARGS:-}" ]; then
+          export <LANGUAGE_NAME>_COMMAND_ARGS
+          LINTER_COMMANDS_ARRAY_<LANGUAGE_NAME>+=("${<LANGUAGE_NAME>_COMMAND_ARGS}")
+        fi
+        ```
 
   - Define the command to invoke the new linter:
 

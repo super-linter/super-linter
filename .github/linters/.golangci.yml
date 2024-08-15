@@ -4,4 +4,3 @@
 linters:
   enable:
     - gofmt
-...

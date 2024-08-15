@@ -16,8 +16,8 @@ body:
       label: Is there an existing issue for this?
       description: Search to see if an issue already exists for the bug you encountered.
       options:
-      - label: I have searched the existing issues
-        required: true
+        - label: I have searched the existing issues
+          required: true
   - type: textarea
     attributes:
       label: Current Behavior
@@ -37,5 +37,3 @@ body:
         Links? References? Anything that will give us more context about the issue you are encountering.
     validations:
       required: false
-
----

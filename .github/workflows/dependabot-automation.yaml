@@ -1,7 +1,7 @@
 ---
 name: Dependabot automation
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   pull_request:
     types:
       - opened
@@ -27,4 +27,3 @@ jobs:
       # This doesn't trigger an automated merge because we require at approvals
       - name: Enable auto-merge
         run: gh pr merge --auto --squash --delete-branch "${PR_URL}"
-...

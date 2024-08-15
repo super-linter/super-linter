@@ -12,9 +12,9 @@ releases, do the following:
 
 1. Run:
 
-    ```shell
-    make release-please-dry-run
-    ```
+   ```shell
+   make release-please-dry-run
+   ```
 
 This command also runs as part of the [CI process](../.github/workflows/ci.yml).
 

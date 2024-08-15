@@ -29,8 +29,5 @@
       "type": "bind"
     }
   ],
-  "runArgs": [
-    "--env-file",
-    ".devcontainer/devcontainer.env"
-  ]
+  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
 }

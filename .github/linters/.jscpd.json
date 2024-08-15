@@ -43,8 +43,6 @@
     "**/workflows/cd.yml",
     "**/workflows/ci.yml"
   ],
-  "reporters": [
-    "consoleFull"
-  ],
+  "reporters": ["consoleFull"],
   "threshold": 0
 }

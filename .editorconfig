@@ -33,3 +33,9 @@ indent_size = 4
 # Disable the filename rule because our test case logic requires that files used in test cases
 # follow a certain syntax which is not compatible with what ktlint currently mandates (PascalCase)
 disabled_rules = filename
+
+[*.md]
+
+# Indentation in Markdown files might not be constant, or a multiple of 2.
+# Prettier takes care of formatting Markdown files.
+indent_size = unset

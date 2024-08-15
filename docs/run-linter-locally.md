@@ -38,7 +38,7 @@ super-linter:
   stage: Super-linter
   # Use a specific Super-linter version instead of latest for more reproducible builds
   image: super-linter/super-linter:latest
-  script: [ "true" ]
+  script: ["true"]
   variables:
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
@@ -58,29 +58,29 @@ them accordingly:
 
 1. Create a configuration file for super-linter `super-linter.env`. For example:
 
-    ```bash
-    VALIDATE_ALL_CODEBASE=true
-    ```
+   ```bash
+   VALIDATE_ALL_CODEBASE=true
+   ```
 
 1. Load the super-linter configuration file when running outside GitHub Actions:
 
-    ```bash
-    docker run --rm \
-        -e RUN_LOCAL=true \
-        --env-file ".github/super-linter.env" \
-        -v "$(pwd)":/tmp/lint \
-        ghcr.io/super-linter/super-linter:latest
-    ```
+   ```bash
+   docker run --rm \
+       -e RUN_LOCAL=true \
+       --env-file ".github/super-linter.env" \
+       -v "$(pwd)":/tmp/lint \
+       ghcr.io/super-linter/super-linter:latest
+   ```
 
 1. Load the super-linter configuration file when running in GitHub Actions by
-  adding the following step to the GitHub Actions workflow that runs
-  super-linter, after checking out your repository and before running
-  super-linter:
+   adding the following step to the GitHub Actions workflow that runs
+   super-linter, after checking out your repository and before running
+   super-linter:
 
-    ```yaml
-    - name: Load super-linter configuration
-      run: cat .github/super-linter.env >> "$GITHUB_ENV"
-    ```
+   ```yaml
+   - name: Load super-linter configuration
+     run: cat .github/super-linter.env >> "$GITHUB_ENV"
+   ```
 
 ## Build the container image and run the test suite locally
 
@@ -88,20 +88,20 @@ To run the build and test process locally, in the top-level super-linter
 directory, do the following:
 
 1. [Create a fine-grained GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token).
-  The token only needs to have public/read-only access.
+   The token only needs to have public/read-only access.
 
 1. Store the generated personal access token in a file in the top-level
-  directory (This file is ignored by Git).
+   directory (This file is ignored by Git).
 
-    ```bash
-    echo "github_pat_XXXXXX_XXXXXX" > .github-personal-access-token
-    ```
+   ```bash
+   echo "github_pat_XXXXXX_XXXXXX" > .github-personal-access-token
+   ```
 
 1. Run the build process:
 
-    ```bash
-    . ./scripts/build-metadata.sh && make
-    ```
+   ```bash
+   . ./scripts/build-metadata.sh && make
+   ```
 
 To avoid invalidating the build cache because of changing values of build
 arguments, you can set build arguments to arbitrary values before running

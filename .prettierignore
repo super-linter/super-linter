@@ -1,0 +1,4 @@
+# Don't format Markdown files to verify tests
+# because we don't yet generate formatted Markdown
+# tables when creating the summary file
+test/data/super-linter-summary/markdown/table/**/*.md

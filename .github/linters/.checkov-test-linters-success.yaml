@@ -19,4 +19,3 @@ skip-framework:
   # we have to do that as part of the test Helm chart or the test Kustomize
   # "package".
   - kubernetes
-...
