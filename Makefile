@@ -260,8 +260,12 @@ fix-codebase: ## Fix and format the entire codebase
 		-e FIX_JAVASCRIPT_ES=true \
 		-e FIX_JAVASCRIPT_PRETTIER=true \
 		-e FIX_JSON=true \
+		-e FIX_JSON_PRETTIER=true \
 		-e FIX_MARKDOWN=true \
+		-e FIX_MARKDOWN_PRETTIER=true \
+		-e FIX_NATURAL_LANGUAGE=true \
 		-e FIX_SHELL_SHFMT=true \
+		-e FIX_YAML_PRETTIER=true \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e LOG_LEVEL=DEBUG \
 		-e RUN_LOCAL=true \

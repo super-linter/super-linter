@@ -13,6 +13,7 @@
 | COFFEESCRIPT | Pass ✅ |
 | CPP | Pass ✅ |
 | CSS | Pass ✅ |
+| CSS_PRETTIER | Pass ✅ |
 | DART | Pass ✅ |
 | DOCKERFILE_HADOLINT | Pass ✅ |
 | EDITORCONFIG | Pass ✅ |
@@ -24,21 +25,26 @@
 | GO_MODULES | Pass ✅ |
 | GO_RELEASER | Pass ✅ |
 | GOOGLE_JAVA_FORMAT | Pass ✅ |
+| GRAPHQL_PRETTIER | Pass ✅ |
 | GROOVY | Pass ✅ |
 | HTML | Pass ✅ |
+| HTML_PRETTIER | Pass ✅ |
 | JAVA | Pass ✅ |
 | JAVASCRIPT_ES | Pass ✅ |
 | JAVASCRIPT_PRETTIER | Pass ✅ |
 | JAVASCRIPT_STANDARD | Pass ✅ |
 | JSCPD | Pass ✅ |
 | JSON | Pass ✅ |
+| JSON_PRETTIER | Pass ✅ |
 | JSONC | Pass ✅ |
 | JSX | Pass ✅ |
+| JSX_PRETTIER | Pass ✅ |
 | KUBERNETES_KUBECONFORM | Pass ✅ |
 | KOTLIN | Pass ✅ |
 | LATEX | Pass ✅ |
 | LUA | Pass ✅ |
 | MARKDOWN | Pass ✅ |
+| MARKDOWN_PRETTIER | Pass ✅ |
 | NATURAL_LANGUAGE | Pass ✅ |
 | OPENAPI | Pass ✅ |
 | PERL | Pass ✅ |
@@ -72,8 +78,10 @@
 | TYPESCRIPT_ES | Pass ✅ |
 | TYPESCRIPT_PRETTIER | Pass ✅ |
 | TYPESCRIPT_STANDARD | Pass ✅ |
+| VUE_PRETTIER | Pass ✅ |
 | XML | Pass ✅ |
 | YAML | Pass ✅ |
+| YAML_PRETTIER | Pass ✅ |
 <!-- textlint-enable terminology -->
 
 All files and directories linted successfully
