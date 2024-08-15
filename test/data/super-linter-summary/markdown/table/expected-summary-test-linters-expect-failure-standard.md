@@ -18,6 +18,9 @@
 | CSS_PRETTIER | Fail ❌ |
 | DART | Fail ❌ |
 | DOCKERFILE_HADOLINT | Fail ❌ |
+| DOTNET_SLN_FORMAT_ANALYZERS | Fail ❌ |
+| DOTNET_SLN_FORMAT_STYLE | Fail ❌ |
+| DOTNET_SLN_FORMAT_WHITESPACE | Fail ❌ |
 | EDITORCONFIG | Fail ❌ |
 | ENV | Fail ❌ |
 | GITHUB_ACTIONS | Fail ❌ |

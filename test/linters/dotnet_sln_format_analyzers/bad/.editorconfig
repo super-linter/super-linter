@@ -1,0 +1,5 @@
+root = false
+
+[*.{cs}]
+
+dotnet_diagnostic.SA1200.severity = error

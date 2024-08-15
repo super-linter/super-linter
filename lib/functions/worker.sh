@@ -103,6 +103,9 @@ function LintCodebase() {
     [[ "${FILE_TYPE}" == "BASH_EXEC" ]] ||
     [[ "${FILE_TYPE}" == "CLOJURE" ]] ||
     [[ "${FILE_TYPE}" == "CSHARP" ]] ||
+    [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
+    [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
+    [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
     [[ "${FILE_TYPE}" == "GITLEAKS" ]] ||
     [[ "${FILE_TYPE}" == "GO_MODULES" ]] ||
     [[ "${FILE_TYPE}" == "JSCPD" ]] ||

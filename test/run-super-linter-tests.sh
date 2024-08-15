@@ -14,7 +14,7 @@ debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
 DEFAULT_BRANCH="main"
 
-COMMAND_TO_RUN=(docker run -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true)
+COMMAND_TO_RUN=(docker run --rm -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
 
 ignore_test_cases() {
   COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*")
@@ -25,7 +25,7 @@ configure_typescript_for_test_cases() {
 }
 
 configure_linters_for_test_cases() {
-  COMMAND_TO_RUN+=(-e TEST_CASE_RUN=true -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
+  COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
   configure_typescript_for_test_cases
 }
 
@@ -44,7 +44,6 @@ run_test_cases_expect_success() {
 
 run_test_cases_log_level() {
   run_test_cases_expect_success
-  CREATE_LOG_FILE="true"
   LOG_LEVEL="NOTICE"
 }
 
@@ -66,6 +65,16 @@ run_test_case_bash_exec_library_expect_failure() {
 run_test_case_bash_exec_library_expect_success() {
   run_test_cases_expect_success
   COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
+}
+
+run_test_case_dont_save_super_linter_log_file() {
+  run_test_cases_expect_success
+  CREATE_LOG_FILE="false"
+}
+
+run_test_case_dont_save_super_linter_output() {
+  run_test_cases_expect_success
+  SAVE_SUPER_LINTER_OUTPUT="false"
 }
 
 initialize_git_repository_and_test_args() {
@@ -107,7 +116,7 @@ run_test_case_git_initial_commit() {
 
   initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
 }
 
 run_test_case_merge_commit_push() {
@@ -138,18 +147,17 @@ run_test_case_merge_commit_push() {
   git -C "${GIT_REPOSITORY_PATH}" log --all --graph --abbrev-commit --decorate --format=oneline
 
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(-e VALIDATE_JSON=true)
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
 }
 
 run_test_case_use_find_and_ignore_gitignored_files() {
   ignore_test_cases
-  COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES=true)
-  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM=true)
+  COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
+  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM="true")
 }
 
 run_test_cases_save_super_linter_output() {
   run_test_cases_expect_success
-  SAVE_SUPER_LINTER_OUTPUT="true"
 }
 
 run_test_cases_save_super_linter_output_custom_path() {
@@ -164,14 +172,10 @@ run_test_case_custom_summary() {
 
 run_test_case_gitleaks_custom_log_level() {
   run_test_cases_expect_success
-  CREATE_LOG_FILE="true"
-  SAVE_SUPER_LINTER_OUTPUT="true"
   COMMAND_TO_RUN+=(--env GITLEAKS_LOG_LEVEL="warn")
 }
 
 run_test_case_fix_mode() {
-  CREATE_LOG_FILE="true"
-  SAVE_SUPER_LINTER_OUTPUT="true"
   VERIFY_FIX_MODE="true"
 
   GIT_REPOSITORY_PATH="$(mktemp -d)"
@@ -212,20 +216,23 @@ run_test_case_fix_mode() {
 
   # Enable test mode so we run linters and formatters only against their test
   # cases
-  COMMAND_TO_RUN+=(--env FIX_MODE_TEST_CASE_RUN=true)
-  COMMAND_TO_RUN+=(--env TEST_CASE_RUN=true)
+  COMMAND_TO_RUN+=(--env FIX_MODE_TEST_CASE_RUN="true")
+  COMMAND_TO_RUN+=(--env TEST_CASE_RUN="true")
   COMMAND_TO_RUN+=(--env ANSIBLE_DIRECTORY="/test/linters/ansible/bad")
   configure_typescript_for_test_cases
 
   # Some linters report a non-zero exit code even if they fix all the issues
   EXPECTED_EXIT_CODE=2
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-fix-mode-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
-CREATE_LOG_FILE="${CREATE_LOG_FILE:-false}"
-SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT:-false}"
+CREATE_LOG_FILE="${CREATE_LOG_FILE:-"true"}"
+debug "CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
+SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT:-true}"
 
 SUPER_LINTER_WORKSPACE="${SUPER_LINTER_WORKSPACE:-$(pwd)}"
 COMMAND_TO_RUN+=(-v "${SUPER_LINTER_WORKSPACE}":"/tmp/lint")
@@ -421,7 +428,10 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
     fi
 
     if find "${BAD_TEST_CASE_DESTINATION_PATH}" \( -type f ! -readable -or -type d \( ! -readable -or ! -executable -or ! -writable \) \) -print | grep -q .; then
-      if [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
+      if [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
+        [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
+        [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
+        [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
         [[ "${LANGUAGE}" == "SHELL_SHFMT" ]] ||
         [[ "${LANGUAGE}" == "SQLFLUFF" ]]; then
         debug "${LANGUAGE} is a known case of a tool that doesn't preserve the ownership of files or directories in fix mode. Need to recursively change ownership of ${BAD_TEST_CASE_DESTINATION_PATH}"
