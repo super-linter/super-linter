@@ -90,6 +90,8 @@ test/reports
 .lintr
 test/linters/rust_clippy/**/Cargo.lock
 test/linters/rust_clippy/**/target
+test/linters/**/src/bin
+test/linters/**/src/obj
 
 # Super-linter ouputs
 super-linter-output/

@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <Copyright>2024</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/dotnet/format</RepositoryUrl>
+    <LangVersion>11</LangVersion>
+    <!-- Enables faster restore times -->
+    <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
+  </PropertyGroup>
+
+</Project>

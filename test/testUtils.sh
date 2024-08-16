@@ -8,6 +8,10 @@ set -o pipefail
 # shellcheck disable=SC2034
 LOG_LEVEL="DEBUG"
 
+# Create log file by default
+# shellcheck disable=SC2034
+CREATE_LOG_FILE="true"
+
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
 
@@ -23,6 +27,9 @@ LANGUAGES_WITH_FIX_MODE=(
   "CSHARP"
   "CSS"
   "CSS_PRETTIER"
+  "DOTNET_SLN_FORMAT_ANALYZERS"
+  "DOTNET_SLN_FORMAT_STYLE"
+  "DOTNET_SLN_FORMAT_WHITESPACE"
   "ENV"
   "GO_MODULES"
   "GO"
@@ -70,6 +77,9 @@ LANGUAGES_WITH_FIX_MODE=(
 LANGUAGES_NOT_IN_SLIM_IMAGE=(
   "ARM"
   "CSHARP"
+  "DOTNET_SLN_FORMAT_ANALYZERS"
+  "DOTNET_SLN_FORMAT_STYLE"
+  "DOTNET_SLN_FORMAT_WHITESPACE"
   "POWERSHELL"
   "RUST_2015"
   "RUST_2018"

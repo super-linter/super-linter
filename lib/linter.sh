@@ -582,8 +582,18 @@ UpdateLoopsForImage() {
     #############################################
     # Need to remove linters for the slim image #
     #############################################
-    REMOVE_ARRAY=("ARM" "CSHARP" "POWERSHELL" "RUST_2015" "RUST_2018"
-      "RUST_2021" "RUST_CLIPPY")
+    REMOVE_ARRAY=(
+      "ARM"
+      "CSHARP"
+      "DOTNET_SLN_FORMAT_ANALYZERS"
+      "DOTNET_SLN_FORMAT_STYLE"
+      "DOTNET_SLN_FORMAT_WHITESPACE"
+      "POWERSHELL"
+      "RUST_2015"
+      "RUST_2018"
+      "RUST_2021"
+      "RUST_CLIPPY"
+    )
 
     # Remove from LANGUAGE_ARRAY
     debug "Removing Languages from LANGUAGE_ARRAY for slim image..."

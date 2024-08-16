@@ -15,7 +15,8 @@ new tool, it should include:
      If the linter supports fix mode, the test case supposed to fail validation
      should only contain violations that the fix mode can automatically fix.
      Avoid test cases that fail only because of syntax errors, when possible.
-  4. If the linter supports check-only mode or fix mode, add the `<LANGUGAGE>`
+  4. Update expected summary reports: `test/data/super-linter-summary`.
+  5. If the linter supports check-only mode or fix mode, add the `<LANGUGAGE>`
      to the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
 
 - Update the test suite to check for installed packages, the commands that your new tool needs in the `PATH`, and the expected version command:

@@ -14,6 +14,7 @@ source /action/lib/globals/linterCommandsOptions.sh
 
 # These commands are reused across several languages
 PRETTIER_COMMAND=(prettier)
+DOTNET_FORMAT_COMMAND=(dotnet format)
 
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
@@ -44,11 +45,14 @@ LINTER_COMMANDS_ARRAY_CLOJURE=(clj-kondo --config "${CLOJURE_LINTER_RULES}" --li
 LINTER_COMMANDS_ARRAY_CLOUDFORMATION=(cfn-lint --config-file "${CLOUDFORMATION_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_COFFEESCRIPT=(coffeelint -f "${COFFEESCRIPT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_CPP=(cpplint)
-LINTER_COMMANDS_ARRAY_CSHARP=(dotnet format whitespace --folder --exclude / --include "{/}")
+LINTER_COMMANDS_ARRAY_CSHARP=("${DOTNET_FORMAT_COMMAND[@]}" whitespace --folder --exclude / --include "{/}")
 LINTER_COMMANDS_ARRAY_CSS=(stylelint --config "${CSS_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_CSS_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_DART=(dart analyze --fatal-infos --fatal-warnings)
 LINTER_COMMANDS_ARRAY_DOCKERFILE_HADOLINT=(hadolint -c "${DOCKERFILE_HADOLINT_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_DOTNET_SLN_FORMAT_ANALYZERS=("${DOTNET_FORMAT_COMMAND[@]}" analyzers)
+LINTER_COMMANDS_ARRAY_DOTNET_SLN_FORMAT_STYLE=("${DOTNET_FORMAT_COMMAND[@]}" style)
+LINTER_COMMANDS_ARRAY_DOTNET_SLN_FORMAT_WHITESPACE=("${DOTNET_FORMAT_COMMAND[@]}" whitespace)
 LINTER_COMMANDS_ARRAY_EDITORCONFIG=(editorconfig-checker -config "${EDITORCONFIG_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_ENV=(dotenv-linter)
 LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=(actionlint -config-file "${GITHUB_ACTIONS_LINTER_RULES}")

@@ -1,0 +1,5 @@
+root = false
+
+[*.{cs}]
+
+dotnet_analyzer_diagnostic.category-Style.severity = error
