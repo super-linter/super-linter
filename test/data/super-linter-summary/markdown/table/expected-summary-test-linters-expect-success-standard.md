@@ -42,6 +42,7 @@
 | JSON | Pass ✅ |
 | JSON_PRETTIER | Pass ✅ |
 | JSONC | Pass ✅ |
+| JSONC_PRETTIER | Pass ✅ |
 | JSX | Pass ✅ |
 | JSX_PRETTIER | Pass ✅ |
 | KUBERNETES_KUBECONFORM | Pass ✅ |

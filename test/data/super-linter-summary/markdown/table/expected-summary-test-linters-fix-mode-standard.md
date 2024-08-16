@@ -24,6 +24,7 @@
 | JSON | Fail ❌ |
 | JSON_PRETTIER | Pass ✅ |
 | JSONC | Pass ✅ |
+| JSONC_PRETTIER | Pass ✅ |
 | JSX | Fail ❌ |
 | JSX_PRETTIER | Pass ✅ |
 | MARKDOWN | Pass ✅ |

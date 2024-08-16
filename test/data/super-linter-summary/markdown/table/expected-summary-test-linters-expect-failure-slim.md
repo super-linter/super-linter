@@ -37,6 +37,7 @@
 | JSON | Fail ❌ |
 | JSON_PRETTIER | Fail ❌ |
 | JSONC | Fail ❌ |
+| JSONC_PRETTIER | Fail ❌ |
 | JSX | Fail ❌ |
 | JSX_PRETTIER | Fail ❌ |
 | KUBERNETES_KUBECONFORM | Fail ❌ |
