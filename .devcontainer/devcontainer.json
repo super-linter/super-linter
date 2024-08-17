@@ -3,10 +3,14 @@
   "image": "ghcr.io/super-linter/super-linter:latest",
   "customizations": {
     "vscode": {
-      "settings": {},
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "prettier.resolveGlobalModules": true
+      },
       "extensions": [
         "DavidAnson.vscode-markdownlint",
         "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
         "GitHub.vscode-github-actions",
         "GitHub.vscode-pull-request-github",
         "mads-hartmann.bash-ide-vscode",
