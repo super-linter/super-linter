@@ -463,6 +463,104 @@ When fix mode is enabled, some linters and formatters don't maintain the
 original file or directory ownership, and use the user that Super-linter uses
 to run the linter or formatter.
 
+### Fix mode examples and workflows
+
+You can configure Super-linter to automatically deliver linting and formatting
+fixes. For example, you can configure a workflow that automatically commits the
+fixes, and pushes them to a branch.
+
+To ensure that Super-linter analyzes your codebase as expected, we recommend
+that you configure your fix mode workflows in addition to your existing
+Super-linter workflows.
+
+#### GitHub Actions workflow example: pull request
+
+The following example shows a GitHub Actions workflow that uses Super-linter to
+automatically fix linting and formatting issues, commit changes in the current
+branch, and push commits to the remote branch tracking the current branch
+whenever a pull request is created or updated:
+
+```yaml
+---
+name: Lint
+
+on: # yamllint disable-line rule:truthy
+  push: null
+  pull_request: null
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    # Super-linter workflow running in check only mode
+    # See https://github.com/super-linter/super-linter#get-started
+
+  fix-lint-issues:
+    permissions:
+      # To write linting fixes
+      contents: write
+      # To write Super-linter status checks
+      statuses: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.0.0 # x-release-please-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Set your fix mode variables to true
+          FIX_SHELL_SHFMT: true
+          FIX_YAML_PRETTIER: true
+          # To reuse the same Super-linter configuration that you use in the
+          # lint job without duplicating it, see
+          # https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md#share-environment-variables-between-environments
+      - name: Commit and push linting fixes
+        # Run only on:
+        # - Pull requests
+        # - Not on the default branch
+        if: >
+          github.event_name == 'pull_request' &&
+          github.ref_name != github.event.repository.default_branch
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "chore: fix linting issues"
+          commit_user_name: super-linter
+          commit_user_email: super-linter@super-linter.dev
+```
+
+This example uses
+[GitHub Actions automatic token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication)
+that automatically greates a unique `GITHUB_TOKEN` secret for the workflow.
+GitHub Actions imposes the following limitations on workflows:
+
+- To avoid accidentally creating recursive workflow runs, the commit that
+  contains linting and formatting fixes
+  [doesn't create new workflow runs](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow).
+- It restrict edits to GitHub Actions workflows files (in `.github/workflows`).
+- It may fail pushing commits to protected branches.
+
+To work around these limitations, you do the following:
+
+1. [Create an authentication token with additional permissions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#granting-additional-permissions).
+1. Grant the authentication token the
+   [`repo` and `workflow` permissions](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens).
+1. Use the authentication token in the `actions/checkout` step:
+
+   ```yaml
+   - uses: actions/checkout@v4
+     with:
+       fetch-depth: 0
+       token: ${{ secrets.SUPER_LINTER_TOKEN }}
+   ```
+
+   This example assumes that you saved the authentication token in a secret
+   called `SUPER_LINTER_TOKEN`, but you can choose whatever name you prefer for
+   the secret.
+
 ## Configure linters
 
 Super-linter provides default configurations for some linters in the [`TEMPLATES/`](./TEMPLATES/)
@@ -609,6 +707,21 @@ If a linter doesn't support setting an arbitrary output path as described in the
 previous paragraph, but only supports emitting results to standard output or
 standard error streams, you can
 [enable Super-linter outputs](#super-linter-outputs) and parse them.
+
+### Ignore output that Super-linter generates
+
+Super-linter generates output reports and logs. To avoid that these outputs end
+up in your repository, we recommend that you add the following lines to your
+`.gitignore` file:
+
+```text
+# Super-linter outputs
+super-linter-output
+super-linter.log
+
+# GitHub Actions leftovers
+github_conf
+```
 
 ## How to contribute
 
