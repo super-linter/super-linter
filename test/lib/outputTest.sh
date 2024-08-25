@@ -11,6 +11,9 @@ LOG_LEVEL="DEBUG"
 source "lib/functions/log.sh"
 
 # shellcheck source=/dev/null
+source "test/testUtils.sh"
+
+# shellcheck source=/dev/null
 source "lib/functions/output.sh"
 
 TEMP_WORKSPACE="$(pwd)/super-linter-output"
@@ -24,14 +27,14 @@ function CleanupWorkspace() {
   rm -rf "${TEMP_WORKSPACE}"
 }
 
-function CheckIfFileDiff() {
-  local INPUT_FILE="${1}"
-  local EXPECTED_FILE="${2}"
-  # Remove eventual HTML comments from the expected file because we use them to disable certain linter rules
-  if ! diff "${INPUT_FILE}" <(grep -vE '^\s*<!--' "${EXPECTED_FILE}"); then
-    fatal "${INPUT_FILE} contents don't match with the expected contents (${EXPECTED_FILE})"
+CheckIfContentsDiff() {
+  local INPUT_FILE_CONTENT
+  INPUT_FILE_CONTENT="$(cat "${1}")"
+  local EXPECTED_CONTENT="${2}"
+  if [[ "${INPUT_FILE_CONTENT}" != "${EXPECTED_CONTENT}" ]]; then
+    fatal "\n${INPUT_FILE_CONTENT}\ncontents don't match the expected contents:\n${EXPECTED_CONTENT}"
   else
-    echo "${INPUT_FILE} contents match with the expected contents (${EXPECTED_FILE})"
+    debug "\n${INPUT_FILE_CONTENT}\ncontents match the expected contents\n${EXPECTED_CONTENT}"
   fi
 }
 
@@ -43,7 +46,16 @@ function WriteSummaryMarkdownTableHeaderTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output.md"
   InitWorkspace
   WriteSummaryHeader "${RESULTS_FILE}"
-  CheckIfFileDiff "${RESULTS_FILE}" "test/data/super-linter-summary/markdown/table/expected-summary-heading.md"
+  local EXPECTED_CONTENT
+  EXPECTED_CONTENT=$(
+    cat <<EOF
+# Super-linter summary
+
+| Language | Validation result |
+| -------- | ----------------- |
+EOF
+  )
+  CheckIfContentsDiff "${RESULTS_FILE}" "${EXPECTED_CONTENT}"
   CleanupWorkspace
 
   notice "${FUNCTION_NAME} PASS"
@@ -57,7 +69,7 @@ function WriteSummaryMarkdownTableLineSuccessTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output-${FUNCTION_NAME}.md"
   InitWorkspace
   WriteSummaryLineSuccess "${RESULTS_FILE}" "Test Language"
-  CheckIfFileDiff "${RESULTS_FILE}" "test/data/super-linter-summary/markdown/table/expected-summary-line-success.md"
+  CheckIfContentsDiff "${RESULTS_FILE}" "| Test Language | Pass ✅ |"
   CleanupWorkspace
 
   notice "${FUNCTION_NAME} PASS"
@@ -71,7 +83,7 @@ function WriteSummaryMarkdownTableLineFailureTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output-${FUNCTION_NAME}.md"
   InitWorkspace
   WriteSummaryLineFailure "${RESULTS_FILE}" "Test Language"
-  CheckIfFileDiff "${RESULTS_FILE}" "test/data/super-linter-summary/markdown/table/expected-summary-line-failure.md"
+  CheckIfContentsDiff "${RESULTS_FILE}" "| Test Language | Fail ❌ |"
   CleanupWorkspace
 
   notice "${FUNCTION_NAME} PASS"
@@ -85,7 +97,14 @@ function WriteSummaryMarkdownTableFooterSuccessTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output-${FUNCTION_NAME}.md"
   InitWorkspace
   WriteSummaryFooterSuccess "${RESULTS_FILE}"
-  CheckIfFileDiff "${RESULTS_FILE}" "test/data/super-linter-summary/markdown/table/expected-summary-footer-success.md"
+  local EXPECTED_CONTENT
+  EXPECTED_CONTENT=$(
+    cat <<EOF
+
+All files and directories linted successfully
+EOF
+  )
+  CheckIfContentsDiff "${RESULTS_FILE}" "${EXPECTED_CONTENT}"
   CleanupWorkspace
 
   notice "${FUNCTION_NAME} PASS"
@@ -99,7 +118,14 @@ function WriteSummaryMarkdownTableFooterFailureTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output-${FUNCTION_NAME}.md"
   InitWorkspace
   WriteSummaryFooterFailure "${RESULTS_FILE}"
-  CheckIfFileDiff "${RESULTS_FILE}" "test/data/super-linter-summary/markdown/table/expected-summary-footer-failure.md"
+  local EXPECTED_CONTENT
+  EXPECTED_CONTENT=$(
+    cat <<EOF
+
+Super-linter detected linting errors
+EOF
+  )
+  CheckIfContentsDiff "${RESULTS_FILE}" "${EXPECTED_CONTENT}"
   CleanupWorkspace
 
   notice "${FUNCTION_NAME} PASS"

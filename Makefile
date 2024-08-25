@@ -145,6 +145,7 @@ open-shell-super-linter-container: ## Open a shell in the Super-linter container
 	docker run $(DOCKER_FLAGS) \
 		--interactive \
 		--entrypoint /bin/bash \
+		--rm \
 		-v "$(CURDIR)":/tmp/lint \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
@@ -167,6 +168,7 @@ test-actions-runner-debug: ## Run super-linter with ACTIONS_RUNNER_DEBUG=true
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-actions-steps-debug
@@ -178,6 +180,7 @@ test-actions-steps-debug: ## Run super-linter with ACTIONS_STEPS_DEBUG=true
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-runner-debug
@@ -189,6 +192,7 @@ test-runner-debug: ## Run super-linter with RUNNER_DEBUG=1
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-find
@@ -200,6 +204,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # We need to set USE_FIND_ALGORITHM=true because the DEFALUT_WORKSPACE is not
@@ -215,6 +220,7 @@ test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 		-e USE_FIND_ALGORITHM=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v $(CURDIR)/.github:/tmp/not-default-workspace/.github \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-git-flags
@@ -229,6 +235,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e IGNORE_GITIGNORED_FILES=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR)":/tmp/lint \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: lint-codebase
@@ -246,6 +253,7 @@ lint-codebase: ## Lint the entire codebase
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # Return an error if there are changes to commit
@@ -273,6 +281,7 @@ fix-codebase: ## Fix and format the entire codebase
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-v "$(CURDIR):/tmp/lint" \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 	&& /bin/bash -c "source test/testUtils.sh; if ! CheckUnexpectedGitChanges ${CURDIR}; then exit 1; fi"
 
@@ -293,6 +302,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_MARKDOWN=true \
 		-v "$(CURDIR):/tmp/lint" \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: lint-subset-files-enable-expensive-io-checks
@@ -312,6 +322,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e VALIDATE_STATES=true \
 		-e VALIDATE_TEKTON=true \
 		-v "$(CURDIR):/tmp/lint" \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-lib
@@ -323,6 +334,7 @@ test-globals-languages: ## Test globals/languages.sh
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/globalsLanguagesTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-globals-linter-command-options
@@ -331,6 +343,7 @@ test-globals-linter-command-options: ## Test globals/LinterCommandsOptions.sh
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/globalsLinterCommandsOptionsTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-linter-rules
@@ -339,6 +352,7 @@ test-linter-rules: ## Test linterRules.sh
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterRulesTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-build-file-list
@@ -347,6 +361,7 @@ test-build-file-list: ## Test buildFileList
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-detect-files
@@ -355,6 +370,7 @@ test-detect-files: ## Test detectFiles
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/detectFilesTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-github-event
@@ -363,6 +379,7 @@ test-github-event: ## Test githubEvent
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/githubEventTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-setup-ssh
@@ -372,6 +389,7 @@ test-setup-ssh: ## Test setupSSH
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/setupSSHTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-validation
@@ -380,6 +398,7 @@ test-validation: ## Test validation
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/validationTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-output
@@ -388,6 +407,7 @@ test-output: ## Test output
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/outputTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-linter-commands
@@ -396,6 +416,7 @@ test-linter-commands: ## Test linterCommands
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterCommandsTest.sh \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 # Run this test against a small directory because we're only interested in
@@ -410,6 +431,7 @@ test-default-config-files: ## Test default configuration files loading
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-v "$(CURDIR)/docs":/tmp/lint \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-custom-ssl-cert
@@ -422,6 +444,7 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		-e USE_FIND_ALGORITHM=true \
 		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
 		-v "$(CURDIR)/docs":/tmp/lint \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-non-default-home-directory
@@ -562,6 +585,7 @@ build-dev-container-image: docker-dev-container-build-check ## Build commit lint
 lint-commits: build-dev-container-image ## Lint commits
 	docker run \
 		-v "$(CURDIR):/source-repository" \
+		--rm \
 		${DEV_CONTAINER_URL} \
 		commitlint \
 		--config .github/linters/commitlint.config.js \
@@ -575,6 +599,7 @@ release-please-dry-run: build-dev-container-image check-github-token ## Run rele
 	@echo "Running release-please against branch: ${RELEASE_PLEASE_TARGET_BRANCH}"; \
 	docker run \
 		-v "$(CURDIR):/source-repository" \
+		--rm \
 		${DEV_CONTAINER_URL} \
 		release-please \
 		release-pr \

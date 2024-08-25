@@ -120,10 +120,24 @@ function CheckUnexpectedGitChanges() {
   fi
 }
 
-AssertFileContentsMatch() {
+AssertFileAndDirContentsMatch() {
   local FILE_1_PATH="${1}"
   local FILE_2_PATH="${2}"
   if diff -r "${FILE_1_PATH}" "${FILE_2_PATH}"; then
+    echo "${FILE_1_PATH} contents match with ${FILE_2_PATH} contents"
+    return 0
+  else
+    echo "${FILE_1_PATH} contents don't match with ${FILE_2_PATH} contents"
+    return 1
+  fi
+}
+
+AssertFileContentsMatchIgnoreHtmlComments() {
+  local FILE_1_PATH="${1}"
+  local FILE_2_PATH="${2}"
+  # Use cat -s to remove duplicate blank lines because Prettier adds blank
+  # lines after HTML comments in Markdown files
+  if diff "${FILE_1_PATH}" <(grep -vE '^\s*<!--' "${FILE_2_PATH}" | cat -s); then
     echo "${FILE_1_PATH} contents match with ${FILE_2_PATH} contents"
     return 0
   else

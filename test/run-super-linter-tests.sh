@@ -359,15 +359,14 @@ else
 fi
 
 if [ -n "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH:-}" ]; then
-  # Remove eventual HTML comments from the expected file because we use them to disable certain linter rules
-  if ! diff "${SUPER_LINTER_SUMMARY_FILE_PATH}" <(grep -vE '^\s*<!--' "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"); then
+  if ! AssertFileContentsMatchIgnoreHtmlComments "${SUPER_LINTER_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"; then
     debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else
     debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
   fi
 
-  if ! diff "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" <(grep -vE '^\s*<!--' "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"); then
+  if ! AssertFileContentsMatchIgnoreHtmlComments "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"; then
     debug "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else
@@ -450,7 +449,7 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
         "${BAD_TEST_CASE_DESTINATION_PATH}"/*/target
     fi
 
-    if AssertFileContentsMatch "${BAD_TEST_CASE_DESTINATION_PATH}" "${BAD_TEST_CASE_SOURCE_PATH}"; then
+    if AssertFileAndDirContentsMatch "${BAD_TEST_CASE_DESTINATION_PATH}" "${BAD_TEST_CASE_SOURCE_PATH}"; then
       fatal "${BAD_TEST_CASE_DESTINATION_PATH} contents match ${BAD_TEST_CASE_SOURCE_PATH} contents and they should differ because fix mode for ${LANGUAGE} should have fixed linting and formatting issues."
     fi
   done
