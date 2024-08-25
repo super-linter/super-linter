@@ -561,6 +561,9 @@ Footer() {
   fi
 
   if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    if ! FormatSuperLinterSummaryFile "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"; then
+      fatal "Error while formatting the Super-linter summary file."
+    fi
     debug "Super-linter summary file (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) contents:\n$(cat "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}")"
   fi
 
