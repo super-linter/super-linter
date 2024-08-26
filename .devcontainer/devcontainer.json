@@ -5,6 +5,7 @@
     "vscode": {
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.wordWrap": "off",
         "prettier.resolveGlobalModules": true
       },
       "extensions": [

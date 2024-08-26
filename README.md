@@ -595,6 +595,7 @@ For example:
 - Lint only the `src` folder: `FILTER_REGEX_INCLUDE: .*src/.*`
 - Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
 - Do not lint JavaScript files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*.js`
+- Do not lint files named `gradlew` and JavaScript files inside a specific directory: `.*/gradlew|.*/specific/directory/*.js`
 
 <!-- This `README.md` has both markers in the text, so it is considered not generated. -->
 
