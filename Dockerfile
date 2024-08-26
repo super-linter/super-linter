@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.18.11 AS terrascan
+FROM tenable/terrascan:1.19.2 AS terrascan
 FROM alpine/terragrunt:1.9.5 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.53.0 AS tflint
