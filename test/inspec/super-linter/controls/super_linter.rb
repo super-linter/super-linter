@@ -186,6 +186,7 @@ control "super-linter-installed-commands" do
     { linter_name: "protolint", version_option: "version"},
     { linter_name: "psalm"},
     { linter_name: "pwsh"},
+    { linter_name: "pyink"},
     { linter_name: "pylint"},
     { linter_name: "R", version_command: "R --slave -e \"r_ver <- R.Version()\\$version.string; \
             lintr_ver <- packageVersion('lintr'); \
@@ -405,6 +406,7 @@ control "super-linter-installed-pypi-packages" do
     "flake8",
     "isort",
     "mypy",
+    "pyink",
     "pylint",
     "ruff",
     "snakefmt",
@@ -511,6 +513,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.protolintrc.yml",
     "/action/lib/.automation/.python-black",
     "/action/lib/.automation/.python-lint",
+    "/action/lib/.automation/.python-pyink",
     "/action/lib/.automation/.ruby-lint.yml",
     "/action/lib/.automation/.ruff.toml",
     "/action/lib/.automation/.scalafmt.conf",
