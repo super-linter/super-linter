@@ -30,6 +30,7 @@
     "**/test/linters/python_flake8",
     "**/test/linters/python_isort",
     "**/test/linters/python_mypy",
+    "**/test/linters/python_pyink",
     "**/test/linters/python_pylint",
     "**/test/linters/python_ruff",
     "**/test/linters/r",

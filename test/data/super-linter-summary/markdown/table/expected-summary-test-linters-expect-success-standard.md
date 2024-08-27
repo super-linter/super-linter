@@ -66,6 +66,7 @@
 | PYTHON_FLAKE8                | Pass ✅           |
 | PYTHON_ISORT                 | Pass ✅           |
 | PYTHON_MYPY                  | Pass ✅           |
+| PYTHON_PYINK                 | Pass ✅           |
 | PYTHON_RUFF                  | Pass ✅           |
 | R                            | Pass ✅           |
 | RAKU                         | Pass ✅           |

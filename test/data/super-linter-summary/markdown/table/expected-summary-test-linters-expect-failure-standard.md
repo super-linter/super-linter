@@ -66,6 +66,7 @@
 | PYTHON_FLAKE8                | Fail ❌           |
 | PYTHON_ISORT                 | Fail ❌           |
 | PYTHON_MYPY                  | Fail ❌           |
+| PYTHON_PYINK                 | Fail ❌           |
 | PYTHON_RUFF                  | Fail ❌           |
 | R                            | Fail ❌           |
 | RAKU                         | Fail ❌           |

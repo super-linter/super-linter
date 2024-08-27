@@ -30,6 +30,7 @@
 | PROTOBUF            | Fail ❌           |
 | PYTHON_BLACK        | Pass ✅           |
 | PYTHON_ISORT        | Pass ✅           |
+| PYTHON_PYINK        | Pass ✅           |
 | PYTHON_RUFF         | Pass ✅           |
 | RUBY                | Fail ❌           |
 | SCALAFMT            | Pass ✅           |
