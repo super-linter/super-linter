@@ -600,8 +600,8 @@ For example, you can configure super-linter to load configuration files from the
 `config/lint` directory in your repository:
 
 ```yaml
-  env:
-    LINTER_RULES_PATH: `config/lint`
+env:
+  LINTER_RULES_PATH: config/lint
 ```
 
 Some of the linters that super-linter provides can be configured to disable
@@ -617,12 +617,20 @@ two environment variables: `FILTER_REGEX_INCLUDE` and `FILTER_REGEX_EXCLUDE`.
 
 For example:
 
-- Lint only the `src` folder: `FILTER_REGEX_INCLUDE: .*src/.*`
-- Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
-- Do not lint JavaScript files inside test folder:
-  `FILTER_REGEX_EXCLUDE: .*test/.*.js`
+- Lint the `src` folder in the root of the repository:
+  `FILTER_REGEX_INCLUDE: ^src/`
+- Lint all `src` folders in the repository: `FILTER_REGEX_INCLUDE: (^|/)src/`
+- Do not lint files inside `test` folder in the root of the repository:
+  `FILTER_REGEX_EXCLUDE: ^test/`
+- Do not lint files inside all `test` folders in the repository:
+  `FILTER_REGEX_EXCLUDE: (^|/)test/`
+- Do not lint JavaScript files inside `test` folder in the root of the
+  repository: `FILTER_REGEX_EXCLUDE: ^test/[^/]+\.js$`
+- Do not lint JavaScript files inside `test` folder in the root of the
+  repository (recursively): `FILTER_REGEX_EXCLUDE: ^test/.+\.js$`
 - Do not lint files named `gradlew` and JavaScript files inside a specific
-  directory: `.*/gradlew|.*/specific/directory/*.js`
+  directory:
+  `FILTER_REGEX_EXCLUDE: ((^|/)gradlew|^specific/directory/[^/]+\.js)$`
 
 <!-- This `README.md` has both markers in the text, so it is considered not generated. -->
 
