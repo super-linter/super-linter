@@ -79,7 +79,11 @@ them accordingly:
 
    ```yaml
    - name: Load super-linter configuration
-     run: cat .github/super-linter.env >> "$GITHUB_ENV"
+     # Use grep inverse matching to exclude eventual comments in the .env file
+     # because the GitHub Actions command to set environment variables doesn't
+     # support comments.
+     # Ref: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#setting-an-environment-variable
+     run: grep -v '^#' .github/super-linter.env >> "$GITHUB_ENV"
    ```
 
 ## Build the container image and run the test suite locally

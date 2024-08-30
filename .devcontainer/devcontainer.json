@@ -32,6 +32,26 @@
       "source": "${localWorkspaceFolder}/lib",
       "target": "/action/lib",
       "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/dependencies/Gemfile",
+      "target": "/Gemfile",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/dependencies/Gemfile.lock",
+      "target": "/Gemfile.lock",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/dependencies/package.json",
+      "target": "/package.json",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/dependencies/package-lock.json",
+      "target": "/package-lock.json",
+      "type": "bind"
     }
   ],
   "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]

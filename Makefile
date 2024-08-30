@@ -147,6 +147,10 @@ open-shell-super-linter-container: ## Open a shell in the Super-linter container
 		--entrypoint /bin/bash \
 		--rm \
 		-v "$(CURDIR)":/tmp/lint \
+		-v "$(CURDIR)/dependencies/Gemfile.lock":/Gemfile.lock \
+		-v "$(CURDIR)/dependencies/Gemfile":/Gemfile \
+		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
+		-v "$(CURDIR)/dependencies/package.json":/package.json \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: validate-container-image-labels

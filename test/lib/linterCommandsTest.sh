@@ -61,9 +61,12 @@ source "lib/functions/linterCommands.sh"
 # Initialize the variables we're going to use to verify tests before running tests
 # because some tests modify LINTER_COMMANDS_xxx variables
 BASE_LINTER_COMMANDS_ARRAY_ANSIBLE=("${LINTER_COMMANDS_ARRAY_ANSIBLE[@]}")
+BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GO_MODULES=("${LINTER_COMMANDS_ARRAY_GO_MODULES[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
+BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
+BASE_LINTER_COMMANDS_ARRAY_PERL=("${LINTER_COMMANDS_ARRAY_PERL[@]}")
 BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
 
 function LinterCommandPresenceTest() {
@@ -300,6 +303,54 @@ function InitPowerShellCommandTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+CommandOptionsTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # Add custom arguments to linter commands that support them.
+  # If possible, use command option that can run without modifying the filesystem,
+  # and that don't need any input.
+
+  # shellcheck disable=SC2034
+  GITHUB_ACTIONS_COMMAND_ARGS="-color -debug -verbose -version"
+  # shellcheck disable=SC2034
+  KUBERNETES_KUBECONFORM_OPTIONS="-debug -verbose -v"
+  # shellcheck disable=SC2034
+  PERL_PERLCRITIC_OPTIONS="--gentle --count test/linters/perl/perl_good_1.pl"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  # Try running the commands
+  "${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}"
+  "${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}"
+  "${LINTER_COMMANDS_ARRAY_PERL[@]}"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+AddOptionsToCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
+  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS" "-color -debug -verbose -version"
+  "${TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}"
+
+  local TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
+  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM" "-debug -verbose -v"
+  "${TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}"
+
+  local TEST_LINTER_COMMANDS_ARRAY_PERL=("${BASE_LINTER_COMMANDS_ARRAY_PERL[@]}")
+  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_PERL" "--gentle --count test/linters/perl/perl_good_1.pl"
+  "${TEST_LINTER_COMMANDS_ARRAY_PERL[@]}"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 LinterCommandPresenceTest
 IgnoreGitIgnoredFilesJscpdCommandTest
 JscpdCommandTest
@@ -308,3 +359,5 @@ GitleaksCommandCustomLogLevelTest
 InitInputConsumeCommandsTest
 InitFixModeOptionsAndCommandsTest
 InitPowerShellCommandTest
+CommandOptionsTest
+AddOptionsToCommandTest
