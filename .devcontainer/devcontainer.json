@@ -5,12 +5,21 @@
     "vscode": {
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file",
         "editor.wordWrap": "off",
-        "prettier.resolveGlobalModules": true
+        "prettier.resolveGlobalModules": true,
+        "[terraform]": {
+          "editor.defaultFormatter": "hashicorp.terraform"
+        },
+        "[terraform-vars]": {
+          "editor.defaultFormatter": "hashicorp.terraform"
+        }
       },
       "extensions": [
         "DavidAnson.vscode-markdownlint",
         "EditorConfig.EditorConfig",
+        "HashiCorp.terraform",
         "esbenp.prettier-vscode",
         "GitHub.vscode-github-actions",
         "GitHub.vscode-pull-request-github",
