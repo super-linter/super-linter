@@ -244,7 +244,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-e CREATE_LOG_FILE=true \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
@@ -263,7 +263,7 @@ lint-codebase: ## Lint the entire codebase
 # Return an error if there are changes to commit
 .PHONY: fix-codebase
 fix-codebase: ## Fix and format the entire codebase
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-e CREATE_LOG_FILE=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \

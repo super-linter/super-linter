@@ -15,14 +15,14 @@
     "location": {
       "type": "string",
       "metadata": {
-          "description": "Location for the resources."
+        "description": "Location for the resources."
       }
     }
   },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-01-01",
       "name": "[concat('store', uniquestring(resourceGroup().id))]",
       "location": "[parameters('location')]",
       "kind": "StorageV2",

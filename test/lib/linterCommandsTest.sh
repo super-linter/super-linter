@@ -7,13 +7,6 @@ set -o pipefail
 # shellcheck source=/dev/null
 source "test/testUtils.sh"
 
-# Default log level
-# shellcheck disable=SC2034
-LOG_LEVEL="DEBUG"
-
-# shellcheck source=/dev/null
-source "lib/functions/log.sh"
-
 # linterCommands.sh needs these
 
 # shellcheck source=/dev/null
@@ -194,8 +187,18 @@ function InitInputConsumeCommandsTest() {
   EXPECTED_LINTER_COMMANDS_ARRAY_ANSIBLE=("${BASE_LINTER_COMMANDS_ARRAY_ANSIBLE[@]}" "${INPUT_CONSUME_COMMAND[@]}")
   # shellcheck disable=SC2034
   EXPECTED_LINTER_COMMANDS_ARRAY_GO_MODULES=("${BASE_LINTER_COMMANDS_ARRAY_GO_MODULES[@]}" "${INPUT_CONSUME_COMMAND[@]}")
+
+  # Add some custom options to the Rust command to ensure that they are added before the "input consume" command
   # shellcheck disable=SC2034
-  EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}" "${INPUT_CONSUME_COMMAND[@]}")
+  local RUST_CLIPPY_COMMAND_OPTIONS_ARRAY=("--verbose --help")
+  RUST_CLIPPY_COMMAND_OPTIONS="${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[*]}"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}" "${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[@]}" "${INPUT_CONSUME_COMMAND[@]}")
 
   if ! InitInputConsumeCommands; then
     fatal "Error while initializing GNU parallel input consume commands"
@@ -318,6 +321,8 @@ CommandOptionsTest() {
   KUBERNETES_KUBECONFORM_OPTIONS="-debug -verbose -v"
   # shellcheck disable=SC2034
   PERL_PERLCRITIC_OPTIONS="--gentle --count test/linters/perl/perl_good_1.pl"
+  # shellcheck disable=SC2034
+  RUST_CLIPPY_COMMAND_OPTIONS="--verbose --help"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
@@ -327,6 +332,11 @@ CommandOptionsTest() {
   "${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}"
   "${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}"
   "${LINTER_COMMANDS_ARRAY_PERL[@]}"
+  # Rust Clippy is only available in the standard image, so we can't run it when
+  # testing the slim image
+  if IsStandardImage; then
+    "${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}"
+  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -347,6 +357,14 @@ AddOptionsToCommandTest() {
   local TEST_LINTER_COMMANDS_ARRAY_PERL=("${BASE_LINTER_COMMANDS_ARRAY_PERL[@]}")
   AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_PERL" "--gentle --count test/linters/perl/perl_good_1.pl"
   "${TEST_LINTER_COMMANDS_ARRAY_PERL[@]}"
+
+  # Rust Clippy is only available in the standard image, so we can't run it when
+  # testing the slim image
+  if IsStandardImage; then
+    local TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
+    AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "--verbose --help"
+    "${TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}"
+  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
