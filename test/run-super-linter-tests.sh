@@ -246,6 +246,10 @@ debug "Super-linter main output path: ${SUPER_LINTER_MAIN_OUTPUT_PATH}"
 SUPER_LINTER_OUTPUT_PATH="${SUPER_LINTER_MAIN_OUTPUT_PATH}/super-linter"
 debug "Super-linter output path: ${SUPER_LINTER_OUTPUT_PATH}"
 
+# Remove color codes from output by default
+REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT="${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT:-"true"}"
+COMMAND_TO_RUN+=(--env REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT="${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}")
+
 COMMAND_TO_RUN+=(-e CREATE_LOG_FILE="${CREATE_LOG_FILE}")
 COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
@@ -324,6 +328,12 @@ if [[ "${CREATE_LOG_FILE}" == true ]]; then
       debug "Copying Super-linter log from the workspace (${SUPER_LINTER_WORKSPACE}) to the current working directory for easier inspection"
       cp -v "${LOG_FILE_PATH}" "$(pwd)/"
     fi
+
+    if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]]; then
+      if AreAnsiColorCodesInFile "${LOG_FILE_PATH}"; then
+        fatal "${LOG_FILE_PATH} contains unexpected ANSI color codes"
+      fi
+    fi
   fi
 else
   debug "Log file was not requested. CREATE_LOG_FILE: ${CREATE_LOG_FILE}"
@@ -344,10 +354,33 @@ if [[ "${SAVE_SUPER_LINTER_OUTPUT}" == true ]]; then
 
     if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
       debug "Copying Super-linter output from the workspace (${SUPER_LINTER_WORKSPACE}) to the current working directory for easier inspection"
-      SUPER_LINTER_OUTPUT_PATH_PWD="$(pwd)/super-linter-output/"
-      mkdir -p "${SUPER_LINTER_OUTPUT_PATH_PWD}"
-      cp -r "${SUPER_LINTER_OUTPUT_PATH}" "${SUPER_LINTER_OUTPUT_PATH_PWD}"
+      SUPER_LINTER_MAIN_OUTPUT_PATH_PWD="$(pwd)/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
+      SUPER_LINTER_OUTPUT_PATH_PWD="${SUPER_LINTER_MAIN_OUTPUT_PATH_PWD}/super-linter"
+      mkdir -p "${SUPER_LINTER_MAIN_OUTPUT_PATH_PWD}"
+      cp -r "${SUPER_LINTER_OUTPUT_PATH}" "${SUPER_LINTER_MAIN_OUTPUT_PATH_PWD}/"
     fi
+
+    for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+      LANGUAGE_STDERR_FILE_PATH="${SUPER_LINTER_OUTPUT_PATH_PWD:-"${SUPER_LINTER_OUTPUT_PATH}"}/super-linter-parallel-stderr-${LANGUAGE}"
+      LANGUAGE_STDOUT_FILE_PATH="${SUPER_LINTER_OUTPUT_PATH_PWD:-"${SUPER_LINTER_OUTPUT_PATH}"}/super-linter-parallel-stdout-${LANGUAGE}"
+
+      if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]]; then
+        if [[ -e "${LANGUAGE_STDERR_FILE_PATH}" ]]; then
+          if AreAnsiColorCodesInFile "${LANGUAGE_STDERR_FILE_PATH}"; then
+            fatal "${LANGUAGE_STDERR_FILE_PATH} contains unexpected ANSI color codes"
+          fi
+        fi
+
+        if [[ -e "${LANGUAGE_STDOUT_FILE_PATH}" ]]; then
+          if AreAnsiColorCodesInFile "${LANGUAGE_STDOUT_FILE_PATH}"; then
+            fatal "${LANGUAGE_STDOUT_FILE_PATH} contains unexpected ANSI color codes"
+          fi
+        fi
+      fi
+
+      unset LANGUAGE_STDERR_FILE_PATH
+      unset LANGUAGE_STDOUT_FILE_PATH
+    done
   fi
 else
   debug "Super-linter output was not requested. SAVE_SUPER_LINTER_OUTPUT: ${SAVE_SUPER_LINTER_OUTPUT}"

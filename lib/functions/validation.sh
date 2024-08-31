@@ -17,6 +17,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "LOG_VERBOSE" "${LOG_VERBOSE}"
   ValidateBooleanVariable "LOG_WARN" "${LOG_WARN}"
   ValidateBooleanVariable "MULTI_STATUS" "${MULTI_STATUS}"
+  ValidateBooleanVariable "REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT" "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}"
   ValidateBooleanVariable "RUN_LOCAL" "${RUN_LOCAL}"
   ValidateBooleanVariable "SAVE_SUPER_LINTER_OUTPUT" "${SAVE_SUPER_LINTER_OUTPUT}"
   ValidateBooleanVariable "SAVE_SUPER_LINTER_SUMMARY" "${SAVE_SUPER_LINTER_SUMMARY}"

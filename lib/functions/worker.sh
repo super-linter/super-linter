@@ -211,6 +211,10 @@ function LintCodebase() {
     fatal "Error when loading stdout for ${FILE_TYPE}:\n${STDOUT_LINTER}"
   fi
 
+  # Load output functions because we might need to process stdout and stderr
+  # shellcheck source=/dev/null
+  source /action/lib/functions/output.sh
+
   if [ -n "${STDOUT_LINTER}" ]; then
     info "Command output for ${FILE_TYPE}:\n------\n${STDOUT_LINTER}\n------"
 
@@ -218,6 +222,10 @@ function LintCodebase() {
     STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${FILE_TYPE}"
     debug "Saving stdout for ${FILE_TYPE} to ${STDOUT_LINTER_FILE_PATH} in case we need it later"
     printf '%s\n' "${STDOUT_LINTER}" >"${STDOUT_LINTER_FILE_PATH}"
+    if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
+      ! RemoveAnsiColorCodesFromFile "${STDOUT_LINTER_FILE_PATH}"; then
+      fatal "Error while removing ANSI color codes from ${STDOUT_LINTER_FILE_PATH}"
+    fi
   else
     debug "Stdout for ${FILE_TYPE} is empty"
   fi
@@ -234,6 +242,10 @@ function LintCodebase() {
     STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${FILE_TYPE}"
     debug "Saving stderr for ${FILE_TYPE} to ${STDERR_LINTER_FILE_PATH} in case we need it later"
     printf '%s\n' "${STDERR_LINTER}" >"${STDERR_LINTER_FILE_PATH}"
+    if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
+      ! RemoveAnsiColorCodesFromFile "${STDERR_LINTER_FILE_PATH}"; then
+      fatal "Error while removing ANSI color codes from ${STDERR_LINTER_FILE_PATH}"
+    fi
   else
     debug "Stderr for ${FILE_TYPE} is empty"
   fi

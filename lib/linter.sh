@@ -133,6 +133,10 @@ YAML_ERROR_ON_WARNING="${YAML_ERROR_ON_WARNING:-false}"
 declare -l SAVE_SUPER_LINTER_SUMMARY
 SAVE_SUPER_LINTER_SUMMARY="${SAVE_SUPER_LINTER_SUMMARY:-false}"
 
+declare -l REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT
+REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT="${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT:-"false"}"
+export REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT
+
 # Define private output paths early because cleanup depends on those being defined
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
@@ -631,6 +635,10 @@ cleanup() {
     local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
     debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
     if [ "${CREATE_LOG_FILE}" = "true" ]; then
+      if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
+        ! RemoveAnsiColorCodesFromFile "${LOG_TEMP}"; then
+        fatal "Error while removing ANSI color codes from ${LOG_TEMP}"
+      fi
       debug "Moving log file from ${LOG_TEMP} to ${LOG_FILE_PATH}"
       mv \
         --force \

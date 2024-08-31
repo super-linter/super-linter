@@ -131,8 +131,29 @@ EOF
   notice "${FUNCTION_NAME} PASS"
 }
 
+RemoveAnsiColorCodesFromFileTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitWorkspace
+
+  local TEST_CASE_FILE_WITH_ANSI_COLOR_CODES="test/data/output/ansi-color-codes/super-linter-parallel-stdout-ARM"
+  local EXPECTED_TEST_CASE_FILE_WITHOUT_ANSI_COLOR_CODES="test/data/output/ansi-color-codes/super-linter-parallel-stdout-ARM-no-ANSI-color-codes"
+  local INPUT_FILE
+  INPUT_FILE="${TEMP_WORKSPACE}/$(basename "${TEST_CASE_FILE_WITH_ANSI_COLOR_CODES}")"
+  cp "${TEST_CASE_FILE_WITH_ANSI_COLOR_CODES}" "${INPUT_FILE}"
+  RemoveAnsiColorCodesFromFile "${INPUT_FILE}"
+  AssertFileAndDirContentsMatch "${INPUT_FILE}" "${EXPECTED_TEST_CASE_FILE_WITHOUT_ANSI_COLOR_CODES}"
+
+  CleanupWorkspace
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 WriteSummaryMarkdownTableHeaderTest
 WriteSummaryMarkdownTableLineSuccessTest
 WriteSummaryMarkdownTableLineFailureTest
 WriteSummaryMarkdownTableFooterSuccessTest
 WriteSummaryMarkdownTableFooterFailureTest
+RemoveAnsiColorCodesFromFileTest

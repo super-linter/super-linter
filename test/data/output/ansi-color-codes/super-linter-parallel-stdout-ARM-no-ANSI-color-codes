@@ -1,0 +1,72 @@
+
+Validating arm\arm_good_1.json
+  JSONFiles Should Be Valid
+    [+] JSONFiles Should Be Valid (30 ms)
+Pass  : 1
+Fail  : 0
+Total : 1
+
+
+  adminUsername Should Not Be A Literal
+    [+] adminUsername Should Not Be A Literal (42 ms)
+  apiVersions Should Be Recent In Reference Functions
+    [+] apiVersions Should Be Recent In Reference Functions (23 ms)
+  apiVersions Should Be Recent
+    [+] apiVersions Should Be Recent (133 ms)
+  artifacts parameter
+    [+] artifacts parameter (12 ms)
+  CommandToExecute Must Use ProtectedSettings For Secrets
+    [+] CommandToExecute Must Use ProtectedSettings For Secrets (17 ms)
+  DependsOn Best Practices
+    [+] DependsOn Best Practices (8 ms)
+  Deployment Resources Must Not Be Debug
+    [+] Deployment Resources Must Not Be Debug (11 ms)
+  DeploymentTemplate Must Not Contain Hardcoded Uri
+    [+] DeploymentTemplate Must Not Contain Hardcoded Uri (72 ms)
+  DeploymentTemplate Schema Is Correct
+    [+] DeploymentTemplate Schema Is Correct (4 ms)
+  Dynamic Variable References Should Not Use Concat
+    [+] Dynamic Variable References Should Not Use Concat (8 ms)
+  IDs Should Be Derived From ResourceIDs
+    [+] IDs Should Be Derived From ResourceIDs (20 ms)
+  Location Should Not Be Hardcoded
+    [+] Location Should Not Be Hardcoded (157 ms)
+  ManagedIdentityExtension must not be used
+    [+] ManagedIdentityExtension must not be used (5 ms)
+  Min And Max Value Are Numbers
+    [+] Min And Max Value Are Numbers (13 ms)
+  Outputs Must Not Contain Secrets
+    [+] Outputs Must Not Contain Secrets (21 ms)
+  Parameter Types Should Be Consistent
+    [+] Parameter Types Should Be Consistent (23 ms)
+  Parameters Must Be Referenced
+    [+] Parameters Must Be Referenced (23 ms)
+  Password params must be secure
+    [+] Password params must be secure (7 ms)
+  providers apiVersions Is Not Permitted
+    [+] providers apiVersions Is Not Permitted (3 ms)
+  ResourceIds should not contain
+    [+] ResourceIds should not contain (23 ms)
+  Resources Should Have Location
+    [+] Resources Should Have Location (11 ms)
+  Resources Should Not Be Ambiguous
+    [+] Resources Should Not Be Ambiguous (13 ms)
+  Secure Params In Nested Deployments
+    [+] Secure Params In Nested Deployments (9 ms)
+  Secure String Parameters Cannot Have Default
+    [+] Secure String Parameters Cannot Have Default (5 ms)
+  Template Should Not Contain Blanks
+    [+] Template Should Not Contain Blanks (15 ms)
+  URIs Should Be Properly Constructed
+    [+] URIs Should Be Properly Constructed (82 ms)
+  Variables Must Be Referenced
+    [+] Variables Must Be Referenced (10 ms)
+  Virtual Machines Should Not Be Preview
+    [+] Virtual Machines Should Not Be Preview (12 ms)
+  VM Images Should Use Latest Version
+    [+] VM Images Should Use Latest Version (2 ms)
+  VM Size Should Be A Parameter
+    [+] VM Size Should Be A Parameter (12 ms)
+Pass  : 31
+Fail  : 0
+Total : 31
