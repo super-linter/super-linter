@@ -158,6 +158,16 @@ IsLanguageInSlimImage() {
   fi
 }
 
+IsStandardImage() {
+  if [[ "${IMAGE}" == "standard" ]]; then
+    debug "This is the standard image"
+    return 0
+  else
+    debug "This isn't the standard image"
+    return 1
+  fi
+}
+
 RemoveTestLeftovers() {
   local LEFTOVERS_TO_CLEAN=()
   LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")

@@ -9,6 +9,12 @@
         "editor.formatOnSaveMode": "file",
         "editor.wordWrap": "off",
         "prettier.resolveGlobalModules": true,
+        "[markdown]": {
+          "editor.wordWrap": "off"
+        },
+        "[shellscript]": {
+          "editor.defaultFormatter": "mkhl.shfmt"
+        },
         "[terraform]": {
           "editor.defaultFormatter": "hashicorp.terraform"
         },
