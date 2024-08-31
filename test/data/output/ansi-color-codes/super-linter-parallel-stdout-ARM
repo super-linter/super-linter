@@ -1,0 +1,72 @@
+
+[35mValidating arm\arm_good_1.json[0m
+[35m[0m[35m  JSONFiles Should Be Valid[0m
+[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (30 ms)[0m
+[35m[0m[35m[0m[32m[0mPass  : 1[0m
+[35m[0m[35m[0m[32m[0mFail  : 0[0m
+[35m[0m[35m[0m[32m[0mTotal : 1[0m
+[35m[0m[35m[0m[32m[0m
+
+[35m  adminUsername Should Not Be A Literal[0m
+[35m[0m[32m    [+] adminUsername Should Not Be A Literal (42 ms)[0m
+[35m  apiVersions Should Be Recent In Reference Functions[0m
+[35m[0m[32m    [+] apiVersions Should Be Recent In Reference Functions (23 ms)[0m
+[35m  apiVersions Should Be Recent[0m
+[35m[0m[32m    [+] apiVersions Should Be Recent (133 ms)[0m
+[35m  artifacts parameter[0m
+[35m[0m[32m    [+] artifacts parameter (12 ms)[0m
+[35m  CommandToExecute Must Use ProtectedSettings For Secrets[0m
+[35m[0m[32m    [+] CommandToExecute Must Use ProtectedSettings For Secrets (17 ms)[0m
+[35m  DependsOn Best Practices[0m
+[35m[0m[32m    [+] DependsOn Best Practices (8 ms)[0m
+[35m  Deployment Resources Must Not Be Debug[0m
+[35m[0m[32m    [+] Deployment Resources Must Not Be Debug (11 ms)[0m
+[35m  DeploymentTemplate Must Not Contain Hardcoded Uri[0m
+[35m[0m[32m    [+] DeploymentTemplate Must Not Contain Hardcoded Uri (72 ms)[0m
+[35m  DeploymentTemplate Schema Is Correct[0m
+[35m[0m[32m    [+] DeploymentTemplate Schema Is Correct (4 ms)[0m
+[35m  Dynamic Variable References Should Not Use Concat[0m
+[35m[0m[32m    [+] Dynamic Variable References Should Not Use Concat (8 ms)[0m
+[35m  IDs Should Be Derived From ResourceIDs[0m
+[35m[0m[32m    [+] IDs Should Be Derived From ResourceIDs (20 ms)[0m
+[35m  Location Should Not Be Hardcoded[0m
+[35m[0m[32m    [+] Location Should Not Be Hardcoded (157 ms)[0m
+[35m  ManagedIdentityExtension must not be used[0m
+[35m[0m[32m    [+] ManagedIdentityExtension must not be used (5 ms)[0m
+[35m  Min And Max Value Are Numbers[0m
+[35m[0m[32m    [+] Min And Max Value Are Numbers (13 ms)[0m
+[35m  Outputs Must Not Contain Secrets[0m
+[35m[0m[32m    [+] Outputs Must Not Contain Secrets (21 ms)[0m
+[35m  Parameter Types Should Be Consistent[0m
+[35m[0m[32m    [+] Parameter Types Should Be Consistent (23 ms)[0m
+[35m  Parameters Must Be Referenced[0m
+[35m[0m[32m    [+] Parameters Must Be Referenced (23 ms)[0m
+[35m  Password params must be secure[0m
+[35m[0m[32m    [+] Password params must be secure (7 ms)[0m
+[35m  providers apiVersions Is Not Permitted[0m
+[35m[0m[32m    [+] providers apiVersions Is Not Permitted (3 ms)[0m
+[35m  ResourceIds should not contain[0m
+[35m[0m[32m    [+] ResourceIds should not contain (23 ms)[0m
+[35m  Resources Should Have Location[0m
+[35m[0m[32m    [+] Resources Should Have Location (11 ms)[0m
+[35m  Resources Should Not Be Ambiguous[0m
+[35m[0m[32m    [+] Resources Should Not Be Ambiguous (13 ms)[0m
+[35m  Secure Params In Nested Deployments[0m
+[35m[0m[32m    [+] Secure Params In Nested Deployments (9 ms)[0m
+[35m  Secure String Parameters Cannot Have Default[0m
+[35m[0m[32m    [+] Secure String Parameters Cannot Have Default (5 ms)[0m
+[35m  Template Should Not Contain Blanks[0m
+[35m[0m[32m    [+] Template Should Not Contain Blanks (15 ms)[0m
+[35m  URIs Should Be Properly Constructed[0m
+[35m[0m[32m    [+] URIs Should Be Properly Constructed (82 ms)[0m
+[35m  Variables Must Be Referenced[0m
+[35m[0m[32m    [+] Variables Must Be Referenced (10 ms)[0m
+[35m  Virtual Machines Should Not Be Preview[0m
+[35m[0m[32m    [+] Virtual Machines Should Not Be Preview (12 ms)[0m
+[35m  VM Images Should Use Latest Version[0m
+[35m[0m[32m    [+] VM Images Should Use Latest Version (2 ms)[0m
+[35m  VM Size Should Be A Parameter[0m
+[35m[0m[32m    [+] VM Size Should Be A Parameter (12 ms)[0m
+[35m[0m[32m[0mPass  : 31[0m
+[35m[0m[32m[0mFail  : 0[0m
+[35m[0m[32m[0mTotal : 31[0m

@@ -15,6 +15,13 @@ CREATE_LOG_FILE="true"
 # shellcheck source=/dev/null
 source "lib/functions/log.sh"
 
+# shellcheck source=/dev/null
+source "lib/globals/languages.sh"
+
+# Because we need variables defined there
+# shellcheck source=/dev/null
+source "lib/functions/output.sh"
+
 # TODO: use TEST_CASE_FOLDER instead of redefining this after we extract the
 # initialization of TEST_CASE_FOLDER from linter.sh
 # shellcheck disable=SC2034
@@ -164,6 +171,17 @@ IsStandardImage() {
     return 0
   else
     debug "This isn't the standard image"
+    return 1
+  fi
+}
+
+AreAnsiColorCodesInFile() {
+  local FILE_TO_SEARCH_IN="${1}"
+  if grep --color=never --quiet --perl-regexp "${ANSI_COLOR_CODES_SEARCH_PATTERN}" "${FILE_TO_SEARCH_IN}"; then
+    debug "Found at least one ANSI color code in ${FILE_TO_SEARCH_IN}"
+    return 0
+  else
+    debug "Found no ANSI color codes in ${FILE_TO_SEARCH_IN}"
     return 1
   fi
 }

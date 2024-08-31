@@ -55,3 +55,16 @@ FormatSuperLinterSummaryFile() {
     return 1
   fi
 }
+
+# 0x1B (= ^[) is the control code that starts all ANSI color codes escape sequences
+# Ref: https://en.wikipedia.org/wiki/ANSI_escape_code#C0_control_codes
+ANSI_COLOR_CODES_SEARCH_PATTERN='\x1b\[[0-9;]*m'
+export ANSI_COLOR_CODES_SEARCH_PATTERN
+RemoveAnsiColorCodesFromFile() {
+  local FILE_PATH="${1}"
+  debug "Removing ANSI color codes from ${FILE_PATH}"
+  if ! sed -i "s/${ANSI_COLOR_CODES_SEARCH_PATTERN}//g" "${FILE_PATH}"; then
+    error "Error while removing ANSI color codes from ${FILE_PATH}"
+    return 1
+  fi
+}
