@@ -296,6 +296,7 @@ BuildFileArrays() {
       debug "Don't include ${FILE} in the list of files to lint with editorconfig-checker because the workspace doesn't contain an EditorConfig file: ${EDITORCONFIG_FILE_PATH}"
     fi
 
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_MERGE_CONFLICT_MARKERS"
     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITLEAKS"
 
     if IsAnsibleDirectory "${FILE}"; then

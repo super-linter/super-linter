@@ -27,6 +27,7 @@
 | GITHUB_ACTIONS               | Pass ✅           |
 | GITLEAKS                     | Pass ✅           |
 | GHERKIN                      | Pass ✅           |
+| GIT_MERGE_CONFLICT_MARKERS   | Pass ✅           |
 | GO                           | Pass ✅           |
 | GO_MODULES                   | Pass ✅           |
 | GO_RELEASER                  | Pass ✅           |
