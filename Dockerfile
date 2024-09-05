@@ -383,10 +383,11 @@ COPY --from=python-builder /venvs /venvs
 #################
 COPY --from=lintr-installer /usr/lib/R /usr/lib/R
 
-#####################
-# Install Bash-Exec #
-#####################
+##########################################
+# Install linters implemented as scripts #
+##########################################
 COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
+COPY --chmod=555 scripts/git-merge-conflict-markers.sh /usr/bin/git-merge-conflict-markers
 
 #########################
 # Install dotenv-linter #

@@ -157,6 +157,7 @@ new tool, it should include:
         Example: `ANSIBLE_FIX_MODE_OPTIONS=(--fix)`
 
   - Provide the logic to populate the list of files or directories to examine: `lib/functions/buildFileList.sh`
+  - Provide the logic to populate the versions file: `scripts/linterVersions.sh`
   - If necessary, provide elaborate logic to detect if the tool should examine a file or a directory: `lib/functions/detectFiles.sh`
   - If the tool needs to take into account special cases, reach out to the
     maintainers by creating a draft pull request and ask relevant questions

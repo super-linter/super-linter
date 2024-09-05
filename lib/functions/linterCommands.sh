@@ -68,6 +68,7 @@ if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
 fi
 LINTER_COMMANDS_ARRAY_GITLEAKS+=(--source)
 LINTER_COMMANDS_ARRAY_GHERKIN=(gherkin-lint -c "${GHERKIN_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_GIT_MERGE_CONFLICT_MARKERS=(git-merge-conflict-markers)
 LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast)
 LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO_RELEASER=(goreleaser check)

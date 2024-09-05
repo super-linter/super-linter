@@ -67,6 +67,16 @@
       "source": "${localWorkspaceFolder}/dependencies/package-lock.json",
       "target": "/package-lock.json",
       "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/scripts/bash-exec.sh",
+      "target": "/usr/bin/bash-exec",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/scripts/git-merge-conflict-markers.sh",
+      "target": "/usr/bin/git-merge-conflict-markers",
+      "type": "bind"
     }
   ],
   "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]

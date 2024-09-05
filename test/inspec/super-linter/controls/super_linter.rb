@@ -162,6 +162,7 @@ control "super-linter-installed-commands" do
     { linter_name: "eslint"},
     { linter_name: "flake8"},
     { linter_name: "gherkin-lint", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
+    { linter_name: "git-merge-conflict-markers"},
     { linter_name: "gitleaks", version_option: "version"},
     { linter_name: "golangci-lint"},
     { linter_name: "goreleaser"},
@@ -526,6 +527,8 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/phpcs.xml",
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",
+    "/usr/bin/bash-exec",
+    "/usr/bin/git-merge-conflict-markers",
     "/usr/bin/helm", # needed for checkov's helm framework
     "/usr/bin/kustomize", # needed for checkov's kustomize checks
   ]
