@@ -122,7 +122,7 @@ This section helps you upgrade from super-linter `v5` to `v6`.
 - Jscpd doesn't consider the `FILTER_REGEX_EXCLUDE`, `FILTER_REGEX_INCLUDE`,
   `IGNORE_GENERATED_FILES` variables. For more
   information about how to ignore files with Jscpd, see
-  [the Jscpd documentation](https://github.com/kucherenko/jscpd/tree/master/packages/jscpd).
+  [the Jscpd documentation](https://github.com/kucherenko/jscpd/tree/master/apps/jscpd).
 
 ### USE_FIND_ALGORITHM and VALIDATE_ALL_CODEBASE used together
 
