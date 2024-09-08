@@ -6,9 +6,9 @@ The Process to create a super-linter release is as follows:
 
 ## Preview the release pull request
 
-In order to have a preview of the next release before merging a pull
-request that updates the configuration of the tooling that we use to create
-releases, do the following:
+In order to have a preview of the next release before merging a pull request
+that updates the configuration of the tooling that we use to create releases, do
+the following:
 
 1. Run:
 

@@ -242,6 +242,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e IGNORE_GENERATED_FILES=true \
 		-e IGNORE_GITIGNORED_FILES=true \
 		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR)":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -260,6 +261,7 @@ lint-codebase: ## Lint the entire codebase
 		-e SAVE_SUPER_LINTER_OUTPUT=true \
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR):/tmp/lint" \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -288,6 +290,7 @@ fix-codebase: ## Fix and format the entire codebase
 		-e SAVE_SUPER_LINTER_OUTPUT=true \
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR):/tmp/lint" \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
@@ -618,3 +621,13 @@ release-please-dry-run: build-dev-container-image check-github-token ## Run rele
 		--target-branch ${RELEASE_PLEASE_TARGET_BRANCH} \
 		--token "${GITHUB_TOKEN}" \
 		--trace
+
+.PHONY: open-shell-dev-container
+open-shell-dev-container: build-dev-container-image ## Open a shell in the dev tools container
+	docker run $(DOCKER_FLAGS) \
+		--interactive \
+		--entrypoint /bin/bash \
+		--rm \
+		-v "$(CURDIR)/dev-dependencies/package-lock.json":/package-lock.json \
+		-v "$(CURDIR)/dev-dependencies/package.json":/package.json \
+		$(DEV_CONTAINER_URL)

@@ -13,9 +13,9 @@ This section helps you upgrade from super-linter `v6` to `v7`.
 ### sql-lint, VALIDATE_SQL and SQL_CONFIG_FILE
 
 [sql-lint](https://github.com/joereynolds/sql-lint) appears to be unmaintained,
-and its dependencies are affected by known security vulnerabilities.
-For this reason, Super-linter `v7` doesn't include sql-lint anymore. If you
-are using sql-lint to check your SQL files, we recommend that you evaluate
+and its dependencies are affected by known security vulnerabilities. For this
+reason, Super-linter `v7` doesn't include sql-lint anymore. If you are using
+sql-lint to check your SQL files, we recommend that you evaluate
 [sqlfluff](https://sqlfluff.com/), included in Super-linter since `v4.6.0`.
 
 You can remove the `VALIDATE_SQL` and `SQL_CONFIG_FILE` because they have no
@@ -62,8 +62,8 @@ This section helps you upgrade from super-linter `v6.7.0` to `v6.8.0`.
     - If you set `TYPESCRIPT_DEFAULT_STYLE=prettier`, set
       `VALIDATE_TYPESCRIPT_STANDARD=false`
 
-  Finally, remove both `JAVASCRIPT_DEFAULT_STYLE` and
-  `TYPESCRIPT_DEFAULT_STYLE` from your Super-linter configuration.
+  Finally, remove both `JAVASCRIPT_DEFAULT_STYLE` and `TYPESCRIPT_DEFAULT_STYLE`
+  from your Super-linter configuration.
 
 ## Upgrade from v5 to v6
 
@@ -120,8 +120,8 @@ This section helps you upgrade from super-linter `v5` to `v6`.
   entire workspace instead of linting files one by one. You can safely remove
   the `VALIDATE_JSCPD_ALL_CODEBASE` variable from your configuration.
 - Jscpd doesn't consider the `FILTER_REGEX_EXCLUDE`, `FILTER_REGEX_INCLUDE`,
-  `IGNORE_GENERATED_FILES` variables. For more
-  information about how to ignore files with Jscpd, see
+  `IGNORE_GENERATED_FILES` variables. For more information about how to ignore
+  files with Jscpd, see
   [the Jscpd documentation](https://github.com/kucherenko/jscpd/tree/master/apps/jscpd).
 
 ### USE_FIND_ALGORITHM and VALIDATE_ALL_CODEBASE used together
@@ -137,6 +137,6 @@ This section helps you upgrade from super-linter `v5` to `v6`.
 
 - The `VALIDATE_KOTLIN_ANDROID` variable has been deprecated because ktlint
   handles linting Kotlin files for Android using a configuration option, so
-  super-linter doesn't need to account for this special case anymore. If you
-  set `VALIDATE_KOTLIN_ANDROID` in your configuration, change it to
+  super-linter doesn't need to account for this special case anymore. If you set
+  `VALIDATE_KOTLIN_ANDROID` in your configuration, change it to
   `VALIDATE_KOTLIN` and configure ktlint to lint Android files.

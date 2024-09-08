@@ -1,32 +1,48 @@
 {
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
   "name": "Super-Linter",
   "image": "ghcr.io/super-linter/super-linter:latest",
   "customizations": {
     "vscode": {
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "editor.wordWrap": "off",
+        "hadolint.cliOptions": [
+          "--config",
+          "/workspaces/super-linter/.github/linters/.hadolint.yaml"
+        ],
+        "markdownlint.config": {
+          "extends": "${workspaceFolder}/.github/linters/.markdown-lint.yml"
+        },
         "prettier.resolveGlobalModules": true,
+        "redhat.telemetry.enabled": false,
+        "telemetry.telemetryLevel": "off",
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
         "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
           "editor.wordWrap": "off"
         },
         "[shellscript]": {
           "editor.defaultFormatter": "mkhl.shfmt"
         },
-        "[terraform]": {
-          "editor.defaultFormatter": "hashicorp.terraform"
-        },
-        "[terraform-vars]": {
-          "editor.defaultFormatter": "hashicorp.terraform"
+        "[yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
         }
       },
       "extensions": [
         "DavidAnson.vscode-markdownlint",
         "EditorConfig.EditorConfig",
-        "HashiCorp.terraform",
         "esbenp.prettier-vscode",
+        "exiasr.hadolint",
         "GitHub.vscode-github-actions",
         "GitHub.vscode-pull-request-github",
         "mads-hartmann.bash-ide-vscode",
@@ -89,5 +105,5 @@
       "type": "bind"
     }
   ],
-  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
+  "runArgs": ["--env-file", ".devcontainer/devcontainer.env", "--rm"]
 }
