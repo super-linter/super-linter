@@ -219,3 +219,24 @@ RemoveTestLogsAndSuperLinterOutputs() {
   debug "Cleaning eventual test logs and Super-linter outputs leftovers: ${LEFTOVERS_TO_CLEAN[*]}"
   sudo rm -rf "${LEFTOVERS_TO_CLEAN[@]}"
 }
+
+initialize_git_repository() {
+  local GIT_REPOSITORY_PATH="${1}"
+
+  # Assuming that if sudo is available we aren't running inside a container,
+  # so we don't want to leave leftovers around.
+  if command -v sudo; then
+    # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+    trap "sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+  fi
+
+  if [[ ! -d "${GIT_REPOSITORY_PATH}" ]]; then
+    mkdir --parents "${GIT_REPOSITORY_PATH}"
+  fi
+
+  debug "GIT_REPOSITORY_PATH: ${GIT_REPOSITORY_PATH}"
+
+  git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH:-"main"}"
+  git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
+  git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
+}

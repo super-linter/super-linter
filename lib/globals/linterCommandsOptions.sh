@@ -101,4 +101,6 @@ SQLFLUFF_FIX_MODE_OPTIONS+=("${SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS[@]}")
 # will not be passed to the --workdir option as well.
 INPUT_CONSUME_COMMAND=("&& echo \"Linted: {}\"")
 
+COMMITLINT_STRICT_MODE_OPTIONS=("--strict")
+
 GITLEAKS_LOG_LEVEL_OPTIONS=("--log-level")

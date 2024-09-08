@@ -24,9 +24,27 @@ configure_typescript_for_test_cases() {
   COMMAND_TO_RUN+=(--env TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
 }
 
+configure_git_commitlint_test_cases() {
+  debug "Initializing commitlint test case"
+  local GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY="test/linters/git_commitlint/good"
+  rm -rfv "${GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY}"
+  initialize_git_repository "${GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY}"
+  touch "${GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY}/test-file.txt"
+  git -C "${GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY}" add .
+  git -C "${GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY}" commit -m "feat: initial commit"
+
+  local GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY="test/linters/git_commitlint/bad"
+  rm -rfv "${GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY}"
+  initialize_git_repository "${GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY}"
+  touch "${GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY}/test-file.txt"
+  git -C "${GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY}" add .
+  git -C "${GIT_COMMITLINT_BAD_TEST_CASE_REPOSITORY}" commit -m "Bad commit message"
+}
+
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
   configure_typescript_for_test_cases
+  configure_git_commitlint_test_cases
 }
 
 run_test_cases_expect_failure() {
@@ -79,16 +97,11 @@ run_test_case_dont_save_super_linter_output() {
 
 initialize_git_repository_and_test_args() {
   local GIT_REPOSITORY_PATH="${1}"
-  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-  trap "sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
 
-  debug "GIT_REPOSITORY_PATH: ${GIT_REPOSITORY_PATH}"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
 
   local GITHUB_EVENT_FILE_PATH="${2}"
 
-  git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH}"
-  git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
-  git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
   # Put an arbitrary JSON file in the repository to trigger some validation
   cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
   git -C "${GIT_REPOSITORY_PATH}" add .
@@ -116,7 +129,11 @@ run_test_case_git_initial_commit() {
 
   initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
+  COMMAND_TO_RUN+=(--env VALIDATE_JSON="true")
+
+  # Validate commits using commitlint so we can check that we have a default
+  # commitlint configuration file
+  COMMAND_TO_RUN+=(--env VALIDATE_GIT_COMMITLINT="true")
 }
 
 run_test_case_merge_commit_push() {

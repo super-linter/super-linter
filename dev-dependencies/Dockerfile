@@ -20,8 +20,7 @@ ENV PATH="${NODE_PATH}/.bin:${PATH}"
 
 # Split this from the previous RUN instruction so we can cache the costly installation step
 # hadolint ignore=DL3059
-RUN commitlint --version \
-  && release-please --version \
+RUN release-please --version \
   && git config --global --add safe.directory /source-repository
 
 ARG USERNAME=super-linter-dev

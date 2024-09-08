@@ -118,6 +118,18 @@ function BuildFileList() {
     debug "DEFAULT_JSCPD_TEST_CASE_DIRECTORY: ${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}"
     RAW_FILE_ARRAY+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/bad")
     RAW_FILE_ARRAY+=("${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with Commitlint."
+    DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/git_commitlint"
+    # We need this for parallel
+    export DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY
+    debug "DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY: ${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/good")
+    # Commitlint uses Git to get commit data, so the dynamically created test case repositories
+    # need to be marked as safe
+    git config --global --add safe.directory "${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/bad"
+    git config --global --add safe.directory "${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/good"
   fi
 
   debug "Add GITHUB_WORKSPACE (${GITHUB_WORKSPACE}) to the list of files to lint because we might need it for linters that lint the whole workspace"
@@ -239,10 +251,13 @@ BuildFileArrays() {
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CHECKOV"
       fi
 
-      # JSCPD test cases are handled below because we first need to exclude non-relevant test cases
+      # Test cases for these languages are handled below because we first need to exclude non-relevant test cases
       if [[ "${TEST_CASE_RUN}" == "false" ]]; then
         debug "Add ${FILE} to the list of items to lint with JSCPD"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
+
+        debug "Add ${FILE} to the list of items to lint with Commitlint"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
       fi
 
       # Handle the corner case where FILE=${GITHUB_WORKSPACE}, and the user set
@@ -309,6 +324,12 @@ BuildFileArrays() {
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
       debug "${FILE} is a test case for JSCPD. Adding it to the list of items to lint with JSCPD"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
+    fi
+
+    # Handle Commitlint test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
     fi
 
     # See https://docs.renovatebot.com/configuration-options/

@@ -22,6 +22,7 @@
 | GITHUB_ACTIONS             | Fail ❌           |
 | GITLEAKS                   | Fail ❌           |
 | GHERKIN                    | Fail ❌           |
+| GIT_COMMITLINT             | Fail ❌           |
 | GIT_MERGE_CONFLICT_MARKERS | Fail ❌           |
 | GO                         | Fail ❌           |
 | GO_MODULES                 | Fail ❌           |

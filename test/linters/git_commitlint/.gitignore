@@ -1,0 +1,8 @@
+# Commitlint test cases are dynamically generated Git repositories with
+# purpose-crafted commit messages. So:
+
+# Ignore all files in this dir...
+*
+
+# ... except for this one.
+!.gitignore
