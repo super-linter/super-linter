@@ -69,6 +69,16 @@
       "type": "bind"
     },
     {
+      "source": "${localWorkspaceFolder}/dependencies/composer/composer.json",
+      "target": "/php-composer/composer.json",
+      "type": "bind"
+    },
+    {
+      "source": "${localWorkspaceFolder}/dependencies/composer/composer.lock",
+      "target": "/php-composer/composer.lock",
+      "type": "bind"
+    },
+    {
       "source": "${localWorkspaceFolder}/scripts/bash-exec.sh",
       "target": "/usr/bin/bash-exec",
       "type": "bind"

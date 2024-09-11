@@ -151,6 +151,8 @@ open-shell-super-linter-container: ## Open a shell in the Super-linter container
 		-v "$(CURDIR)/dependencies/Gemfile":/Gemfile \
 		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
 		-v "$(CURDIR)/dependencies/package.json":/package.json \
+		-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
+		-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
 		-v "$(CURDIR)/scripts/bash-exec.sh":/usr/bin/bash-exec \
 		-v "$(CURDIR)/scripts/git-merge-conflict-markers.sh":/usr/bin/git-merge-conflict-markers \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)

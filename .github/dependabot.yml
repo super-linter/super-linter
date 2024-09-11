@@ -1,7 +1,4 @@
 ---
-#################################
-# GitHub Dependabot Config info #
-#################################
 version: 2
 updates:
   - package-ecosystem: "devcontainers"
@@ -88,6 +85,15 @@ updates:
     commit-message:
       prefix: "ci(dev-npm)"
     directory: "/dev-dependencies"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 100
+
+  - package-ecosystem: "composer"
+    commit-message:
+      prefix: "deps(php)"
+    directories:
+      - dependencies/composer
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 100
