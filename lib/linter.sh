@@ -686,7 +686,7 @@ Header
 UpdateLoopsForImage
 
 # Print linter versions
-info "$(cat "${VERSION_FILE}")"
+info "This version of Super-linter includes the following tools:\n$(cat "${VERSION_FILE}")"
 
 #######################
 # Get GitHub Env Vars #
