@@ -2,8 +2,8 @@
 
 :wave: Hi there!
 
-We're thrilled that you'd like to contribute to this project.
-Your help is essential for keeping it great.
+We're thrilled that you'd like to contribute to this project. Your help is
+essential for keeping it great.
 
 ## Submitting a pull request
 
@@ -16,7 +16,8 @@ request being accepted:
 - Keep your change as focused as possible. If there are multiple changes you
   would like to make that are not dependent upon each other, submit them as
   separate pull requests.
-- Write [descriptive commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+- Write
+  [descriptive commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 Draft pull requests are also welcome to get feedback early on, or if there is
 something blocking you.

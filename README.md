@@ -1,7 +1,7 @@
 # Super-Linter
 
-Super-linter is a ready-to-run collection of linters and code analyzers, to
-help validate and fix your source code.
+Super-linter is a ready-to-run collection of linters and code analyzers, to help
+validate and fix your source code.
 
 The goal of super-linter is to help you establish best practices and consistent
 formatting across multiple programming languages, and ensure developers are
@@ -10,9 +10,11 @@ adhering to those conventions.
 Super-linter analyzes source code files using several tools, and reports the
 issues that those tools find as console output, and as
 [GitHub Actions status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks).
-You can also [run super-linter outside GitHub Actions](#run-super-linter-outside-github-actions).
+You can also
+[run super-linter outside GitHub Actions](#run-super-linter-outside-github-actions).
 
-Super-linter can also help you [fix linting and formatting issues](#fix-linting-and-formatting-issues).
+Super-linter can also help you
+[fix linting and formatting issues](#fix-linting-and-formatting-issues).
 
 Super-linter is licensed under an
 [MIT License](https://github.com/super-linter/super-linter/blob/main/LICENSE).
@@ -29,9 +31,9 @@ Here are some notable Super-linter features:
   [most widely used](https://github.com/super-linter/super-linter/network/dependents)
   and [forked](https://github.com/super-linter/super-linter/forks) project of
   this kind.
-- **Runs linters in parallel**: Since `v6`, Super-linter parallelizes
-  running all the included linters, leading to scanning massive code
-  repositories in seconds.
+- **Runs linters in parallel**: Since `v6`, Super-linter parallelizes running
+  all the included linters, leading to scanning massive code repositories in
+  seconds.
 - **Highly curated set of linters**: Avoid including linters that implement
   overlapping checks, reducing bloat, scanning times, and container image size.
 - **Run on GitHub Actions or other environments**: Super-linter runs
@@ -114,11 +116,14 @@ Super-linter supports the following tools:
 
 ## Get started
 
-More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s) available
+More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s)
+available
 
 To run super-linter as a GitHub Action, you do the following:
 
-1. Create a new [GitHub Actions workflow](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows) in your repository with the following content:
+1. Create a new
+   [GitHub Actions workflow](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows)
+   in your repository with the following content:
 
    ```yaml
    ---
@@ -182,8 +187,10 @@ For more information, see
 
 Super-Linter provides several variants:
 
-- `standard`: `super-linter/super-linter@[VERSION]`: includes all supported linters.
-- `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported linters except:
+- `standard`: `super-linter/super-linter@[VERSION]`: includes all supported
+  linters.
+- `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported
+  linters except:
 
   - Rustfmt
   - Rust Clippy
@@ -419,9 +426,13 @@ You can configure Super-linter using the following environment variables:
 The `VALIDATE_[LANGUAGE]` variables work as follows:
 
 - super-linter runs all supported linters by default.
-- If you set any of the `VALIDATE_[LANGUAGE]` variables to `true`, super-linter defaults to leaving any unset variable to false (only validate those languages).
-- If you set any of the `VALIDATE_[LANGUAGE]` variables to `false`, super-linter defaults to leaving any unset variable to true (only exclude those languages).
-- If you set any of the `VALIDATE_[LANGUAGE]` variables to both `true` and `false`, super-linter fails reporting an error.
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to `true`, super-linter
+  defaults to leaving any unset variable to false (only validate those
+  languages).
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to `false`, super-linter
+  defaults to leaving any unset variable to true (only exclude those languages).
+- If you set any of the `VALIDATE_[LANGUAGE]` variables to both `true` and
+  `false`, super-linter fails reporting an error.
 
 For more information about reusing Super-linter configuration across
 environments, see
@@ -430,9 +441,9 @@ environments, see
 ## Fix linting and formatting issues
 
 All the linters and formatters that Super-linter runs report errors if they
-detect linting or formatting issues without modifying your source
-code (_check only mode_). Check only mode is the default for all linters and
-formatters that Super-linter runs.
+detect linting or formatting issues without modifying your source code (_check
+only mode_). Check only mode is the default for all linters and formatters that
+Super-linter runs.
 
 Certain linters and formatters support automatically fixing issues in your code
 (_fix mode_). You can enable fix mode for a particular linter or formatter by
@@ -467,8 +478,8 @@ configuration that doesn't ignore the `yaml` rule.
 ### Fix mode file and directory ownership
 
 When fix mode is enabled, some linters and formatters don't maintain the
-original file or directory ownership, and use the user that Super-linter uses
-to run the linter or formatter.
+original file or directory ownership, and use the user that Super-linter uses to
+run the linter or formatter.
 
 ### Fix mode examples and workflows
 
@@ -487,6 +498,7 @@ automatically fix linting and formatting issues, commit changes in the current
 branch, and push commits to the remote branch tracking the current branch
 whenever a pull request is created or updated:
 
+<!-- prettier-ignore-start -->
 ```yaml
 ---
 name: Lint
@@ -538,6 +550,7 @@ jobs:
           commit_user_name: super-linter
           commit_user_email: super-linter@super-linter.dev
 ```
+<!-- prettier-ignore-end -->
 
 This example uses
 [GitHub Actions automatic token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication)
@@ -570,10 +583,11 @@ To work around these limitations, you do the following:
 
 ## Configure linters
 
-Super-linter provides default configurations for some linters in the [`TEMPLATES/`](./TEMPLATES/)
-directory. You can customize the configuration for the linters that support
-this by placing your own configuration files in the `LINTER_RULES_PATH`
-directory. `LINTER_RULES_PATH` is relative to the `DEFAULT_WORKSPACE` directory.
+Super-linter provides default configurations for some linters in the
+[`TEMPLATES/`](./TEMPLATES/) directory. You can customize the configuration for
+the linters that support this by placing your own configuration files in the
+`LINTER_RULES_PATH` directory. `LINTER_RULES_PATH` is relative to the
+`DEFAULT_WORKSPACE` directory.
 
 Super-linter supports customizing the name of these configuration files. For
 more information, refer to [Configure super-linter](#configure-super-linter).
@@ -601,15 +615,17 @@ For example:
 
 - Lint only the `src` folder: `FILTER_REGEX_INCLUDE: .*src/.*`
 - Do not lint files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*`
-- Do not lint JavaScript files inside test folder: `FILTER_REGEX_EXCLUDE: .*test/.*.js`
-- Do not lint files named `gradlew` and JavaScript files inside a specific directory: `.*/gradlew|.*/specific/directory/*.js`
+- Do not lint JavaScript files inside test folder:
+  `FILTER_REGEX_EXCLUDE: .*test/.*.js`
+- Do not lint files named `gradlew` and JavaScript files inside a specific
+  directory: `.*/gradlew|.*/specific/directory/*.js`
 
 <!-- This `README.md` has both markers in the text, so it is considered not generated. -->
 
 Additionally, if you set `IGNORE_GENERATED_FILES` to `true`, super-linter
-ignores any file with `@generated` string in it, unless the file
-also has `@not-generated` marker. For example, super-linter considers a file
-with the following contents as generated:
+ignores any file with `@generated` string in it, unless the file also has
+`@not-generated` marker. For example, super-linter considers a file with the
+following contents as generated:
 
 ```bash
 #!/bin/sh
@@ -665,7 +681,8 @@ env:
 
 If you need to inject a SSL certificate into the trust store, you can use the
 `SSL_CERT_SECRET` variable. The value of that variable is expected to be the
-path to the files that contains a CA that can be used to validate the certificate:
+path to the files that contains a CA that can be used to validate the
+certificate:
 
 ```yaml
 env:
@@ -674,15 +691,15 @@ env:
 
 ## Outputs
 
-Super-linter supports generating several outputs, and also supports exposing
-the output of individual linters.
+Super-linter supports generating several outputs, and also supports exposing the
+output of individual linters.
 
 ### Summary outputs
 
 Super-linter writes a summary of all the checks:
 
-- If `SAVE_SUPER_LINTER_SUMMARY` is set to `true`, Super-linter writes
-  a summary to
+- If `SAVE_SUPER_LINTER_SUMMARY` is set to `true`, Super-linter writes a summary
+  to
   `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/${SUPER_LINTER_SUMMARY_FILE_NAME}`.
 - If `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` is set to `true`, Super-linter writes
   a GitHub Actions job summary. Setting `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` to
@@ -697,8 +714,8 @@ The summary output of previous Super-linter runs is not preserved.
 ### Super-linter outputs
 
 If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its output
-to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter`, so you
-can further process it, if needed.
+to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter`, so
+you can further process it, if needed.
 
 Most outputs are in JSON format.
 

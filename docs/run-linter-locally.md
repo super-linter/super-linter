@@ -5,7 +5,8 @@ runtime engine to run the super-linter container image.
 
 ## Run super-linter Locally
 
-You can run the container locally with the following configuration options to run your code:
+You can run the container locally with the following configuration options to
+run your code:
 
 ```bash
 docker run \
@@ -16,16 +17,21 @@ docker run \
   ghcr.io/super-linter/super-linter:latest
 ```
 
-This example uses the `latest` container image version. If you're trying to reproduce
-an issue, or running super-linter as part of your CI pipeline, we recommend that
-you **refer to a specific version instead**.
+This example uses the `latest` container image version. If you're trying to
+reproduce an issue, or running super-linter as part of your CI pipeline, we
+recommend that you **refer to a specific version instead**.
 
 Notes:
 
-- To run against a single file you can use: `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
-- You need to pass the `RUN_LOCAL` option to bypass some of the GitHub Actions checks, as well as the mapping of your local codebase to `/tmp/lint`.
-- If you want to override the `/tmp/lint` folder, you can set the `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer to scan.
-- You can add as many configuration options as needed. Configuration options are documented in the [readme](../README.md#configure-super-linter).
+- To run against a single file you can use:
+  `docker run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true -v /path/to/local/codebase/file:/tmp/lint/file ghcr.io/super-linter/super-linter`
+- You need to pass the `RUN_LOCAL` option to bypass some of the GitHub Actions
+  checks, as well as the mapping of your local codebase to `/tmp/lint`.
+- If you want to override the `/tmp/lint` folder, you can set the
+  `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer
+  to scan.
+- You can add as many configuration options as needed. Configuration options are
+  documented in the [readme](../README.md#configure-super-linter).
 
 ### GitLab
 
@@ -48,7 +54,8 @@ Note that this is a high-level example that you should customize for your needs.
 
 ### Run on Codespaces and Visual Studio Code
 
-This repository provides a DevContainer for [remote development](https://code.visualstudio.com/docs/remote/containers).
+This repository provides a DevContainer for
+[remote development](https://code.visualstudio.com/docs/remote/containers).
 
 ## Share Environment variables between environments
 
@@ -122,8 +129,8 @@ make
 
 You can run the test suite against an arbitrary super-linter container image.
 
-Here is an example that runs the test suite against the `v5.4.3` container
-image version.
+Here is an example that runs the test suite against the `v5.4.3` container image
+version.
 
 ```shell
 CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v5.4.3" \

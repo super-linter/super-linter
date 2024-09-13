@@ -154,6 +154,7 @@ run_test_case_use_find_and_ignore_gitignored_files() {
   ignore_test_cases
   COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
   COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM="true")
+  COMMAND_TO_RUN+=(--env VALIDATE_JAVASCRIPT_STANDARD="false")
 }
 
 run_test_cases_save_super_linter_output() {
