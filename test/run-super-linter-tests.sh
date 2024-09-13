@@ -290,7 +290,10 @@ COMMAND_TO_RUN+=("${SUPER_LINTER_TEST_CONTAINER_URL}")
 declare -i EXPECTED_EXIT_CODE
 EXPECTED_EXIT_CODE=${EXPECTED_EXIT_CODE:-0}
 
+# Remove leftovers before instrumenting the test because other tests might have
+# created temporary files and caches
 RemoveTestLeftovers
+RemoveTestLogsAndSuperLinterOutputs
 
 if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]]; then
   debug "Creating GitHub Actions step summary file: ${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}"
@@ -306,6 +309,10 @@ set +o errexit
 SUPER_LINTER_EXIT_CODE=$?
 # Enable the errexit option that we check later
 set -o errexit
+
+# Remove leftovers after runnint tests because we don't want other tests
+# to consider them
+RemoveTestLeftovers
 
 debug "Super-linter workspace: ${SUPER_LINTER_WORKSPACE}"
 debug "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"

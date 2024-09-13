@@ -63,6 +63,8 @@ control "super-linter-installed-packages" do
     "php83-curl",
     "php83-dom",
     "php83-iconv",
+    "php83-pecl-igbinary",
+    "php83-intl",
     "php83-mbstring",
     "php83-openssl",
     "php83-phar",

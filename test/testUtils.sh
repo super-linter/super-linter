@@ -192,38 +192,30 @@ RemoveTestLeftovers() {
   LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
   LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
   LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
+  LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/dependencies/composer/vendor")
   # Delete leftovers in pwd in case the workspace is not pwd
   LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/target")
   LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/bad/Cargo.lock")
   LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/target")
   LEFTOVERS_TO_CLEAN+=("$(pwd)/${LINTERS_TEST_CASE_DIRECTORY}/rust_clippy/good/Cargo.lock")
-
-  # These variables are defined after configuring test cases, so they might not
-  # have been initialized yet
-  if [[ -v LOG_FILE_PATH ]] &&
-    [[ -n "${LOG_FILE_PATH}" ]]; then
-    LEFTOVERS_TO_CLEAN+=("${LOG_FILE_PATH}")
-    LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${LOG_FILE_PATH}")")
-  fi
-
-  if [[ -v SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH ]] &&
-    [[ -n "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" ]]; then
-    LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")
-    LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")")
-  fi
-
-  if [[ -v SUPER_LINTER_MAIN_OUTPUT_PATH ]] &&
-    [[ -n "${SUPER_LINTER_MAIN_OUTPUT_PATH}" ]]; then
-    LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_MAIN_OUTPUT_PATH}")
-    LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_MAIN_OUTPUT_PATH}")")
-  fi
-
-  if [[ -v SUPER_LINTER_SUMMARY_FILE_PATH ]] &&
-    [[ -n "${SUPER_LINTER_SUMMARY_FILE_PATH}" ]]; then
-    LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
-    LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_SUMMARY_FILE_PATH}")")
-  fi
+  LEFTOVERS_TO_CLEAN+=("$(pwd)/dependencies/composer/vendor")
 
   debug "Cleaning eventual test leftovers: ${LEFTOVERS_TO_CLEAN[*]}"
-  sudo rm -rfv "${LEFTOVERS_TO_CLEAN[@]}"
+  sudo rm -rf "${LEFTOVERS_TO_CLEAN[@]}"
+}
+
+RemoveTestLogsAndSuperLinterOutputs() {
+  local LEFTOVERS_TO_CLEAN=()
+  LEFTOVERS_TO_CLEAN+=("${LOG_FILE_PATH}")
+  LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")
+  LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_MAIN_OUTPUT_PATH}")
+  LEFTOVERS_TO_CLEAN+=("${SUPER_LINTER_SUMMARY_FILE_PATH}")
+
+  LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${LOG_FILE_PATH}")")
+  LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}")")
+  LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_MAIN_OUTPUT_PATH}")")
+  LEFTOVERS_TO_CLEAN+=("$(pwd)/$(basename "${SUPER_LINTER_SUMMARY_FILE_PATH}")")
+
+  debug "Cleaning eventual test logs and Super-linter outputs leftovers: ${LEFTOVERS_TO_CLEAN[*]}"
+  sudo rm -rf "${LEFTOVERS_TO_CLEAN[@]}"
 }

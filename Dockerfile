@@ -30,6 +30,7 @@ FROM ghcr.io/clj-kondo/clj-kondo:2024.08.01-alpine AS clj-kondo
 FROM dart:3.5.1-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:8.0.401-alpine3.20 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 AS powershell
+FROM composer/composer:2.7.6 AS php-composer
 
 FROM python:3.12.5-alpine3.20 AS clang-format
 
@@ -118,6 +119,13 @@ FROM powershell AS powershell-installer
 # when copying PowerShell stuff in the main image
 RUN echo "${PS_INSTALL_FOLDER}" > /tmp/PS_INSTALL_FOLDER
 
+FROM php-composer AS php-linters
+
+COPY dependencies/composer/composer.json dependencies/composer/composer.lock /app/
+
+RUN composer update \
+    && composer audit
+
 FROM python:3.12.5-alpine3.20 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
@@ -164,6 +172,8 @@ RUN apk add --no-cache \
     php83-curl \
     php83-dom \
     php83-iconv \
+    php83-pecl-igbinary \
+    php83-intl \
     php83-mbstring \
     php83-openssl \
     php83-phar \
@@ -230,13 +240,12 @@ WORKDIR /
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
-##############################
-# Install Phive dependencies #
-##############################
-COPY dependencies/phive.xml /phive.xml
-COPY scripts/install-phive.sh /
-RUN /install-phive.sh \
-    && rm -rfv /install-phive.sh /phive.xml
+############################
+# Install PHP dependencies #
+############################
+ENV PHP_COMPOSER_PACKAGES_DIR=/php-composer/vendor
+COPY --from=php-composer /usr/bin/composer /usr/bin/
+COPY --from=php-linters /app/vendor "${PHP_COMPOSER_PACKAGES_DIR}"
 
 ##################
 # Install ktlint #
@@ -416,6 +425,7 @@ ENV PATH="${PATH}:/venvs/yq/bin"
 ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
+ENV PATH="${PATH}:${PHP_COMPOSER_PACKAGES_DIR}/bin"
 
 # Renovate optionally requires re2, and will warn if its not present
 # Setting this envoronment variable disables this warning.
