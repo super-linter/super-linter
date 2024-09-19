@@ -137,6 +137,14 @@ declare -l REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT
 REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT="${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT:-"false"}"
 export REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT
 
+declare -l ENABLE_COMMITLINT_STRICT_MODE
+ENABLE_COMMITLINT_STRICT_MODE="${ENABLE_COMMITLINT_STRICT_MODE:-"false"}"
+export ENABLE_COMMITLINT_STRICT_MODE
+
+declare -l ENFORCE_COMMITLINT_CONFIGURATION_CHECK
+ENFORCE_COMMITLINT_CONFIGURATION_CHECK="${ENFORCE_COMMITLINT_CONFIGURATION_CHECK:-"false"}"
+export ENFORCE_COMMITLINT_CONFIGURATION_CHECK
+
 # Define private output paths early because cleanup depends on those being defined
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
@@ -781,6 +789,10 @@ if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" =
   fi
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."
+fi
+
+if ! ValidateCommitlintConfiguration "${GITHUB_WORKSPACE}" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"; then
+  fatal "Error while validating commitlint configuration"
 fi
 
 ValidateDeprecatedVariables

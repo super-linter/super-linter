@@ -175,6 +175,7 @@ test-actions-runner-debug: ## Run super-linter with ACTIONS_RUNNER_DEBUG=true
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -187,6 +188,7 @@ test-actions-steps-debug: ## Run super-linter with ACTIONS_STEPS_DEBUG=true
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -199,6 +201,7 @@ test-runner-debug: ## Run super-linter with RUNNER_DEBUG=1
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -211,6 +214,7 @@ test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/.github":/tmp/lint/.github \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -227,6 +231,7 @@ test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
 		-e DEFAULT_WORKSPACE=/tmp/not-default-workspace \
 		-e USE_FIND_ALGORITHM=true \
 		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v $(CURDIR)/.github:/tmp/not-default-workspace/.github \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -433,6 +438,7 @@ test-linter-commands: ## Test linterCommands
 # Run this test against a small directory because we're only interested in
 # loading default configuration files. The directory that we run super-linter
 # against should not be .github because that includes default linter rules.
+# Disable commitlint because the workspace is not a Git repository.
 .PHONY: test-default-config-files
 test-default-config-files: ## Test default configuration files loading
 	docker run \
@@ -441,6 +447,7 @@ test-default-config-files: ## Test default configuration files loading
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -454,6 +461,7 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
+		-e VALIDATE_GIT_COMMITLINT=false \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -591,19 +599,6 @@ build-dev-container-image: docker-dev-container-build-check ## Build commit lint
 		--build-arg GID=$(shell id -g) \
 		--build-arg UID=$(shell id -u) \
 		-t ${DEV_CONTAINER_URL} "${CURDIR}/dev-dependencies"
-
-.PHONY: lint-commits
-lint-commits: build-dev-container-image ## Lint commits
-	docker run \
-		-v "$(CURDIR):/source-repository" \
-		--rm \
-		${DEV_CONTAINER_URL} \
-		commitlint \
-		--config .github/linters/commitlint.config.js \
-		--cwd /source-repository \
-		--from ${FROM_INTERVAL_COMMITLINT} \
-		--to ${TO_INTERVAL_COMMITLINT} \
-		--verbose
 
 .PHONY: release-please-dry-run
 release-please-dry-run: build-dev-container-image check-github-token ## Run release-please in dry-run mode to preview the release pull request

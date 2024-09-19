@@ -5,8 +5,10 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "BASH_EXEC_IGNORE_LIBRARIES" "${BASH_EXEC_IGNORE_LIBRARIES}"
   ValidateBooleanVariable "CREATE_LOG_FILE" "${CREATE_LOG_FILE}"
   ValidateBooleanVariable "DISABLE_ERRORS" "${DISABLE_ERRORS}"
+  ValidateBooleanVariable "ENABLE_COMMITLINT_STRICT_MODE" "${ENABLE_COMMITLINT_STRICT_MODE}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY" "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
+  ValidateBooleanVariable "ENFORCE_COMMITLINT_CONFIGURATION_CHECK" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"
   ValidateBooleanVariable "FIX_MODE_ENABLED" "${FIX_MODE_ENABLED}"
   ValidateBooleanVariable "FIX_MODE_TEST_CASE_RUN" "${FIX_MODE_TEST_CASE_RUN}"
   ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
@@ -372,6 +374,37 @@ function ValidateSuperLinterSummaryOutputPath() {
     return 1
   fi
   debug "Super-linter summary ouput path passed validation"
+}
+
+ValidateCommitlintConfiguration() {
+  local GITHUB_WORKSPACE="${1}"
+  local ENFORCE_COMMITLINT_CONFIGURATION_CHECK="${2}"
+
+  debug "Validating Commitlint configuration. Enforce commitlint configuration check: ${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"
+
+  if [[ "${VALIDATE_GIT_COMMITLINT}" == "true" ]]; then
+    local COMMITLINT_VERSION_CHECK_OUTPUT
+    COMMITLINT_VERSION_CHECK_OUTPUT="$(commitlint --cwd "${GITHUB_WORKSPACE}" --last)"
+    local COMMITLINT_EXIT_CODE=$?
+    debug "Commitlint configuration check output:\n${COMMITLINT_VERSION_CHECK_OUTPUT}"
+    # Commitlint exits with 9 if no configuration file is avaialble.
+    # Ref: https://github.com/conventional-changelog/commitlint/pull/4143
+    # Ref: https://commitlint.js.org/reference/cli.html
+    # Set this here so we can reuse this variable for tests
+    COMMITLINT_EXIT_CODE_CONFIGURATION_ERROR=9
+    if [[ ${COMMITLINT_EXIT_CODE} -eq ${COMMITLINT_EXIT_CODE_CONFIGURATION_ERROR} ]]; then
+      warn "Git commit message validation with commitlint is enabled, but no commitlint configuration file is available. Disabling commitlint. To suppress this message, either disable Git commit validation by setting VALIDATE_GIT_COMMITLINT to false in your Super-linter configuration, or provide a commitlint configuration file."
+      VALIDATE_GIT_COMMITLINT="false"
+      export VALIDATE_GIT_COMMITLINT
+
+      if [[ "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}" == "true" ]]; then
+        info "Commitlint configuration check enforcement is enabled. Exiting with an error because the commitlint configuration check failed."
+        return 1
+      fi
+    fi
+  else
+    debug "Commitlint is disabled. Skipping commitlint configuration validation"
+  fi
 }
 
 function WarnIfVariableIsSet() {

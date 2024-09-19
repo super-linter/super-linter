@@ -55,6 +55,7 @@ source "lib/functions/linterCommands.sh"
 # because some tests modify LINTER_COMMANDS_xxx variables
 BASE_LINTER_COMMANDS_ARRAY_ANSIBLE=("${LINTER_COMMANDS_ARRAY_ANSIBLE[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
+BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=("${LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GO_MODULES=("${LINTER_COMMANDS_ARRAY_GO_MODULES[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
@@ -119,6 +120,27 @@ function JscpdCommandTest() {
   EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+EnableCommitlintStrictModeCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  ENABLE_COMMITLINT_STRICT_MODE="true"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}" "${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GIT_COMMITLINT" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
 
@@ -372,6 +394,7 @@ AddOptionsToCommandTest() {
 LinterCommandPresenceTest
 IgnoreGitIgnoredFilesJscpdCommandTest
 JscpdCommandTest
+EnableCommitlintStrictModeCommandTest
 GitleaksCommandTest
 GitleaksCommandCustomLogLevelTest
 InitInputConsumeCommandsTest

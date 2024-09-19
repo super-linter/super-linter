@@ -4,12 +4,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# Default log level
-# shellcheck disable=SC2034
-LOG_LEVEL="DEBUG"
-
 # shellcheck source=/dev/null
-source "lib/functions/log.sh"
+source "test/testUtils.sh"
 
 # shellcheck source=/dev/null
 source "lib/functions/validation.sh"
@@ -525,6 +521,46 @@ CheckIfFixModeIsEnabledTest() {
 
 }
 
+ValidateCommitlintConfigurationTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  local ENFORCE_COMMITLINT_CONFIGURATION_CHECK="false"
+
+  VALIDATE_GIT_COMMITLINT="false"
+  if ! ValidateCommitlintConfiguration "${GITHUB_WORKSPACE}" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"; then
+    fatal "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT} should have passed validation"
+  else
+    debug "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT} passed validation as expected"
+  fi
+
+  VALIDATE_GIT_COMMITLINT="true"
+  if ! ValidateCommitlintConfiguration "${GITHUB_WORKSPACE}" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"; then
+    fatal "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT}, ENFORCE_COMMITLINT_CONFIGURATION_CHECK: ${ENFORCE_COMMITLINT_CONFIGURATION_CHECK} should have passed validation"
+  else
+    debug "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT}, ENFORCE_COMMITLINT_CONFIGURATION_CHECK: ${ENFORCE_COMMITLINT_CONFIGURATION_CHECK} passed validation as expected"
+  fi
+  if [[ "${VALIDATE_GIT_COMMITLINT}" == "true" ]]; then
+    fatal "VALIDATE_GIT_COMMITLINT should have been false"
+  else
+    debug "VALIDATE_GIT_COMMITLINT is ${VALIDATE_GIT_COMMITLINT} as expected"
+  fi
+
+  VALIDATE_GIT_COMMITLINT="true"
+  ENFORCE_COMMITLINT_CONFIGURATION_CHECK="true"
+  if ValidateCommitlintConfiguration "${GITHUB_WORKSPACE}" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"; then
+    fatal "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT}, ENFORCE_COMMITLINT_CONFIGURATION_CHECK: ${ENFORCE_COMMITLINT_CONFIGURATION_CHECK} should have failed validation"
+  else
+    debug "VALIDATE_GIT_COMMITLINT: ${VALIDATE_GIT_COMMITLINT}, ENFORCE_COMMITLINT_CONFIGURATION_CHECK: ${ENFORCE_COMMITLINT_CONFIGURATION_CHECK} failed validation as expected"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerSuccessTest
 IsUnsignedIntegerFailureTest
 ValidateDeprecatedVariablesTest
@@ -536,3 +572,4 @@ ValidateValidationVariablesTest
 ValidationVariablesExportTest
 ValidateCheckModeAndFixModeVariablesTest
 CheckIfFixModeIsEnabledTest
+ValidateCommitlintConfigurationTest
