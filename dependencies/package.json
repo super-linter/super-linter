@@ -12,7 +12,7 @@
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "asl-validator": "^3.8.3",
     "commitlint": "^19.5.0",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.8.0",
