@@ -308,6 +308,7 @@ GetGitHubVars() {
         debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there no commit before the initial commit"
       else
         debug "${GITHUB_SHA} is not the initial commit"
+        local -i GITHUB_PUSH_COMMIT_COUNT
         GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
         if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
           fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
@@ -315,7 +316,7 @@ GetGitHubVars() {
         info "Successfully found GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
 
         # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
-        debug "Get the hash of the commit to start the diff from from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
+        debug "Get the hash of the commit to start the diff from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
 
         debug "Check if the commit is a merge commit by checking if it has more than one parent"
         local GIT_COMMIT_PARENTS_COUNT
@@ -330,8 +331,13 @@ GetGitHubVars() {
           debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
           GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
           debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
-          GITHUB_PUSH_COMMIT_COUNT=$((GITHUB_PUSH_COMMIT_COUNT - 1))
-          debug "Remove one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
+
+          if [ ${GITHUB_PUSH_COMMIT_COUNT} -gt 0 ]; then
+            GITHUB_PUSH_COMMIT_COUNT=$((GITHUB_PUSH_COMMIT_COUNT - 1))
+            debug "Remove one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
+          else
+            debug "Don't subtract one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
+          fi
         else
           debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
         fi
@@ -657,12 +663,18 @@ cleanup() {
     fi
 
     if [ "${SAVE_SUPER_LINTER_OUTPUT}" = "true" ]; then
-      if [ -e "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}" ]; then
-        debug "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH} already exists. Deleting it before moving the new output directory there."
-        rm -fr "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+      debug "Super-linter output directory path is set to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH:-"not set"}"
+      if [[ -n "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH:-}" ]]; then
+        debug "Super-linter output directory path is set to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+        if [ -e "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}" ]; then
+          debug "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH} already exists. Deleting it before moving the new output directory there."
+          rm -fr "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+        fi
+        debug "Moving Super-linter output from ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH} to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+        mv "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}" "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
+      else
+        debug "Skip moving the private Super-linter output directory (${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}) to the output directory because the Super-linter output destination directory path is not initialized yet"
       fi
-      debug "Moving Super-linter output from ${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH} to ${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
-      mv "${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}" "${SUPER_LINTER_OUTPUT_DIRECTORY_PATH}"
     else
       debug "Skip moving the private Super-linter output directory (${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}) to the output directory (${SUPER_LINTER_OUTPUT_DIRECTORY_PATH:-"not initialized yet"})"
     fi
