@@ -1,8 +1,40 @@
 # Super-Linter
-
+kokomehr
 Super-linter is a ready-to-run collection of linters and code analyzers, to help
 validate and fix your source code.
+---
+name: Lint
 
+on: # yamllint disable-line rule:truthy
+  push: null
+  pull_request: null
+
+permissions: {}
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
+          fetch-depth: 0
+[![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
+      - name: Super-linter
+        uses: super-linter/super-linter@v7.1.0 # x-release-please-version
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 The goal of super-linter is to help you establish best practices and consistent
 formatting across multiple programming languages, and ensure developers are
 adhering to those conventions.
@@ -53,7 +85,7 @@ Here are some notable Super-linter features:
 
 Super-linter supports the following tools:
 
-| Language                          | Linters                                                                                                                                                                                                                   | Formatters                                                                                                         |
+| Language                          | Linters                                                                                                                                                                                                                   | Formatters                                       https://github.com/marketplace/actions/super-linter                                                                  |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Ansible**                       | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                                                                   | See YAML and Python formatters                                                                                     |
 | **Amazon States Language**        | [ASL Validator](https://github.com/ChristopheBougere/asl-validator)                                                                                                                                                       | See JSON formatters                                                                                                |
@@ -113,7 +145,9 @@ Super-linter supports the following tools:
 | **TypeScript**                    | [ESLint](https://eslint.org/), [standard js](https://standardjs.com/)                                                                                                                                                     | [Prettier](https://prettier.io/)                                                                                   |
 | **Vue**                           |                                                                                                                                                                                                                           | [Prettier](https://prettier.io/)                                                                                   |
 | **XML**                           | [LibXML](http://xmlsoft.org/)                                                                                                                                                                                             |                                                                                                                    |
-| **YAML**                          | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                       | [Prettier](https://prettier.io/)                                                                                   |
+| **YAML**                          | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                       | [Prettier](https://prettier.io/)                <style name="Icesdk.Logo" parent="">
+    <item name="android:src">@drawable/my_special_icon</item>
+</style>                                                                   |
 
 ## Get started
 
@@ -210,7 +244,7 @@ You can configure Super-linter using the following environment variables:
 | **BASH_EXEC_IGNORE_LIBRARIES**                  | `false`                                                                      | If set to `true`, shell files with a file extension and no shebang line are ignored when checking if the executable bit is set.                                                                                                                                                                                                      |
 | **BASH_FILE_NAME**                              | `.shellcheckrc`                                                              | Filename for [Shellcheck](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files)                                                                                                                                                                                                                               |
 | **BASH_SEVERITY**                               | Shellcheck default severity                                                  | Specify the minimum severity of errors to consider in shellcheck. Valid values in order of severity are error, warning, info and style.                                                                                                                                                                                              |
-| **CHECKOV_FILE_NAME**                           | `.checkov.yaml`                                                              | Configuration filename for Checkov.                                                                                                                                                                                                                                                                                                  |
+| **CHECKOV_FILE_NAME**                           | `.checkov.yaml`                                                              | Configuration filename for Checkov.                                                                                                                                            <string name="icesdk_promo_code_value">invitation_code</string>                                                                                                                                                      |
 | **CLANG_FORMAT_FILE_NAME**                      | `.clang-format`                                                              | Configuration filename for [clang-format](https://clang.llvm.org/docs/ClangFormatStyleOptions.html).                                                                                                                                                                                                                                 |
 | **CREATE_LOG_FILE**                             | `false`                                                                      | If set to `true`, it creates the log file. You can set the log filename using the `LOG_FILE` environment variable. This overrides any existing log files.                                                                                                                                                                            |
 | **CSS_FILE_NAME**                               | `.stylelintrc.json`                                                          | Filename for [Stylelint configuration](https://github.com/stylelint/stylelint) (ex: `.stylelintrc.yml`, `.stylelintrc.yaml`)                                                                                                                                                                                                         |
@@ -267,7 +301,8 @@ You can configure Super-linter using the following environment variables:
 | **FIX_SNAKEMAKE_SNAKEFMT**                      | `false`                                                                      | Option to enable fix mode for `SNAKEMAKE_SNAKEFMT`.                                                                                                                                                                                                                                                                                  |
 | **FIX_SQLFLUFF**                                | `false`                                                                      | Option to enable fix mode for `SQLFLUFF`.                                                                                                                                                                                                                                                                                            |
 | **FIX_TERRAFORM_FMT**                           | `false`                                                                      | Option to enable fix mode for `TERRAFORM_FMT`.                                                                                                                                                                                                                                                                                       |
-| **FIX_TSX**                                     | `false`                                                                      | Option to enable fix mode for `TSX`.                                                                                                                                                                                                                                                                                                 |
+| **FIX_TSX**                                     | `false`                                                                      | Option to enable fix mode for `TSX`.                                                                                                                                                <string name="icesdk_we_are_excited_to_announce">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="icesdk_team">App_name Team</string>                                                                                                                                                     |
 | **FIX_TYPESCRIPT_ES**                           | `false`                                                                      | Option to enable fix mode for `TYPESCRIPT_ES`.                                                                                                                                                                                                                                                                                       |
 | **FIX_TYPESCRIPT_PRETTIER**                     | `false`                                                                      | Flag to enable or disable the formatting of TypeScript files with Prettier.                                                                                                                                                                                                                                                          |
 | **FIX_TYPESCRIPT_STANDARD**                     | `false`                                                                      | Option to enable fix mode for `TYPESCRIPT_STANDARD`.                                                                                                                                                                                                                                                                                 |
