@@ -147,6 +147,7 @@ control "super-linter-installed-commands" do
     { linter_name: "asl-validator"},
     { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "black"},
+    { linter_name: "blacken-docs"},
     { linter_name: "cfn-lint"},
     { linter_name: "checkov"},
     { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
@@ -181,6 +182,7 @@ control "super-linter-installed-commands" do
     { linter_name: "lua", version_option: "-v"},
     { linter_name: "markdownlint"},
     { linter_name: "mypy"},
+    { linter_name: "nbqa"},
     { linter_name: "npm-groovy-lint"},
     { linter_name: "perl"},
     { linter_name: "php"},
@@ -405,12 +407,14 @@ control "super-linter-installed-pypi-packages" do
   pypi_packages = [
     "ansible-lint",
     "black",
+    "blacken-docs"
     "cfn-lint",
     "checkov",
     "cpplint",
     "flake8",
     "isort",
     "mypy",
+    "nbqa",
     "pyink",
     "pylint",
     "ruff",
@@ -512,6 +516,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.luacheckrc",
     "/action/lib/.automation/.markdown-lint.yml",
     "/action/lib/.automation/.mypy.ini",
+    "/action/lib/.automation/.nbqa.toml",
     "/action/lib/.automation/.openapirc.yml",
     "/action/lib/.automation/.perlcriticrc",
     "/action/lib/.automation/.powershell-psscriptanalyzer.psd1",
