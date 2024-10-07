@@ -26,15 +26,14 @@ GEM
     logger (1.6.0)
     minitest (5.25.1)
     parallel (1.26.3)
-    parser (3.3.4.2)
+    parser (3.3.5.0)
       ast (~> 2.4.1)
       racc
     racc (1.8.1)
     rack (3.1.7)
     rainbow (3.1.1)
     regexp_parser (2.9.2)
-    rexml (3.3.6)
-      strscan
+    rexml (3.3.8)
     rubocop (1.65.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -46,7 +45,7 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.1)
+    rubocop-ast (1.32.3)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
@@ -76,7 +75,7 @@ GEM
       rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.13.0)
     securerandom (0.3.1)
-    standard (1.40.0)
+    standard (1.40.1)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
       rubocop (~> 1.65.0)
@@ -88,10 +87,9 @@ GEM
     standard-performance (1.4.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.21.0)
-    strscan (3.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.5.0)
+    unicode-display_width (2.6.0)
 
 PLATFORMS
   x86_64-linux
@@ -108,7 +106,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.0.3)
   rubocop-rspec_rails (~> 2.30)
-  standard (~> 1.35)
+  standard (~> 1.40)
 
 BUNDLED WITH
   2.5.9
