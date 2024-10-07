@@ -55,6 +55,12 @@
 | MARKDOWN                     | Pass ✅           |
 | MARKDOWN_PRETTIER            | Pass ✅           |
 | NATURAL_LANGUAGE             | Pass ✅           |
+| NBQA_BLACK                   | Pass ✅           |
+| NBQA_PYLINT                  | Pass ✅           |
+| NBQA_FLAKE8                  | Pass ✅           |
+| NBQA_ISORT                   | Pass ✅           |
+| NBQA_MYPY                    | Pass ✅           |
+| NBQA_RUFF                    | Pass ✅           |
 | OPENAPI                      | Pass ✅           |
 | PERL                         | Pass ✅           |
 | PHP_BUILTIN                  | Pass ✅           |
