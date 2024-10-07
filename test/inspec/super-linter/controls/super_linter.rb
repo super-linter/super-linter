@@ -516,7 +516,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.luacheckrc",
     "/action/lib/.automation/.markdown-lint.yml",
     "/action/lib/.automation/.mypy.ini",
-    "/action/lib/.automation/.nbqa.toml",
+    "/action/lib/.automation/.jupyter-nbqa.toml",
     "/action/lib/.automation/.openapirc.yml",
     "/action/lib/.automation/.perlcriticrc",
     "/action/lib/.automation/.powershell-psscriptanalyzer.psd1",
