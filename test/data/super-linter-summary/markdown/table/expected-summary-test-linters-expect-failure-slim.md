@@ -50,6 +50,12 @@
 | MARKDOWN                   | Fail ❌           |
 | MARKDOWN_PRETTIER          | Fail ❌           |
 | NATURAL_LANGUAGE           | Fail ❌           |
+| NBQA_BLACK                 | Fail ❌           |
+| NBQA_PYLINT                | Fail ❌           |
+| NBQA_FLAKE8                | Fail ❌           |
+| NBQA_ISORT                 | Fail ❌           |
+| NBQA_MYPY                  | Fail ❌           |
+| NBQA_RUFF                  | Fail ❌           |
 | OPENAPI                    | Fail ❌           |
 | PERL                       | Fail ❌           |
 | PHP_BUILTIN                | Fail ❌           |
