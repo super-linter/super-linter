@@ -435,6 +435,12 @@ ENV RENOVATE_X_IGNORE_RE2="true"
 ENV VERSION_FILE="/action/linterVersions.txt"
 RUN mkdir /action
 
+# create the homedir, so that in case it is not present (like on action-runner-controller based selfhosted runners)
+# we do not fail at setting /github/workspace as a safe git directory
+# ignore multiple consecutive RUN statements in hadolint, since this is a separate thought to the previous block
+# hadolint ignore=DL3059
+RUN mkdir -p /github/home
+
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image AS slim
