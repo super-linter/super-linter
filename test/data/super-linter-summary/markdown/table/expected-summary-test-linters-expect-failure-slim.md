@@ -57,6 +57,7 @@
 | PHP_PHPSTAN                | Fail ❌           |
 | PHP_PSALM                  | Fail ❌           |
 | PROTOBUF                   | Fail ❌           |
+| PYTHON_BLACKEN_DOCS        | Fail ❌           |
 | PYTHON_BLACK               | Fail ❌           |
 | PYTHON_PYLINT              | Fail ❌           |
 | PYTHON_FLAKE8              | Fail ❌           |
