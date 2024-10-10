@@ -1,5 +1,43 @@
 # Changelog
 
+## [7.2.0](https://github.com/super-linter/super-linter/compare/v7.1.0...v7.2.0) (2024-10-10)
+
+
+### 🚀 Features
+
+* allow passing custom options to rust clippy ([#6094](https://github.com/super-linter/super-linter/issues/6094)) ([05d4d4e](https://github.com/super-linter/super-linter/commit/05d4d4e128d14b9c442efdd6617237b0e2ded1c1)), closes [#4001](https://github.com/super-linter/super-linter/issues/4001)
+* implement a linter to check git conflicts ([#6113](https://github.com/super-linter/super-linter/issues/6113)) ([e0d8b4f](https://github.com/super-linter/super-linter/commit/e0d8b4fb2f36c890b71c5e14fd46715098c3c6f1))
+* lint commit messages with commitlint ([#6118](https://github.com/super-linter/super-linter/issues/6118)) ([5d6e3fc](https://github.com/super-linter/super-linter/commit/5d6e3fcecc2b2906eedc2d15495fd6027bf51a9e))
+* optionally remove color codes from output ([#6095](https://github.com/super-linter/super-linter/issues/6095)) ([94920ff](https://github.com/super-linter/super-linter/commit/94920ffcc743ebba42205db26cc4bad16f309498)), closes [#5540](https://github.com/super-linter/super-linter/issues/5540)
+
+
+### 🐛 Bugfixes
+
+* correctly load custom linter commands ([#6085](https://github.com/super-linter/super-linter/issues/6085)) ([ad0ff68](https://github.com/super-linter/super-linter/commit/ad0ff68c526c79ca1fd61d0225db7662571b8037)), closes [#6084](https://github.com/super-linter/super-linter/issues/6084)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump standard from 1.40.0 to 1.40.1 in /dependencies ([#6239](https://github.com/super-linter/super-linter/issues/6239)) ([75fb343](https://github.com/super-linter/super-linter/commit/75fb3434dd8338fac1b5616db1f5a564498370ad))
+* **docker:** bump composer/composer from 2.7.6 to 2.8.1 ([#6237](https://github.com/super-linter/super-linter/issues/6237)) ([95b56f1](https://github.com/super-linter/super-linter/commit/95b56f1a2700dfcadc3b5ebda9b7647da95f57ea))
+* **docker:** bump golang from 1.23.0-alpine to 1.23.2-alpine ([#6236](https://github.com/super-linter/super-linter/issues/6236)) ([2a42244](https://github.com/super-linter/super-linter/commit/2a42244b37895c51a495f1248397bb69bea918c7))
+* **docker:** bump python from 3.12.5-alpine3.20 to 3.12.7-alpine3.20 ([#6235](https://github.com/super-linter/super-linter/issues/6235)) ([c97987c](https://github.com/super-linter/super-linter/commit/c97987ce2af88ca69ee2aa614e198878c23438ff))
+* **npm:** bump next from 14.2.6 to 14.2.11 in /dependencies ([#6157](https://github.com/super-linter/super-linter/issues/6157)) ([b526eff](https://github.com/super-linter/super-linter/commit/b526effb8b749bc8290f1c5ec05fdc75a1ba110b))
+
+
+### 🧰 Maintenance
+
+* configure terraform formatting ([#6092](https://github.com/super-linter/super-linter/issues/6092)) ([dd33b47](https://github.com/super-linter/super-linter/commit/dd33b476f887b19d84d51613d3cec227d5d9d963))
+* devcontainer, docs, prettier config ([#6119](https://github.com/super-linter/super-linter/issues/6119)) ([170cabf](https://github.com/super-linter/super-linter/commit/170cabf92b9ee74a38a2c035cdd48e63d8d42153))
+* explain how to configure the path ([#6244](https://github.com/super-linter/super-linter/issues/6244)) ([0208181](https://github.com/super-linter/super-linter/commit/02081814d883fc3401b8d3bdd67ec66ea91ad7f0))
+* **github-actions:** bump actions/upload-artifact from 4.3.6 to 4.4.0 ([#6097](https://github.com/super-linter/super-linter/issues/6097)) ([00b52f3](https://github.com/super-linter/super-linter/commit/00b52f36b6e86ab2277b50526b088bc294e25e54))
+* group dependency updates prs ([#6247](https://github.com/super-linter/super-linter/issues/6247)) ([fed55ef](https://github.com/super-linter/super-linter/commit/fed55ef448dfd4e8002af9367092c4f1b7a55f37))
+* improve ignore/exclude examples ([#6088](https://github.com/super-linter/super-linter/issues/6088)) ([c9116aa](https://github.com/super-linter/super-linter/commit/c9116aac88ffa6f475029ec2c9b2a30c365a8ce7))
+* manage php dependencies ([#6139](https://github.com/super-linter/super-linter/issues/6139)) ([72a4884](https://github.com/super-linter/super-linter/commit/72a4884f7a37b7409b5ef2c7ab29fb552636bb74))
+* simplified awk usage for version extraction ([#5893](https://github.com/super-linter/super-linter/issues/5893)) ([dd646d7](https://github.com/super-linter/super-linter/commit/dd646d7b7feddf1e7660f8cf080a2c924ef657db))
+* update link to jscpd documentation ([#6117](https://github.com/super-linter/super-linter/issues/6117)) ([058b923](https://github.com/super-linter/super-linter/commit/058b9239d47af5565e7c80f55ec097259ad00673))
+* update rollup ([#6203](https://github.com/super-linter/super-linter/issues/6203)) ([c4fe4da](https://github.com/super-linter/super-linter/commit/c4fe4da1f3bda7fd0f28bf92dd357fb9feeef5bf)), closes [#6197](https://github.com/super-linter/super-linter/issues/6197)
+
 ## [7.1.0](https://github.com/super-linter/super-linter/compare/v7.0.0...v7.1.0) (2024-08-27)
 
 
