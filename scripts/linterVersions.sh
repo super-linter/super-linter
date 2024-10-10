@@ -64,7 +64,6 @@ LINTER_NAMES_ARRAY['R']="R"
 LINTER_NAMES_ARRAY['RAKU']="raku"
 LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
-LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
 LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
 LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
@@ -81,6 +80,10 @@ LINTER_NAMES_ARRAY['TYPESCRIPT_PRETTIER']="prettier"
 LINTER_NAMES_ARRAY['TYPESCRIPT_STANDARD']="ts-standard"
 LINTER_NAMES_ARRAY['XML']="xmllint"
 LINTER_NAMES_ARRAY['YAML']="yamllint"
+
+if [[ "${TARGETARCH}" == "amd64" ]]; then
+  LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
+fi
 
 if [[ "${IMAGE}" == "standard" ]]; then
   LINTER_NAMES_ARRAY['ARM']="arm-ttk"
