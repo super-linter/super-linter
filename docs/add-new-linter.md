@@ -46,6 +46,9 @@ new tool needs in the `PATH`, and the expected version command:
        ENV PATH="${PATH}:/venvs/<name-of-tool>/bin"
        ```
 
+    1. Add the new dependencies to the `pip` group in the DependaBot
+       configuration file (`.github/dependabot.yaml`).
+
   - If there are npm packages, update `dependencies/package.json` and
     `dependencies/package-lock.json`. by adding the new packages.
   - If there are Ruby Gems, update `dependencies/Gemfile` and
@@ -73,6 +76,7 @@ new tool needs in the `PATH`, and the expected version command:
 
     3. Update the `dependencies` section in
        `dependencies/<name-of-tool>/build.gradle` to install your dependencies.
+
     4. Add the following content to the `Dockerfile`:
 
        ```dockerfile
@@ -91,15 +95,9 @@ new tool needs in the `PATH`, and the expected version command:
        )"
        ```
 
-    6. Add the new to DependaBot configuration:
-
-       ```yaml
-       - package-ecosystem: "gradle"
-         directory: "/dependencies/<name-of-tool>"
-         schedule:
-           interval: "weekly"
-         open-pull-requests-limit: 10
-       ```
+    6. Add the new tool dependencies to the DependaBot configuration in the
+       `directories` list and in the `java-gradle` group of the `gradle` package
+       ecosystem.
 
   - If there is a container (Docker) image:
 
@@ -115,6 +113,9 @@ new tool needs in the `PATH`, and the expected version command:
        ```sh
        COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
        ```
+
+    1. Add the new dependency to the `docker` group in the DependaBot
+       configuration file.
 
 ## Run the new tool
 
