@@ -34,8 +34,18 @@ new tool needs in the `PATH`, and the expected version command:
 
 - Install the tool by pointing to specific package or container image versions:
 
-  - If there are PyPi packages, create a text file named
-    `dependencies/python/<name-of-tool>.txt` and list the packages there.
+  - If there are PyPi packages:
+
+    1. Create a text file named `dependencies/python/<name-of-tool>.txt` and
+       list the packages there.
+    1. Add the new virtual environment `bin` directory to the `PATH` in the
+       Super-linter `Dockerfile`, in the `Configure Environment` section.
+       Example:
+
+       ```dockerfile
+       ENV PATH="${PATH}:/venvs/<name-of-tool>/bin"
+       ```
+
   - If there are npm packages, update `dependencies/package.json` and
     `dependencies/package-lock.json`. by adding the new packages.
   - If there are Ruby Gems, update `dependencies/Gemfile` and
