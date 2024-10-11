@@ -3,13 +3,13 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.25.8",
     "@babel/preset-react": "^7.25.7",
-    "@babel/preset-typescript": "^7.24.7",
+    "@babel/preset-typescript": "^7.25.7",
     "@coffeelint/cli": "^5.2.11",
     "@commitlint/config-conventional": "^19.5.0",
     "@ibm/tekton-lint": "^1.1.0",
     "@react-native/eslint-config": "^0.75.4",
     "@stoplight/spectral-cli": "^6.13.1",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
     "asl-validator": "^3.8.3",
     "commitlint": "^19.5.0",
     "eslint": "^8.57.1",
@@ -53,6 +53,6 @@
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^5.2.12",
     "ts-standard": "^12.0.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.3"
   }
 }
