@@ -4,25 +4,16 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# Default log level
-# shellcheck disable=SC2034
-LOG_LEVEL="DEBUG"
-
 # shellcheck source=/dev/null
-source "lib/functions/log.sh"
-
-DEFAULT_BRANCH=main
-
-git config --global init.defaultBranch "${DEFAULT_BRANCH}"
-git config --global user.email "super-linter@example.com"
-git config --global user.name "Super-linter"
+source "test/testUtils.sh"
 
 function InitGitRepositoryAndCommitFiles() {
   local REPOSITORY_PATH="${1}" && shift
   local FILES_TO_COMMIT="${1}" && shift
   local COMMIT_FILE_INITIAL_COMMIT="${1}"
 
-  git -C "${REPOSITORY_PATH}" init
+  initialize_git_repository "${REPOSITORY_PATH}"
+
   if [[ "${COMMIT_FILE_INITIAL_COMMIT}" == "true" ]]; then
     touch "${REPOSITORY_PATH}/test-initial-commit.txt"
     git -C "${REPOSITORY_PATH}" add .
@@ -50,9 +41,6 @@ function InitGitRepositoryAndCommitFiles() {
 function GenerateFileDiffOneFileTest() {
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
-  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-  trap "rm -fr '${GITHUB_WORKSPACE}'" EXIT
-  debug "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 
   local FILES_TO_COMMIT="${FILES_TO_COMMIT:-1}"
   local COMMIT_FILE_INITIAL_COMMIT="${COMMIT_FILE_INITIAL_COMMIT:-"false"}"
@@ -92,9 +80,6 @@ function GenerateFileDiffInitialCommitPushEventTest() {
 function GenerateFileDiffTwoFilesTest() {
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
-  # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-  trap "rm -fr '${GITHUB_WORKSPACE}'" EXIT
-  debug "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
   local FILES_TO_COMMIT=2
 
   InitGitRepositoryAndCommitFiles "${GITHUB_WORKSPACE}" ${FILES_TO_COMMIT} "false"

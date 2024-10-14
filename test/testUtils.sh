@@ -96,6 +96,8 @@ LANGUAGES_NOT_IN_SLIM_IMAGE=(
   "RUST_CLIPPY"
 )
 
+DEFAULT_BRANCH="main"
+
 function AssertArraysElementsContentMatch() {
   local ARRAY_1_VARIABLE_NAME="${1}"
   local ARRAY_2_VARIABLE_NAME="${2}"
