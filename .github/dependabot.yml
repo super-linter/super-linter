@@ -140,6 +140,7 @@ updates:
           - cpplint
           - flake8
           - isort
+          - mypy
           - pyink
           - pylint
           - ruff
