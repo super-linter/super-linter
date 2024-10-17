@@ -12,8 +12,6 @@ TEST_FUNCTION_NAME="${2}"
 SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
 debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
-DEFAULT_BRANCH="main"
-
 COMMAND_TO_RUN=(docker run --rm -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
 
 ignore_test_cases() {

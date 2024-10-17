@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <string>
+
 using std::string;
 
 int main() {
