@@ -58,6 +58,7 @@
 | PHP_PSALM                  | Pass ✅           |
 | PROTOBUF                   | Pass ✅           |
 | PYTHON_BLACK               | Pass ✅           |
+| PYTHON_BLACKEN_DOCS        | Pass ✅           |
 | PYTHON_PYLINT              | Pass ✅           |
 | PYTHON_FLAKE8              | Pass ✅           |
 | PYTHON_ISORT               | Pass ✅           |

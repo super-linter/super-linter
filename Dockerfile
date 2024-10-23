@@ -408,6 +408,7 @@ COPY --from=dotenv-linter /dotenv-linter /usr/bin/
 #########################
 ENV PATH="${PATH}:/venvs/ansible-lint/bin"
 ENV PATH="${PATH}:/venvs/black/bin"
+ENV PATH="${PATH}:/venvs/blacken-docs/bin"
 ENV PATH="${PATH}:/venvs/checkov/bin"
 ENV PATH="${PATH}:/venvs/cfn-lint/bin"
 ENV PATH="${PATH}:/venvs/cpplint/bin"

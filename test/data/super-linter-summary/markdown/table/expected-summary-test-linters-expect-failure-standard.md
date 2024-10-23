@@ -64,6 +64,7 @@
 | POWERSHELL                   | Fail ❌           |
 | PROTOBUF                     | Fail ❌           |
 | PYTHON_BLACK                 | Fail ❌           |
+| PYTHON_BLACKEN_DOCS          | Fail ❌           |
 | PYTHON_PYLINT                | Fail ❌           |
 | PYTHON_FLAKE8                | Fail ❌           |
 | PYTHON_ISORT                 | Fail ❌           |

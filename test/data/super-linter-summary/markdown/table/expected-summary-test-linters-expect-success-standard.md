@@ -63,6 +63,7 @@
 | PHP_PSALM                    | Pass ✅           |
 | POWERSHELL                   | Pass ✅           |
 | PROTOBUF                     | Pass ✅           |
+| PYTHON_BLACKEN_DOCS          | Pass ✅           |
 | PYTHON_BLACK                 | Pass ✅           |
 | PYTHON_PYLINT                | Pass ✅           |
 | PYTHON_FLAKE8                | Pass ✅           |

@@ -29,6 +29,7 @@
 | NATURAL_LANGUAGE    | Pass ✅           |
 | PROTOBUF            | Fail ❌           |
 | PYTHON_BLACK        | Pass ✅           |
+| PYTHON_BLACKEN_DOCS | Pass ✅           |
 | PYTHON_ISORT        | Pass ✅           |
 | PYTHON_PYINK        | Pass ✅           |
 | PYTHON_RUFF         | Pass ✅           |

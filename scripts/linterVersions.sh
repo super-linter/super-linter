@@ -62,6 +62,7 @@ LINTER_NAMES_ARRAY['PHP_PHPSTAN']="phpstan"
 LINTER_NAMES_ARRAY['PHP_PSALM']="psalm"
 LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
 LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
+LINTER_NAMES_ARRAY['PYTHON_BLACKEN_DOCS']="blacken-docs"
 LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
 LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
 LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
@@ -231,7 +232,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ "${LINTER}" == "yamllint" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   # Some linters don't support a "get version" command
-  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
+  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "blacken-docs" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
     GET_VERSION_CMD="Version command not supported"
   else
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"

@@ -1,0 +1,1 @@
+blacken-docs==1.19.0
