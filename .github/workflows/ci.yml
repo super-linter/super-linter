@@ -252,7 +252,14 @@ jobs:
       - set-build-metadata
       - build-container-image
       - build-test-suite-matrix
+    # Don't fail the entire test suite when:
+    # - Running npm audit, so we can see test results even if there are
+    #   vulnerable dependencies that might be unrelated to the PR
+    # - Running the 'test' target because it runs all the tests, including the
+    #   ones that are allowed to fail
+    continue-on-error: ${{ matrix.test-case == 'npm-audit' || matrix.test-case == 'test' }}
     strategy:
+      fail-fast: true
       matrix:
         test-case: ${{ fromJson(needs.build-test-suite-matrix.outputs.matrix) }}
         images:
