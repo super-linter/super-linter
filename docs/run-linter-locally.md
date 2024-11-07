@@ -30,6 +30,10 @@ Notes:
 - If you want to override the `/tmp/lint` folder, you can set the
   `DEFAULT_WORKSPACE` environment variable to point to the folder you'd prefer
   to scan.
+- If the default branch for your repository doesn't match the default, you can
+  use the `DEFAULT_BRANCH` variable to set the default branch. For more
+  information about the default value of the `DEFAULT_BRANCH` variable, see the
+  [README](../README.md).
 - You can add as many configuration options as needed. Configuration options are
   documented in the [readme](../README.md#configure-super-linter).
 
