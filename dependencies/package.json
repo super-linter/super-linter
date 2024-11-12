@@ -8,7 +8,7 @@
     "@commitlint/config-conventional": "^19.5.0",
     "@ibm/tekton-lint": "^1.1.0",
     "@react-native/eslint-config": "^0.75.4",
-    "@stoplight/spectral-cli": "^6.13.1",
+    "@stoplight/spectral-cli": "^6.14.0",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "asl-validator": "^3.8.4",
     "commitlint": "^19.5.0",
