@@ -35,34 +35,34 @@ FROM composer/composer:2.8.1 AS php-composer
 FROM python:3.12.7-alpine3.20 AS clang-format
 
 RUN apk add --no-cache \
-    build-base \
-    clang17 \
-    cmake \
-    git \
-    llvm17-dev \
-    ninja-is-really-ninja
+  build-base \
+  clang17 \
+  cmake \
+  git \
+  llvm17-dev \
+  ninja-is-really-ninja
 
 WORKDIR /tmp
 RUN git clone \
-    --branch "llvmorg-$(llvm-config  --version)" \
-    --depth 1 \
-    https://github.com/llvm/llvm-project.git
+  --branch "llvmorg-$(llvm-config  --version)" \
+  --depth 1 \
+  https://github.com/llvm/llvm-project.git
 
 WORKDIR /tmp/llvm-project/llvm/build
 RUN cmake \
-    -G Ninja \
-    -DCMAKE_BUILD_TYPE=MinSizeRel \
-    -DLLVM_BUILD_STATIC=ON \
-    -DLLVM_ENABLE_PROJECTS=clang \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ .. \
-    && ninja clang-format \
-    && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
+  -G Ninja \
+  -DCMAKE_BUILD_TYPE=MinSizeRel \
+  -DLLVM_BUILD_STATIC=ON \
+  -DLLVM_ENABLE_PROJECTS=clang \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=clang++ .. \
+  && ninja clang-format \
+  && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
 FROM python:3.12.7-alpine3.20 AS python-builder
 
 RUN apk add --no-cache \
-    bash
+  bash
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
@@ -73,8 +73,8 @@ RUN ./build-venvs.sh && rm -rfv /stage
 FROM python:3.12.7-alpine3.20 AS npm-builder
 
 RUN apk add --no-cache \
-    bash \
-    nodejs-current
+  bash \
+  nodejs-current
 
 # The chown fixes broken uid/gid in ast-types-flow dependency
 # (see https://github.com/super-linter/super-linter/issues/3901)
@@ -84,12 +84,12 @@ RUN apk add --no-cache \
 # apk del --no-network --purge .node-build-deps
 COPY dependencies/package.json dependencies/package-lock.json /
 RUN apk add --no-cache --virtual .node-build-deps \
-    npm \
-    && npm audit \
-    && npm install --strict-peer-deps \
-    && npm cache clean --force \
-    && chown -R "$(id -u)":"$(id -g)" node_modules \
-    && rm -rfv package.json package-lock.json
+  npm \
+  && npm audit \
+  && npm install --strict-peer-deps \
+  && npm cache clean --force \
+  && chown -R "$(id -u)":"$(id -g)" node_modules \
+  && rm -rfv package.json package-lock.json
 
 FROM tflint AS tflint-plugins
 
@@ -105,8 +105,8 @@ RUN --mount=type=secret,id=GITHUB_TOKEN GITHUB_TOKEN=$(cat /run/secrets/GITHUB_T
 FROM python:3.12.7-alpine3.20 AS lintr-installer
 
 RUN apk add --no-cache \
-    bash \
-    R
+  bash \
+  R
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
@@ -124,20 +124,20 @@ FROM php-composer AS php-linters
 COPY dependencies/composer/composer.json dependencies/composer/composer.lock /app/
 
 RUN composer update \
-    && composer audit
+  && composer audit
 
 FROM python:3.12.7-alpine3.20 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
-    com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
-    com.github.actions.icon="code" \
-    com.github.actions.color="red" \
-    maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
-    org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
-    org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
-    org.opencontainers.image.description="A collection of code linters and analyzers."
+  com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
+  com.github.actions.icon="code" \
+  com.github.actions.color="red" \
+  maintainer="@Hanse00, @ferrarimarco, @zkoppert" \
+  org.opencontainers.image.authors="Super Linter Contributors: https://github.com/super-linter/super-linter/graphs/contributors" \
+  org.opencontainers.image.url="https://github.com/super-linter/super-linter" \
+  org.opencontainers.image.source="https://github.com/super-linter/super-linter" \
+  org.opencontainers.image.documentation="https://github.com/super-linter/super-linter" \
+  org.opencontainers.image.description="A collection of code linters and analyzers."
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
@@ -145,7 +145,7 @@ ARG TARGETARCH
 # Install bash first so we can use it
 # This is also a super-linter runtime dependency
 RUN apk add --no-cache \
-    bash
+  bash
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
@@ -153,78 +153,78 @@ SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 # Npm is not a runtime dependency but we need it to ensure that npm packages
 # are installed when we run the test suite.
 RUN apk add --no-cache \
-    ca-certificates \
-    coreutils \
-    curl \
-    file \
-    git \
-    git-lfs \
-    jq \
-    libxml2-utils \
-    npm \
-    nodejs-current \
-    openjdk17-jre \
-    openssh-client \
-    parallel \
-    perl \
-    php83 \
-    php83-ctype \
-    php83-curl \
-    php83-dom \
-    php83-iconv \
-    php83-pecl-igbinary \
-    php83-intl \
-    php83-mbstring \
-    php83-openssl \
-    php83-phar \
-    php83-simplexml \
-    php83-tokenizer \
-    php83-xmlwriter \
-    R \
-    rakudo \
-    ruby \
-    zef
+  ca-certificates \
+  coreutils \
+  curl \
+  file \
+  git \
+  git-lfs \
+  jq \
+  libxml2-utils \
+  npm \
+  nodejs-current \
+  openjdk17-jre \
+  openssh-client \
+  parallel \
+  perl \
+  php83 \
+  php83-ctype \
+  php83-curl \
+  php83-dom \
+  php83-iconv \
+  php83-pecl-igbinary \
+  php83-intl \
+  php83-mbstring \
+  php83-openssl \
+  php83-phar \
+  php83-simplexml \
+  php83-tokenizer \
+  php83-xmlwriter \
+  R \
+  rakudo \
+  ruby \
+  zef
 
 # Install Ruby tools
 COPY dependencies/Gemfile dependencies/Gemfile.lock /
 RUN apk add --no-cache --virtual .ruby-build-deps \
-    gcc \
-    make \
-    musl-dev \
-    ruby-bundler \
-    ruby-dev \
-    ruby-rdoc \
-    && bundle install \
-    && apk del --no-network --purge .ruby-build-deps \
-    && rm -rf Gemfile Gemfile.lock
+  gcc \
+  make \
+  musl-dev \
+  ruby-bundler \
+  ruby-dev \
+  ruby-rdoc \
+  && bundle install \
+  && apk del --no-network --purge .ruby-build-deps \
+  && rm -rf Gemfile Gemfile.lock
 
 ##############################
 # Installs Perl dependencies #
 ##############################
 RUN apk add --no-cache --virtual .perl-build-deps \
-    gcc \
-    make \
-    musl-dev \
-    perl-dev \
-    && curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ \
-    | perl - -nq --no-wget \
-    Perl::Critic \
-    Perl::Critic::Bangs \
-    Perl::Critic::Community \
-    Perl::Critic::Lax \
-    Perl::Critic::More \
-    Perl::Critic::StricterSubs \
-    Perl::Critic::Swift \
-    Perl::Critic::Tics \
-    && rm -rf /root/.cpanm \
-    && apk del --no-network --purge .perl-build-deps
+  gcc \
+  make \
+  musl-dev \
+  perl-dev \
+  && curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ \
+  | perl - -nq --no-wget \
+  Perl::Critic \
+  Perl::Critic::Bangs \
+  Perl::Critic::Community \
+  Perl::Critic::Lax \
+  Perl::Critic::More \
+  Perl::Critic::StricterSubs \
+  Perl::Critic::Swift \
+  Perl::Critic::Tics \
+  && rm -rf /root/.cpanm \
+  && apk del --no-network --purge .perl-build-deps
 
 #################
 # Install glibc #
 #################
 COPY scripts/install-glibc.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-glibc.sh \
-    && rm -rf /install-glibc.sh
+  && rm -rf /install-glibc.sh
 
 ##################
 # Install chktex #
@@ -253,7 +253,7 @@ COPY --from=php-linters /app/vendor "${PHP_COMPOSER_PACKAGES_DIR}"
 COPY scripts/install-ktlint.sh /
 COPY dependencies/ktlint /ktlint
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh \
-    && rm -rfv /install-ktlint.sh /ktlint
+  && rm -rfv /install-ktlint.sh /ktlint
 
 ######################
 # Install CheckStyle #
@@ -261,7 +261,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-ktlint.sh \
 COPY scripts/install-checkstyle.sh /
 COPY dependencies/checkstyle /checkstyle
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh \
-    && rm -rfv /install-checkstyle.sh /checkstyle
+  && rm -rfv /install-checkstyle.sh /checkstyle
 
 ##############################
 # Install google-java-format #
@@ -269,7 +269,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-checkstyle.sh \
 COPY scripts/install-google-java-format.sh /
 COPY dependencies/google-java-format /google-java-format
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-google-java-format.sh \
-    && rm -rfv /install-google-java-format.sh /google-java-format
+  && rm -rfv /install-google-java-format.sh /google-java-format
 
 ################
 # Install Helm #
@@ -443,7 +443,7 @@ FROM base_image AS slim
 ENV IMAGE="slim"
 COPY scripts/linterVersions.sh /
 RUN /linterVersions.sh \
-    && rm -rfv /linterVersions.sh
+  && rm -rfv /linterVersions.sh
 
 ###################################
 # Copy linter configuration files #
@@ -454,7 +454,7 @@ COPY TEMPLATES /action/lib/.automation
 # Ref: https://scalameta.org/scalafmt/docs/configuration.html#version
 COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
 RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
-    && rm /tmp/scalafmt-version.txt
+  && rm /tmp/scalafmt-version.txt
 
 #################################
 # Copy super-linter executables #
@@ -468,8 +468,8 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 
 LABEL org.opencontainers.image.created=$BUILD_DATE \
-    org.opencontainers.image.revision=$BUILD_REVISION \
-    org.opencontainers.image.version=$BUILD_VERSION
+  org.opencontainers.image.revision=$BUILD_REVISION \
+  org.opencontainers.image.version=$BUILD_VERSION
 
 ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION
@@ -488,8 +488,8 @@ ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
 # Install super-linter runtime dependencies
 RUN apk add --no-cache \
-    rust-clippy \
-    rustfmt
+  rust-clippy \
+  rustfmt
 
 ###################################
 # Install DotNet and Dependencies #
@@ -508,11 +508,11 @@ COPY --from=powershell /opt/microsoft/powershell /opt/microsoft/powershell
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 ARG PSSA_VERSION='1.22.0'
 RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
-    && echo "PS_INSTALL_FOLDER: ${PS_INSTALL_FOLDER}" \
-    && ln -s "${PS_INSTALL_FOLDER}/pwsh" /usr/bin/pwsh \
-    && chmod a+x,o-w "${PS_INSTALL_FOLDER}/pwsh" \
-    && pwsh -c "Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force" \
-    && rm -rf /tmp/PS_INSTALL_FOLDER
+  && echo "PS_INSTALL_FOLDER: ${PS_INSTALL_FOLDER}" \
+  && ln -s "${PS_INSTALL_FOLDER}/pwsh" /usr/bin/pwsh \
+  && chmod a+x,o-w "${PS_INSTALL_FOLDER}/pwsh" \
+  && pwsh -c "Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force" \
+  && rm -rf /tmp/PS_INSTALL_FOLDER
 
 #############################################################
 # Install Azure Resource Manager Template Toolkit (arm-ttk) #
@@ -524,7 +524,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-a
 ENV IMAGE="standard"
 COPY scripts/linterVersions.sh /
 RUN /linterVersions.sh \
-    && rm -rfv /linterVersions.sh
+  && rm -rfv /linterVersions.sh
 
 ###################################
 # Copy linter configuration files #
@@ -535,7 +535,7 @@ COPY TEMPLATES /action/lib/.automation
 # Ref: https://scalameta.org/scalafmt/docs/configuration.html#version
 COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
 RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
-    && rm /tmp/scalafmt-version.txt
+  && rm /tmp/scalafmt-version.txt
 
 #################################
 # Copy super-linter executables #
@@ -549,8 +549,8 @@ ARG BUILD_REVISION
 ARG BUILD_VERSION
 
 LABEL org.opencontainers.image.created=$BUILD_DATE \
-    org.opencontainers.image.revision=$BUILD_REVISION \
-    org.opencontainers.image.version=$BUILD_VERSION
+  org.opencontainers.image.revision=$BUILD_REVISION \
+  org.opencontainers.image.version=$BUILD_VERSION
 
 ENV BUILD_DATE=$BUILD_DATE
 ENV BUILD_REVISION=$BUILD_REVISION

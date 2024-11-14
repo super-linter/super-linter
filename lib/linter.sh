@@ -270,7 +270,7 @@ GetGitHubVars() {
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
-      debug "${GITHUB_EVENT_PATH} contents: $(cat "${GITHUB_EVENT_PATH}")"
+      debug "${GITHUB_EVENT_PATH} contents:\n$(cat "${GITHUB_EVENT_PATH}")"
     fi
 
     if [ -z "${GITHUB_SHA:-}" ]; then
