@@ -117,6 +117,12 @@ updates:
           - dart
           - powershell
           - composer/composer
+      docker-base-images:
+        applies-to: version-updates
+        patterns:
+          # Move the base image to a dedicated group to avoid blocking other
+          # dependencies in the case of wheel not being available for more
+          # recent Python version
           - python
 
   - package-ecosystem: "pip"
