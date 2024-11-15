@@ -7,30 +7,30 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.19.2 AS terrascan
-FROM alpine/terragrunt:1.9.5 AS terragrunt
+FROM tenable/terrascan:1.19.9 AS terrascan
+FROM alpine/terragrunt:1.9.8 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
-FROM ghcr.io/terraform-linters/tflint:v0.53.0 AS tflint
+FROM ghcr.io/terraform-linters/tflint:v0.54.0 AS tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.7 AS kubeconfrm
-FROM alpine/helm:3.15.4 AS helm
-FROM golang:1.23.2-alpine AS golang
-FROM golangci/golangci-lint:v1.60.3 AS golangci-lint
-FROM goreleaser/goreleaser:v2.2.0 AS goreleaser
+FROM alpine/helm:3.16.2 AS helm
+FROM golang:1.23.3-alpine AS golang
+FROM golangci/golangci-lint:v1.62.0 AS golangci-lint
+FROM goreleaser/goreleaser:v2.4.5 AS goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.4.3 AS kustomize
-FROM hashicorp/terraform:1.9.5 AS terraform
+FROM hashicorp/terraform:1.9.8 AS terraform
 FROM koalaman/shellcheck:v0.10.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.0.3 AS editorconfig-checker
-FROM mvdan/shfmt:v3.9.0 AS shfmt
-FROM rhysd/actionlint:1.7.1 AS actionlint
+FROM mvdan/shfmt:v3.10.0 AS shfmt
+FROM rhysd/actionlint:1.7.4 AS actionlint
 FROM scalameta/scalafmt:v3.8.3 AS scalafmt
-FROM zricethezav/gitleaks:v8.18.4 AS gitleaks
+FROM zricethezav/gitleaks:v8.21.2 AS gitleaks
 FROM yoheimuta/protolint:0.50.5 AS protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2024.08.01-alpine AS clj-kondo
-FROM dart:3.5.1-sdk AS dart
-FROM mcr.microsoft.com/dotnet/sdk:8.0.401-alpine3.20 AS dotnet-sdk
+FROM ghcr.io/clj-kondo/clj-kondo:2024.11.14-alpine AS clj-kondo
+FROM dart:3.5.4-sdk AS dart
+FROM mcr.microsoft.com/dotnet/sdk:9.0.100-alpine3.20 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.4-alpine-3.17 AS powershell
-FROM composer/composer:2.8.1 AS php-composer
+FROM composer/composer:2.8.2 AS php-composer
 
 FROM python:3.12.7-alpine3.20 AS clang-format
 
