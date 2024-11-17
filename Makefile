@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check test-lib inspec lint-codebase fix-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linters test-linters-fix-mode ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linters test-linters-fix-mode ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -164,6 +164,17 @@ validate-container-image-labels: ## Validate container image labels
 		$(BUILD_DATE) \
 		$(BUILD_REVISION) \
 		$(BUILD_VERSION)
+
+.PHONY: npm-audit
+npm-audit: ## Run npm audit to check for known vulnerable dependencies
+	docker run $(DOCKER_FLAGS) \
+		--entrypoint /bin/bash \
+		--rm \
+		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
+		-v "$(CURDIR)/dependencies/package.json":/package.json \
+		--workdir / \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		-c "npm audit"
 
 # For some cases, mount a directory that doesn't have too many files to keep tests short
 

@@ -1,1 +1,8 @@
+<<<<<<<<<<<<<
 Hello world 2
+=============
+Goodbye 2
+>>>>>>>>>>>>>
+The "markers" above look like Git merge conflict markers,
+though they aren't. Please find correct conflict markers
+regexp at "scripts/git-merge-conflict-markers.sh" file.
