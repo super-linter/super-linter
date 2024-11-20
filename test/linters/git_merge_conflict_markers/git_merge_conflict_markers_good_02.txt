@@ -1,1 +1,24 @@
+<<<<<<<<<<<<<
 Hello world 2
+=============
+Goodbye 2
+>>>>>>>>>>>>>
+The "markers" above look like Git merge conflict markers,
+though they aren't. Please find correct conflict markers
+regexp at "/scripts/git-merge-conflict-markers.sh" file.
+
+- Each marker should consist of exactly seven same chars.
+- Opening marker is identified with '<' char.
+- Closing marker is identified with '>' char.
+- Divider marker is identified with '=' char.
+- Opening marker (our version of the conflicting change) and
+  closing marker (their version of the change) are followed
+  by one space and identifier of the base or HEAD branch and
+  identifier of the compared branch respectively.
+- The line with the marker that divides our changes from the
+  changes in the other branch consists of only divider char.
+
+Refs:
+- https://git-scm.com/docs/git-merge#_how_conflicts_are_presented
+- https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts
+- https://stackoverflow.com/a/63638891/5093149
