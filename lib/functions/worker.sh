@@ -149,7 +149,9 @@ function LintCodebase() {
   debug "PARALLEL_COMMAND for ${FILE_TYPE} after updating the working directory: ${PARALLEL_COMMAND[*]}"
 
   # shellcheck source=/dev/null
-  source /action/lib/functions/linterCommands.sh
+  if ! source /action/lib/functions/linterCommands.sh; then
+    fatal "Error while sourcing linter commands"
+  fi
   # Dynamically add arguments and commands to each linter command as needed
   if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
     fatal "Error while inizializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
