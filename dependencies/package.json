@@ -47,7 +47,7 @@
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-prettier": "^5.0.2",
-    "stylelint-scss": "^6.9.0",
+    "stylelint-scss": "^6.10.0",
     "textlint": "^14.3.0",
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
