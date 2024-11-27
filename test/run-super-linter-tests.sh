@@ -191,6 +191,12 @@ run_test_case_gitleaks_custom_log_level() {
   COMMAND_TO_RUN+=(--env GITLEAKS_LOG_LEVEL="warn")
 }
 
+run_test_case_linter_command_options() {
+  run_test_cases_expect_success
+  # Pick one arbitrary linter to pass options to
+  COMMAND_TO_RUN+=(--env KUBERNETES_KUBECONFORM_OPTIONS="-ignore-missing-schemas -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' --ignore-filename-pattern '.*tpl\.yaml'")
+}
+
 run_test_case_fix_mode() {
   VERIFY_FIX_MODE="true"
 
