@@ -18,6 +18,10 @@ control "super-linter-environment-variables" do
     its("content") { should match(/^(standard|slim)$/) }
   end
 
+  describe os_env("HOME") do
+    its("content") { should eq "/github/home" }
+  end
+
   describe os_env("RENOVATE_X_IGNORE_RE2") do
     its("content") { should eq "true" }
   end
@@ -437,6 +441,7 @@ control "super-linter-validate-directories" do
   desc "Check that directories that Super-Linter needs are installed."
 
   dirs = [
+    "/github/home",
     "/node_modules",
     "/action/lib",
     "/action/lib/functions",
