@@ -73,7 +73,7 @@ function InitPowerShellCommand() {
   debug "PowerShell command after initialization: ${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}"
 }
 
-AddOptionsToCommand() {
+function AddOptionsToCommand() {
   local -n COMMAND_ARRAY_NAME="${1}"
   local COMMAND_OPTIONS_TO_ADD="${2}"
   local COMMAND_OPTIONS_TO_ADD_ARRAY
