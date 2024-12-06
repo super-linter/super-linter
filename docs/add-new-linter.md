@@ -20,8 +20,8 @@ tool, do the following.
    violations that the fix mode can automatically fix. Avoid test cases that
    fail only because of syntax errors, when possible.
 4. Update expected summary reports: `test/data/super-linter-summary`.
-5. If the tool supports check-only mode or fix mode, add the `<LANGUGAGE>` to
-   the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
+5. If the tool supports check-only mode or fix mode, add the `<LANGUAGE>` to the
+   `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
 
 ## Update the test suite
 
