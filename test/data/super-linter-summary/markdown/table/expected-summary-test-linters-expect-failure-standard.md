@@ -55,6 +55,12 @@
 | MARKDOWN                     | Fail ❌           |
 | MARKDOWN_PRETTIER            | Fail ❌           |
 | NATURAL_LANGUAGE             | Fail ❌           |
+| JUPYTER_NBQA_BLACK           | Fail ❌           |
+| JUPYTER_NBQA_PYLINT          | Fail ❌           |
+| JUPYTER_NBQA_FLAKE8          | Fail ❌           |
+| JUPYTER_NBQA_ISORT           | Fail ❌           |
+| JUPYTER_NBQA_MYPY            | Fail ❌           |
+| JUPYTER_NBQA_RUFF            | Fail ❌           |
 | OPENAPI                      | Fail ❌           |
 | PERL                         | Fail ❌           |
 | PHP_BUILTIN                  | Fail ❌           |
