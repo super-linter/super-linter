@@ -434,6 +434,11 @@ ENV RENOVATE_X_IGNORE_RE2="true"
 ENV VERSION_FILE="/action/linterVersions.txt"
 RUN mkdir /action
 
+# create the homedir, so that in case it is not present (like on action-runner-controller based selfhosted runners)
+# we do not fail at setting /github/workspace as a safe git directory
+ENV HOME="/github/home"
+RUN mkdir -p "${HOME}"
+
 ENTRYPOINT ["/action/lib/linter.sh"]
 
 FROM base_image AS slim
