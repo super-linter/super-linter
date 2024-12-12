@@ -1,5 +1,33 @@
 # Changelog
 
+## [7.2.1](https://github.com/super-linter/super-linter/compare/v7.2.0...v7.2.1) (2024-12-12)
+
+
+### 🐛 Bugfixes
+
+* define command options function before use ([#6375](https://github.com/super-linter/super-linter/issues/6375)) ([6b60f4c](https://github.com/super-linter/super-linter/commit/6b60f4c968c6ef706f82d77c242d2e6d398868ff)), closes [#6372](https://github.com/super-linter/super-linter/issues/6372)
+* downgrade npm-groovy-lint to 15.0.0 ([#6373](https://github.com/super-linter/super-linter/issues/6373)) ([ffccf2d](https://github.com/super-linter/super-linter/commit/ffccf2d49dce2b1e051e081cc7ee743bdda723fc))
+* ensure setting /github/workdir as Git safe directory works always ([#6242](https://github.com/super-linter/super-linter/issues/6242)) ([ec05515](https://github.com/super-linter/super-linter/commit/ec05515e93ce545506111700d06865e66fed8295))
+* make git conflict markers check more precise ([#6379](https://github.com/super-linter/super-linter/issues/6379)) ([d929d04](https://github.com/super-linter/super-linter/commit/d929d049cb8f37aaea41733aee6e456e5c74362a))
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump standard from 1.42.0 to 1.42.1 in /dependencies ([#6383](https://github.com/super-linter/super-linter/issues/6383)) ([6776692](https://github.com/super-linter/super-linter/commit/67766920118161891152d9d62eab96f3591a860d))
+* **docker:** bump the docker group across 1 directory with 4 updates ([#6381](https://github.com/super-linter/super-linter/issues/6381)) ([0fe8b07](https://github.com/super-linter/super-linter/commit/0fe8b0796b19c6a444b674a3bb5c03af34d17bc2))
+* **npm:** bump @stoplight/spectral-cli in /dependencies ([#6389](https://github.com/super-linter/super-linter/issues/6389)) ([39b1577](https://github.com/super-linter/super-linter/commit/39b1577f18b72e5383e36aae4d8bb3dba11bd98a))
+* **npm:** bump renovate from 39.15.4 to 39.31.3 in /dependencies ([#6397](https://github.com/super-linter/super-linter/issues/6397)) ([70a684d](https://github.com/super-linter/super-linter/commit/70a684deb66fa53eb5dab2eca96205cc66c2f576))
+* **npm:** bump renovate from 39.31.3 to 39.58.1 in /dependencies ([#6432](https://github.com/super-linter/super-linter/issues/6432)) ([71cc525](https://github.com/super-linter/super-linter/commit/71cc52518beb7ed70eb232c6462c51bad363a9fe))
+* **php:** bump phpstan/phpstan ([#6419](https://github.com/super-linter/super-linter/issues/6419)) ([24a53df](https://github.com/super-linter/super-linter/commit/24a53df7ba9bc8af3e609b4e5598d91458dbf250))
+* **php:** bump the composer group across 1 directory with 2 updates ([#6365](https://github.com/super-linter/super-linter/issues/6365)) ([de5f8a4](https://github.com/super-linter/super-linter/commit/de5f8a47e6a34056a23bbafae950b293569f4771))
+
+
+### 🧰 Maintenance
+
+* disable fail-fast in ci ([#6399](https://github.com/super-linter/super-linter/issues/6399)) ([102ceb6](https://github.com/super-linter/super-linter/commit/102ceb6a8d60feb91e93a674e48700cc0bbc4c1d))
+* move npm audit to a dedicate task ([#6297](https://github.com/super-linter/super-linter/issues/6297)) ([b2d0953](https://github.com/super-linter/super-linter/commit/b2d0953bfc5705a3deda9c2340acf6fe14e3e434))
+* update npm deps ([#6401](https://github.com/super-linter/super-linter/issues/6401)) ([7b18a58](https://github.com/super-linter/super-linter/commit/7b18a58c9429b53d6f376f8150daf491e9f21b0c)), closes [#6400](https://github.com/super-linter/super-linter/issues/6400)
+
 ## [7.2.0](https://github.com/super-linter/super-linter/compare/v7.1.0...v7.2.0) (2024-11-17)
 
 
