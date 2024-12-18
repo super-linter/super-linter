@@ -24,6 +24,9 @@
 | JSONC_PRETTIER      | Pass ✅           |
 | JSX                 | Fail ❌           |
 | JSX_PRETTIER        | Pass ✅           |
+| JUPYTER_NBQA_BLACK  | Pass ✅           |
+| JUPYTER_NBQA_ISORT  | Pass ✅           |
+| JUPYTER_NBQA_RUFF   | Pass ✅           |
 | MARKDOWN            | Pass ✅           |
 | MARKDOWN_PRETTIER   | Pass ✅           |
 | NATURAL_LANGUAGE    | Pass ✅           |

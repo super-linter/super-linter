@@ -632,7 +632,8 @@ cleanup() {
     debug "Removing temporary files and directories"
     rm -rf \
       "${GITHUB_WORKSPACE}/.mypy_cache" \
-      "${GITHUB_WORKSPACE}/logback.log"
+      "${GITHUB_WORKSPACE}/logback.log" \
+      "${GITHUB_WORKSPACE}/.ruff_cache"
 
     if [[ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE:-}" == "true" ]]; then
       debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
