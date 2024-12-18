@@ -48,6 +48,12 @@
 | JSONC_PRETTIER               | Pass ✅           |
 | JSX                          | Pass ✅           |
 | JSX_PRETTIER                 | Pass ✅           |
+| JUPYTER_NBQA_BLACK           | Pass ✅           |
+| JUPYTER_NBQA_FLAKE8          | Pass ✅           |
+| JUPYTER_NBQA_ISORT           | Pass ✅           |
+| JUPYTER_NBQA_MYPY            | Pass ✅           |
+| JUPYTER_NBQA_PYLINT          | Pass ✅           |
+| JUPYTER_NBQA_RUFF            | Pass ✅           |
 | KUBERNETES_KUBECONFORM       | Pass ✅           |
 | KOTLIN                       | Pass ✅           |
 | LATEX                        | Pass ✅           |

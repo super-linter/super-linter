@@ -147,6 +147,7 @@ updates:
           - flake8
           - isort
           - mypy
+          - nbqa
           - pyink
           - pylint
           - ruff

@@ -48,6 +48,12 @@
 | JSONC_PRETTIER               | Fail ❌           |
 | JSX                          | Fail ❌           |
 | JSX_PRETTIER                 | Fail ❌           |
+| JUPYTER_NBQA_BLACK           | Fail ❌           |
+| JUPYTER_NBQA_FLAKE8          | Fail ❌           |
+| JUPYTER_NBQA_ISORT           | Fail ❌           |
+| JUPYTER_NBQA_MYPY            | Fail ❌           |
+| JUPYTER_NBQA_PYLINT          | Fail ❌           |
+| JUPYTER_NBQA_RUFF            | Fail ❌           |
 | KUBERNETES_KUBECONFORM       | Fail ❌           |
 | KOTLIN                       | Fail ❌           |
 | LATEX                        | Fail ❌           |
