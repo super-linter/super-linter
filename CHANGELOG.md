@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.3.0](https://github.com/super-linter/super-linter/compare/v7.2.1...v7.3.0) (2024-12-20)
+
+
+### 🚀 Features
+
+* add nbqa linter for jupyter notebooks ([#6240](https://github.com/super-linter/super-linter/issues/6240)) ([469f30e](https://github.com/super-linter/super-linter/commit/469f30eb53776d99cde52e60c0e21694a87124d4))
+
 ## [7.2.1](https://github.com/super-linter/super-linter/compare/v7.2.0...v7.2.1) (2024-12-12)
 
 
