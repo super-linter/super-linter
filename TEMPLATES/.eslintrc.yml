@@ -3,15 +3,18 @@ env:
   browser: true
   es6: true
   jest: true
+  node: true
+
+extends:
+  - "eslint:recommended"
 
 ignorePatterns:
   - "!.*"
   - "**/node_modules/.*"
 
-parser: "@typescript-eslint/parser"
-
 plugins:
-  - "@typescript-eslint"
+  - n
+  - prettier
 
 overrides:
   # JSON files
@@ -40,3 +43,36 @@ overrides:
     parser: jsonc-eslint-parser
     parserOptions:
       jsonSyntax: JSON5
+
+  # Javascript files
+  - files:
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.cjs"
+      - "**/*.jsx"
+    extends:
+      - "plugin:react/recommended"
+    parserOptions:
+      sourceType: module
+      ecmaVersion: latest
+      ecmaFeatures:
+        jsx: true
+        modules: true
+
+  # TypeScript files
+  - files:
+      - "**/*.ts"
+      - "**/*.cts"
+      - "**/*.mts"
+      - "**/*.tsx"
+    extends:
+      - "plugin:@typescript-eslint/recommended"
+      - plugin:n/recommended
+      - plugin:react/recommended
+      - prettier
+    parser: "@typescript-eslint/parser"
+    plugins:
+      - "@typescript-eslint"
+    parserOptions:
+      ecmaVersion: latest
+      sourceType: module
