@@ -24,6 +24,6 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      # This doesn't trigger an automated merge because we require at approvals
+      # This doesn't trigger an automated merge because we require approvals
       - name: Enable auto-merge
-        run: gh pr merge --auto --squash --delete-branch "${PR_URL}"
+        run: gh pr merge --auto --squash "${PR_URL}"
