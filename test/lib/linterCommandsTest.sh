@@ -24,11 +24,14 @@ BASH_EXEC_IGNORE_LIBRARIES="false"
 # shellcheck disable=SC2034
 GITHUB_WORKSPACE="$(pwd)"
 # shellcheck disable=SC2034
+GROOVY_FAILON_LEVEL="warning"
+# shellcheck disable=SC2034
 IGNORE_GITIGNORED_FILES="false"
 # shellcheck disable=SC2034
 TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json"
 # shellcheck disable=SC2034
 YAML_ERROR_ON_WARNING="false"
+
 for LANGUAGE in "${LANGUAGE_ARRAY_FOR_LINTER_RULES[@]}"; do
   GetLinterRules "${LANGUAGE}" "TEMPLATES"
 done
