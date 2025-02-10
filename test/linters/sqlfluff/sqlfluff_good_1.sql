@@ -1,1 +1,4 @@
-DELETE FROM person WHERE 1 = 1;
+DELETE
+FROM person
+WHERE
+  1 = 1;
