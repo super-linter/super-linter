@@ -1,5 +1,5 @@
 DELETE
 FROM
-  person
+    person
 WHERE
-  1 = 1;
+    1 = 1;
