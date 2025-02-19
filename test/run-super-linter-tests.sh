@@ -489,7 +489,8 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
     fi
 
     if find "${BAD_TEST_CASE_DESTINATION_PATH}" \( -type f ! -readable -or -type d \( ! -readable -or ! -executable -or ! -writable \) \) -print | grep -q .; then
-      if [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
+      if [[ "${LANGUAGE}" == "ANSIBLE" ]] ||
+        [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
         [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||

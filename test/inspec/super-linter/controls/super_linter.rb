@@ -364,7 +364,6 @@ control "super-linter-installed-npm-packages" do
     "jscpd",
     "markdownlint-cli",
     "next",
-    "next-pwa",
     "npm-groovy-lint",
     "postcss-less",
     "prettier",
