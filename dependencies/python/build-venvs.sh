@@ -14,6 +14,11 @@ apk add --no-cache --virtual .python-build-deps \
   musl-dev \
   python3-dev
 
+# Otherwise, pytries/datrie doesn't build using gcc14
+# Ref: https://github.com/pytries/datrie/issues/101
+export CFLAGS="-Wno-error=incompatible-pointer-types"
+export CXXFLAGS="-Wno-error=incompatible-pointer-types"
+
 ############################
 # Create staging directory #
 ############################

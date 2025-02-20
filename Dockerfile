@@ -30,16 +30,16 @@ FROM ghcr.io/clj-kondo/clj-kondo:2024.11.14-alpine AS clj-kondo
 FROM dart:3.5.4-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.100-alpine3.20 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.4-alpine-3.20 AS powershell
-FROM composer/composer:2.8.3 AS php-composer
+FROM composer/composer:2.8.5 AS php-composer
 
-FROM python:3.12.7-alpine3.20 AS clang-format
+FROM python:3.13.2-alpine3.21 AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang17 \
+  clang19 \
   cmake \
   git \
-  llvm17-dev \
+  llvm19-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
@@ -59,10 +59,12 @@ RUN cmake \
   && ninja clang-format \
   && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.12.7-alpine3.20 AS python-builder
+FROM python:3.13.2-alpine3.21 AS python-builder
 
 RUN apk add --no-cache \
-  bash
+  bash \
+  cargo \
+  rust
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
@@ -70,7 +72,7 @@ COPY dependencies/python/ /stage
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.12.7-alpine3.20 AS npm-builder
+FROM python:3.13.2-alpine3.21 AS npm-builder
 
 RUN apk add --no-cache \
   bash \
@@ -101,7 +103,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN --mount=type=secret,id=GITHUB_TOKEN GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN) tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.12.7-alpine3.20 AS lintr-installer
+FROM python:3.13.2-alpine3.21 AS lintr-installer
 
 RUN apk add --no-cache \
   bash \
@@ -125,7 +127,7 @@ COPY dependencies/composer/composer.json dependencies/composer/composer.lock /ap
 RUN composer update \
   && composer audit
 
-FROM python:3.12.7-alpine3.20 AS base_image
+FROM python:3.13.2-alpine3.21 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
   com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
@@ -166,19 +168,19 @@ RUN apk add --no-cache \
   openssh-client \
   parallel \
   perl \
-  php83 \
-  php83-ctype \
-  php83-curl \
-  php83-dom \
-  php83-iconv \
-  php83-pecl-igbinary \
-  php83-intl \
-  php83-mbstring \
-  php83-openssl \
-  php83-phar \
-  php83-simplexml \
-  php83-tokenizer \
-  php83-xmlwriter \
+  php84 \
+  php84-ctype \
+  php84-curl \
+  php84-dom \
+  php84-iconv \
+  php84-pecl-igbinary \
+  php84-intl \
+  php84-mbstring \
+  php84-openssl \
+  php84-phar \
+  php84-simplexml \
+  php84-tokenizer \
+  php84-xmlwriter \
   R \
   rakudo \
   ruby \
@@ -441,6 +443,8 @@ ENV HOME="/github/home"
 RUN mkdir -p "${HOME}"
 
 ENTRYPOINT ["/action/lib/linter.sh"]
+
+RUN if [ ! -e "/usr/bin/php" ]; then ln -s /usr/bin/php84 /usr/bin/php; fi
 
 FROM base_image AS slim
 
