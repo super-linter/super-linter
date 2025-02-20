@@ -26,7 +26,7 @@
     "gherkin-lint": "^4.2.4",
     "htmlhint": "^1.1.4",
     "jscpd": "^4.0.5",
-    "markdownlint-cli": "^0.42.0",
+    "markdownlint-cli": "^0.44.0",
     "next": "^15.1.7",
     "npm-groovy-lint": "^15.0.0",
     "postcss-less": "^6.0.0",
