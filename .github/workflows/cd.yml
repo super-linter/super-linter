@@ -27,7 +27,7 @@ jobs:
             target: slim
           - prefix: ""
             target: standard
-    timeout-minutes: 60
+    timeout-minutes: 120
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
@@ -164,7 +164,7 @@ jobs:
       issues: write
       packages: write
       pull-requests: write
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: googleapis/release-please-action@v4.1.3
         id: release
