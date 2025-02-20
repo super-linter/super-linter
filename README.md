@@ -616,6 +616,14 @@ env:
   LINTER_RULES_PATH: config/lint
 ```
 
+In order to facilitate migrations from using standalone linters to super-linter,
+the following linters don't follow the convention described above in this
+section, but rather they use their own mechanism to discover and load
+configuration files. To configure these linters, see:
+
+- [Prettier](https://prettier.io/docs/en/configuration)
+- [Commitlint](https://commitlint.js.org/reference/configuration.html#config-via-file)
+
 Some of the linters that super-linter provides can be configured to disable
 certain rules or checks, and to ignore certain files or part of them.
 
