@@ -181,7 +181,7 @@ function LintCodebase() {
   PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${FILE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
   # Don't check for errors on this return code because commands can fail if linter report errors
   PARALLEL_COMMAND_RETURN_CODE=$?
-  debug "PARALLEL_COMMAND_OUTPUT for ${FILE_TYPE} (exit code: ${PARALLEL_COMMAND_RETURN_CODE}): ${PARALLEL_COMMAND_OUTPUT}"
+  debug "PARALLEL_COMMAND_OUTPUT for ${FILE_TYPE} (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
   debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents for ${FILE_TYPE}:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
 
   echo ${PARALLEL_COMMAND_RETURN_CODE} >"${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${FILE_TYPE}"
