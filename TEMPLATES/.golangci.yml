@@ -1,12 +1,5 @@
 ---
-#########################
-#########################
-## Golang Linter rules ##
-#########################
-#########################
-
-# configure golangci-lint
-# see https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+# Ref https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
 issues:
   exclude-rules:
     - path: _test\.go
@@ -36,6 +29,3 @@ linters-settings:
   gocyclo:
     # minimal code complexity to report, 30 by default
     min-complexity: 15
-  maligned:
-    # print struct with more effective memory layout or not, false by default
-    suggest-new: true
