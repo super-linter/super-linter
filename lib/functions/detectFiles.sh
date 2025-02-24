@@ -293,9 +293,13 @@ function RunAdditionalInstalls() {
   ##################################
   # Run installs for Psalm and PHP #
   ##################################
-  if [ "${VALIDATE_PHP_PSALM}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM" ]; then
+  if [[ ("${VALIDATE_PHP:-"${VALIDATE_PHP_BUILTIN}"}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_BUILTIN") ]] ||
+    [[ ("${VALIDATE_PHP_BUILTIN}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_BUILTIN") ]] ||
+    [[ ("${VALIDATE_PHP_PHPCS}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PHPCS") ]] ||
+    [[ ("${VALIDATE_PHP_PHPSTAN}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PHPSTAN") ]] ||
+    [[ ("${VALIDATE_PHP_PSALM}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM") ]]; then
     # found PHP files and were validating it, need to composer install
-    info "Found PHP files to validate, and VALIDATE_PHP_PSALM is set to ${VALIDATE_PHP_PSALM}. Check if we need to run composer install"
+    info "Found PHP files to validate. Check if we need to run composer install"
     mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
     debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
