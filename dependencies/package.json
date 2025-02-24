@@ -28,7 +28,7 @@
     "jscpd": "^4.0.5",
     "markdownlint-cli": "^0.44.0",
     "next": "^15.1.7",
-    "npm-groovy-lint": "^15.0.0",
+    "npm-groovy-lint": "^15.1.0",
     "postcss-less": "^6.0.0",
     "prettier": "^3.3.3",
     "prettyjson": "^1.2.5",
