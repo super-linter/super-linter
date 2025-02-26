@@ -58,6 +58,7 @@
 | KOTLIN                       | Fail ❌           |
 | LATEX                        | Fail ❌           |
 | LUA                          | Fail ❌           |
+| LYCHEE                       | Fail ❌           |
 | MARKDOWN                     | Fail ❌           |
 | MARKDOWN_PRETTIER            | Fail ❌           |
 | NATURAL_LANGUAGE             | Fail ❌           |
