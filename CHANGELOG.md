@@ -1,5 +1,70 @@
 # Changelog
 
+## [7.3.0](https://github.com/super-linter/super-linter/compare/v7.2.1...v7.3.0) (2025-02-26)
+
+
+### 🚀 Features
+
+* add nbqa linter for jupyter notebooks ([#6240](https://github.com/super-linter/super-linter/issues/6240)) ([469f30e](https://github.com/super-linter/super-linter/commit/469f30eb53776d99cde52e60c0e21694a87124d4))
+* composer install with any php linters ([#6599](https://github.com/super-linter/super-linter/issues/6599)) ([9f7f83b](https://github.com/super-linter/super-linter/commit/9f7f83bca5edb0536bba49ff46df0c87e13ee65c)), closes [#6336](https://github.com/super-linter/super-linter/issues/6336) [#6598](https://github.com/super-linter/super-linter/issues/6598) [#6597](https://github.com/super-linter/super-linter/issues/6597)
+* enable scss linting by default ([#6408](https://github.com/super-linter/super-linter/issues/6408)) ([ff470a9](https://github.com/super-linter/super-linter/commit/ff470a9ae0e47649922e324ca3f7f8dd2637d86b))
+* **golangci-lint:** add possibility to specify custom config file ([#6558](https://github.com/super-linter/super-linter/issues/6558)) ([4a4ab1e](https://github.com/super-linter/super-linter/commit/4a4ab1ed473ecd01b0c512582b838964a131169f))
+* update eslint configuration ([#6590](https://github.com/super-linter/super-linter/issues/6590)) ([d0b304a](https://github.com/super-linter/super-linter/commit/d0b304a6a58b560749c679157953fec8ba7206df))
+
+
+### 🐛 Bugfixes
+
+* handle push tag events on merge commits ([#6204](https://github.com/super-linter/super-linter/issues/6204)) ([36971e1](https://github.com/super-linter/super-linter/commit/36971e1125e3bdf259a17452b46acc5071593ab7)), closes [#6193](https://github.com/super-linter/super-linter/issues/6193)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump the rubocop group across 1 directory with 4 updates ([#6567](https://github.com/super-linter/super-linter/issues/6567)) ([e6340f4](https://github.com/super-linter/super-linter/commit/e6340f4c240a100eed237a722b036bda48734714))
+* **bundler:** bump the rubocop group in /dependencies with 2 updates ([#6602](https://github.com/super-linter/super-linter/issues/6602)) ([d85ded7](https://github.com/super-linter/super-linter/commit/d85ded7e6593bb8d03fa1e41fbd3a41bd06511d5))
+* **docker:** bump the docker group across 1 directory with 16 updates ([#6591](https://github.com/super-linter/super-linter/issues/6591)) ([1da80af](https://github.com/super-linter/super-linter/commit/1da80afdcee8e355d1ca1679003baefc95137324))
+* **java:** bump com.google.googlejavaformat:google-java-format ([#6442](https://github.com/super-linter/super-linter/issues/6442)) ([a819ff6](https://github.com/super-linter/super-linter/commit/a819ff645161db765b657d0a301bb99f709b4090))
+* **java:** bump the java-gradle group across 2 directories with 2 updates ([#6605](https://github.com/super-linter/super-linter/issues/6605)) ([846dfad](https://github.com/super-linter/super-linter/commit/846dfad673cce2479c41a6f574a0d4bd992482f0))
+* **npm:** bump @babel/eslint-parser in /dependencies ([#6547](https://github.com/super-linter/super-linter/issues/6547)) ([3a6c779](https://github.com/super-linter/super-linter/commit/3a6c779eb8b93230253a4e3e131c4ef57bd72b01))
+* **npm:** bump asl-validator from 3.9.0 to 3.13.0 in /dependencies ([#6588](https://github.com/super-linter/super-linter/issues/6588)) ([e2ebecc](https://github.com/super-linter/super-linter/commit/e2ebecc8973d268533368188386e30690ca4bdae))
+* **npm:** bump markdownlint-cli from 0.42.0 to 0.44.0 in /dependencies ([#6529](https://github.com/super-linter/super-linter/issues/6529)) ([bb5a295](https://github.com/super-linter/super-linter/commit/bb5a2951d75750c7c668d702651a6bad484b6287))
+* **npm:** bump next ([#6468](https://github.com/super-linter/super-linter/issues/6468)) ([b5a246e](https://github.com/super-linter/super-linter/commit/b5a246e96b912dcfe71eb19b4aa62e453a02ebea))
+* **npm:** bump next ([#6564](https://github.com/super-linter/super-linter/issues/6564)) ([9a00bbf](https://github.com/super-linter/super-linter/commit/9a00bbf22bc253e523be61e2446ed45b52e7fec8))
+* **npm:** bump npm-groovy-lint from 15.0.0 to 15.1.0 in /dependencies ([#6609](https://github.com/super-linter/super-linter/issues/6609)) ([c43b06c](https://github.com/super-linter/super-linter/commit/c43b06c7eac9ccc071a1264c1d1572a26bd1daaf))
+* **npm:** bump prettier from 3.5.1 to 3.5.2 in /dependencies ([#6610](https://github.com/super-linter/super-linter/issues/6610)) ([d05486b](https://github.com/super-linter/super-linter/commit/d05486b75003daebc22cd23e2b9079d3ced6584e))
+* **npm:** bump renovate from 39.172.0 to 39.176.3 in /dependencies ([#6586](https://github.com/super-linter/super-linter/issues/6586)) ([7dacfb4](https://github.com/super-linter/super-linter/commit/7dacfb4581fa2b280cb94d7cfb3e5afd0c8b54fe))
+* **npm:** bump renovate from 39.176.3 to 39.179.1 in /dependencies ([#6608](https://github.com/super-linter/super-linter/issues/6608)) ([ffe769d](https://github.com/super-linter/super-linter/commit/ffe769dfe9b02264c77d76ae8ff1932e84aa8784))
+* **npm:** bump stylelint-scss ([#6607](https://github.com/super-linter/super-linter/issues/6607)) ([68b354c](https://github.com/super-linter/super-linter/commit/68b354c2cd6932de7720c80c72eba7f335d0c125))
+* **npm:** bump textlint ([#6484](https://github.com/super-linter/super-linter/issues/6484)) ([2094743](https://github.com/super-linter/super-linter/commit/2094743599f14f1d71a8f5aa2ca2b5c8ea66c18e))
+* **npm:** bump the commitlint group across 1 directory with 2 updates ([#6560](https://github.com/super-linter/super-linter/issues/6560)) ([6f351f1](https://github.com/super-linter/super-linter/commit/6f351f1393e9dcae82ddbdeafd34742eec4a6177))
+* **npm:** bump the react group across 1 directory with 7 updates ([#6587](https://github.com/super-linter/super-linter/issues/6587)) ([b9c87d4](https://github.com/super-linter/super-linter/commit/b9c87d42256af1c5c3515a4c333ab0f41bbb7564))
+* **npm:** bump the stylelint group across 1 directory with 5 updates ([#6537](https://github.com/super-linter/super-linter/issues/6537)) ([7d0a891](https://github.com/super-linter/super-linter/commit/7d0a891b337207db94ff4895b11f82403100f66c))
+* **python:** bump the pip group across 1 directory with 13 updates ([#6572](https://github.com/super-linter/super-linter/issues/6572)) ([d7d3a34](https://github.com/super-linter/super-linter/commit/d7d3a3457f184f114921f4400228802267185c47))
+* **python:** bump the pip group across 1 directory with 3 updates ([#6606](https://github.com/super-linter/super-linter/issues/6606)) ([d39d077](https://github.com/super-linter/super-linter/commit/d39d077d0c8e29e7172424958884f24d351b777e))
+
+
+### 🧰 Maintenance
+
+* **dev-docker:** bump node in /dev-dependencies ([#6535](https://github.com/super-linter/super-linter/issues/6535)) ([d68be1a](https://github.com/super-linter/super-linter/commit/d68be1a0ef33c37409fb269f0aad89075c49105e))
+* **dev-docker:** bump node in /dev-dependencies ([#6559](https://github.com/super-linter/super-linter/issues/6559)) ([a5237ea](https://github.com/super-linter/super-linter/commit/a5237ea0a174b1fbcb6c2266ee3fe7ea3cd5ae12))
+* **dev-npm:** bump release-please in /dev-dependencies ([#6611](https://github.com/super-linter/super-linter/issues/6611)) ([b301205](https://github.com/super-linter/super-linter/commit/b301205c5ed544e6e2257f8c661c05b58391ee86))
+* fix ansible dir ownership in tests ([#6563](https://github.com/super-linter/super-linter/issues/6563)) ([ff7ebee](https://github.com/super-linter/super-linter/commit/ff7ebeef9d7768b46b8df88b98f708000b483827))
+* fix broken link to sqlfluff config ([#6475](https://github.com/super-linter/super-linter/issues/6475)) ([ae84419](https://github.com/super-linter/super-linter/commit/ae844193ed3e200e74ca4b0a523b7d61956720cb))
+* fix checkov and sqlfluff tests ([#6574](https://github.com/super-linter/super-linter/issues/6574)) ([8ed4d07](https://github.com/super-linter/super-linter/commit/8ed4d0718fb6e032cebcabb607dcd4164bb8711e))
+* fix ruby linting issues ([#6614](https://github.com/super-linter/super-linter/issues/6614)) ([f7cbf33](https://github.com/super-linter/super-linter/commit/f7cbf336aa0e0f7f598de8f853e175ad8d64bb17))
+* fix sqlfluff test ([#6579](https://github.com/super-linter/super-linter/issues/6579)) ([41ad86e](https://github.com/super-linter/super-linter/commit/41ad86ee6cfffe08e5bad1529d7b095871f11512))
+* **github-actions:** bump actions/upload-artifact ([#6500](https://github.com/super-linter/super-linter/issues/6500)) ([401875a](https://github.com/super-linter/super-linter/commit/401875a5695b838532a72cccd7cbbb1f702e9a74))
+* **github-actions:** bump actions/upload-artifact ([#6604](https://github.com/super-linter/super-linter/issues/6604)) ([41fd8a9](https://github.com/super-linter/super-linter/commit/41fd8a9280bbe33a32789178bdaabc51eb37f6c4))
+* group commitlint updates ([#6557](https://github.com/super-linter/super-linter/issues/6557)) ([a5e3381](https://github.com/super-linter/super-linter/commit/a5e3381daebcdb9f91c5a8c923d422521355fef0))
+* increase workflow timeouts to 120 mins ([#6594](https://github.com/super-linter/super-linter/issues/6594)) ([f8f7e70](https://github.com/super-linter/super-linter/commit/f8f7e7086bf6a8775e5256fb747f03d59bb49255))
+* remove delete-branch option ([#6514](https://github.com/super-linter/super-linter/issues/6514)) ([4c666df](https://github.com/super-linter/super-linter/commit/4c666df3c99f1326c749e2f54a56b7a42c166dec))
+* remove deprecated golang-ci config value ([#6596](https://github.com/super-linter/super-linter/issues/6596)) ([a373ff1](https://github.com/super-linter/super-linter/commit/a373ff1396b33ca1f72227b78fbe252cb94003e6)), closes [#6120](https://github.com/super-linter/super-linter/issues/6120)
+* uninstall next-pwa and fix jest ([#6573](https://github.com/super-linter/super-linter/issues/6573)) ([5031c6a](https://github.com/super-linter/super-linter/commit/5031c6a8ceffe3b06092a57dfdf0d9451428bf99))
+* update arm test api version ([#6485](https://github.com/super-linter/super-linter/issues/6485)) ([a6fdbf7](https://github.com/super-linter/super-linter/commit/a6fdbf7f2acde46ab7a592cfff89a7a6e6a0a41b))
+* update dependencies to unblock the build ([#6589](https://github.com/super-linter/super-linter/issues/6589)) ([6a9eb04](https://github.com/super-linter/super-linter/commit/6a9eb04b8deebed9cfa9b6b6e4c83a7a8b64ae58))
+* update go tests deps ([#6580](https://github.com/super-linter/super-linter/issues/6580)) ([7007f2f](https://github.com/super-linter/super-linter/commit/7007f2fca54d3182bec16008f22d3b465d741789))
+* update readme ([#6593](https://github.com/super-linter/super-linter/issues/6593)) ([3cb5ade](https://github.com/super-linter/super-linter/commit/3cb5ade63087d97f2f61d8c3bb1fa86fd1ec3a65)), closes [#6505](https://github.com/super-linter/super-linter/issues/6505)
+* update run-linter-locally.md ([#6326](https://github.com/super-linter/super-linter/issues/6326)) ([b354da5](https://github.com/super-linter/super-linter/commit/b354da52674b632b79a5c89bb0926d6722e3050a)), closes [#5472](https://github.com/super-linter/super-linter/issues/5472)
+
 ## [7.2.1](https://github.com/super-linter/super-linter/compare/v7.2.0...v7.2.1) (2024-12-12)
 
 
