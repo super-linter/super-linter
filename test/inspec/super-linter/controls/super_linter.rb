@@ -85,7 +85,7 @@ control "super-linter-installed-packages" do
   ]
 
   # Removed linters from slim image
-  SLIM_IMAGE_REMOVED_PACKAGES=%w(
+  SLIM_IMAGE_REMOVED_PACKAGES = %w(
     rust-clippy
     rustfmt
   )
@@ -145,88 +145,88 @@ control "super-linter-installed-commands" do
   default_expected_stdout_regex = /(.*?)/s
 
   linters = [
-    { linter_name: "actionlint"},
-    { linter_name: "ansible-lint", expected_stdout_regex: /(.*)/},
-    { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs"},
-    { linter_name: "asl-validator"},
-    { linter_name: "bash-exec", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
-    { linter_name: "black"},
-    { linter_name: "cfn-lint"},
-    { linter_name: "checkov"},
-    { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version"},
-    { linter_name: "chktex"},
-    { linter_name: "clang-format"},
-    { linter_name: "clippy", linter_command: "cargo clippy"},
-    { linter_name: "clj-kondo"},
-    { linter_name: "coffeelint"},
-    { linter_name: "commitlint"},
-    { linter_name: "composer"},
-    { linter_name: "cpplint"},
-    { linter_name: "dart"},
-    { linter_name: "dotenv-linter"},
-    { linter_name: "dotnet"},
-    { linter_name: "editorconfig-checker", version_option: "-version"},
-    { linter_name: "eslint"},
-    { linter_name: "flake8"},
-    { linter_name: "gherkin-lint", expected_exit_status: 1}, # expect a return code = 1 because this linter doesn't support a "get linter version" command
-    { linter_name: "git-merge-conflict-markers"},
-    { linter_name: "gitleaks", version_option: "version"},
-    { linter_name: "golangci-lint"},
-    { linter_name: "goreleaser"},
-    { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version"},
-    { linter_name: "hadolint"},
-    { linter_name: "helm", version_option: "version"}, # not used as linter, needed for checkov's helm framework
-    { linter_name: "htmlhint"},
-    { linter_name: "isort"},
-    { linter_name: "jscpd"},
-    { linter_name: "ktlint"},
-    { linter_name: "kustomize", version_option: "version"}, # not used as linter, needed for checkov's kustomize checks
-    { linter_name: "kubeconform", version_option: "-v"},
-    { linter_name: "lua", version_option: "-v"},
-    { linter_name: "markdownlint"},
-    { linter_name: "mypy"},
-    { linter_name: "nbqa"},
-    { linter_name: "npm-groovy-lint"},
-    { linter_name: "perl"},
-    { linter_name: "php"},
-    { linter_name: "phpcs"},
-    { linter_name: "phpstan"},
-    { linter_name: "prettier"},
-    { linter_name: "protolint", version_option: "version"},
-    { linter_name: "psalm"},
-    { linter_name: "pwsh"},
-    { linter_name: "pyink"},
-    { linter_name: "pylint"},
+    { linter_name: "actionlint" },
+    { linter_name: "ansible-lint", expected_stdout_regex: /(.*)/ },
+    { linter_name: "arm-ttk", version_command: "grep -iE 'version' '/usr/bin/arm-ttk' | xargs" },
+    { linter_name: "asl-validator" },
+    { linter_name: "bash-exec", expected_exit_status: 1 }, # expect a return code = 1 because this linter doesn't support a "get linter version" command
+    { linter_name: "black" },
+    { linter_name: "cfn-lint" },
+    { linter_name: "checkov" },
+    { linter_name: "checkstyle", version_command: "java -jar /usr/bin/checkstyle --version" },
+    { linter_name: "chktex" },
+    { linter_name: "clang-format" },
+    { linter_name: "clippy", linter_command: "cargo clippy" },
+    { linter_name: "clj-kondo" },
+    { linter_name: "coffeelint" },
+    { linter_name: "commitlint" },
+    { linter_name: "composer" },
+    { linter_name: "cpplint" },
+    { linter_name: "dart" },
+    { linter_name: "dotenv-linter" },
+    { linter_name: "dotnet" },
+    { linter_name: "editorconfig-checker", version_option: "-version" },
+    { linter_name: "eslint" },
+    { linter_name: "flake8" },
+    { linter_name: "gherkin-lint", expected_exit_status: 1 }, # expect a return code = 1 because this linter doesn't support a "get linter version" command
+    { linter_name: "git-merge-conflict-markers" },
+    { linter_name: "gitleaks", version_option: "version" },
+    { linter_name: "golangci-lint" },
+    { linter_name: "goreleaser" },
+    { linter_name: "google-java-format", version_command: "java -jar /usr/bin/google-java-format --version" },
+    { linter_name: "hadolint" },
+    { linter_name: "helm", version_option: "version" }, # not used as linter, needed for checkov's helm framework
+    { linter_name: "htmlhint" },
+    { linter_name: "isort" },
+    { linter_name: "jscpd" },
+    { linter_name: "ktlint" },
+    { linter_name: "kustomize", version_option: "version" }, # not used as linter, needed for checkov's kustomize checks
+    { linter_name: "kubeconform", version_option: "-v" },
+    { linter_name: "lua", version_option: "-v" },
+    { linter_name: "markdownlint" },
+    { linter_name: "mypy" },
+    { linter_name: "nbqa" },
+    { linter_name: "npm-groovy-lint" },
+    { linter_name: "perl" },
+    { linter_name: "php" },
+    { linter_name: "phpcs" },
+    { linter_name: "phpstan" },
+    { linter_name: "prettier" },
+    { linter_name: "protolint", version_option: "version" },
+    { linter_name: "psalm" },
+    { linter_name: "pwsh" },
+    { linter_name: "pyink" },
+    { linter_name: "pylint" },
     { linter_name: "R", version_command: "R --slave -e \"r_ver <- R.Version()\\$version.string; \
             lintr_ver <- packageVersion('lintr'); \
             glue::glue('lintr { lintr_ver } on { r_ver }')\""},
-    { linter_name: "raku", version_command: "raku --version | strings -n 8"},
-    { linter_name: "renovate-config-validator", version_command: "renovate --version"},
-    { linter_name: "rubocop"},
-    { linter_name: "ruff"},
-    { linter_name: "rustfmt"},
-    { linter_name: "scalafmt"},
-    { linter_name: "shellcheck"},
-    { linter_name: "shfmt"},
-    { linter_name: "snakefmt"},
-    { linter_name: "snakemake"},
-    { linter_name: "spectral"},
-    { linter_name: "sqlfluff"},
-    { linter_name: "standard"},
-    { linter_name: "stylelint"},
-    { linter_name: "tekton-lint"},
-    { linter_name: "terraform"},
-    { linter_name: "terragrunt"},
-    { linter_name: "terrascan", version_option: "version"},
-    { linter_name: "textlint"},
-    { linter_name: "tflint"},
-    { linter_name: "ts-standard"},
-    { linter_name: "xmllint"},
-    { linter_name: "yamllint"},
+    { linter_name: "raku", version_command: "raku --version | strings -n 8" },
+    { linter_name: "renovate-config-validator", version_command: "renovate --version" },
+    { linter_name: "rubocop" },
+    { linter_name: "ruff" },
+    { linter_name: "rustfmt" },
+    { linter_name: "scalafmt" },
+    { linter_name: "shellcheck" },
+    { linter_name: "shfmt" },
+    { linter_name: "snakefmt" },
+    { linter_name: "snakemake" },
+    { linter_name: "spectral" },
+    { linter_name: "sqlfluff" },
+    { linter_name: "standard" },
+    { linter_name: "stylelint" },
+    { linter_name: "tekton-lint" },
+    { linter_name: "terraform" },
+    { linter_name: "terragrunt" },
+    { linter_name: "terrascan", version_option: "version" },
+    { linter_name: "textlint" },
+    { linter_name: "tflint" },
+    { linter_name: "ts-standard" },
+    { linter_name: "xmllint" },
+    { linter_name: "yamllint" },
   ]
 
   # Removed linters from slim image
-  SLIM_IMAGE_REMOVED_LINTERS=%w(
+  SLIM_IMAGE_REMOVED_LINTERS = %w(
     arm-ttk
     clippy
     dotnet
@@ -285,7 +285,7 @@ control "super-linter-installed-commands" do
         ##########################################################
         describe command(version_command) do
           its("exit_status") { should eq expected_exit_status }
-          its("stdout") { should match (expected_stdout_regex) }
+          its("stdout") { should match(expected_stdout_regex) }
         end
       end
     end
@@ -455,7 +455,7 @@ control "super-linter-validate-directories" do
   ]
 
   # Removed linters from slim image
-  SLIM_IMAGE_REMOVED_DIRS=%w(
+  SLIM_IMAGE_REMOVED_DIRS = %w(
   )
 
   dirs.each do |item|
