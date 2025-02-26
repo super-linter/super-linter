@@ -298,6 +298,7 @@ fix-codebase: ## Fix and format the entire codebase
 		-e FIX_MARKDOWN=true \
 		-e FIX_MARKDOWN_PRETTIER=true \
 		-e FIX_NATURAL_LANGUAGE=true \
+		-e FIX_RUBY=true \
 		-e FIX_SHELL_SHFMT=true \
 		-e FIX_YAML_PRETTIER=true \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
