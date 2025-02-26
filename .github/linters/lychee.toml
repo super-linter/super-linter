@@ -1,0 +1,9 @@
+accept = ["200", "429"]
+
+# Decrease concurrent requests to avoid flooding target servers when running
+# in highly parallel CI jobs
+max_concurrency = 5
+max_retries = 20
+no_progress = true
+retry_wait_time = 5
+timeout = 40

@@ -58,6 +58,7 @@
 | KOTLIN                       | Pass ✅           |
 | LATEX                        | Pass ✅           |
 | LUA                          | Pass ✅           |
+| LYCHEE                       | Pass ✅           |
 | MARKDOWN                     | Pass ✅           |
 | MARKDOWN_PRETTIER            | Pass ✅           |
 | NATURAL_LANGUAGE             | Pass ✅           |
