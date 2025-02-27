@@ -35,7 +35,7 @@ Notes:
   information about the default value of the `DEFAULT_BRANCH` variable, see the
   [README.md](../README.md).
 - You can add as many configuration options as needed. Configuration options are
-  documented in the [README.md](../README.md#configure-super-linter).
+  documented in the [readme](../README.md#configure-super-linter).
 
 ### GitLab
 
@@ -53,7 +53,7 @@ super-linter:
     - /action/lib/linter.sh
   variables:
     # More info at https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter
-    GIT_DEPTH: 1 # clone only the last commit of the required branches
+    GIT_DEPTH: 0 # clone only the last commit of the required branches
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
     DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
