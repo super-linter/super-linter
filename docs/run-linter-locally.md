@@ -33,7 +33,7 @@ Notes:
 - If the default branch for your repository doesn't match the default, you can
   use the `DEFAULT_BRANCH` variable to set the default branch. For more
   information about the default value of the `DEFAULT_BRANCH` variable, see the
-  [README.md](../README.md).
+  [Readme](../README.md).
 - You can add as many configuration options as needed. Configuration options are
   documented in the [readme](../README.md#configure-super-linter).
 
@@ -53,7 +53,7 @@ super-linter:
     - /action/lib/linter.sh
   variables:
     # More info at https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter
-    GIT_DEPTH: 0 # clone only the last commit of the required branches
+    GIT_DEPTH: 0 # clone the hole history of the required branches
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
     DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
