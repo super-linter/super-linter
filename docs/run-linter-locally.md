@@ -33,9 +33,9 @@ Notes:
 - If the default branch for your repository doesn't match the default, you can
   use the `DEFAULT_BRANCH` variable to set the default branch. For more
   information about the default value of the `DEFAULT_BRANCH` variable, see the
-  [Readme](../README.md).
+  [README.md](../README.md).
 - You can add as many configuration options as needed. Configuration options are
-  documented in the [readme](../README.md#configure-super-linter).
+  documented in the [README.md](../README.md#configure-super-linter).
 
 ### GitLab
 
@@ -44,14 +44,19 @@ snippet:
 
 ```yaml
 super-linter:
-  # More info at https://github.com/super-linter/super-linter
-  stage: Super-linter
-  # Use a specific Super-linter version instead of latest for more reproducible builds
-  image: super-linter/super-linter:latest
-  script: ["true"]
+  stage: lint
+  image:
+    name: ghcr.io/super-linter/super-linter:latest # set a stable version tag and the sha checksum in production for reproducible runs
+    entrypoint: [""]
+  script:
+    - git fetch origin $CI_DEFAULT_BRANCH # clone the default branch from this repository
+    - /action/lib/linter.sh
   variables:
+    # More info at https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter
+    GIT_DEPTH: 1 # clone only the last commit of the required branches
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+    DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
 ```
 
 Note that this is a high-level example that you should customize for your needs.
