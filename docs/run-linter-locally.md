@@ -53,7 +53,7 @@ super-linter:
     - /action/lib/linter.sh
   variables:
     # More info at https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter
-    GIT_DEPTH: 0 # clone the hole history of the required branches
+    GIT_DEPTH: 0 # clone the whole history of the required branches
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
     DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
