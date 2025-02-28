@@ -369,7 +369,7 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "css" ] || [ "${FILE_TYPE}" == "scss" ] ||
       [ "${FILE_TYPE}" == "sass" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CSS"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CSS_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CSS_PRETTIER"
     elif [ "${FILE_TYPE}" == "dart" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DART"
     # Use BASE_FILE here because FILE_TYPE is not reliable when there is no file extension
@@ -425,20 +425,20 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GROOVY"
     elif [ "${FILE_TYPE}" == "html" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-HTML"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-HTML_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-HTML_PRETTIER"
     elif [ "${FILE_TYPE}" == "java" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVA"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GOOGLE_JAVA_FORMAT"
     elif [ "${FILE_TYPE}" == "js" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_ES"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_STANDARD"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_PRETTIER"
     elif [ "$FILE_TYPE" == "jsonc" ] || [ "$FILE_TYPE" == "json5" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSONC"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSONC_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSONC_PRETTIER"
     elif [ "${FILE_TYPE}" == "json" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSON"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSON_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSON_PRETTIER"
       if DetectOpenAPIFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-OPENAPI"
       fi
@@ -456,7 +456,7 @@ BuildFileArrays() {
       fi
     elif [ "${FILE_TYPE}" == "jsx" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSX"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSX_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSX_PRETTIER"
     elif [ "${FILE_TYPE}" == "ipynb" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_BLACK"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_FLAKE8"
@@ -472,7 +472,7 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LATEX"
     elif [ "${FILE_TYPE}" == "md" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-MARKDOWN"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-MARKDOWN_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-MARKDOWN_PRETTIER"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-NATURAL_LANGUAGE"
     elif [ "${FILE_TYPE}" == "php" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_BUILTIN"
@@ -534,7 +534,7 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "ts" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_ES"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_STANDARD"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_PRETTIER"
     elif [ "${FILE_TYPE}" == "tsx" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TSX"
     elif [ "${FILE_TYPE}" == "txt" ]; then
@@ -545,16 +545,16 @@ BuildFileArrays() {
     elif [[ "${FILE}" =~ .?goreleaser.+ya?ml ]]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GO_RELEASER"
     elif [ "${FILE_TYPE}" == "graphql" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GRAPHQL_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GRAPHQL_PRETTIER"
     elif [ "${FILE_TYPE}" == "vue" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-VUE_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-VUE_PRETTIER"
     elif [ "${FILE_TYPE}" == "sln" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_ANALYZERS"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_STYLE"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_WHITESPACE"
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML_PRETTIER"
+      IsNotSymbolicLink "${FILE}" && echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML_PRETTIER"
       if DetectActions "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS"
       fi
