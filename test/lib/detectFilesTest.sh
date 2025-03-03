@@ -124,11 +124,43 @@ function IsAnsibleDirectoryTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function RecognizeNotSymbolicLink() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+  local FILE="test/linters/symboliclinks/not_symbolic_link"
+
+  debug "Confirming that ${FILE} is not a symbolic link"
+
+  if ! IsNotSymbolicLink "${FILE}"; then
+    fatal "${FILE} is a symbolic link"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+function RecognizeSymbolicLink() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+  local FILE="test/linters/symboliclinks/symbolic_link"
+
+  debug "Confirming that ${FILE} is a symbolic link"
+
+  if IsNotSymbolicLink "${FILE}"; then
+    fatal "${FILE} is not a symbolic link"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 RecognizeNoShebangTest
 RecognizeCommentIsNotShebangTest
 RecognizeIndentedShebangAsCommentTest
 RecognizeSecondLineShebangAsCommentTest
 RecognizeShebangTest
 RecognizeShebangWithBlankTest
+RecognizeNotSymbolicLink
+RecognizeSymbolicLink
 
 IsAnsibleDirectoryTest
