@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.4.0](https://github.com/super-linter/super-linter/compare/v7.3.0...v7.4.0) (2025-03-03)
+
+
+### 🚀 Features
+
+* support eslint flat config files ([#6619](https://github.com/super-linter/super-linter/issues/6619)) ([d349d57](https://github.com/super-linter/super-linter/commit/d349d575765a595151dd8ae5f42355336f37b028))
+
 ## [7.3.0](https://github.com/super-linter/super-linter/compare/v7.2.1...v7.3.0) (2025-02-26)
 
 
