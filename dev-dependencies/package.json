@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1-local",
   "dependencies": {
-    "release-please": "^16.17.0"
+    "release-please": "^16.18.0"
   },
   "license": "MIT"
 }
