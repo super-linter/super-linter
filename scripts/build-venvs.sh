@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-################################################################################
-########################### Install Python Dependancies ########################
-################################################################################
 
-#####################
-# Set fail on error #
-#####################
-set -euo pipefail
+set -o errexit
+set -o nounset
+set -o pipefail
 
 apk add --no-cache --virtual .python-build-deps \
   gcc \
@@ -24,11 +20,6 @@ export CXXFLAGS="-Wno-error=incompatible-pointer-types"
 ############################
 mkdir -p /venvs
 
-########################################
-# Install basic libs to run installers #
-########################################
-pip install virtualenv
-
 #######################################################
 # Iterate through requirments.txt to install binaries #
 #######################################################
@@ -40,7 +31,7 @@ for DEP_FILE in *.txt; do
   cp "${DEP_FILE}" "/venvs/${PACKAGE_NAME}/requirements.txt"
   echo "Generating virtualenv for: [${PACKAGE_NAME}]"
   pushd "/venvs/${PACKAGE_NAME}"
-  virtualenv .
+  python -m venv .
   # shellcheck disable=SC1091
   source bin/activate
   pip install \
