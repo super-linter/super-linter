@@ -269,6 +269,20 @@ function IsGenerated() {
   fi
 }
 
+function IsNotSymbolicLink() {
+  local FILE="$1"
+
+  debug "Checking if ${FILE} is not a symbolic link..."
+
+  if [[ -L "${FILE}" ]]; then
+    debug "${FILE} is a symbolic link"
+    return 1
+  else
+    debug "${FILE} is NOT a symbolic link"
+    return 0
+  fi
+}
+
 # We need these functions when building the file list with parallel
 export -f CheckFileType
 export -f DetectActions
@@ -283,6 +297,7 @@ export -f GetFileType
 export -f IsValidShellScript
 export -f HasNoShebang
 export -f IsGenerated
+export -f IsNotSymbolicLink
 
 function RunAdditionalInstalls() {
 

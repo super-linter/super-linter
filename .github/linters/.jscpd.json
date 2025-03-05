@@ -25,6 +25,7 @@
     "**/test/linters/php_phpcs",
     "**/test/linters/php_phpstan",
     "**/test/linters/php_psalm",
+    "**/test/linters/prettier",
     "**/test/linters/protobuf",
     "**/test/linters/python_black",
     "**/test/linters/python_flake8",

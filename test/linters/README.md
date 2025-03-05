@@ -47,3 +47,8 @@ up.
 ### Ansible test cases
 
 `roles/ghe-initialize` is a valid Ansible role
+
+### Symbolic Links test cases
+
+- `symboliclinks/notSymbolicLink` is not a symbolic link
+- `symboliclinks/symbolicLink` is a symbolic link
