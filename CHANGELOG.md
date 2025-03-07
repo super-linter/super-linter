@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.4.0](https://github.com/super-linter/super-linter/compare/v7.3.0...v7.4.0) (2025-03-07)
+
+
+### 🚀 Features
+
+* add env var for npm-groovy-lint failon level ([#6530](https://github.com/super-linter/super-linter/issues/6530)) ([418c922](https://github.com/super-linter/super-linter/commit/418c922120006007fad0f1839b3dae7210c0a50b))
+* support eslint flat config files ([#6619](https://github.com/super-linter/super-linter/issues/6619)) ([d349d57](https://github.com/super-linter/super-linter/commit/d349d575765a595151dd8ae5f42355336f37b028))
+
+
+### 🐛 Bugfixes
+
+* emit prettier verbose output when debugging ([#6636](https://github.com/super-linter/super-linter/issues/6636)) ([4e1eb5f](https://github.com/super-linter/super-linter/commit/4e1eb5f5e0bffb6484d6411426a4edd32e35eeed))
+* skip symbolic links when passing files to prettier ([#6620](https://github.com/super-linter/super-linter/issues/6620)) ([417a58a](https://github.com/super-linter/super-linter/commit/417a58a62d9b71cab86a467908b0aca8b4ec88b3))
+
 ## [7.3.0](https://github.com/super-linter/super-linter/compare/v7.2.1...v7.3.0) (2025-02-26)
 
 
