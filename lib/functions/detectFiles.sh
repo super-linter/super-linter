@@ -323,7 +323,10 @@ function RunAdditionalInstalls() {
         COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
         info "Found Composer file: ${LINE}"
         local COMPOSER_CMD
-        if ! COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --no-progress -q 2>&1); then
+        local COMPOSER_EXIT_STATUS
+        COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --no-progress 2>&1)
+        COMPOSER_EXIT_STATUS=$?
+        if [ $COMPOSER_EXIT_STATUS -ne 0 ]; then
           fatal "Failed to run composer install for ${COMPOSER_PATH}. Output: ${COMPOSER_CMD}"
         else
           info "Successfully ran composer install."
