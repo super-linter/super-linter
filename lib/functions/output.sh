@@ -42,6 +42,12 @@ WriteSummaryFooterFailure() {
 FormatSuperLinterSummaryFile() {
   local SUPER_LINTER_SUMMARY_OUTPUT_PATH="${1}"
   local SUPER_LINTER_SUMMARY_FORMAT_COMMAND=(prettier --write)
+
+  # Avoid emitting output except of warnings and errors if debug logging is
+  # disabled.
+  if [[ "${LOG_DEBUG}" != "true" ]]; then
+    SUPER_LINTER_SUMMARY_FORMAT_COMMAND+=(--log-level warn)
+  fi
   # Override the default prettier ignore paths (.gitignore, .prettierignore) to
   # avoid considering their defaults because prettier will skip formatting
   # the summary report file if the summary report file is ignored in those
