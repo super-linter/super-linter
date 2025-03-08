@@ -315,7 +315,11 @@ function RunAdditionalInstalls() {
     [[ ("${VALIDATE_PHP_PSALM}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM") ]]; then
     # found PHP files and were validating it, need to composer install
     info "Found PHP files to validate. Check if we need to run composer install"
-    mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
+    if [[ -n "${FILTER_REGEX_EXCLUDE}" ]]; then
+      mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json ! -regex "${FILTER_REGEX_EXCLUDE}" 2>&1)
+    else
+      mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
+    fi
     debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
@@ -323,7 +327,10 @@ function RunAdditionalInstalls() {
         COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
         info "Found Composer file: ${LINE}"
         local COMPOSER_CMD
-        if ! COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --no-progress -q 2>&1); then
+        local COMPOSER_EXIT_STATUS
+        COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --ignore-platform-reqs --no-progress 2>&1)
+        COMPOSER_EXIT_STATUS=$?
+        if [ $COMPOSER_EXIT_STATUS -ne 0 ]; then
           fatal "Failed to run composer install for ${COMPOSER_PATH}. Output: ${COMPOSER_CMD}"
         else
           info "Successfully ran composer install."
