@@ -328,7 +328,7 @@ function RunAdditionalInstalls() {
         info "Found Composer file: ${LINE}"
         local COMPOSER_CMD
         local COMPOSER_EXIT_STATUS
-        COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --ignore-platform-reqs --no-progress 2>&1)
+        COMPOSER_CMD=$(cd "${COMPOSER_PATH}" && composer install --ignore-platform-reqs --no-plugins --no-progress --no-scripts 2>&1)
         COMPOSER_EXIT_STATUS=$?
         if [ $COMPOSER_EXIT_STATUS -ne 0 ]; then
           fatal "Failed to run composer install for ${COMPOSER_PATH}. Output: ${COMPOSER_CMD}"
