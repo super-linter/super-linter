@@ -315,7 +315,11 @@ function RunAdditionalInstalls() {
     [[ ("${VALIDATE_PHP_PSALM}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM") ]]; then
     # found PHP files and were validating it, need to composer install
     info "Found PHP files to validate. Check if we need to run composer install"
-    mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
+    if [[ -n "${FILTER_REGEX_EXCLUDE}" ]]; then
+      mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json ! -regex "${FILTER_REGEX_EXCLUDE}" 2>&1)
+    else
+      mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
+    fi
     debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
