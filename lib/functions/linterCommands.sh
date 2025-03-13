@@ -268,6 +268,11 @@ LINTER_COMMANDS_ARRAY_TYPESCRIPT_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_TYPESCRIPT_STANDARD=(ts-standard --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin --project "${TYPESCRIPT_STANDARD_TSCONFIG_FILE}")
 LINTER_COMMANDS_ARRAY_VUE_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_XML=(xmllint)
+# Avoid emitting output except of warnings and errors if debug logging is
+# disabled.
+if [[ "${LOG_DEBUG}" == "false" ]]; then
+  LINTER_COMMANDS_ARRAY_XML+=("${XMLLINT_NOOUT_OPTIONS[@]}")
+fi
 LINTER_COMMANDS_ARRAY_YAML=(yamllint -c "${YAML_LINTER_RULES}" -f parsable)
 if [ "${YAML_ERROR_ON_WARNING}" == 'true' ]; then
   LINTER_COMMANDS_ARRAY_YAML+=(--strict)

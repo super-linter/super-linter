@@ -65,6 +65,7 @@ BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PERL=("${LINTER_COMMANDS_ARRAY_PERL[@]}")
 BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
+BASE_LINTER_COMMANDS_ARRAY_XML=("${LINTER_COMMANDS_ARRAY_XML[@]}")
 
 function LinterCommandPresenceTest() {
   local FUNCTION_NAME
@@ -244,6 +245,44 @@ function InitInputConsumeCommandsTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+AddDebugOptionsToCommandsTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LOG_DEBUG="true"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_XML=("${BASE_LINTER_COMMANDS_ARRAY_XML[@]}")
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_XML" "EXPECTED_LINTER_COMMANDS_ARRAY_XML"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  LOG_DEBUG="false"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_XML=("${BASE_LINTER_COMMANDS_ARRAY_XML[@]}" "${XMLLINT_NOOUT_OPTIONS[@]}")
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_XML" "EXPECTED_LINTER_COMMANDS_ARRAY_XML"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # Restore LOG_DEBUG
+  # shellcheck disable=SC2034
+  LOG_DEBUG="true"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 function InitFixModeOptionsAndCommandsTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -405,3 +444,4 @@ InitFixModeOptionsAndCommandsTest
 InitPowerShellCommandTest
 CommandOptionsTest
 AddOptionsToCommandTest
+AddDebugOptionsToCommandsTest
