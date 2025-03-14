@@ -434,6 +434,7 @@ BuildFileArrays() {
       else
         debug "Skip adding ${FILE} to HTML_PRETTIER file array because Prettier doesn't support following symbolic links"
       fi
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LYCHEE"
     elif [ "${FILE_TYPE}" == "java" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVA"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GOOGLE_JAVA_FORMAT"
@@ -494,7 +495,10 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LUA"
     elif [ "${FILE_TYPE}" == "tex" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LATEX"
+    elif [ "${FILE_TYPE}" == "txt" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LYCHEE"
     elif [ "${FILE_TYPE}" == "md" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LYCHEE"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-MARKDOWN"
       if IsNotSymbolicLink "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-MARKDOWN_PRETTIER"
@@ -592,6 +596,8 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_ANALYZERS"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_STYLE"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOTNET_SLN_FORMAT_WHITESPACE"
+    elif [ "${FILE_TYPE}" == "rst" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-LYCHEE"
     elif [ "${FILE_TYPE}" == "yml" ] || [ "${FILE_TYPE}" == "yaml" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML"
       if IsNotSymbolicLink "${FILE}"; then
