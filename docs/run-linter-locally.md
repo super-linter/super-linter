@@ -44,14 +44,19 @@ snippet:
 
 ```yaml
 super-linter:
-  # More info at https://github.com/super-linter/super-linter
-  stage: Super-linter
-  # Use a specific Super-linter version instead of latest for more reproducible builds
-  image: super-linter/super-linter:latest
-  script: ["true"]
+  stage: lint
+  image:
+    name: ghcr.io/super-linter/super-linter:latest # set a stable version tag and the sha checksum in production for reproducible runs
+    entrypoint: [""]
+  script:
+    - git fetch origin $CI_DEFAULT_BRANCH # clone the default branch from this repository
+    - /action/lib/linter.sh
   variables:
+    # More info at https://github.com/super-linter/super-linter?tab=readme-ov-file#configure-super-linter
+    GIT_DEPTH: 0 # clone the whole history of the required branches
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+    DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
 ```
 
 Note that this is a high-level example that you should customize for your needs.
