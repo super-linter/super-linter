@@ -658,6 +658,6 @@ open-shell-dev-container: build-dev-container-image ## Open a shell in the dev t
 		--interactive \
 		--entrypoint /bin/bash \
 		--rm \
-		-v "$(CURDIR)/dev-dependencies/package-lock.json":/package-lock.json \
-		-v "$(CURDIR)/dev-dependencies/package.json":/package.json \
+		-v "$(CURDIR)/dev-dependencies/package-lock.json":/app/package-lock.json \
+		-v "$(CURDIR)/dev-dependencies/package.json":/app/package.json \
 		$(DEV_CONTAINER_URL)
