@@ -222,17 +222,6 @@ Header() {
   fi
 }
 
-ConfigureGitSafeDirectories() {
-  debug "Configuring Git safe directories"
-  declare -a git_safe_directories=("${GITHUB_WORKSPACE}" "${DEFAULT_SUPER_LINTER_WORKSPACE}" "${DEFAULT_WORKSPACE}")
-  for safe_directory in "${git_safe_directories[@]}"; do
-    debug "Set ${safe_directory} as a Git safe directory"
-    if ! git config --global --add safe.directory "${safe_directory}"; then
-      fatal "Cannot configure ${safe_directory} as a Git safe directory."
-    fi
-  done
-}
-
 GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
@@ -252,7 +241,6 @@ GetGitHubVars() {
     pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
-      ConfigureGitSafeDirectories
       debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
       if ! GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD); then
         fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
@@ -266,9 +254,6 @@ GetGitHubVars() {
     debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
     ValidateGitHubWorkspace "${GITHUB_WORKSPACE}"
-
-    # Ensure that Git can access the local repository
-    ConfigureGitSafeDirectories
 
     if [ -z "${GITHUB_EVENT_PATH:-}" ]; then
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
@@ -705,16 +690,14 @@ UpdateLoopsForImage
 # Print linter versions
 info "This version of Super-linter includes the following tools:\n$(cat "${VERSION_FILE}")"
 
+debug "Git safe directory: $(git config --system --get safe.directory)"
+
 #######################
 # Get GitHub Env Vars #
 #######################
 # Need to pull in all the GitHub variables
 # needed to connect back and update checks
 GetGitHubVars
-
-# Ensure that Git safe directories are configured because we don't do this in
-# all cases when initializing variables
-ConfigureGitSafeDirectories
 
 ############################################
 # Create SSH agent and add key if provided #

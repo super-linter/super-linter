@@ -446,6 +446,13 @@ ENTRYPOINT ["/action/lib/linter.sh"]
 
 RUN if [ ! -e "/usr/bin/php" ]; then ln -s /usr/bin/php84 /usr/bin/php; fi
 
+# Consider directories safe for Git because users might run Super-linter as an
+# arbitrary user. Also, some tools like commitlint and golangci-lint expect that
+# Git directories they interact with are to be considered safe.
+# Keep this in a dedicated RUN instruction for clarity
+# hadolint ignore=DL3059
+RUN git config --system --add safe.directory "*"
+
 FROM base_image AS slim
 
 # Run to build version file and validate image

@@ -126,10 +126,6 @@ function BuildFileList() {
     debug "DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY: ${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}"
     RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/bad")
     RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/good")
-    # Commitlint uses Git to get commit data, so the dynamically created test case repositories
-    # need to be marked as safe
-    git config --global --add safe.directory "${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/bad"
-    git config --global --add safe.directory "${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/good"
   fi
 
   debug "Add GITHUB_WORKSPACE (${GITHUB_WORKSPACE}) to the list of files to lint because we might need it for linters that lint the whole workspace"

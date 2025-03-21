@@ -2,5 +2,6 @@
 # This file is only used in tests
 # TODO: move in a dedicated directory in test/linters-config
 linters:
+  disable-all: true
   enable:
     - gofmt
