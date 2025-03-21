@@ -14,6 +14,7 @@
     "**/test/linters/dotnet_sln_format_analyzers",
     "**/test/linters/dotnet_sln_format_style",
     "**/test/linters/dotnet_sln_format_whitespace",
+    "**/test/linters/go_modules",
     "**/test/linters/html",
     "**/test/linters/javascript_es",
     "**/test/linters/javascript_prettier",
