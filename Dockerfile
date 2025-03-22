@@ -69,6 +69,7 @@ RUN apk add --no-cache \
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
 COPY dependencies/python/ /stage
+COPY scripts/build-venvs.sh /stage/
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
@@ -495,7 +496,7 @@ ARG TARGETARCH
 ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
-# Install super-linter runtime dependencies
+# Install Rust linters
 RUN apk add --no-cache \
   rust-clippy \
   rustfmt
