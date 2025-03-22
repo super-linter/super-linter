@@ -9,8 +9,69 @@ on:
 permissions: {}
 
 jobs:
+  build-stages:
+    name: Build and cache container image stages
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-main-build-stages-${{ matrix.stages.stage-name }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      issues: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        stages:
+          - stage-name: clang-format
+          - stage-name: python-builder
+          - stage-name: npm-builder
+          - stage-name: tflint-plugins
+          - stage-name: lintr-installer
+          - stage-name: powershell-installer
+          - stage-name: php-linters
+    timeout-minutes: 120
+    env:
+      CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build clang-format stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-${{ matrix.stages.stage-name }}
+          cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-${{ matrix.stages.stage-name }},mode=max
+          load: false
+          push: false
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          target: ${{ matrix.stages.stage-name }}
+      - name: Create Issue on Failure
+        uses: actions/github-script@v7
+        if: failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const create = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Failed to build stage ${{ matrix.stages.stage-name }}",
+              body: "Automation has failed us!\nMore information can be found at:\n - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              assignees: [
+                "zkoppert", "Hanse00", "ferrarimarco"
+              ]
+            })
+
   test:
     name: Build and Test
+    needs:
+      - build-stages
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-main-${{ matrix.images.target }}
@@ -95,7 +156,15 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
-          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
+          cache-from: |
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-clang-format
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-python-builder
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-npm-builder
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-php-linters
           load: true
           push: false
           secrets: |
@@ -125,7 +194,15 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_REVISION=${{ env.BUILD_REVISION }}
             BUILD_VERSION=${{ env.BUILD_VERSION }}
-          cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
+          cache-from: |
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-clang-format
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-python-builder
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-npm-builder
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
+            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-php-linters
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
           push: true
