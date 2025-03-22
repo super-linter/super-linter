@@ -110,7 +110,7 @@ jobs:
           context: .
           file: ./Dockerfile
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-${{ matrix.stages.stage-name }}
-          load: false
+          load: true
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
