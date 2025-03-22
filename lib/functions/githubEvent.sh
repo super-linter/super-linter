@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Pull request event payload ref: https://docs.github.com/en/webhooks/webhook-events-and-payloads#pull_request
 # Push event payload ref: https://docs.github.com/en/webhooks/webhook-events-and-payloads#push
 
 function GetGithubPushEventCommitCount() {
@@ -16,6 +17,27 @@ function GetGithubPushEventCommitCount() {
     return 0
   else
     fatal "GITHUB_PUSH_COMMIT_COUNT is not an integer: ${GITHUB_PUSH_COMMIT_COUNT}"
+  fi
+}
+
+function GetGithubPullRequestEventCommitCount() {
+  local GITHUB_EVENT_FILE_PATH
+  GITHUB_EVENT_FILE_PATH="${1}"
+  local GITHUB_PULL_REQUEST_COMMIT_COUNT
+
+  GITHUB_PULL_REQUEST_COMMIT_COUNT=$(jq -r '.pull_request.commits' <"${GITHUB_EVENT_FILE_PATH}")
+  RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to initialize GITHUB_PULL_REQUEST_COMMIT_COUNT for a pull request event."
+    return 1
+  fi
+
+  if IsUnsignedInteger "${GITHUB_PULL_REQUEST_COMMIT_COUNT}" && [ -n "${GITHUB_PULL_REQUEST_COMMIT_COUNT}" ]; then
+    echo "${GITHUB_PULL_REQUEST_COMMIT_COUNT}"
+    return 0
+  else
+    error "GITHUB_PULL_REQUEST_COMMIT_COUNT is not an integer: ${GITHUB_PULL_REQUEST_COMMIT_COUNT}"
+    return 1
   fi
 }
 
