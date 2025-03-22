@@ -23,6 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         stages:
+          - stage-name: base_image
           - stage-name: clang-format
           - stage-name: python-builder
           - stage-name: npm-builder
@@ -99,6 +100,7 @@ jobs:
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
+      STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -165,13 +167,14 @@ jobs:
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           cache-from: |
             type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-clang-format
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-python-builder
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-npm-builder
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-php-linters
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-base_image
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-clang-format
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-python-builder
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-npm-builder
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-php-linters
           load: true
           push: false
           secrets: |
@@ -203,13 +206,14 @@ jobs:
             BUILD_VERSION=${{ env.BUILD_VERSION }}
           cache-from: |
             type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-clang-format
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-python-builder
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-npm-builder
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
-            type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-php-linters
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-base_image
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-clang-format
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-python-builder
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-npm-builder
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-tflint-plugins
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-lintr-installer
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-powershell-installer
+            type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-php-linters
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
           push: true
