@@ -35,12 +35,16 @@ IMAGE := $(CONTAINER_IMAGE_TARGET)
 
 # Default to stadard
 ifeq ($(IMAGE),)
-IMAGE := "standard"
+IMAGE := standard
+IMAGE_PREFIX :=
+endif
+ifeq ($(IMAGE),slim)
+IMAGE_PREFIX := slim-
 endif
 
 # Default to latest
 ifeq ($(SUPER_LINTER_TEST_CONTAINER_URL),)
-SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:latest"
+SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:${IMAGE_PREFIX}latest"
 endif
 
 ifeq ($(BUILD_DATE),)
@@ -82,6 +86,7 @@ info: ## Gather information about the runtime environment
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
 	echo "IMAGE:" $(IMAGE); \
+	echo "IMAGE_PREFIX: $(IMAGE_PREFIX)"; \
 	echo "Build date: ${BUILD_DATE}"; \
 	echo "Build revision: ${BUILD_REVISION}"; \
 	echo "Build version: ${BUILD_VERSION}"; \
@@ -127,6 +132,15 @@ docker: docker-build-check check-github-token ## Build the container image
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:${IMAGE_PREFIX}latest-buildcache \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-base_image \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-clang-format \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-python-builder \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-npm-builder \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-tflint-plugins \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-lintr-installer \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-powershell-installer \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-php-linters \
 		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
 		--target $(IMAGE) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .
