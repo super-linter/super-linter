@@ -93,68 +93,11 @@ run_test_case_dont_save_super_linter_output() {
   SAVE_SUPER_LINTER_OUTPUT="false"
 }
 
-initialize_git_repository_and_test_args() {
-  local GIT_REPOSITORY_PATH="${1}"
-
-  initialize_git_repository "${GIT_REPOSITORY_PATH}"
-
-  local GITHUB_EVENT_FILE_PATH="${2}"
-
-  # Put an arbitrary JSON file in the repository to trigger some validation
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: initial commit"
-
-  RUN_LOCAL=false
-  SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
-  COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="push")
-  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
-  COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
-  COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
-}
-
-initialize_git_repository_and_test_args_merge_commit() {
-  local GIT_REPOSITORY_PATH="${1}"
-  local GITHUB_EVENT_FILE_PATH="${2}"
-
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}"
-
-  local NEW_BRANCH_NAME="branch-1"
-  git -C "${GIT_REPOSITORY_PATH}" switch --create "${NEW_BRANCH_NAME}"
-  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-1.json"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 1"
-  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-2.json"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 2"
-  cp -v "test/data/github-event/github-event-push-merge-commit.json" "${GIT_REPOSITORY_PATH}/new-file-3.json"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 3"
-  git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
-  # Force the creation of a merge commit
-  git -C "${GIT_REPOSITORY_PATH}" merge \
-    -m "Merge commit" \
-    --no-ff \
-    "${NEW_BRANCH_NAME}"
-  git -C "${GIT_REPOSITORY_PATH}" branch -d "${NEW_BRANCH_NAME}"
-
-  initialize_github_sha "${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
-}
-
-initialize_github_sha() {
-  local GIT_REPOSITORY_PATH="${1}"
-  local TEST_GITHUB_SHA
-  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
-  COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
-}
-
 run_test_case_git_initial_commit() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
   COMMAND_TO_RUN+=(--env VALIDATE_JSON="true")
 
@@ -167,17 +110,37 @@ run_test_case_merge_commit_push() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json"
-  git_log_graph "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
 }
 
 run_test_case_merge_commit_push_tag() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json"
+  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json" "push"
   git -C "${GIT_REPOSITORY_PATH}" tag "v1.0.1-beta"
   git_log_graph "${GIT_REPOSITORY_PATH}"
+}
+
+run_test_case_github_pr_event_multiple_commits() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  local GITHUB_EVENT_FILE_PATH="test/data/github-event/github-event-pull-request-multiple-commits.json"
+  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "pull_request"
+
+  # Update the GitHub event file in the temporary directory because Super-linter
+  # reads certain fields at runtime, such as pull_request.head.sha, and the
+  # values of these fields need to be computed because we create a new Git
+  # repository on each test run
+  local GITHUB_EVENT_FILE_DESTINATION_PATH
+  GITHUB_EVENT_FILE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/$(basename "${GITHUB_EVENT_FILE_PATH}")"
+
+  # Update the pull_request.head.sha considering the test Git repository
+  local TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA
+  TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "HEAD^2")"
+  debug "Updating the pull_request.head.sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}"
+  sed -i "s/fa386af5d523fabb5df5d1bae53b8984dfbf4ff0/${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
 }
 
 run_test_case_use_find_and_ignore_gitignored_files() {
@@ -216,7 +179,7 @@ run_test_case_fix_mode() {
   VERIFY_FIX_MODE="true"
 
   GIT_REPOSITORY_PATH="$(mktemp -d)"
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json"
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
 
   # Remove leftovers before copying test files because other tests might have
   # created temporary files and caches as the root user, so commands that

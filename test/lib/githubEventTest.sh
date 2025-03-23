@@ -35,6 +35,31 @@ function GetGithubPushEventCommitCountTest() {
 
 GetGithubPushEventCommitCountTest
 
+function GetGithubPullRequestEventCommitCountTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_EVENT_COMMIT_COUNT
+  set +o errexit
+  GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPullRequestEventCommitCount "test/data/github-event/github-event-pull-request-multiple-commits.json")
+  RET_CODE=$?
+  set -o errexit
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    fatal "Failed to get commit count from GitHub pull request event. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
+  fi
+
+  debug "GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+
+  if [ "${GITHUB_EVENT_COMMIT_COUNT}" -ne 3 ]; then
+    fatal "GITHUB_EVENT_COMMIT_COUNT is not equal to 3: ${GITHUB_EVENT_COMMIT_COUNT}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+GetGithubPullRequestEventCommitCountTest
+
 function GetGithubRepositoryDefaultBranchTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -56,3 +81,25 @@ function GetGithubRepositoryDefaultBranchTest() {
 }
 
 GetGithubRepositoryDefaultBranchTest
+
+function GetPullRequestHeadShaTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_PULL_REQUEST_HEAD_SHA
+  GITHUB_PULL_REQUEST_HEAD_SHA=$(GetPullRequestHeadSha "test/data/github-event/github-event-pull-request-multiple-commits.json")
+
+  debug "GITHUB_PULL_REQUEST_HEAD_SHA: ${GITHUB_PULL_REQUEST_HEAD_SHA}"
+
+  local EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA
+  EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA="fa386af5d523fabb5df5d1bae53b8984dfbf4ff0"
+
+  if [ "${GITHUB_PULL_REQUEST_HEAD_SHA}" != "${EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA}" ]; then
+    fatal "GITHUB_PULL_REQUEST_HEAD_SHA (${GITHUB_PULL_REQUEST_HEAD_SHA}) is not equal to: ${EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+GetPullRequestHeadShaTest
