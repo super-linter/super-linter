@@ -15,14 +15,22 @@ function InitGitRepositoryAndCommitFiles() {
   initialize_git_repository "${REPOSITORY_PATH}"
 
   if [[ "${COMMIT_FILE_INITIAL_COMMIT}" == "true" ]]; then
+    debug "Adding a test file to the initial commit"
     touch "${REPOSITORY_PATH}/test-initial-commit.txt"
     git -C "${REPOSITORY_PATH}" add .
   fi
   git -C "${REPOSITORY_PATH}" commit --allow-empty -m "Initial commit"
-  GITHUB_BEFORE_SHA=$(git -C "${REPOSITORY_PATH}" rev-parse HEAD)
-  debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
-  GIT_ROOT_COMMIT_SHA="${GITHUB_BEFORE_SHA}"
+  # shellcheck disable=SC2034
+  GIT_ROOT_COMMIT_SHA="$(git -C "${REPOSITORY_PATH}" rev-parse HEAD)"
   debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
+
+  if [[ "${FILES_TO_COMMIT}" -gt 0 ]]; then
+    GITHUB_BEFORE_SHA=$(git -C "${REPOSITORY_PATH}" rev-parse HEAD)
+    debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  else
+    debug "Unsetting GITHUB_BEFORE_SHA because if we only have the initial commit, there is no previous commit to compare to"
+    unset GITHUB_BEFORE_SHA
+  fi
 
   git -C "${REPOSITORY_PATH}" checkout -b test-branch
 
@@ -35,10 +43,14 @@ function InitGitRepositoryAndCommitFiles() {
 
   GITHUB_SHA=$(git -C "${REPOSITORY_PATH}" rev-parse HEAD)
   debug "GITHUB_SHA: ${GITHUB_SHA}"
-  git -C "${REPOSITORY_PATH}" log --oneline "${DEFAULT_BRANCH}...${GITHUB_SHA}"
+  git_log_graph "${REPOSITORY_PATH}"
 }
 
 function GenerateFileDiffOneFileTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
 
@@ -56,28 +68,28 @@ function GenerateFileDiffOneFileTest() {
     fatal "RAW_FILE_ARRAY does not have exactly one element: ${RAW_FILE_ARRAY_SIZE}"
   fi
 
-  local FUNCTION_NAME
-  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
   notice "${FUNCTION_NAME} PASS"
 }
 
 function GenerateFileDiffOneFilePushEventTest() {
-  # shellcheck disable=SC2034
-  local GITHUB_EVENT_NAME="push"
-  local FILES_TO_COMMIT=1
-  local COMMIT_FILE_INITIAL_COMMIT="false"
+  FILES_TO_COMMIT=1
+  COMMIT_FILE_INITIAL_COMMIT="false"
   GenerateFileDiffOneFileTest "${FUNCNAME[0]}"
 }
 
 function GenerateFileDiffInitialCommitPushEventTest() {
-  # shellcheck disable=SC2034
-  local GITHUB_EVENT_NAME="push"
-  local FILES_TO_COMMIT=0
-  local COMMIT_FILE_INITIAL_COMMIT="true"
+  FILES_TO_COMMIT=0
+  COMMIT_FILE_INITIAL_COMMIT="true"
+  GITHUB_EVENT_NAME="push"
   GenerateFileDiffOneFileTest "${FUNCNAME[0]}"
+  unset GITHUB_EVENT_NAME
 }
 
 function GenerateFileDiffTwoFilesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
   local GITHUB_WORKSPACE
   GITHUB_WORKSPACE="$(mktemp -d)"
   local FILES_TO_COMMIT=2
@@ -94,8 +106,6 @@ function GenerateFileDiffTwoFilesTest() {
     fatal "RAW_FILE_ARRAY does not have exactly ${FILES_TO_COMMIT} elements: ${RAW_FILE_ARRAY_SIZE}"
   fi
 
-  local FUNCTION_NAME
-  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
   notice "${FUNCTION_NAME} PASS"
 }
 

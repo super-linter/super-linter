@@ -231,8 +231,13 @@ initialize_git_repository() {
   # Assuming that if sudo is available we aren't running inside a container,
   # so we don't want to leave leftovers around.
   if command -v sudo; then
-    # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-    trap "sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+    if [[ "${KEEP_TEMP_FILES:-}" == "true" ]]; then
+      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+      trap "echo Temp git repository available at: '${GIT_REPOSITORY_PATH}'" EXIT
+    else
+      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+      trap "echo 'Deleting ${GIT_REPOSITORY_PATH}. Set KEEP_TEMP_FILES=true to keep temporary files'; sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
+    fi
   fi
 
   if [[ ! -d "${GIT_REPOSITORY_PATH}" ]]; then
@@ -244,6 +249,94 @@ initialize_git_repository() {
   git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH:-"main"}"
   git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
   git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
+}
+
+initialize_git_repository_and_test_args() {
+  local GIT_REPOSITORY_PATH="${1}"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+
+  local GITHUB_EVENT_FILE_PATH="${2}"
+
+  local GITHUB_EVENT_NAME="${3}"
+
+  # Put an arbitrary JSON file in the repository to trigger some validation
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: initial commit"
+
+  if [[ -v COMMAND_TO_RUN ]]; then
+    # shellcheck disable=SC2034
+    RUN_LOCAL=false
+    SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
+    COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
+    COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
+    COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
+    COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
+    COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
+  fi
+}
+
+initialize_git_repository_and_test_args_merge_commit() {
+  local GIT_REPOSITORY_PATH="${1}"
+  local GITHUB_EVENT_FILE_PATH="${2}"
+  local GITHUB_EVENT_NAME="${3}"
+
+  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_NAME}"
+
+  local NEW_BRANCH_NAME="branch-1"
+  git -C "${GIT_REPOSITORY_PATH}" switch --create "${NEW_BRANCH_NAME}"
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-1.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 1"
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-2.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 2"
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-3.json"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 3"
+  git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+
+  if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+    debug "Simulate what happens in a GitHub pull request event"
+    # shellcheck disable=SC2034
+    GITHUB_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "${NEW_BRANCH_NAME}")"
+    debug "Create a branch to merge the pull request"
+    git -C "${GIT_REPOSITORY_PATH}" switch --create pull/6637/merge
+  fi
+
+  debug "Forcing the creation of a merge commit"
+  git -C "${GIT_REPOSITORY_PATH}" merge \
+    -m "Merge commit" \
+    --no-ff \
+    "${NEW_BRANCH_NAME}"
+
+  if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+    debug "Simulate what happens in a GitHub push event"
+    git -C "${GIT_REPOSITORY_PATH}" branch -d "${NEW_BRANCH_NAME}"
+  fi
+
+  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+
+  git_log_graph "${GIT_REPOSITORY_PATH}"
+
+  if [[ -v COMMAND_TO_RUN ]]; then
+    COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
+  fi
+}
+
+initialize_github_sha() {
+  local GIT_REPOSITORY_PATH="${1}"
+  local TEST_GITHUB_SHA
+  TEST_GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+  debug "Setting GITHUB_SHA to ${TEST_GITHUB_SHA}"
+
+  # shellcheck disable=SC2034
+  GITHUB_SHA="${TEST_GITHUB_SHA}"
+
+  if [[ -v COMMAND_TO_RUN ]]; then
+    COMMAND_TO_RUN+=(-e GITHUB_SHA="${TEST_GITHUB_SHA}")
+  fi
 }
 
 git_log_graph() {

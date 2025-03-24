@@ -90,8 +90,9 @@ info: ## Gather information about the runtime environment
 	echo "Build date: ${BUILD_DATE}"; \
 	echo "Build revision: ${BUILD_REVISION}"; \
 	echo "Build version: ${BUILD_VERSION}"; \
-	echo "SUPER_LINTER_TEST_CONTAINER_URL:" $(SUPER_LINTER_TEST_CONTAINER_URL); \
-	echo "ls -ahl: $$(ls -ahl)"; \
+	echo "SUPER_LINTER_TEST_CONTAINER_URL: $(SUPER_LINTER_TEST_CONTAINER_URL)"; \
+	echo "ls -ahl:\n$$(ls -ahl)"; \
+	echo "Git log:\n$$(git log --all --graph --abbrev-commit --decorate --format=oneline)" \
 	docker images; \
 	docker ps; \
 	echo "Container image layers size:"; \
@@ -579,6 +580,13 @@ test-git-merge-commit-push-tag: ## Run super-linter against a repository that ha
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_merge_commit_push_tag" \
+		"$(IMAGE)"
+
+.PHONY: test-github-pr-event-multiple-commits
+test-github-pr-event-multiple-commits: ## Run super-linter against a repository that simulates a pull request event with multiple commits
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_pr_event_multiple_commits" \
 		"$(IMAGE)"
 
 .PHONY: test-use-find-and-ignore-gitignored-files

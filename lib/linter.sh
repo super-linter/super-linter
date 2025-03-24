@@ -275,19 +275,15 @@ GetGitHubVars() {
     fi
     export GIT_ROOT_COMMIT_SHA
 
-    ##################################################
-    # Need to pull the GitHub Vars from the env file #
-    ##################################################
-
-    GITHUB_ORG=$(jq -r '.repository.owner.login' <"${GITHUB_EVENT_PATH}")
-
     # Github sha on PR events is not the latest commit.
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
     if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
       debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
 
-      if ! GITHUB_SHA=$(jq -r .pull_request.head.sha <"$GITHUB_EVENT_PATH"); then
-        fatal "Failed to update GITHUB_SHA for pull request event: ${GITHUB_SHA}"
+      GITHUB_SHA="$(GetPullRequestHeadSha "${GITHUB_EVENT_PATH}")"
+      local RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
     elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
@@ -344,32 +340,11 @@ GetGitHubVars() {
       fi
     fi
 
-    ############################
-    # Validate we have a value #
-    ############################
-    if [ -z "${GITHUB_ORG}" ]; then
-      error "Failed to get [GITHUB_ORG]!"
-      fatal "[${GITHUB_ORG}]"
-    else
-      info "Successfully found GITHUB_ORG: ${GITHUB_ORG}"
-    fi
-
-    #######################
-    # Get the GitHub Repo #
-    #######################
-    GITHUB_REPO=$(jq -r '.repository.name' <"${GITHUB_EVENT_PATH}")
-
-    ############################
-    # Validate we have a value #
-    ############################
-    if [ -z "${GITHUB_REPO}" ]; then
-      error "Failed to get [GITHUB_REPO]!"
-      fatal "[${GITHUB_REPO}]"
-    else
-      info "Successfully found GITHUB_REPO: ${GITHUB_REPO}"
-    fi
-
     GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_PATH}")
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      fatal "Failed to get GITHUB_REPOSITORY_DEFAULT_BRANCH. Output: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+    fi
   fi
 
   if [ -z "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]; then
@@ -400,15 +375,13 @@ GetGitHubVars() {
     fi
 
     if [ -z "${GITHUB_REPOSITORY:-}" ]; then
-      error "Failed to get [GITHUB_REPOSITORY]!"
-      fatal "[${GITHUB_REPOSITORY}]"
+      fatal "Failed to get GITHUB_REPOSITORY"
     else
       info "Successfully found GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
     fi
 
     if [ -z "${GITHUB_RUN_ID:-}" ]; then
-      error "Failed to get [GITHUB_RUN_ID]!"
-      fatal "[${GITHUB_RUN_ID}]"
+      fatal "Failed to get GITHUB_RUN_ID"
     else
       info "Successfully found GITHUB_RUN_ID ${GITHUB_RUN_ID}"
     fi

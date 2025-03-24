@@ -289,6 +289,8 @@ function ValidateGitBeforeShaReference() {
   else
     debug "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this repository"
   fi
+
+  info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
 }
 
 function ValidateDefaultGitBranch() {
