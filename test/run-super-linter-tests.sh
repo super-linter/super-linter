@@ -22,6 +22,24 @@ configure_typescript_for_test_cases() {
   COMMAND_TO_RUN+=(--env TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
 }
 
+configure_command_arguments_for_test_git_repository() {
+  local GIT_REPOSITORY_PATH="${1}" && shift
+  local GITHUB_EVENT_FILE_PATH="${1}" && shift
+  local GITHUB_EVENT_NAME="${1}" && shift
+
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
+
+  # shellcheck disable=SC2034
+  RUN_LOCAL=false
+  SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
+  COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
+  COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
+  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
+  COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
+  COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
+  COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
+}
+
 configure_git_commitlint_test_cases() {
   debug "Initializing commitlint test case"
   local GIT_COMMITLINT_GOOD_TEST_CASE_REPOSITORY="test/linters/git_commitlint/good"
@@ -97,9 +115,10 @@ run_test_case_git_initial_commit() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
-  COMMAND_TO_RUN+=(--env VALIDATE_JSON="true")
 
   # Validate commits using commitlint so we can check that we have a default
   # commitlint configuration file
@@ -110,14 +129,18 @@ run_test_case_merge_commit_push() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
 }
 
 run_test_case_merge_commit_push_tag() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
-  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json" "push"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json" "push"
   git -C "${GIT_REPOSITORY_PATH}" tag "v1.0.1-beta"
   git_log_graph "${GIT_REPOSITORY_PATH}"
 }
@@ -127,7 +150,9 @@ run_test_case_github_pr_event_multiple_commits() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   local GITHUB_EVENT_FILE_PATH="test/data/github-event/github-event-pull-request-multiple-commits.json"
-  initialize_git_repository_and_test_args_merge_commit "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "pull_request"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "pull_request" "true"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "pull_request"
 
   # Update the GitHub event file in the temporary directory because Super-linter
   # reads certain fields at runtime, such as pull_request.head.sha, and the
@@ -179,7 +204,9 @@ run_test_case_fix_mode() {
   VERIFY_FIX_MODE="true"
 
   GIT_REPOSITORY_PATH="$(mktemp -d)"
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
 
   # Remove leftovers before copying test files because other tests might have
   # created temporary files and caches as the root user, so commands that

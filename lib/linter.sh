@@ -259,6 +259,12 @@ GetGitHubVars() {
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
       info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
+    fi
+
+    if [[ ! -e "${GITHUB_EVENT_PATH}" ]]; then
+      fatal "${GITHUB_EVENT_PATH} doesn't exist or it's not readable"
+    else
+      debug "${GITHUB_EVENT_PATH} exists and it's readable"
       debug "${GITHUB_EVENT_PATH} contents:\n$(cat "${GITHUB_EVENT_PATH}")"
     fi
 
@@ -295,6 +301,10 @@ GetGitHubVars() {
         debug "${GITHUB_SHA} is not the initial commit"
         local -i GITHUB_PUSH_COMMIT_COUNT
         GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
+        local RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to initialize GITHUB_PUSH_COMMIT_COUNT for ${GITHUB_EVENT_NAME} event: ${GITHUB_PUSH_COMMIT_COUNT}"
+        fi
         if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
           fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
         fi

@@ -22,6 +22,13 @@ source "lib/globals/languages.sh"
 # shellcheck source=/dev/null
 source "lib/functions/output.sh"
 
+# shellcheck disable=SC2034
+TEST_DATA_DIRECTORY="test/data/test-repository-contents"
+
+# Use an arbitrary JSON file in case we want trigger some validation
+# shellcheck disable=SC2034
+TEST_DATA_JSON_FILE_GOOD="${TEST_DATA_DIRECTORY}/json_good_1.json"
+
 # TODO: use TEST_CASE_FOLDER instead of redefining this after we extract the
 # initialization of TEST_CASE_FOLDER from linter.sh
 # shellcheck disable=SC2034
@@ -228,6 +235,10 @@ RemoveTestLogsAndSuperLinterOutputs() {
 initialize_git_repository() {
   local GIT_REPOSITORY_PATH="${1}"
 
+  unset GITHUB_SHA
+  unset GIT_ROOT_COMMIT_SHA
+  unset GITHUB_BEFORE_SHA
+
   # Assuming that if sudo is available we aren't running inside a container,
   # so we don't want to leave leftovers around.
   if command -v sudo; then
@@ -251,78 +262,90 @@ initialize_git_repository() {
   git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
 }
 
-initialize_git_repository_and_test_args() {
-  local GIT_REPOSITORY_PATH="${1}"
-
-  initialize_git_repository "${GIT_REPOSITORY_PATH}"
-
-  local GITHUB_EVENT_FILE_PATH="${2}"
-
-  local GITHUB_EVENT_NAME="${3}"
-
-  # Put an arbitrary JSON file in the repository to trigger some validation
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: initial commit"
-
-  if [[ -v COMMAND_TO_RUN ]]; then
-    # shellcheck disable=SC2034
-    RUN_LOCAL=false
-    SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
-    COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
-    COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
-    COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
-    COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
-    COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
-  fi
-}
-
-initialize_git_repository_and_test_args_merge_commit() {
-  local GIT_REPOSITORY_PATH="${1}"
-  local GITHUB_EVENT_FILE_PATH="${2}"
-  local GITHUB_EVENT_NAME="${3}"
-
-  initialize_git_repository_and_test_args "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_NAME}"
+initialize_git_repository_contents() {
+  local GIT_REPOSITORY_PATH="${1}" && shift
+  local COMMITS_TO_CREATE="${1}" && shift
+  local CREATE_NEW_BRANCH="${1}" && shift
+  local GITHUB_EVENT_NAME="${1}" && shift
+  local FORCE_MERGE_COMMIT="${1}" && shift
 
   local NEW_BRANCH_NAME="branch-1"
-  git -C "${GIT_REPOSITORY_PATH}" switch --create "${NEW_BRANCH_NAME}"
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-1.json"
+
+  debug "Creating the initial commit"
+  local TEST_FILE_PATH
+  TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test0.json"
+  cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
   git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 1"
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-2.json"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 2"
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/new-file-3.json"
-  git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add new file 3"
-  git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "Add ${TEST_FILE_PATH}"
+
+  # shellcheck disable=SC2034
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+  debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
+
+  if [[ "${COMMITS_TO_CREATE}" -gt 0 ]]; then
+    GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
+    debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  fi
+
+  if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
+    debug "Creating a new branch: ${NEW_BRANCH_NAME}"
+    git -C "${GIT_REPOSITORY_PATH}" switch --create "${NEW_BRANCH_NAME}"
+  fi
+
+  debug "Creating ${COMMITS_TO_CREATE} commits"
+  for ((i = 1; i <= COMMITS_TO_CREATE; i++)); do
+    local TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test${i}.json"
+    cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
+    git -C "${GIT_REPOSITORY_PATH}" add .
+    git -C "${GIT_REPOSITORY_PATH}" commit -m "Add ${TEST_FILE_PATH}"
+  done
+
+  debug "Simulating a GitHub ${GITHUB_EVENT_NAME:-"not set"} event"
 
   if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-    debug "Simulate what happens in a GitHub pull request event"
+    debug "Switching to the ${DEFAULT_BRANCH} branch"
+    git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+
+    local PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
     # shellcheck disable=SC2034
     GITHUB_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "${NEW_BRANCH_NAME}")"
     debug "Create a branch to merge the pull request"
-    git -C "${GIT_REPOSITORY_PATH}" switch --create pull/6637/merge
-  fi
+    git -C "${GIT_REPOSITORY_PATH}" switch --create "${PULL_REQUEST_BRANCH_NAME}"
 
-  debug "Forcing the creation of a merge commit"
-  git -C "${GIT_REPOSITORY_PATH}" merge \
-    -m "Merge commit" \
-    --no-ff \
-    "${NEW_BRANCH_NAME}"
+    if [[ "${FORCE_MERGE_COMMIT}" != "true" ]]; then
+      fatal "A pull request always creates a merge commit. Set FORCE_MERGE_COMMIT to true"
+    fi
 
-  if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-    debug "Simulate what happens in a GitHub push event"
-    git -C "${GIT_REPOSITORY_PATH}" branch -d "${NEW_BRANCH_NAME}"
+    debug "Create a merge commit to merge the ${NEW_BRANCH_NAME} branch in the pull request branch (${PULL_REQUEST_BRANCH_NAME})"
+    git -C "${GIT_REPOSITORY_PATH}" merge \
+      -m "Merge commit (${GITHUB_EVENT_NAME})" \
+      --no-ff \
+      "${NEW_BRANCH_NAME}"
+  elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+    if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
+      if [[ "${FORCE_MERGE_COMMIT}" == "true" ]]; then
+        git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+        debug "Forcing the creation of a merge commit"
+        git -C "${GIT_REPOSITORY_PATH}" merge \
+          -m "Merge commit" \
+          --no-ff \
+          "${NEW_BRANCH_NAME}"
+
+        debug "Deleting the ${NEW_BRANCH_NAME} branch"
+        git -C "${GIT_REPOSITORY_PATH}" branch -d "${NEW_BRANCH_NAME}"
+      else
+        debug "Skipping the creation of a merge commit."
+      fi
+    else
+      debug "Pushed directly to the default branch. No need to merge."
+    fi
+  else
+    fatal "Handling GITHUB_EVENT_NAME (${GITHUB_EVENT_NAME:-"not set"}) not implemented"
   fi
 
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
 
   git_log_graph "${GIT_REPOSITORY_PATH}"
-
-  if [[ -v COMMAND_TO_RUN ]]; then
-    COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
-  fi
 }
 
 initialize_github_sha() {
