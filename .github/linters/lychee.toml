@@ -1,0 +1,3 @@
+accept = ["200", "429"]
+max_retries = 5
+retry_wait_time = 4
