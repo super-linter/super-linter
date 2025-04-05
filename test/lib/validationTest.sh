@@ -560,6 +560,76 @@ ValidateCommitlintConfigurationTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  local -i COMMIT_COUNT=3
+
+  for ((i = 0; i < COMMIT_COUNT; i++)); do
+    touch "${GITHUB_WORKSPACE}/file-${i}.txt"
+    git -C "${GITHUB_WORKSPACE}" add .
+    git -C "${GITHUB_WORKSPACE}" commit -m "add file-${i}"
+
+    # Set EXPECTED_GITHUB_BEFORE_SHA to the initial commit because it's the only
+    # one we don't push
+    if [[ "${i}" -eq 0 ]]; then
+      local EXPECTED_GITHUB_BEFORE_SHA
+      EXPECTED_GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+      debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
+    fi
+  done
+
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  initialize_github_sha "${GITHUB_WORKSPACE}"
+
+  # Simulate pushing all the commits besides the initial one
+  InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}-1))" "${EXPECTED_GITHUB_BEFORE_SHA}"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_GITHUB_BEFORE_SHA}" ]]; then
+    fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  else
+    debug "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) matches the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  local -i COMMIT_COUNT=3
+
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "pull_request" "true" "false"
+
+  local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
+  debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
+
+  GITHUB_SHA="${GITHUB_PULL_REQUEST_HEAD_SHA}"
+  debug "Updating GITHUB_SHA to the pull request head SHA for the ${FUNCTION_NAME} test: ${GITHUB_SHA}"
+
+  # Simulate pushing all the commits besides the initial one
+  InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}))" "${EXPECTED_GITHUB_BEFORE_SHA}"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_GITHUB_BEFORE_SHA}" ]]; then
+    fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  else
+    debug "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) matches the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 InitializeRootCommitShaTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -594,4 +664,6 @@ ValidationVariablesExportTest
 ValidateCheckModeAndFixModeVariablesTest
 CheckIfFixModeIsEnabledTest
 ValidateCommitlintConfigurationTest
+InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest
+InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest
 InitializeRootCommitShaTest

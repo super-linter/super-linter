@@ -84,6 +84,11 @@ GenerateFileDiffInitialCommitPushEventTest() {
 }
 GenerateFileDiffInitialCommitPushEventTest
 
+GenerateFileDiffPushEventNoGitHubBeforeShaTest() {
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "true"
+}
+GenerateFileDiffPushEventNoGitHubBeforeShaTest
+
 GenerateFileDiffOneFilePullRequestEventTest() {
   GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false"
 }
