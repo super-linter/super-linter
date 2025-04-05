@@ -290,7 +290,20 @@ function ValidateGitBeforeShaReference() {
     debug "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this repository"
   fi
 
-  info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  debug "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+  export GITHUB_BEFORE_SHA
+}
+
+InitializeRootCommitSha() {
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${GITHUB_SHA}")"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to get the root commit: ${GIT_ROOT_COMMIT_SHA}"
+    return 1
+  else
+    debug "Successfully found the root commit: ${GIT_ROOT_COMMIT_SHA}"
+  fi
+  export GIT_ROOT_COMMIT_SHA
 }
 
 function ValidateDefaultGitBranch() {

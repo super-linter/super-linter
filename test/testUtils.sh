@@ -268,6 +268,7 @@ initialize_git_repository_contents() {
   local CREATE_NEW_BRANCH="${1}" && shift
   local GITHUB_EVENT_NAME="${1}" && shift
   local FORCE_MERGE_COMMIT="${1}" && shift
+  local SKIP_GITHUB_BEFORE_SHA_INIT="${1}" && shift
 
   local NEW_BRANCH_NAME="branch-1"
 
@@ -283,8 +284,14 @@ initialize_git_repository_contents() {
   debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
 
   if [[ "${COMMITS_TO_CREATE}" -gt 0 ]]; then
-    GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
-    debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+    if [[ "${SKIP_GITHUB_BEFORE_SHA_INIT}" != "true" ]]; then
+      GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
+      debug "GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+    else
+      debug "Skipping GITHUB_BEFORE_SHA initialization because SKIP_GITHUB_BEFORE_SHA_INIT is ${SKIP_GITHUB_BEFORE_SHA_INIT}"
+    fi
+  else
+    debug "Skipping GITHUB_BEFORE_SHA because there are no more commits other than the root commit"
   fi
 
   if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
@@ -297,7 +304,7 @@ initialize_git_repository_contents() {
     local TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test${i}.json"
     cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
     git -C "${GIT_REPOSITORY_PATH}" add .
-    git -C "${GIT_REPOSITORY_PATH}" commit -m "Add ${TEST_FILE_PATH}"
+    git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}")"
   done
 
   debug "Simulating a GitHub ${GITHUB_EVENT_NAME:-"not set"} event"
@@ -318,7 +325,7 @@ initialize_git_repository_contents() {
 
     debug "Create a merge commit to merge the ${NEW_BRANCH_NAME} branch in the pull request branch (${PULL_REQUEST_BRANCH_NAME})"
     git -C "${GIT_REPOSITORY_PATH}" merge \
-      -m "Merge commit (${GITHUB_EVENT_NAME})" \
+      -m "chore: merge commit ${GITHUB_EVENT_NAME}" \
       --no-ff \
       "${NEW_BRANCH_NAME}"
   elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
@@ -327,7 +334,7 @@ initialize_git_repository_contents() {
         git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
         debug "Forcing the creation of a merge commit"
         git -C "${GIT_REPOSITORY_PATH}" merge \
-          -m "Merge commit" \
+          -m "chore: merge commit ${GITHUB_EVENT_NAME}" \
           --no-ff \
           "${NEW_BRANCH_NAME}"
 
