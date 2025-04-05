@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-linters test-linters-fix-mode ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files test-actions-runner-debug test-actions-steps-debug test-runner-debug test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-github-push-event-multiple-commits test-linters test-linters-fix-mode ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -57,14 +57,6 @@ endif
 
 ifeq ($(BUILD_VERSION),)
 BUILD_VERSION := $(shell git rev-parse HEAD)
-endif
-
-ifeq ($(FROM_INTERVAL_COMMITLINT),)
-FROM_INTERVAL_COMMITLINT := "HEAD~1"
-endif
-
-ifeq ($(TO_INTERVAL_COMMITLINT),)
-TO_INTERVAL_COMMITLINT := "HEAD"
 endif
 
 GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
@@ -587,6 +579,13 @@ test-github-pr-event-multiple-commits: ## Run super-linter against a repository 
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_pr_event_multiple_commits" \
+		"$(IMAGE)"
+
+.PHONY: test-github-push-event-multiple-commits
+test-github-push-event-multiple-commits: ## Run super-linter against a repository that simulates a push event with multiple commits
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_push_event_multiple_commits" \
 		"$(IMAGE)"
 
 .PHONY: test-use-find-and-ignore-gitignored-files

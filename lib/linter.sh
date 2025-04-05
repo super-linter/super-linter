@@ -242,10 +242,16 @@ GetGitHubVars() {
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
-      if ! GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD); then
+      GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)
+      local RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
         fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
       fi
-      debug "GITHUB_SHA: ${GITHUB_SHA}"
+      info "Initialized GITHUB_SHA to: ${GITHUB_SHA}"
+
+      if ! InitializeRootCommitSha; then
+        fatal "Failed to initialize root commit"
+      fi
     else
       debug "Skip the initalization of GITHUB_SHA because we don't need it"
     fi
@@ -274,12 +280,9 @@ GetGitHubVars() {
       info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
     fi
 
-    if ! GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${GITHUB_SHA}")"; then
-      fatal "Failed to get the root commit: ${GIT_ROOT_COMMIT_SHA}"
-    else
-      debug "Successfully found the root commit: ${GIT_ROOT_COMMIT_SHA}"
+    if ! InitializeRootCommitSha; then
+      fatal "Failed to initialize root commit"
     fi
-    export GIT_ROOT_COMMIT_SHA
 
     # Github sha on PR events is not the latest commit.
     # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request

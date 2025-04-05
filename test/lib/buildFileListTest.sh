@@ -18,6 +18,7 @@ GenerateFileDiffTest() {
 
   local COMMITS_TO_CREATE="${2}"
   local GITHUB_EVENT_NAME="${3}"
+  local SKIP_GITHUB_BEFORE_SHA_INIT="${4}"
 
   local TEST_FORCE_CREATE_MERGE_COMMIT
   if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
@@ -26,7 +27,7 @@ GenerateFileDiffTest() {
     TEST_FORCE_CREATE_MERGE_COMMIT="false"
   fi
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"
@@ -69,32 +70,32 @@ GenerateFileDiffTest() {
 }
 
 GenerateFileDiffOneFilePushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "push"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "push" "false"
 }
 GenerateFileDiffOneFilePushEventTest
 
 GenerateFileDiffTwoFilesPushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "false"
 }
 GenerateFileDiffTwoFilesPushEventTest
 
 GenerateFileDiffInitialCommitPushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "push"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "push" "false"
 }
 GenerateFileDiffInitialCommitPushEventTest
 
 GenerateFileDiffOneFilePullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false"
 }
 GenerateFileDiffOneFilePullRequestEventTest
 
 GenerateFileDiffTwoFilesPullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "pull_request"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "pull_request" "false"
 }
 GenerateFileDiffTwoFilesPullRequestEventTest
 
 GenerateFileDiffInitialCommitPullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "pull_request"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "pull_request" "false"
 }
 GenerateFileDiffTwoFilesPullRequestEventTest
 

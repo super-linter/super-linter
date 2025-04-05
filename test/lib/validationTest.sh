@@ -560,6 +560,29 @@ ValidateCommitlintConfigurationTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+InitializeRootCommitShaTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false"
+
+  local EXPECTED_GIT_ROOT_COMMIT_SHA="${GIT_ROOT_COMMIT_SHA}"
+  unset GIT_ROOT_COMMIT_SHA
+
+  InitializeRootCommitSha
+
+  if [[ "${GIT_ROOT_COMMIT_SHA}" != "${EXPECTED_GIT_ROOT_COMMIT_SHA}" ]]; then
+    fatal "GIT_ROOT_COMMIT_SHA (${GIT_ROOT_COMMIT_SHA}) doesn't match the expected value: ${EXPECTED_GIT_ROOT_COMMIT_SHA}"
+  fi
+
+  unset GIT_ROOT_COMMIT_SHA
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
@@ -571,3 +594,4 @@ ValidationVariablesExportTest
 ValidateCheckModeAndFixModeVariablesTest
 CheckIfFixModeIsEnabledTest
 ValidateCommitlintConfigurationTest
+InitializeRootCommitShaTest
