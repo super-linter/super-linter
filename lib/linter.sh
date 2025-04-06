@@ -284,10 +284,15 @@ GetGitHubVars() {
       fatal "Failed to initialize root commit"
     fi
 
-    # Github sha on PR events is not the latest commit.
-    # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
-    if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-      debug "This is a GitHub pull request. Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
+    debug "This is a ${GITHUB_EVENT_NAME} event"
+
+    if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
+      # GITHUB_SHA on PR events is not the latest commit.
+      # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
+      # "Note that GITHUB_SHA for this [pull_request] event is the last merge commit of the pull request merge branch.
+      # If you want to get the commit ID for the last commit to the head branch of the pull request,
+      # use github.event.pull_request.head.sha instead."
+      debug "Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
 
       GITHUB_SHA="$(GetPullRequestHeadSha "${GITHUB_EVENT_PATH}")"
       local RET_CODE=$?
@@ -295,63 +300,24 @@ GetGitHubVars() {
         fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
-    elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
-      debug "This is a GitHub push event."
 
-      if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
-        debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there no commit before the initial commit"
+      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPullRequestEventCommitCount "${GITHUB_EVENT_PATH}")
+      RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
       else
-        debug "${GITHUB_SHA} is not the initial commit"
-        local -i GITHUB_PUSH_COMMIT_COUNT
-        GITHUB_PUSH_COMMIT_COUNT=$(GetGithubPushEventCommitCount "$GITHUB_EVENT_PATH")
-        local RET_CODE=$?
-        if [[ "${RET_CODE}" -gt 0 ]]; then
-          fatal "Failed to initialize GITHUB_PUSH_COMMIT_COUNT for ${GITHUB_EVENT_NAME} event: ${GITHUB_PUSH_COMMIT_COUNT}"
-        fi
-        if [ -z "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
-          fatal "Failed to get GITHUB_PUSH_COMMIT_COUNT"
-        fi
-        info "Successfully found GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
-
-        # Ref: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
-        debug "Get the hash of the commit to start the diff from Git because the GitHub push event payload may not contain references to base_ref or previous commit."
-
-        debug "Check if the commit is a merge commit by checking if it has more than one parent"
-        local GIT_COMMIT_PARENTS_COUNT
-        GIT_COMMIT_PARENTS_COUNT=$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)
-        debug "Git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
-        GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
-        debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
-
-        # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
-        local GIT_BEFORE_SHA_HEAD="HEAD"
-        if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
-          debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
-          GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
-          debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
-
-          if [ ${GITHUB_PUSH_COMMIT_COUNT} -gt 0 ]; then
-            GITHUB_PUSH_COMMIT_COUNT=$((GITHUB_PUSH_COMMIT_COUNT - 1))
-            debug "Remove one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
-          else
-            debug "Don't subtract one commit from GITHUB_PUSH_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_PUSH_COMMIT_COUNT: ${GITHUB_PUSH_COMMIT_COUNT}"
-          fi
-        else
-          debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
-        fi
-
-        GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_PUSH_COMMIT_COUNT}"
-        debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
-
-        # shellcheck disable=SC2086  # We checked that GITHUB_PUSH_COMMIT_COUNT is an integer
-        if ! GITHUB_BEFORE_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD}); then
-          fatal "Failed to initialize GITHUB_BEFORE_SHA for a push event. Output: ${GITHUB_BEFORE_SHA}"
-        fi
-
-        ValidateGitBeforeShaReference
-        info "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+        debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
       fi
+    elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
+      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPushEventCommitCount "${GITHUB_EVENT_PATH}")
+      RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
+      fi
+      debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
     fi
+
+    InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}"
 
     GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_PATH}")
     local RET_CODE=$?

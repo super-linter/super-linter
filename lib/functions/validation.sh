@@ -275,7 +275,58 @@ function ValidateGitShaReference() {
   fi
 }
 
-function ValidateGitBeforeShaReference() {
+InitializeAndValidateGitBeforeShaReference() {
+  debug "Initializing and validating GITHUB_BEFORE_SHA"
+  debug "Check if the ${GITHUB_SHA} commit is a merge commit by checking if it has more than one parent"
+
+  local GITHUB_SHA="${1}"
+  local -i GITHUB_EVENT_COMMIT_COUNT="${2}"
+  local GIT_ROOT_COMMIT_SHA="${3}"
+
+  if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
+    debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there cannot be any commit before the initial commit"
+    return 0
+  fi
+  debug "${GITHUB_SHA} is not the initial commit. Initializing and validating GITHUB_BEFORE_SHA"
+
+  local -i GIT_COMMIT_PARENTS_COUNT
+  GIT_COMMIT_PARENTS_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    fatal "Error while getting ${GITHUB_SHA} commit parents count. Output: ${GIT_COMMIT_PARENTS_COUNT}"
+  fi
+  debug "${GITHUB_SHA} git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
+  GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
+  debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the ${GITHUB_SHA} commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
+
+  # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
+  # Use GITHUB_SHA instead of HEAD because for pull requests, HEAD points that the PR merge commit
+  local GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
+  if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
+    debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
+    GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
+    debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
+
+    if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
+      GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
+      debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+    else
+      debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+    fi
+  else
+    debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
+  fi
+
+  GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
+  debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
+
+  # shellcheck disable=SC2086  # We checked that GITHUB_EVENT_COMMIT_COUNT is an integer
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD})"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    fatal "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
+  fi
+
   debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
   if [ -z "${GITHUB_BEFORE_SHA}" ] ||
     [ "${GITHUB_BEFORE_SHA}" == "null" ] ||
