@@ -1,5 +1,44 @@
 # Changelog
 
+## [7.4.0](https://github.com/super-linter/super-linter/compare/v7.3.0...v7.4.0) (2025-04-06)
+
+
+### 🚀 Features
+
+* add env var for npm-groovy-lint failon level ([#6530](https://github.com/super-linter/super-linter/issues/6530)) ([418c922](https://github.com/super-linter/super-linter/commit/418c922120006007fad0f1839b3dae7210c0a50b))
+* do not hide php composer output ([#6637](https://github.com/super-linter/super-linter/issues/6637)) ([1c62141](https://github.com/super-linter/super-linter/commit/1c621411943c1ca0b2e057424cff5f7158addc2a))
+* set github_before_sha on pull requests ([#6687](https://github.com/super-linter/super-linter/issues/6687)) ([d7f5222](https://github.com/super-linter/super-linter/commit/d7f522206a7ce6f2a76be2e489fd69d590fcf1e8))
+* support eslint flat config files ([#6619](https://github.com/super-linter/super-linter/issues/6619)) ([d349d57](https://github.com/super-linter/super-linter/commit/d349d575765a595151dd8ae5f42355336f37b028))
+
+
+### 🐛 Bugfixes
+
+* check return code and misc test improvements ([#6697](https://github.com/super-linter/super-linter/issues/6697)) ([7f46ec3](https://github.com/super-linter/super-linter/commit/7f46ec3f956811ca47e4234cd7fa694a96f19caf))
+* consider git dirs safe ([#6675](https://github.com/super-linter/super-linter/issues/6675)) ([101d5a6](https://github.com/super-linter/super-linter/commit/101d5a6e79d6caf56aa9fa45b432eaf17151019c))
+* emit prettier verbose output when debugging ([#6636](https://github.com/super-linter/super-linter/issues/6636)) ([4e1eb5f](https://github.com/super-linter/super-linter/commit/4e1eb5f5e0bffb6484d6411426a4edd32e35eeed))
+* export github_before_sha ([#6714](https://github.com/super-linter/super-linter/issues/6714)) ([6401906](https://github.com/super-linter/super-linter/commit/6401906d78fb46bed63ab074daac098d75305e26))
+* more robust error checking and test fixes ([#6693](https://github.com/super-linter/super-linter/issues/6693)) ([1c70566](https://github.com/super-linter/super-linter/commit/1c70566ff2fa29fa52365733a591857a66a6964c))
+* skip symbolic links when passing files to prettier ([#6620](https://github.com/super-linter/super-linter/issues/6620)) ([417a58a](https://github.com/super-linter/super-linter/commit/417a58a62d9b71cab86a467908b0aca8b4ec88b3))
+
+
+### ⬆️ Dependency updates
+
+* **npm:** bump @babel/runtime-corejs3 ([#6651](https://github.com/super-linter/super-linter/issues/6651)) ([8fbf79e](https://github.com/super-linter/super-linter/commit/8fbf79e7cd4907ab33eb5b130ec81873582444c0))
+* **npm:** bump next ([#6676](https://github.com/super-linter/super-linter/issues/6676)) ([f171ee5](https://github.com/super-linter/super-linter/commit/f171ee5245d05a25a5901c8ddf5a55eb779b11f4))
+
+
+### 🧰 Maintenance
+
+* cache multi-stage build ([#6678](https://github.com/super-linter/super-linter/issues/6678)) ([945b682](https://github.com/super-linter/super-linter/commit/945b682d09b2a4a3ccf1ec276f4738b90d7ab248))
+* cache the base image stage ([#6689](https://github.com/super-linter/super-linter/issues/6689)) ([920b5da](https://github.com/super-linter/super-linter/commit/920b5da5302ec5bbdc2734912a91b30a448007f8))
+* **deps:** bump the go_modules group across 2 directories with 1 update ([#6652](https://github.com/super-linter/super-linter/issues/6652)) ([df21f1f](https://github.com/super-linter/super-linter/commit/df21f1f472a805f8a0a543512d0541e2776a4d8f))
+* **github-actions:** bump the dev-ci-tools group across 1 directory with 4 updates ([#6683](https://github.com/super-linter/super-linter/issues/6683)) ([135f511](https://github.com/super-linter/super-linter/commit/135f51179ae13d499cde0e2e7acf2d370bdbb920))
+* login to container registry ([#6686](https://github.com/super-linter/super-linter/issues/6686)) ([2e48f55](https://github.com/super-linter/super-linter/commit/2e48f55c339c64f67a3c4b6b5710d18436063e4c))
+* update deps and fix devcontainer mounts ([#6677](https://github.com/super-linter/super-linter/issues/6677)) ([f555b63](https://github.com/super-linter/super-linter/commit/f555b639fa86e227baedec80a3562d79081a2df9))
+* update gitlab documentation ([#6617](https://github.com/super-linter/super-linter/issues/6617)) ([8a9bf8f](https://github.com/super-linter/super-linter/commit/8a9bf8fc37c8a98d34eb5eeeb6bc5d0c2e7f8575))
+* update go modules test to use deps ([#6670](https://github.com/super-linter/super-linter/issues/6670)) ([8eeba78](https://github.com/super-linter/super-linter/commit/8eeba78b63b8cc0244ad89b9482d4c1322aebce1))
+* use python venv instead of virtualenv ([#6669](https://github.com/super-linter/super-linter/issues/6669)) ([b7dd3fc](https://github.com/super-linter/super-linter/commit/b7dd3fc3fbfe4b0422c008f0decf408f1733554d))
+
 ## [7.3.0](https://github.com/super-linter/super-linter/compare/v7.2.1...v7.3.0) (2025-02-26)
 
 
