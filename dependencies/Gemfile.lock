@@ -68,6 +68,11 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.52.0, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
+    rubocop-rails-omakase (1.0.0)
+      rubocop
+      rubocop-minitest
+      rubocop-performance
+      rubocop-rails
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
     rubocop-rspec (3.4.0)
@@ -97,6 +102,7 @@ GEM
     uri (1.0.3)
 
 PLATFORMS
+  arm64-darwin-24
   x86_64-linux
   x86_64-linux-musl
 
@@ -108,10 +114,11 @@ DEPENDENCIES
   rubocop-minitest (~> 0.37.0)
   rubocop-performance (~> 1.23.1)
   rubocop-rails (~> 2.29)
+  rubocop-rails-omakase (~> 1.0)
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.4.0)
   rubocop-rspec_rails (~> 2.30)
   standard (~> 1.42)
 
 BUNDLED WITH
-  2.5.9
+   2.5.9
