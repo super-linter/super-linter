@@ -11,7 +11,7 @@ permissions: {}
 jobs:
   build-stages:
     name: Build and cache container image stages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     concurrency:
       group: ${{ github.workflow }}-main-build-stages-${{ matrix.stages.stage-name }}
       cancel-in-progress: true
@@ -80,7 +80,7 @@ jobs:
     name: Build and Test
     needs:
       - build-stages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     concurrency:
       group: ${{ github.workflow }}-main-${{ matrix.images.target }}
       cancel-in-progress: true
@@ -243,7 +243,7 @@ jobs:
     name: Release
     needs:
       - test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     concurrency:
       group: ${{ github.workflow }}-main-release
       cancel-in-progress: true
