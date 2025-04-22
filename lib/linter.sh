@@ -770,6 +770,8 @@ done
 # Load rules for special cases
 GetStandardRules "javascript"
 
+ValidateDeprecatedConfigurationFiles
+
 #############################################################################
 # Validate the environment that depends on linter rules variables being set #
 #############################################################################

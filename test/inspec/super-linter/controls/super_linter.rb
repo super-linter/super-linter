@@ -504,7 +504,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.clang-format",
     "/action/lib/.automation/.clj-kondo",
     "/action/lib/.automation/.coffee-lint.json",
-    "/action/lib/.automation/.ecrc",
+    "/action/lib/.automation/.editorconfig-checker.json",
     "/action/lib/.automation/.eslintrc.yml",
     "/action/lib/.automation/.flake8",
     "/action/lib/.automation/.gherkin-lintrc",
