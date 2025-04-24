@@ -130,6 +130,15 @@ run_test_case_merge_commit_push() {
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
 }
 
+run_test_case_github_merge_group_event() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "merge_group" "false" "false"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-merge-group.json" "merge_group"
+}
+
 run_test_case_merge_commit_push_tag() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"

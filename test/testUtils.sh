@@ -328,7 +328,8 @@ initialize_git_repository_contents() {
       -m "chore: merge commit ${GITHUB_EVENT_NAME}" \
       --no-ff \
       "${NEW_BRANCH_NAME}"
-  elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+  elif [[ "${GITHUB_EVENT_NAME}" == "push" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]]; then
     if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
       if [[ "${FORCE_MERGE_COMMIT}" == "true" ]]; then
         git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"

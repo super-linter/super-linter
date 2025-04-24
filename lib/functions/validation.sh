@@ -328,10 +328,10 @@ InitializeAndValidateGitBeforeShaReference() {
   fi
 
   debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
-  if [ -z "${GITHUB_BEFORE_SHA}" ] ||
-    [ "${GITHUB_BEFORE_SHA}" == "null" ] ||
-    [ "${GITHUB_BEFORE_SHA}" == "0000000000000000000000000000000000000000" ]; then
-    fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA}]"
+  if [ -z "${GITHUB_BEFORE_SHA:-}" ] ||
+    [ "${GITHUB_BEFORE_SHA:-}" == "null" ] ||
+    [ "${GITHUB_BEFORE_SHA:-}" == "0000000000000000000000000000000000000000" ]; then
+    fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA:-}]"
   fi
 
   debug "Validate that the GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this Git repository."
