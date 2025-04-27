@@ -317,7 +317,10 @@ GetGitHubVars() {
       debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
     fi
 
-    InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}"
+    if [[ -n "${GITHUB_EVENT_COMMIT_COUNT:-}" ]]; then
+      debug "Initializing GITHUB_BEFORE_SHA because GITHUB_EVENT_COMMIT_COUNT is defined: ${GITHUB_EVENT_COMMIT_COUNT}"
+      InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}"
+    fi
 
     GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_PATH}")
     local RET_CODE=$?
