@@ -473,6 +473,26 @@ ValidateCommitlintConfiguration() {
   fi
 }
 
+ValidateEditorconfigCheckerConfigurationFilePath() {
+  local EDITORCONFIG_LINTER_RULES="${1}"
+
+  debug "Validating editorconfig-checker configuration file name"
+
+  if [[ "${VALIDATE_EDITORCONFIG}" == "true" ]]; then
+    local EDITORCONFIG_LINTER_RULES_DIR_NAME
+    EDITORCONFIG_LINTER_RULES_DIR_NAME="$(dirname "${EDITORCONFIG_LINTER_RULES}")"
+    local DEPRECATED_EDITORCONFIG_CONFIGURATION_FILE_NAME=".ecrc"
+
+    local DEPRECATED_EDITORCONFIG_CONFIGURATION_FILE_PATH="${EDITORCONFIG_LINTER_RULES_DIR_NAME}/${DEPRECATED_EDITORCONFIG_CONFIGURATION_FILE_NAME}"
+
+    if [[ -e "${DEPRECATED_EDITORCONFIG_CONFIGURATION_FILE_PATH}" ]]; then
+      fatal "editorconfig-checker configuration file path"
+    fi
+  else
+    debug "editorconfig-checker is disabled. Skipping editorconfig-checker configuration validation"
+  fi
+}
+
 function WarnIfVariableIsSet() {
   local INPUT_VARIABLE="${1}"
   shift
@@ -497,8 +517,46 @@ function WarnIfDeprecatedValueForConfigurationVariableIsSet() {
   VALUE_TO_UPDATE_TO="${1}"
 
   if [[ "${INPUT_VARIABLE_VALUE}" == "${DEPRECATED_VARIABLE_VALUE}" ]]; then
-    warn "${INPUT_VARIABLE_NAME} is set to a deprecated value: ${DEPRECATED_VARIABLE_VALUE}. Set it to ${VALUE_TO_UPDATE_TO} instead. Falling back to ${VALUE_TO_UPDATE_TO}. This warning may turn in a fatal error in the future."
+    warn "${INPUT_VARIABLE_NAME} is set to a deprecated value: ${DEPRECATED_VARIABLE_VALUE}. Set it to ${VALUE_TO_UPDATE_TO} instead. This warning may turn in a fatal error in the future."
   fi
+}
+
+DeprecatedConfigurationFileExists() {
+  local LANGUAGE_NAME="${1}"
+  shift
+  local DEPRECATED_CONFIGURATION_FILE_NAME="${1}"
+  shift
+  local CONFIGURATION_FILE_NAME_TO_UPDATE_TO="${1}"
+
+  local -n LANGUAGE_LINTER_RULES="${LANGUAGE_NAME}_LINTER_RULES"
+  local -n VALIDATE_LANGUAGE="VALIDATE_${LANGUAGE_NAME}"
+
+  debug "Language ${LANGUAGE_NAME}. Check if the deprecated ${DEPRECATED_CONFIGURATION_FILE_NAME} configuration file exists"
+
+  if [[ "${VALIDATE_LANGUAGE}" == "true" ]]; then
+    local LINTER_RULES_DIR_NAME
+    LINTER_RULES_DIR_NAME="$(dirname "${LANGUAGE_LINTER_RULES}")"
+
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      error "Error when loading LINTER_RULES_DIR_NAME for ${LANGUAGE_NAME}: ${LINTER_RULES_DIR_NAME}"
+      return 1
+    fi
+
+    local DEPRECATED_CONFIGURATION_FILE_PATH="${LINTER_RULES_DIR_NAME}/${DEPRECATED_CONFIGURATION_FILE_NAME}"
+
+    if [[ -e "${DEPRECATED_CONFIGURATION_FILE_PATH}" ]]; then
+      error "${LANGUAGE_NAME} configuration file (${DEPRECATED_CONFIGURATION_FILE_PATH}) exists and has a deprecated name (${DEPRECATED_CONFIGURATION_FILE_NAME}). Rename it to ${CONFIGURATION_FILE_NAME_TO_UPDATE_TO}"
+      return 1
+    fi
+
+    debug "The deprecated ${DEPRECATED_CONFIGURATION_FILE_NAME} configuration doesn't file exist"
+  else
+    debug "${LANGUAGE_NAME} is disabled. Skipping ${LANGUAGE_NAME} configuration file name validation"
+  fi
+
+  unset -n LANGUAGE_LINTER_RULES
+  unset -n VALIDATE_LANGUAGE
 }
 
 function ValidateDeprecatedVariables() {
@@ -520,4 +578,14 @@ function ValidateDeprecatedVariables() {
   # The following variables have been deprecated in v7.0.0
   WarnIfVariableIsSet "${SQL_CONFIG_FILE:-}" "SQL_CONFIG_FILE"
   WarnIfVariableIsSet "${VALIDATE_SQL:-}" "VALIDATE_SQL"
+
+  # The following values have been deprecated in v7.4.0
+  WarnIfDeprecatedValueForConfigurationVariableIsSet "${EDITORCONFIG_FILE_NAME:-}" ".ecrc" "EDITORCONFIG_FILE_NAME" ".editorconfig-checker.json"
+}
+
+ValidateDeprecatedConfigurationFiles() {
+  # The following values have been deprecated in v7.4.0
+  if ! DeprecatedConfigurationFileExists "EDITORCONFIG" ".ecrc" ".editorconfig-checker.json"; then
+    fatal "Error while validating EDITORCONFIG configuration file"
+  fi
 }

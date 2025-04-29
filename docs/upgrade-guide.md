@@ -2,9 +2,22 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from v7.3.0 to v7.4.0](#upgrade-from-v730-to-v740)
 - [Upgrade from v6 to v7](#upgrade-from-v6-to-v7)
 - [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from v7.3.0 to v7.4.0
+
+This section helps you upgrade from super-linter `v7.3.0` to `v7.4.0`.
+
+### editorconfig-checker default configuration filename
+
+[editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker?tab=readme-ov-file#configuration)
+changed the default configuration filename from `.ecrc` to
+`.editorconfig-checker.json`. Super-linter `v7.4.0` changed the default value of
+the `EDITORCONFIG_FILE_NAME` configuration variable to reflect that. If you are
+using an `.ecrc` file, rename it to `.editorconfig-checker.json`.
 
 ## Upgrade from v6 to v7
 

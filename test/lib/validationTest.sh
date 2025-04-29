@@ -51,6 +51,8 @@ function ValidateDeprecatedVariablesTest() {
     ValidateDeprecatedVariables
   VALIDATE_KOTLIN_ANDROID="true" \
     ValidateDeprecatedVariables
+  EDITORCONFIG_FILE_NAME=".ecrc" \
+    ValidateDeprecatedVariables
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -653,6 +655,27 @@ InitializeRootCommitShaTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+DeprecatedConfigurationFileExistsTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  local EDITORCONFIG_LINTER_RULES="test/data/deprecated-linter-rules-test/.editorconfig-checker.json"
+  # shellcheck disable=SC2034
+  local LANGUAGE_NAME="EDITORCONFIG"
+  # shellcheck disable=SC2034
+  local VALIDATE_EDITORCONFIG="true"
+  local DEPRECATED_CONFIGURATION_FILE_NAME=".ecrc"
+  local DEPRECATED_CONFIGURATION_FILE_PATH
+  DEPRECATED_CONFIGURATION_FILE_PATH="$(dirname "${EDITORCONFIG_LINTER_RULES}")/${DEPRECATED_CONFIGURATION_FILE_NAME}"
+  if DeprecatedConfigurationFileExists "EDITORCONFIG" "${DEPRECATED_CONFIGURATION_FILE_NAME}" "$(basename "${EDITORCONFIG_LINTER_RULES}")"; then
+    fatal "${DEPRECATED_CONFIGURATION_FILE_PATH} should be reported as existing"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
@@ -667,3 +690,4 @@ ValidateCommitlintConfigurationTest
 InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest
 InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest
 InitializeRootCommitShaTest
+DeprecatedConfigurationFileExistsTest
