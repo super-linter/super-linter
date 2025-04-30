@@ -29,10 +29,11 @@ spaces_around_brackets = false
 indent_style = tab
 indent_size = 4
 
-[**/test/*.{kt,kts}]
+[*.{kt,kts}]
+
 # Disable the filename rule because our test case logic requires that files used in test cases
 # follow a certain syntax which is not compatible with what ktlint currently mandates (PascalCase)
-disabled_rules = filename
+ktlint_standard_filename = disabled
 
 [*.md]
 
