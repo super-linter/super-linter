@@ -22,6 +22,8 @@ source "lib/functions/validation.sh"
 # shellcheck disable=SC2034
 BASH_EXEC_IGNORE_LIBRARIES="false"
 # shellcheck disable=SC2034
+ENABLE_COMMITLINT_EDIT_MODE="false"
+# shellcheck disable=SC2034
 GITHUB_WORKSPACE="$(pwd)"
 # shellcheck disable=SC2034
 GROOVY_FAILON_LEVEL="warning"
@@ -93,13 +95,13 @@ function IgnoreGitIgnoredFilesJscpdCommandTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  IGNORE_GITIGNORED_FILES="true"
+  local IGNORE_GITIGNORED_FILES="true"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
-  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTION}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTION}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
@@ -114,16 +116,40 @@ function JscpdCommandTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  IGNORE_GITIGNORED_FILES="false"
+  local IGNORE_GITIGNORED_FILES="false"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
   # shellcheck disable=SC2034
-  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+EnableCommitlintEditModeCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  local ENABLE_COMMITLINT_EDIT_MODE="true"
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
+  # remove the last argument because we replace it with COMMITLINT_EDIT_MODE_OPTIONS
+  unset "EXPECTED_COMMAND[-1]"
+  EXPECTED_COMMAND+=("${COMMITLINT_EDIT_MODE_OPTIONS[@]}")
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GIT_COMMITLINT" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
 
@@ -136,13 +162,13 @@ EnableCommitlintStrictModeCommandTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  ENABLE_COMMITLINT_STRICT_MODE="true"
+  local ENABLE_COMMITLINT_STRICT_MODE="true"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
-  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}" "${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}" "${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GIT_COMMITLINT" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
@@ -157,7 +183,7 @@ function GitleaksCommandTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 
   if [[ "${EXPECTED_GITLEAKS_LOG_LEVEL:-}" ]]; then
     # The gitleaks command ends with an option to specify the path
@@ -167,7 +193,7 @@ function GitleaksCommandTest() {
     # Remove the file path option so we can append the log option
     unset 'EXPECTED_COMMAND[-1]'
     # shellcheck disable=SC2034
-    GITLEAKS_LOG_LEVEL="${EXPECTED_GITLEAKS_LOG_LEVEL}"
+    local GITLEAKS_LOG_LEVEL="${EXPECTED_GITLEAKS_LOG_LEVEL}"
     EXPECTED_COMMAND+=("${GITLEAKS_LOG_LEVEL_OPTIONS[@]}" "${EXPECTED_GITLEAKS_LOG_LEVEL}")
 
     # Add the file path option back
@@ -198,7 +224,7 @@ function GitleaksCommandCustomLogLevelTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  EXPECTED_GITLEAKS_LOG_LEVEL="debug"
+  local EXPECTED_GITLEAKS_LOG_LEVEL="debug"
   GitleaksCommandTest
 
   notice "${FUNCTION_NAME} PASS"
@@ -210,9 +236,9 @@ function InitInputConsumeCommandsTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  EXPECTED_LINTER_COMMANDS_ARRAY_ANSIBLE=("${BASE_LINTER_COMMANDS_ARRAY_ANSIBLE[@]}" "${INPUT_CONSUME_COMMAND[@]}")
+  local EXPECTED_LINTER_COMMANDS_ARRAY_ANSIBLE=("${BASE_LINTER_COMMANDS_ARRAY_ANSIBLE[@]}" "${INPUT_CONSUME_COMMAND[@]}")
   # shellcheck disable=SC2034
-  EXPECTED_LINTER_COMMANDS_ARRAY_GO_MODULES=("${BASE_LINTER_COMMANDS_ARRAY_GO_MODULES[@]}" "${INPUT_CONSUME_COMMAND[@]}")
+  local EXPECTED_LINTER_COMMANDS_ARRAY_GO_MODULES=("${BASE_LINTER_COMMANDS_ARRAY_GO_MODULES[@]}" "${INPUT_CONSUME_COMMAND[@]}")
 
   # Add some custom options to the Rust command to ensure that they are added before the "input consume" command
   # shellcheck disable=SC2034
@@ -224,7 +250,7 @@ function InitInputConsumeCommandsTest() {
   source "lib/functions/linterCommands.sh"
 
   # shellcheck disable=SC2034
-  EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}" "${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[@]}" "${INPUT_CONSUME_COMMAND[@]}")
+  local EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}" "${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[@]}" "${INPUT_CONSUME_COMMAND[@]}")
 
   if ! InitInputConsumeCommands; then
     fatal "Error while initializing GNU parallel input consume commands"
@@ -288,21 +314,21 @@ function InitFixModeOptionsAndCommandsTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  LANGUAGE_ARRAY=("A" "B" "C")
+  local LANGUAGE_ARRAY=("A" "B" "C")
 
   # Test a command that has only fix mode options to add
   # shellcheck disable=SC2034
-  A_FIX_MODE_OPTIONS=(--fixA)
+  local A_FIX_MODE_OPTIONS=(--fixA)
 
   # Test a command that has only check only mode options to add
   # shellcheck disable=SC2034
-  B_CHECK_ONLY_MODE_TEST=(--checkB)
+  local B_CHECK_ONLY_MODE_TEST=(--checkB)
 
   # Test a command that has both fix mode and check only mode options to add
   # shellcheck disable=SC2034
-  C_CHECK_ONLY_MODE_TEST=(--checkC)
+  local C_CHECK_ONLY_MODE_TEST=(--checkC)
   # shellcheck disable=SC2034
-  C_FIX_MODE_OPTIONS=(--fixC)
+  local C_FIX_MODE_OPTIONS=(--fixC)
 
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     local -n FIX_LANGUAGE_VARIABLE_NAME="FIX_${LANGUAGE}"
@@ -380,13 +406,13 @@ CommandOptionsTest() {
   # and that don't need any input.
 
   # shellcheck disable=SC2034
-  GITHUB_ACTIONS_COMMAND_ARGS="-color -debug -verbose -version"
+  local GITHUB_ACTIONS_COMMAND_ARGS="-color -debug -verbose -version"
   # shellcheck disable=SC2034
-  KUBERNETES_KUBECONFORM_OPTIONS="-debug -verbose -v"
+  local KUBERNETES_KUBECONFORM_OPTIONS="-debug -verbose -v"
   # shellcheck disable=SC2034
-  PERL_PERLCRITIC_OPTIONS="--gentle --count test/linters/perl/perl_good_1.pl"
+  local PERL_PERLCRITIC_OPTIONS="--gentle --count test/linters/perl/perl_good_1.pl"
   # shellcheck disable=SC2034
-  RUST_CLIPPY_COMMAND_OPTIONS="--verbose --help"
+  local RUST_CLIPPY_COMMAND_OPTIONS="--verbose --help"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
@@ -436,6 +462,7 @@ AddOptionsToCommandTest() {
 LinterCommandPresenceTest
 IgnoreGitIgnoredFilesJscpdCommandTest
 JscpdCommandTest
+EnableCommitlintEditModeCommandTest
 EnableCommitlintStrictModeCommandTest
 GitleaksCommandTest
 GitleaksCommandCustomLogLevelTest
