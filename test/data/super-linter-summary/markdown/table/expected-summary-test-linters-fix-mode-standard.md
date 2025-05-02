@@ -31,6 +31,7 @@
 | JUPYTER_NBQA_BLACK           | Pass ✅           |
 | JUPYTER_NBQA_ISORT           | Pass ✅           |
 | JUPYTER_NBQA_RUFF            | Pass ✅           |
+| KOTLIN                       | Pass ✅           |
 | MARKDOWN                     | Pass ✅           |
 | MARKDOWN_PRETTIER            | Pass ✅           |
 | NATURAL_LANGUAGE             | Pass ✅           |
