@@ -107,3 +107,5 @@ INPUT_CONSUME_COMMAND=("&& echo \"Linted: {}\"")
 COMMITLINT_STRICT_MODE_OPTIONS=("--strict")
 
 GITLEAKS_LOG_LEVEL_OPTIONS=("--log-level")
+
+XMLLINT_NOOUT_OPTIONS=("--noout")
