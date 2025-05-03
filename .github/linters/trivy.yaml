@@ -10,6 +10,7 @@ scan:
     - misconfig
     - secret
   skip-dirs:
+    - "**/test/data/install-dependencies/additional-ruby-deps"
     - "**/super-linter-output"
     - "**/test/linters/arm"
     - "**/test/linters/checkov"
