@@ -9,6 +9,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_GROUP_TITLE" "${ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"
   ValidateBooleanVariable "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY" "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"
   ValidateBooleanVariable "ENFORCE_COMMITLINT_CONFIGURATION_CHECK" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"
+  ValidateBooleanVariable "FAIL_ON_CONFLICTING_TOOLS_ENABLED" "${FAIL_ON_CONFLICTING_TOOLS_ENABLED}"
   ValidateBooleanVariable "FIX_MODE_ENABLED" "${FIX_MODE_ENABLED}"
   ValidateBooleanVariable "FIX_MODE_TEST_CASE_RUN" "${FIX_MODE_TEST_CASE_RUN}"
   ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
@@ -587,5 +588,15 @@ ValidateDeprecatedConfigurationFiles() {
   # The following values have been deprecated in v7.4.0
   if ! DeprecatedConfigurationFileExists "EDITORCONFIG" ".ecrc" ".editorconfig-checker.json"; then
     fatal "Error while validating EDITORCONFIG configuration file"
+  fi
+}
+
+ValidateConflictingTools() {
+  debug "Validating if potentially conflicting tools are enabled"
+
+  if [[ ("${VALIDATE_PYTHON_BLACK}" == "true" && "${VALIDATE_PYTHON_PYINK}" == "true") ]] &&
+    [[ (-e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYINK") ]]; then
+    warn "Black and Pyink are both enabled, and might conflict with each other. To avoid potential conflicts,keep only one of the two enabled, and disable the other."
+    return 1
   fi
 }
