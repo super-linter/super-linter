@@ -202,6 +202,7 @@ RUN apk add --no-cache \
   R \
   rakudo \
   ruby \
+  ruby-bundler \
   zef
 
 ##############################
