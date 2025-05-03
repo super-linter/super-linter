@@ -134,6 +134,7 @@ docker: docker-build-check check-github-token ## Build the container image
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-lintr-installer \
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-powershell-installer \
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-php-linters \
+		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-ruby-installer \
 		--secret id=GITHUB_TOKEN,src=$(GITHUB_TOKEN_PATH) \
 		--target $(IMAGE) \
 		-t $(SUPER_LINTER_TEST_CONTAINER_URL) .

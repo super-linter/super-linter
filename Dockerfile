@@ -128,6 +128,23 @@ COPY dependencies/composer/composer.json dependencies/composer/composer.lock /ap
 RUN composer update \
   && composer audit
 
+FROM python:3.13.2-alpine3.21 AS ruby-installer
+
+RUN apk add --no-cache --virtual .ruby-build-deps \
+  gcc \
+  make \
+  musl-dev \
+  ruby-bundler \
+  ruby-dev \
+  ruby-rdoc
+
+COPY dependencies/Gemfile dependencies/Gemfile.lock /
+
+ENV GEM_HOME="/usr/local/bundle"
+
+RUN bundle install --retry 3 \
+  && apk del --no-cache --no-network --purge .ruby-build-deps
+
 FROM python:3.13.2-alpine3.21 AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
@@ -186,19 +203,6 @@ RUN apk add --no-cache \
   rakudo \
   ruby \
   zef
-
-# Install Ruby tools
-COPY dependencies/Gemfile dependencies/Gemfile.lock /
-RUN apk add --no-cache --virtual .ruby-build-deps \
-  gcc \
-  make \
-  musl-dev \
-  ruby-bundler \
-  ruby-dev \
-  ruby-rdoc \
-  && bundle install \
-  && apk del --no-network --purge .ruby-build-deps \
-  && rm -rf Gemfile Gemfile.lock
 
 ##############################
 # Installs Perl dependencies #
@@ -405,11 +409,13 @@ COPY --from=dart --chmod=0755 \
   "${DART_SDK}/lib/io" \
   "${DART_SDK}/lib/io"
 
-
 ########################
 # Install clang-format #
 ########################
 COPY --from=clang-format /usr/bin/clang-format /usr/bin/
+
+# Install ruby linters and formatters
+COPY --from=ruby-installer /usr/local/bundle /usr/local/bundle
 
 ########################
 # Install python tools #
@@ -456,6 +462,9 @@ ENV PATH="${PATH}:/node_modules/.bin"
 ENV PATH="${PATH}:/usr/lib/go/bin"
 ENV PATH="${PATH}:${DART_SDK}/bin:/root/.pub-cache/bin"
 ENV PATH="${PATH}:${PHP_COMPOSER_PACKAGES_DIR}/bin"
+
+ENV GEM_HOME="/usr/local/bundle"
+ENV PATH="${PATH}:${GEM_HOME}/bin:${GEM_HOME}/gems/bin"
 
 # Renovate optionally requires re2, and will warn if its not present
 # Setting this envoronment variable disables this warning.
