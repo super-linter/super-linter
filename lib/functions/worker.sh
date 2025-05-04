@@ -171,6 +171,8 @@ function LintCodebase() {
     debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements: ${LINTER_COMMAND_ARRAY[*]}"
   fi
 
+  # From GNU Parallel manpage (https://www.gnu.org/software/parallel/parallel.html#options)
+  # "If the command line contains no replacement strings then {} will be appended to the command line."
   PARALLEL_COMMAND+=("${LINTER_COMMAND_ARRAY[@]}")
   debug "PARALLEL_COMMAND for ${FILE_TYPE} after LINTER_COMMAND_ARRAY concatenation: ${PARALLEL_COMMAND[*]}"
 
