@@ -396,36 +396,67 @@ function InitPowerShellCommandTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+# Test environment variables to set command options
 CommandOptionsTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
   # Add custom arguments to linter commands that support them.
-  # If possible, use command option that can run without modifying the filesystem,
-  # and that don't need any input.
+
+  ARGS_TO_ADD="--arg1 --arg2"
 
   # shellcheck disable=SC2034
-  local GITHUB_ACTIONS_COMMAND_ARGS="-color -debug -verbose -version"
+  local GITHUB_ACTIONS_COMMAND_ARGS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
-  local KUBERNETES_KUBECONFORM_OPTIONS="-debug -verbose -v"
+  local GITLEAKS_COMMAND_OPTIONS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
-  local PERL_PERLCRITIC_OPTIONS="--gentle --count test/linters/perl/perl_good_1.pl"
+  local KUBERNETES_KUBECONFORM_OPTIONS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
-  local RUST_CLIPPY_COMMAND_OPTIONS="--verbose --help"
+  local PERL_PERLCRITIC_OPTIONS="${ARGS_TO_ADD}"
+  # shellcheck disable=SC2034
+  local RUST_CLIPPY_COMMAND_OPTIONS="${ARGS_TO_ADD}"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
-  # Try running the commands
-  "${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}"
-  "${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}"
-  "${LINTER_COMMANDS_ARRAY_PERL[@]}"
-  # Rust Clippy is only available in the standard image, so we can't run it when
-  # testing the slim image
-  if IsStandardImage; then
-    "${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}"
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
+  # remove the last argument (--source) because we add command arguments before --source
+  unset "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS[-1]"
+  # also add the --source argument that we removed before
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS" "${GITLEAKS_COMMAND_OPTIONS} --source"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GITLEAKS" "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS" "${GITHUB_ACTIONS_COMMAND_ARGS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS" "EXPECTED_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM" "${KUBERNETES_KUBECONFORM_OPTIONS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM" "EXPECTED_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_PERL=("${BASE_LINTER_COMMANDS_ARRAY_PERL[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_PERL" "${PERL_PERLCRITIC_OPTIONS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PERL" "EXPECTED_LINTER_COMMANDS_ARRAY_PERL"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "${RUST_CLIPPY_COMMAND_OPTIONS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY"; then
+    fatal "${FUNCTION_NAME} test failed"
   fi
 
   notice "${FUNCTION_NAME} PASS"
@@ -436,24 +467,17 @@ AddOptionsToCommandTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  local TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
-  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS" "-color -debug -verbose -version"
-  "${TEST_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}"
+  local TEST_LINTER_COMMANDS_ARRAY=("command1")
 
-  local TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
-  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM" "-debug -verbose -v"
-  "${TEST_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}"
+  ARG_TO_ADD_1="--arg1"
+  ARG_TO_ADD_2="--arg2"
 
-  local TEST_LINTER_COMMANDS_ARRAY_PERL=("${BASE_LINTER_COMMANDS_ARRAY_PERL[@]}")
-  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_PERL" "--gentle --count test/linters/perl/perl_good_1.pl"
-  "${TEST_LINTER_COMMANDS_ARRAY_PERL[@]}"
+  # shellcheck disable=SC2034
+  local EXPECTED_COMMAND_ARRAY=("${TEST_LINTER_COMMANDS_ARRAY[@]}" "${ARG_TO_ADD_1}" "${ARG_TO_ADD_2}")
 
-  # Rust Clippy is only available in the standard image, so we can't run it when
-  # testing the slim image
-  if IsStandardImage; then
-    local TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
-    AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "--verbose --help"
-    "${TEST_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}"
+  AddOptionsToCommand "TEST_LINTER_COMMANDS_ARRAY" "${ARG_TO_ADD_1} ${ARG_TO_ADD_2}"
+  if ! AssertArraysElementsContentMatch "TEST_LINTER_COMMANDS_ARRAY" "EXPECTED_COMMAND_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
   fi
 
   notice "${FUNCTION_NAME} PASS"
