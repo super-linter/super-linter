@@ -185,6 +185,11 @@ the command to run the new tool to set the path to the configuration file:
 1. Update `lib/functions/linterCommands.sh` to set the path to the configuration
    file path. Example: `htmlhint --config "${HTML_LINTER_RULES}"`
 
+1. If the the new tool can potentially conflict with other tools, update the
+   `ValidateConflictingTools` function in `lib/functions/validation.sh` to warn
+   the user if the tools that might conflict with each other are enabled at the
+   same time.
+
 ### Configure the new tool for the Super-linter repository
 
 If the default configuration of the new tool is unsuitable for the Super-linter

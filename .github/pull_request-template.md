@@ -20,7 +20,7 @@ In order to have this pull request merged, complete the following tasks.
 - [ ] I followed the
       [Conventional Commit v1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/).
 - [ ] I wrote the necessary upgrade instructions in the
-      [upgrade guide](../docs/upgrade-guide.md).
+      [upgrade guide](https://github.com/super-linter/super-linter/blob/main/docs/upgrade-guide.md).
 - [ ] If this pull request is about and existing issue, I added the
       `Fix #ISSUE_NUMBER` or `Close #ISSUE_NUMBER` text to the description of
       the pull request.

@@ -153,6 +153,10 @@ declare GROOVY_FAILON_LEVEL
 GROOVY_FAILON_LEVEL="${GROOVY_FAILON_LEVEL:-"warning"}"
 export GROOVY_FAILON_LEVEL
 
+declare -l FAIL_ON_CONFLICTING_TOOLS_ENABLED
+FAIL_ON_CONFLICTING_TOOLS_ENABLED="${FAIL_ON_CONFLICTING_TOOLS_ENABLED:-"false"}"
+export FAIL_ON_CONFLICTING_TOOLS_ENABLED
+
 # Define private output paths early because cleanup depends on those being defined
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
@@ -800,6 +804,11 @@ CheckSSLCert
 # Build the list of files for each linter #
 ###########################################
 BuildFileList "${VALIDATE_ALL_CODEBASE}" "${TEST_CASE_RUN}"
+
+# Check if potentially conflicting tools are enabled
+if ! ValidateConflictingTools && [[ "${FAIL_ON_CONFLICTING_TOOLS_ENABLED}" == "true" ]]; then
+  fatal "Potentially conflicting linters or formatters are enabled."
+fi
 
 #####################################
 # Run additional Installs as needed #
