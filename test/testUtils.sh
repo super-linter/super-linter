@@ -374,7 +374,7 @@ initialize_github_sha() {
 git_log_graph() {
   local GIT_REPOSITORY_PATH="${1}"
 
-  git -C "${GIT_REPOSITORY_PATH}" log \
+  git --no-pager -C "${GIT_REPOSITORY_PATH}" log \
     --abbrev-commit \
     --all \
     --decorate \
