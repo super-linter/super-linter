@@ -559,7 +559,7 @@ COPY --from=powershell-installer /tmp/PS_INSTALL_FOLDER /tmp/PS_INSTALL_FOLDER
 COPY --from=powershell /opt/microsoft/powershell /opt/microsoft/powershell
 # Disable Powershell telemetry
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
-ARG PSSA_VERSION='1.22.0'
+ARG PSSA_VERSION='1.24.0'
 RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
   && echo "PS_INSTALL_FOLDER: ${PS_INSTALL_FOLDER}" \
   && ln -s "${PS_INSTALL_FOLDER}/pwsh" /usr/bin/pwsh \
