@@ -305,6 +305,12 @@ function RunAdditionalInstalls() {
     fatal "FILE_ARRAYS_DIRECTORY_PATH (set to ${FILE_ARRAYS_DIRECTORY_PATH}) is empty or doesn't exist"
   fi
 
+  # Run installs for Ruby
+
+  # Ref: https://bundler.io/guides/bundler_docker_guide.html
+  unset BUNDLE_PATH
+  unset BUNDLE_BIN
+
   ##################################
   # Run installs for Psalm and PHP #
   ##################################

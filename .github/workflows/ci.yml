@@ -93,6 +93,7 @@ jobs:
           - stage-name: npm-builder
           - stage-name: tflint-plugins
           - stage-name: lintr-installer
+          - stage-name: ruby-installer
           - stage-name: powershell-installer
           - stage-name: php-linters
     timeout-minutes: 120
