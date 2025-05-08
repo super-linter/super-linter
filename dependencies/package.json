@@ -30,7 +30,7 @@
     "next": "^15.2.4",
     "npm-groovy-lint": "^15.1.0",
     "postcss-less": "^6.0.0",
-    "prettier": "^3.5.2",
+    "prettier": "^3.5.3",
     "prettyjson": "^1.2.5",
     "pug": "^3.0.3",
     "react": "^19.0.0",
