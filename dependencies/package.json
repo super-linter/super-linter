@@ -6,7 +6,6 @@
     "@babel/preset-typescript": "^7.24.7",
     "@coffeelint/cli": "^5.2.11",
     "@commitlint/config-conventional": "^19.8.1",
-    "@ibm/tekton-lint": "^1.1.0",
     "@react-native/eslint-config": "^0.78.0",
     "@stoplight/spectral-cli": "^6.15.0",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
@@ -19,11 +18,11 @@
     "eslint-plugin-json": "^4.0.1",
     "eslint-plugin-jsonc": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-n": "^17.18.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-vue": "^9.28.0",
-    "gherkin-lint": "^4.2.4",
     "htmlhint": "^1.1.4",
     "jscpd": "^4.0.5",
     "markdownlint-cli": "^0.44.0",
@@ -39,7 +38,6 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.5.2",
     "renovate": "^40.11.8",
-    "standard": "^17.1.2",
     "stylelint": "^16.19.1",
     "stylelint-config-recommended-scss": "^15.0.0",
     "stylelint-config-sass-guidelines": "^12.1.0",
@@ -51,7 +49,6 @@
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-terminology": "^5.2.12",
-    "ts-standard": "^12.0.2",
     "typescript": "^5.5.4"
   }
 }

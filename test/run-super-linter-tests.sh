@@ -18,10 +18,6 @@ ignore_test_cases() {
   COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*")
 }
 
-configure_typescript_for_test_cases() {
-  COMMAND_TO_RUN+=(--env TYPESCRIPT_STANDARD_TSCONFIG_FILE=".github/linters/tsconfig.json")
-}
-
 configure_command_arguments_for_test_git_repository() {
   local GIT_REPOSITORY_PATH="${1}" && shift
   local GITHUB_EVENT_FILE_PATH="${1}" && shift
@@ -59,7 +55,6 @@ configure_git_commitlint_test_cases() {
 
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
-  configure_typescript_for_test_cases
   configure_git_commitlint_test_cases
 }
 
@@ -194,7 +189,6 @@ run_test_case_use_find_and_ignore_gitignored_files() {
   ignore_test_cases
   COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
   COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM="true")
-  COMMAND_TO_RUN+=(--env VALIDATE_JAVASCRIPT_STANDARD="false")
 }
 
 run_test_cases_save_super_linter_output() {
@@ -219,7 +213,7 @@ run_test_case_gitleaks_custom_log_level() {
 run_test_case_linter_command_options() {
   run_test_cases_expect_success
   # Pick one arbitrary linter to pass options to
-  COMMAND_TO_RUN+=(--env KUBERNETES_KUBECONFORM_OPTIONS="-ignore-missing-schemas -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' --ignore-filename-pattern '.*tpl\.yaml'")
+  COMMAND_TO_RUN+=(--env GITLEAKS_COMMAND_OPTIONS="--verbose")
 }
 
 run_test_case_fix_mode() {
@@ -258,7 +252,6 @@ run_test_case_fix_mode() {
   local FIX_MODE_LINTERS_CONFIG_DIR="${GIT_REPOSITORY_PATH}/.github/linters"
   mkdir -p "${FIX_MODE_LINTERS_CONFIG_DIR}"
   cp -rv "test/linters-config/fix-mode/." "${FIX_MODE_LINTERS_CONFIG_DIR}/"
-  cp -rv ".github/linters/tsconfig.json" "${FIX_MODE_LINTERS_CONFIG_DIR}/"
   cp -rv ".editorconfig" "${GIT_REPOSITORY_PATH}/"
   git -C "${GIT_REPOSITORY_PATH}" add .
   git -C "${GIT_REPOSITORY_PATH}" commit --no-verify -m "feat: add fix mode test cases"
@@ -269,7 +262,6 @@ run_test_case_fix_mode() {
   COMMAND_TO_RUN+=(--env FIX_MODE_TEST_CASE_RUN="true")
   COMMAND_TO_RUN+=(--env TEST_CASE_RUN="true")
   COMMAND_TO_RUN+=(--env ANSIBLE_DIRECTORY="/test/linters/ansible/bad")
-  configure_typescript_for_test_cases
 
   # Some linters report a non-zero exit code even if they fix all the issues
   EXPECTED_EXIT_CODE=2

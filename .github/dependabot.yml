@@ -69,7 +69,6 @@ updates:
         patterns:
           - "@babel/preset-typescript"
           - "@typescript-eslint/eslint-plugin"
-          - ts-standard
           - typescript
 
   - package-ecosystem: "bundler"
@@ -110,7 +109,6 @@ updates:
           - kustomize/kustomize
           - tenable/terrascan
           - terraform-linters/tflint
-          - yannh/kubeconform
           - koalaman/shellcheck
           - mstruebing/editorconfig-checker
           - mvdan/shfmt
@@ -153,7 +151,6 @@ updates:
           - isort
           - mypy
           - nbqa
-          - pyink
           - pylint
           - ruff
           - snakefmt

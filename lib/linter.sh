@@ -671,9 +671,6 @@ SetupGithubComSshKeys
 ########################################################
 # Initialize variables that depend on GitHub variables #
 ########################################################
-TYPESCRIPT_STANDARD_TSCONFIG_FILE="${GITHUB_WORKSPACE}/${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-"tsconfig.json"}"
-debug "TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${TYPESCRIPT_STANDARD_TSCONFIG_FILE}"
-
 R_RULES_FILE_PATH_IN_ROOT="${GITHUB_WORKSPACE}/${R_FILE_NAME}"
 debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
 
@@ -773,13 +770,10 @@ LinterRulesLocation
 ########################
 # Get the linter rules #
 ########################
-for LANGUAGE in "${LANGUAGE_ARRAY_FOR_LINTER_RULES[@]}"; do
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
   debug "Loading rules for ${LANGUAGE}..."
   eval "GetLinterRules ${LANGUAGE} ${DEFAULT_RULES_LOCATION}"
 done
-
-# Load rules for special cases
-GetStandardRules "javascript"
 
 ValidateDeprecatedConfigurationFiles
 
