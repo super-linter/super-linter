@@ -21,7 +21,6 @@
 | ENV                        | Pass ✅           |
 | GITHUB_ACTIONS             | Pass ✅           |
 | GITLEAKS                   | Pass ✅           |
-| GHERKIN                    | Pass ✅           |
 | GIT_COMMITLINT             | Pass ✅           |
 | GIT_MERGE_CONFLICT_MARKERS | Pass ✅           |
 | GO                         | Pass ✅           |
@@ -35,7 +34,6 @@
 | JAVA                       | Pass ✅           |
 | JAVASCRIPT_ES              | Pass ✅           |
 | JAVASCRIPT_PRETTIER        | Pass ✅           |
-| JAVASCRIPT_STANDARD        | Pass ✅           |
 | JSCPD                      | Pass ✅           |
 | JSON                       | Pass ✅           |
 | JSON_PRETTIER              | Pass ✅           |
@@ -49,7 +47,6 @@
 | JUPYTER_NBQA_MYPY          | Pass ✅           |
 | JUPYTER_NBQA_PYLINT        | Pass ✅           |
 | JUPYTER_NBQA_RUFF          | Pass ✅           |
-| KUBERNETES_KUBECONFORM     | Pass ✅           |
 | KOTLIN                     | Pass ✅           |
 | LATEX                      | Pass ✅           |
 | LUA                        | Pass ✅           |
@@ -68,10 +65,8 @@
 | PYTHON_FLAKE8              | Pass ✅           |
 | PYTHON_ISORT               | Pass ✅           |
 | PYTHON_MYPY                | Pass ✅           |
-| PYTHON_PYINK               | Pass ✅           |
 | PYTHON_RUFF                | Pass ✅           |
 | R                          | Pass ✅           |
-| RAKU                       | Pass ✅           |
 | RENOVATE                   | Pass ✅           |
 | RUBY                       | Pass ✅           |
 | SCALAFMT                   | Pass ✅           |
@@ -80,7 +75,6 @@
 | SNAKEMAKE_SNAKEFMT         | Pass ✅           |
 | STATES                     | Pass ✅           |
 | SQLFLUFF                   | Pass ✅           |
-| TEKTON                     | Pass ✅           |
 | TERRAFORM_FMT              | Pass ✅           |
 | TERRAFORM_TFLINT           | Pass ✅           |
 | TERRAFORM_TERRASCAN        | Pass ✅           |
@@ -88,7 +82,6 @@
 | TSX                        | Pass ✅           |
 | TYPESCRIPT_ES              | Pass ✅           |
 | TYPESCRIPT_PRETTIER        | Pass ✅           |
-| TYPESCRIPT_STANDARD        | Pass ✅           |
 | VUE_PRETTIER               | Pass ✅           |
 | XML                        | Pass ✅           |
 | YAML                       | Pass ✅           |

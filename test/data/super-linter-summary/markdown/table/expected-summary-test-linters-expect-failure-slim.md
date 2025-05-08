@@ -21,7 +21,6 @@
 | ENV                        | Fail ❌           |
 | GITHUB_ACTIONS             | Fail ❌           |
 | GITLEAKS                   | Fail ❌           |
-| GHERKIN                    | Fail ❌           |
 | GIT_COMMITLINT             | Fail ❌           |
 | GIT_MERGE_CONFLICT_MARKERS | Fail ❌           |
 | GO                         | Fail ❌           |
@@ -35,7 +34,6 @@
 | JAVA                       | Fail ❌           |
 | JAVASCRIPT_ES              | Fail ❌           |
 | JAVASCRIPT_PRETTIER        | Fail ❌           |
-| JAVASCRIPT_STANDARD        | Fail ❌           |
 | JSCPD                      | Fail ❌           |
 | JSON                       | Fail ❌           |
 | JSON_PRETTIER              | Fail ❌           |
@@ -49,7 +47,6 @@
 | JUPYTER_NBQA_MYPY          | Fail ❌           |
 | JUPYTER_NBQA_PYLINT        | Fail ❌           |
 | JUPYTER_NBQA_RUFF          | Fail ❌           |
-| KUBERNETES_KUBECONFORM     | Fail ❌           |
 | KOTLIN                     | Fail ❌           |
 | LATEX                      | Fail ❌           |
 | LUA                        | Fail ❌           |
@@ -68,10 +65,8 @@
 | PYTHON_FLAKE8              | Fail ❌           |
 | PYTHON_ISORT               | Fail ❌           |
 | PYTHON_MYPY                | Fail ❌           |
-| PYTHON_PYINK               | Fail ❌           |
 | PYTHON_RUFF                | Fail ❌           |
 | R                          | Fail ❌           |
-| RAKU                       | Fail ❌           |
 | RENOVATE                   | Fail ❌           |
 | RUBY                       | Fail ❌           |
 | SCALAFMT                   | Fail ❌           |
@@ -80,7 +75,6 @@
 | SNAKEMAKE_SNAKEFMT         | Fail ❌           |
 | STATES                     | Fail ❌           |
 | SQLFLUFF                   | Fail ❌           |
-| TEKTON                     | Fail ❌           |
 | TERRAFORM_FMT              | Fail ❌           |
 | TERRAFORM_TFLINT           | Fail ❌           |
 | TERRAFORM_TERRASCAN        | Fail ❌           |
@@ -88,7 +82,6 @@
 | TSX                        | Fail ❌           |
 | TYPESCRIPT_ES              | Fail ❌           |
 | TYPESCRIPT_PRETTIER        | Fail ❌           |
-| TYPESCRIPT_STANDARD        | Fail ❌           |
 | VUE_PRETTIER               | Fail ❌           |
 | XML                        | Fail ❌           |
 | YAML                       | Fail ❌           |

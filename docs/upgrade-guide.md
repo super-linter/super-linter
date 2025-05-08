@@ -2,10 +2,44 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from v7.4.0 to v8.0.0](#upgrade-from-v740-to-v8)
 - [Upgrade from v7.3.0 to v7.4.0](#upgrade-from-v730-to-v740)
 - [Upgrade from v6 to v7](#upgrade-from-v6-to-v7)
 - [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from v7.4.0 to v8
+
+This section helps you upgrade from super-linter `v7.4.0` to `v8.0.0`.
+
+### Removed unmaintained linters and formatters
+
+Super-linter `v8.0.0` doesn't include the following linters anymore because they
+are unmaintained:
+
+- gherkin-lint
+- Kubeconform
+- JavaScript Standard
+- Pyink
+- Raku compiler
+- tekton-lint
+- TypeScript Standard
+
+You can remove the following variables from your Super-linter configuration:
+
+- `FIX_JAVASCRIPT_STANDARD`
+- `FIX_PYTHON_PYINK`
+- `FIX_TYPESCRIPT_STANDARD`
+- `KUBERNETES_KUBECONFORM_OPTIONS`
+- `PYTHON_PYINK_CONFIG_FILE`
+- `TYPESCRIPT_STANDARD_TSCONFIG_FILE`
+- `VALIDATE_GHERKIN`
+- `VALIDATE_JAVASCRIPT_STANDARD`
+- `VALIDATE_KUBERNETES_KUBECONFORM`
+- `VALIDATE_PYTHON_PYINK`
+- `VALIDATE_RAKU`
+- `VALIDATE_TEKTON`
+- `VALIDATE_TYPESCRIPT_STANDARD`
 
 ## Upgrade from v7.3.0 to v7.4.0
 

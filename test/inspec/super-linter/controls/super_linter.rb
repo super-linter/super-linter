@@ -76,12 +76,9 @@ control "super-linter-installed-packages" do
     "php84-tokenizer",
     "php84-xmlwriter",
     "R",
-    "rakudo",
     "ruby",
     "rust-clippy",
     "rustfmt",
-    "tar",
-    "zef"
   ]
 
   # Removed linters from slim image
@@ -122,7 +119,8 @@ control "super-linter-uninstalled-packages" do
     "readline-dev",
     "ruby-bundler",
     "ruby-dev",
-    "ruby-rdoc"
+    "ruby-rdoc",
+    "tar",
   ]
 
   packages.each do |item|
@@ -168,7 +166,6 @@ control "super-linter-installed-commands" do
     { linter_name: "editorconfig-checker", version_option: "-version" },
     { linter_name: "eslint" },
     { linter_name: "flake8" },
-    { linter_name: "gherkin-lint", expected_exit_status: 1 }, # expect a return code = 1 because this linter doesn't support a "get linter version" command
     { linter_name: "git-merge-conflict-markers" },
     { linter_name: "gitleaks", version_option: "version" },
     { linter_name: "golangci-lint" },
@@ -181,7 +178,6 @@ control "super-linter-installed-commands" do
     { linter_name: "jscpd" },
     { linter_name: "ktlint" },
     { linter_name: "kustomize", version_option: "version" }, # not used as linter, needed for checkov's kustomize checks
-    { linter_name: "kubeconform", version_option: "-v" },
     { linter_name: "lua", version_option: "-v" },
     { linter_name: "markdownlint" },
     { linter_name: "mypy" },
@@ -195,12 +191,10 @@ control "super-linter-installed-commands" do
     { linter_name: "protolint", version_option: "version" },
     { linter_name: "psalm" },
     { linter_name: "pwsh" },
-    { linter_name: "pyink" },
     { linter_name: "pylint" },
     { linter_name: "R", version_command: "R --slave -e \"r_ver <- R.Version()\\$version.string; \
             lintr_ver <- packageVersion('lintr'); \
             glue::glue('lintr { lintr_ver } on { r_ver }')\""},
-    { linter_name: "raku", version_command: "raku --version | strings -n 8" },
     { linter_name: "renovate-config-validator", version_command: "renovate --version" },
     { linter_name: "rubocop" },
     { linter_name: "ruff" },
@@ -212,15 +206,12 @@ control "super-linter-installed-commands" do
     { linter_name: "snakemake" },
     { linter_name: "spectral" },
     { linter_name: "sqlfluff" },
-    { linter_name: "standard" },
     { linter_name: "stylelint" },
-    { linter_name: "tekton-lint" },
     { linter_name: "terraform" },
     { linter_name: "terragrunt" },
     { linter_name: "terrascan", version_option: "version" },
     { linter_name: "textlint" },
     { linter_name: "tflint" },
-    { linter_name: "ts-standard" },
     { linter_name: "xmllint" },
     { linter_name: "yamllint" },
   ]
@@ -295,7 +286,7 @@ end
 ###################################
 # Linters with no version command #
 # protolint editorconfig-checker  #
-# bash-exec gherkin-lint          #
+# bash-exec                       #
 ###################################
 
 ############################################
@@ -317,7 +308,6 @@ control "super-linter-installed-ruby-gems" do
     "rubocop-rspec_rails",
     "rubocop-rspec",
     "rubocop",
-    "standard"
   ]
 
   gems.each do |item|
@@ -340,7 +330,6 @@ control "super-linter-installed-npm-packages" do
     "@babel/preset-react",
     "@babel/preset-typescript",
     "@coffeelint/cli",
-    "@ibm/tekton-lint",
     "@react-native/eslint-config",
     "@react-native/eslint-plugin",
     "@stoplight/spectral-cli",
@@ -355,11 +344,11 @@ control "super-linter-installed-npm-packages" do
     "eslint-plugin-json",
     "eslint-plugin-jsonc",
     "eslint-plugin-jsx-a11y",
+    "eslint-plugin-n",
     "eslint-plugin-prettier",
     "eslint-plugin-react",
     "eslint-plugin-react-hooks",
     "eslint-plugin-vue",
-    "gherkin-lint",
     "htmlhint",
     "jscpd",
     "markdownlint-cli",
@@ -375,7 +364,6 @@ control "super-linter-installed-npm-packages" do
     "react-redux",
     "react-router-dom",
     "renovate",
-    "standard",
     "stylelint",
     "stylelint-config-recommended-scss",
     "stylelint-config-sass-guidelines",
@@ -387,7 +375,6 @@ control "super-linter-installed-npm-packages" do
     "textlint-filter-rule-allowlist",
     "textlint-filter-rule-comments",
     "textlint-rule-terminology",
-    "ts-standard",
     "typescript"
   ]
 
@@ -416,7 +403,6 @@ control "super-linter-installed-pypi-packages" do
     "isort",
     "mypy",
     "nbqa",
-    "pyink",
     "pylint",
     "ruff",
     "snakefmt",
@@ -507,7 +493,6 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.editorconfig-checker.json",
     "/action/lib/.automation/.eslintrc.yml",
     "/action/lib/.automation/.flake8",
-    "/action/lib/.automation/.gherkin-lintrc",
     "/action/lib/.automation/.golangci.yml",
     "/action/lib/.automation/.groovylintrc.json",
     "/action/lib/.automation/.hadolint.yaml",
@@ -525,7 +510,6 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.protolintrc.yml",
     "/action/lib/.automation/.python-black",
     "/action/lib/.automation/.python-lint",
-    "/action/lib/.automation/.python-pyink",
     "/action/lib/.automation/.ruby-lint.yml",
     "/action/lib/.automation/.ruff.toml",
     "/action/lib/.automation/.scalafmt.conf",

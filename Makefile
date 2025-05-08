@@ -266,7 +266,6 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e IGNORE_GENERATED_FILES=true \
 		-e IGNORE_GITIGNORED_FILES=true \
 		-e VALIDATE_ALL_CODEBASE=true \
-		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR)":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -285,7 +284,6 @@ lint-codebase: ## Lint the entire codebase
 		-e SAVE_SUPER_LINTER_OUTPUT=true \
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
-		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR):/tmp/lint" \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -315,7 +313,6 @@ fix-codebase: ## Fix and format the entire codebase
 		-e SAVE_SUPER_LINTER_OUTPUT=true \
 		-e SAVE_SUPER_LINTER_SUMMARY=true \
 		-e VALIDATE_ALL_CODEBASE=true \
-		-e VALIDATE_JAVASCRIPT_STANDARD=false \
 		-v "$(CURDIR):/tmp/lint" \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
@@ -352,11 +349,9 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \
-		-e VALIDATE_KUBERNETES_KUBECONFORM=true \
 		-e VALIDATE_MARKDOWN=true \
 		-e VALIDATE_OPENAPI=true \
 		-e VALIDATE_STATES=true \
-		-e VALIDATE_TEKTON=true \
 		-v "$(CURDIR):/tmp/lint" \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
