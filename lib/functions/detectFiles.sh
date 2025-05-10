@@ -39,23 +39,6 @@ DetectOpenAPIFile() {
   fi
 }
 
-DetectTektonFile() {
-  FILE="${1}"
-
-  if [ "${VALIDATE_TEKTON}" == "false" ]; then
-    debug "Don't check if ${FILE} is a Tekton file because VALIDATE_TEKTON is: ${VALIDATE_TEKTON}"
-    return 1
-  fi
-
-  debug "Checking if ${FILE} is a Tekton file..."
-
-  if grep -q -E 'apiVersion: tekton' "${FILE}" >/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 DetectARMFile() {
   FILE="${1}"
 
@@ -102,14 +85,8 @@ DetectCloudFormationFile() {
 DetectKubernetesFile() {
   FILE="${1}"
 
-  if [ "${VALIDATE_KUBERNETES_KUBECONFORM}" == "false" ]; then
-    debug "Don't check if ${FILE} is a Kubernetes file because VALIDATE_KUBERNETES_KUBECONFORM is: ${VALIDATE_KUBERNETES_KUBECONFORM}"
-    return 1
-  fi
-
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
   if grep -q -v 'kustomize.config.k8s.io' "${FILE}" &&
-    grep -q -v "tekton" "${FILE}" &&
     grep -q -E '(^apiVersion):' "${FILE}" &&
     grep -q -E '(^kind):' "${FILE}"; then
     debug "${FILE} is a Kubernetes descriptor"
@@ -291,7 +268,6 @@ export -f DetectAWSStatesFIle
 export -f DetectCloudFormationFile
 export -f DetectKubernetesFile
 export -f DetectOpenAPIFile
-export -f DetectTektonFile
 export -f GetFileExtension
 export -f GetFileType
 export -f IsValidShellScript
@@ -442,11 +418,6 @@ function RunAdditionalInstalls() {
       fatal "Error while initializing Terrascan:\n${TERRASCAN_INIT_COMMAND_OUTPUT}"
     fi
     debug "Terrascan init command output:\n${TERRASCAN_INIT_COMMAND_OUTPUT}"
-  fi
-
-  # Check if there's local configuration for the Raku linter
-  if [ -e "${GITHUB_WORKSPACE}/META6.json" ]; then
-    cd "${GITHUB_WORKSPACE}" && zef install --deps-only --/test .
   fi
 }
 

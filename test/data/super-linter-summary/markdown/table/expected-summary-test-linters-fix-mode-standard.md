@@ -21,7 +21,6 @@
 | HTML_PRETTIER                | Pass ✅           |
 | JAVASCRIPT_ES                | Pass ✅           |
 | JAVASCRIPT_PRETTIER          | Pass ✅           |
-| JAVASCRIPT_STANDARD          | Pass ✅           |
 | JSON                         | Fail ❌           |
 | JSON_PRETTIER                | Pass ✅           |
 | JSONC                        | Pass ✅           |
@@ -39,7 +38,6 @@
 | PROTOBUF                     | Fail ❌           |
 | PYTHON_BLACK                 | Pass ✅           |
 | PYTHON_ISORT                 | Pass ✅           |
-| PYTHON_PYINK                 | Pass ✅           |
 | PYTHON_RUFF                  | Pass ✅           |
 | RUBY                         | Fail ❌           |
 | RUST_2015                    | Pass ✅           |
@@ -54,7 +52,6 @@
 | TSX                          | Fail ❌           |
 | TYPESCRIPT_ES                | Pass ✅           |
 | TYPESCRIPT_PRETTIER          | Pass ✅           |
-| TYPESCRIPT_STANDARD          | Pass ✅           |
 | VUE_PRETTIER                 | Pass ✅           |
 | YAML_PRETTIER                | Pass ✅           |
 

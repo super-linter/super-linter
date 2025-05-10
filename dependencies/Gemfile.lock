@@ -77,18 +77,6 @@ GEM
       rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    standard (1.45.0)
-      language_server-protocol (~> 3.17.0.2)
-      lint_roller (~> 1.0)
-      rubocop (~> 1.71.0)
-      standard-custom (~> 1.0.0)
-      standard-performance (~> 1.6)
-    standard-custom (1.0.2)
-      lint_roller (~> 1.0)
-      rubocop (~> 1.50)
-    standard-performance (1.6.0)
-      lint_roller (~> 1.1)
-      rubocop-performance (~> 1.23.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
@@ -111,7 +99,6 @@ DEPENDENCIES
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.4.0)
   rubocop-rspec_rails (~> 2.30)
-  standard (~> 1.42)
 
 BUNDLED WITH
   2.5.13
