@@ -165,10 +165,22 @@ function LintCodebase() {
 
   local -n LINTER_COMMAND_ARRAY
   LINTER_COMMAND_ARRAY="LINTER_COMMANDS_ARRAY_${FILE_TYPE}"
-  if [ ${#LINTER_COMMAND_ARRAY[@]} -eq 0 ]; then
+  local -i LINTER_COMMAND_ARRAY_SIZE="${#LINTER_COMMAND_ARRAY[@]}"
+  if [ "${LINTER_COMMAND_ARRAY_SIZE}" -eq 0 ]; then
     fatal "LINTER_COMMAND_ARRAY for ${FILE_TYPE} is empty."
   else
     debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements: ${LINTER_COMMAND_ARRAY[*]}"
+  fi
+
+  local -i PARALLEL_TIMEOUT=0
+
+  if [[ "${FILE_TYPE}" == "LYCHEE" ]]; then
+    PARALLEL_TIMEOUT=$((5 * LINTER_COMMAND_ARRAY_SIZE))
+  fi
+
+  if [[ "${PARALLEL_TIMEOUT}" -gt 0 ]]; then
+    debug "Setting parallel timeout to: ${PARALLEL_TIMEOUT}"
+    PARALLEL_COMMAND+=(--timeout "${PARALLEL_TIMEOUT}")
   fi
 
   # From GNU Parallel manpage (https://www.gnu.org/software/parallel/parallel.html#options)

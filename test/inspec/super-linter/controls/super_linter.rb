@@ -183,6 +183,7 @@ control "super-linter-installed-commands" do
     { linter_name: "kustomize", version_option: "version" }, # not used as linter, needed for checkov's kustomize checks
     { linter_name: "kubeconform", version_option: "-v" },
     { linter_name: "lua", version_option: "-v" },
+    { linter_name: "lychee" },
     { linter_name: "markdownlint" },
     { linter_name: "mypy" },
     { linter_name: "nbqa" },
@@ -535,6 +536,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.stylelintrc.json",
     "/action/lib/.automation/.tflint.hcl",
     "/action/lib/.automation/.yaml-lint.yml",
+    "/action/lib/.automation/lychee.toml",
     "/action/lib/.automation/phpcs.xml",
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",
