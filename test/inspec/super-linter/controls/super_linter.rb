@@ -78,6 +78,7 @@ control "super-linter-installed-packages" do
     "R",
     "rakudo",
     "ruby",
+    "ruby-bundler",
     "rust-clippy",
     "rustfmt",
     "tar",
@@ -120,7 +121,6 @@ control "super-linter-uninstalled-packages" do
     "R-dev",
     "R-doc",
     "readline-dev",
-    "ruby-bundler",
     "ruby-dev",
     "ruby-rdoc"
   ]
