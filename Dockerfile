@@ -31,6 +31,7 @@ FROM dart:3.7.0-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.102-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.5 AS php-composer
+FROM lycheeverse/lychee:sha-e185e90-alpine AS lychee
 
 FROM python:3.13.3-alpine3.21 AS clang-format
 
@@ -437,6 +438,11 @@ COPY --chmod=555 scripts/git-merge-conflict-markers.sh /usr/bin/git-merge-confli
 # Install dotenv-linter #
 #########################
 COPY --from=dotenv-linter /dotenv-linter /usr/bin/
+
+##################
+# Install lychee #
+##################
+COPY --from=lychee /usr/local/bin/lychee /usr/bin/
 
 #########################
 # Configure Environment #
