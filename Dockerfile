@@ -8,29 +8,29 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.19.9 AS terrascan
-FROM alpine/terragrunt:1.10.3 AS terragrunt
+FROM alpine/terragrunt:1.11.4 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
-FROM ghcr.io/terraform-linters/tflint:v0.55.1 AS tflint
+FROM ghcr.io/terraform-linters/tflint:v0.57.0 AS tflint
 FROM ghcr.io/yannh/kubeconform:v0.6.7 AS kubeconfrm
-FROM alpine/helm:3.17.1 AS helm
-FROM golang:1.24.0-alpine AS golang
-FROM golangci/golangci-lint:v1.64.5 AS golangci-lint
-FROM goreleaser/goreleaser:v2.7.0 AS goreleaser
+FROM alpine/helm:3.17.3 AS helm
+FROM golang:1.24.3-alpine AS golang
+FROM golangci/golangci-lint:v2.1.6 AS golangci-lint
+FROM goreleaser/goreleaser:v2.9.0 AS goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.6.0 AS kustomize
-FROM hashicorp/terraform:1.10.5 AS terraform
+FROM hashicorp/terraform:1.11.4 AS terraform
 FROM koalaman/shellcheck:v0.10.0 AS shellcheck
-FROM mstruebing/editorconfig-checker:v3.2.0 AS editorconfig-checker
-FROM mvdan/shfmt:v3.10.0 AS shfmt
+FROM mstruebing/editorconfig-checker:v3.3.0 AS editorconfig-checker
+FROM mvdan/shfmt:v3.11.0 AS shfmt
 FROM rhysd/actionlint:1.7.7 AS actionlint
-FROM scalameta/scalafmt:v3.8.3 AS scalafmt
-FROM zricethezav/gitleaks:v8.24.0 AS gitleaks
-FROM yoheimuta/protolint:0.53.0 AS protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2025.02.20-alpine AS clj-kondo
-FROM dart:3.7.0-sdk AS dart
-FROM mcr.microsoft.com/dotnet/sdk:9.0.102-alpine3.21 AS dotnet-sdk
+FROM scalameta/scalafmt:v3.9.6 AS scalafmt
+FROM zricethezav/gitleaks:v8.25.1 AS gitleaks
+FROM yoheimuta/protolint:0.55.1 AS protolint
+FROM ghcr.io/clj-kondo/clj-kondo:2025.04.07-alpine AS clj-kondo
+FROM dart:3.7.3-sdk AS dart
+FROM mcr.microsoft.com/dotnet/sdk:9.0.203-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
-FROM composer/composer:2.8.5 AS php-composer
+FROM composer/composer:2.8.8 AS php-composer
 
 FROM python:3.13.2-alpine3.21 AS clang-format
 
