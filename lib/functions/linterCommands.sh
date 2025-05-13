@@ -167,7 +167,7 @@ if [ "${ENABLE_COMMITLINT_STRICT_MODE:-}" == 'true' ]; then
   LINTER_COMMANDS_ARRAY_GIT_COMMITLINT+=("${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
 fi
 LINTER_COMMANDS_ARRAY_GIT_MERGE_CONFLICT_MARKERS=(git-merge-conflict-markers)
-LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast)
+LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast-only)
 LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GO_RELEASER=(goreleaser check)
 LINTER_COMMANDS_ARRAY_GOOGLE_JAVA_FORMAT=(java -jar /usr/bin/google-java-format)
