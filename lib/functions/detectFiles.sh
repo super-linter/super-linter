@@ -306,6 +306,37 @@ function RunAdditionalInstalls() {
   fi
 
   # Run installs for Ruby
+  if [[ ("${VALIDATE_RUBY}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY") ]]; then
+    info "Found RUBY files to validate. Check if we need to install additional dependencies"
+    local -a GEMFILE_FILE_ARRAY
+    mapfile -t GEMFILE_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name Gemfile 2>&1)
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      fatal "Error while initializing GEMFILE_FILE_ARRAY"
+    fi
+    if [ "${#GEMFILE_FILE_ARRAY[@]}" -ne 0 ]; then
+      for LINE in "${GEMFILE_FILE_ARRAY[@]}"; do
+        info "Found Gemfile: ${LINE}"
+        local GEMFILE_DIRECTORY_PATH
+        GEMFILE_DIRECTORY_PATH="$(dirname "${LINE}" 2>&1)"
+
+        local BUNDLER_CMD_OUTPUT
+        local BUNDLER_EXIT_STATUS
+        BUNDLER_CMD_OUTPUT="$(
+          cd "${GEMFILE_DIRECTORY_PATH}" &&
+            BUNDLE_DEPLOYMENT="true" bundle install
+        )"
+        BUNDLER_EXIT_STATUS=$?
+        if [ "${BUNDLER_EXIT_STATUS}" -gt 0 ]; then
+          fatal "Failed to install additional dependencies for ${LINE}. Output: ${BUNDLER_CMD_OUTPUT}"
+        else
+          info "Successfully installed additional Ruby dependencies."
+          debug "Ruby dependencies install output: ${BUNDLER_CMD_OUTPUT}"
+        fi
+        debug "Composer install output: ${COMPOSER_CMD}"
+      done
+    fi
+  fi
 
   # Ref: https://bundler.io/guides/bundler_docker_guide.html
   unset BUNDLE_PATH
@@ -321,12 +352,13 @@ function RunAdditionalInstalls() {
     [[ ("${VALIDATE_PHP_PSALM}" == "true" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM") ]]; then
     # found PHP files and were validating it, need to composer install
     info "Found PHP files to validate. Check if we need to run composer install"
+    local -a COMPOSER_FILE_ARRAY
     mapfile -t COMPOSER_FILE_ARRAY < <(find "${GITHUB_WORKSPACE}" -name composer.json 2>&1)
     debug "COMPOSER_FILE_ARRAY contents: ${COMPOSER_FILE_ARRAY[*]}"
     if [ "${#COMPOSER_FILE_ARRAY[@]}" -ne 0 ]; then
       for LINE in "${COMPOSER_FILE_ARRAY[@]}"; do
         local COMPOSER_PATH
-        COMPOSER_PATH=$(dirname "${LINE}" 2>&1)
+        COMPOSER_PATH="$(dirname "${LINE}" 2>&1)"
         info "Found Composer file: ${LINE}"
         local COMPOSER_CMD
         local COMPOSER_EXIT_STATUS

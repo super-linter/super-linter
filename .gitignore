@@ -102,3 +102,9 @@ github-step-summary.md
 
 # MacOS File
 .DS_Store
+
+# Bundler configuration directory
+.bundle
+
+# Installed gems
+vendor

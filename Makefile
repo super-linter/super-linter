@@ -652,6 +652,13 @@ test-linter-command-options: ## Run super-linter passing options to linters
 		"run_test_case_linter_command_options" \
 		"$(IMAGE)"
 
+.PHONY: test-additional-installs-ruby-bundler
+test-additional-installs-ruby-bundler: ## Run super-linter and install additional dependencies using bundler
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_additional_installs_ruby_bundler" \
+		"$(IMAGE)"
+
 .PHONY: docker-dev-container-build-check ## Run Docker build checks against the dev-container image
 docker-dev-container-build-check:
 	DOCKER_BUILDKIT=1 docker buildx build --check \

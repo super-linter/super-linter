@@ -605,10 +605,9 @@ To work around these limitations, you do the following:
 ## Configure linters
 
 Super-linter provides default configurations for some linters in the
-[`TEMPLATES/`](./TEMPLATES/) directory. You can customize the configuration for
-the linters that support this by placing your own configuration files in the
-`LINTER_RULES_PATH` directory. `LINTER_RULES_PATH` is relative to the
-`DEFAULT_WORKSPACE` directory.
+`TEMPLATES/` directory. You can customize the configuration for the linters that
+support this by placing your own configuration files in the `LINTER_RULES_PATH`
+directory. `LINTER_RULES_PATH` is relative to the `DEFAULT_WORKSPACE` directory.
 
 Super-linter supports customizing the name of these configuration files. For
 more information, refer to [Configure super-linter](#configure-super-linter).
@@ -784,6 +783,12 @@ super-linter.log
 # GitHub Actions leftovers
 github_conf
 ```
+
+## Install additonal dependencies
+
+For more information about installing additional dependencies when running
+Super-linter, see
+[Install additional dependencies](/docs/install-additional-dependencies.md).
 
 ## How to contribute
 

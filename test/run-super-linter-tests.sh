@@ -277,6 +277,24 @@ run_test_case_fix_mode() {
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-fix-mode-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
+run_test_case_additional_installs_ruby_bundler() {
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
+
+  local LINTERS_CONFIGURATION_DIRECTORY="${GIT_REPOSITORY_PATH}/.github/linters"
+  mkdir -pv "${LINTERS_CONFIGURATION_DIRECTORY}"
+  cp -v "test/data/additional-ruby-deps/.ruby-lint.yml" "${LINTERS_CONFIGURATION_DIRECTORY}/"
+
+  COMMAND_TO_RUN+=(--env VALIDATE_RUBY="true")
+  cp -v "test/linters/ruby/ruby_good_1.rb" "${GIT_REPOSITORY_PATH}/"
+  git -C "${GIT_REPOSITORY_PATH}" add .
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add ruby test files"
+
+  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+}
+
 # Run the test setup function
 ${TEST_FUNCTION_NAME}
 
