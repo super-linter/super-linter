@@ -564,7 +564,7 @@ RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
   && echo "PS_INSTALL_FOLDER: ${PS_INSTALL_FOLDER}" \
   && ln -s "${PS_INSTALL_FOLDER}/pwsh" /usr/bin/pwsh \
   && chmod a+x,o-w "${PS_INSTALL_FOLDER}/pwsh" \
-  && pwsh -c "Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force" \
+  && pwsh -c "Install-Module -ErrorAction Stop -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force" \
   && rm -rf /tmp/PS_INSTALL_FOLDER
 
 #############################################################
