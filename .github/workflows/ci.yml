@@ -267,8 +267,6 @@ jobs:
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
-          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
-          VALIDATE_JAVASCRIPT_STANDARD: false
 
       - name: Get the contents of the log file
         run: |
@@ -282,8 +280,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
-          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ".github/linters/tsconfig.json"
-          VALIDATE_JAVASCRIPT_STANDARD: false
 
   build-test-suite-matrix:
     name: Build test suite matrix

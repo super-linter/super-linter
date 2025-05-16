@@ -376,8 +376,6 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOCKERFILE_HADOLINT"
     elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ENV"
-    elif [ "${FILE_TYPE}" == "feature" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GHERKIN"
     elif [ "${FILE_TYPE}" == "go" ] ||
       [[ "${BASE_FILE}" == "go.mod" ]]; then
 
@@ -431,7 +429,6 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GOOGLE_JAVA_FORMAT"
     elif [ "${FILE_TYPE}" == "js" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_ES"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_STANDARD"
       if IsNotSymbolicLink "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JAVASCRIPT_PRETTIER"
       else
@@ -518,12 +515,7 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_ISORT"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYLINT"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYINK"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF"
-    elif [ "${FILE_TYPE}" == "raku" ] || [ "${FILE_TYPE}" == "rakumod" ] ||
-      [ "${FILE_TYPE}" == "rakutest" ] || [ "${FILE_TYPE}" == "pm6" ] ||
-      [ "${FILE_TYPE}" == "pl6" ] || [ "${FILE_TYPE}" == "p6" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RAKU"
     elif [ "${FILE_TYPE}" == "r" ] || [ "${FILE_TYPE}" == "rmd" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-R"
     elif [ "${FILE_TYPE}" == "rb" ]; then
@@ -553,7 +545,6 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAGRUNT"
     elif [ "${FILE_TYPE}" == "ts" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_ES"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_STANDARD"
       if IsNotSymbolicLink "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TYPESCRIPT_PRETTIER"
       else
@@ -601,14 +592,6 @@ BuildFileArrays() {
 
       if DetectOpenAPIFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-OPENAPI"
-      fi
-
-      if DetectTektonFile "${FILE}"; then
-        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TEKTON"
-      fi
-
-      if DetectKubernetesFile "${FILE}"; then
-        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-KUBERNETES_KUBECONFORM"
       fi
     else
       CheckFileType "${FILE}"

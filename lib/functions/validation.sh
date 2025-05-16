@@ -583,6 +583,21 @@ function ValidateDeprecatedVariables() {
 
   # The following values have been deprecated in v7.4.0
   WarnIfDeprecatedValueForConfigurationVariableIsSet "${EDITORCONFIG_FILE_NAME:-}" ".ecrc" "EDITORCONFIG_FILE_NAME" ".editorconfig-checker.json"
+
+  # The following variables have been deprecated in v8.0.0
+  WarnIfVariableIsSet "${FIX_JAVASCRIPT_STANDARD:-}" "FIX_JAVASCRIPT_STANDARD"
+  WarnIfVariableIsSet "${FIX_PYTHON_PYINK:-}" "FIX_PYTHON_PYINK"
+  WarnIfVariableIsSet "${FIX_TYPESCRIPT_STANDARD:-}" "FIX_TYPESCRIPT_STANDARD"
+  WarnIfVariableIsSet "${KUBERNETES_KUBECONFORM_OPTIONS:-}" "KUBERNETES_KUBECONFORM_OPTIONS"
+  WarnIfVariableIsSet "${PYTHON_PYINK_CONFIG_FILE:-}" "PYTHON_PYINK_CONFIG_FILE"
+  WarnIfVariableIsSet "${TYPESCRIPT_STANDARD_TSCONFIG_FILE:-}" "TYPESCRIPT_STANDARD_TSCONFIG_FILE"
+  WarnIfVariableIsSet "${VALIDATE_GHERKIN:-}" "VALIDATE_GHERKIN"
+  WarnIfVariableIsSet "${VALIDATE_JAVASCRIPT_STANDARD:-}" "VALIDATE_JAVASCRIPT_STANDARD"
+  WarnIfVariableIsSet "${VALIDATE_KUBERNETES_KUBECONFORM:-}" "VALIDATE_KUBERNETES_KUBECONFORM"
+  WarnIfVariableIsSet "${VALIDATE_PYTHON_PYINK:-}" "VALIDATE_PYTHON_PYINK"
+  WarnIfVariableIsSet "${VALIDATE_RAKU:-}" "VALIDATE_RAKU"
+  WarnIfVariableIsSet "${VALIDATE_TEKTON:-}" "VALIDATE_TEKTON"
+  WarnIfVariableIsSet "${VALIDATE_TYPESCRIPT_STANDARD:-}" "VALIDATE_TYPESCRIPT_STANDARD"
 }
 
 ValidateDeprecatedConfigurationFiles() {
@@ -594,10 +609,4 @@ ValidateDeprecatedConfigurationFiles() {
 
 ValidateConflictingTools() {
   debug "Validating if potentially conflicting tools are enabled"
-
-  if [[ ("${VALIDATE_PYTHON_BLACK}" == "true" && "${VALIDATE_PYTHON_PYINK}" == "true") ]] &&
-    [[ (-e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK" && -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYINK") ]]; then
-    warn "Black and Pyink are both enabled, and might conflict with each other. To avoid potential conflicts,keep only one of the two enabled, and disable the other."
-    return 1
-  fi
 }

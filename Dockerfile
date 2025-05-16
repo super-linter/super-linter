@@ -11,7 +11,6 @@ FROM tenable/terrascan:1.19.9 AS terrascan
 FROM alpine/terragrunt:1.11.4 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.57.0 AS tflint
-FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconfrm
 FROM alpine/helm:3.17.3 AS helm
 FROM golang:1.24.3-alpine AS golang
 FROM golangci/golangci-lint:v2.1.6 AS golangci-lint
@@ -200,9 +199,7 @@ RUN apk add --no-cache \
   php84-tokenizer \
   php84-xmlwriter \
   R \
-  rakudo \
-  ruby \
-  zef
+  ruby
 
 ##############################
 # Installs Perl dependencies #
@@ -366,11 +363,6 @@ RUN scalafmt --version | awk ' { print $2 }' > /tmp/scalafmt-version.txt
 ######################
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
 
-######################
-# Install kubeconform #
-######################
-COPY --from=kubeconfrm /kubeconform /usr/bin/
-
 #####################
 # Install clj-kondo #
 #####################
@@ -450,7 +442,6 @@ ENV PATH="${PATH}:/venvs/flake8/bin"
 ENV PATH="${PATH}:/venvs/isort/bin"
 ENV PATH="${PATH}:/venvs/mypy/bin"
 ENV PATH="${PATH}:/venvs/nbqa/bin"
-ENV PATH="${PATH}:/venvs/pyink/bin"
 ENV PATH="${PATH}:/venvs/pylint/bin"
 ENV PATH="${PATH}:/venvs/ruff/bin"
 ENV PATH="${PATH}:/venvs/snakefmt/bin"

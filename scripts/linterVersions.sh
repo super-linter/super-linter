@@ -25,7 +25,6 @@ LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
 LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
 LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
 LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
-LINTER_NAMES_ARRAY['GHERKIN']="gherkin-lint"
 LINTER_NAMES_ARRAY['GIT_COMMITLINT']="commitlint"
 LINTER_NAMES_ARRAY['GIT_MERGE_CONFLICT_MARKERS']="git-merge-conflict-markers"
 LINTER_NAMES_ARRAY['GO']="golangci-lint"
@@ -39,7 +38,6 @@ LINTER_NAMES_ARRAY['HTML_PRETTIER']="prettier"
 LINTER_NAMES_ARRAY['JAVA']="checkstyle"
 LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
 LINTER_NAMES_ARRAY['JAVASCRIPT_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JAVASCRIPT_STANDARD']="standard"
 LINTER_NAMES_ARRAY['JSCPD']="jscpd"
 LINTER_NAMES_ARRAY['JSON']="eslint"
 LINTER_NAMES_ARRAY['JSON_PRETTIER']="prettier"
@@ -54,7 +52,6 @@ LINTER_NAMES_ARRAY['JUPYTER_NBQA_MYPY']="nbqa"
 LINTER_NAMES_ARRAY['JUPYTER_NBQA_PYLINT']="nbqa"
 LINTER_NAMES_ARRAY['JUPYTER_NBQA_RUFF']="nbqa"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
-LINTER_NAMES_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform"
 LINTER_NAMES_ARRAY['LATEX']="chktex"
 LINTER_NAMES_ARRAY['LUA']="lua"
 LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
@@ -72,10 +69,8 @@ LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
 LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
 LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
 LINTER_NAMES_ARRAY['PYTHON_MYPY']="mypy"
-LINTER_NAMES_ARRAY['PYTHON_PYINK']="pyink"
 LINTER_NAMES_ARRAY['PYTHON_RUFF']="ruff"
 LINTER_NAMES_ARRAY['R']="R"
-LINTER_NAMES_ARRAY['RAKU']="raku"
 LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
 LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
@@ -84,7 +79,6 @@ LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
 LINTER_NAMES_ARRAY['STATES']="asl-validator"
 LINTER_NAMES_ARRAY['SQLFLUFF']="sqlfluff"
-LINTER_NAMES_ARRAY['TEKTON']="tekton-lint"
 LINTER_NAMES_ARRAY['TERRAFORM_FMT']="terraform"
 LINTER_NAMES_ARRAY['TERRAFORM_TFLINT']="tflint"
 LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
@@ -92,7 +86,6 @@ LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
 LINTER_NAMES_ARRAY['TSX']="eslint"
 LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
 LINTER_NAMES_ARRAY['TYPESCRIPT_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['TYPESCRIPT_STANDARD']="ts-standard"
 LINTER_NAMES_ARRAY['VUE_PRETTIER']="prettier"
 LINTER_NAMES_ARRAY['XML']="xmllint"
 LINTER_NAMES_ARRAY['YAML']="yamllint"
@@ -168,8 +161,6 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(${LINTER} --version | grep 'VERSION' | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "ktlint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $3 }')"
-  elif [[ ${LINTER} == "kubeconform" ]]; then
-    GET_VERSION_CMD="$(${LINTER} -v)"
   elif [[ ${LINTER} == "lintr" ]]; then
     # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
     GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \
@@ -187,8 +178,6 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(${LINTER} version | awk '{ print $3 }')"
   elif [[ ${LINTER} == "psalm" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "pyink" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | grep 'pyink' | awk '{ print $2 }')"
   elif [[ ${LINTER} == "pylint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | grep 'pylint' | awk '{ print $2 }')"
   elif [[ ${LINTER} == "lua" ]]; then
@@ -201,8 +190,6 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "R" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | head -n 1 | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "raku" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'Rakudo' | awk '{ print $4 }' | sed 's/\.$//')"
   elif [[ ${LINTER} == "renovate-config-validator" ]]; then
     GET_VERSION_CMD="$(renovate --version 2>/dev/null)"
   elif [[ "${LINTER}" == "ruff" ]]; then
@@ -237,7 +224,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ "${LINTER}" == "yamllint" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   # Some linters don't support a "get version" command
-  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "nbqa" ]] || [[ ${LINTER} == "gherkin-lint" ]]; then
+  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "nbqa" ]]; then
     GET_VERSION_CMD="Version command not supported"
   else
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
