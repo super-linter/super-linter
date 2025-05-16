@@ -1,5 +1,21 @@
 # Changelog
 
+## [8.0.0](https://github.com/super-linter/super-linter/compare/v7.4.0...v8.0.0) (2025-05-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove unmaintained linters and formatters ([#6773](https://github.com/super-linter/super-linter/issues/6773))
+
+### 🚀 Features
+
+* remove unmaintained linters and formatters ([#6773](https://github.com/super-linter/super-linter/issues/6773)) ([4e80084](https://github.com/super-linter/super-linter/commit/4e80084b0c06e7cd178aa879d3a3cde965b73d65)), closes [#6771](https://github.com/super-linter/super-linter/issues/6771)
+
+
+### 🧰 Maintenance
+
+* stop on ps errors when building ([#6784](https://github.com/super-linter/super-linter/issues/6784)) ([0bccbbb](https://github.com/super-linter/super-linter/commit/0bccbbb68f766f4a9f65e002a3f0dd04cb4379a8))
+
 ## [7.4.0](https://github.com/super-linter/super-linter/compare/v7.3.0...v7.4.0) (2025-05-13)
 
 
