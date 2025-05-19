@@ -151,7 +151,9 @@ if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
 fi
 if [ -n "${GITLEAKS_COMMAND_OPTIONS:-}" ]; then
   export GITLEAKS_COMMAND_OPTIONS
-  AddOptionsToCommand "LINTER_COMMANDS_ARRAY_GITLEAKS" "${GITLEAKS_COMMAND_OPTIONS}"
+  if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_GITLEAKS" "${GITLEAKS_COMMAND_OPTIONS}"; then
+    fatal "Error while adding options to GITLEAKS command"
+  fi
 fi
 LINTER_COMMANDS_ARRAY_GITLEAKS+=(--source)
 LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=(commitlint --verbose --cwd "{}")
@@ -175,6 +177,12 @@ LINTER_COMMANDS_ARRAY_GROOVY=(npm-groovy-lint -c "${GROOVY_LINTER_RULES}" --fail
 LINTER_COMMANDS_ARRAY_HTML=(htmlhint --config "${HTML_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_HTML_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_JAVA=(java -jar /usr/bin/checkstyle -c "${JAVA_LINTER_RULES}")
+if [ -n "${JAVA_COMMAND_ARGS:-}" ]; then
+  export JAVA_COMMAND_ARGS
+  if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_JAVA" "${JAVA_COMMAND_ARGS}"; then
+    fatal "Error while adding options to JAVA command"
+  fi
+fi
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_ES=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_JSCPD=(jscpd --config "${JSCPD_LINTER_RULES}")
