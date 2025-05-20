@@ -76,3 +76,15 @@ overrides:
     parserOptions:
       ecmaVersion: latest
       sourceType: module
+
+  # Vue files
+  - files:
+      - "**/*.vue"
+    extends:
+      - "plugin:vue/recommended"
+    parser: vue-eslint-parser
+    parserOptions:
+      sourceType: module
+      ecmaVersion: latest
+      ecmaFeatures:
+        modules: true
