@@ -16,7 +16,8 @@ function GenerateFileDiff() {
   if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
     GIT_DIFF_TERM=""
     debug "Setting GIT_DIFF_TERM to an empty string because there's no commit before the initial commit to diff against."
-  elif [[ -z "${GITHUB_BEFORE_SHA:-""}" ]]; then
+  elif [[ -z "${GITHUB_BEFORE_SHA:-""}" ]] ||
+    [[ "${GITHUB_EVENT_NAME:-""}" == "pull_request" ]]; then
     GIT_DIFF_TERM="${DEFAULT_BRANCH}"
     debug "Setting GIT_DIFF_TERM to the value of DEFAULT_BRANCH because GITHUB_BEFORE_SHA was not initialized: ${GIT_DIFF_TERM}"
   else

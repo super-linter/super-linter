@@ -25,9 +25,14 @@ source "lib/functions/output.sh"
 # shellcheck disable=SC2034
 TEST_DATA_DIRECTORY="test/data/test-repository-contents"
 
-# Use an arbitrary JSON file in case we want trigger some validation
+# Use arbitrary JSON files in case we want trigger some validation
+# shellcheck disable=SC2034
+TEST_DATA_JSON_FILE_BAD="${TEST_DATA_DIRECTORY}/json_bad_1.json"
 # shellcheck disable=SC2034
 TEST_DATA_JSON_FILE_GOOD="${TEST_DATA_DIRECTORY}/json_good_1.json"
+
+# Set an arbitrary pull request name
+PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
 
 # TODO: use TEST_CASE_FOLDER instead of redefining this after we extract the
 # initialization of TEST_CASE_FOLDER from linter.sh
@@ -267,6 +272,7 @@ initialize_git_repository_contents() {
   local GITHUB_EVENT_NAME="${1}" && shift
   local FORCE_MERGE_COMMIT="${1}" && shift
   local SKIP_GITHUB_BEFORE_SHA_INIT="${1}" && shift
+  local COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE="${1}" && shift
 
   local NEW_BRANCH_NAME="branch-1"
 
@@ -311,7 +317,28 @@ initialize_git_repository_contents() {
     debug "Switching to the ${DEFAULT_BRANCH} branch"
     git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
 
-    local PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
+    if [[ "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}" == "true" ]]; then
+      # Commit a bad file in the default branch to ensure that the file diff mechanism
+      # doesn't pick it up
+      debug "Commit a bad file in the default branch (${DEFAULT_BRANCH})"
+      TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test-bad0.json"
+      cp -v "${TEST_DATA_JSON_FILE_BAD}" "${TEST_FILE_PATH}"
+      git -C "${GIT_REPOSITORY_PATH}" add .
+      git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}")"
+
+      debug "Switching to ${NEW_BRANCH_NAME}"
+      git -C "${GIT_REPOSITORY_PATH}" switch "${NEW_BRANCH_NAME}"
+
+      debug "Create a merge commit to merge the ${DEFAULT_BRANCH} branch in the ${NEW_BRANCH_NAME} branch"
+      git -C "${GIT_REPOSITORY_PATH}" merge \
+        -m "chore: merge commit ${GITHUB_EVENT_NAME} bad files" \
+        --no-ff \
+        "${DEFAULT_BRANCH}"
+
+      debug "Switching to the ${DEFAULT_BRANCH} branch"
+      git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+    fi
+
     # shellcheck disable=SC2034
     GITHUB_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "${NEW_BRANCH_NAME}")"
     debug "Create a branch to merge the pull request"

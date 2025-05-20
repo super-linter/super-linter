@@ -19,6 +19,7 @@ GenerateFileDiffTest() {
   local COMMITS_TO_CREATE="${2}"
   local GITHUB_EVENT_NAME="${3}"
   local SKIP_GITHUB_BEFORE_SHA_INIT="${4}"
+  local COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE="${5}"
 
   local TEST_FORCE_CREATE_MERGE_COMMIT
   if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
@@ -27,7 +28,7 @@ GenerateFileDiffTest() {
     TEST_FORCE_CREATE_MERGE_COMMIT="false"
   fi
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}" "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"
@@ -70,39 +71,44 @@ GenerateFileDiffTest() {
 }
 
 GenerateFileDiffOneFilePushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "push" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "push" "false" "false"
 }
 GenerateFileDiffOneFilePushEventTest
 
 GenerateFileDiffTwoFilesPushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "false" "false"
 }
 GenerateFileDiffTwoFilesPushEventTest
 
 GenerateFileDiffInitialCommitPushEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "push" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "push" "false" "false"
 }
 GenerateFileDiffInitialCommitPushEventTest
 
 GenerateFileDiffPushEventNoGitHubBeforeShaTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "true"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "true" "false"
 }
 GenerateFileDiffPushEventNoGitHubBeforeShaTest
 
 GenerateFileDiffOneFilePullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false" "false"
 }
 GenerateFileDiffOneFilePullRequestEventTest
 
 GenerateFileDiffTwoFilesPullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "pull_request" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "pull_request" "false" "false"
 }
 GenerateFileDiffTwoFilesPullRequestEventTest
 
 GenerateFileDiffInitialCommitPullRequestEventTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "pull_request" "false"
+  GenerateFileDiffTest "${FUNCNAME[0]}" 0 "pull_request" "false" "false"
 }
 GenerateFileDiffTwoFilesPullRequestEventTest
+
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchPullRequestEventTest() {
+  GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false" "true"
+}
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchPullRequestEventTest
 
 BuildFileArraysAnsibleGitHubWorkspaceTest() {
   local FUNCTION_NAME
