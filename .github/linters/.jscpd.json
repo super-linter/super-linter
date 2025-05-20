@@ -41,6 +41,8 @@
     "**/test/linters/scalafmt",
     "**/test/linters/typescript_es/**",
     "**/test/linters/typescript_prettier/**",
+    "**/test/linters/vue",
+    "**/test/linters/vue_prettier",
     "**/test/linters-config/**",
     "**/github_conf/**",
     "**/workflows/cd.yml",

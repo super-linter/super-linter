@@ -41,3 +41,10 @@ overrides:
       - "*.tsx"
     extends:
       - plugin:react/recommended
+  - files:
+      - "*.vue"
+    extends:
+      - plugin:vue/recommended
+    parser: vue-eslint-parser
+    rules:
+      vue/html-indent: [error, 2]

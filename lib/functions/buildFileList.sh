@@ -567,6 +567,7 @@ BuildFileArrays() {
         debug "Skip adding ${FILE} to GRAPHQL_PRETTIER file array because Prettier doesn't support following symbolic links"
       fi
     elif [ "${FILE_TYPE}" == "vue" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-VUE"
       if IsNotSymbolicLink "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-VUE_PRETTIER"
       else
