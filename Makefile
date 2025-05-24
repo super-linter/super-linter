@@ -261,7 +261,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e DEFAULT_BRANCH=main \
 		-e IGNORE_GENERATED_FILES=true \
 		-e IGNORE_GITIGNORED_FILES=true \
@@ -278,7 +278,7 @@ lint-codebase: ## Lint the entire codebase
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml" \
 		-e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json" \
 		-e SAVE_SUPER_LINTER_OUTPUT=true \
@@ -295,7 +295,7 @@ fix-codebase: ## Fix and format the entire codebase
 		-e CREATE_LOG_FILE=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e FIX_ENV=true \
 		-e FIX_JAVASCRIPT_ES=true \
 		-e FIX_JAVASCRIPT_PRETTIER=true \
@@ -331,7 +331,7 @@ lint-subset-files-enable-only-one-type: ## Lint a small subset of files in the c
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_MARKDOWN=true \
 		-v "$(CURDIR):/tmp/lint" \
@@ -345,7 +345,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e LOG_LEVEL=DEBUG \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md).*" \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \

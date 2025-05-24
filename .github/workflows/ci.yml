@@ -265,7 +265,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
-          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
+          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*"
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Get the contents of the log file
@@ -279,7 +279,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
-          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md).*"
+          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*"
 
   build-test-suite-matrix:
     name: Build test suite matrix
