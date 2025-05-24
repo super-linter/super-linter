@@ -116,6 +116,9 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   LINTER="${LINTER_NAMES_ARRAY[${LANGUAGE}]}"
   echo "Get version for ${LINTER}"
 
+  # Disable errexit because we want to get the error output
+  set +o errexit
+
   # Some linters need to account for special commands to get their version instead
   # of the default --version option
 
@@ -231,6 +234,9 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   fi
 
   ERROR_CODE=$?
+  # Enable errexit back
+  set -o errexit
+
   if [ ${ERROR_CODE} -ne 0 ]; then
     echo "[ERROR]: Failed to get version info for ${LINTER}. Exit code: ${ERROR_CODE}. Output: ${GET_VERSION_CMD}"
     exit 1
