@@ -82,6 +82,7 @@
 | TSX                        | Pass ✅           |
 | TYPESCRIPT_ES              | Pass ✅           |
 | TYPESCRIPT_PRETTIER        | Pass ✅           |
+| VUE                        | Pass ✅           |
 | VUE_PRETTIER               | Pass ✅           |
 | XML                        | Pass ✅           |
 | YAML                       | Pass ✅           |

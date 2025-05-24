@@ -43,6 +43,7 @@
 | TSX                 | Fail ❌           |
 | TYPESCRIPT_ES       | Pass ✅           |
 | TYPESCRIPT_PRETTIER | Pass ✅           |
+| VUE                 | Pass ✅           |
 | VUE_PRETTIER        | Pass ✅           |
 | YAML_PRETTIER       | Pass ✅           |
 
