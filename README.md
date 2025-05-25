@@ -547,6 +547,7 @@ jobs:
         # - Pull requests
         # - Not on the default branch
         if: >
+          always() &&
           github.event_name == 'pull_request' &&
           github.ref_name != github.event.repository.default_branch
         uses: stefanzweifel/git-auto-commit-action@v5
