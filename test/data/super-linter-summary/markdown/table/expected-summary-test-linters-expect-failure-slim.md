@@ -82,6 +82,7 @@
 | TSX                        | Fail ❌           |
 | TYPESCRIPT_ES              | Fail ❌           |
 | TYPESCRIPT_PRETTIER        | Fail ❌           |
+| VUE                        | Fail ❌           |
 | VUE_PRETTIER               | Fail ❌           |
 | XML                        | Fail ❌           |
 | YAML                       | Fail ❌           |
