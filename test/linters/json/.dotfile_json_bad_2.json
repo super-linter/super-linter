@@ -1,14 +1,13 @@
 {
   "arrow_spacing": {
-    "level": [
-      "ignore"
-    ]
+    "level": ["ignore"]
   },
   "foo": "bar",
   "foo": "baz",
   "braces_spacing": {
-    "level": 'ignore',
+    "level": "ignore",
     "spaces": 0,
     "empty_object_spaces": 0
-  }
+  },
+  "BAD": ["c", "b", "a"]
 }
