@@ -31,14 +31,16 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0.203-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.8 AS php-composer
 
-FROM python:3.13.3-alpine3.21 AS clang-format
+FROM python:3.13.5-alpine3.22 as python-base
+
+FROM python-base AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang19 \
+  clang20 \
   cmake \
   git \
-  llvm19-dev \
+  llvm20-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
@@ -58,7 +60,7 @@ RUN cmake \
   && ninja clang-format \
   && mv /tmp/llvm-project/llvm/build/bin/clang-format /usr/bin
 
-FROM python:3.13.3-alpine3.21 AS python-builder
+FROM python-base AS python-builder
 
 RUN apk add --no-cache \
   bash \
@@ -72,7 +74,7 @@ COPY scripts/build-venvs.sh /stage/
 WORKDIR /stage
 RUN ./build-venvs.sh && rm -rfv /stage
 
-FROM python:3.13.3-alpine3.21 AS npm-builder
+FROM python-base AS npm-builder
 
 RUN apk add --no-cache \
   bash \
@@ -103,7 +105,7 @@ COPY TEMPLATES/.tflint.hcl /action/lib/.automation/
 # Initialize TFLint plugins so we get plugin versions listed when we ask for TFLint version
 RUN --mount=type=secret,id=GITHUB_TOKEN GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN) tflint --init -c /action/lib/.automation/.tflint.hcl
 
-FROM python:3.13.3-alpine3.21 AS lintr-installer
+FROM python-base AS lintr-installer
 
 RUN apk add --no-cache \
   bash \
@@ -127,7 +129,7 @@ COPY dependencies/composer/composer.json dependencies/composer/composer.lock /ap
 RUN composer update \
   && composer audit
 
-FROM python:3.13.3-alpine3.21 AS ruby-installer
+FROM python-base AS ruby-installer
 
 RUN apk add --no-cache --virtual .ruby-build-deps \
   gcc \
@@ -144,7 +146,7 @@ ENV GEM_HOME="/usr/local/bundle"
 RUN bundle install --retry 3 \
   && apk del --no-cache --no-network --purge .ruby-build-deps
 
-FROM python:3.13.3-alpine3.21 AS base_image
+FROM python-base AS base_image
 
 LABEL com.github.actions.name="Super-Linter" \
   com.github.actions.description="Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code." \
