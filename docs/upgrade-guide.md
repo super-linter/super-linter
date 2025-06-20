@@ -41,6 +41,16 @@ You can remove the following variables from your Super-linter configuration:
 - `VALIDATE_TEKTON`
 - `VALIDATE_TYPESCRIPT_STANDARD`
 
+### Removed unmaintained Node packages
+
+Super-linter `v8.0.0` doesn't include the following Node packages anymore
+because they are unmaintained:
+
+- eslint-config-airbnb
+- postcss-less
+- prettyjson
+- pug
+
 ## Upgrade from v7.3.0 to v7.4.0
 
 This section helps you upgrade from super-linter `v7.3.0` to `v7.4.0`.
