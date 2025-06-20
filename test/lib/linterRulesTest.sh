@@ -37,7 +37,7 @@ function GetLinterRulesTest() {
   DEFAULT_RULES_LOCATION="${DEFAULT_RULES_LOCATION:-"TEMPLATES"}"
   # Use an existing configuration file. Can be anything inside
   # DEFAULT_RULES_LOCATION
-  TEST_LANGUAGE_FILE_NAME="${TEST_LANGUAGE_FILE_NAME:-".eslintrc.yml"}"
+  TEST_LANGUAGE_FILE_NAME="${TEST_LANGUAGE_FILE_NAME:-"eslint.config.mjs"}"
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     debug "Loading rules for ${LANGUAGE}..."
     GetLinterRules "${LANGUAGE}" "${DEFAULT_RULES_LOCATION}"
@@ -106,7 +106,7 @@ function LinterRulesVariablesExportTest() {
   info "${FUNCTION_NAME} start"
 
   DEFAULT_RULES_LOCATION="TEMPLATES"
-  TEST_LANGUAGE_FILE_NAME=".eslintrc.yml"
+  TEST_LANGUAGE_FILE_NAME="eslint.config.mjs"
 
   # shellcheck source=/dev/null
   source "lib/globals/linterRules.sh"
