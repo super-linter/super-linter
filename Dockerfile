@@ -31,14 +31,14 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0.203-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.8 AS php-composer
 
-FROM python:3.13.3-alpine3.21 AS clang-format
+FROM python:3.13.3-alpine3.22 AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang19 \
+  clang20 \
   cmake \
   git \
-  llvm19-dev \
+  llvm20-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
