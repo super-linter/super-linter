@@ -22,7 +22,7 @@
     "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-vue": "^9.28.0",
-    "htmlhint": "^1.1.4",
+    "htmlhint": "^1.6.3",
     "jscpd": "^4.0.5",
     "markdownlint-cli": "^0.44.0",
     "next": "^15.3.2",
