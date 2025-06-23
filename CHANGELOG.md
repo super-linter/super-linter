@@ -1,5 +1,37 @@
 # Changelog
 
+## [8.0.0](https://github.com/super-linter/super-linter/compare/v7.4.0...v8.0.0) (2025-06-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove unmaintained node packages ([#6848](https://github.com/super-linter/super-linter/issues/6848))
+* remove unmaintained linters and formatters ([#6773](https://github.com/super-linter/super-linter/issues/6773))
+
+### 🚀 Features
+
+* add vue files linting support ([#6800](https://github.com/super-linter/super-linter/issues/6800)) ([597b195](https://github.com/super-linter/super-linter/commit/597b1952cdc4e9e89fe3093e782a8596935a22a2))
+* remove unmaintained linters and formatters ([#6773](https://github.com/super-linter/super-linter/issues/6773)) ([4e80084](https://github.com/super-linter/super-linter/commit/4e80084b0c06e7cd178aa879d3a3cde965b73d65)), closes [#6771](https://github.com/super-linter/super-linter/issues/6771)
+* support passing arguments to java ([#6785](https://github.com/super-linter/super-linter/issues/6785)) ([4099648](https://github.com/super-linter/super-linter/commit/4099648f56a29ed2b889b6b0765c198d83c9b508)), closes [#6281](https://github.com/super-linter/super-linter/issues/6281)
+
+
+### 🐛 Bugfixes
+
+* exclude files matching default branch ones ([#6801](https://github.com/super-linter/super-linter/issues/6801)) ([26efde1](https://github.com/super-linter/super-linter/commit/26efde18b393f7820fcd1a618f21ae205362a687)), closes [#6798](https://github.com/super-linter/super-linter/issues/6798)
+
+
+### ⬆️ Dependency updates
+
+* **npm:** bump renovate from 40.11.8 to 40.28.0 in /dependencies ([#6807](https://github.com/super-linter/super-linter/issues/6807)) ([66b6cb3](https://github.com/super-linter/super-linter/commit/66b6cb3802422e5c67588a7983dae41b518cf91c))
+
+
+### 🧰 Maintenance
+
+* **dev-npm:** bump the npm_and_yarn group across 1 directory with 1 update ([#6839](https://github.com/super-linter/super-linter/issues/6839)) ([13b8675](https://github.com/super-linter/super-linter/commit/13b8675a3e5e0f13d4d9ce58724dbe0a14d4aada))
+* disable errexit when getting versions ([#6804](https://github.com/super-linter/super-linter/issues/6804)) ([3dc381d](https://github.com/super-linter/super-linter/commit/3dc381d77994c139728128c069b7176f8e12fd28))
+* remove unmaintained node packages ([#6848](https://github.com/super-linter/super-linter/issues/6848)) ([ef18228](https://github.com/super-linter/super-linter/commit/ef1822821fe0a4e22d01576195a6d997cb94897e))
+* stop on ps errors when building ([#6784](https://github.com/super-linter/super-linter/issues/6784)) ([0bccbbb](https://github.com/super-linter/super-linter/commit/0bccbbb68f766f4a9f65e002a3f0dd04cb4379a8))
+
 ## [7.4.0](https://github.com/super-linter/super-linter/compare/v7.3.0...v7.4.0) (2025-05-13)
 
 
