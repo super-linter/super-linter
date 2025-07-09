@@ -41,15 +41,33 @@ You can remove the following variables from your Super-linter configuration:
 - `VALIDATE_TEKTON`
 - `VALIDATE_TYPESCRIPT_STANDARD`
 
-### Removed unmaintained Node packages
+### Removed ESLint plugins and configurations
 
-Super-linter `v8.0.0` doesn't include the following Node packages anymore
-because they are unmaintained:
+Super-linter `v8.0.0` doesn't include the following ESLint configurations and
+plugins anymore because they are blocking the upgrade to ESLint v9:
 
-- eslint-config-airbnb
-- postcss-less
-- prettyjson
-- pug
+- `eslint-config-airbnb`: latest release dates back to 2021, and it's blocking
+  the upgrade to ESLint v9.
+- `@react-native/eslint-config`: it's blocking the upgrade to ESLint v9.
+
+### Removed unmaintained dependencies
+
+Super-linter `v8.0.0` doesn't include the following node dependencies anymore
+because they unmaintained:
+
+- `postcss-less`
+- `prettyjson`
+- `pug`
+
+### Update ESLint default configuration and filenames
+
+Updated the default ESLint configuration file to the
+[supported configuration format](https://eslint.org/docs/latest/use/configure/configuration-files).
+
+Changed the default values for ESLint configuration filenames:
+
+- `JAVASCRIPT_ES_CONFIG_FILE` is now set to `eslint.config.mjs`
+- `TYPESCRIPT_ES_CONFIG_FILE` is now set to `eslint.config.mjs`
 
 ## Upgrade from v7.3.0 to v7.4.0
 

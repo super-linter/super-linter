@@ -252,6 +252,7 @@ run_test_case_fix_mode() {
   local FIX_MODE_LINTERS_CONFIG_DIR="${GIT_REPOSITORY_PATH}/.github/linters"
   mkdir -p "${FIX_MODE_LINTERS_CONFIG_DIR}"
   cp -rv "test/linters-config/fix-mode/." "${FIX_MODE_LINTERS_CONFIG_DIR}/"
+  cp -rv ".github/linters/eslint.config.mjs" "${FIX_MODE_LINTERS_CONFIG_DIR}/"
   cp -rv ".editorconfig" "${GIT_REPOSITORY_PATH}/"
   git -C "${GIT_REPOSITORY_PATH}" add .
   git -C "${GIT_REPOSITORY_PATH}" commit --no-verify -m "feat: add fix mode test cases"
