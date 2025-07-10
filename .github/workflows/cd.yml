@@ -89,9 +89,9 @@ jobs:
     name: Build and Test
     needs:
       - build-stages
-    runs-on: ubuntu-latest
+    runs-on: ${{ contains(matrix.images.platform, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     concurrency:
-      group: ${{ github.workflow }}-main-${{ matrix.images.target }}
+      group: ${{ github.workflow }}-main-${{ matrix.images.target }}-${{ matrix.images.platform }}
       cancel-in-progress: true
     permissions:
       contents: read
@@ -103,8 +103,16 @@ jobs:
         images:
           - prefix: slim-
             target: slim
+            platform: linux/amd64
           - prefix: ""
             target: standard
+            platform: linux/amd64
+          - prefix: slim-
+            target: slim
+            platform: linux/arm64/v8
+          - prefix: ""
+            target: standard
+            platform: linux/arm64/v8
     timeout-minutes: 120
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
@@ -187,6 +195,7 @@ jobs:
             type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-ruby-installer
           load: true
           push: false
+          platforms: ${{ matrix.images.platform }}
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
@@ -228,6 +237,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
           push: true
+          platforms: ${{ matrix.images.platform }}
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
