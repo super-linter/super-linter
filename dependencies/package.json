@@ -26,7 +26,7 @@
     "markdownlint-cli": "^0.45.0",
     "next": "^15.3.5",
     "npm-groovy-lint": "^15.2.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-intl": "^7.1.6",
