@@ -5,7 +5,7 @@ repositories {
 
 // Hold this dependency here so we can get automated updates using DependaBot
 dependencies {
-  implementation 'com.google.googlejavaformat:google-java-format:1.27.0'
+  implementation 'com.google.googlejavaformat:google-java-format:1.28.0'
 }
 
 group 'com.github.super-linter'
