@@ -95,6 +95,13 @@ AddOptionsToCommand() {
 
 # These commands are reused across several languages
 PRETTIER_COMMAND=(prettier)
+if [ -n "${PRETTIER_COMMAND_OPTIONS:-}" ]; then
+  export PRETTIER_COMMAND_OPTIONS
+  if ! AddOptionsToCommand "PRETTIER_COMMAND" "${PRETTIER_COMMAND_OPTIONS}"; then
+    fatal "Error while adding options to Prettier command"
+  fi
+fi
+
 DOTNET_FORMAT_COMMAND=(dotnet format)
 
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
