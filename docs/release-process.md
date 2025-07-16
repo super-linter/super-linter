@@ -23,7 +23,6 @@ This command also runs as part of the [CI process](../.github/workflows/ci.yml).
 Every push to the default branch triggers GitHub Actions workflows that:
 
 - Build and deploy of super-linter container images:
-
   - `super-linter/super-linter:latest`
   - `super-linter/super-linter:slim-latest`
 
