@@ -190,7 +190,6 @@ Super-Linter provides several variants:
   linters.
 - `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported
   linters except:
-
   - Rustfmt
   - Rust Clippy
   - Azure Resource Manager Template Toolkit (arm-ttk)
@@ -469,7 +468,6 @@ Super-linter supports the following locations to deliver fixes:
 
 - In the current Super-linter workspace, so you can process the changes to your
   files by yourself. For example:
-
   - If you're running Super-linter in your CI environment, such as GitHub
     Actions, you can commit and push changes as part of your workflow.
   - If you're running Super-linter locally, you can commit the changes as you

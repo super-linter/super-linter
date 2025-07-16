@@ -112,10 +112,8 @@ This section helps you upgrade from super-linter `v6.7.0` to `v6.8.0`.
   complicating the codebase to address all possible cases. If you only want to
   run only one between Prettier and Standard, a possible migration strategy
   could be:
-
   - If you're explicitly enabling linters and formatters that you want
     Super-linter to run by setting `VALIDATE_xxxx` variables to `true`:
-
     - If you set `JAVASCRIPT_DEFAULT_STYLE=standard`, set
       `VALIDATE_JAVASCRIPT_STANDARD=true`
     - If you set `TYPESCRIPT_DEFAULT_STYLE=standard`, set
@@ -127,7 +125,6 @@ This section helps you upgrade from super-linter `v6.7.0` to `v6.8.0`.
 
   - If you're explicitly disabling linters and formatters that you don't want
     Super-linter to run by setting `VALIDATE_xxxx` variables to `false`:
-
     - If you set `JAVASCRIPT_DEFAULT_STYLE=standard`, set
       `VALIDATE_JAVASCRIPT_PRETTIER=false`
     - If you set `TYPESCRIPT_DEFAULT_STYLE=standard`, set

@@ -33,9 +33,7 @@ new tool needs in the `PATH`, and the expected version command:
 ## Install the tool
 
 - Install the tool by pointing to specific package or container image versions:
-
   - If there are PyPi packages:
-
     1. Create a text file named `dependencies/python/<name-of-tool>.txt` and
        list the packages there.
     1. Add the new virtual environment `bin` directory to the `PATH` in the
@@ -54,7 +52,6 @@ new tool needs in the `PATH`, and the expected version command:
   - If there are Ruby Gems, update `dependencies/Gemfile` and
     `dependencies/Gemfile.lock`
   - If there are Maven or Java packages:
-
     1. Create a directory named `dependencies/<name-of-tool>`.
     2. Create a `dependencies/<name-of-tool>/build.gradle` file with the
        following contents:
@@ -100,7 +97,6 @@ new tool needs in the `PATH`, and the expected version command:
        ecosystem.
 
   - If there is a container (Docker) image:
-
     1. Add a new build stage to get the image:
 
        ```dockerfile
@@ -120,7 +116,6 @@ new tool needs in the `PATH`, and the expected version command:
 ## Run the new tool
 
 - Update the orchestration scripts to run the new tool:
-
   - `lib/globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use
     the "name" of the language, then a `_`, and finally the name of the tool. To
     allow for future additions, use a language name and a tool name for the new
@@ -128,11 +123,9 @@ new tool needs in the `PATH`, and the expected version command:
     repetitions we reference this new item as `<LANGUAGE_NAME>`.
 
   - Define the command to invoke the new tool:
-
     - `lib/functions/linterCommands.sh`: add the command to invoke the tool.
       Define a new variable: `LINTER_COMMANDS_ARRAY_<LANGUAGE_NAME>`. Example:
       `LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners)`
-
       - If there are arguments that you can only pass using the command line,
         and you think users might want to customize them, define a new variable
         using `<LANGUAGE_NAME>_COMMAND_ARGS` and add it to the command if the
@@ -149,7 +142,6 @@ new tool needs in the `PATH`, and the expected version command:
     - `lib/globals/linterCommandsOptions.sh`: add "check only mode" and "fix
       linting and formatting issues mode" options if the tool supports it.
       Super-linter will automatically add them to the command to run the tool.
-
       - If the tool runs in "fix linting and formatting issues mode" by default,
         define a new variable with the options to add to the tool command to
         enable "check only mode":
