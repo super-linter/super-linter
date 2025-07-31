@@ -21,7 +21,7 @@ export CXXFLAGS="-Wno-error=incompatible-pointer-types"
 mkdir -p /venvs
 
 #######################################################
-# Iterate through requirments.txt to install binaries #
+# Iterate through requirements.txt to install binaries #
 #######################################################
 for DEP_FILE in *.txt; do
   # split the package name from its version
