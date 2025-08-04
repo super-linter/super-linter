@@ -581,7 +581,7 @@ UpdateLoopsForImage() {
   fi
 }
 
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2329 # Shellcheck doesn't correctly detect usage in trap
 cleanup() {
   local -ri EXIT_CODE=$?
   debug "Captured exit code: ${EXIT_CODE}"
