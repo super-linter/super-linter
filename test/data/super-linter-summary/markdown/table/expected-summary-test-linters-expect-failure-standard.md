@@ -89,6 +89,7 @@
 | TERRAFORM_TFLINT             | Fail ❌           |
 | TERRAFORM_TERRASCAN          | Fail ❌           |
 | TERRAGRUNT                   | Fail ❌           |
+| TRIVY                        | Fail ❌           |
 | TSX                          | Fail ❌           |
 | TYPESCRIPT_ES                | Fail ❌           |
 | TYPESCRIPT_PRETTIER          | Fail ❌           |

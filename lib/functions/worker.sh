@@ -140,7 +140,8 @@ function LintCodebase() {
     [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
     LINTER_WORKING_DIRECTORY="{//}"
   elif [[ ${FILE_TYPE} == "ANSIBLE" ]] ||
-    [[ ${FILE_TYPE} == "GO_MODULES" ]]; then
+    [[ ${FILE_TYPE} == "GO_MODULES" ]] ||
+    [[ ${FILE_TYPE} == "TRIVY" ]]; then
     LINTER_WORKING_DIRECTORY="{}"
   fi
 

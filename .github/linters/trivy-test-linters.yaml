@@ -1,0 +1,14 @@
+---
+debug: true
+disable-telemetry: true
+exit-code: 1
+exit-on-eol: 2
+ignorefile: /tmp/lint/.github/linters/.trivyignore.yaml
+scan:
+  scanners:
+    - vuln
+    - misconfig
+    - secret
+  skip-files:
+    - "**/.github-personal-access-token"
+    - super-linter.log

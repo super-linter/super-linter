@@ -123,6 +123,14 @@ function BuildFileList() {
     debug "DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY: ${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}"
     RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/bad")
     RAW_FILE_ARRAY+=("${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with Trivy."
+    DEFAULT_TRIVY_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/trivy"
+    # We need this for parallel
+    export DEFAULT_TRIVY_TEST_CASE_DIRECTORY
+    debug "DEFAULT_TRIVY_TEST_CASE_DIRECTORY: ${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}/good")
   fi
 
   debug "Add GITHUB_WORKSPACE (${GITHUB_WORKSPACE}) to the list of files to lint because we might need it for linters that lint the whole workspace"
@@ -251,6 +259,9 @@ BuildFileArrays() {
 
         debug "Add ${FILE} to the list of items to lint with Commitlint"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+
+        debug "Add ${FILE} to the list of items to lint with Trivy"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
       fi
 
       # Handle the corner case where FILE=${GITHUB_WORKSPACE}, and the user set
@@ -323,6 +334,12 @@ BuildFileArrays() {
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
       debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+    fi
+
+    # Handle Trivy test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for Trivy. Adding it to the list of items to lint with Trivy"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
     fi
 
     # See https://docs.renovatebot.com/configuration-options/
