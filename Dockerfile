@@ -30,6 +30,7 @@ FROM dart:3.8.2-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.303-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.10 AS php-composer
+FROM ghcr.io/aquasecurity/trivy:0.65.0 AS trivy
 
 FROM python:3.13.5-alpine3.22 AS python-base
 
@@ -328,6 +329,12 @@ COPY --from=terrascan /go/bin/terrascan /usr/bin/
 # Install Terragrunt #
 ######################
 COPY --from=terragrunt /usr/local/bin/terragrunt /usr/bin/
+
+#################
+# Install Trivy #
+#################
+COPY --from=trivy /usr/local/bin/trivy /usr/bin/
+COPY --from=trivy /contrib /contrib
 
 ######################
 # Install protolint #
