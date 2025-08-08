@@ -83,6 +83,7 @@ LINTER_NAMES_ARRAY['TERRAFORM_FMT']="terraform"
 LINTER_NAMES_ARRAY['TERRAFORM_TFLINT']="tflint"
 LINTER_NAMES_ARRAY['TERRAFORM_TERRASCAN']="terrascan"
 LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
+LINTER_NAMES_ARRAY['TRIVY']="trivy"
 LINTER_NAMES_ARRAY['TSX']="eslint"
 LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
 LINTER_NAMES_ARRAY['TYPESCRIPT_PRETTIER']="prettier"
@@ -223,6 +224,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
       unset TFLINT_LOG
       "${LINTER}" --version | grep 'version' | awk '{ print $3 }'
     )"
+  elif [[ ${LINTER} == "trivy" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $2 }')"
   elif [[ ${LINTER} == "xmllint" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'xmllint' | awk '{ print $5 }')"
   elif [[ "${LINTER}" == "yamllint" ]]; then
