@@ -32,7 +32,7 @@ FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.10 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.65.0 AS trivy
 
-FROM python:3.13.5-alpine3.22 AS python-base
+FROM python:3.13.6-alpine3.22 AS python-base
 
 FROM python-base AS clang-format
 
