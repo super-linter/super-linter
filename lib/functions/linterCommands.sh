@@ -183,13 +183,21 @@ LINTER_COMMANDS_ARRAY_GRAPHQL_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_GROOVY=(npm-groovy-lint -c "${GROOVY_LINTER_RULES}" --failon "${GROOVY_FAILON_LEVEL}" --loglevel "${GROOVY_LOG_LEVEL}" --no-insight)
 LINTER_COMMANDS_ARRAY_HTML=(htmlhint --config "${HTML_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_HTML_PRETTIER=("${PRETTIER_COMMAND[@]}")
-LINTER_COMMANDS_ARRAY_JAVA=(java -jar /usr/bin/checkstyle -c "${JAVA_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_JAVA=(java)
+if [ -n "${JAVA_JVM_COMMAND_ARGS:-}" ]; then
+  export JAVA_JVM_COMMAND_ARGS
+  if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_JAVA" "${JAVA_JVM_COMMAND_ARGS}"; then
+    fatal "Error while adding JVM options to JAVA command"
+  fi
+fi
+LINTER_COMMANDS_ARRAY_JAVA+=(-jar /usr/bin/checkstyle -c "${JAVA_LINTER_RULES}")
 if [ -n "${JAVA_COMMAND_ARGS:-}" ]; then
   export JAVA_COMMAND_ARGS
   if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_JAVA" "${JAVA_COMMAND_ARGS}"; then
     fatal "Error while adding options to JAVA command"
   fi
 fi
+
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_ES=(eslint -c "${JAVASCRIPT_ES_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_JAVASCRIPT_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_JSCPD=(jscpd --config "${JSCPD_LINTER_RULES}")
