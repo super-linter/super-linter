@@ -1,0 +1,8 @@
+misconfigurations:
+  - id: AVD-DS-0002
+    paths:
+      - "Dockerfile"
+  - id: AVD-DS-0026
+    paths:
+      - "Dockerfile"
+      - "dev-dependencies/Dockerfile"
