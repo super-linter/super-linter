@@ -18,6 +18,8 @@ source /action/lib/functions/buildFileList.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/detectFiles.sh # Source the function script(s)
 # shellcheck source=/dev/null
+source /action/lib/functions/runtimeDependencies.sh
+# shellcheck source=/dev/null
 source /action/lib/functions/linterRules.sh # Source the function script(s)
 # shellcheck source=/dev/null
 source /action/lib/functions/updateSSL.sh # Source the function script(s)
@@ -209,6 +211,10 @@ source /action/lib/globals/linterRules.sh
 # Load languages array
 # shellcheck source=/dev/null
 source /action/lib/globals/languages.sh
+
+# Load runtime depenendencies variables
+# shellcheck source=/dev/null
+source /action/lib/globals/runtimeDependencies.sh
 
 Header() {
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
@@ -811,6 +817,7 @@ fi
 #####################################
 # Run additional Installs as needed #
 #####################################
+InstallOsPackages
 RunAdditionalInstalls
 
 endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"

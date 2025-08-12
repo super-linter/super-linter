@@ -31,6 +31,9 @@ TEST_DATA_JSON_FILE_BAD="${TEST_DATA_DIRECTORY}/json_bad_1.json"
 # shellcheck disable=SC2034
 TEST_DATA_JSON_FILE_GOOD="${TEST_DATA_DIRECTORY}/json_good_1.json"
 
+# shellcheck disable=SC2034
+TEST_OS_PACKAGES_TO_INSTALL_FILE_PATH="test/data/install-dependencies/os-packages.json"
+
 # Set an arbitrary pull request name
 PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
 
