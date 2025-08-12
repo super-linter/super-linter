@@ -414,6 +414,8 @@ CommandOptionsTest() {
   # shellcheck disable=SC2034
   local JAVA_COMMAND_ARGS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
+  local JAVA_JVM_COMMAND_ARGS="${ARGS_TO_ADD}"
+  # shellcheck disable=SC2034
   local PERL_PERLCRITIC_OPTIONS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
   local PRETTIER_COMMAND_OPTIONS="${ARGS_TO_ADD}"
@@ -441,8 +443,11 @@ CommandOptionsTest() {
     fatal "${FUNCTION_NAME} test failed"
   fi
 
+  # Test both the options to add to the JVM and the options to add to the command
   # shellcheck disable=SC2034
-  local EXPECTED_LINTER_COMMANDS_ARRAY_JAVA=("${BASE_LINTER_COMMANDS_ARRAY_JAVA[@]}")
+  local EXPECTED_LINTER_COMMANDS_ARRAY_JAVA=("${BASE_LINTER_COMMANDS_ARRAY_JAVA[0]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_JAVA" "${JAVA_JVM_COMMAND_ARGS}"
+  EXPECTED_LINTER_COMMANDS_ARRAY_JAVA+=("${BASE_LINTER_COMMANDS_ARRAY_JAVA[@]:1}")
   AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_JAVA" "${JAVA_COMMAND_ARGS}"
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JAVA" "EXPECTED_LINTER_COMMANDS_ARRAY_JAVA"; then
     fatal "${FUNCTION_NAME} test failed"
