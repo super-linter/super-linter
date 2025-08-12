@@ -303,6 +303,7 @@ You can configure Super-linter using the following environment variables:
 | **MARKDOWN_CUSTOM_RULE_GLOBS**                  | not set                                                                      | Comma-separated list of [file globs](https://github.com/igorshubovych/markdownlint-cli#globbing) matching [custom Markdownlint rule files](https://github.com/DavidAnson/markdownlint/blob/main/doc/CustomRules.md).                                                                                                                                                        |
 | **MULTI_STATUS**                                | `true`                                                                       | A status API is made for each language that is linted to make visual parsing easier.                                                                                                                                                                                                                                                                                        |
 | **NATURAL_LANGUAGE_CONFIG_FILE**                | `.textlintrc`                                                                | Filename for [textlint configuration](https://textlint.github.io/docs/getting-started.html#configuration) (ex: `.textlintrc`)                                                                                                                                                                                                                                               |
+| **OS_PACKAGES_CONFIG_FILE_NAME**                | `os-packages.json`                                                           | Name of the file that holds the list of operating system (OS) packages to install, in JSON format. Relative to `LINTER_RULES_PATH`. For more information, see [Install additional dependencies](#install-additional-dependencies).                                                                                                                                          |
 | **PERL_PERLCRITIC_OPTIONS**                     | `null`                                                                       | Additional arguments to pass to the command-line when running **perlcritic** (Example: --theme community)                                                                                                                                                                                                                                                                   |
 | **POWERSHELL_CONFIG_FILE**                      | `.powershell-psscriptanalyzer.psd1`                                          | Filename for [PSScriptAnalyzer configuration](https://learn.microsoft.com/en-gb/powershell/utility-modules/psscriptanalyzer/using-scriptanalyzer)                                                                                                                                                                                                                           |
 | **PHP_CONFIG_FILE**                             | `php.ini`                                                                    | Filename for [PHP Configuration](https://www.php.net/manual/en/configuration.file.php) (ex: `php.ini`)                                                                                                                                                                                                                                                                      |
@@ -777,6 +778,13 @@ super-linter.log
 # GitHub Actions leftovers
 github_conf
 ```
+
+## Install additional dependencies
+
+Super-linter supports installing dependencies at runtime, on each Super-linter
+run. For more information about installing additional dependencies when running
+Super-linter, see
+[Install additional dependencies](docs/install-additional-dependencies.md).
 
 ## How to contribute
 
