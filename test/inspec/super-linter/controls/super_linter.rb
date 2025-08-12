@@ -77,6 +77,7 @@ control "super-linter-installed-packages" do
     "php84-xmlwriter",
     "R",
     "ruby",
+    "ruby-bundler",
     "rust-clippy",
     "rustfmt",
   ]
@@ -117,7 +118,6 @@ control "super-linter-uninstalled-packages" do
     "R-dev",
     "R-doc",
     "readline-dev",
-    "ruby-bundler",
     "ruby-dev",
     "ruby-rdoc",
     "tar",
