@@ -34,10 +34,10 @@ GEM
       racc
     prism (1.4.0)
     racc (1.8.1)
-    rack (3.1.16)
+    rack (3.2.0)
     rainbow (3.1.1)
-    regexp_parser (2.11.0)
-    rubocop (1.79.1)
+    regexp_parser (2.11.1)
+    rubocop (1.79.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -69,7 +69,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
-    rubocop-rails (2.32.0)
+    rubocop-rails (2.33.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -99,13 +99,13 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  rubocop (~> 1.79.1)
+  rubocop (~> 1.79.2)
   rubocop-capybara (~> 2.22)
   rubocop-factory_bot (~> 2.27)
   rubocop-github (~> 0.26.0)
   rubocop-minitest (~> 0.38.1)
   rubocop-performance (~> 1.25.0)
-  rubocop-rails (~> 2.32)
+  rubocop-rails (~> 2.33)
   rubocop-rake (~> 0.7.1)
   rubocop-rspec (~> 3.6.0)
   rubocop-rspec_rails (~> 2.31)
