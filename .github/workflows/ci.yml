@@ -26,7 +26,7 @@ jobs:
       CONTAINER_IMAGE_BUILD_VERSION: ${{ steps.set-container-image-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -101,7 +101,7 @@ jobs:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -155,7 +155,7 @@ jobs:
       STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -235,12 +235,12 @@ jobs:
       CONTAINER_IMAGE_OUTPUT_IMAGE_NAME: "super-linter-${{ matrix.images.prefix }}latest"
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/download-artifact@v4.3.0
+        uses: actions/download-artifact@v5.0.0
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp
@@ -290,7 +290,7 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.test-cases }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Generate test cases matrix
@@ -335,12 +335,12 @@ jobs:
       BUILD_VERSION: ${{ needs.set-build-metadata.outputs.CONTAINER_IMAGE_BUILD_VERSION }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/download-artifact@v4.3.0
+        uses: actions/download-artifact@v5.0.0
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp
@@ -383,7 +383,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
