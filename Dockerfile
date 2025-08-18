@@ -11,9 +11,9 @@ FROM tenable/terrascan:1.19.9 AS terrascan
 FROM alpine/terragrunt:1.12.2 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.58.1 AS tflint
-FROM alpine/helm:3.18.4 AS helm
-FROM golang:1.24.6-alpine AS golang
-FROM golangci/golangci-lint:v2.3.1 AS golangci-lint
+FROM alpine/helm:3.18.5 AS helm
+FROM golang:1.25.0-alpine AS golang
+FROM golangci/golangci-lint:v2.4.0 AS golangci-lint
 FROM goreleaser/goreleaser:v2.11.2 AS goreleaser
 FROM hadolint/hadolint:v2.12.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.7.1 AS kustomize
@@ -26,7 +26,7 @@ FROM scalameta/scalafmt:v3.9.9 AS scalafmt
 FROM zricethezav/gitleaks:v8.28.0 AS gitleaks
 FROM yoheimuta/protolint:0.55.6 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2025.07.28-alpine AS clj-kondo
-FROM dart:3.8.3-sdk AS dart
+FROM dart:3.9.0-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.304-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.10 AS php-composer
@@ -386,10 +386,12 @@ COPY --from=dart --chmod=0755 \
   "${DART_SDK}/version" \
   "${DART_SDK}"/
 COPY --from=dart --chmod=0755 \
-  "${DART_SDK}/bin/dart" \
   "${DART_SDK}/bin/dart.sym" \
+  "${DART_SDK}/bin/dart" \
+  "${DART_SDK}/bin/dartaotruntime" \
   "${DART_SDK}/bin"/
 COPY --from=dart --chmod=0755 \
+  "${DART_SDK}/bin/snapshots/analysis_server_aot.dart.snapshot" \
   "${DART_SDK}/bin/snapshots/analysis_server.dart.snapshot" \
   "${DART_SDK}/bin/snapshots/dartdev.dart.snapshot" \
   "${DART_SDK}/bin/snapshots/frontend_server_aot.dart.snapshot" \
