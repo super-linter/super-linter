@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -115,6 +117,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set build metadata
         run: |
@@ -276,7 +279,7 @@ jobs:
         if: steps.release.outputs.release_created
         # shellcheck disable=SC2062
         run: |
-          RELEASE_VERSION="${{ steps.release.outputs.tag_name }}"
+          RELEASE_VERSION="${STEPS_RELEASE_OUTPUTS_TAG_NAME}"
 
           if [ -z "${RELEASE_VERSION}" ]; then
             echo "Error RELEASE_VERSION is empty. Exiting..."
@@ -288,12 +291,15 @@ jobs:
             exit 2
           fi
 
-          SEMVER_MAJOR_VERSION=v${{ steps.release.outputs.major }}
+          SEMVER_MAJOR_VERSION=v${STEPS_RELEASE_OUTPUTS_MAJOR}
 
           {
             echo "RELEASE_VERSION=${RELEASE_VERSION}"
             echo "SEMVER_MAJOR_VERSION=${SEMVER_MAJOR_VERSION}"
           } >> "${GITHUB_ENV}"
+        env:
+          STEPS_RELEASE_OUTPUTS_TAG_NAME: ${{ steps.release.outputs.tag_name }}
+          STEPS_RELEASE_OUTPUTS_MAJOR: ${{ steps.release.outputs.major }}
 
       - name: Login to GHCR
         if: steps.release.outputs.release_created
@@ -326,6 +332,8 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          # Persist credentials because we update Git tags
+          persist-credentials: true
 
       # No need to tag major.minor.patch because that tag is automatically created when creating the release
       - name: Tag major, minor, and latest versions
@@ -334,10 +342,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
 
-          git tag --annotate --force ${{ env.SEMVER_MAJOR_VERSION }} -m "Release ${{ env.SEMVER_MAJOR_VERSION }}"
-          git tag --annotate --force latest -m "Release latest (${{ env.RELEASE_VERSION }})"
+          git tag --annotate --force "${SEMVER_MAJOR_VERSION}" -m "Release ${SEMVER_MAJOR_VERSION}"
+          git tag --annotate --force latest -m "Release latest (${RELEASE_VERSION})"
 
-          git push --force origin ${{ env.SEMVER_MAJOR_VERSION }}
+          git push --force origin "${SEMVER_MAJOR_VERSION}"
           git push --force origin latest
 
       - name: Create Issue on Failure

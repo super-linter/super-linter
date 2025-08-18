@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set build metadata
         id: set-container-image-build-metadata
@@ -102,6 +103,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -158,6 +161,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Free Disk space
         shell: bash
@@ -202,7 +206,7 @@ jobs:
       # Ref: https://github.com/moby/buildkit/issues/1555
       - name: Load image
         run: |
-          docker load <"/tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar"
+          docker load <"/tmp/${CONTAINER_IMAGE_OUTPUT_IMAGE_NAME}.tar"
 
       - name: Print environment info
         run: |
@@ -238,6 +242,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         uses: actions/download-artifact@v5.0.0
@@ -247,7 +252,7 @@ jobs:
 
       - name: Load ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         run: |
-          docker load --input /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+          docker load --input "/tmp/${CONTAINER_IMAGE_OUTPUT_IMAGE_NAME}.tar"
           docker image ls -a
 
       - name: Update action.yml
@@ -293,6 +298,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Generate test cases matrix
         id: generate-matrix
         run: |
@@ -338,6 +344,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         uses: actions/download-artifact@v5.0.0
@@ -347,15 +354,16 @@ jobs:
 
       - name: Load ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         run: |
-          docker load --input /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+          docker load --input "/tmp/${CONTAINER_IMAGE_OUTPUT_IMAGE_NAME}.tar"
           docker image ls -a
 
       - name: "Test case: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} - ${{ matrix.test-case }}"
         run: |
-          echo "Running: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} - ${{ matrix.test-case }}"
-          make ${{ matrix.test-case }}
+          echo "Running: ${CONTAINER_IMAGE_OUTPUT_IMAGE_NAME} - ${MATRIX_TEST_CASE}"
+          make "${MATRIX_TEST_CASE}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MATRIX_TEST_CASE: ${{ matrix.test-case }}
 
   # The purpose of this job is to run only when the run-test-suite job runs to completion.
   # We can use this job as a required status check in a branch protection rule without
@@ -386,6 +394,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup authentication token
         run: |

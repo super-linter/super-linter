@@ -150,6 +150,7 @@ if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMM
     fatal "Error while adding options to GitHub Actions command"
   fi
 fi
+LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS_ZIZMOR=(zizmor --config "${GITHUB_ACTIONS_ZIZMOR_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose)
 if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
   export GITLEAKS_LOG_LEVEL

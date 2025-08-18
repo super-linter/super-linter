@@ -1,0 +1,10 @@
+---
+rules:
+  unpinned-uses:
+    ignore:
+      - ci.yml
+      - cd.yml
+      - dependabot-automation.yaml
+      - lint-commit.yaml
+      - stale.yaml
+      - thank_contributors.yaml

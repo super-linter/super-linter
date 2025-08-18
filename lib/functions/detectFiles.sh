@@ -3,15 +3,17 @@
 DetectActions() {
   FILE="${1}"
 
-  if [ "${VALIDATE_GITHUB_ACTIONS}" == "false" ]; then
-    debug "Don't check if ${FILE} is a GitHub Actions file because VALIDATE_GITHUB_ACTIONS is: ${VALIDATE_GITHUB_ACTIONS}"
+  if [[ "${VALIDATE_GITHUB_ACTIONS}" == "false" ]] &&
+    [[ "${VALIDATE_GITHUB_ACTIONS_ZIZMOR}" == "false" ]]; then
+    debug "Don't check if ${FILE} is a GitHub Actions file because VALIDATE_GITHUB_ACTIONS is ${VALIDATE_GITHUB_ACTIONS}, and VALIDATE_GITHUB_ACTIONS_ZIZMOR is ${VALIDATE_GITHUB_ACTIONS_ZIZMOR}"
     return 1
   fi
 
   debug "Checking if ${FILE} is a GitHub Actions file..."
 
   # Check if in the users .github, or the super linter test suite
-  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] || [[ "$(dirname "${FILE}")" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
+  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] ||
+    [[ "$(dirname "${FILE}")" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
     debug "${FILE} is GitHub Actions file."
     return 0
   else

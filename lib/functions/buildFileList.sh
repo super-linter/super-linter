@@ -603,6 +603,7 @@ BuildFileArrays() {
       fi
       if DetectActions "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS_ZIZMOR"
       fi
 
       if DetectCloudFormationFile "${FILE}"; then

@@ -14,6 +14,8 @@
     "**/test/linters/dotnet_sln_format_analyzers",
     "**/test/linters/dotnet_sln_format_style",
     "**/test/linters/dotnet_sln_format_whitespace",
+    "**/test/linters/github_actions",
+    "**/test/linters/github_actions_zizmor",
     "**/test/linters/go_modules",
     "**/test/linters/html",
     "**/test/linters/javascript_es",
