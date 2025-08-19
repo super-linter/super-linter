@@ -322,11 +322,57 @@ InitializeAndValidateGitBeforeShaReference() {
   GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
 
+  # First try the traditional ~N approach for backwards compatibility
   # shellcheck disable=SC2086  # We checked that GITHUB_EVENT_COMMIT_COUNT is an integer
-  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD})"
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD} 2>/dev/null)"
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
+    debug "Traditional ~N approach failed, trying alternative method with git rev-list --first-parent"
+    # Fallback: Use git rev-list to avoid ambiguity with merge commits
+    # The --first-parent option ensures we always follow the main line of development
+    # when encountering merge commits, avoiding "ambiguous argument" errors
+    # Extract the base commit (remove ~N suffix) from GIT_BEFORE_SHA_HEAD
+    local BASE_COMMIT="${GIT_BEFORE_SHA_HEAD%~*}"
+    debug "Using base commit for fallback: ${BASE_COMMIT}"
+    
+    # Check if we have enough commits to skip
+    local AVAILABLE_COMMITS
+    AVAILABLE_COMMITS="$(git -C "${GITHUB_WORKSPACE}" rev-list --count "${BASE_COMMIT}" 2>/dev/null)"
+    debug "Available commits from ${BASE_COMMIT}: ${AVAILABLE_COMMITS}"
+    
+    if [[ "${AVAILABLE_COMMITS}" -gt "${GITHUB_EVENT_COMMIT_COUNT}" ]]; then
+      debug "Attempting git rev-list --first-parent -n 1 --skip=${GITHUB_EVENT_COMMIT_COUNT} ${BASE_COMMIT}"
+      GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --first-parent -n 1 --skip="${GITHUB_EVENT_COMMIT_COUNT}" "${BASE_COMMIT}" 2>/dev/null)"
+      RET_CODE=$?
+      debug "git rev-list command returned: RET_CODE=${RET_CODE}, GITHUB_BEFORE_SHA='${GITHUB_BEFORE_SHA}'"
+      if [[ "${RET_CODE}" -eq 0 ]] && [[ -n "${GITHUB_BEFORE_SHA}" ]]; then
+        debug "Successfully initialized GITHUB_BEFORE_SHA using git rev-list --first-parent fallback method: ${GITHUB_BEFORE_SHA}"
+      else
+        debug "git rev-list fallback failed, trying alternative calculation"
+        # Alternative approach: calculate the target commit position more carefully
+        local TARGET_POSITION=$((AVAILABLE_COMMITS - GITHUB_EVENT_COMMIT_COUNT))
+        if [[ "${TARGET_POSITION}" -gt 0 ]]; then
+          GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --first-parent -n 1 --skip=$((TARGET_POSITION - 1)) "${BASE_COMMIT}" 2>/dev/null)"
+          if [[ $? -eq 0 ]] && [[ -n "${GITHUB_BEFORE_SHA}" ]]; then
+            debug "Successfully initialized GITHUB_BEFORE_SHA using alternative calculation: ${GITHUB_BEFORE_SHA}"
+          else
+            fatal "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event using all fallback methods. Base commit: ${BASE_COMMIT}, skip count: ${GITHUB_EVENT_COMMIT_COUNT}, available: ${AVAILABLE_COMMITS}"
+          fi
+        else
+          fatal "Cannot calculate valid target position: TARGET_POSITION=${TARGET_POSITION}, AVAILABLE_COMMITS=${AVAILABLE_COMMITS}, GITHUB_EVENT_COMMIT_COUNT=${GITHUB_EVENT_COMMIT_COUNT}"
+        fi
+      fi
+    else
+      # If we can't skip enough commits, fall back to the root commit or handle gracefully
+      debug "Not enough commits to skip ${GITHUB_EVENT_COMMIT_COUNT} from ${BASE_COMMIT}. Available: ${AVAILABLE_COMMITS}. Using root commit as fallback."
+      # Get the root commit of this branch as a fallback
+      GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${BASE_COMMIT}" 2>/dev/null | head -n 1)"
+      if [[ -n "${GITHUB_BEFORE_SHA}" ]]; then
+        debug "Using root commit as GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
+      else
+        fatal "Cannot determine GITHUB_BEFORE_SHA: unable to skip ${GITHUB_EVENT_COMMIT_COUNT} commits from ${BASE_COMMIT} (only ${AVAILABLE_COMMITS} available) and cannot find root commit"
+      fi
+    fi
   fi
 
   debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
