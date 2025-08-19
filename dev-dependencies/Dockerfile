@@ -1,4 +1,4 @@
-FROM node:24.5.0-bookworm
+FROM node:24.6.0-bookworm
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
