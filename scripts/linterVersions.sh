@@ -24,6 +24,7 @@ LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
 LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
 LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
 LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
+LINTER_NAMES_ARRAY['GITHUB_ACTIONS_ZIZMOR']="zizmor"
 LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
 LINTER_NAMES_ARRAY['GIT_COMMITLINT']="commitlint"
 LINTER_NAMES_ARRAY['GIT_MERGE_CONFLICT_MARKERS']="git-merge-conflict-markers"
@@ -229,6 +230,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ ${LINTER} == "xmllint" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'xmllint' | awk '{ print $5 }')"
   elif [[ "${LINTER}" == "yamllint" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
+  elif [[ "${LINTER}" == "zizmor" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   # Some linters don't support a "get version" command
   elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "nbqa" ]]; then

@@ -20,6 +20,7 @@
 | EDITORCONFIG               | Pass ✅           |
 | ENV                        | Pass ✅           |
 | GITHUB_ACTIONS             | Pass ✅           |
+| GITHUB_ACTIONS_ZIZMOR      | Pass ✅           |
 | GITLEAKS                   | Pass ✅           |
 | GIT_COMMITLINT             | Pass ✅           |
 | GIT_MERGE_CONFLICT_MARKERS | Pass ✅           |

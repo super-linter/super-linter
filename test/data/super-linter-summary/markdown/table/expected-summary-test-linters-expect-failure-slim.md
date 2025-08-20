@@ -20,6 +20,7 @@
 | EDITORCONFIG               | Fail ❌           |
 | ENV                        | Fail ❌           |
 | GITHUB_ACTIONS             | Fail ❌           |
+| GITHUB_ACTIONS_ZIZMOR      | Fail ❌           |
 | GITLEAKS                   | Fail ❌           |
 | GIT_COMMITLINT             | Fail ❌           |
 | GIT_MERGE_CONFLICT_MARKERS | Fail ❌           |

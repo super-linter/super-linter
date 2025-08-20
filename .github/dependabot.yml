@@ -97,6 +97,7 @@ updates:
         # We can group all Docker dependencies because they are isolated from
         # each other
         patterns:
+          - aquasecurity/trivy
           - alpine/helm
           - alpine/terragrunt
           - dotenvlinter/dotenv-linter
@@ -157,6 +158,7 @@ updates:
           - snakemake
           - sqlfluff
           - yamllint
+          - zizmor
 
   - package-ecosystem: "gradle"
     commit-message:

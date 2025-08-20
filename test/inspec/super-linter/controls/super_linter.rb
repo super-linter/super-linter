@@ -215,6 +215,7 @@ control "super-linter-installed-commands" do
     { linter_name: "trivy" },
     { linter_name: "xmllint" },
     { linter_name: "yamllint" },
+    { linter_name: "zizmor" },
   ]
 
   # Removed linters from slim image
@@ -405,7 +406,8 @@ control "super-linter-installed-pypi-packages" do
     "snakemake",
     "sqlfluff",
     "yamllint",
-    "yq"
+    "yq",
+    "zizmor",
   ]
 
   pypi_packages.each do |item|
@@ -521,6 +523,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/phpstan.neon",
     "/action/lib/.automation/psalm.xml",
     "/action/lib/.automation/trivy.yaml",
+    "/action/lib/.automation/zizmor.yaml",
     "/usr/bin/bash-exec",
     "/usr/bin/git-merge-conflict-markers",
     "/usr/bin/helm", # needed for checkov's helm framework

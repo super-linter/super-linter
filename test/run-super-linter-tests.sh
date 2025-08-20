@@ -238,6 +238,7 @@ run_test_case_fix_mode() {
       debug "Skip ${LANGUAGE} because it's not available in the Super-linter ${SUPER_LINTER_CONTAINER_IMAGE_TYPE} image"
       continue
     fi
+    debug "Enabling validate and fix mode for ${LANGUAGE}"
     local -l LOWERCASE_LANGUAGE="${LANGUAGE}"
     cp -rv "${LINTERS_TEST_CASE_DIRECTORY}/${LOWERCASE_LANGUAGE}" "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}/"
     eval "COMMAND_TO_RUN+=(--env FIX_${LANGUAGE}=\"true\")"

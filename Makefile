@@ -296,6 +296,7 @@ fix-codebase: ## Fix and format the entire codebase
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
+		-e FIX_GITHUB_ACTIONS_ZIZMOR=true \
 		-e FIX_ENV=true \
 		-e FIX_JAVASCRIPT_ES=true \
 		-e FIX_JAVASCRIPT_PRETTIER=true \
