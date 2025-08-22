@@ -49,6 +49,7 @@
 | JUPYTER_NBQA_PYLINT        | Pass ✅           |
 | JUPYTER_NBQA_RUFF          | Pass ✅           |
 | KOTLIN                     | Pass ✅           |
+| KUBERNETES_KUBECONFORM     | Pass ✅           |
 | LATEX                      | Pass ✅           |
 | LUA                        | Pass ✅           |
 | MARKDOWN                   | Pass ✅           |

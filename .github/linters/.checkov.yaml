@@ -23,6 +23,7 @@ skip-path:
   - test/linters/dockerfile_hadolint
   - test/linters/jscpd
   - test/linters/json
+  - test/linters/kubernetes_kubeconform
   - test/linters/openapi
   - test/linters/terraform_fmt
   - test/linters/terraform_tflint

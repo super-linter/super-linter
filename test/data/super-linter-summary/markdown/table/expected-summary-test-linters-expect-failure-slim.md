@@ -49,6 +49,7 @@
 | JUPYTER_NBQA_PYLINT        | Fail ❌           |
 | JUPYTER_NBQA_RUFF          | Fail ❌           |
 | KOTLIN                     | Fail ❌           |
+| KUBERNETES_KUBECONFORM     | Fail ❌           |
 | LATEX                      | Fail ❌           |
 | LUA                        | Fail ❌           |
 | MARKDOWN                   | Fail ❌           |

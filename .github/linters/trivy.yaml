@@ -17,6 +17,7 @@ scan:
     - "**/test/linters/dockerfile_hadolint"
     - "**/test/linters/go_modules"
     - "**/test/linters/jscpd"
+    - "**/test/linters/kubernetes_kubeconform"
     - "**/test/linters/terraform_fmt"
     - "**/test/linters/terraform_terrascan"
     - "**/test/linters/terraform_tflint"

@@ -31,6 +31,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0.304-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.11 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.66.0 AS trivy
+FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
 FROM python:3.13.7-alpine3.22 AS python-base
 
@@ -371,6 +372,9 @@ RUN scalafmt --version | awk ' { print $2 }' > /tmp/scalafmt-version.txt
 # Install actionlint #
 ######################
 COPY --from=actionlint /usr/local/bin/actionlint /usr/bin/
+
+# Install kubeconform
+COPY --from=kubeconform /kubeconform /usr/bin/
 
 #####################
 # Install clj-kondo #

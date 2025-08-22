@@ -2,11 +2,19 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from v8.1.0 to v8.2.0](#upgrade-from-v810-to-v820)
 - [Upgrade from v7.4.0 to v8.0.0](#upgrade-from-v740-to-v8)
 - [Upgrade from v7.3.0 to v7.4.0](#upgrade-from-v730-to-v740)
 - [Upgrade from v6 to v7](#upgrade-from-v6-to-v7)
 - [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from v8.1.0 to v8.2.0
+
+Super-linter `v8.2.0` adds back Kubeconform and related configuration variables:
+
+- `KUBERNETES_KUBECONFORM_OPTIONS`
+- `VALIDATE_KUBERNETES_KUBECONFORM`
 
 ## Upgrade from v7.4.0 to v8
 
