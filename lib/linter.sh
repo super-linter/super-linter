@@ -804,6 +804,21 @@ fi
 #################################
 CheckSSLCert
 
+# Set global variables that depend on validation being successful
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+  debug "GitHub Token environment variable (GITHUB_TOKEN) is set"
+
+  if [[ "${VALIDATE_GITHUB_ACTIONS_ZIZMOR}" == "true" ]]; then
+    if [[ -z "${GH_TOKEN:-}" ]]; then
+      debug "Initializing the GH_TOKEN for zizmor with the value of GITHUB_TOKEN"
+      GH_TOKEN="${GITHUB_TOKEN}"
+    else
+      debug "GH_TOKEN for zizmor is already initialized"
+    fi
+    export GH_TOKEN
+  fi
+fi
+
 ###########################################
 # Build the list of files for each linter #
 ###########################################
