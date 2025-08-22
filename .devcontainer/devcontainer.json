@@ -41,6 +41,7 @@
       },
       "extensions": [
         "DavidAnson.vscode-markdownlint",
+        "docker.docker",
         "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode",
         "exiasr.hadolint",
@@ -48,7 +49,7 @@
         "GitHub.vscode-pull-request-github",
         "mads-hartmann.bash-ide-vscode",
         "mkhl.shfmt",
-        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-containers",
         "ms-vscode.makefile-tools",
         "timonwong.shellcheck"
       ]
