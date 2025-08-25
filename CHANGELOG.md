@@ -1,5 +1,17 @@
 # Changelog
 
+## [8.2.0](https://github.com/super-linter/super-linter/compare/v8.1.0...v8.2.0) (2025-08-25)
+
+
+### 🚀 Features
+
+* set zizmor github token variable ([#6971](https://github.com/super-linter/super-linter/issues/6971)) ([097f489](https://github.com/super-linter/super-linter/commit/097f489a3cdab4b3d68560787562cfba865628d0))
+
+
+### 🧰 Maintenance
+
+* install new docker vs code extensions ([#6969](https://github.com/super-linter/super-linter/issues/6969)) ([0768adf](https://github.com/super-linter/super-linter/commit/0768adf0e4a7456429f552325fec347310b3fddc))
+
 ## [8.1.0](https://github.com/super-linter/super-linter/compare/v8.0.0...v8.1.0) (2025-08-20)
 
 
