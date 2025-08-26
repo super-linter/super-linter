@@ -10,7 +10,7 @@
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "asl-validator": "^4.0.0",
     "commitlint": "^19.8.1",
-    "eslint": "^9.33.0",
+    "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jest": "^29.0.1",
     "eslint-plugin-json": "^4.0.1",
