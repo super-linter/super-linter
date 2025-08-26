@@ -251,6 +251,7 @@ LINTER_COMMANDS_ARRAY_PYTHON_FLAKE8=(flake8 --config="${PYTHON_FLAKE8_LINTER_RUL
 LINTER_COMMANDS_ARRAY_PYTHON_ISORT=(isort --sp "${PYTHON_ISORT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PYTHON_MYPY=(mypy --config-file "${PYTHON_MYPY_LINTER_RULES}" --install-types --non-interactive)
 LINTER_COMMANDS_ARRAY_PYTHON_RUFF=(ruff check --config "${PYTHON_RUFF_LINTER_RULES}")
+LINTER_COMMANDS_ARRAY_PYTHON_RUFF_FORMAT=(ruff format --config "${PYTHON_RUFF_FORMAT_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_R=(R --slave -e "\"lints <- lintr::lint('{}');print(lints);errors <- purrr::keep(lints, ~ .\\\$type == 'error');quit(save = 'no', status = if (length(errors) > 0) 1 else 0)\"")
 LINTER_COMMANDS_ARRAY_RENOVATE=(renovate-config-validator --strict)
 LINTER_COMMANDS_ARRAY_RUBY=(rubocop -c "${RUBY_LINTER_RULES}" --force-exclusion --ignore-unrecognized-cops)

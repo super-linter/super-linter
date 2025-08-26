@@ -35,6 +35,7 @@
 | PYTHON_BLACK          | Pass ✅           |
 | PYTHON_ISORT          | Pass ✅           |
 | PYTHON_RUFF           | Pass ✅           |
+| PYTHON_RUFF_FORMAT    | Pass ✅           |
 | RUBY                  | Fail ❌           |
 | SCALAFMT              | Pass ✅           |
 | SHELL_SHFMT           | Pass ✅           |
