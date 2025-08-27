@@ -40,6 +40,7 @@
 | PYTHON_BLACK                 | Pass ✅           |
 | PYTHON_ISORT                 | Pass ✅           |
 | PYTHON_RUFF                  | Pass ✅           |
+| PYTHON_RUFF_FORMAT           | Pass ✅           |
 | RUBY                         | Fail ❌           |
 | RUST_2015                    | Pass ✅           |
 | RUST_2018                    | Pass ✅           |

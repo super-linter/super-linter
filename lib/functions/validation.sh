@@ -609,4 +609,9 @@ ValidateDeprecatedConfigurationFiles() {
 
 ValidateConflictingTools() {
   debug "Validating if potentially conflicting tools are enabled"
+
+  if [[ "${VALIDATE_PYTHON_BLACK}" == "true" ]] && [[ "${VALIDATE_PYTHON_RUFF_FORMAT}" == "true" ]]; then
+    warn "Black and Ruff formatter are both enabled, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    return 1
+  fi
 }

@@ -73,6 +73,7 @@
 | PYTHON_ISORT                 | Fail ❌           |
 | PYTHON_MYPY                  | Fail ❌           |
 | PYTHON_RUFF                  | Fail ❌           |
+| PYTHON_RUFF_FORMAT           | Fail ❌           |
 | R                            | Fail ❌           |
 | RENOVATE                     | Fail ❌           |
 | RUBY                         | Fail ❌           |

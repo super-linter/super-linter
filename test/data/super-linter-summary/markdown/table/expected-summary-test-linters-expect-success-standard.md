@@ -73,6 +73,7 @@
 | PYTHON_ISORT                 | Pass ✅           |
 | PYTHON_MYPY                  | Pass ✅           |
 | PYTHON_RUFF                  | Pass ✅           |
+| PYTHON_RUFF_FORMAT           | Pass ✅           |
 | R                            | Pass ✅           |
 | RENOVATE                     | Pass ✅           |
 | RUBY                         | Pass ✅           |
