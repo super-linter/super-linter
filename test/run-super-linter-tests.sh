@@ -26,11 +26,15 @@ configure_command_arguments_for_test_git_repository() {
   cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
 
   # shellcheck disable=SC2034
-  RUN_LOCAL=false
+  RUN_LOCAL="${RUN_LOCAL:-"false"}"
   SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
   COMMAND_TO_RUN+=(-e GITHUB_WORKSPACE="/tmp/lint")
-  COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
-  COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
+
+  if [[ "${RUN_LOCAL:-"false"}" == "false" ]]; then
+    COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
+    COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="/tmp/lint/$(basename "${GITHUB_EVENT_FILE_PATH}")")
+  fi
+
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
   COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
   COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
@@ -111,7 +115,7 @@ run_test_case_git_initial_commit() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
 }
@@ -121,7 +125,7 @@ run_test_case_merge_commit_push() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
 }
 
@@ -130,7 +134,7 @@ run_test_case_github_merge_group_event() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "merge_group" "false" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "merge_group" "false" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-merge-group.json" "merge_group"
 }
 
@@ -139,7 +143,7 @@ run_test_case_merge_commit_push_tag() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json" "push"
   git -C "${GIT_REPOSITORY_PATH}" tag "v1.0.1-beta"
   git_log_graph "${GIT_REPOSITORY_PATH}"
@@ -153,7 +157,7 @@ configure_test_case_github_event_multiple_commits() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "true" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "true" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_NAME}"
   cp commitlint.config.js "${GIT_REPOSITORY_PATH}/"
 
@@ -216,12 +220,43 @@ run_test_case_linter_command_options() {
   COMMAND_TO_RUN+=(--env GITLEAKS_COMMAND_OPTIONS="--verbose")
 }
 
+run_test_case_git_worktree() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "false" "push" "false" "false" "false" "false"
+
+  local GIT_WORKTREE_PATH
+  GIT_WORKTREE_PATH="$(mktemp -d)"
+  initialize_temp_directory_cleanup_traps "${GIT_WORKTREE_PATH}"
+
+  debug "Initializing Git worktree: ${GIT_WORKTREE_PATH}"
+  git -C "${GIT_REPOSITORY_PATH}" worktree add "${GIT_WORKTREE_PATH}"
+
+  debug "Git worktree list (verbose)"
+  git -C "${GIT_REPOSITORY_PATH}" worktree list --verbose
+
+  debug "Git worktree list (porelain, nul-terminated)"
+  git -C "${GIT_REPOSITORY_PATH}" worktree list --porcelain -z
+  # Add a newline after the nul-terminated string
+  echo
+
+  debug ".git worktree contents:\n$(cat "${GIT_WORKTREE_PATH}/.git")"
+
+  RUN_LOCAL="true"
+  SAVE_SUPER_LINTER_OUTPUT="false"
+
+  configure_command_arguments_for_test_git_repository "${GIT_WORKTREE_PATH}" "test/data/github-event/github-event-push.json" "push"
+  EXPECTED_EXIT_CODE=1
+}
+
 run_test_case_fix_mode() {
   VERIFY_FIX_MODE="true"
 
   GIT_REPOSITORY_PATH="$(mktemp -d)"
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false" "false"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
 
   # Remove leftovers before copying test files because other tests might have
