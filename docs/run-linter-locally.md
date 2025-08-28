@@ -39,9 +39,14 @@ Notes:
 
 ### Working with Git Worktrees
 
-Git worktrees allow you to have multiple working directories associated with a single git repository, which is useful for working on different branches simultaneously without switching contexts.
+Git worktrees allow you to have multiple working directories associated with a
+single Git repository, which is useful for working on different branches
+simultaneously without switching contexts.
 
-When running super-linter in a git worktree, you must mount both the worktree directory and the main git repository directory into the container. This is because worktrees store only the working files, while git metadata remains in the main repository's `.git` directory.
+When running super-linter in a Git worktree, you must mount both the worktree
+directory and the main Git repository directory into the container. This is
+because worktrees store only the working files, while Git metadata remains in
+the main repository's `.git` directory.
 
 #### Example Docker Command for Git Worktrees
 
@@ -57,13 +62,15 @@ docker run \
 
 #### Finding Your Git Common Directory
 
-To find the main git directory that needs to be mounted, use the following git command from within your worktree:
+To find the main Git directory that needs to be mounted, use the following Git
+command from within your worktree:
 
 ```bash
 git rev-parse --path-format=absolute --git-common-dir
 ```
 
-This will output the absolute path to the main git directory, for example:
+This will output the absolute path to the main Git directory, for example:
+
 ```
 /path/to/main/repo/.git
 ```
@@ -72,7 +79,9 @@ Use this output as the source path for your Docker volume mount.
 
 #### Helpful Error Messages
 
-If you forget to mount the main git directory, super-linter will detect this and provide a helpful error message indicating exactly which directory needs to be mounted:
+If you forget to mount the main Git directory, super-linter will detect this and
+provide a helpful error message indicating exactly which directory needs to be
+mounted:
 
 ```
 Detected a git worktree at /tmp/lint, but git cannot operate. Please mount the main git directory located at: /path/to/main/repo/.git
