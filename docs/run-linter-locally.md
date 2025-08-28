@@ -83,8 +83,10 @@ If you forget to mount the main Git directory, super-linter will detect this and
 provide a helpful error message indicating exactly which directory needs to be
 mounted:
 
-```
-Detected a git worktree at /tmp/lint, but git cannot operate. Please mount the main git directory located at: /path/to/main/repo/.git
+```text
+/path/to/main/repo/.git/worktrees/my-worktree doesn't exist.
+Ensure to mount it as a volume when running the Super-linter container.
+See https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md
 ```
 
 ### GitLab
