@@ -248,17 +248,7 @@ initialize_git_repository() {
   unset GIT_ROOT_COMMIT_SHA
   unset GITHUB_BEFORE_SHA
 
-  # Assuming that if sudo is available we aren't running inside a container,
-  # so we don't want to leave leftovers around.
-  if command -v sudo; then
-    if [[ "${KEEP_TEMP_FILES:-}" == "true" ]]; then
-      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-      trap "echo Temp git repository available at: '${GIT_REPOSITORY_PATH}'" EXIT
-    else
-      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
-      trap "echo 'Deleting ${GIT_REPOSITORY_PATH}. Set KEEP_TEMP_FILES=true to keep temporary files'; sudo rm -fr '${GIT_REPOSITORY_PATH}'" EXIT
-    fi
-  fi
+  initialize_temp_directory_cleanup_traps "${GIT_REPOSITORY_PATH}"
 
   if [[ ! -d "${GIT_REPOSITORY_PATH}" ]]; then
     mkdir --parents "${GIT_REPOSITORY_PATH}"
@@ -271,6 +261,24 @@ initialize_git_repository() {
   git -C "${GIT_REPOSITORY_PATH}" config user.email "super-linter-test@example.com"
 }
 
+initialize_temp_directory_cleanup_traps() {
+  local TEMP_DIRECTORY_PATH="${1}"
+
+  debug "Initializing temp directory cleanup traps for ${TEMP_DIRECTORY_PATH}"
+
+  # Assuming that if sudo is available we aren't running inside a container,
+  # so we don't want to leave leftovers around.
+  if command -v sudo; then
+    if [[ "${KEEP_TEMP_FILES:-}" == "true" ]]; then
+      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+      trap "echo Temp git repository available at: '${TEMP_DIRECTORY_PATH}'" EXIT
+    else
+      # shellcheck disable=SC2064 # Once the path is set, we don't expect it to change
+      trap "echo 'Deleting ${TEMP_DIRECTORY_PATH}. Set KEEP_TEMP_FILES=true to keep temporary files'; sudo rm -fr '${TEMP_DIRECTORY_PATH}'" EXIT
+    fi
+  fi
+}
+
 initialize_git_repository_contents() {
   local GIT_REPOSITORY_PATH="${1}" && shift
   local COMMITS_TO_CREATE="${1}" && shift
@@ -279,6 +287,7 @@ initialize_git_repository_contents() {
   local FORCE_MERGE_COMMIT="${1}" && shift
   local SKIP_GITHUB_BEFORE_SHA_INIT="${1}" && shift
   local COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE="${1}" && shift
+  local INITIALIZE_GITHUB_SHA="${1}" && shift
 
   local NEW_BRANCH_NAME="branch-1"
 
@@ -382,7 +391,10 @@ initialize_git_repository_contents() {
     fatal "Handling GITHUB_EVENT_NAME (${GITHUB_EVENT_NAME:-"not set"}) not implemented"
   fi
 
-  initialize_github_sha "${GIT_REPOSITORY_PATH}"
+  if [[ "${INITIALIZE_GITHUB_SHA:-}" == "true" ]]; then
+    debug "Initializing GITHUB_SHA"
+    initialize_github_sha "${GIT_REPOSITORY_PATH}"
+  fi
 
   git_log_graph "${GIT_REPOSITORY_PATH}"
 }

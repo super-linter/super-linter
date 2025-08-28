@@ -28,7 +28,7 @@ GenerateFileDiffTest() {
     TEST_FORCE_CREATE_MERGE_COMMIT="false"
   fi
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}" "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}" "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}" "true"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"

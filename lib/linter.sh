@@ -260,11 +260,32 @@ GetGitHubVars() {
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
-      GITHUB_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)
-      local RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
+      local DOT_GIT_PATH="${GITHUB_WORKSPACE}/.git"
+      debug "Checking if ${DOT_GIT_PATH} is a file or a directory."
+      if [[ -f "${DOT_GIT_PATH}" ]]; then
+        debug "${DOT_GIT_PATH} exists and is a file. Assuming that this is a worktree."
+
+        local GIT_DIRECTORY_PATH_WORKTREE
+        GIT_DIRECTORY_PATH_WORKTREE="$(cat "${DOT_GIT_PATH}" | awk '{ print $2 }')"
+        local RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Error while getting .git directory path while in a worktree: ${GIT_DIRECTORY_PATH_WORKTREE}"
+        fi
+
+        debug ".git directory path referenced by the worktree: ${GIT_DIRECTORY_PATH_WORKTREE}"
+
+        if [[ ! -e "${GIT_DIRECTORY_PATH_WORKTREE}" ]]; then
+          fatal "${GIT_DIRECTORY_PATH_WORKTREE} doesn't exist. Ensure to mount it as a volume when running the Super-linter container. See https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md"
+        fi
+      else
+        debug "${DOT_GIT_PATH} is a directory. Assuming that this is not a worktree"
+        GITHUB_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+        local RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
+        fi
       fi
+
       info "Initialized GITHUB_SHA to: ${GITHUB_SHA}"
 
       if ! InitializeRootCommitSha; then

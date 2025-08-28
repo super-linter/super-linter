@@ -612,7 +612,7 @@ InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest() {
 
   local -i COMMIT_COUNT=3
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "pull_request" "true" "false" "false"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "pull_request" "true" "false" "false" "true"
 
   local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
   debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
@@ -640,7 +640,7 @@ InitializeRootCommitShaTest() {
   GITHUB_WORKSPACE="$(mktemp -d)"
   initialize_git_repository "${GITHUB_WORKSPACE}"
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false" "false"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false" "false" "true"
 
   local EXPECTED_GIT_ROOT_COMMIT_SHA="${GIT_ROOT_COMMIT_SHA}"
   unset GIT_ROOT_COMMIT_SHA
