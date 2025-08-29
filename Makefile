@@ -485,6 +485,7 @@ test-default-config-files: ## Test default configuration files loading
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-e VALIDATE_GIT_COMMITLINT=false \
+		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
@@ -499,6 +500,7 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		-e USE_FIND_ALGORITHM=true \
 		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
 		-e VALIDATE_GIT_COMMITLINT=false \
+		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)

@@ -24,6 +24,8 @@ something blocking you.
 
 ## Resources
 
+- [Development Guide](../docs/DEVELOPMENT.md): For instructions on how to set up
+  your development environment.
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
 - [Using Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 - [GitHub Help](https://docs.github.com/en)
