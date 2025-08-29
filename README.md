@@ -793,3 +793,6 @@ Super-linter, see
 
 If you would like to help contribute to super-linter, see
 [CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md).
+
+For a guide on how to set up your development environment and contribute to
+Super-linter, see the [development guide](docs/DEVELOPMENT.md).
