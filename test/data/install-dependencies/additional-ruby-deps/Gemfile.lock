@@ -1,0 +1,85 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (8.0.2)
+      base64
+      benchmark (>= 0.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.3.1)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      logger (>= 1.4.2)
+      minitest (>= 5.1)
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
+    ast (2.4.3)
+    base64 (0.2.0)
+    benchmark (0.4.0)
+    bigdecimal (3.1.9)
+    concurrent-ruby (1.3.5)
+    connection_pool (2.5.3)
+    drb (2.2.1)
+    i18n (1.14.7)
+      concurrent-ruby (~> 1.0)
+    json (2.11.3)
+    language_server-protocol (3.17.0.4)
+    lint_roller (1.1.0)
+    logger (1.7.0)
+    minitest (5.25.5)
+    parallel (1.27.0)
+    parser (3.3.8.0)
+      ast (~> 2.4.1)
+      racc
+    prism (1.4.0)
+    racc (1.8.1)
+    rack (3.1.13)
+    rainbow (3.1.1)
+    regexp_parser (2.10.0)
+    rubocop (1.75.5)
+      json (~> 2.3)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
+      parallel (~> 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.44.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.44.1)
+      parser (>= 3.3.7.2)
+      prism (~> 1.4)
+    rubocop-performance (1.25.0)
+      lint_roller (~> 1.1)
+      rubocop (>= 1.75.0, < 2.0)
+      rubocop-ast (>= 1.38.0, < 2.0)
+    rubocop-rails (2.31.0)
+      activesupport (>= 4.2.0)
+      lint_roller (~> 1.1)
+      rack (>= 1.1)
+      rubocop (>= 1.75.0, < 2.0)
+      rubocop-ast (>= 1.38.0, < 2.0)
+    rubocop-rails-omakase (1.1.0)
+      rubocop (>= 1.72)
+      rubocop-performance (>= 1.24)
+      rubocop-rails (>= 2.30)
+    ruby-progressbar (1.13.0)
+    securerandom (0.4.1)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    unicode-display_width (3.1.4)
+      unicode-emoji (~> 4.0, >= 4.0.4)
+    unicode-emoji (4.0.4)
+    uri (1.0.3)
+
+PLATFORMS
+  ruby
+  x86_64-linux-musl
+
+DEPENDENCIES
+  rubocop-rails-omakase
+
+BUNDLED WITH
+  2.5.23
