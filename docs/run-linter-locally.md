@@ -37,6 +37,58 @@ Notes:
 - You can add as many configuration options as needed. Configuration options are
   documented in the [readme](../README.md#configure-super-linter).
 
+### Working with Git Worktrees
+
+Git worktrees allow you to have multiple working directories associated with a
+single Git repository, which is useful for working on different branches
+simultaneously without switching contexts.
+
+When running super-linter in a Git worktree, you must mount both the worktree
+directory and the main Git repository directory into the container. This is
+because worktrees store only the working files, while Git metadata remains in
+the main repository's `.git` directory.
+
+#### Example Docker Command for Git Worktrees
+
+```bash
+docker run \
+  -e LOG_LEVEL=DEBUG \
+  -e RUN_LOCAL=true \
+  -v /path/to/your/worktree:/tmp/lint \
+  -v /path/to/main/repo/.git:/path/to/main/repo/.git \
+  --rm \
+  ghcr.io/super-linter/super-linter:latest
+```
+
+#### Finding Your Git Common Directory
+
+To find the main Git directory that needs to be mounted, use the following Git
+command from within your worktree:
+
+```bash
+git rev-parse --path-format=absolute --git-common-dir
+```
+
+This will output the absolute path to the main Git directory, for example:
+
+```bash
+/path/to/main/repo/.git
+```
+
+Use this output as the source path for your Docker volume mount.
+
+#### Helpful Error Messages
+
+If you forget to mount the main Git directory, super-linter will detect this and
+provide a helpful error message indicating exactly which directory needs to be
+mounted:
+
+```text
+/path/to/main/repo/.git/worktrees/my-worktree doesn't exist.
+Ensure to mount it as a volume when running the Super-linter container.
+See https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md
+```
+
 ### GitLab
 
 To run Super-linter in your GitLab CI/CD pipeline, You can use the following
