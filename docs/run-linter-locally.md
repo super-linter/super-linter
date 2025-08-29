@@ -71,7 +71,7 @@ git rev-parse --path-format=absolute --git-common-dir
 
 This will output the absolute path to the main Git directory, for example:
 
-```
+```bash
 /path/to/main/repo/.git
 ```
 
