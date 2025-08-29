@@ -1,5 +1,31 @@
 # Changelog
 
+## [8.2.0](https://github.com/super-linter/super-linter/compare/v8.1.0...v8.2.0) (2025-08-29)
+
+
+### 🚀 Features
+
+* run ruff as a formatter ([#6981](https://github.com/super-linter/super-linter/issues/6981)) ([f9bdfcb](https://github.com/super-linter/super-linter/commit/f9bdfcb11fff7cc775ad985957c2bc106c78666e)), closes [#5951](https://github.com/super-linter/super-linter/issues/5951)
+* set zizmor github token variable ([#6971](https://github.com/super-linter/super-linter/issues/6971)) ([097f489](https://github.com/super-linter/super-linter/commit/097f489a3cdab4b3d68560787562cfba865628d0))
+* support git worktrees ([#6983](https://github.com/super-linter/super-linter/issues/6983)) ([deb9853](https://github.com/super-linter/super-linter/commit/deb98535dae979b4e847d0f83aba71629a63fc8e)), closes [#6944](https://github.com/super-linter/super-linter/issues/6944)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump rubocop in /dependencies in the rubocop group ([#6973](https://github.com/super-linter/super-linter/issues/6973)) ([1e6cd2f](https://github.com/super-linter/super-linter/commit/1e6cd2fc2047ac30c4b44f7538f54c98d71ea953))
+* **docker:** bump the docker group with 5 updates ([#6974](https://github.com/super-linter/super-linter/issues/6974)) ([8ea4f49](https://github.com/super-linter/super-linter/commit/8ea4f4921c3e6ad6f7ccaa232ff047de2ddd823d))
+* **npm:** bump eslint from 9.33.0 to 9.34.0 in /dependencies ([#6977](https://github.com/super-linter/super-linter/issues/6977)) ([0480c3e](https://github.com/super-linter/super-linter/commit/0480c3ec7832409691e612dfd481dbe45c23b6d0))
+* **npm:** bump react-router-dom ([#6975](https://github.com/super-linter/super-linter/issues/6975)) ([dc353b6](https://github.com/super-linter/super-linter/commit/dc353b60557be97f492959a70edf02de217232fd))
+* **npm:** bump renovate from 41.81.5 to 41.83.1 in /dependencies ([#6978](https://github.com/super-linter/super-linter/issues/6978)) ([b9a2b77](https://github.com/super-linter/super-linter/commit/b9a2b77cd5afc269e86b1c46455a5bc1218af73e))
+* **python:** bump the pip group across 1 directory with 2 updates ([#6976](https://github.com/super-linter/super-linter/issues/6976)) ([db91c76](https://github.com/super-linter/super-linter/commit/db91c76188cbeaafe2cf68abcd8ccf4d26efcf2f))
+
+
+### 🧰 Maintenance
+
+* add and refactor development guide ([#6985](https://github.com/super-linter/super-linter/issues/6985)) ([5e61a2e](https://github.com/super-linter/super-linter/commit/5e61a2e8e425389973fe62881d14a25bed150b87))
+* add git worktrees section to local run documentation ([#6984](https://github.com/super-linter/super-linter/issues/6984)) ([633b53a](https://github.com/super-linter/super-linter/commit/633b53a32114ba64fa0f3cb29dc92df6087171ec))
+* install new docker vs code extensions ([#6969](https://github.com/super-linter/super-linter/issues/6969)) ([0768adf](https://github.com/super-linter/super-linter/commit/0768adf0e4a7456429f552325fec347310b3fddc))
+
 ## [8.1.0](https://github.com/super-linter/super-linter/compare/v8.0.0...v8.1.0) (2025-08-20)
 
 
