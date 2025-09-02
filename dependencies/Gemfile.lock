@@ -37,7 +37,7 @@ GEM
     rack (3.2.0)
     rainbow (3.1.1)
     regexp_parser (2.11.2)
-    rubocop (1.80.0)
+    rubocop (1.80.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -61,7 +61,7 @@ GEM
       rubocop (>= 1.76)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.23)
-    rubocop-minitest (0.38.1)
+    rubocop-minitest (0.38.2)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
@@ -78,7 +78,7 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.6.0)
+    rubocop-rspec (3.7.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
     rubocop-rspec_rails (2.31.0)
@@ -99,15 +99,15 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  rubocop (~> 1.80.0)
+  rubocop (~> 1.80.1)
   rubocop-capybara (~> 2.22)
   rubocop-factory_bot (~> 2.27)
   rubocop-github (~> 0.26.0)
-  rubocop-minitest (~> 0.38.1)
+  rubocop-minitest (~> 0.38.2)
   rubocop-performance (~> 1.25.0)
   rubocop-rails (~> 2.33)
   rubocop-rake (~> 0.7.1)
-  rubocop-rspec (~> 3.6.0)
+  rubocop-rspec (~> 3.7.0)
   rubocop-rspec_rails (~> 2.31)
 
 BUNDLED WITH
