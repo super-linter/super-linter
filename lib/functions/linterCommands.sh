@@ -151,7 +151,7 @@ if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMM
   fi
 fi
 LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS_ZIZMOR=(zizmor --config "${GITHUB_ACTIONS_ZIZMOR_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks detect --no-banner --no-git --redact --config "${GITLEAKS_LINTER_RULES}" --verbose)
+LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks directory --no-banner --redact --config "${GITLEAKS_LINTER_RULES}" --verbose)
 if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
   export GITLEAKS_LOG_LEVEL
   LINTER_COMMANDS_ARRAY_GITLEAKS+=("${GITLEAKS_LOG_LEVEL_OPTIONS[@]}" "${GITLEAKS_LOG_LEVEL}")
@@ -163,7 +163,6 @@ if [ -n "${GITLEAKS_COMMAND_OPTIONS:-}" ]; then
     fatal "Error while adding options to GITLEAKS command"
   fi
 fi
-LINTER_COMMANDS_ARRAY_GITLEAKS+=(--source)
 LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=(commitlint --verbose --cwd "{}")
 if [[ -n "${GITHUB_BEFORE_SHA:-}" ]]; then
   LINTER_COMMANDS_ARRAY_GIT_COMMITLINT+=(--from "${GITHUB_BEFORE_SHA}" --to "${GITHUB_SHA}")
