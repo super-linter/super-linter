@@ -150,7 +150,7 @@ To run super-linter as a GitHub Action, you do the following:
 
        steps:
          - name: Checkout code
-           uses: actions/checkout@v4
+           uses: actions/checkout@v5
            with:
              # super-linter needs the full git history to get the
              # list of files that changed across commits
@@ -542,7 +542,7 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Super-Linter
@@ -573,13 +573,13 @@ jobs:
 
 This example uses
 [GitHub Actions automatic token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication)
-that automatically greates a unique `GITHUB_TOKEN` secret for the workflow.
+that automatically creates a unique `GITHUB_TOKEN` secret for the workflow.
 GitHub Actions imposes the following limitations on workflows:
 
 - To avoid accidentally creating recursive workflow runs, the commit that
   contains linting and formatting fixes
   [doesn't create new workflow runs](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow).
-- It restrict edits to GitHub Actions workflows files (in `.github/workflows`).
+- It restricts edits to GitHub Actions workflows files (in `.github/workflows`).
 - It may fail pushing commits to protected branches.
 
 To work around these limitations, you do the following:
@@ -590,7 +590,7 @@ To work around these limitations, you do the following:
 1. Use the authentication token in the `actions/checkout` step:
 
    ```yaml
-   - uses: actions/checkout@v4
+   - uses: actions/checkout@v5
      with:
        fetch-depth: 0
        token: ${{ secrets.SUPER_LINTER_TOKEN }}
