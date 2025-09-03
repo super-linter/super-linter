@@ -14,6 +14,12 @@ ifeq ($(INTERACTIVE), 1)
 	DOCKER_FLAGS += -t
 endif
 
+# Detect if running on ARM64 and set platform to AMD64 for compatibility
+ARCH := $(shell uname -m)
+ifeq ($(ARCH), arm64)
+	DOCKER_FLAGS += --platform linux/amd64
+endif
+
 .PHONY: help
 help: ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
