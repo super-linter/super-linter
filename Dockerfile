@@ -14,8 +14,8 @@ FROM ghcr.io/terraform-linters/tflint:v0.59.1 AS tflint
 FROM alpine/helm:3.18.6 AS helm
 FROM golang:1.25.0-alpine AS golang
 FROM golangci/golangci-lint:v2.4.0 AS golangci-lint
-FROM goreleaser/goreleaser:v2.11.2 AS goreleaser
-FROM hadolint/hadolint:v2.12.0-alpine AS dockerfile-lint
+FROM goreleaser/goreleaser:v2.12.0 AS goreleaser
+FROM hadolint/hadolint:v2.13.1-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.7.1 AS kustomize
 FROM hashicorp/terraform:1.13.1 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
@@ -30,7 +30,7 @@ FROM dart:3.9.2-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.304-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.11 AS php-composer
-FROM ghcr.io/aquasecurity/trivy:0.65.0 AS trivy
+FROM ghcr.io/aquasecurity/trivy:0.66.0 AS trivy
 
 FROM python:3.13.7-alpine3.22 AS python-base
 
