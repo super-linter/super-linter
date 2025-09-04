@@ -322,9 +322,9 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
     fi
 
+    # Handle test cases for tools that lint the entire workspace
+
     # Handle JSCPD test cases
-    # At this point, we already processed the options to include or exclude files, so we
-    # excluded test cases that are not relevant
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
       debug "${FILE} is a test case for JSCPD. Adding it to the list of items to lint with JSCPD"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
@@ -341,6 +341,8 @@ BuildFileArrays() {
       debug "${FILE} is a test case for Trivy. Adding it to the list of items to lint with Trivy"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
     fi
+
+    # Select files by extension or content
 
     # See https://docs.renovatebot.com/configuration-options/
     if [[ "${BASE_FILE}" =~ renovate.json5? ]] ||

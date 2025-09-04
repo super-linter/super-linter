@@ -5,7 +5,15 @@ tool, do the following.
 
 ## Update documentation
 
-- `README.md`
+Update the `README.md` to include:
+
+- `VALIDATE_<LANGUAGE_NAME>` and `FIX_<LANGUAGE_NAME>` variables.
+- If the new tool lints the entire workspace (`GITHUB_WORKSPACE`), explain that
+  the tool ignores the following variables:
+  - `FILTER_REGEX_EXCLUDE`
+  - `FILTER_REGEX_INCLUDE`
+  - `IGNORE_GENERATED_FILES`
+  - `IGNORE_GITIGNORED_FILES`
 
 ## Provide test cases
 
@@ -26,94 +34,103 @@ tool, do the following.
 ## Update the test suite
 
 Update the test suite to check for installed packages, the commands that your
-new tool needs in the `PATH`, and the expected version command:
+new tool needs in the `PATH`, the expected version command, and for the
+existence of any configuration file you added:
 
 - `test/inspec/super-linter/controls/super_linter.rb`
 
 ## Install the tool
 
-- Install the tool by pointing to specific package or container image versions:
-  - If there are PyPi packages:
-    1. Create a text file named `dependencies/python/<name-of-tool>.txt` and
-       list the packages there.
-    1. Add the new virtual environment `bin` directory to the `PATH` in the
-       Super-linter `Dockerfile`, in the `Configure Environment` section.
-       Example:
+1. Install the tool by pointing to specific package or container image versions:
+   - If there are PyPi packages:
+     1. Create a text file named `dependencies/python/<name-of-tool>.txt` and
+        list the packages there.
+     1. Add the new virtual environment `bin` directory to the `PATH` in the
+        Super-linter `Dockerfile`, in the `Configure Environment` section.
+        Example:
 
-       ```dockerfile
-       ENV PATH="${PATH}:/venvs/<name-of-tool>/bin"
-       ```
+     ```dockerfile
+     ENV PATH="${PATH}:/venvs/<name-of-tool>/bin"
+     ```
 
-    1. Add the new dependencies to the `pip` group in the DependaBot
-       configuration file (`.github/dependabot.yaml`).
+     1. Add the new dependencies to the `pip` group in the DependaBot
+        configuration file (`.github/dependabot.yaml`).
 
-  - If there are npm packages, update `dependencies/package.json` and
-    `dependencies/package-lock.json`. by adding the new packages.
-  - If there are Ruby Gems, update `dependencies/Gemfile` and
-    `dependencies/Gemfile.lock`
-  - If there are Maven or Java packages:
-    1. Create a directory named `dependencies/<name-of-tool>`.
-    2. Create a `dependencies/<name-of-tool>/build.gradle` file with the
-       following contents:
+   - If there are npm packages:
+     1. Update `dependencies/package.json` and `dependencies/package-lock.json`.
+        by adding the new packages.
+     1. Add the new npm packages to the `npm` group in the DependaBot
+        configuration file (`.github/dependabot.yaml`).
+   - If there are Ruby Gems, update `dependencies/Gemfile` and
+     `dependencies/Gemfile.lock`
+   - If there are Maven or Java packages:
+     1. Create a directory named `dependencies/<name-of-tool>`.
+     1. Create a `dependencies/<name-of-tool>/build.gradle` file with the
+        following contents:
 
-       ```gradle
-       repositories {
-         mavenLocal()
-         mavenCentral()
-       }
+     ```gradle
+     repositories {
+       mavenLocal()
+       mavenCentral()
+     }
 
-       // Hold this dependency here so we can get automated updates using DependaBot
-       dependencies {
-         implementation 'your:dependency-here:version'
-       }
+     // Hold this dependency here so we can get automated updates using DependaBot
+     dependencies {
+       implementation 'your:dependency-here:version'
+     }
 
-       group 'com.github.super-linter'
-       version '1.0.0-SNAPSHOT'
-       ```
+     group 'com.github.super-linter'
+     version '1.0.0-SNAPSHOT'
+     ```
 
-    3. Update the `dependencies` section in
-       `dependencies/<name-of-tool>/build.gradle` to install your dependencies.
+     3. Update the `dependencies` section in
+        `dependencies/<name-of-tool>/build.gradle` to install your dependencies.
 
-    4. Add the following content to the `Dockerfile`:
+     4. Add the following content to the `Dockerfile`:
 
-       ```dockerfile
-       COPY scripts/install-<name-of-tool>.sh /
-       RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
-       ```
+     ```dockerfile
+     COPY scripts/install-<name-of-tool>.sh /
+     RUN --mount=type=secret,id=GITHUB_TOKEN /<name-of-tool>.sh && rm -rf /<name-of-tool>.sh
+     ```
 
-    5. Create `scripts/install-<name-of-tool>.sh`, and implement the logic to
-       install your tool. You get the version of a dependency from
-       `build.gradle`. Example:
+     5. Create `scripts/install-<name-of-tool>.sh`, and implement the logic to
+        install your tool. You get the version of a dependency from
+        `build.gradle`. Example:
 
-       ```sh
-       GOOGLE_JAVA_FORMAT_VERSION="$(
-         set -euo pipefail
-         awk -F "[:']" '/google-java-format/ {print $4}' "google-java-format/build.gradle"
-       )"
-       ```
+     ```sh
+     GOOGLE_JAVA_FORMAT_VERSION="$(
+       set -euo pipefail
+       awk -F "[:']" '/google-java-format/ {print $4}' "google-java-format/build.gradle"
+     )"
+     ```
 
-    6. Add the new tool dependencies to the DependaBot configuration in the
-       `directories` list and in the `java-gradle` group of the `gradle` package
-       ecosystem.
+     6. Add the new tool dependencies to the DependaBot configuration in the
+        `directories` list and in the `java-gradle` group of the `gradle`
+        package ecosystem.
 
-  - If there is a container (Docker) image:
-    1. Add a new build stage to get the image:
+   - If there is a container (Docker) image:
+     1. Add a new build stage to get the image:
 
-       ```dockerfile
-       FROM your/image:version as <name-of-tool>
-       ```
+     ```dockerfile
+     FROM your/image:version as <name-of-tool>
+     ```
 
-    1. Copy the necessary binaries and libraries to the relevant locations.
-       Example:
+     1. Copy the necessary binaries and libraries to the relevant locations.
+        Example:
 
-       ```sh
-       COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
-       ```
+     ```sh
+     COPY --from=<name-of-tool> /usr/local/bin/<name-of-command> /usr/bin/
+     ```
 
-    1. Add the new dependency to the `docker` group in the DependaBot
-       configuration file.
+     1. Add the new dependency to the `docker` group in the DependaBot
+        configuration file.
 
 ## Run the new tool
+
+To get the commands and command options to use to run the new tool, refer to the
+command-line interface documentation of the new tool. If it's not available on
+the tool's site, run the new tool with the option to print help text (often:
+`--help` or `-h`).
 
 - Update the orchestration scripts to run the new tool:
   - `lib/globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use
@@ -158,24 +175,35 @@ new tool needs in the `PATH`, and the expected version command:
 
 ## Configure the new tool
 
-If the new tool doesn't support a configuration file search mechanism, update
-the command to run the new tool to set the path to the configuration file:
+To check if the new tool supports a configuration file search mechanism (also
+called _configuration file resolution_), refer to the configuration
+documentation of the new tool.
 
-1. Define a new variable in `lib/globals/linterRules.sh`:
-   `<LANGUAGE_NAME>_FILE_NAME="${<LANGUAGE_NAME>_CONFIG_FILE:-"default-config-file-name.conf"}"`
-   where `default-config-file-name.conf` is the name of the new configuration
-   file for the new tool. Use one of the default recommended configurationfile
-   names for the new tool. Example:
-   `PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"`.
-   Super-linter automatically initializes the path to the configuration file in
-   the `<LANGUAGE_NAME>_LINTER_RULES` variable using the
-   `<LANGUAGE_NAME>_FILE_NAME`. Example: `PYTHON_RUFF_LINTER_RULES`
+- If the new tool doesn't support a configuration file search mechanism, update
+  the command to run the new tool to set the path to the configuration file:
+  1. Define a new variable in `lib/globals/linterRules.sh`:
+     `<LANGUAGE_NAME>_FILE_NAME="${<LANGUAGE_NAME>_CONFIG_FILE:-"default-config-file-name.conf"}"`
+     where `default-config-file-name.conf` is the name of the new configuration
+     file for the new tool. Use one of the default recommended configurationfile
+     names for the new tool. Example:
+     `PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"`.
+     Super-linter automatically initializes the path to the configuration file
+     in the `<LANGUAGE_NAME>_LINTER_RULES` variable using the
+     `<LANGUAGE_NAME>_FILE_NAME`. Example: `PYTHON_RUFF_LINTER_RULES`
 
-1. Create a new minimal configuration file in the `TEMPLATES` directory.
-   Example: `TEMPLATES/default-config-file-name.conf`.
+  1. Create a new minimal configuration file in the `TEMPLATES` directory.
+     Example: `TEMPLATES/default-config-file-name.conf`.
 
-1. Update `lib/functions/linterCommands.sh` to set the path to the configuration
-   file path. Example: `htmlhint --config "${HTML_LINTER_RULES}"`
+  1. Update `lib/functions/linterCommands.sh` to set the path to the
+     configuration file path. Example:
+     `htmlhint --config "${HTML_LINTER_RULES}"`
+
+- If the new tool supports a configuration file search mechanism:
+  1. Update the _Configure linters_ section in the `README.md` by adding the new
+     tool to the list of tools that don't load configuration files from
+     `LINTER_RULES_PATH`.
+
+### Potential conflicts
 
 1. If the the new tool can potentially conflict with other tools, update the
    `ValidateConflictingTools` function in `lib/functions/validation.sh` to warn
@@ -198,17 +226,59 @@ filename:
 
 ## Populate the file list
 
-Provide the logic to populate the list of files or directories to examine:
-`lib/functions/buildFileList.sh`
+Provide the logic to populate the list of files or directories to examine in
+`lib/functions/buildFileList.sh`:
+
+- _File extension check_: If the new tool supports only specific files and you
+  can select the files by looking at their extension:
+  1. Add an `elif` clause in the `BuildFileArrays` function to select files by
+     extension. Example:
+
+  ```bash
+  elif [ "${FILE_TYPE}" == "ext" ]; then
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-<LANGUAGE_NAME>"
+  ```
+
+- _File contents check_: If the tool supports only specific files and you need
+  to examine the file contents to check if the new tool supports them:
+  1. Implement a function in `lib/functions/detectFiles.sh` to detect if the
+     file is one of those that the new tool supports.
+  1. Add an `elif` clause in the `BuildFileArrays` function to select files by
+     extension. Example:
+
+  ```bash
+  elif DetectCloudFormationFile "${FILE}"; then
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOUDFORMATION"
+  ```
+
+- _Entire workspace check_: If the tool supports its own file detection logic,
+  and supports customizing that logic using a configuration file, do the
+  following:
+  1. Add the logic to handle the "entire workspace" test case for the new tool
+     in the `BuildFileList` function.
+  1. In the `BuildFileArrays` function:
+     1. Add `FILE` to
+        `"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-<LANGUAGE_NAME>"` when
+        `"${FILE}" == "${GITHUB_WORKSPACE}"`
+     1. Add the logic to handle test cases for the new tool that lints the
+        entire workspace.
+
+To avoid a performance penalty, it might be possible that you need to combine
+the _file extension check_ and the _file contents check_ approaches to run the
+detection logic only on certain files. For example, you might run the
+_Kubernetes files detection_ logic only to YAML files (so files with the `.yml`
+and `.yaml` extensions).
+
+### Fallback
+
+The `CheckFileType` function in `lib/functions/detectFiles.sh` attempts to get
+the file type in case no other case matched.
 
 ## Get the tool version
 
-Provide the logic to populate the versions file: `scripts/linterVersions.sh`
-
-## Detection logic
-
-If necessary, provide elaborate logic to detect if the tool should examine a
-file or a directory: `lib/functions/detectFiles.sh`
+1. Provide the logic to populate the versions file: `scripts/linterVersions.sh`
+1. Ensure that the version command emits only the version string (example:
+   `v1.0.0`). You can use `awk` to select only the version string.
 
 ## Special cases
 

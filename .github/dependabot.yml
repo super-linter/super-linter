@@ -35,35 +35,26 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 100
     groups:
-      commitlint:
+      npm:
         applies-to: version-updates
         patterns:
           - "@commitlint/*"
           - "commitlint"
+          - "textlint*"
+          - "stylelint*"
+          - next
+          - next-pwa
       eslint-plugins-configs:
         applies-to: version-updates
         patterns:
           - "eslint-config*"
           - "eslint-plugin*"
-      next:
-        applies-to: version-updates
-        patterns:
-          - next
-          - next-pwa
       react:
         applies-to: version-updates
         patterns:
           - "react*"
           - "@babel/preset-react"
           - "@react-native/eslint-config"
-      stylelint:
-        applies-to: version-updates
-        patterns:
-          - "stylelint*"
-      textlint:
-        applies-to: version-updates
-        patterns:
-          - "textlint*"
       typescript:
         applies-to: version-updates
         patterns:
