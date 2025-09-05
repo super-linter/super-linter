@@ -3,12 +3,9 @@
 # GitHub Actions variables to enable workflow debug logging
 # Ref: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
 # Ref: https://github.com/actions/runner/pull/253
-declare -l ACTIONS_RUNNER_DEBUG
-ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}"
-declare -l ACTIONS_STEPS_DEBUG
-ACTIONS_STEPS_DEBUG="${ACTIONS_STEPS_DEBUG:-"false"}"
-declare -i RUNNER_DEBUG
-RUNNER_DEBUG="${RUNNER_DEBUG:-0}"
+declare -l ACTIONS_RUNNER_DEBUG="${ACTIONS_RUNNER_DEBUG:-"false"}"
+declare -l ACTIONS_STEPS_DEBUG="${ACTIONS_STEPS_DEBUG:-"false"}"
+declare -i RUNNER_DEBUG="${RUNNER_DEBUG:-0}"
 
 # Default log file name (located in GITHUB_WORKSPACE folder)
 LOG_FILE="${LOG_FILE:-"super-linter.log"}"
