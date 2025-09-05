@@ -108,6 +108,22 @@ function BuildFileList() {
   if [ "${TEST_CASE_RUN}" == "true" ]; then
     debug "We are running in test mode."
 
+    debug "Adding test case directories to the list of directories to analyze with BIOME_FORMAT."
+    DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/biome_format"
+    # We need this for parallel
+    export DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY
+    debug "DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY: ${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with BIOME_LINT."
+    DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/biome_lint"
+    # We need this for parallel
+    export DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY
+    debug "DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY: ${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}/good")
+
     debug "Adding test case directories to the list of directories to analyze with JSCPD."
     DEFAULT_JSCPD_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/jscpd"
     # We need this for parallel
@@ -254,6 +270,12 @@ BuildFileArrays() {
 
       # Test cases for these languages are handled below because we first need to exclude non-relevant test cases
       if [[ "${TEST_CASE_RUN}" == "false" ]]; then
+        debug "Add ${FILE} to the list of items to lint with BIOME_FORMAT"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_FORMAT"
+
+        debug "Add ${FILE} to the list of items to lint with BIOME_LINT"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
+
         debug "Add ${FILE} to the list of items to lint with JSCPD"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
 
@@ -323,6 +345,18 @@ BuildFileArrays() {
     fi
 
     # Handle test cases for tools that lint the entire workspace
+
+    # Handle BIOME_FORMAT test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for BIOME_FORMAT. Adding it to the list of items to lint with BIOME_FORMAT"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_FORMAT"
+    fi
+
+    # Handle BIOME_LINT test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for BIOME_LINT. Adding it to the list of items to lint with BIOME_LINT"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
+    fi
 
     # Handle JSCPD test cases
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then

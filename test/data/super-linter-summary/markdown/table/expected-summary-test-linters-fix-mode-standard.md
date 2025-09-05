@@ -5,6 +5,8 @@
 | Language                     | Validation result |
 | ---------------------------- | ----------------- |
 | ANSIBLE                      | Pass ✅           |
+| BIOME_FORMAT                 | Pass ✅           |
+| BIOME_LINT                   | Pass ✅           |
 | CLANG_FORMAT                 | Pass ✅           |
 | CSHARP                       | Pass ✅           |
 | CSS                          | Pass ✅           |

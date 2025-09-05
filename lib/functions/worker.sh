@@ -139,7 +139,11 @@ function LintCodebase() {
     [[ ${FILE_TYPE} == "RUST_CLIPPY" ]] ||
     [[ ${FILE_TYPE} == "TERRAFORM_TFLINT" ]]; then
     LINTER_WORKING_DIRECTORY="{//}"
+  # Biome: it runs against the entire workspace, but we need to change the
+  # the working directory when running test cases, so we can pick a
+  # configuration that doesn't ignore the test/data directory
   elif [[ ${FILE_TYPE} == "ANSIBLE" ]] ||
+    [[ ${FILE_TYPE} == "BIOME" ]] ||
     [[ ${FILE_TYPE} == "GO_MODULES" ]] ||
     [[ ${FILE_TYPE} == "TRIVY" ]]; then
     LINTER_WORKING_DIRECTORY="{}"

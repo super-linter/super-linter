@@ -102,3 +102,6 @@ github-step-summary.md
 
 # MacOS File
 .DS_Store
+
+# GitHub Actions configuration files
+github_conf

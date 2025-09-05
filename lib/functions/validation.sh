@@ -608,8 +608,73 @@ ValidateDeprecatedConfigurationFiles() {
 ValidateConflictingTools() {
   debug "Validating if potentially conflicting tools are enabled"
 
+  local -l CONFLICT_FOUND="false"
+
   if [[ "${VALIDATE_PYTHON_BLACK}" == "true" ]] && [[ "${VALIDATE_PYTHON_RUFF_FORMAT}" == "true" ]]; then
-    warn "Black and Ruff formatter are both enabled, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    warn "Black and Ruff are both enabled, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    CONFLICT_FOUND="true"
+  fi
+
+  if [[ "${VALIDATE_BIOME_FORMAT}" ]]; then
+    if [[ "${VALIDATE_CSS_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for CSS, SCSS, and SASS files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_GRAPHQL_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for GraphQL files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_HTML_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for HTML files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JAVASCRIPT_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for JavaScript files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSON_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for JSON files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSONC_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for JSONC and JSON5 files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSX_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for JSX files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_TYPESCRIPT_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for TypeScript files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_VUE_PRETTIER}" == "true" ]]; then
+      warn "Biome format and Prettier are both enabled for Vue files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+  fi
+
+  if [[ "${VALIDATE_BIOME_LINT}" ]]; then
+    if [[ "${VALIDATE_CSS}" == "true" ]]; then
+      warn "Biome lint and Stylelint are both enabled for CSS, SCSS, and SASS files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JAVASCRIPT_ES}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for JavaScript files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSON}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for JSON files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSONC}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for JSONC and JSON5 files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_JSX}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for JSX files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_TSX}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for TSX files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_TYPESCRIPT_ES}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for TypeScript files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+    if [[ "${VALIDATE_VUE}" == "true" ]]; then
+      warn "Biome lint and ESLint are both enabled for Vue files, and might conflict with each other. To avoid potential conflicts, keep only one of the two enabled, and disable the other."
+    fi
+  fi
+
+  ValidateBooleanVariable "CONFLICT_FOUND" "${CONFLICT_FOUND}"
+
+  if [[ "${CONFLICT_FOUND}" == "true" ]]; then
     return 1
   fi
 }

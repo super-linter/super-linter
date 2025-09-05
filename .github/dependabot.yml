@@ -38,6 +38,7 @@ updates:
       npm:
         applies-to: version-updates
         patterns:
+          - "@biomejs/biome"
           - "@commitlint/*"
           - "commitlint"
           - "textlint*"
