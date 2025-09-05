@@ -50,6 +50,8 @@ PRETTIER_FIX_MODE_OPTIONS=(--write)
 # Define configuration options to enable "fix mode".
 # Not all linters and formatters support this.
 ANSIBLE_FIX_MODE_OPTIONS=(--fix)
+BIOME_FORMAT_FIX_MODE_OPTIONS=(--write)
+BIOME_LINT_FIX_MODE_OPTIONS=(--write)
 CLANG_FORMAT_FIX_MODE_OPTIONS=(-i)
 CSS_FIX_MODE_OPTIONS=(--fix)
 CSS_PRETTIER_FIX_MODE_OPTIONS=("${PRETTIER_FIX_MODE_OPTIONS[@]}")

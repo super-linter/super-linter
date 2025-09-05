@@ -8,6 +8,8 @@
 | ARM                          | Pass ✅           |
 | BASH                         | Pass ✅           |
 | BASH_EXEC                    | Pass ✅           |
+| BIOME_FORMAT                 | Pass ✅           |
+| BIOME_LINT                   | Pass ✅           |
 | CHECKOV                      | Pass ✅           |
 | CLANG_FORMAT                 | Pass ✅           |
 | CLOUDFORMATION               | Pass ✅           |
