@@ -401,6 +401,8 @@ test-os-packages-installation: ## Test installing OS packages
 # loading default configuration files. The directory that we run super-linter
 # against should not be .github because that includes default linter rules.
 # Disable commitlint because the workspace is not a Git repository.
+# Disable biome format because it reports errors due to default formatting rules,
+# and the absence of a biome config file that address our formatting choices.
 .PHONY: test-default-config-files
 test-default-config-files: ## Test default configuration files loading
 	docker run \
@@ -410,6 +412,7 @@ test-default-config-files: ## Test default configuration files loading
 		-e DEFAULT_BRANCH=main \
 		-e USE_FIND_ALGORITHM=true \
 		-e VALIDATE_GIT_COMMITLINT=false \
+		-e VALIDATE_BIOME_FORMAT=false \
 		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \
@@ -425,6 +428,7 @@ test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
 		-e USE_FIND_ALGORITHM=true \
 		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
 		-e VALIDATE_GIT_COMMITLINT=false \
+		-e VALIDATE_BIOME_FORMAT=false \
 		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
 		-v "$(CURDIR)/docs":/tmp/lint \
 		--rm \

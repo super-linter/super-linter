@@ -7,6 +7,8 @@
 | ANSIBLE                    | Fail ❌           |
 | BASH                       | Fail ❌           |
 | BASH_EXEC                  | Fail ❌           |
+| BIOME_FORMAT               | Fail ❌           |
+| BIOME_LINT                 | Fail ❌           |
 | CHECKOV                    | Fail ❌           |
 | CLANG_FORMAT               | Fail ❌           |
 | CLOUDFORMATION             | Fail ❌           |

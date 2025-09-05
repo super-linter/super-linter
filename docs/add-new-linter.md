@@ -14,6 +14,8 @@ Update the `README.md` to include:
   - `FILTER_REGEX_INCLUDE`
   - `IGNORE_GENERATED_FILES`
   - `IGNORE_GITIGNORED_FILES`
+- The table of supported linters and formatters.
+- If the new tool supports its own configuration file search mechanism.
 
 ## Provide test cases
 
@@ -27,7 +29,7 @@ Update the `README.md` to include:
    mode, the test case supposed to fail validation should only contain
    violations that the fix mode can automatically fix. Avoid test cases that
    fail only because of syntax errors, when possible.
-4. Update expected summary reports: `test/data/super-linter-summary`.
+4. Update all the expected summary reports in `test/data/super-linter-summary`.
 5. If the tool supports check-only mode or fix mode, add the `<LANGUAGE>` to the
    `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
 
@@ -61,6 +63,7 @@ existence of any configuration file you added:
         by adding the new packages.
      1. Add the new npm packages to the `npm` group in the DependaBot
         configuration file (`.github/dependabot.yaml`).
+
    - If there are Ruby Gems, update `dependencies/Gemfile` and
      `dependencies/Gemfile.lock`
    - If there are Maven or Java packages:
@@ -201,7 +204,7 @@ documentation of the new tool.
 - If the new tool supports a configuration file search mechanism:
   1. Update the _Configure linters_ section in the `README.md` by adding the new
      tool to the list of tools that don't load configuration files from
-     `LINTER_RULES_PATH`.
+     `LINTER_RULES_PATH`. Keep the list alphabetically ordered.
 
 ### Potential conflicts
 
@@ -263,11 +266,10 @@ Provide the logic to populate the list of files or directories to examine in
      1. Add the logic to handle test cases for the new tool that lints the
         entire workspace.
 
-To avoid a performance penalty, it might be possible that you need to combine
-the _file extension check_ and the _file contents check_ approaches to run the
-detection logic only on certain files. For example, you might run the
-_Kubernetes files detection_ logic only to YAML files (so files with the `.yml`
-and `.yaml` extensions).
+To avoid a performance penalties, you can combine the _file extension check_ and
+the _file contents check_ approaches to run the detection logic only on certain
+files. For example, you might run the _Kubernetes files detection_ logic only to
+YAML files (so files with the `.yml` and `.yaml` extensions).
 
 ### Fallback
 
