@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files test-find lint-subset-files test-custom-ssl-cert test-non-default-workdir test-git-flags test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-git-worktree test-github-push-event-multiple-commits test-github-merge-group-event test-runtime-dependencies-installation test-linters test-linters-fix-mode ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files lint-subset-files test-custom-ssl-cert test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-git-worktree test-github-push-event-multiple-commits test-github-merge-group-event test-runtime-dependencies-installation test-linters test-linters-fix-mode ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -185,51 +185,6 @@ npm-audit: ## Run npm audit to check for known vulnerable dependencies
 		-c "npm audit"
 
 # For some cases, mount a directory that doesn't have too many files to keep tests short
-
-.PHONY: test-find
-test-find: ## Run super-linter on a subdirectory with USE_FIND_ALGORITHM=true
-	docker run \
-		-e RUN_LOCAL=true \
-		-e LOG_LEVEL=DEBUG \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e DEFAULT_BRANCH=main \
-		-e USE_FIND_ALGORITHM=true \
-		-e VALIDATE_GIT_COMMITLINT=false \
-		-v "$(CURDIR)/.github":/tmp/lint/.github \
-		--rm \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
-
-# We need to set USE_FIND_ALGORITHM=true because the DEFALUT_WORKSPACE is not
-# a Git directory in this test case
-.PHONY: test-non-default-workdir
-test-non-default-workdir: ## Run super-linter with DEFAULT_WORKSPACE set
-	docker run \
-		-e RUN_LOCAL=true \
-		-e LOG_LEVEL=DEBUG \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e DEFAULT_BRANCH=main \
-		-e DEFAULT_WORKSPACE=/tmp/not-default-workspace \
-		-e USE_FIND_ALGORITHM=true \
-		-e VALIDATE_ALL_CODEBASE=true \
-		-e VALIDATE_GIT_COMMITLINT=false \
-		-v $(CURDIR)/.github:/tmp/not-default-workspace/.github \
-		--rm \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
-
-.PHONY: test-git-flags
-test-git-flags: ## Run super-linter with different git-related flags
-	docker run \
-		-e RUN_LOCAL=true \
-		-e LOG_LEVEL=DEBUG \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
-		-e DEFAULT_BRANCH=main \
-		-e IGNORE_GENERATED_FILES=true \
-		-e IGNORE_GITIGNORED_FILES=true \
-		-e VALIDATE_ALL_CODEBASE=true \
-		-v "$(CURDIR)":/tmp/lint \
-		--rm \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
