@@ -279,13 +279,13 @@ GetGitHubVars() {
         fi
       else
         debug "${DOT_GIT_PATH} is a directory. Assuming that this is not a worktree"
-        GITHUB_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
-        local RET_CODE=$?
-        if [[ "${RET_CODE}" -gt 0 ]]; then
-          fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
-        fi
       fi
 
+      GITHUB_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+      local RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to initialize GITHUB_SHA. Output: ${GITHUB_SHA}"
+      fi
       info "Initialized GITHUB_SHA to: ${GITHUB_SHA}"
 
       if ! InitializeRootCommitSha; then
