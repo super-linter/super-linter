@@ -386,7 +386,7 @@ test-linter-versions: ## Test linterVersions
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: test-runtime-dependencies-installation
-test-runtime-dependencies-installation: test-os-packages-installation ## Test runtime dependencies installation
+test-runtime-dependencies-installation: test-os-packages-installation test-additional-installs-ruby-bundler ## Test runtime dependencies installation
 
 .PHONY: test-os-packages-installation
 test-os-packages-installation: ## Test installing OS packages
@@ -396,6 +396,13 @@ test-os-packages-installation: ## Test installing OS packages
 		--entrypoint /tmp/lint/test/lib/osPackagesInstallationTest.sh \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-additional-installs-ruby-bundler
+test-additional-installs-ruby-bundler: ## Run super-linter and install additional dependencies using bundler
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_additional_installs_ruby_bundler" \
+		"$(IMAGE)"
 
 # Run this test against a small directory because we're only interested in
 # loading default configuration files. The directory that we run super-linter

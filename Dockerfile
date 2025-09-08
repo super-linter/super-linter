@@ -202,7 +202,8 @@ RUN apk add --no-cache \
   php84-tokenizer \
   php84-xmlwriter \
   R \
-  ruby
+  ruby \
+  ruby-bundler
 
 ##############################
 # Installs Perl dependencies #
@@ -213,7 +214,7 @@ RUN apk add --no-cache --virtual .perl-build-deps \
   musl-dev \
   perl-dev \
   && curl --retry 5 --retry-delay 5 -sL https://cpanmin.us/ \
-  | perl - -nq --no-wget \
+  | perl - -n --no-wget \
   Perl::Critic \
   Perl::Critic::Bangs \
   Perl::Critic::Community \
