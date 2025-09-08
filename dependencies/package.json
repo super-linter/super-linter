@@ -32,7 +32,7 @@
     "react-intl": "^7.1.6",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.8.2",
-    "renovate": "^41.96.2",
+    "renovate": "^41.98.1",
     "stylelint": "^16.23.1",
     "stylelint-config-recommended-scss": "^16.0.0",
     "stylelint-config-sass-guidelines": "^12.1.0",
