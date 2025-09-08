@@ -17,7 +17,7 @@ endif
 # Detect if running on ARM64 and set platform to AMD64 for compatibility
 ARCH := $(shell uname -m)
 ifeq ($(ARCH), arm64)
-	DOCKER_FLAGS += --platform linux/amd64
+	DOCKER_PLATFORM := --platform linux/amd64
 endif
 
 .PHONY: help
@@ -26,7 +26,7 @@ help: ## Show help
 
 .PHONY: inspec-check
 inspec-check: ## Validate inspec profiles
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		--rm \
 		-v "$(CURDIR)":/workspace \
 		-w="/workspace" \
@@ -111,7 +111,7 @@ inspec: inspec-check ## Run InSpec tests
 	if [ "$$DOCKER_CONTAINER_STATE" = "true" ]; then docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME); fi && \
 	docker tag $(SUPER_LINTER_TEST_CONTAINER_URL) $(SUPER_LINTER_TEST_CONTAINER_NAME) && \
 	SUPER_LINTER_TEST_CONTAINER_ID="$$(docker run -d --name $(SUPER_LINTER_TEST_CONTAINER_NAME) --rm -it --entrypoint /bin/ash $(SUPER_LINTER_TEST_CONTAINER_NAME) -c "while true; do sleep 1; done")" \
-	&& docker run $(DOCKER_FLAGS) \
+	&& docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		--rm \
 		-v "$(CURDIR)":/workspace \
 		-v /var/run/docker.sock:/var/run/docker.sock \
@@ -127,7 +127,7 @@ inspec: inspec-check ## Run InSpec tests
 
 .PHONY: docker
 docker: docker-build-check check-github-token ## Build the container image
-	DOCKER_BUILDKIT=1 docker buildx build --load \
+	DOCKER_BUILDKIT=1 docker buildx build --load $(DOCKER_PLATFORM) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
 		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
@@ -156,7 +156,7 @@ docker-pull: ## Pull the container image from registry
 
 .PHONY: open-shell-super-linter-container
 open-shell-super-linter-container: ## Open a shell in the Super-linter container
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		--interactive \
 		--entrypoint /bin/bash \
 		--rm \
@@ -181,7 +181,7 @@ validate-container-image-labels: ## Validate container image labels
 
 .PHONY: npm-audit
 npm-audit: ## Run npm audit to check for known vulnerable dependencies
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		--entrypoint /bin/bash \
 		--rm \
 		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
@@ -278,7 +278,7 @@ test-git-flags: ## Run super-linter with different git-related flags
 
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		-e CREATE_LOG_FILE=true \
 		-e RUN_LOCAL=true \
 		-e LOG_LEVEL=DEBUG \
@@ -297,7 +297,7 @@ lint-codebase: ## Lint the entire codebase
 # Return an error if there are changes to commit
 .PHONY: fix-codebase
 fix-codebase: ## Fix and format the entire codebase
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		-e CREATE_LOG_FILE=true \
 		-e DEFAULT_BRANCH=main \
 		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
@@ -682,7 +682,7 @@ docker-dev-container-build-check:
 
 .PHONY: build-dev-container-image
 build-dev-container-image: docker-dev-container-build-check ## Build commit linter container image
-	DOCKER_BUILDKIT=1 docker buildx build --load \
+	DOCKER_BUILDKIT=1 docker buildx build --load $(DOCKER_PLATFORM) \
 		--build-arg GID=$(shell id -g) \
 		--build-arg UID=$(shell id -u) \
 		-t ${DEV_CONTAINER_URL} "${CURDIR}/dev-dependencies"
@@ -706,7 +706,7 @@ release-please-dry-run: build-dev-container-image check-github-token ## Run rele
 
 .PHONY: open-shell-dev-container
 open-shell-dev-container: build-dev-container-image ## Open a shell in the dev tools container
-	docker run $(DOCKER_FLAGS) \
+	docker run $(DOCKER_FLAGS) $(DOCKER_PLATFORM) \
 		--interactive \
 		--entrypoint /bin/bash \
 		--rm \
