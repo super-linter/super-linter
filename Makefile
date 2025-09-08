@@ -126,7 +126,7 @@ inspec: inspec-check ## Run InSpec tests
 	&& docker kill $(SUPER_LINTER_TEST_CONTAINER_NAME)
 
 .PHONY: docker
-docker: docker-build-check check-github-token ## Build the container image
+docker: check-github-token ## Build the container image
 	DOCKER_BUILDKIT=1 docker buildx build --load $(DOCKER_PLATFORM) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
@@ -147,8 +147,12 @@ docker: docker-build-check check-github-token ## Build the container image
 
 .PHONY: docker-build-check ## Run Docker build checks against the Super-linter image
 docker-build-check:
+ifeq ($(ARCH), arm64)
+	@echo "Skipping docker-build-check on ARM64 (--check flag incompatible with --platform)"
+else
 	DOCKER_BUILDKIT=1 docker buildx build --check \
 	.
+endif
 
 .PHONY: docker-pull
 docker-pull: ## Pull the container image from registry
@@ -677,8 +681,12 @@ test-git-worktree: ## Run super-linter against a Git repository with worktrees
 
 .PHONY: docker-dev-container-build-check ## Run Docker build checks against the dev-container image
 docker-dev-container-build-check:
+ifeq ($(ARCH), arm64)
+	@echo "Skipping docker-dev-container-build-check on ARM64 (--check flag incompatible with --platform)"
+else
 	DOCKER_BUILDKIT=1 docker buildx build --check \
 	"${CURDIR}/dev-dependencies"
+endif
 
 .PHONY: build-dev-container-image
 build-dev-container-image: docker-dev-container-build-check ## Build commit linter container image
