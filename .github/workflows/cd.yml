@@ -41,6 +41,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -67,6 +70,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-${{ matrix.stages.stage-name }}
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache-${{ matrix.stages.stage-name }},mode=max
           load: true
+          platforms: linux/amd64,linux/arm64
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
@@ -165,6 +169,9 @@ jobs:
           sudo rm -rf /opt/ghc || true
           sudo rm -rf /usr/local/.ghcup || true
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -189,6 +196,7 @@ jobs:
             type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-php-linters
             type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-ruby-installer
           load: true
+          platforms: linux/amd64,linux/arm64
           push: false
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
@@ -230,6 +238,7 @@ jobs:
             type=registry,ref=${{ env.STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID }}-buildcache-ruby-installer
           cache-to: type=registry,ref=${{ env.CONTAINER_IMAGE_ID }}-buildcache,mode=max
           load: false
+          platforms: linux/amd64,linux/arm64
           push: true
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
