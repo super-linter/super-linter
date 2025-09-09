@@ -187,18 +187,9 @@ function GitleaksCommandTest() {
   local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 
   if [[ "${EXPECTED_GITLEAKS_LOG_LEVEL:-}" ]]; then
-    # The gitleaks command ends with an option to specify the path
-    # to the file to check, so we need to append the log option before that.
-    local GITLEAKS_FILE_PATH_OPTION="${EXPECTED_COMMAND[-1]}"
-
-    # Remove the file path option so we can append the log option
-    unset 'EXPECTED_COMMAND[-1]'
     # shellcheck disable=SC2034
     local GITLEAKS_LOG_LEVEL="${EXPECTED_GITLEAKS_LOG_LEVEL}"
     EXPECTED_COMMAND+=("${GITLEAKS_LOG_LEVEL_OPTIONS[@]}" "${EXPECTED_GITLEAKS_LOG_LEVEL}")
-
-    # Add the file path option back
-    EXPECTED_COMMAND+=("${GITLEAKS_FILE_PATH_OPTION}")
   fi
 
   # Source the file again so it accounts for modifications
@@ -428,10 +419,7 @@ CommandOptionsTest() {
 
   # shellcheck disable=SC2034
   local EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
-  # remove the last argument (--source) because we add command arguments before --source
-  unset "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS[-1]"
-  # also add the --source argument that we removed before
-  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS" "${GITLEAKS_COMMAND_OPTIONS} --source"
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS" "${GITLEAKS_COMMAND_OPTIONS}"
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GITLEAKS" "EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
