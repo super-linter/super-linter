@@ -616,6 +616,10 @@ BuildFileArrays() {
       if DetectOpenAPIFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-OPENAPI"
       fi
+
+      if DetectKubernetesFile "${FILE}"; then
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-KUBERNETES_KUBECONFORM"
+      fi
     else
       CheckFileType "${FILE}"
     fi

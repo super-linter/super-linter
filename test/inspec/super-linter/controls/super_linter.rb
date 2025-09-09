@@ -177,6 +177,7 @@ control "super-linter-installed-commands" do
     { linter_name: "isort" },
     { linter_name: "jscpd" },
     { linter_name: "ktlint" },
+    { linter_name: "kubeconform", version_option: "-v" },
     { linter_name: "kustomize", version_option: "version" }, # not used as linter, needed for checkov's kustomize checks
     { linter_name: "lua", version_option: "-v" },
     { linter_name: "markdownlint" },

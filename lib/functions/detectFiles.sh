@@ -87,6 +87,11 @@ DetectCloudFormationFile() {
 DetectKubernetesFile() {
   FILE="${1}"
 
+  if [ "${VALIDATE_KUBERNETES_KUBECONFORM}" == "false" ]; then
+    debug "Don't check if ${FILE} is a Kubernetes file because VALIDATE_KUBERNETES_KUBECONFORM is: ${VALIDATE_KUBERNETES_KUBECONFORM}"
+    return 1
+  fi
+
   debug "Checking if ${FILE} is a Kubernetes descriptor..."
   if grep -q -v 'kustomize.config.k8s.io' "${FILE}" &&
     grep -q -E '(^apiVersion):' "${FILE}" &&

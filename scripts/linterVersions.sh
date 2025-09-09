@@ -53,6 +53,7 @@ LINTER_NAMES_ARRAY['JUPYTER_NBQA_MYPY']="nbqa"
 LINTER_NAMES_ARRAY['JUPYTER_NBQA_PYLINT']="nbqa"
 LINTER_NAMES_ARRAY['JUPYTER_NBQA_RUFF']="nbqa"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
+LINTER_NAMES_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform"
 LINTER_NAMES_ARRAY['LATEX']="chktex"
 LINTER_NAMES_ARRAY['LUA']="lua"
 LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
@@ -168,6 +169,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(${LINTER} --version | grep 'VERSION' | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "ktlint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $3 }')"
+  elif [[ ${LINTER} == "kubeconform" ]]; then
+    GET_VERSION_CMD="$(${LINTER} -v)"
   elif [[ ${LINTER} == "lintr" ]]; then
     # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
     GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \

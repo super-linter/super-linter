@@ -112,6 +112,7 @@ updates:
           - dart
           - powershell
           - composer/composer
+          - yannh/kubeconform
       docker-base-images:
         applies-to: version-updates
         patterns:

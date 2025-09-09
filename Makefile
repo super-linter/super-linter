@@ -266,6 +266,7 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
 		-e VALIDATE_CLOUDFORMATION=true \
+		-e VALIDATE_KUBERNETES_KUBECONFORM=true \
 		-e VALIDATE_MARKDOWN=true \
 		-e VALIDATE_OPENAPI=true \
 		-e VALIDATE_STATES=true \
