@@ -611,6 +611,9 @@ for item in "${TEMP_ITEMS_TO_CLEAN[@]}"; do
   fi
 done
 
+# Change ownership of .git dir back in case we have a devcontainer open
+sudo chown -R "$(id -u)":"$(id -g)" "$(pwd)/.git"
+
 if ! CheckUnexpectedGitChanges "$(pwd)"; then
   debug "There are unexpected modifications to the working directory after running tests."
   exit 1

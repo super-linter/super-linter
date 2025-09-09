@@ -329,7 +329,7 @@ You can configure Super-linter using the following environment variables:
 | **SAVE_SUPER_LINTER_SUMMARY**                   | `false`                                                                      | If set to `true`, Super-linter will save a summary. For more information, see [Summary outputs](#summary-outputs).                                                                                                                                                                                                                                                          |
 | **SCALAFMT_CONFIG_FILE**                        | `.scalafmt.conf`                                                             | Filename for [scalafmt configuration](https://scalameta.org/scalafmt/docs/configuration.html) (ex: `.scalafmt.conf`)                                                                                                                                                                                                                                                        |
 | **SNAKEMAKE_SNAKEFMT_CONFIG_FILE**              | `.snakefmt.toml`                                                             | Filename for [Snakemake configuration](https://github.com/snakemake/snakefmt#configuration) (ex: `pyproject.toml`, `.snakefmt.toml`)                                                                                                                                                                                                                                        |
-| **SSL_CERT_SECRET**                             | `none`                                                                       | SSL cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the cert for security standards (ex. ${{ secrets.SSL_CERT }})                                                                                                                                                                                      |
+| **SSL_CERT_SECRET**                             | `none`                                                                       | Certification Authority (CA) cert to add to the **Super-Linter** trust store. This is needed for users on `self-hosted` runners or need to inject the certificate (ex. ${{ secrets.SSL_CERT }})                                                                                                                                                                             |
 | **SSH_KEY**                                     | `none`                                                                       | SSH key that has access to your private repositories                                                                                                                                                                                                                                                                                                                        |
 | **SSH_SETUP_GITHUB**                            | `false`                                                                      | If set to `true`, adds the `github.com` SSH key to `known_hosts`. This is ignored if `SSH_KEY` is provided - i.e. the `github.com` SSH key is always added if `SSH_KEY` is provided                                                                                                                                                                                         |
 | **SSH_INSECURE_NO_VERIFY_GITHUB_KEY**           | `false`                                                                      | **INSECURE -** If set to `true`, does not verify the fingerprint of the github.com SSH key before adding this. This is not recommended!                                                                                                                                                                                                                                     |
@@ -716,10 +716,10 @@ env:
   SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
 
-If you need to inject a SSL certificate into the trust store, you can use the
-`SSL_CERT_SECRET` variable. The value of that variable is expected to be the
-path to the files that contains a CA that can be used to validate the
-certificate:
+If you need to inject a certification authority (CA) certificate in the
+operating system trust store, you can use the `SSL_CERT_SECRET` variable. The
+value of that variable is expected to be the path to the files that contains a
+CA that can be used to validate the certificate:
 
 ```yaml
 env:
