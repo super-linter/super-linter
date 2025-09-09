@@ -4,7 +4,7 @@
 all: info docker test ## Run all targets.
 
 .PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files lint-subset-files test-custom-ssl-cert test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-git-worktree test-github-push-event-multiple-commits test-github-merge-group-event test-runtime-dependencies-installation test-linters test-linters-fix-mode ## Run the test suite
+test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files lint-subset-files test-custom-ssl-cert test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-git-invalid-worktree test-git-valid-worktree test-github-push-event-multiple-commits test-github-merge-group-event test-runtime-dependencies-installation test-linters test-linters-fix-mode ## Run the test suite
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -588,11 +588,18 @@ test-linter-command-options: ## Run super-linter passing options to linters
 		"run_test_case_linter_command_options" \
 		"$(IMAGE)"
 
-.PHONY: test-git-worktree
-test-git-worktree: ## Run super-linter against a Git repository with worktrees
+.PHONY: test-git-invalid-worktree
+test-git-invalid-worktree: ## Run super-linter against a Git repository with worktrees
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_git_worktree" \
+		"run_test_case_git_invalid_worktree" \
+		"$(IMAGE)"
+
+.PHONY: test-git-valid-worktree
+test-git-valid-worktree: ## Run super-linter against a Git repository with worktrees
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_git_valid_worktree" \
 		"$(IMAGE)"
 
 .PHONY: docker-dev-container-build-check ## Run Docker build checks against the dev-container image

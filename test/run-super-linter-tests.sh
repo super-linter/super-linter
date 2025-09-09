@@ -220,9 +220,8 @@ run_test_case_linter_command_options() {
   COMMAND_TO_RUN+=(--env GITLEAKS_COMMAND_OPTIONS="--verbose")
 }
 
-run_test_case_git_worktree() {
-  local GIT_REPOSITORY_PATH
-  GIT_REPOSITORY_PATH="$(mktemp -d)"
+configure_git_worktree_test_cases() {
+  local GIT_REPOSITORY_PATH="${1}"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
   initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "false" "push" "false" "false" "false" "false"
@@ -248,7 +247,23 @@ run_test_case_git_worktree() {
   SAVE_SUPER_LINTER_OUTPUT="false"
 
   configure_command_arguments_for_test_git_repository "${GIT_WORKTREE_PATH}" "test/data/github-event/github-event-push.json" "push"
+}
+
+run_test_case_git_invalid_worktree() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  configure_git_worktree_test_cases "${GIT_REPOSITORY_PATH}"
   EXPECTED_EXIT_CODE=1
+}
+
+run_test_case_git_valid_worktree() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  configure_git_worktree_test_cases "${GIT_REPOSITORY_PATH}"
+  debug "Mounting the main Git repository (${GIT_REPOSITORY_PATH}) so Super-linter can access the common Git objects"
+  COMMAND_TO_RUN+=(-v "${GIT_REPOSITORY_PATH}:${GIT_REPOSITORY_PATH}")
 }
 
 run_test_case_fix_mode() {
