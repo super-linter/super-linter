@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 
-function CheckSSLCert() {
+InstallCaCert() {
   if [ -z "${SSL_CERT_SECRET:-}" ]; then
-    # No cert was passed
     debug "User did not provide a SSL_CERT_SECRET"
-  else
-    # User has provided a cert file to upload
-    debug "User configured a SSL_CERT_SECRET"
-    InstallSSLCert
+    return
   fi
-}
 
-function InstallSSLCert() {
+  debug "User configured a SSL_CERT_SECRET"
+
   local CERT_FILE
   CERT_FILE='/tmp/cert.crt'
   local CERT_ROOT
   CERT_ROOT='/usr/local/share/ca-certificates'
   local FILE_NAME
-  FILE_NAME=$(basename "${CERT_FILE}" 2>&1)
+  local RET_CODE
+  FILE_NAME="$(basename "${CERT_FILE}" 2>&1)"
+  RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Error while getting the file name of the certificate file: ${CERT_FILE}. Output: ${FILE_NAME}"
+    return 1
+  fi
 
   echo "${SSL_CERT_SECRET}" >>"${CERT_FILE}"
 
@@ -26,14 +28,16 @@ function InstallSSLCert() {
   info "Moving certificate to ${CERT_DESTINATION}"
   local COPY_CMD
   if ! COPY_CMD=$(mv -v "${CERT_FILE}" "${CERT_DESTINATION}" 2>&1); then
-    fatal "Failed to move cert to ${CERT_DESTINATION}. Output: ${COPY_CMD}"
+    error "Failed to move cert to ${CERT_DESTINATION}. Output: ${COPY_CMD}"
+    return 1
   fi
   debug "Move certificate output: ${COPY_CMD}"
 
   info "Update cert store to consider the new certificate"
   local UPDATE_CMD
   if ! UPDATE_CMD=$(update-ca-certificates 2>&1); then
-    fatal "Failed to add the certificate to the trust store. Output: ${UPDATE_CMD}"
+    error "Failed to add the certificate to the trust store. Output: ${UPDATE_CMD}"
+    return 1
   fi
   debug "Cert store update output: ${UPDATE_CMD}"
 }

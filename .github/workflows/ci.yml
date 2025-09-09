@@ -302,7 +302,7 @@ jobs:
       - name: Generate test cases matrix
         id: generate-matrix
         run: |
-          TEST_TARGETS=$(make -pRrq 2>&1 | grep 'test:' | tr -d '\n' | sed -e "s/^test: //" | jq --raw-input --slurp --compact-output 'split(" ")')
+          TEST_TARGETS=$(awk '/^test:/ {p=1} p {if ($1 ~ /:$/) start=2; else start=1; for (i=start; i<=NF; ++i) if ($i != "\\") print $i; if ($NF != "\\") p=0}' Makefile | jq --compact-output --raw-input --slurp 'split("\n") | map(select(length > 0))')
           echo "TEST_TARGETS: ${TEST_TARGETS}"
           echo "test-cases=${TEST_TARGETS}" >> "${GITHUB_OUTPUT}"
 

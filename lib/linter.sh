@@ -820,10 +820,10 @@ if ! ValidateCheckModeAndFixModeVariables; then
   fatal "Error while validating the configuration fix mode for linters that support that"
 fi
 
-#################################
-# Check for SSL cert and update #
-#################################
-CheckSSLCert
+# Check for SSL cert if necessary
+if ! InstallCaCert; then
+  fatal "Error while installing certificates"
+fi
 
 # Set global variables that depend on validation being successful
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then

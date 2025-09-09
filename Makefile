@@ -3,8 +3,42 @@
 .PHONY: all
 all: info docker test ## Run all targets.
 
-.PHONY: test
-test: info validate-container-image-labels docker-build-check docker-dev-container-build-check npm-audit test-lib inspec lint-codebase fix-codebase test-default-config-files lint-subset-files test-custom-ssl-cert test-non-default-home-directory test-git-initial-commit test-git-merge-commit-push test-git-merge-commit-push-tag test-log-level test-use-find-and-ignore-gitignored-files test-linters-expect-failure-log-level-notice test-bash-exec-library-expect-success test-bash-exec-library-expect-failure test-save-super-linter-output test-save-super-linter-output-custom-path test-save-super-linter-custom-summary test-custom-gitleaks-log-level test-dont-save-super-linter-log-file test-dont-save-super-linter-output test-linter-command-options test-git-invalid-worktree test-git-valid-worktree test-github-push-event-multiple-commits test-github-merge-group-event test-runtime-dependencies-installation test-linters test-linters-fix-mode ## Run the test suite
+.PHONY: test ## Run the test suite
+test: \
+	info \
+	validate-container-image-labels \
+	docker-build-check \
+	docker-dev-container-build-check \
+	npm-audit \
+	test-lib \
+	inspec \
+	lint-codebase \
+	fix-codebase \
+	test-default-config-files \
+	lint-subset-files \
+	test-non-default-home-directory \
+	test-git-initial-commit \
+	test-git-merge-commit-push \
+	test-git-merge-commit-push-tag \
+	test-log-level \
+	test-use-find-and-ignore-gitignored-files \
+	test-linters-expect-failure-log-level-notice \
+	test-bash-exec-library-expect-success \
+	test-bash-exec-library-expect-failure \
+	test-save-super-linter-output \
+	test-save-super-linter-output-custom-path \
+	test-save-super-linter-custom-summary \
+	test-custom-gitleaks-log-level \
+	test-dont-save-super-linter-log-file \
+	test-dont-save-super-linter-output \
+	test-linter-command-options \
+	test-git-invalid-worktree \
+	test-git-valid-worktree \
+	test-github-push-event-multiple-commits \
+	test-github-merge-group-event \
+	test-runtime-dependencies-installation \
+	test-linters \
+	test-linters-fix-mode
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
@@ -16,7 +50,8 @@ endif
 
 .PHONY: help
 help: ## Show help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E ':.*?##(.*)$$' $(MAKEFILE_LIST) | grep -v 'MAKEFILE_LIST' | sed -E 's/^\.PHONY: *([a-zA-Z_-]+) */\1:/' | sort | awk 'BEGIN {FS = ":.*?## "; max_len = 0}; { f1[NR] = $$1; f2[NR] = $$2; if (length($$1) > max_len) { max_len = length($$1) } } END { padding = max_len + 1; for (i = 1; i <= NR; i++) { printf("\033[36m%-" padding "s\033[0m %s\n", f1[i], f2[i]) } }'
+
 
 .PHONY: inspec-check
 inspec-check: ## Validate inspec profiles
@@ -184,8 +219,6 @@ npm-audit: ## Run npm audit to check for known vulnerable dependencies
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		-c "npm audit"
 
-# For some cases, mount a directory that doesn't have too many files to keep tests short
-
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
 	docker run $(DOCKER_FLAGS) \
@@ -274,8 +307,20 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.PHONY: test-lib
-test-lib: test-log test-globals-languages test-linter-rules test-build-file-list test-detect-files test-github-event test-setup-ssh test-validation test-output test-linter-commands test-linter-versions ## Test super-linter libs and globals
+.PHONY: test-lib ## Test super-linter libs and globals
+test-lib: \
+	test-log \
+	test-globals-languages \
+	test-linter-rules \
+	test-build-file-list \
+	test-detect-files \
+	test-github-event \
+	test-setup-ssh \
+	test-validation \
+	test-output \
+	test-linter-commands \
+	test-linter-versions \
+	test-update-ssl
 
 .PHONY: test-log
 test-log: ## Test log initialization and functions
@@ -386,8 +431,18 @@ test-linter-versions: ## Test linterVersions
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.PHONY: test-runtime-dependencies-installation
-test-runtime-dependencies-installation: test-os-packages-installation ## Test runtime dependencies installation
+.PHONY: test-update-ssl
+test-update-ssl: ## Test updateSSL
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/updateSSLTest.sh \
+		--rm \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-runtime-dependencies-installation ## Test runtime dependencies installation
+test-runtime-dependencies-installation: \
+	test-os-packages-installation
 
 .PHONY: test-os-packages-installation
 test-os-packages-installation: ## Test installing OS packages
@@ -416,21 +471,6 @@ test-default-config-files: ## Test default configuration files loading
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-.PHONY: test-custom-ssl-cert
-test-custom-ssl-cert: ## Test the configuration of a custom SSL/TLS certificate
-	docker run \
-		-e RUN_LOCAL=true \
-		-e LOG_LEVEL=DEBUG \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e DEFAULT_BRANCH=main \
-		-e USE_FIND_ALGORITHM=true \
-		-e SSL_CERT_SECRET="$(shell cat test/data/ssl-certificate/rootCA-test.crt)" \
-		-e VALIDATE_GIT_COMMITLINT=false \
-		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
-		-v "$(CURDIR)/docs":/tmp/lint \
-		--rm \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
-
 .PHONY: test-non-default-home-directory
 test-non-default-home-directory: ## Test a non-default HOME directory
 	$(CURDIR)/test/run-super-linter-tests.sh \
@@ -445,8 +485,10 @@ test-linters-fix-mode: ## Run the linters test suite (fix mode)
 		"run_test_case_fix_mode" \
 		"$(IMAGE)"
 
-.PHONY: test-linters
-test-linters: test-linters-expect-success test-linters-expect-failure ## Run the linters test suite
+.PHONY: test-linters ## Run the linters test suite
+test-linters: \
+	test-linters-expect-success \
+	test-linters-expect-failure
 
 .PHONY: test-linters-expect-success
 test-linters-expect-success: ## Run the linters test suite expecting successes
