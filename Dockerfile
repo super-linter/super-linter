@@ -8,11 +8,11 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.19.9 AS terrascan
-FROM alpine/terragrunt:1.12.2 AS terragrunt
+FROM alpine/terragrunt:1.13.1 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.59.1 AS tflint
 FROM alpine/helm:3.18.6 AS helm
-FROM golang:1.25.0-alpine AS golang
+FROM golang:1.25.1-alpine AS golang
 FROM golangci/golangci-lint:v2.4.0 AS golangci-lint
 FROM goreleaser/goreleaser:v2.12.0 AS goreleaser
 FROM hadolint/hadolint:v2.13.1-alpine AS dockerfile-lint
