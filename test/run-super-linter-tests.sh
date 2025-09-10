@@ -401,8 +401,13 @@ RemoveTestLeftovers
 debug "Super-linter workspace: ${SUPER_LINTER_WORKSPACE}"
 debug "Super-linter exit code: ${SUPER_LINTER_EXIT_CODE}"
 
-# Print the log graph again so we don't have to scroll all the way up
-git_log_graph "${SUPER_LINTER_WORKSPACE}"
+# Print the log graph again so we don't have to scroll all the way up.
+# Only print if we are running the test against a repository that's not the
+# Super-linter repository because we're not interested in the graph of the
+# Super-linter repository.
+if [[ "${SUPER_LINTER_WORKSPACE}" != "$(pwd)" ]]; then
+  git_log_graph "${SUPER_LINTER_WORKSPACE}"
+fi
 
 if [[ "${CREATE_LOG_FILE}" == true ]]; then
   if [ ! -e "${LOG_FILE_PATH}" ]; then

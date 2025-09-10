@@ -11,6 +11,8 @@ declare -A LINTER_NAMES_ARRAY
 LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
 LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
+LINTER_NAMES_ARRAY['BIOME_FORMAT']="biome"
+LINTER_NAMES_ARRAY['BIOME_LINT']="biome"
 LINTER_NAMES_ARRAY['CHECKOV']="checkov"
 LINTER_NAMES_ARRAY['CLANG_FORMAT']="clang-format"
 LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
@@ -133,6 +135,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$("${LINTER}" --version | grep -v 'available' | awk '{ print $2 }')"
   elif [[ ${LINTER} == "arm-ttk" ]]; then
     GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1 | awk '{ print $3 }')"
+  elif [[ "${LINTER}" == "biome" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "black" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | grep 'black' | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "cfn-lint" ]]; then
