@@ -23,8 +23,6 @@ test: \
 	test-log-level \
 	test-use-find-and-ignore-gitignored-files \
 	test-linters-expect-failure-log-level-notice \
-	test-bash-exec-library-expect-success \
-	test-bash-exec-library-expect-failure \
 	test-save-super-linter-output \
 	test-save-super-linter-output-custom-path \
 	test-save-super-linter-custom-summary \
@@ -320,7 +318,8 @@ test-lib: \
 	test-output \
 	test-linter-commands \
 	test-linter-versions \
-	test-update-ssl
+	test-update-ssl \
+	test-bash-exec
 
 .PHONY: test-log
 test-log: ## Test log initialization and functions
@@ -440,6 +439,15 @@ test-update-ssl: ## Test updateSSL
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
+.PHONY: test-bash-exec
+test-bash-exec: ## Test bash-exec
+	docker run \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/bashExecTest.sh \
+		--rm \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
 .PHONY: test-runtime-dependencies-installation ## Test runtime dependencies installation
 test-runtime-dependencies-installation: \
 	test-os-packages-installation
@@ -516,20 +524,6 @@ test-linters-expect-failure-log-level-notice: ## Run the linters test suite expe
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_expect_failure_notice_log" \
-		"$(IMAGE)"
-
-.PHONY: test-bash-exec-library-expect-success
-test-bash-exec-library-expect-success: ## Run the linters test cases for BASH_EXEC expecting successes with BASH_EXEC_IGNORE_LIBRARIES set to true
-	$(CURDIR)/test/run-super-linter-tests.sh \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_bash_exec_library_expect_success" \
-		"$(IMAGE)"
-
-.PHONY: test-bash-exec-library-expect-failure
-test-bash-exec-library-expect-failure: ## Run the linters test cases for BASH_EXEC expecting failures with BASH_EXEC_IGNORE_LIBRARIES set to true
-	$(CURDIR)/test/run-super-linter-tests.sh \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_bash_exec_library_expect_failure" \
 		"$(IMAGE)"
 
 .PHONY: test-git-initial-commit

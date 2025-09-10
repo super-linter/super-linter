@@ -42,7 +42,7 @@ ValidateValidationVariables
 # Now we can load linter command options because they have
 # dependencies on linter rules
 # shellcheck source=/dev/null
-source /action/lib/globals/linterCommandsOptions.sh
+source lib/globals/linterCommandsOptions.sh
 
 # The slim image might not have this variable defined
 if [[ ! -v ARM_TTK_PSD1 ]]; then
@@ -59,6 +59,7 @@ source "lib/functions/linterCommands.sh"
 # Initialize the variables we're going to use to verify tests before running tests
 # because some tests modify LINTER_COMMANDS_xxx variables
 BASE_LINTER_COMMANDS_ARRAY_ANSIBLE=("${LINTER_COMMANDS_ARRAY_ANSIBLE[@]}")
+BASE_LINTER_COMMANDS_ARRAY_BASH_EXEC=("${LINTER_COMMANDS_ARRAY_BASH_EXEC[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=("${LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
@@ -389,6 +390,28 @@ function InitPowerShellCommandTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+BashExecIgnoreLibrariesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  local BASH_EXEC_IGNORE_LIBRARIES="true"
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_BASH_EXEC=("${BASE_LINTER_COMMANDS_ARRAY_BASH_EXEC[@]}" "true")
+
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_BASH_EXEC" "EXPECTED_LINTER_COMMANDS_ARRAY_BASH_EXEC"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 # Test environment variables to set command options
 CommandOptionsTest() {
   local FUNCTION_NAME
@@ -506,6 +529,7 @@ GitleaksCommandCustomLogLevelTest
 InitInputConsumeCommandsTest
 InitFixModeOptionsAndCommandsTest
 InitPowerShellCommandTest
+BashExecIgnoreLibrariesTest
 CommandOptionsTest
 AddOptionsToCommandTest
 AddDebugOptionsToCommandsTest

@@ -116,9 +116,9 @@ BuildFileArraysAnsibleGitHubWorkspaceTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck source=/dev/null
-  source /action/lib/functions/detectFiles.sh
+  source "lib/functions/detectFiles.sh"
   # shellcheck source=/dev/null
-  source /action/lib/functions/validation.sh
+  source "lib/functions/validation.sh"
 
   # shellcheck disable=SC2034
   local FILTER_REGEX_INCLUDE=""

@@ -11,7 +11,7 @@ source "test/testUtils.sh"
 source "lib/functions/runtimeDependencies.sh"
 
 # shellcheck source=/dev/null
-source /action/lib/globals/runtimeDependencies.sh
+source lib/globals/runtimeDependencies.sh
 
 InstallOsPackagesTest() {
   local FUNCTION_NAME
