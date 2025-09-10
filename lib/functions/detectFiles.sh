@@ -337,22 +337,25 @@ function RunAdditionalInstalls() {
   # Run installs for R language #
   ###############################
   if [ "${VALIDATE_R}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-R" ]; then
-    info "Detected R Language files to lint."
-    info "Installing the R package in: ${GITHUB_WORKSPACE}"
-    local BUILD_CMD
-    if ! BUILD_CMD=$(R CMD build "${GITHUB_WORKSPACE}" 2>&1); then
-      warn "Failed to build R package in ${GITHUB_WORKSPACE}. Output: ${BUILD_CMD}"
-    else
-      local BUILD_PKG
-      if ! BUILD_PKG=$(cd "${GITHUB_WORKSPACE}" && echo *.tar.gz 2>&1); then
-        warn "Failed to echo R archives. Output: ${BUILD_PKG}"
+    debug "Detected R Language files to lint."
+
+    if [[ -e "${GITHUB_WORKSPACE}/DESCRIPTION" ]]; then
+      debug "Installing the R package in: ${GITHUB_WORKSPACE}"
+      local BUILD_CMD
+      if ! BUILD_CMD=$(R CMD build "${GITHUB_WORKSPACE}" 2>&1); then
+        warn "Failed to build R package in ${GITHUB_WORKSPACE}. Output: ${BUILD_CMD}"
+      else
+        local BUILD_PKG
+        if ! BUILD_PKG=$(cd "${GITHUB_WORKSPACE}" && echo *.tar.gz 2>&1); then
+          warn "Failed to echo R archives. Output: ${BUILD_PKG}"
+        fi
+        debug "echo R archives output: ${BUILD_PKG}"
+        local INSTALL_CMD
+        if ! INSTALL_CMD=$(cd "${GITHUB_WORKSPACE}" && R -e "remotes::install_local('.', dependencies=T)" 2>&1); then
+          warn "Failed to install the R package. Output: ${BUILD_PKG}]"
+        fi
+        debug "R package install output: ${INSTALL_CMD}"
       fi
-      debug "echo R archives output: ${BUILD_PKG}"
-      local INSTALL_CMD
-      if ! INSTALL_CMD=$(cd "${GITHUB_WORKSPACE}" && R -e "remotes::install_local('.', dependencies=T)" 2>&1); then
-        warn "Failed to install the R package. Output: ${BUILD_PKG}]"
-      fi
-      debug "R package install output: ${INSTALL_CMD}"
     fi
 
     if [ ! -f "${R_RULES_FILE_PATH_IN_ROOT}" ]; then
