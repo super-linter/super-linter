@@ -155,6 +155,7 @@ To run super-linter as a GitHub Action, you do the following:
              # super-linter needs the full git history to get the
              # list of files that changed across commits
              fetch-depth: 0
+             persist-credentials: false
 
          - name: Super-linter
            uses: super-linter/super-linter@v8.1.0 # x-release-please-version
@@ -547,6 +548,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Super-Linter
         uses: super-linter/super-linter@v8.1.0 # x-release-please-version
         env:
