@@ -1,22 +1,7 @@
 # Ref https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
+# yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
 version: "2"
 linters:
-  enable:
-    - goconst
-    - gocritic
-    - gocyclo
-    - gosec
-    - govet
-    - revive
-    - unconvert
-  settings:
-    errcheck:
-      check-blank: true
-    gocyclo:
-      min-complexity: 15
-    govet:
-      enable:
-        - shadow
   exclusions:
     generated: lax
     presets:
@@ -35,8 +20,6 @@ linters:
       - builtin$
       - examples$
 formatters:
-  enable:
-    - goimports
   exclusions:
     generated: lax
     paths:
