@@ -15,6 +15,28 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 This section helps you upgrade from Super-linter `>=v8.4.0` to `v9.0.0`.
 
+### Configuration files
+
+Super-linter now ships configuration files that match the default configuration
+for linters and formatters. Historically, Super-linter provided configuration
+files that enabled or disabled certain rules, but the rationale for doing so was
+lost. So, we decided to bring the default configuration back to each tool's
+defaults to avoid surprising users. The linters and formatters that are impacted
+by this change are:
+
+- ansible-lint
+- clj-kondo
+- coffeelint
+- Flake8
+- golangci-lint
+- groovylint
+- htmllint
+- markdownlint
+- phpstan
+- protolint
+- Ruff
+- yamllint
+
 ### NBQA
 
 Super-linter `v9.0.0` removes support for NBQA because it's not being maintained
