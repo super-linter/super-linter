@@ -72,7 +72,7 @@ jobs:
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           target: ${{ matrix.stages.stage-name }}
       - name: Create Issue on Failure
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -238,7 +238,7 @@ jobs:
           target: "${{ matrix.images.target }}"
 
       - name: Create Issue on Failure
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -349,7 +349,7 @@ jobs:
           git push --force origin latest
 
       - name: Create Issue on Failure
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
