@@ -305,7 +305,7 @@ You can configure Super-linter using the following environment variables:
 | **JAVASCRIPT_ES_CONFIG_FILE**                   | `eslint.config.mjs`                                                          | Filename for [ESLint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats)                                                                                                                                                                                                                                                              |
 | **JSCPD_CONFIG_FILE**                           | `.jscpd.json`                                                                | Filename for JSCPD configuration                                                                                                                                                                                                                                                                                                                                            |
 | **KUBERNETES_KUBECONFORM_OPTIONS**              | not set                                                                      | Additional arguments to pass to the command-line when running Kubeconform (Example: `--ignore-missing-schemas`)                                                                                                                                                                                                                                                             |
-| **LINTER_RULES_PATH**                           | `.github/linters`                                                            | Directory for all linter configuration rules.                                                                                                                                                                                                                                                                                                                               |
+| **LINTER_RULES_PATH**                           | `.github/linters`                                                            | Directory for all linter configuration rules. For more information, see [Configure Linters](#configure-linters).                                                                                                                                                                                                                                                            |
 | **LOG_FILE**                                    | `super-linter.log`                                                           | The filename for outputting logs. Super-linter saves the log file to `${DEFAULT_WORKSPACE}/${LOG_FILE}`.                                                                                                                                                                                                                                                                    |
 | **LOG_LEVEL**                                   | `INFO`                                                                       | How much output the script will generate to the console. One of `ERROR`, `WARN`, `NOTICE`, `INFO`, or `DEBUG`.                                                                                                                                                                                                                                                              |
 | **MARKDOWN_CONFIG_FILE**                        | `.markdown-lint.yml`                                                         | Filename for [Markdownlint configuration](https://github.com/DavidAnson/markdownlint#optionsconfig) (ex: `.markdown-lint.yml`, `.markdownlint.json`, `.markdownlint.yaml`)                                                                                                                                                                                                  |
@@ -618,16 +618,32 @@ directory. You can customize the configuration for the linters that support this
 by placing your own configuration files in the `LINTER_RULES_PATH` directory.
 `LINTER_RULES_PATH` is relative to the `DEFAULT_WORKSPACE` directory.
 
+By providing your own configuration files, Super-linter will ignore default
+configuration files. For example, if you provide your own configuration file for
+a linter, you can enable more checks and rules than what Super-linter enables by
+default for that linter, or disable some checks and rules that you don't need to
+enable. Super-linter configures some linters to enable more checks and rules
+than linters would by default, so by providing your own configuration file,
+ensure that you enable all checks and rules that you need for your use case.
+
 Super-linter supports customizing the name of these configuration files. For
 more information, refer to [Configure super-linter](#configure-super-linter).
 
-For example, you can configure super-linter to load configuration files from the
-`config/lint` directory in your repository:
+For example, you can configure Super-linter to:
 
-```yaml
-env:
-  LINTER_RULES_PATH: config/lint
-```
+- Load configuration files from the `config/lint` directory in your repository:
+
+  ```yaml
+  env:
+    LINTER_RULES_PATH: config/lint
+  ```
+
+- Load configuration files from the root directory of your repository:
+
+  ```yaml
+  env:
+    LINTER_RULES_PATH: .
+  ```
 
 In order to facilitate migrations from using standalone linters and formatters
 to super-linter, the following linters and formatters don't load configuration
