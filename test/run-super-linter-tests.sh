@@ -560,6 +560,8 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
 
     if find "${BAD_TEST_CASE_DESTINATION_PATH}" \( -type f ! -readable -or -type d \( ! -readable -or ! -executable -or ! -writable \) \) -print | grep -q .; then
       if [[ "${LANGUAGE}" == "ANSIBLE" ]] ||
+        [[ "${LANGUAGE}" == "BIOME_FORMAT" ]] ||
+        [[ "${LANGUAGE}" == "BIOME_LINT" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||

@@ -143,7 +143,8 @@ function LintCodebase() {
   # the working directory when running test cases, so we can pick a
   # configuration that doesn't ignore the test/data directory
   elif [[ ${FILE_TYPE} == "ANSIBLE" ]] ||
-    [[ ${FILE_TYPE} == "BIOME" ]] ||
+    [[ ${FILE_TYPE} == "BIOME_FORMAT" ]] ||
+    [[ ${FILE_TYPE} == "BIOME_LINT" ]] ||
     [[ ${FILE_TYPE} == "GO_MODULES" ]] ||
     [[ ${FILE_TYPE} == "TRIVY" ]]; then
     LINTER_WORKING_DIRECTORY="{}"
