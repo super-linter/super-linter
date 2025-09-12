@@ -11,7 +11,7 @@
 ## .github/linters folder
 ##
 ## Configuration options are described here:
-## https://docs.sqlfluff.com/en/stable/configuration.html
+## https://docs.sqlfluff.com/en/stable/configuration/index.html
 ##
 
 [sqlfluff]
