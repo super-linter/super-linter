@@ -163,6 +163,9 @@ declare -l FAIL_ON_CONFLICTING_TOOLS_ENABLED
 FAIL_ON_CONFLICTING_TOOLS_ENABLED="${FAIL_ON_CONFLICTING_TOOLS_ENABLED:-"false"}"
 export FAIL_ON_CONFLICTING_TOOLS_ENABLED
 
+declare -l EXPORT_GITHUB_TOKEN
+EXPORT_GITHUB_TOKEN="${EXPORT_GITHUB_TOKEN:-"false"}"
+
 # Define private output paths early because cleanup depends on those being defined
 DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME="super-linter-output"
 SUPER_LINTER_OUTPUT_DIRECTORY_NAME="${SUPER_LINTER_OUTPUT_DIRECTORY_NAME:-${DEFAULT_SUPER_LINTER_OUTPUT_DIRECTORY_NAME}}"
@@ -825,7 +828,7 @@ if ! InstallCaCert; then
   fatal "Error while installing certificates"
 fi
 
-# Set global variables that depend on validation being successful
+# Export GITHUB_TOKEN if needed
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   debug "GitHub Token environment variable (GITHUB_TOKEN) is set"
 
@@ -837,6 +840,11 @@ if [[ -n "${GITHUB_TOKEN:-}" ]]; then
       debug "GH_TOKEN for zizmor is already initialized"
     fi
     export GH_TOKEN
+  fi
+
+  if [[ "${EXPORT_GITHUB_TOKEN}" == "true" ]]; then
+    debug "Exporting GITHUB_TOKEN"
+    export GITHUB_TOKEN
   fi
 fi
 
