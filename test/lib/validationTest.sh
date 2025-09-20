@@ -10,6 +10,9 @@ source "test/testUtils.sh"
 # shellcheck source=/dev/null
 source "lib/functions/validation.sh"
 
+# shellcheck source=/dev/null
+source "lib/functions/githubEvent.sh"
+
 IsUnsignedIntegerTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -562,7 +565,7 @@ ValidateCommitlintConfigurationTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
-InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest() {
+InitializeGitBeforeShaReferenceFastForwardPushTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
@@ -591,7 +594,7 @@ InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest() {
   initialize_github_sha "${GITHUB_WORKSPACE}"
 
   # Simulate pushing all the commits besides the initial one
-  InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}-1))" "${EXPECTED_GITHUB_BEFORE_SHA}"
+  InitializeGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}-1))" "${EXPECTED_GITHUB_BEFORE_SHA}" "push" "${DEFAULT_BRANCH}"
 
   if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_GITHUB_BEFORE_SHA}" ]]; then
     fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
@@ -602,7 +605,55 @@ InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
-InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest() {
+InitializeGitBeforeShaReferenceMergeCommitTest() {
+  local EVENT_NAME="${1}"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  local -i COMMIT_COUNT=3
+
+  if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+    initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "true" "false" "false" "true"
+  elif [[ "${EVENT_NAME}" == "merge_group" ]]; then
+    initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "false" "false" "false" "true"
+  fi
+  local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
+  debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
+
+  GITHUB_SHA="${GITHUB_PULL_REQUEST_HEAD_SHA}"
+  debug "Updating GITHUB_SHA to the pull request head SHA for the ${FUNCTION_NAME} test: ${GITHUB_SHA}"
+
+  InitializeGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}))" "${EXPECTED_GITHUB_BEFORE_SHA}" "${EVENT_NAME}" "${DEFAULT_BRANCH}"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_GITHUB_BEFORE_SHA}" ]]; then
+    fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  else
+    debug "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) matches the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
+  fi
+}
+
+InitializeGitBeforeShaReferenceMergeCommitPullRequestTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "pull_request"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "merge_group"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeDefaultBranchInPullRequestBranchTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
@@ -610,9 +661,57 @@ InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest() {
   GITHUB_WORKSPACE="$(mktemp -d)"
   initialize_git_repository "${GITHUB_WORKSPACE}"
 
-  local -i COMMIT_COUNT=3
+  touch "${GITHUB_WORKSPACE}/test-${DEFAULT_BRANCH}-0.txt"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "initial commit"
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "pull_request" "true" "false" "false" "true"
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  local FEATURE_BRANCH_1_NAME="feature/test-branch-1"
+  local FEATURE_BRANCH_2_NAME="feature/test-branch-2"
+
+  debug "Create feature branch"
+  git -C "${GITHUB_WORKSPACE}" checkout -b "${FEATURE_BRANCH_1_NAME}"
+
+  info "Add commits to ${FEATURE_BRANCH_1_NAME}"
+  for i in {1..3}; do
+    touch "${GITHUB_WORKSPACE}/file${i}.txt"
+    git -C "${GITHUB_WORKSPACE}" add .
+    git -C "${GITHUB_WORKSPACE}" commit -m "feat: commit ${i}"
+  done
+
+  debug "Create a new feature branch from ${DEFAULT_BRANCH}"
+  git -C "${GITHUB_WORKSPACE}" switch "${DEFAULT_BRANCH}"
+  git -C "${GITHUB_WORKSPACE}" checkout -b "${FEATURE_BRANCH_2_NAME}"
+
+  debug "Add commits to ${FEATURE_BRANCH_2_NAME}"
+  touch "${GITHUB_WORKSPACE}/file-feat-branch-2.txt"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "feat: commit on ${FEATURE_BRANCH_2_NAME}"
+
+  debug "Switch to ${FEATURE_BRANCH_1_NAME}"
+  git -C "${GITHUB_WORKSPACE}" switch "${FEATURE_BRANCH_1_NAME}"
+
+  info "Merge ${FEATURE_BRANCH_2_NAME} to ${FEATURE_BRANCH_1_NAME} (without squashing)"
+  git -C "${GITHUB_WORKSPACE}" merge \
+    -m "chore: merge commit ${FEATURE_BRANCH_2_NAME} into ${FEATURE_BRANCH_1_NAME}" \
+    --no-ff \
+    "${FEATURE_BRANCH_2_NAME}"
+
+  info "Add commits to ${FEATURE_BRANCH_1_NAME}"
+  touch "${GITHUB_WORKSPACE}/file-feat-1.txt"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "feat: commit on ${FEATURE_BRANCH_1_NAME}"
+
+  local -i COMMIT_COUNT
+  COMMIT_COUNT=$(git -C "${GITHUB_WORKSPACE}" rev-list --count main.."${FEATURE_BRANCH_1_NAME}")
+  debug "Setting COMMIT_COUNT to ${COMMIT_COUNT}"
+
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  initialize_github_sha "${GITHUB_WORKSPACE}"
+
+  GITHUB_PULL_REQUEST_HEAD_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${FEATURE_BRANCH_1_NAME}")"
 
   local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
   debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
@@ -621,7 +720,7 @@ InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest() {
   debug "Updating GITHUB_SHA to the pull request head SHA for the ${FUNCTION_NAME} test: ${GITHUB_SHA}"
 
   # Simulate pushing all the commits besides the initial one
-  InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}))" "${EXPECTED_GITHUB_BEFORE_SHA}"
+  InitializeGitBeforeShaReference "${GITHUB_SHA}" "((${COMMIT_COUNT}))" "${EXPECTED_GITHUB_BEFORE_SHA}" "pull_request" "${DEFAULT_BRANCH}"
 
   if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_GITHUB_BEFORE_SHA}" ]]; then
     fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to the expected value: ${EXPECTED_GITHUB_BEFORE_SHA}"
@@ -676,6 +775,168 @@ DeprecatedConfigurationFileExistsTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+ValidateGitShaReferenceTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_BEFORE_SHA_TEST=""
+
+  if ValidateGitShaReference "${GITHUB_BEFORE_SHA_TEST}"; then
+    fatal "ValidateGitShaReference should have failed for an empty string"
+  fi
+
+  GITHUB_BEFORE_SHA_TEST="null"
+  if ValidateGitShaReference "${GITHUB_BEFORE_SHA_TEST}"; then
+    fatal "ValidateGitShaReference should have failed for ${GITHUB_BEFORE_SHA_TEST}"
+  fi
+
+  GITHUB_BEFORE_SHA_TEST="0000000000000000000000000000000000000000"
+  if ValidateGitShaReference "${GITHUB_BEFORE_SHA_TEST}"; then
+    fatal "ValidateGitShaReference should have failed for ${GITHUB_BEFORE_SHA_TEST}"
+  fi
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false" "false" "true"
+  local GITHUB_BEFORE_SHA_TEST="${GIT_ROOT_COMMIT_SHA}"
+  if ! ValidateGitShaReference "${GITHUB_BEFORE_SHA_TEST}"; then
+    fatal "ValidateGitShaReference should have passed for ${GITHUB_BEFORE_SHA_TEST}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeDefaultBranchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local RUN_LOCAL="true"
+  local USE_FIND_ALGORITHM="true"
+  local GITHUB_EVENT_FILE_PATH="test/data/github-event/github-event-push.json"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false" "false" "true"
+
+  if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_FILE_PATH}" "${RUN_LOCAL}"; then
+    fatal "InitializeDefaultBranch with USE_FIND_ALGORITHM (${USE_FIND_ALGORITHM}), GITHUB_EVENT_FILE_PATH (${GITHUB_EVENT_FILE_PATH}), and RUN_LOCAL (${RUN_LOCAL}) should have passed"
+  fi
+
+  USE_FIND_ALGORITHM="false"
+
+  local EXPECTED_DEFAULT_BRANCH="${DEFAULT_BRANCH}"
+  if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_FILE_PATH}" "${RUN_LOCAL}"; then
+    fatal "InitializeDefaultBranch with USE_FIND_ALGORITHM (${USE_FIND_ALGORITHM}), GITHUB_EVENT_FILE_PATH (${GITHUB_EVENT_FILE_PATH}), and RUN_LOCAL (${RUN_LOCAL}) should have passed"
+  fi
+  if [[ "${DEFAULT_BRANCH}" != "${EXPECTED_DEFAULT_BRANCH}" ]]; then
+    fatal "DEFAULT_BRANCH (${DEFAULT_BRANCH}) doesn't match the expected value: ${EXPECTED_DEFAULT_BRANCH}"
+  fi
+
+  RUN_LOCAL="false"
+
+  if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_FILE_PATH}" "${RUN_LOCAL}"; then
+    fatal "InitializeDefaultBranch with USE_FIND_ALGORITHM (${USE_FIND_ALGORITHM}), GITHUB_EVENT_FILE_PATH (${GITHUB_EVENT_FILE_PATH}), and RUN_LOCAL (${RUN_LOCAL}) should have passed"
+  fi
+  if [[ "${DEFAULT_BRANCH}" != "${EXPECTED_DEFAULT_BRANCH}" ]]; then
+    fatal "DEFAULT_BRANCH (${DEFAULT_BRANCH}) doesn't match the expected value: ${EXPECTED_DEFAULT_BRANCH}"
+  fi
+
+  # Create a local repository to simulate a remote.
+  # Create the simulated remote inside ${GITHUB_WORKSPACE} to benefit from automatic cleanup
+  local SIMULATED_REMOTE_REPOSITORY_PATH="${GITHUB_WORKSPACE}/simulated-remote"
+  mkdir "${SIMULATED_REMOTE_REPOSITORY_PATH}"
+  git -C "${SIMULATED_REMOTE_REPOSITORY_PATH}" clone --bare "${GITHUB_WORKSPACE}" "${SIMULATED_REMOTE_REPOSITORY_PATH}.git"
+  git -C "${GITHUB_WORKSPACE}" remote add origin "file://${SIMULATED_REMOTE_REPOSITORY_PATH}"
+  git -C "${GITHUB_WORKSPACE}" push origin "${DEFAULT_BRANCH}"
+  git_log_graph "${GITHUB_WORKSPACE}"
+  git -C "${GITHUB_WORKSPACE}" switch --create "${NEW_BRANCH_NAME}"
+  git -C "${GITHUB_WORKSPACE}" branch -D "${DEFAULT_BRANCH}"
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  EXPECTED_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
+
+  if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_FILE_PATH}" "${RUN_LOCAL}"; then
+    fatal "InitializeDefaultBranch with USE_FIND_ALGORITHM (${USE_FIND_ALGORITHM}), GITHUB_EVENT_FILE_PATH (${GITHUB_EVENT_FILE_PATH}), and RUN_LOCAL (${RUN_LOCAL}) should have passed"
+  fi
+  if [[ "${DEFAULT_BRANCH}" != "${EXPECTED_DEFAULT_BRANCH}" ]]; then
+    fatal "DEFAULT_BRANCH (${DEFAULT_BRANCH}) doesn't match the expected value: ${EXPECTED_DEFAULT_BRANCH}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeDefaultBranchDefaultValueTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local RUN_LOCAL="true"
+  local USE_FIND_ALGORITHM="false"
+
+  local BACKUP_DEFAULT_BRANCH="${DEFAULT_BRANCH}"
+  DEFAULT_BRANCH="master"
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" 0 "false" "push" "false" "false" "false" "true"
+
+  local EXPECTED_DEFAULT_BRANCH="${DEFAULT_BRANCH}"
+  unset DEFAULT_BRANCH
+
+  if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "" "${RUN_LOCAL}"; then
+    fatal "InitializeDefaultBranch with USE_FIND_ALGORITHM (${USE_FIND_ALGORITHM}) and RUN_LOCAL (${RUN_LOCAL}) should have passed"
+  fi
+  if [[ "${DEFAULT_BRANCH}" != "${EXPECTED_DEFAULT_BRANCH}" ]]; then
+    fatal "DEFAULT_BRANCH (${DEFAULT_BRANCH}) doesn't match the expected value: ${EXPECTED_DEFAULT_BRANCH}"
+  fi
+
+  DEFAULT_BRANCH="${BACKUP_DEFAULT_BRANCH}"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitHubWorkspaceTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  unset GITHUB_WORKSPACE
+
+  local DEFAULT_WORKSPACE
+  DEFAULT_WORKSPACE=
+  if InitializeGitHubWorkspace "${DEFAULT_WORKSPACE}"; then
+    fatal "InitializeGitHubWorkspace with an empty DEFAULT_WORKSPACE should have failed"
+  fi
+
+  DEFAULT_WORKSPACE="/non-existing"
+  debug "DEFAULT_WORKSPACE: ${DEFAULT_WORKSPACE}"
+  if InitializeGitHubWorkspace "${DEFAULT_WORKSPACE}"; then
+    fatal "InitializeGitHubWorkspace with a non-existing DEFAULT_WORKSPACE should have failed"
+  fi
+  unset GITHUB_WORKSPACE
+
+  DEFAULT_WORKSPACE="/tmp"
+  debug "DEFAULT_WORKSPACE: ${DEFAULT_WORKSPACE}"
+  if ! InitializeGitHubWorkspace "${DEFAULT_WORKSPACE}"; then
+    fatal "InitializeGitHubWorkspace with an existing DEFAULT_WORKSPACE should have passed"
+  fi
+
+  local EXPECTED_GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
+  if [[ "${GITHUB_WORKSPACE}" != "${EXPECTED_GITHUB_WORKSPACE}" ]]; then
+    fatal "GITHUB_WORKSPACE (${GITHUB_WORKSPACE}) doesn't match the expected value: ${EXPECTED_GITHUB_WORKSPACE}"
+  fi
+
+  local EXPECTED_WORKING_DIRECTORY="${DEFAULT_WORKSPACE}"
+  if [[ "$(pwd)" != "${EXPECTED_WORKING_DIRECTORY}" ]]; then
+    fatal "WORKING_DIRECTORY ($(pwd)) doesn't match the expected value: ${EXPECTED_WORKING_DIRECTORY}"
+  fi
+  unset GITHUB_WORKSPACE
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
@@ -687,7 +948,13 @@ ValidationVariablesExportTest
 ValidateCheckModeAndFixModeVariablesTest
 CheckIfFixModeIsEnabledTest
 ValidateCommitlintConfigurationTest
-InitializeAndValidateGitBeforeShaReferenceFastForwardPushTest
-InitializeAndValidateGitBeforeShaReferenceMergeCommitPushTest
+InitializeGitBeforeShaReferenceFastForwardPushTest
+InitializeGitBeforeShaReferenceMergeCommitPullRequestTest
+InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest
+InitializeGitBeforeShaReferenceMergeDefaultBranchInPullRequestBranchTest
+ValidateGitShaReferenceTest
 InitializeRootCommitShaTest
 DeprecatedConfigurationFileExistsTest
+InitializeDefaultBranchTest
+InitializeDefaultBranchDefaultValueTest
+InitializeGitHubWorkspaceTest

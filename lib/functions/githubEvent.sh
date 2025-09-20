@@ -51,7 +51,8 @@ function GetGithubRepositoryDefaultBranch() {
   GITHUB_REPOSITORY_DEFAULT_BRANCH=$(jq -r '.repository.default_branch' <"${GITHUB_EVENT_FILE_PATH}")
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Failed to initialize GITHUB_REPOSITORY_DEFAULT_BRANCH. Output: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+    error "Failed to initialize GITHUB_REPOSITORY_DEFAULT_BRANCH. Output: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+    return 1
   fi
 
   echo "${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
