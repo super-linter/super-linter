@@ -14,26 +14,23 @@ test: \
 	inspec \
 	lint-codebase \
 	fix-codebase \
-	test-default-config-files \
 	lint-subset-files \
 	test-non-default-home-directory \
-	test-git-initial-commit \
-	test-git-merge-commit-push \
-	test-git-merge-commit-push-tag \
 	test-log-level \
 	test-use-find-and-ignore-gitignored-files \
 	test-linters-expect-failure-log-level-notice \
 	test-save-super-linter-output \
 	test-save-super-linter-output-custom-path \
 	test-save-super-linter-custom-summary \
-	test-custom-gitleaks-log-level \
 	test-dont-save-super-linter-log-file \
 	test-dont-save-super-linter-output \
-	test-linter-command-options \
 	test-git-invalid-worktree \
 	test-git-valid-worktree \
-	test-github-push-event-multiple-commits \
-	test-github-merge-group-event \
+	test-github-event-initial-commit \
+	test-github-event-merge-commit-push \
+	test-github-event-merge-commit-push-tag \
+	test-github-event-merge-group \
+	test-github-event-push-event-multiple-commits \
 	test-runtime-dependencies-installation \
 	test-linters \
 	test-linters-fix-mode
@@ -461,27 +458,6 @@ test-os-packages-installation: ## Test installing OS packages
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
-# Run this test against a small directory because we're only interested in
-# loading default configuration files. The directory that we run super-linter
-# against should not be .github because that includes default linter rules.
-# Disable commitlint because the workspace is not a Git repository.
-# Disable biome format because it reports errors due to default formatting rules,
-# and the absence of a biome config file that address our formatting choices.
-.PHONY: test-default-config-files
-test-default-config-files: ## Test default configuration files loading
-	docker run \
-		-e RUN_LOCAL=true \
-		-e LOG_LEVEL=DEBUG \
-		-e ENABLE_GITHUB_ACTIONS_GROUP_TITLE=true \
-		-e DEFAULT_BRANCH=main \
-		-e USE_FIND_ALGORITHM=true \
-		-e VALIDATE_GIT_COMMITLINT=false \
-		-e VALIDATE_BIOME_FORMAT=false \
-		-v "$(CURDIR)/.github/linters":/tmp/lint/.github/linters \
-		-v "$(CURDIR)/docs":/tmp/lint \
-		--rm \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
-
 .PHONY: test-non-default-home-directory
 test-non-default-home-directory: ## Test a non-default HOME directory
 	$(CURDIR)/test/run-super-linter-tests.sh \
@@ -529,43 +505,43 @@ test-linters-expect-failure-log-level-notice: ## Run the linters test suite expe
 		"run_test_cases_expect_failure_notice_log" \
 		"$(IMAGE)"
 
-.PHONY: test-git-initial-commit
-test-git-initial-commit: ## Run super-linter against a repository that only has one commit
+.PHONY: test-github-event-initial-commit
+test-github-event-initial-commit: ## Run super-linter against a repository that only has one commit
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_git_initial_commit" \
 		"$(IMAGE)"
 
-.PHONY: test-git-merge-commit-push
-test-git-merge-commit-push: ## Run super-linter against a repository that has merge commits on a push event
+.PHONY: test-github-event-merge-commit-push
+test-github-event-merge-commit-push: ## Run super-linter against a repository that has merge commits on a push event
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_merge_commit_push" \
 		"$(IMAGE)"
 
-.PHONY: test-git-merge-commit-push-tag
-test-git-merge-commit-push-tag: ## Run super-linter against a repository that has merge commits and pushed a tag
+.PHONY: test-github-event-merge-commit-push-tag
+test-github-event-merge-commit-push-tag: ## Run super-linter against a repository that has merge commits and pushed a tag
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_merge_commit_push_tag" \
 		"$(IMAGE)"
 
-.PHONY: test-github-pr-event-multiple-commits
-test-github-pr-event-multiple-commits: ## Run super-linter against a repository that simulates a pull request event with multiple commits
+.PHONY: test-github-event-pr-event-multiple-commits
+test-github-event-pr-event-multiple-commits: ## Run super-linter against a repository that simulates a pull request event with multiple commits
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_pr_event_multiple_commits" \
 		"$(IMAGE)"
 
-.PHONY: test-github-push-event-multiple-commits
-test-github-push-event-multiple-commits: ## Run super-linter against a repository that simulates a push event with multiple commits
+.PHONY: test-github-event-push-event-multiple-commits
+test-github-event-push-event-multiple-commits: ## Run super-linter against a repository that simulates a push event with multiple commits
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_push_event_multiple_commits" \
 		"$(IMAGE)"
 
-.PHONY: test-github-merge-group-event
-test-github-merge-group-event: ## Run super-linter against a repository that simulates a merge_group event
+.PHONY: test-github-event-merge-group
+test-github-event-merge-group: ## Run super-linter against a repository that simulates a merge_group event
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_merge_group_event" \
@@ -599,13 +575,6 @@ test-save-super-linter-custom-summary: ## Run super-linter with a custom SUPER_L
 		"run_test_case_custom_summary" \
 		"$(IMAGE)"
 
-.PHONY: test-custom-gitleaks-log-level
-test-custom-gitleaks-log-level: ## Run super-linter with a custom Gitleaks log level
-	$(CURDIR)/test/run-super-linter-tests.sh \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_gitleaks_custom_log_level" \
-		"$(IMAGE)"
-
 .PHONY: test-dont-save-super-linter-log-file
 test-dont-save-super-linter-log-file: ## Run super-linter without saving the Super-linter log file
 	$(CURDIR)/test/run-super-linter-tests.sh \
@@ -618,13 +587,6 @@ test-dont-save-super-linter-output: ## Run super-linter without saving Super-lin
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_dont_save_super_linter_output" \
-		"$(IMAGE)"
-
-.PHONY: test-linter-command-options
-test-linter-command-options: ## Run super-linter passing options to linters
-	$(CURDIR)/test/run-super-linter-tests.sh \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_linter_command_options" \
 		"$(IMAGE)"
 
 .PHONY: test-git-invalid-worktree

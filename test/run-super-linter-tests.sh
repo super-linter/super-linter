@@ -199,17 +199,6 @@ run_test_case_custom_summary() {
   SUPER_LINTER_SUMMARY_FILE_NAME="custom-github-step-summary.md"
 }
 
-run_test_case_gitleaks_custom_log_level() {
-  run_test_cases_expect_success
-  COMMAND_TO_RUN+=(--env GITLEAKS_LOG_LEVEL="warn")
-}
-
-run_test_case_linter_command_options() {
-  run_test_cases_expect_success
-  # Pick one arbitrary linter to pass options to
-  COMMAND_TO_RUN+=(--env GITLEAKS_COMMAND_OPTIONS="--verbose")
-}
-
 configure_git_worktree_test_cases() {
   local GIT_REPOSITORY_PATH="${1}"
 

@@ -184,7 +184,6 @@ ValidateBooleanConfigurationVariables
 ###########
 # GLOBALS #
 ###########
-DEFAULT_RULES_LOCATION='/action/lib/.automation'                            # Default rules files location
 DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
 FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
