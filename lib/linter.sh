@@ -247,19 +247,8 @@ GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
-  local GITHUB_REPOSITORY_DEFAULT_BRANCH
-  GITHUB_REPOSITORY_DEFAULT_BRANCH="master"
-
   if [[ ${RUN_LOCAL} != "false" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
-
-    if [ -z "${GITHUB_WORKSPACE:-}" ]; then
-      GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
-    fi
-
-    ValidateGitHubWorkspace "${GITHUB_WORKSPACE}"
-
-    pushd "${GITHUB_WORKSPACE}" >/dev/null || exit 1
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
       debug "Initializing GITHUB_SHA considering ${GITHUB_WORKSPACE}"
@@ -301,8 +290,6 @@ GetGitHubVars() {
     MULTI_STATUS="false"
     debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
-    ValidateGitHubWorkspace "${GITHUB_WORKSPACE}"
-
     if [ -z "${GITHUB_EVENT_PATH:-}" ]; then
       fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
     else
@@ -328,7 +315,9 @@ GetGitHubVars() {
 
     debug "This is a ${GITHUB_EVENT_NAME} event"
 
-    if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
+    local -i GITHUB_EVENT_COMMIT_COUNT
+
+    if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
       # GITHUB_SHA on PR events is not the latest commit.
       # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
       # "Note that GITHUB_SHA for this [pull_request] event is the last merge commit of the pull request merge branch.
@@ -350,39 +339,19 @@ GetGitHubVars() {
       else
         debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
       fi
-    elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
+    elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
       GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPushEventCommitCount "${GITHUB_EVENT_PATH}")
       RET_CODE=$?
       if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
+        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT:-"not set"}"
       fi
       debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
     fi
 
-    if [[ -n "${GITHUB_EVENT_COMMIT_COUNT:-}" ]]; then
-      debug "Initializing GITHUB_BEFORE_SHA because GITHUB_EVENT_COMMIT_COUNT is defined: ${GITHUB_EVENT_COMMIT_COUNT}"
-      InitializeAndValidateGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}"
-    fi
-
-    GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_PATH}")
-    local RET_CODE=$?
-    if [[ "${RET_CODE}" -gt 0 ]]; then
-      fatal "Failed to get GITHUB_REPOSITORY_DEFAULT_BRANCH. Output: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+    if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
+      fatal "Error while initializing GITHUB_BEFORE_SHA"
     fi
   fi
-
-  if [ -z "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]; then
-    fatal "Failed to get GITHUB_REPOSITORY_DEFAULT_BRANCH"
-  else
-    debug "Successfully detected the default branch for this repository: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
-  fi
-
-  DEFAULT_BRANCH="${DEFAULT_BRANCH:-${GITHUB_REPOSITORY_DEFAULT_BRANCH}}"
-
-  if [[ "${DEFAULT_BRANCH}" != "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]]; then
-    debug "The default branch for this repository was set to ${GITHUB_REPOSITORY_DEFAULT_BRANCH}, but it was explicitly overridden using the DEFAULT_BRANCH variable, and set to: ${DEFAULT_BRANCH}"
-  fi
-  info "The default branch for this repository is set to: ${DEFAULT_BRANCH}"
 
   if [ "${MULTI_STATUS}" == "true" ]; then
 
@@ -418,9 +387,6 @@ GetGitHubVars() {
   else
     debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
   fi
-
-  # We need this for parallel
-  export GITHUB_WORKSPACE
 }
 
 CallStatusAPI() {
@@ -689,11 +655,15 @@ info "This version of Super-linter includes the following tools:\n$(cat "${VERSI
 
 debug "Git safe directory: $(git config --system --get safe.directory)"
 
-#######################
-# Get GitHub Env Vars #
-#######################
-# Need to pull in all the GitHub variables
-# needed to connect back and update checks
+if ! InitializeGitHubWorkspace "${DEFAULT_WORKSPACE:-}"; then
+  fatal "Error while initializing the GITHUB_WORKSPACE variable"
+fi
+
+if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_PATH:-}" "${RUN_LOCAL}"; then
+  fatal "Error while initializing the DEFAULT_BRANCH variable"
+fi
+
+# Initialize GitHub environment variables
 GetGitHubVars
 
 ############################################
@@ -778,8 +748,10 @@ if [[ "${USE_FIND_ALGORITHM}" == "false" ]] || [[ "${IGNORE_GITIGNORED_FILES}" =
   # using Git to get the list of files to lint
   if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
     debug "Validate the Git SHA and branch references"
-    ValidateGitShaReference
-    ValidateDefaultGitBranch
+    debug "Validating GITHUB_SHA: ${GITHUB_SHA:-"not set"}"
+    if ! ValidateGitShaReference "${GITHUB_SHA}"; then
+      fatal "Failed to validate GITHUB_SHA (${GITHUB_SHA:-"not set"})"
+    fi
   fi
 else
   debug "Skipped the validation of the local Git environment because we don't depend on it."

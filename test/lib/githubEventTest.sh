@@ -66,7 +66,9 @@ function GetGithubRepositoryDefaultBranchTest() {
   info "${FUNCTION_NAME} start"
 
   local GITHUB_REPOSITORY_DEFAULT_BRANCH
-  GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "test/data/github-event/github-event-push.json")
+  if ! GITHUB_REPOSITORY_DEFAULT_BRANCH=$(GetGithubRepositoryDefaultBranch "test/data/github-event/github-event-push.json"); then
+    fatal "Error while setting GITHUB_REPOSITORY_DEFAULT_BRANCH"
+  fi
 
   debug "GITHUB_REPOSITORY_DEFAULT_BRANCH: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
 

@@ -40,6 +40,9 @@ TEST_ROOT_CA_CERT_FILE_PATH="test/data/ssl-certificate/rootCA-test.crt"
 # Set an arbitrary pull request name
 PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
 
+# Set an arbitrary new branch name
+NEW_BRANCH_NAME="branch-1"
+
 # TODO: use TEST_CASE_FOLDER instead of redefining this after we extract the
 # initialization of TEST_CASE_FOLDER from linter.sh
 # shellcheck disable=SC2034
@@ -259,7 +262,7 @@ initialize_git_repository() {
     mkdir --parents "${GIT_REPOSITORY_PATH}"
   fi
 
-  debug "GIT_REPOSITORY_PATH: ${GIT_REPOSITORY_PATH}"
+  debug "GIT_REPOSITORY_PATH: ${GIT_REPOSITORY_PATH}. DEFAULT_BRANCH: ${DEFAULT_BRANCH}"
 
   git -C "${GIT_REPOSITORY_PATH}" init --initial-branch="${DEFAULT_BRANCH:-"main"}"
   git -C "${GIT_REPOSITORY_PATH}" config user.name "Super-linter Test"
@@ -293,8 +296,6 @@ initialize_git_repository_contents() {
   local SKIP_GITHUB_BEFORE_SHA_INIT="${1}" && shift
   local COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE="${1}" && shift
   local INITIALIZE_GITHUB_SHA="${1}" && shift
-
-  local NEW_BRANCH_NAME="branch-1"
 
   debug "Creating the initial commit"
   local TEST_FILE_PATH

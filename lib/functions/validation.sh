@@ -36,17 +36,36 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"
 }
 
-function ValidateGitHubWorkspace() {
-  local GITHUB_WORKSPACE
-  GITHUB_WORKSPACE="${1}"
-  if [ -z "${GITHUB_WORKSPACE}" ]; then
-    fatal "Failed to get GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+InitializeGitHubWorkspace() {
+  local DEFAULT_WORKSPACE="${1}" && shift
+
+  debug "Initializing GITHUB_WORKSPACE. DEFAULT_WORKSPACE: ${DEFAULT_WORKSPACE:-"not set"}"
+
+  if [[ -z "${DEFAULT_WORKSPACE:-}" ]]; then
+    error "DEFAULT_WORKSPACE is not set."
+    return 1
+  fi
+
+  if [[ -z "${GITHUB_WORKSPACE:-}" ]]; then
+    GITHUB_WORKSPACE="${DEFAULT_WORKSPACE}"
   fi
 
   if [ ! -d "${GITHUB_WORKSPACE}" ]; then
-    fatal "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
+    error "The workspace (${GITHUB_WORKSPACE}) is not a directory!"
+    return 1
   fi
-  info "Successfully validated GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+  debug "Successfully validated GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+
+  # Change the working directory to the workspace so we don't need to ask users
+  # to do this.
+  if ! pushd "${GITHUB_WORKSPACE}" >/dev/null; then
+    error "Error while changing the working directory to ${GITHUB_WORKSPACE:-"not set"}"
+    return 1
+  fi
+
+  # We need to export GITHUB_WORKSPACE so subprocesses can access the value
+  # of this variable (i.e. when running linters with GNU parallel)
+  export GITHUB_WORKSPACE
 }
 
 function ValidateFindMode() {
@@ -266,101 +285,37 @@ function IsUnsignedInteger() {
   esac
 }
 
-function ValidateGitShaReference() {
-  debug "Git HEAD: $(git -C "${GITHUB_WORKSPACE}" show HEAD --stat)"
+InitializeDefaultBranch() {
+  local -l USE_FIND_ALGORITHM="${1}" && shift
+  local GITHUB_EVENT_FILE_PATH="${1}" && shift
+  local -l RUN_LOCAL="${1}" && shift
 
-  debug "Validate that the GITHUB_SHA reference (${GITHUB_SHA}) exists in this Git repository."
-  if ! CheckIfGitRefExists "${GITHUB_SHA}"; then
-    IssueHintForFullGitHistory
-    fatal "The GITHUB_SHA reference (${GITHUB_SHA}) doesn't exist in this Git repository"
-  else
-    debug "The GITHUB_SHA reference (${GITHUB_SHA}) exists in this repository"
-  fi
-}
-
-InitializeAndValidateGitBeforeShaReference() {
-  debug "Initializing and validating GITHUB_BEFORE_SHA"
-  debug "Check if the ${GITHUB_SHA} commit is a merge commit by checking if it has more than one parent"
-
-  local GITHUB_SHA="${1}"
-  local -i GITHUB_EVENT_COMMIT_COUNT="${2}"
-  local GIT_ROOT_COMMIT_SHA="${3}"
-
-  if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
-    debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there cannot be any commit before the initial commit"
+  if [[ "${USE_FIND_ALGORITHM}" == "true" ]]; then
+    debug "Skip DEFAULT_BRANCH initialization because USE_FIND_ALGORITHM is set to ${USE_FIND_ALGORITHM}"
     return 0
   fi
-  debug "${GITHUB_SHA} is not the initial commit. Initializing and validating GITHUB_BEFORE_SHA"
 
-  local -i GIT_COMMIT_PARENTS_COUNT
-  GIT_COMMIT_PARENTS_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)"
-  local RET_CODE=$?
-  if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Error while getting ${GITHUB_SHA} commit parents count. Output: ${GIT_COMMIT_PARENTS_COUNT}"
-  fi
-  debug "${GITHUB_SHA} git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
-  GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
-  debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the ${GITHUB_SHA} commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
+  local GITHUB_REPOSITORY_DEFAULT_BRANCH
 
-  # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
-  # Use GITHUB_SHA instead of HEAD because for pull requests, HEAD points that the PR merge commit
-  local GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
-  if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
-    debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
-    GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
-    debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
-
-    if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
-      GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
-      debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
-    else
-      debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+  if [[ "${RUN_LOCAL}" == "true" ]]; then
+    GITHUB_REPOSITORY_DEFAULT_BRANCH="master"
+  else
+    GITHUB_REPOSITORY_DEFAULT_BRANCH="$(GetGithubRepositoryDefaultBranch "${GITHUB_EVENT_FILE_PATH}")"
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      error "Failed to get GITHUB_REPOSITORY_DEFAULT_BRANCH. Output: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
+      return 1
     fi
-  else
-    debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
+    debug "Successfully detected the default branch for this repository: ${GITHUB_REPOSITORY_DEFAULT_BRANCH}"
   fi
 
-  GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
-  debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
+  DEFAULT_BRANCH="${DEFAULT_BRANCH:-"${GITHUB_REPOSITORY_DEFAULT_BRANCH}"}"
 
-  # shellcheck disable=SC2086  # We checked that GITHUB_EVENT_COMMIT_COUNT is an integer
-  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD})"
-  local RET_CODE=$?
-  if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
+  if [[ "${DEFAULT_BRANCH}" != "${GITHUB_REPOSITORY_DEFAULT_BRANCH}" ]]; then
+    debug "The default branch for this repository was set to ${GITHUB_REPOSITORY_DEFAULT_BRANCH}, but it was explicitly overridden using the DEFAULT_BRANCH variable, and set to: ${DEFAULT_BRANCH}"
   fi
+  info "The default branch for this repository is set to: ${DEFAULT_BRANCH}"
 
-  debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
-  if [ -z "${GITHUB_BEFORE_SHA:-}" ] ||
-    [ "${GITHUB_BEFORE_SHA:-}" == "null" ] ||
-    [ "${GITHUB_BEFORE_SHA:-}" == "0000000000000000000000000000000000000000" ]; then
-    fatal "Failed to get GITHUB_BEFORE_SHA: [${GITHUB_BEFORE_SHA:-}]"
-  fi
-
-  debug "Validate that the GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this Git repository."
-  if ! CheckIfGitRefExists "${GITHUB_BEFORE_SHA}"; then
-    fatal "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) doesn't exist in this Git repository"
-  else
-    debug "The GITHUB_BEFORE_SHA reference (${GITHUB_BEFORE_SHA}) exists in this repository"
-  fi
-
-  debug "Successfully found GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA}"
-  export GITHUB_BEFORE_SHA
-}
-
-InitializeRootCommitSha() {
-  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${GITHUB_SHA}")"
-  local RET_CODE=$?
-  if [[ "${RET_CODE}" -gt 0 ]]; then
-    error "Failed to get the root commit: ${GIT_ROOT_COMMIT_SHA}"
-    return 1
-  else
-    debug "Successfully found the root commit: ${GIT_ROOT_COMMIT_SHA}"
-  fi
-  export GIT_ROOT_COMMIT_SHA
-}
-
-function ValidateDefaultGitBranch() {
   debug "Check if the default branch (${DEFAULT_BRANCH}) exists"
   if ! CheckIfGitBranchExists "${DEFAULT_BRANCH}"; then
     REMOTE_DEFAULT_BRANCH="origin/${DEFAULT_BRANCH}"
@@ -375,6 +330,111 @@ function ValidateDefaultGitBranch() {
   else
     debug "The default branch (${DEFAULT_BRANCH}) exists in this repository"
   fi
+}
+
+InitializeGitBeforeShaReference() {
+  debug "Initializing and validating GITHUB_BEFORE_SHA"
+
+  local GITHUB_SHA="${1}"
+  local -i GITHUB_EVENT_COMMIT_COUNT="${2}"
+  local GIT_ROOT_COMMIT_SHA="${3}"
+  local GITHUB_EVENT_NAME="${4}"
+  local DEFAULT_BRANCH="${5:-}"
+
+  if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
+    debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there cannot be any commit before the initial commit"
+    return 0
+  fi
+  debug "${GITHUB_SHA} is not the initial commit. Initializing and validating GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event"
+
+  if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+    debug "Check if the ${GITHUB_SHA} commit is a merge commit by checking if it has more than one parent"
+    local -i GIT_COMMIT_PARENTS_COUNT
+    GIT_COMMIT_PARENTS_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)"
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      error "Error while getting ${GITHUB_SHA} commit parents count. Output: ${GIT_COMMIT_PARENTS_COUNT}"
+      return 1
+    fi
+    debug "${GITHUB_SHA} git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
+    GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
+    debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the ${GITHUB_SHA} commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
+
+    # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
+    # Use GITHUB_SHA instead of HEAD because for pull requests, HEAD points that the PR merge commit
+    local GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
+    if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
+      debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
+      GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
+      debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
+
+      if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
+        GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
+        debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+      else
+        debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+      fi
+    else
+      debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
+    fi
+
+    GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
+  elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+    GIT_BEFORE_SHA_HEAD="${DEFAULT_BRANCH}"
+  fi
+
+  debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
+
+  # shellcheck disable=SC2086  # We checked that GITHUB_EVENT_COMMIT_COUNT is an integer
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD})"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
+    return 1
+  fi
+
+  debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA:-"not set"}"
+  if ! ValidateGitShaReference "${GITHUB_BEFORE_SHA}"; then
+    error "Failed to validate GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA:-"not set"})"
+    return 1
+  fi
+
+  export GITHUB_BEFORE_SHA
+}
+
+ValidateGitShaReference() {
+  local SHA_REFERENCE="${1}"
+  debug "Validating GITHUB_BEFORE_SHA: ${SHA_REFERENCE}"
+  if [ -z "${SHA_REFERENCE:-}" ] ||
+    [ "${SHA_REFERENCE:-}" == "null" ] ||
+    [ "${SHA_REFERENCE:-}" == "0000000000000000000000000000000000000000" ]; then
+    error "Failed to get SHA_REFERENCE: ${SHA_REFERENCE:-}"
+    return 1
+  fi
+
+  debug "Validate that the SHA_REFERENCE reference (${SHA_REFERENCE}) exists in this Git repository."
+  if ! CheckIfGitRefExists "${SHA_REFERENCE}"; then
+    IssueHintForFullGitHistory
+    error "The SHA_REFERENCE reference (${SHA_REFERENCE}) doesn't exist in this Git repository"
+    return 1
+  else
+    debug "The SHA_REFERENCE reference (${SHA_REFERENCE}) exists in this repository"
+  fi
+
+  debug "Successfully validated SHA_REFERENCE: ${SHA_REFERENCE}"
+}
+
+InitializeRootCommitSha() {
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-list --max-parents=0 "${GITHUB_SHA}")"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to get the root commit: ${GIT_ROOT_COMMIT_SHA}"
+    return 1
+  else
+    debug "Successfully found the root commit: ${GIT_ROOT_COMMIT_SHA}"
+  fi
+  export GIT_ROOT_COMMIT_SHA
 }
 
 function CheckovConfigurationFileContainsDirectoryOption() {
