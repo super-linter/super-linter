@@ -8,28 +8,28 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.19.9 AS terrascan
-FROM alpine/terragrunt:1.13.2 AS terragrunt
+FROM alpine/terragrunt:1.13.3 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.59.1 AS tflint
 FROM alpine/helm:3.19.0 AS helm
 FROM golang:1.25.1-alpine AS golang
-FROM golangci/golangci-lint:v2.4.0 AS golangci-lint
-FROM goreleaser/goreleaser:v2.12.0 AS goreleaser
-FROM hadolint/hadolint:v2.13.1-alpine AS dockerfile-lint
+FROM golangci/golangci-lint:v2.5.0 AS golangci-lint
+FROM goreleaser/goreleaser:v2.12.2 AS goreleaser
+FROM hadolint/hadolint:v2.14.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.7.1 AS kustomize
-FROM hashicorp/terraform:1.13.2 AS terraform
+FROM hashicorp/terraform:1.13.3 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.4.0 AS editorconfig-checker
 FROM mvdan/shfmt:v3.12.0 AS shfmt
 FROM rhysd/actionlint:1.7.7 AS actionlint
-FROM scalameta/scalafmt:v3.9.9 AS scalafmt
+FROM scalameta/scalafmt:v3.9.10 AS scalafmt
 FROM zricethezav/gitleaks:v8.28.0 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2025.07.28-alpine AS clj-kondo
+FROM ghcr.io/clj-kondo/clj-kondo:2025.09.22-alpine AS clj-kondo
 FROM dart:3.9.3-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.305-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
-FROM composer/composer:2.8.11 AS php-composer
+FROM composer/composer:2.8.12 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.66.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
