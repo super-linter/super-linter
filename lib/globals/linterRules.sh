@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-LINTER_RULES_PATH="${LINTER_RULES_PATH:-.github/linters}" # Linter rules directory
+# Default rules files location
+# shellcheck disable=SC2034 # Variable is referenced indirectly
+DEFAULT_RULES_LOCATION="/action/lib/.automation"
+
+# Linter rules directory
+LINTER_RULES_PATH="${LINTER_RULES_PATH:-".github/linters"}"
 
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 ANSIBLE_FILE_NAME="${ANSIBLE_CONFIG_FILE:-.ansible-lint.yml}"

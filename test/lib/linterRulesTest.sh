@@ -4,12 +4,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# Default log level
-# shellcheck disable=SC2034
-LOG_LEVEL="DEBUG"
-
 # shellcheck source=/dev/null
-source "lib/functions/log.sh"
+source "test/testUtils.sh"
 
 # shellcheck source=/dev/null
 source "lib/functions/detectFiles.sh"
@@ -19,7 +15,7 @@ source "lib/globals/linterRules.sh"
 
 TEST_LANGUAGE_NAME="TEST_LANGUAGE"
 TEST_LANGUAGE_NAME_WITHOUT_RULES="TEST_LANGUAGE_WITHOUT_RULES"
-LANGUAGE_ARRAY=("${TEST_LANGUAGE_NAME}" "${TEST_LANGUAGE_NAME_WITHOUT_RULES}")
+TEST_LANGUAGE_ARRAY=("${TEST_LANGUAGE_NAME}" "${TEST_LANGUAGE_NAME_WITHOUT_RULES}")
 
 # shellcheck source=/dev/null
 source "lib/functions/linterRules.sh"
@@ -39,7 +35,7 @@ function GetLinterRulesTest() {
   # DEFAULT_RULES_LOCATION that is also in
   # ${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}
   TEST_LANGUAGE_FILE_NAME="${TEST_LANGUAGE_FILE_NAME:-".jscpd.json"}"
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  for LANGUAGE in "${TEST_LANGUAGE_ARRAY[@]}"; do
     debug "Loading rules for ${LANGUAGE}..."
     GetLinterRules "${LANGUAGE}" "${DEFAULT_RULES_LOCATION}"
   done
@@ -112,12 +108,12 @@ function LinterRulesVariablesExportTest() {
   # shellcheck source=/dev/null
   source "lib/globals/linterRules.sh"
 
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  for LANGUAGE in "${TEST_LANGUAGE_ARRAY[@]}"; do
     debug "Loading rules for ${LANGUAGE}..."
     GetLinterRules "${LANGUAGE}" "${DEFAULT_RULES_LOCATION}"
   done
 
-  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  for LANGUAGE in "${TEST_LANGUAGE_ARRAY[@]}"; do
     debug "Verify that ${LANGUAGE} configuration file variable is exported"
     if [[ "${LANGUAGE}" == "${TEST_LANGUAGE_NAME_WITHOUT_RULES}" ]]; then
       debug "${LANGUAGE} doesn't have linter configuration file variable. Skipping export test."
@@ -143,7 +139,25 @@ function LinterRulesVariablesExportTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+LoadDefaultRulesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  debug "LANGUAGE_ARRAY: ${LANGUAGE_ARRAY[*]}"
+
+  for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+    debug "Test Loading rules for ${LANGUAGE}..."
+    if ! GetLinterRules "${LANGUAGE}" "${DEFAULT_RULES_LOCATION}"; then
+      fatal "Failed loading rules for ${LANGUAGE}"
+    fi
+  done
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 GetLinterRulesTest
 GetLinterRulesEmptyDotRulesPathTest
 GetLinterRulesEmptyRootRulesPathTest
 LinterRulesVariablesExportTest
+LoadDefaultRulesTest
