@@ -22,7 +22,13 @@ function GetGithubPushEventCommitCountTest() {
   info "${FUNCTION_NAME} start"
 
   local GITHUB_EVENT_COMMIT_COUNT
-  GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPushEventCommitCount "test/data/github-event/github-event-push.json")
+  set +o errexit
+  GITHUB_EVENT_COMMIT_COUNT="$(GetGithubPushEventCommitCount "test/data/github-event/github-event-push.json")"
+  RET_CODE=$?
+  set -o errexit
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    fatal "Failed to get commit count from GitHub push event. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
+  fi
 
   debug "GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
 
@@ -90,7 +96,9 @@ function GetPullRequestHeadShaTest() {
   info "${FUNCTION_NAME} start"
 
   local GITHUB_PULL_REQUEST_HEAD_SHA
-  GITHUB_PULL_REQUEST_HEAD_SHA=$(GetPullRequestHeadSha "test/data/github-event/github-event-pull-request-multiple-commits.json")
+  if ! GITHUB_PULL_REQUEST_HEAD_SHA=$(GetPullRequestHeadSha "test/data/github-event/github-event-pull-request-multiple-commits.json"); then
+    fatal "Failed to get pull request HEAD SHA"
+  fi
 
   debug "GITHUB_PULL_REQUEST_HEAD_SHA: ${GITHUB_PULL_REQUEST_HEAD_SHA}"
 

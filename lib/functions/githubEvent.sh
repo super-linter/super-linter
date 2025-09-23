@@ -11,14 +11,16 @@ function GetGithubPushEventCommitCount() {
   GITHUB_PUSH_COMMIT_COUNT="$(jq -r '.commits | length' <"${GITHUB_EVENT_FILE_PATH}")"
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Failed to initialize GITHUB_PUSH_COMMIT_COUNT for a push event. Output: ${GITHUB_PUSH_COMMIT_COUNT}"
+    error "Failed to initialize GITHUB_PUSH_COMMIT_COUNT for a push event. Output: ${GITHUB_PUSH_COMMIT_COUNT}"
+    return 1
   fi
 
   if IsUnsignedInteger "${GITHUB_PUSH_COMMIT_COUNT}" && [ -n "${GITHUB_PUSH_COMMIT_COUNT}" ]; then
     echo "${GITHUB_PUSH_COMMIT_COUNT}"
     return 0
   else
-    fatal "GITHUB_PUSH_COMMIT_COUNT is not an unsigned integer: ${GITHUB_PUSH_COMMIT_COUNT}"
+    error "GITHUB_PUSH_COMMIT_COUNT is not an unsigned integer: ${GITHUB_PUSH_COMMIT_COUNT}"
+    return 1
   fi
 }
 
@@ -66,7 +68,8 @@ function GetPullRequestHeadSha() {
   GITHUB_PULL_REQUEST_HEAD_SHA=$(jq -r '.pull_request.head.sha' <"${GITHUB_EVENT_FILE_PATH}")
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
-    fatal "Failed to initialize GITHUB_PULL_REQUEST_HEAD_SHA. Output: ${GITHUB_PULL_REQUEST_HEAD_SHA}"
+    error "Failed to initialize GITHUB_PULL_REQUEST_HEAD_SHA. Output: ${GITHUB_PULL_REQUEST_HEAD_SHA}"
+    return 1
   fi
 
   echo "${GITHUB_PULL_REQUEST_HEAD_SHA}"

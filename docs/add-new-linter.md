@@ -43,7 +43,8 @@ existence of any configuration file you added:
 
 ## Install the tool
 
-1. Install the tool by pointing to specific package or container image versions:
+1. Install the latest version of the tool by pointing to specific package or
+   container image versions:
    - If there are PyPi packages:
      1. Create a text file named `dependencies/python/<name-of-tool>.txt` and
         list the packages there.
