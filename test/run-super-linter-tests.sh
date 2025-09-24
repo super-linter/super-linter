@@ -59,12 +59,14 @@ configure_git_commitlint_test_cases() {
 
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e TRIVY_CONFIG_FILE="trivy-test-linters.yaml" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters.yaml")
   configure_git_commitlint_test_cases
 }
 
 run_test_cases_expect_failure() {
   configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/bad" -e CHECKOV_FILE_NAME=".checkov-test-linters-failure.yaml" -e FILTER_REGEX_INCLUDE=".*bad.*")
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters-failure.yaml")
   EXPECTED_EXIT_CODE=1
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-failure-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
@@ -72,6 +74,7 @@ run_test_cases_expect_failure() {
 run_test_cases_expect_success() {
   configure_linters_for_test_cases
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/good" -e CHECKOV_FILE_NAME=".checkov-test-linters-success.yaml" -e FILTER_REGEX_INCLUDE=".*good.*")
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters-success.yaml")
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 

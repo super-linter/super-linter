@@ -32,7 +32,8 @@ test: \
 	test-github-event-merge-group \
 	test-github-event-push-event-multiple-commits \
 	test-runtime-dependencies-installation \
-	test-linters \
+	test-linters-expect-failure \
+	test-linters-expect-success \
 	test-linters-fix-mode
 
 # if this session isn't interactive, then we don't want to allocate a
@@ -471,11 +472,6 @@ test-linters-fix-mode: ## Run the linters test suite (fix mode)
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_fix_mode" \
 		"$(IMAGE)"
-
-.PHONY: test-linters ## Run the linters test suite
-test-linters: \
-	test-linters-expect-success \
-	test-linters-expect-failure
 
 .PHONY: test-linters-expect-success
 test-linters-expect-success: ## Run the linters test suite expecting successes

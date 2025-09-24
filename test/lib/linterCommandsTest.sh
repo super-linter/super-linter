@@ -68,6 +68,7 @@ BASE_LINTER_COMMANDS_ARRAY_JAVA=("${LINTER_COMMANDS_ARRAY_JAVA[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PERL=("${LINTER_COMMANDS_ARRAY_PERL[@]}")
+BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${LINTER_COMMANDS_ARRAY_PRE_COMMIT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PRETTIER=("${PRETTIER_COMMAND[@]}")
 BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
 BASE_LINTER_COMMANDS_ARRAY_XML=("${LINTER_COMMANDS_ARRAY_XML[@]}")
@@ -435,6 +436,8 @@ CommandOptionsTest() {
   # shellcheck disable=SC2034
   local PERL_PERLCRITIC_OPTIONS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
+  local PRE_COMMIT_COMMAND_ARGS="${ARGS_TO_ADD}"
+  # shellcheck disable=SC2034
   local PRETTIER_COMMAND_OPTIONS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
   local RUST_CLIPPY_COMMAND_OPTIONS="${ARGS_TO_ADD}"
@@ -489,11 +492,82 @@ CommandOptionsTest() {
   fi
 
   # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT" "${PRE_COMMIT_COMMAND_ARGS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  # shellcheck disable=SC2034
   local EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}")
   AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "${RUST_CLIPPY_COMMAND_OPTIONS}"
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+PreCommitCommandTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT
+  local VALIDATE_ALL_CODEBASE
+
+  local BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT[@]}")
+  # Remove the last array element because Super-linter initializes the pre-commit command with the PRE_COMMIT_RUN_ALL_FILES_OPTION as a fallback option
+  unset "BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION[-1]"
+
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION[@]}" "${PRE_COMMIT_ALL_FILES_OPTION[@]}")
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+    fatal "LINTER_COMMANDS_ARRAY_PRE_COMMIT doesn't match the expected value when VALIDATE_ALL_CODEBASE is ${VALIDATE_ALL_CODEBASE:-"not initialized"}"
+  fi
+
+  # shellcheck disable=SC2034
+  VALIDATE_ALL_CODEBASE=
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION[@]}" "${PRE_COMMIT_ALL_FILES_OPTION[@]}")
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+    fatal "LINTER_COMMANDS_ARRAY_PRE_COMMIT doesn't match the expected value when VALIDATE_ALL_CODEBASE is ${VALIDATE_ALL_CODEBASE:-"not set"}"
+  fi
+
+  # shellcheck disable=SC2034
+  VALIDATE_ALL_CODEBASE="true"
+  # shellcheck disable=SC2034
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION[@]}" "${PRE_COMMIT_ALL_FILES_OPTION[@]}")
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+    fatal "LINTER_COMMANDS_ARRAY_PRE_COMMIT doesn't match the expected value when VALIDATE_ALL_CODEBASE is ${VALIDATE_ALL_CODEBASE:-"not set"}"
+  fi
+
+  VALIDATE_ALL_CODEBASE="false"
+  # shellcheck disable=SC2034
+  GITHUB_SHA="to-ref"
+  GITHUB_BEFORE_SHA="from-ref"
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT_WITHOUT_FALLBACK_OPTION[@]}")
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT+=("${PRE_COMMIT_FROM_REF_OPTIONS[@]}" "${GITHUB_BEFORE_SHA}")
+  EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT+=("${PRE_COMMIT_TO_REF_OPTIONS[@]}" "${GITHUB_SHA}")
+  # Source the file again so it accounts for modifications
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+    fatal "LINTER_COMMANDS_ARRAY_PRE_COMMIT doesn't match the expected value when VALIDATE_ALL_CODEBASE is ${VALIDATE_ALL_CODEBASE:-"not set"}"
+  fi
+
+  unset VALIDATE_ALL_CODEBASE
+  unset GITHUB_BEFORE_SHA
+  unset GITHUB_SHA
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -531,5 +605,6 @@ InitFixModeOptionsAndCommandsTest
 InitPowerShellCommandTest
 BashExecIgnoreLibrariesTest
 CommandOptionsTest
+PreCommitCommandTest
 AddOptionsToCommandTest
 AddDebugOptionsToCommandsTest

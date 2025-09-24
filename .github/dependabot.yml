@@ -145,6 +145,7 @@ updates:
           - isort
           - mypy
           - nbqa
+          - pre-commit
           - pylint
           - ruff
           - snakefmt

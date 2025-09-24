@@ -67,6 +67,7 @@ LINTER_NAMES_ARRAY['PHP_BUILTIN']="php"
 LINTER_NAMES_ARRAY['PHP_PHPCS']="phpcs"
 LINTER_NAMES_ARRAY['PHP_PHPSTAN']="phpstan"
 LINTER_NAMES_ARRAY['PHP_PSALM']="psalm"
+LINTER_NAMES_ARRAY['PRE_COMMIT']="pre-commit"
 LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
 LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
 LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
@@ -191,6 +192,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ ${LINTER} == "protolint" ]]; then
     GET_VERSION_CMD="$(${LINTER} version | awk '{ print $3 }')"
   elif [[ ${LINTER} == "psalm" ]]; then
+    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
+  elif [[ ${LINTER} == "pre-commit" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
   elif [[ ${LINTER} == "pylint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | grep 'pylint' | awk '{ print $2 }')"
