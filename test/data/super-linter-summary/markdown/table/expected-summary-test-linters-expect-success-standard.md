@@ -69,6 +69,7 @@
 | PHP_PHPSTAN                  | Pass ✅           |
 | PHP_PSALM                    | Pass ✅           |
 | POWERSHELL                   | Pass ✅           |
+| PRE_COMMIT                   | Pass ✅           |
 | PROTOBUF                     | Pass ✅           |
 | PYTHON_BLACK                 | Pass ✅           |
 | PYTHON_PYLINT                | Pass ✅           |

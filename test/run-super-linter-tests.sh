@@ -59,6 +59,7 @@ configure_git_commitlint_test_cases() {
 
 configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e TRIVY_CONFIG_FILE="trivy-test-linters.yaml" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters.yaml")
   configure_git_commitlint_test_cases
 }
 

@@ -63,6 +63,7 @@
 | PHP_PHPCS                  | Fail ❌           |
 | PHP_PHPSTAN                | Fail ❌           |
 | PHP_PSALM                  | Fail ❌           |
+| PRE_COMMIT                 | Fail ❌           |
 | PROTOBUF                   | Fail ❌           |
 | PYTHON_BLACK               | Fail ❌           |
 | PYTHON_PYLINT              | Fail ❌           |

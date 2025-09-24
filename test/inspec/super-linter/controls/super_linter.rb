@@ -193,6 +193,7 @@ control "super-linter-installed-commands" do
     { linter_name: "protolint", version_option: "version" },
     { linter_name: "psalm" },
     { linter_name: "pwsh" },
+    { linter_name: "pre-commit" },
     { linter_name: "pylint" },
     { linter_name: "R", version_command: "R --slave -e \"r_ver <- R.Version()\\$version.string; \
             lintr_ver <- packageVersion('lintr'); \
@@ -404,6 +405,7 @@ control "super-linter-installed-pypi-packages" do
     "mypy",
     "nbqa",
     "pylint",
+    "pre-commit",
     "ruff",
     "snakefmt",
     "snakemake",
@@ -509,6 +511,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.openapirc.yml",
     "/action/lib/.automation/.perlcriticrc",
     "/action/lib/.automation/.powershell-psscriptanalyzer.psd1",
+    "/action/lib/.automation/.pre-commit-config.yaml",
     "/action/lib/.automation/.protolintrc.yml",
     "/action/lib/.automation/.python-black",
     "/action/lib/.automation/.python-lint",

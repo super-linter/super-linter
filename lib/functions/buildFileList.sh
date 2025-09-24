@@ -147,6 +147,14 @@ function BuildFileList() {
     debug "DEFAULT_TRIVY_TEST_CASE_DIRECTORY: ${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}"
     RAW_FILE_ARRAY+=("${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}/bad")
     RAW_FILE_ARRAY+=("${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}/good")
+
+    debug "Adding test case directories to the list of directories to analyze with pre-commit."
+    DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/pre_commit"
+    # We need this for parallel
+    export DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY
+    debug "DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY: ${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}/good")
   fi
 
   debug "Add GITHUB_WORKSPACE (${GITHUB_WORKSPACE}) to the list of files to lint because we might need it for linters that lint the whole workspace"
@@ -276,11 +284,14 @@ BuildFileArrays() {
         debug "Add ${FILE} to the list of items to lint with BIOME_LINT"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
 
+        debug "Add ${FILE} to the list of items to lint with Commitlint"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+
         debug "Add ${FILE} to the list of items to lint with JSCPD"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
 
-        debug "Add ${FILE} to the list of items to lint with Commitlint"
-        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+        debug "Add ${FILE} to the list of items to lint with pre-commit"
+        echo "${GITHUB_WORKSPACE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PRE_COMMIT"
 
         debug "Add ${FILE} to the list of items to lint with Trivy"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
@@ -358,16 +369,22 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
     fi
 
+    # Handle Commitlint test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+    fi
+
     # Handle JSCPD test cases
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
       debug "${FILE} is a test case for JSCPD. Adding it to the list of items to lint with JSCPD"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
     fi
 
-    # Handle Commitlint test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+    # Handle pre-commit test cases
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
+      debug "${FILE} is a test case for pre-commit. Adding it to the list of items to lint with pre-commit"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PRE_COMMIT"
     fi
 
     # Handle Trivy test cases
