@@ -30,7 +30,7 @@ FROM dart:3.9.3-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:9.0.305-alpine3.21 AS dotnet-sdk
 FROM mcr.microsoft.com/powershell:7.5-alpine-3.20 AS powershell
 FROM composer/composer:2.8.12 AS php-composer
-FROM ghcr.io/aquasecurity/trivy:0.66.0 AS trivy
+FROM ghcr.io/aquasecurity/trivy:0.67.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
 FROM python:3.13.7-alpine3.22 AS python-base
