@@ -69,6 +69,7 @@
 | PHP_PHPSTAN                  | Fail ❌           |
 | PHP_PSALM                    | Fail ❌           |
 | POWERSHELL                   | Fail ❌           |
+| PRE_COMMIT                   | Fail ❌           |
 | PROTOBUF                     | Fail ❌           |
 | PYTHON_BLACK                 | Fail ❌           |
 | PYTHON_PYLINT                | Fail ❌           |
