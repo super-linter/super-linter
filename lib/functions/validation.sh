@@ -380,7 +380,8 @@ InitializeGitBeforeShaReference() {
 
     GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
-    [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
     GIT_BEFORE_SHA_HEAD="${DEFAULT_BRANCH}"
   fi
 

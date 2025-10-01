@@ -613,7 +613,8 @@ InitializeGitBeforeShaReferenceMergeCommitTest() {
 
   local -i COMMIT_COUNT=3
 
-  if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+  if [[ "${EVENT_NAME}" == "pull_request" ]] ||
+    [[ "${EVENT_NAME}" == "pull_request_target" ]]; then
     initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "true" "false" "false" "true"
   elif [[ "${EVENT_NAME}" == "merge_group" ]]; then
     initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "false" "false" "false" "true"
@@ -639,6 +640,16 @@ InitializeGitBeforeShaReferenceMergeCommitPullRequestTest() {
   info "${FUNCTION_NAME} start"
 
   InitializeGitBeforeShaReferenceMergeCommitTest "pull_request"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeCommitPullRequestTargetGroupTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "pull_request_target"
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -950,6 +961,7 @@ CheckIfFixModeIsEnabledTest
 ValidateCommitlintConfigurationTest
 InitializeGitBeforeShaReferenceFastForwardPushTest
 InitializeGitBeforeShaReferenceMergeCommitPullRequestTest
+InitializeGitBeforeShaReferenceMergeCommitPullRequestTargetGroupTest
 InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest
 InitializeGitBeforeShaReferenceMergeDefaultBranchInPullRequestBranchTest
 ValidateGitShaReferenceTest
