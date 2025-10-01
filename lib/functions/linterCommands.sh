@@ -120,8 +120,8 @@ if [ "${BASH_EXEC_IGNORE_LIBRARIES}" == 'true' ]; then
   debug "Enabling bash-exec option to ignore shell library files."
   LINTER_COMMANDS_ARRAY_BASH_EXEC+=('true')
 fi
-LINTER_COMMANDS_ARRAY_BIOME_FORMAT=(biome format --error-on-warnings)
-LINTER_COMMANDS_ARRAY_BIOME_LINT=(biome lint --error-on-warnings)
+LINTER_COMMANDS_ARRAY_BIOME_FORMAT=(biome format --error-on-warnings --no-errors-on-unmatched)
+LINTER_COMMANDS_ARRAY_BIOME_LINT=(biome lint --error-on-warnings --no-errors-on-unmatched)
 LINTER_COMMANDS_ARRAY_CHECKOV=(checkov --config-file "${CHECKOV_LINTER_RULES}")
 if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
   # Consume the input as we do with ANSIBLE
