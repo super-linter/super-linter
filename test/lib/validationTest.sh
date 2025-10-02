@@ -937,6 +937,63 @@ InitializeGitHubWorkspaceTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+ValidateConflictingToolsTestCase() {
+  local -n FIRST_VARIABLE_NAME="${1}"
+  local -n SECOND_VARIABLE_NAME="${2}"
+
+  FIRST_VARIABLE_NAME="true"
+  SECOND_VARIABLE_NAME="true"
+  if ValidateConflictingTools; then
+    fatal "ValidateConflictingTools with ${1} (${FIRST_VARIABLE_NAME}) and ${2} (${SECOND_VARIABLE_NAME}) vars set to false should have failed validation"
+  fi
+  unset FIRST_VARIABLE_NAME
+  unset SECOND_VARIABLE_NAME
+
+  unset -n FIRST_VARIABLE_NAME
+  unset -n SECOND_VARIABLE_NAME
+}
+
+ValidateConflictingToolsTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+
+  ValidateConflictingToolsTestCase "VALIDATE_PYTHON_BLACK" "VALIDATE_PYTHON_RUFF_FORMAT"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_CSS_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_GRAPHQL_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_GRAPHQL_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_HTML_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_JAVASCRIPT_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_JSON_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_JSONC_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_JSX_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_TYPESCRIPT_PRETTIER"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_FORMAT" "VALIDATE_VUE_PRETTIER"
+
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_CSS"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_JAVASCRIPT_ES"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_JSON"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_JSONC"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_JSX"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_TSX"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_TYPESCRIPT_ES"
+  ValidateConflictingToolsTestCase "VALIDATE_BIOME_LINT" "VALIDATE_VUE"
+
+  local VALIDATE_PYTHON_BLACK="false"
+  local VALIDATE_PYTHON_RUFF_FORMAT="false"
+  if ! ValidateConflictingTools; then
+    fatal "ValidateConflictingTools VALIDATE_PYTHON_BLACK (${VALIDATE_PYTHON_BLACK}) and VALIDATE_PYTHON_RUFF_FORMAT (${VALIDATE_PYTHON_RUFF_FORMAT}) vars set to false should have passed validation"
+  fi
+  unset VALIDATE_PYTHON_BLACK
+  unset VALIDATE_PYTHON_RUFF_FORMAT
+
+  if ! ValidateConflictingTools; then
+    fatal "ValidateConflictingTools all VALIDATE_ vars not set should have passed validation"
+  fi
+
+  info "${FUNCTION_NAME} start"
+  notice "${FUNCTION_NAME} PASS"
+}
+
 IsUnsignedIntegerTest
 ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
@@ -958,3 +1015,4 @@ DeprecatedConfigurationFileExistsTest
 InitializeDefaultBranchTest
 InitializeDefaultBranchDefaultValueTest
 InitializeGitHubWorkspaceTest
+ValidateConflictingToolsTest
