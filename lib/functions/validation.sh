@@ -381,8 +381,12 @@ InitializeGitBeforeShaReference() {
     GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
-    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
     GIT_BEFORE_SHA_HEAD="${DEFAULT_BRANCH}"
+  else
+    error "GitHub event not supported: ${GITHUB_EVENT_NAME}"
+    return 1
   fi
 
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
