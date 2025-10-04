@@ -335,7 +335,8 @@ initialize_git_repository_contents() {
   debug "Simulating a GitHub ${GITHUB_EVENT_NAME:-"not set"} event"
 
   if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
-    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
     debug "Switching to the ${DEFAULT_BRANCH} branch"
     git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
 

@@ -614,10 +614,13 @@ InitializeGitBeforeShaReferenceMergeCommitTest() {
   local -i COMMIT_COUNT=3
 
   if [[ "${EVENT_NAME}" == "pull_request" ]] ||
-    [[ "${EVENT_NAME}" == "pull_request_target" ]]; then
+    [[ "${EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
     initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "true" "false" "false" "true"
   elif [[ "${EVENT_NAME}" == "merge_group" ]]; then
     initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "false" "false" "false" "true"
+  else
+    fatal "Event not handled: ${EVENT_NAME}"
   fi
   local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
   debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
@@ -660,6 +663,26 @@ InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest() {
   info "${FUNCTION_NAME} start"
 
   InitializeGitBeforeShaReferenceMergeCommitTest "merge_group"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeCommitScheduleTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "schedule"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeCommitWorkflowDispatchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "workflow_dispatch"
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -1020,6 +1043,8 @@ InitializeGitBeforeShaReferenceFastForwardPushTest
 InitializeGitBeforeShaReferenceMergeCommitPullRequestTest
 InitializeGitBeforeShaReferenceMergeCommitPullRequestTargetGroupTest
 InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest
+InitializeGitBeforeShaReferenceMergeCommitScheduleTest
+InitializeGitBeforeShaReferenceMergeCommitWorkflowDispatchTest
 InitializeGitBeforeShaReferenceMergeDefaultBranchInPullRequestBranchTest
 ValidateGitShaReferenceTest
 InitializeRootCommitShaTest
