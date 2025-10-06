@@ -12,6 +12,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "ENFORCE_COMMITLINT_CONFIGURATION_CHECK" "${ENFORCE_COMMITLINT_CONFIGURATION_CHECK}"
   ValidateBooleanVariable "EXPORT_GITHUB_TOKEN" "${EXPORT_GITHUB_TOKEN}"
   ValidateBooleanVariable "FAIL_ON_CONFLICTING_TOOLS_ENABLED" "${FAIL_ON_CONFLICTING_TOOLS_ENABLED}"
+  ValidateBooleanVariable "FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION" "${FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION}"
   ValidateBooleanVariable "FIX_MODE_ENABLED" "${FIX_MODE_ENABLED}"
   ValidateBooleanVariable "FIX_MODE_TEST_CASE_RUN" "${FIX_MODE_TEST_CASE_RUN}"
   ValidateBooleanVariable "IGNORE_GENERATED_FILES" "${IGNORE_GENERATED_FILES}"
@@ -381,8 +382,13 @@ InitializeGitBeforeShaReference() {
     GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
-    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]]; then
+    [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "schedule" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
     GIT_BEFORE_SHA_HEAD="${DEFAULT_BRANCH}"
+  else
+    error "GitHub event not supported: ${GITHUB_EVENT_NAME}. Create a new issue in the Super-linter repository so the developers can look into this."
+    return 1
   fi
 
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
@@ -424,6 +430,19 @@ ValidateGitShaReference() {
   fi
 
   debug "Successfully validated SHA_REFERENCE: ${SHA_REFERENCE}"
+}
+
+ValidateGitHubEvent() {
+  local GITHUB_EVENT_NAME="${1}" && shift
+  local VALIDATE_ALL_CODEBASE="${1}" && shift
+  debug "Validating Super-linter configuration for specific GitHub events"
+
+  if [[ "${GITHUB_EVENT_NAME:-"GITHUB_EVENT_NAME not set"}" == "schedule" ]]; then
+    if [[ "${VALIDATE_ALL_CODEBASE:-"VALIDATE_ALL_CODEBASE not set"}" == "false" ]]; then
+      warn "${GITHUB_EVENT_NAME} (https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule) sets GITHUB_SHA as the last commit on the default branch, and GITHUB_REF to the default branch. When triggering schedule event, we recommend that you set VALIDATE_ALL_CODEBASE to true, otherwise Super-linter will not find any file to check."
+      return 1
+    fi
+  fi
 }
 
 InitializeRootCommitSha() {

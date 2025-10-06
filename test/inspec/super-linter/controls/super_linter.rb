@@ -486,6 +486,7 @@ control "super-linter-validate-files" do
     "/action/lib/globals/linterCommandsOptions.sh",
     "/action/lib/globals/linterRules.sh",
     "/action/lib/globals/runtimeDependencies.sh",
+    "/action/lib/globals/validation.sh",
     "/action/lib/.automation/actionlint.yml",
     "/action/lib/.automation/.ansible-lint.yml",
     "/action/lib/.automation/.arm-ttk.psd1",

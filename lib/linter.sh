@@ -7,11 +7,14 @@ set -o pipefail
 IMAGE="${IMAGE:-standard}"
 
 #########################
-# Source Function Files #
+# Source Globals and function Files #
 #########################
 # Source log functions and variables early so we can use them ASAP
 # shellcheck source=/dev/null
 source /action/lib/functions/log.sh # Source the function script(s)
+
+# shellcheck source=/dev/null
+source /action/lib/globals/validation.sh
 
 # shellcheck source=/dev/null
 source /action/lib/functions/buildFileList.sh # Source the function script(s)
@@ -349,6 +352,10 @@ GetGitHubVars() {
 
     if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
       fatal "Error while initializing GITHUB_BEFORE_SHA"
+    fi
+
+    if ! ValidateGitHubEvent "${GITHUB_EVENT_NAME}" "${VALIDATE_ALL_CODEBASE}" && [[ "${FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION}" == "true" ]]; then
+      fatal "Error while validating Super-linter configuration for specific GitHub Actions events"
     fi
   fi
 
