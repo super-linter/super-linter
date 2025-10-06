@@ -110,45 +110,123 @@ GenerateFileDiffMergeDefaultBranchInPullRequestBranchPullRequestEventTest() {
 }
 GenerateFileDiffMergeDefaultBranchInPullRequestBranchPullRequestEventTest
 
-BuildFileArraysAnsibleGitHubWorkspaceTest() {
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
-  info "${FUNCTION_NAME} start"
+BuildFileArraysTest() {
+  local GITHUB_WORKSPACE="${1}" && shift
+  # shellcheck disable=SC2034
+  local FILTER_REGEX_INCLUDE="${1}" && shift
+  # shellcheck disable=SC2034
+  local FILTER_REGEX_EXCLUDE="${1}" && shift
+  local FILE_ARRAYS_DIRECTORY_PATH="${1}" && shift
+  # shellcheck disable=SC2034
+  local STRIP_DEFAULT_WORKSPACE_FOR_REGEX="${1}" && shift
+
+  initialize_temp_directory_cleanup_traps "${FILE_ARRAYS_DIRECTORY_PATH}"
 
   # shellcheck source=/dev/null
   source "lib/functions/detectFiles.sh"
   # shellcheck source=/dev/null
   source "lib/functions/validation.sh"
 
-  # shellcheck disable=SC2034
-  local FILTER_REGEX_INCLUDE=""
-  # shellcheck disable=SC2034
-  local FILTER_REGEX_EXCLUDE=""
+  # validation and detection functions depend on these values
   # shellcheck disable=SC2034
   local TEST_CASE_RUN=false
   # shellcheck disable=SC2034
   local IGNORE_GENERATED_FILES=false
-  local FILE_ARRAYS_DIRECTORY_PATH="/tmp/super-linter-output/super-linter-file-arrays"
-  mkdir -p "${FILE_ARRAYS_DIRECTORY_PATH}"
+  # shellcheck disable=SC2034
+  local IGNORE_GITIGNORED_FILES=false
+  # shellcheck disable=SC2034
+  local VALIDATE_BASH="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_BASH_EXEC="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_CLOUDFORMATION="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_GITHUB_ACTIONS="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_KUBERNETES_KUBECONFORM="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_OPENAPI="true"
+  # shellcheck disable=SC2034
+  local VALIDATE_SHELL_SHFMT="true"
 
+  local CHECKOV_LINTER_RULES
   # shellcheck disable=SC2034
   CHECKOV_LINTER_RULES="$(mktemp)"
+  initialize_temp_directory_cleanup_traps "${CHECKOV_LINTER_RULES}"
 
-  GITHUB_WORKSPACE="/tmp/lint"
+  local -a RAW_FILE_ARRAY_TEST
+  RAW_FILE_ARRAY_TEST=()
+  if [ $# -gt 0 ]; then
+    RAW_FILE_ARRAY_TEST+=("$@")
+  fi
+
+  ValidateAnsibleDirectory
+
+  BuildFileArrays "${GITHUB_WORKSPACE}" "${RAW_FILE_ARRAY_TEST[@]}"
+}
+
+BuildFileArraysAnsibleGitHubWorkspaceTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE="${DEFAULT_SUPER_LINTER_WORKSPACE}"
   # shellcheck disable=SC2034
-  ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}"
+  ANSIBLE_DIRECTORY="."
 
-  BuildFileArrays "${GITHUB_WORKSPACE}"
+  local FILE_ARRAYS_DIRECTORY_PATH
+  FILE_ARRAYS_DIRECTORY_PATH="$(mktemp -d)"
+
+  BuildFileArraysTest "${GITHUB_WORKSPACE}" "" "" "${FILE_ARRAYS_DIRECTORY_PATH}" "false"
 
   local FILE_ARRAY_ANSIBLE_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
   if [[ ! -e "${FILE_ARRAY_ANSIBLE_PATH}" ]]; then
     fatal "${FILE_ARRAY_ANSIBLE_PATH} doesn't exist"
   fi
 
-  if ! grep -qxF "${ANSIBLE_DIRECTORY}" "${FILE_ARRAY_ANSIBLE_PATH}"; then
-    fatal "${FILE_ARRAY_ANSIBLE_PATH} doesn't contain ${ANSIBLE_DIRECTORY}"
+  if ! AssertFileContains "${FILE_ARRAY_ANSIBLE_PATH}" "${ANSIBLE_DIRECTORY}"; then
+    fatal "${FILE_ARRAY_ANSIBLE_PATH} should contain ${ANSIBLE_DIRECTORY}"
   fi
+
+  unset ANSIBLE_DIRECTORY
 
   notice "${FUNCTION_NAME} PASS"
 }
 BuildFileArraysAnsibleGitHubWorkspaceTest
+
+BuildFileArraysFilterRegexExcludeStartOfStringTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local FILTER_REGEX_EXCLUDE
+  # Use a regex that looks for matches from the beginning of the string
+  # shellcheck disable=SC2034
+  FILTER_REGEX_EXCLUDE="^action\.yml$"
+
+  local FILE_ARRAYS_DIRECTORY_PATH
+  FILE_ARRAYS_DIRECTORY_PATH="$(mktemp -d)"
+
+  local GITHUB_WORKSPACE="${DEFAULT_SUPER_LINTER_WORKSPACE}"
+
+  local TEST_FILE_PATH="${GITHUB_WORKSPACE}/action.yml"
+  local TEST_FILE_PATHS=()
+  TEST_FILE_PATHS+=("${TEST_FILE_PATH}")
+  TEST_FILE_PATHS+=("${GITHUB_WORKSPACE}/.github/dependabot.yml")
+
+  BuildFileArraysTest "${GITHUB_WORKSPACE}" "" "${FILTER_REGEX_EXCLUDE}" "${FILE_ARRAYS_DIRECTORY_PATH}" "${TEST_FILE_PATHS[@]}" "true"
+
+  local FILE_ARRAY_YAML_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-YAML"
+  if [[ ! -e "${FILE_ARRAY_YAML_PATH}" ]]; then
+    fatal "${FILE_ARRAY_YAML_PATH} doesn't exist"
+  fi
+
+  if AssertFileContains "${FILE_ARRAY_YAML_PATH}" "${TEST_FILE_PATH}"; then
+    fatal "${FILE_ARRAY_YAML_PATH} should not contain ${TEST_FILE_PATH}"
+  fi
+
+  unset FILTER_REGEX_EXCLUDE
+
+  notice "${FUNCTION_NAME} PASS"
+}
+BuildFileArraysFilterRegexExcludeStartOfStringTest

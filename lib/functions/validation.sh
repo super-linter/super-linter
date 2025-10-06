@@ -29,6 +29,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "SAVE_SUPER_LINTER_SUMMARY" "${SAVE_SUPER_LINTER_SUMMARY}"
   ValidateBooleanVariable "SSH_INSECURE_NO_VERIFY_GITHUB_KEY" "${SSH_INSECURE_NO_VERIFY_GITHUB_KEY}"
   ValidateBooleanVariable "SSH_SETUP_GITHUB" "${SSH_SETUP_GITHUB}"
+  ValidateBooleanVariable "STRIP_DEFAULT_WORKSPACE_FOR_REGEX" "${STRIP_DEFAULT_WORKSPACE_FOR_REGEX}"
   ValidateBooleanVariable "SUPPRESS_FILE_TYPE_WARN" "${SUPPRESS_FILE_TYPE_WARN}"
   ValidateBooleanVariable "SUPPRESS_POSSUM" "${SUPPRESS_POSSUM}"
   ValidateBooleanVariable "TEST_CASE_RUN" "${TEST_CASE_RUN}"
