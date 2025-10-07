@@ -356,7 +356,7 @@ You can configure Super-linter using the following environment variables:
 | **TRIVY_CONFIG_FILE**                                  | `trivy.yaml`                                                                 | Filename for [Trivy](https://trivy.dev/latest/docs/references/configuration/config-file/)                                                                                                                                                                                                                                                                                   |
 | **TYPESCRIPT_ES_CONFIG_FILE**                          | `eslint.config.mjs`                                                          | Filename for [ESLint configuration](https://eslint.org/docs/user-guide/configuring#configuration-file-formats)                                                                                                                                                                                                                                                              |
 | **USE_FIND_ALGORITHM**                                 | `false`                                                                      | By default, we use `git diff` to find all files in the workspace and what has been updated, this would enable the Linux `find` method instead to find all files to lint                                                                                                                                                                                                     |
-| **VALIDATE_ALL_CODEBASE**                              | `true`                                                                       | Will parse the entire repository and find all files to validate across all types. **NOTE:** When set to`false`, only **new** or **edited** files will be parsed for validation.                                                                                                                                                                                             |
+| **VALIDATE_ALL_CODEBASE**                              | `true`                                                                       | Set this to `true` to lint and format the entire workspace. Set this to`false` to lint and format **new** or **changed** files only. For more information, see [VALIDATE_ALL_CODEBASE](#validate_all_codebase).                                                                                                                                                             |
 | **VALIDATE_ANSIBLE**                                   | `true`                                                                       | Flag to enable or disable the linting process of the Ansible language.                                                                                                                                                                                                                                                                                                      |
 | **VALIDATE_ARM**                                       | `true`                                                                       | Flag to enable or disable the linting process of the ARM language.                                                                                                                                                                                                                                                                                                          |
 | **VALIDATE_BASH**                                      | `true`                                                                       | Flag to enable or disable the linting process of the Bash language.                                                                                                                                                                                                                                                                                                         |
@@ -476,6 +476,24 @@ The `VALIDATE_[LANGUAGE]` variables work as follows:
 For more information about reusing Super-linter configuration across
 environments, see
 [Share Environment variables between environments](docs/run-linter-locally.md#share-environment-variables-between-environments).
+
+### VALIDATE_ALL_CODEBASE
+
+To lint and format only the files that you changed or created, set
+`VALIDATE_ALL_CODEBASE` to `false` (the default). To lint and format all the
+files in the workspace, set `VALIDATE_ALL_CODEBASE` to `true`.
+
+The following linters and formatters ignore the `VALIDATE_ALL_CODEBASE`
+variable, and always check the entire workspace:
+
+- Biome, because it supports its own mechanim to check changed files only. For
+  more information, about configuring Biome to only check changed files, see
+  [Biome VCS integration doc](https://biomejs.dev/guides/integrate-in-vcs/#process-only-changed-files).
+- Trivy, because while some Trivy scanners can work on changed files only,
+  others expect to scan the entire workspace. For example, if you run the SBOM
+  scanner against a subset of files, you'll unexpectedly get a partial SBOM.
+- Jscpd, because the most likely intended Jscpd use case is to search for
+  duplicates across the entire workspace, not just across the changed files.
 
 ## Fix linting and formatting issues
 
