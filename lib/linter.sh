@@ -14,6 +14,8 @@ IMAGE="${IMAGE:-standard}"
 source /action/lib/functions/log.sh # Source the function script(s)
 
 # shellcheck source=/dev/null
+source /action/lib/globals/main.sh
+# shellcheck source=/dev/null
 source /action/lib/globals/validation.sh
 
 # shellcheck source=/dev/null
@@ -187,16 +189,12 @@ ValidateBooleanConfigurationVariables
 ###########
 # GLOBALS #
 ###########
-DEFAULT_SUPER_LINTER_WORKSPACE="/tmp/lint"                                  # Fall-back value for the workspace
-DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-${DEFAULT_SUPER_LINTER_WORKSPACE}}" # Default workspace if running locally
 FILTER_REGEX_INCLUDE="${FILTER_REGEX_INCLUDE:-""}"
 export FILTER_REGEX_INCLUDE
 FILTER_REGEX_EXCLUDE="${FILTER_REGEX_EXCLUDE:-""}"
 export FILTER_REGEX_EXCLUDE
 # shellcheck disable=SC2034 # Variable is referenced in other scripts
 RAW_FILE_ARRAY=() # Array of all files that were changed
-# shellcheck disable=SC2034 # Variable is referenced in other scripts
-TEST_CASE_FOLDER='test/linters' # Folder for test cases we should always ignore
 
 # Set the log level
 TF_LOG_LEVEL="info"

@@ -32,7 +32,7 @@ function LanguageTestPresenceTest() {
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
     local -l LOWERCASE_LANGUAGE="${LANGUAGE}"
     # shellcheck disable=SC2153
-    local LINTER_TEST_CASE_DIRECTORY="${LINTERS_TEST_CASE_DIRECTORY}/${LOWERCASE_LANGUAGE}"
+    local LINTER_TEST_CASE_DIRECTORY="${TEST_CASE_FOLDER}/${LOWERCASE_LANGUAGE}"
 
     if [[ ! -d "${LINTER_TEST_CASE_DIRECTORY}" ]]; then
       fatal "Test case directory for ${LANGUAGE} (${LINTER_TEST_CASE_DIRECTORY}) doesn't exist or is not readable."

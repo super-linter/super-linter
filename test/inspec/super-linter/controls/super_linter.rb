@@ -482,6 +482,7 @@ control "super-linter-validate-files" do
     "/action/lib/functions/updateSSL.sh",
     "/action/lib/functions/validation.sh",
     "/action/lib/functions/worker.sh",
+    "/action/lib/globals/main.sh",
     "/action/lib/globals/languages.sh",
     "/action/lib/globals/linterCommandsOptions.sh",
     "/action/lib/globals/linterRules.sh",

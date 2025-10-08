@@ -998,6 +998,10 @@ InitializeGitHubWorkspaceTest() {
   fi
   unset GITHUB_WORKSPACE
 
+  # Restore default GITHUB_WORKSPACE
+  # shellcheck source=/dev/null
+  source /action/lib/globals/main.sh
+
   notice "${FUNCTION_NAME} PASS"
 }
 

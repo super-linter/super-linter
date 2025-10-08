@@ -307,10 +307,19 @@ BuildFileArrays() {
       continue
     fi
 
+    local FILE_PATH_FOR_REGEXES="${FILE}"
+
+    if [[ "${STRIP_DEFAULT_WORKSPACE_FOR_REGEX}" == "true" ]]; then
+      # Remove the workspace from the path to to match against regular expressions
+      # that look for the beginning of the string. Example: ^file\.ext$
+      FILE_PATH_FOR_REGEXES="${FILE#"${GITHUB_WORKSPACE}/"}"
+      debug "Stripping the default workspace from FILE_PATH_FOR_REGEXES: ${FILE_PATH_FOR_REGEXES}"
+    fi
+
     ###############################################
     # Filter files if FILTER_REGEX_INCLUDE is set #
     ###############################################
-    if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE} =~ $FILTER_REGEX_INCLUDE) ]]; then
+    if [[ -n "$FILTER_REGEX_INCLUDE" ]] && [[ ! (${FILE_PATH_FOR_REGEXES} =~ $FILTER_REGEX_INCLUDE) ]]; then
       debug "FILTER_REGEX_INCLUDE didn't match. Skipping ${FILE}"
       continue
     fi
@@ -318,7 +327,7 @@ BuildFileArrays() {
     ###############################################
     # Filter files if FILTER_REGEX_EXCLUDE is set #
     ###############################################
-    if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE} =~ $FILTER_REGEX_EXCLUDE ]]; then
+    if [[ -n "$FILTER_REGEX_EXCLUDE" ]] && [[ ${FILE_PATH_FOR_REGEXES} =~ $FILTER_REGEX_EXCLUDE ]]; then
       debug "FILTER_REGEX_EXCLUDE match. Skipping ${FILE}"
       continue
     fi
@@ -401,14 +410,16 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
     fi
 
-    # See https://docs.renovatebot.com/config-presets/
-    IFS="," read -r -a RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY <<<"${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES}"
-    for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
-      if [ "${BASE_FILE}" == "${file_name}" ]; then
-        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
-        break
-      fi
-    done
+    if [[ -n "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES:-}" ]]; then
+      # See https://docs.renovatebot.com/config-presets/
+      IFS="," read -r -a RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY <<<"${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES}"
+      for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
+        if [ "${BASE_FILE}" == "${file_name}" ]; then
+          echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
+          break
+        fi
+      done
+    fi
 
     if IsValidShellScript "${FILE}"; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
