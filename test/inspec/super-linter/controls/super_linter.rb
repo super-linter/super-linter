@@ -58,7 +58,7 @@ control "super-linter-installed-packages" do
     "libxml2-utils",
     "nodejs-current",
     "npm",
-    "openjdk17-jre",
+    "openjdk21-jre",
     "openssh-client",
     "parallel",
     "perl",
