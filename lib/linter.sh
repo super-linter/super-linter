@@ -348,8 +348,10 @@ GetGitHubVars() {
       debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
     fi
 
-    if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
-      fatal "Error while initializing GITHUB_BEFORE_SHA"
+    if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+      if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
+        fatal "Error while initializing GITHUB_BEFORE_SHA"
+      fi
     fi
 
     if ! ValidateGitHubEvent "${GITHUB_EVENT_NAME}" "${VALIDATE_ALL_CODEBASE}" && [[ "${FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION}" == "true" ]]; then

@@ -71,10 +71,18 @@ InitializeGitHubWorkspace() {
 }
 
 function ValidateFindMode() {
-  debug "Validating find mode. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE}"
-  if [[ "${USE_FIND_ALGORITHM}" == "true" ]] && [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
-    error "Setting USE_FIND_ALGORITHM to true and VALIDATE_ALL_CODEBASE to false is not supported because super-linter relies on Git to validate changed files."
-    return 1
+  debug "Validating find mode. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE: ${VALIDATE_ALL_CODEBASE:-"not set"}, DEFAULT_BRANCH: ${DEFAULT_BRANCH:-"not set"}"
+  if [[ "${USE_FIND_ALGORITHM}" == "true" ]]; then
+
+    if [[ "${VALIDATE_ALL_CODEBASE}" == "false" ]]; then
+      error "Setting USE_FIND_ALGORITHM to ${USE_FIND_ALGORITHM} and VALIDATE_ALL_CODEBASE to ${VALIDATE_ALL_CODEBASE} is not supported because Super-linter relies on Git to validate changed files."
+      return 1
+    fi
+
+    if [[ -n "${DEFAULT_BRANCH:-}" ]]; then
+      error "Setting USE_FIND_ALGORITHM to ${USE_FIND_ALGORITHM} and DEFAULT_BRANCH to ${DEFAULT_BRANCH} is not supported because Super-linter doesn't consider the value DEFAULT_BRANCH when not using Git."
+      return 1
+    fi
   fi
 }
 
