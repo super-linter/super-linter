@@ -191,6 +191,10 @@ function ValidateFindModeTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
+  local USE_FIND_ALGORITHM
+  local VALIDATE_ALL_CODEBASE
+  local DEFAULT_BRANCH
+
   USE_FIND_ALGORITHM="true"
   VALIDATE_ALL_CODEBASE="false"
   if ValidateFindMode; then
@@ -229,6 +233,18 @@ function ValidateFindModeTest() {
     fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, VALIDATE_ALL_CODEBASE=${VALIDATE_ALL_CODEBASE} should have passed validation"
   fi
   unset USE_FIND_ALGORITHM
+  unset VALIDATE_ALL_CODEBASE
+
+  USE_FIND_ALGORITHM="true"
+  DEFAULT_BRANCH="branch"
+  VALIDATE_ALL_CODEBASE="true"
+  if ValidateFindMode; then
+    fatal "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, DEFAULT_BRANCH=${DEFAULT_BRANCH} should have failed validation"
+  else
+    info "USE_FIND_ALGORITHM=${USE_FIND_ALGORITHM}, DEFAULT_BRANCH=${DEFAULT_BRANCH} failed validation as expected"
+  fi
+  unset USE_FIND_ALGORITHM
+  unset DEFAULT_BRANCH
   unset VALIDATE_ALL_CODEBASE
 
   notice "${FUNCTION_NAME} PASS"

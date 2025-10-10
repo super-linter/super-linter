@@ -12,7 +12,7 @@ TEST_FUNCTION_NAME="${2}"
 SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
 debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
-COMMAND_TO_RUN=(docker run --rm -t -e DEFAULT_BRANCH="${DEFAULT_BRANCH}" -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
+COMMAND_TO_RUN=(docker run --rm -t -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
 
 ignore_test_cases() {
   COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*")
@@ -36,7 +36,7 @@ configure_command_arguments_for_test_git_repository() {
   fi
 
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
-  COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE=false)
+  COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE:-"false"}")
   COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
 }
 
@@ -61,6 +61,13 @@ configure_linters_for_test_cases() {
   COMMAND_TO_RUN+=(-e TEST_CASE_RUN="true" -e JSCPD_CONFIG_FILE=".jscpd-test-linters.json" -e TRIVY_CONFIG_FILE="trivy-test-linters.yaml" -e RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES="default.json,hoge.json")
   COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters.yaml")
   configure_git_commitlint_test_cases
+}
+
+configure_use_find_algorithm() {
+  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM="true")
+  # unset DEFAULT_BRANCH because it's defined in testUtils.sh, and it's a config
+  # error to set USE_FIND_ALGORITHM=true and DEFAULT_BRANCH
+  unset DEFAULT_BRANCH
 }
 
 run_test_cases_expect_failure() {
@@ -182,10 +189,17 @@ run_test_case_github_push_event_multiple_commits() {
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"
 }
 
+run_test_case_github_push_event_multiple_commits_use_find_algorithm() {
+  RUN_LOCAL="false"
+  VALIDATE_ALL_CODEBASE="true"
+  configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"
+  configure_use_find_algorithm
+}
+
 run_test_case_use_find_and_ignore_gitignored_files() {
   ignore_test_cases
+  configure_use_find_algorithm
   COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
-  COMMAND_TO_RUN+=(-e USE_FIND_ALGORITHM="true")
 }
 
 run_test_cases_save_super_linter_output() {
@@ -331,6 +345,9 @@ COMMAND_TO_RUN+=(-e LOG_LEVEL="${LOG_LEVEL:-"DEBUG"}")
 COMMAND_TO_RUN+=(-e RUN_LOCAL="${RUN_LOCAL:-true}")
 COMMAND_TO_RUN+=(-e SAVE_SUPER_LINTER_OUTPUT="${SAVE_SUPER_LINTER_OUTPUT}")
 
+if [[ -n "${DEFAULT_BRANCH:-}" ]]; then
+  COMMAND_TO_RUN+=(-e DEFAULT_BRANCH="${DEFAULT_BRANCH}")
+fi
 SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH="${SUPER_LINTER_WORKSPACE}/github-step-summary.md"
 # We can't put this inside SUPER_LINTER_MAIN_OUTPUT_PATH because it doesn't exist
 # before Super-linter creates it, and we want to verify that as well.

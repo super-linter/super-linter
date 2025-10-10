@@ -31,6 +31,7 @@ test: \
 	test-github-event-merge-commit-push-tag \
 	test-github-event-merge-group \
 	test-github-event-push-event-multiple-commits \
+	test-github-event-push-event-multiple-commits-use-find-algorithm \
 	test-runtime-dependencies-installation \
 	test-linters-expect-failure \
 	test-linters-expect-success \
@@ -534,6 +535,13 @@ test-github-event-push-event-multiple-commits: ## Run super-linter against a rep
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_push_event_multiple_commits" \
+		"$(IMAGE)"
+
+.PHONY: test-github-event-push-event-multiple-commits-use-find-algorithm
+test-github-event-push-event-multiple-commits-use-find-algorithm: ## Run super-linter setting USE_FIND_ALGORITHM=true on a GitHub event
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_push_event_multiple_commits_use_find_algorithm" \
 		"$(IMAGE)"
 
 .PHONY: test-github-event-merge-group
