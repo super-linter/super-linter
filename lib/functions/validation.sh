@@ -240,8 +240,13 @@ function CheckIfFixModeIsEnabled() {
 function CheckIfGitBranchExists() {
   local BRANCH_NAME="${1}"
   debug "Check if the ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
-  if ! git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${BRANCH_NAME}"; then
+  local RET_CODE
+  local GIT_BRANCH_CHECK_OUTPUT
+  GIT_BRANCH_CHECK_OUTPUT="$(git -C "${GITHUB_WORKSPACE}" rev-parse --quiet --verify "${BRANCH_NAME}")"
+  RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
     info "The ${BRANCH_NAME} branch doesn't exist in ${GITHUB_WORKSPACE}"
+    debug "Git branch check output: ${GIT_BRANCH_CHECK_OUTPUT}"
     return 1
   else
     debug "The ${BRANCH_NAME} branch exists in ${GITHUB_WORKSPACE}"
@@ -489,6 +494,7 @@ function ValidateGitHubUrls() {
     error "DEFAULT_GITHUB_DOMAIN is empty."
     return 1
   fi
+
   debug "Default GitHub domain: ${DEFAULT_GITHUB_DOMAIN}"
 
   if [[ -z "${GITHUB_DOMAIN:-}" ]]; then

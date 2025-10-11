@@ -41,10 +41,6 @@ source /action/lib/functions/githubDomain.sh
 # shellcheck source=/dev/null
 source /action/lib/functions/output.sh
 
-if ! ValidateGitHubUrls; then
-  fatal "GitHub URLs failed validation"
-fi
-
 # We want a lowercase value
 declare -l RUN_LOCAL
 # Initialize RUN_LOCAL early because we need it for logging
@@ -66,6 +62,14 @@ ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAU
 export ENABLE_GITHUB_ACTIONS_GROUP_TITLE
 
 startGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
+
+if ! ValidateGitHubUrls; then
+  fatal "GitHub URLs failed validation"
+fi
+
+debug "GitHub server URL: ${GITHUB_SERVER_URL}"
+debug "GitHub API URL: ${GITHUB_API_URL}"
+debug "GitHub meta URL: ${GITHUB_META_URL}"
 
 # Let users configure GitHub Actions step summary regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"}"
@@ -219,6 +223,8 @@ source /action/lib/globals/languages.sh
 # shellcheck source=/dev/null
 source /action/lib/globals/runtimeDependencies.sh
 
+debug "FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
+
 Header() {
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
     info "$(/bin/bash /action/lib/functions/possum.sh)"
@@ -244,8 +250,7 @@ Header() {
 }
 
 GetGitHubVars() {
-  info "--------------------------------------------"
-  info "Gathering GitHub information..."
+  debug "Initializing Git environment variables..."
 
   if [[ "${RUN_LOCAL}" == "true" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
@@ -782,8 +787,8 @@ LinterRulesLocation
 ########################
 # Get the linter rules #
 ########################
+debug "Default rules location: ${DEFAULT_RULES_LOCATION}"
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  debug "Loading rules for ${LANGUAGE}..."
   eval "GetLinterRules ${LANGUAGE} ${DEFAULT_RULES_LOCATION}"
 done
 

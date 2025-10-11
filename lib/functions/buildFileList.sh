@@ -242,7 +242,6 @@ BuildFileArrays() {
   RAW_FILE_ARRAY=("$@")
 
   debug "Categorizing the following files: ${RAW_FILE_ARRAY[*]}"
-  debug "FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     # Get the file extension
