@@ -120,7 +120,7 @@ run_test_case_git_initial_commit() {
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
 }
 
-run_test_case_merge_commit_push() {
+run_test_case_merge_commit_push_default_branch() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
@@ -185,11 +185,11 @@ run_test_case_github_pr_event_multiple_commits() {
   configure_test_case_github_event_multiple_commits "pull_request" "test/data/github-event/github-event-pull-request-multiple-commits.json" "3"
 }
 
-run_test_case_github_push_event_multiple_commits() {
+run_test_case_github_push_event_multiple_commits_default_branch() {
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"
 }
 
-run_test_case_github_push_event_multiple_commits_use_find_algorithm() {
+run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_branch() {
   RUN_LOCAL="false"
   VALIDATE_ALL_CODEBASE="true"
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"

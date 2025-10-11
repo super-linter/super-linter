@@ -38,6 +38,24 @@
       "timestamp": "2024-01-04T23:56:39+01:00",
       "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
       "url": "https://github.com/super-linter/super-linter/commit/bcdef9b772d82713180257853c4908f9c3519"
+    },
+    {
+      "author": {
+        "email": "test@example.com",
+        "name": "Test user",
+        "username": "testuser"
+      },
+      "committer": {
+        "email": "test@example.com",
+        "name": "Test user",
+        "username": "testuser"
+      },
+      "distinct": true,
+      "id": "bcdef9b772d82713180257853c4908f9c3519",
+      "message": "Merge commit",
+      "timestamp": "2024-01-04T23:56:39+01:00",
+      "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
+      "url": "https://github.com/super-linter/super-linter/commit/bcdef9b772d82713180257853c4908f9c3519"
     }
   ],
   "compare": "https://github.com/super-linter/super-linter/commit/a15934149b77",
