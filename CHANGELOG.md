@@ -1,5 +1,37 @@
 # Changelog
 
+## [8.2.1](https://github.com/super-linter/super-linter/compare/v8.2.0...v8.2.1) (2025-10-15)
+
+
+### 🐛 Bugfixes
+
+* biome ignore errors on unmatched files ([#7089](https://github.com/super-linter/super-linter/issues/7089)) ([8d1cfd5](https://github.com/super-linter/super-linter/commit/8d1cfd5ca320fa3a3cdb9718b78b71106b3867e6))
+* handle pull_request_target ([#7088](https://github.com/super-linter/super-linter/issues/7088)) ([188a10f](https://github.com/super-linter/super-linter/commit/188a10fdb3a991cc813af934f03c634e03c178bd))
+* handle schedule and workflow_dispatch events ([#7098](https://github.com/super-linter/super-linter/issues/7098)) ([28cb079](https://github.com/super-linter/super-linter/commit/28cb079925f2c003a9781ead0eec64e8278c93df)), closes [#7095](https://github.com/super-linter/super-linter/issues/7095)
+* set CONFLICT_FOUND as expected ([#7093](https://github.com/super-linter/super-linter/issues/7093)) ([07cfe7e](https://github.com/super-linter/super-linter/commit/07cfe7eb123bd56fbd1c73d274193c488ad2e60f)), closes [#7092](https://github.com/super-linter/super-linter/issues/7092)
+* strip workspace from the regex check path ([#7110](https://github.com/super-linter/super-linter/issues/7110)) ([3b72a2d](https://github.com/super-linter/super-linter/commit/3b72a2d2c03b9db79296a430a534d0e6b003c8dc)), closes [#7086](https://github.com/super-linter/super-linter/issues/7086)
+* validate DEFAULT_BRANCH when using find ([#7119](https://github.com/super-linter/super-linter/issues/7119)) ([7508f4c](https://github.com/super-linter/super-linter/commit/7508f4ccb749f1d5b9328aca04bfdeda2e9f8542)), closes [#7117](https://github.com/super-linter/super-linter/issues/7117)
+
+
+### ⬆️ Dependency updates
+
+* **docker:** bump the docker group with 2 updates ([#7100](https://github.com/super-linter/super-linter/issues/7100)) ([28c5681](https://github.com/super-linter/super-linter/commit/28c568121b3f6b7167c8892e422d102bbcc8eb69))
+* **npm:** bump eslint from 9.36.0 to 9.37.0 in /dependencies ([#7102](https://github.com/super-linter/super-linter/issues/7102)) ([cf6cb1e](https://github.com/super-linter/super-linter/commit/cf6cb1ebfa9a5acc42b8897b270b94214f0bb3cc))
+* **npm:** bump renovate from 41.132.2 to 41.136.0 in /dependencies ([#7107](https://github.com/super-linter/super-linter/issues/7107)) ([495692f](https://github.com/super-linter/super-linter/commit/495692ff75eb1cc6963c05d614e75f341d06a062))
+* **npm:** bump the eslint-plugins-configs group across 1 directory with 2 updates ([#7101](https://github.com/super-linter/super-linter/issues/7101)) ([b3a735d](https://github.com/super-linter/super-linter/commit/b3a735d16a56266102f0297bf4f48bc13f23aa9b))
+* **npm:** bump the npm group across 1 directory with 4 updates ([#7108](https://github.com/super-linter/super-linter/issues/7108)) ([ce227b3](https://github.com/super-linter/super-linter/commit/ce227b3ec86ae4f7d6650674ed1f37877f7f4c34))
+* **npm:** bump typescript ([#7109](https://github.com/super-linter/super-linter/issues/7109)) ([deba11c](https://github.com/super-linter/super-linter/commit/deba11c880239ab04bcd11a8b5cde914b13db740))
+* **python:** bump the pip group across 1 directory with 7 updates ([#7106](https://github.com/super-linter/super-linter/issues/7106)) ([7c02a56](https://github.com/super-linter/super-linter/commit/7c02a56ba63719acef55b8e6865582f7dc4465b2))
+
+
+### 🧰 Maintenance
+
+* add missing ruff variables to readme ([#7091](https://github.com/super-linter/super-linter/issues/7091)) ([7daeceb](https://github.com/super-linter/super-linter/commit/7daeceba58e1d1d43afdd9df96070ba6bfbc37fb)), closes [#7099](https://github.com/super-linter/super-linter/issues/7099)
+* explain who ignores VALIDATE_ALL_CODEBASE ([#7111](https://github.com/super-linter/super-linter/issues/7111)) ([9150eb9](https://github.com/super-linter/super-linter/commit/9150eb9b2be254146a684b5f97b10b3ed16882a9)), closes [#7090](https://github.com/super-linter/super-linter/issues/7090)
+* **github-actions:** bump peter-evans/create-issue-from-file ([#7103](https://github.com/super-linter/super-linter/issues/7103)) ([ec80a77](https://github.com/super-linter/super-linter/commit/ec80a773933c4215f8450a7eeb5b617436fe7d03))
+* update rack to 3.2.3 ([#7136](https://github.com/super-linter/super-linter/issues/7136)) ([2e6ad3d](https://github.com/super-linter/super-linter/commit/2e6ad3dff5b580a3e84c781cd9b0e3555c09414a))
+* update ruby transitive dependencies ([#7115](https://github.com/super-linter/super-linter/issues/7115)) ([00a71f6](https://github.com/super-linter/super-linter/commit/00a71f647b0014a246a0fb34caaa0e7640e85070))
+
 ## [8.2.0](https://github.com/super-linter/super-linter/compare/v8.1.0...v8.2.0) (2025-09-30)
 
 
