@@ -34,7 +34,7 @@ GEM
       racc
     prism (1.5.1)
     racc (1.8.1)
-    rack (3.2.2)
+    rack (3.2.3)
     rainbow (3.1.1)
     regexp_parser (2.11.3)
     rubocop (1.81.1)
