@@ -23,7 +23,9 @@ configure_command_arguments_for_test_git_repository() {
   local GITHUB_EVENT_FILE_PATH="${1}" && shift
   local GITHUB_EVENT_NAME="${1}" && shift
 
-  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GIT_REPOSITORY_PATH}/"
+  local GITHUB_EVENT_FILE_DESTINATION_PATH
+  GITHUB_EVENT_FILE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/$(basename "${GITHUB_EVENT_FILE_PATH}")"
+  cp -v "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
 
   # shellcheck disable=SC2034
   RUN_LOCAL="${RUN_LOCAL:-"false"}"
@@ -33,6 +35,49 @@ configure_command_arguments_for_test_git_repository() {
   if [[ "${RUN_LOCAL:-"false"}" == "false" ]]; then
     COMMAND_TO_RUN+=(-e GITHUB_EVENT_NAME="${GITHUB_EVENT_NAME}")
     COMMAND_TO_RUN+=(-e GITHUB_EVENT_PATH="${DEFAULT_SUPER_LINTER_WORKSPACE}/$(basename "${GITHUB_EVENT_FILE_PATH}")")
+
+    local GIT_HEAD_REF
+    GIT_HEAD_REF="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "HEAD")"
+    local BASE_REF="refs/heads/${DEFAULT_BRANCH}"
+
+    local GIT_BASE_REF
+    if [[ -z "${GITHUB_BEFORE_SHA:-}" ]]; then
+      GIT_BASE_REF="0000000000000000000000000000000000000000"
+    else
+      GIT_BASE_REF="${GITHUB_BEFORE_SHA}"
+    fi
+
+    # Update the GitHub event file in the temporary directory because Super-linter
+    # reads certain fields at runtime, such as pull_request.head.sha, and the
+    # values of these fields need to be computed because we create a new Git
+    # repository on each test run
+    if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+      # Update the pull_request.head.sha considering the test Git repository
+      local TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA
+      # Get the second parent of the merge commit.
+      # For reference, the first parent of a merge commit is from the branch you
+      # were on when you merged, while the second parent of a merge commit is
+      # from the branch that was merged.
+      # Ref: https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+      TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "HEAD^2")"
+      debug "Updating the pull_request.head.sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}"
+      # Use sed to avoid depending on jq
+      sed -i "s/pull-request-head-sha/${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+    elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]]; then
+      debug "Updating the head_sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${GIT_HEAD_REF}"
+      sed -i "s/merge-group-head-sha/${GITHUB_BEFORE_SHA}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+      debug "Updating the base_ref field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${BASE_REF}"
+      sed -i "s|refs/heads/main|${BASE_REF}|g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+      debug "Updating the base_sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${GIT_BASE_REF}"
+      sed -i "s/merge-group-base-sha/${GIT_BASE_REF}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+    elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+      debug "Updating the after field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${GIT_HEAD_REF}"
+      sed -i "s/push-after/${GIT_HEAD_REF}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+      debug "Updating the before field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${GIT_BASE_REF}"
+      sed -i "s/push-before/${GIT_BASE_REF}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+    else
+      fatal "GitHub ${GITHUB_EVENT_NAME:-"not set"} event not supported"
+    fi
   fi
 
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
@@ -115,18 +160,27 @@ run_test_case_git_initial_commit() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 1 "false" "push" "false" "false" "false" "true"
-  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push.json" "push"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 0 "false" "push" "false" "true" "false" "true"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-initial-commit.json" "push"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
 }
 
-run_test_case_merge_commit_push() {
+run_test_case_merge_commit_push_default_branch() {
   local GIT_REPOSITORY_PATH
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
   initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-merge-commit.json" "push"
+}
+
+run_test_case_github_push_force_push() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "push" "true" "false" "false" "true"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-force-push.json" "push"
 }
 
 run_test_case_github_merge_group_event() {
@@ -143,7 +197,7 @@ run_test_case_merge_commit_push_tag() {
   GIT_REPOSITORY_PATH="$(mktemp -d)"
 
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
-  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "false" "false" "true"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "4" "true" "push" "true" "true" "false" "true"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-tag-merge-commit.json" "push"
   git -C "${GIT_REPOSITORY_PATH}" tag "v1.0.1-beta"
   git_log_graph "${GIT_REPOSITORY_PATH}"
@@ -161,21 +215,6 @@ configure_test_case_github_event_multiple_commits() {
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_NAME}"
   cp commitlint.config.js "${GIT_REPOSITORY_PATH}/"
 
-  if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-    # Update the GitHub event file in the temporary directory because Super-linter
-    # reads certain fields at runtime, such as pull_request.head.sha, and the
-    # values of these fields need to be computed because we create a new Git
-    # repository on each test run
-    local GITHUB_EVENT_FILE_DESTINATION_PATH
-    GITHUB_EVENT_FILE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/$(basename "${GITHUB_EVENT_FILE_PATH}")"
-
-    # Update the pull_request.head.sha considering the test Git repository
-    local TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA
-    TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "HEAD^2")"
-    debug "Updating the pull_request.head.sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}"
-    sed -i "s/fa386af5d523fabb5df5d1bae53b8984dfbf4ff0/${TEST_GIT_REPOSITORY_PULL_REQUEST_HEAD_SHA}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
-  fi
-
   COMMAND_TO_RUN+=(--env ENABLE_COMMITLINT_STRICT_MODE="true")
   COMMAND_TO_RUN+=(--env ENFORCE_COMMITLINT_CONFIGURATION_CHECK="true")
   COMMAND_TO_RUN+=(--env VALIDATE_GIT_COMMITLINT="true")
@@ -185,11 +224,11 @@ run_test_case_github_pr_event_multiple_commits() {
   configure_test_case_github_event_multiple_commits "pull_request" "test/data/github-event/github-event-pull-request-multiple-commits.json" "3"
 }
 
-run_test_case_github_push_event_multiple_commits() {
+run_test_case_github_push_event_multiple_commits_default_branch() {
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"
 }
 
-run_test_case_github_push_event_multiple_commits_use_find_algorithm() {
+run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_branch() {
   RUN_LOCAL="false"
   VALIDATE_ALL_CODEBASE="true"
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"

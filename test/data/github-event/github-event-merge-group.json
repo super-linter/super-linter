@@ -14,7 +14,7 @@
   },
   "merge_group": {
     "base_ref": "refs/heads/main",
-    "base_sha": "43faf9530c2b779d74245b557b58a8f680e7df77",
+    "base_sha": "merge-group-base-sha",
     "head_commit": {
       "author": {
         "email": "email@example.com",
@@ -24,13 +24,13 @@
         "email": "noreply@github.com",
         "name": "GitHub"
       },
-      "id": "5d5427bff46f08a9043cb7aac0998c1eb23d70fc",
+      "id": "merge-group-head-sha",
       "message": "chore: free disk space (#6732)",
       "timestamp": "2025-04-23T17:54:23Z",
       "tree_id": "3676f67699d3d5659c1ba40e93a4556bfe6e0f82"
     },
     "head_ref": "refs/heads/gh-readonly-queue/main/pr-6732-43faf9530c2b779d74245b557b58a8f680e7df77",
-    "head_sha": "5d5427bff46f08a9043cb7aac0998c1eb23d70fc"
+    "head_sha": "merge-group-head-sha"
   },
   "organization": {
     "avatar_url": "https://avatars.githubusercontent.com/u/74564708?v=4",
