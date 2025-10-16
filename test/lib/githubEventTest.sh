@@ -41,6 +41,30 @@ function GetGithubPushEventCommitCountTest() {
 
 GetGithubPushEventCommitCountTest
 
+GetGitHubEventPushBeforeTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_PUSH_BEFORE
+  if ! GITHUB_PUSH_BEFORE=$(GetGitHubEventPushBefore "test/data/github-event/github-event-push.json"); then
+    fatal "Error while setting GITHUB_PUSH_BEFORE"
+  fi
+
+  debug "GITHUB_PUSH_BEFORE: ${GITHUB_PUSH_BEFORE}"
+
+  local EXPECTED_GITHUB_PUSH_BEFORE
+  EXPECTED_GITHUB_PUSH_BEFORE="0000000000000000000000000000000000000000"
+
+  if [ "${GITHUB_PUSH_BEFORE}" != "${EXPECTED_GITHUB_PUSH_BEFORE}" ]; then
+    fatal "GITHUB_PUSH_BEFORE (${GITHUB_PUSH_BEFORE}) is not equal to: ${EXPECTED_GITHUB_PUSH_BEFORE}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+GetGitHubEventPushBeforeTest
+
 function GetGithubPullRequestEventCommitCountTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -103,7 +127,7 @@ function GetPullRequestHeadShaTest() {
   debug "GITHUB_PULL_REQUEST_HEAD_SHA: ${GITHUB_PULL_REQUEST_HEAD_SHA}"
 
   local EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA
-  EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA="fa386af5d523fabb5df5d1bae53b8984dfbf4ff0"
+  EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA="pull-request-head-sha"
 
   if [ "${GITHUB_PULL_REQUEST_HEAD_SHA}" != "${EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA}" ]; then
     fatal "GITHUB_PULL_REQUEST_HEAD_SHA (${GITHUB_PULL_REQUEST_HEAD_SHA}) is not equal to: ${EXPECTED_GITHUB_PULL_REQUEST_HEAD_SHA}"

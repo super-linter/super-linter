@@ -1,7 +1,7 @@
 {
-  "after": "cc62b30b91677b695d3929d6352e7bb541e5ed8c",
+  "after": "push-after",
   "base_ref": null,
-  "before": "dc27afaa1f4d1b098cbf7602b82de312d20fa481",
+  "before": "push-before",
   "commits": [
     {
       "author": {
@@ -71,6 +71,24 @@
       "distinct": true,
       "id": "cc62b30b91677b695d3929d6352e7bb541e5ed8c",
       "message": "Merge pull request #1 from amplify-security/feature/readme\nadd README",
+      "timestamp": "2024-07-31T06: 33: 25+09: 00",
+      "tree_id": "807fa49be3c439afd7723e7e3a8fea2103bd7368",
+      "url": "https://github.com/amplify-security/sl-repro-5941/commit/cc62b30b91677b695d3929d6352e7bb541e5ed8c"
+    },
+    {
+      "author": {
+        "email": "lae@users.noreply.github.com",
+        "name": "lae",
+        "username": "lae"
+      },
+      "committer": {
+        "email": "noreply@github.com",
+        "name": "GitHub",
+        "username": "web-flow"
+      },
+      "distinct": true,
+      "id": "cc62b30b91677b695d3929d6352e7bb541e5ed8c",
+      "message": "Merge commit",
       "timestamp": "2024-07-31T06: 33: 25+09: 00",
       "tree_id": "807fa49be3c439afd7723e7e3a8fea2103bd7368",
       "url": "https://github.com/amplify-security/sl-repro-5941/commit/cc62b30b91677b695d3929d6352e7bb541e5ed8c"

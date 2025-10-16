@@ -27,11 +27,12 @@ test: \
 	test-git-invalid-worktree \
 	test-git-valid-worktree \
 	test-github-event-initial-commit \
-	test-github-event-merge-commit-push \
+	test-github-event-merge-commit-push-default-branch \
 	test-github-event-merge-commit-push-tag \
 	test-github-event-merge-group \
-	test-github-event-push-event-multiple-commits \
-	test-github-event-push-event-multiple-commits-use-find-algorithm \
+	test-github-event-push-event-multiple-commits-default-branch \
+	test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch \
+	test-github-event-push-force-push \
 	test-runtime-dependencies-installation \
 	test-linters-expect-failure \
 	test-linters-expect-success \
@@ -509,11 +510,11 @@ test-github-event-initial-commit: ## Run super-linter against a repository that 
 		"run_test_case_git_initial_commit" \
 		"$(IMAGE)"
 
-.PHONY: test-github-event-merge-commit-push
-test-github-event-merge-commit-push: ## Run super-linter against a repository that has merge commits on a push event
+.PHONY: test-github-event-merge-commit-push-default-branch
+test-github-event-merge-commit-push-default-branch: ## Run super-linter against a repository that has merge commits on a push event
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_merge_commit_push" \
+		"run_test_case_merge_commit_push_default_branch" \
 		"$(IMAGE)"
 
 .PHONY: test-github-event-merge-commit-push-tag
@@ -530,18 +531,25 @@ test-github-event-pr-event-multiple-commits: ## Run super-linter against a repos
 		"run_test_case_github_pr_event_multiple_commits" \
 		"$(IMAGE)"
 
-.PHONY: test-github-event-push-event-multiple-commits
-test-github-event-push-event-multiple-commits: ## Run super-linter against a repository that simulates a push event with multiple commits
+.PHONY: test-github-event-push-event-multiple-commits-default-branch
+test-github-event-push-event-multiple-commits-default-branch: ## Run super-linter against a repository that simulates a push event with multiple commits
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_github_push_event_multiple_commits" \
+		"run_test_case_github_push_event_multiple_commits_default_branch" \
 		"$(IMAGE)"
 
-.PHONY: test-github-event-push-event-multiple-commits-use-find-algorithm
-test-github-event-push-event-multiple-commits-use-find-algorithm: ## Run super-linter setting USE_FIND_ALGORITHM=true on a GitHub event
+.PHONY: test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch
+test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch: ## Run super-linter setting USE_FIND_ALGORITHM=true on a GitHub event
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_case_github_push_event_multiple_commits_use_find_algorithm" \
+		"run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_branch" \
+		"$(IMAGE)"
+
+.PHONY: test-github-event-push-force-push
+test-github-event-push-force-push: ## Run super-linter on a force push event
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_push_force_push" \
 		"$(IMAGE)"
 
 .PHONY: test-github-event-merge-group
