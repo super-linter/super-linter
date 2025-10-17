@@ -596,14 +596,15 @@ InitializeGitBeforeShaReferenceFastForwardPushTest() {
     git -C "${GITHUB_WORKSPACE}" add .
     git -C "${GITHUB_WORKSPACE}" commit -m "add file-${i}"
 
-    # Set EXPECTED_GITHUB_BEFORE_SHA to the initial commit because it's the only
-    # one we don't push
     if [[ "${i}" -eq 0 ]]; then
-      local EXPECTED_GITHUB_BEFORE_SHA
-      EXPECTED_GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
-      debug "Setting EXPECTED_GITHUB_BEFORE_SHA to ${EXPECTED_GITHUB_BEFORE_SHA}"
+      local GIT_ROOT_COMMIT_SHA
+      GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+      debug "Setting GIT_ROOT_COMMIT_SHA to ${GIT_ROOT_COMMIT_SHA}"
     fi
   done
+  # Set EXPECTED_GITHUB_BEFORE_SHA to the initial commit because it's the only
+  # one we don't push
+  local EXPECTED_GITHUB_BEFORE_SHA="${GIT_ROOT_COMMIT_SHA}"
 
   git_log_graph "${GITHUB_WORKSPACE}"
 
@@ -761,7 +762,7 @@ InitializeGitBeforeShaReferenceMergeDefaultBranchInPullRequestBranchTest() {
   git -C "${GITHUB_WORKSPACE}" commit -m "feat: commit on ${FEATURE_BRANCH_1_NAME}"
 
   local -i COMMIT_COUNT
-  COMMIT_COUNT=$(git -C "${GITHUB_WORKSPACE}" rev-list --count main.."${FEATURE_BRANCH_1_NAME}")
+  COMMIT_COUNT=$(git -C "${GITHUB_WORKSPACE}" rev-list --count "${DEFAULT_BRANCH}".."${FEATURE_BRANCH_1_NAME}")
   debug "Setting COMMIT_COUNT to ${COMMIT_COUNT}"
 
   git_log_graph "${GITHUB_WORKSPACE}"

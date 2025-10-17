@@ -402,8 +402,7 @@ InitializeGitBeforeShaReference() {
 
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
 
-  # shellcheck disable=SC2086  # We checked that GITHUB_EVENT_COMMIT_COUNT is an integer
-  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse ${GIT_BEFORE_SHA_HEAD})"
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${GIT_BEFORE_SHA_HEAD}")"
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
     error "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
@@ -421,7 +420,7 @@ InitializeGitBeforeShaReference() {
 
 ValidateGitShaReference() {
   local SHA_REFERENCE="${1}"
-  debug "Validating GITHUB_BEFORE_SHA: ${SHA_REFERENCE}"
+  debug "Validating SHA_REFERENCE: ${SHA_REFERENCE}"
   if [ -z "${SHA_REFERENCE:-}" ] ||
     [ "${SHA_REFERENCE:-}" == "null" ] ||
     [ "${SHA_REFERENCE:-}" == "0000000000000000000000000000000000000000" ]; then
