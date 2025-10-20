@@ -1,7 +1,7 @@
 {
   "after": "push-after",
   "base_ref": null,
-  "before": "0000000000000000000000000000000000000000",
+  "before": "push-before",
   "commits": [
     {
       "author": {

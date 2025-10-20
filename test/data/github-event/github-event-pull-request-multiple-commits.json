@@ -346,7 +346,7 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       },
-      "sha": "fa386af5d523fabb5df5d1bae53b8984dfbf4ff0",
+      "sha": "pull-request-head-sha",
       "user": {
         "avatar_url": "https://avatars.githubusercontent.com/u/26247074?v=4",
         "events_url": "https://api.github.com/users/WorkOfStan/events{/privacy}",

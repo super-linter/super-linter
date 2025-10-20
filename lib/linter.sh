@@ -247,7 +247,7 @@ GetGitHubVars() {
   info "--------------------------------------------"
   info "Gathering GitHub information..."
 
-  if [[ ${RUN_LOCAL} != "false" ]]; then
+  if [[ "${RUN_LOCAL}" == "true" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then

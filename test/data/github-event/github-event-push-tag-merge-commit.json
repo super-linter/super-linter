@@ -1,6 +1,6 @@
 {
-  "after": "e8fd3808e35b28ac12c507c1951ff0618a86b29f",
-  "base_ref": "refs/heads/master",
+  "after": "push-after",
+  "base_ref": "refs/heads/main",
   "before": "0000000000000000000000000000000000000000",
   "commits": [],
   "compare": "https://github.com/xxxs/xxx-rails/compare/v1.0.1-beta",
