@@ -8,7 +8,7 @@
 # Get dependency images as build stages #
 #########################################
 FROM tenable/terrascan:1.19.9 AS terrascan
-FROM alpine/terragrunt:1.13.3 AS terragrunt
+FROM alpine/terragrunt:1.13.4 AS terragrunt
 FROM dotenvlinter/dotenv-linter:3.3.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.59.1 AS tflint
 FROM alpine/helm:3.19.0 AS helm
@@ -22,7 +22,7 @@ FROM koalaman/shellcheck:v0.11.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.4.1 AS editorconfig-checker
 FROM mvdan/shfmt:v3.12.0 AS shfmt
 FROM rhysd/actionlint:1.7.8 AS actionlint
-FROM scalameta/scalafmt:v3.10.0 AS scalafmt
+FROM scalameta/scalafmt:v3.10.1 AS scalafmt
 FROM zricethezav/gitleaks:v8.28.0 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2025.09.22-alpine AS clj-kondo
