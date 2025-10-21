@@ -1,5 +1,28 @@
 # Changelog
 
+## [8.2.2](https://github.com/super-linter/super-linter/compare/v8.2.1...v8.2.2) (2025-10-21)
+
+
+### ⬆️ Dependency updates
+
+* **docker:** bump python in the docker-base-images group ([#7123](https://github.com/super-linter/super-linter/issues/7123)) ([41c3da1](https://github.com/super-linter/super-linter/commit/41c3da1d09d0e5ec067ad65c9b855c6aeff225bc))
+* **docker:** bump the docker group across 1 directory with 6 updates ([#7148](https://github.com/super-linter/super-linter/issues/7148)) ([76149cf](https://github.com/super-linter/super-linter/commit/76149cff49dabb7f045e86f46e93f6767e2da34d))
+* **npm:** bump @typescript-eslint/eslint-plugin ([#7127](https://github.com/super-linter/super-linter/issues/7127)) ([2d57f06](https://github.com/super-linter/super-linter/commit/2d57f06c64c521f2cfbbea3b8cc9c8f080fb473a))
+* **npm:** bump eslint from 9.37.0 to 9.38.0 in /dependencies ([#7170](https://github.com/super-linter/super-linter/issues/7170)) ([b42af6f](https://github.com/super-linter/super-linter/commit/b42af6f21b7bc5b827acd2c977b6047baad41ce9))
+* **npm:** bump npm-groovy-lint from 15.2.1 to 15.2.2 in /dependencies ([#7130](https://github.com/super-linter/super-linter/issues/7130)) ([4913825](https://github.com/super-linter/super-linter/commit/49138252344a9c051b5d4c4f12cc660d670415d8))
+* **npm:** bump renovate from 41.142.0 to 41.146.5 in /dependencies ([#7134](https://github.com/super-linter/super-linter/issues/7134)) ([900b973](https://github.com/super-linter/super-linter/commit/900b973697b89c3d89462a12bdd556c8dec5b4d0))
+* **npm:** bump the eslint-plugins-configs group across 1 directory with 2 updates ([#7145](https://github.com/super-linter/super-linter/issues/7145)) ([c137ca9](https://github.com/super-linter/super-linter/commit/c137ca99f70bb902052d71b0191dd000fb2390a1))
+* **npm:** bump the npm group across 1 directory with 3 updates ([#7146](https://github.com/super-linter/super-linter/issues/7146)) ([d4d3f16](https://github.com/super-linter/super-linter/commit/d4d3f168263fb5ae8b10cec7280d34954230f0a0))
+* **npm:** bump the react group across 1 directory with 4 updates ([#7128](https://github.com/super-linter/super-linter/issues/7128)) ([4034702](https://github.com/super-linter/super-linter/commit/40347029803087080f7cc79e7ca129c1e6b7cbd1))
+
+
+### 🧰 Maintenance
+
+* bump dotnet/sdk to 9.0.306-alpine3.22 ([#7140](https://github.com/super-linter/super-linter/issues/7140)) ([39be15a](https://github.com/super-linter/super-linter/commit/39be15abad6483656d22d7dcd49445c766de80cb))
+* **dev-docker:** bump node in /dev-dependencies ([#7132](https://github.com/super-linter/super-linter/issues/7132)) ([b8dd2b4](https://github.com/super-linter/super-linter/commit/b8dd2b47308bb911d745b781659f81bf373bb244))
+* **dev-npm:** bump release-please in /dev-dependencies ([#7129](https://github.com/super-linter/super-linter/issues/7129)) ([3addd51](https://github.com/super-linter/super-linter/commit/3addd5169a6fd50c906199476337dbce564ceb7e))
+* improve testing and get push.before ([#7143](https://github.com/super-linter/super-linter/issues/7143)) ([de2fd49](https://github.com/super-linter/super-linter/commit/de2fd4950504997f6f46c556eb92eaab51a4c127))
+
 ## [8.2.1](https://github.com/super-linter/super-linter/compare/v8.2.0...v8.2.1) (2025-10-15)
 
 
