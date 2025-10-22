@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
 function LintCodebase() {
+
   local FILE_TYPE
   FILE_TYPE="${1}" && shift
   local TEST_CASE_RUN
   TEST_CASE_RUN="${1}" && shift
+
+  startGitHubActionsLogGroup "${FILE_TYPE}"
 
   declare -n VALIDATE_LANGUAGE
   VALIDATE_LANGUAGE="VALIDATE_${FILE_TYPE}"
@@ -13,12 +16,15 @@ function LintCodebase() {
     if [[ "${TEST_CASE_RUN}" == "false" ]]; then
       debug "Skip validation of ${FILE_TYPE} because VALIDATE_LANGUAGE is ${VALIDATE_LANGUAGE}"
       unset -n VALIDATE_LANGUAGE
+      endGitHubActionsLogGroup "${FILE_TYPE}"
       return 0
     else
       if [[ "${FIX_MODE_TEST_CASE_RUN}" == "true" ]]; then
         debug "Don't fail the test even if VALIDATE_${FILE_TYPE} is set to ${VALIDATE_LANGUAGE} because ${FILE_TYPE} might not support fix mode"
+        endGitHubActionsLogGroup "${FILE_TYPE}"
         return 0
       else
+        endGitHubActionsLogGroup "${FILE_TYPE}"
         fatal "Don't disable any validation when running in test mode. VALIDATE_${FILE_TYPE} is set to: ${VALIDATE_LANGUAGE}. Set it to: true"
       fi
     fi
@@ -71,15 +77,15 @@ function LintCodebase() {
     if [[ "${TEST_CASE_RUN}" == "false" ]]; then
       debug "There are no items to lint for ${FILE_TYPE}"
       unset -n FILE_ARRAY
+      endGitHubActionsLogGroup "${FILE_TYPE}"
       return 0
     else
+      endGitHubActionsLogGroup "${FILE_TYPE}"
       fatal "Cannot find any tests for ${FILE_TYPE}"
     fi
   else
     debug "There are ${#FILE_ARRAY[@]} items to lint for ${FILE_TYPE}: ${FILE_ARRAY[*]}"
   fi
-
-  startGitHubActionsLogGroup "${FILE_TYPE}"
 
   info "Linting ${FILE_TYPE} items..."
 
@@ -156,10 +162,12 @@ function LintCodebase() {
 
   # shellcheck source=/dev/null
   if ! source /action/lib/functions/linterCommands.sh; then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error while sourcing linter commands"
   fi
   # Dynamically add arguments and commands to each linter command as needed
   if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error while inizializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
   fi
   InitInputConsumeCommands
@@ -172,6 +180,7 @@ function LintCodebase() {
   local -n LINTER_COMMAND_ARRAY
   LINTER_COMMAND_ARRAY="LINTER_COMMANDS_ARRAY_${FILE_TYPE}"
   if [ ${#LINTER_COMMAND_ARRAY[@]} -eq 0 ]; then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "LINTER_COMMAND_ARRAY for ${FILE_TYPE} is empty."
   else
     debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements: ${LINTER_COMMAND_ARRAY[*]}"
@@ -203,6 +212,7 @@ function LintCodebase() {
   local RESULTS_OBJECT
   RESULTS_OBJECT=
   if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error loading results for ${FILE_TYPE}: ${RESULTS_OBJECT}"
   fi
   debug "RESULTS_OBJECT for ${FILE_TYPE}:\n${RESULTS_OBJECT}"
@@ -211,6 +221,7 @@ function LintCodebase() {
   local INDEX
   INDEX=0
   if ! ((INDEX = $(jq '[.[] | .V | length] | add' <<<"${RESULTS_OBJECT}"))); then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error when setting INDEX for ${FILE_TYPE}: ${INDEX}"
   fi
   debug "Set INDEX for ${FILE_TYPE} to: ${INDEX}"
@@ -218,6 +229,7 @@ function LintCodebase() {
   local STDOUT_LINTER
   # Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
   if ! STDOUT_LINTER="$(jq --raw-output '.[] | select(.Stdout[:-1] | length > 0) | .Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error when loading stdout for ${FILE_TYPE}:\n${STDOUT_LINTER}"
   fi
 
@@ -234,6 +246,7 @@ function LintCodebase() {
     printf '%s\n' "${STDOUT_LINTER}" >"${STDOUT_LINTER_FILE_PATH}"
     if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
       ! RemoveAnsiColorCodesFromFile "${STDOUT_LINTER_FILE_PATH}"; then
+      endGitHubActionsLogGroup "${FILE_TYPE}"
       fatal "Error while removing ANSI color codes from ${STDOUT_LINTER_FILE_PATH}"
     fi
   else
@@ -242,6 +255,7 @@ function LintCodebase() {
 
   local STDERR_LINTER
   if ! STDERR_LINTER="$(jq --raw-output '.[] | select(.Stderr[:-1] | length > 0) | .Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
+    endGitHubActionsLogGroup "${FILE_TYPE}"
     fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTER}"
   fi
 
@@ -254,6 +268,7 @@ function LintCodebase() {
     printf '%s\n' "${STDERR_LINTER}" >"${STDERR_LINTER_FILE_PATH}"
     if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
       ! RemoveAnsiColorCodesFromFile "${STDERR_LINTER_FILE_PATH}"; then
+      endGitHubActionsLogGroup "${FILE_TYPE}"
       fatal "Error while removing ANSI color codes from ${STDERR_LINTER_FILE_PATH}"
     fi
   else
