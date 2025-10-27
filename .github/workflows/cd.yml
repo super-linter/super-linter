@@ -268,7 +268,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: googleapis/release-please-action@v4.3.0
+      - uses: googleapis/release-please-action@v4.4.0
         id: release
         with:
           config-file: .github/release-please/release-please-config.json
