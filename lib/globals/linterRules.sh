@@ -86,6 +86,22 @@ PYTHON_PYLINT_FILE_NAME="${PYTHON_PYLINT_CONFIG_FILE:-.python-lint}"
 PYTHON_RUFF_FILE_NAME="${PYTHON_RUFF_CONFIG_FILE:-.ruff.toml}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 PYTHON_RUFF_FORMAT_FILE_NAME="${PYTHON_RUFF_FORMAT_CONFIG_FILE:-.ruff.toml}"
+
+# JUPYTER_NBQA tools default to using the same config file as the equivalent Python tool.
+#
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_BLACK_FILE_NAME="${JUPYTER_NBQA_BLACK_CONFIG_FILE:-"${PYTHON_BLACK_FILE_NAME}"}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_FLAKE8_FILE_NAME="${JUPYTER_NBQA_FLAKE8_CONFIG_FILE:-"${PYTHON_FLAKE8_FILE_NAME}"}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_ISORT_FILE_NAME="${JUPYTER_NBQA_ISORT_CONFIG_FILE:-"${PYTHON_ISORT_FILE_NAME}"}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_MYPY_FILE_NAME="${JUPYTER_NBQA_MYPY_CONFIG_FILE:-"${PYTHON_MYPY_FILE_NAME}"}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_PYLINT_FILE_NAME="${JUPYTER_NBQA_PYLINT_CONFIG_FILE:-"${PYTHON_PYLINT_FILE_NAME}"}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+JUPYTER_NBQA_RUFF_FILE_NAME="${JUPYTER_NBQA_RUFF_CONFIG_FILE:-"${PYTHON_RUFF_FILE_NAME}"}"
+
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 R_FILE_NAME=".lintr"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
