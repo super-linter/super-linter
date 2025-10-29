@@ -219,6 +219,8 @@ source /action/lib/globals/languages.sh
 # shellcheck source=/dev/null
 source /action/lib/globals/runtimeDependencies.sh
 
+debug "FILTER_REGEX_INCLUDE: ${FILTER_REGEX_INCLUDE}, FILTER_REGEX_EXCLUDE: ${FILTER_REGEX_EXCLUDE}, TEST_CASE_RUN: ${TEST_CASE_RUN}"
+
 Header() {
   if [[ "${SUPPRESS_POSSUM}" == "false" ]]; then
     info "$(/bin/bash /action/lib/functions/possum.sh)"
@@ -244,8 +246,7 @@ Header() {
 }
 
 GetGitHubVars() {
-  info "--------------------------------------------"
-  info "Gathering GitHub information..."
+  debug "Initializing Git environment variables..."
 
   if [[ "${RUN_LOCAL}" == "true" ]]; then
     info "RUN_LOCAL has been set to: ${RUN_LOCAL}. Bypassing GitHub Actions variables..."
@@ -782,8 +783,8 @@ LinterRulesLocation
 ########################
 # Get the linter rules #
 ########################
+debug "Default rules location: ${DEFAULT_RULES_LOCATION}"
 for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
-  debug "Loading rules for ${LANGUAGE}..."
   eval "GetLinterRules ${LANGUAGE} ${DEFAULT_RULES_LOCATION}"
 done
 
