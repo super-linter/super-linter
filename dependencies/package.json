@@ -2,7 +2,7 @@
   "name": "super-linter",
   "dependencies": {
     "@babel/eslint-parser": "^7.28.5",
-    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@biomejs/biome": "^2.2.6",
     "@coffeelint/cli": "^5.2.11",
@@ -32,7 +32,7 @@
     "react-dom": "^19.2.0",
     "react-intl": "^7.1.14",
     "react-redux": "^9.2.0",
-    "react-router-dom": "^7.9.4",
+    "react-router-dom": "^7.9.5",
     "renovate": "^41.161.0",
     "stylelint": "^16.25.0",
     "stylelint-config-recommended-scss": "^16.0.2",
