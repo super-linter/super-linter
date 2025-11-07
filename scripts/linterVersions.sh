@@ -109,6 +109,7 @@ if [[ "${IMAGE}" == "standard" ]]; then
   LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
   LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
   LINTER_NAMES_ARRAY['RUST_2021']="rustfmt"
+  LINTER_NAMES_ARRAY['RUST_2024']="rustfmt"
   LINTER_NAMES_ARRAY['RUST_CLIPPY']="clippy"
 fi
 

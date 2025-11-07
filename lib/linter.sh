@@ -576,6 +576,7 @@ UpdateLoopsForImage() {
       "RUST_2015"
       "RUST_2018"
       "RUST_2021"
+      "RUST_2024"
       "RUST_CLIPPY"
     )
 

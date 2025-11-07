@@ -40,6 +40,7 @@
     "**/test/linters/rust_2015",
     "**/test/linters/rust_2018",
     "**/test/linters/rust_2021",
+    "**/test/linters/rust_2024",
     "**/test/linters/scalafmt",
     "**/test/linters/typescript_es/**",
     "**/test/linters/typescript_prettier/**",

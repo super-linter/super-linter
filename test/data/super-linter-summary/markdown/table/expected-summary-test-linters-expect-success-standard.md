@@ -86,6 +86,7 @@
 | RUST_2015                    | Pass ✅           |
 | RUST_2018                    | Pass ✅           |
 | RUST_2021                    | Pass ✅           |
+| RUST_2024                    | Pass ✅           |
 | RUST_CLIPPY                  | Pass ✅           |
 | SCALAFMT                     | Pass ✅           |
 | SHELL_SHFMT                  | Pass ✅           |
