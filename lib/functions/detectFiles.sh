@@ -9,15 +9,12 @@ DetectActions() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is a GitHub Actions file..."
-
   # Check if in the users .github, or the super linter test suite
   if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] ||
     [[ "$(dirname "${FILE}")" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
     debug "${FILE} is GitHub Actions file."
     return 0
   else
-    debug "${FILE} is NOT GitHub Actions file."
     return 1
   fi
 }
@@ -30,13 +27,10 @@ DetectOpenAPIFile() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is an OpenAPI file..."
-
   if grep -E '"openapi":|"swagger":|^openapi:|^swagger:' "${FILE}" >/dev/null; then
     debug "${FILE} is an OpenAPI descriptor"
     return 0
   else
-    debug "${FILE} is NOT an OpenAPI descriptor"
     return 1
   fi
 }
@@ -49,9 +43,8 @@ DetectARMFile() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is an ARM file..."
-
   if grep -E 'schema.management.azure.com' "${FILE}" >/dev/null; then
+    debug "${FILE} is an ARM file"
     return 0
   else
     return 1
@@ -66,22 +59,17 @@ DetectCloudFormationFile() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is a Cloud Formation file..."
-
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html
   # AWSTemplateFormatVersion is optional
 
-  # Check if file has AWS Template info
-  if grep -q 'AWSTemplateFormatVersion' "${FILE}" >/dev/null; then
+  # Check if file has AWS Template info or AWS References
+  if grep -q 'AWSTemplateFormatVersion' "${FILE}" >/dev/null ||
+    grep -q -E '(AWS|Alexa|Custom)::' "${FILE}" >/dev/null; then
+    debug "Checking if ${FILE} is a Cloud Formation file..."
     return 0
+  else
+    return 1
   fi
-
-  # See if it contains AWS References
-  if grep -q -E '(AWS|Alexa|Custom)::' "${FILE}" >/dev/null; then
-    return 0
-  fi
-
-  return 1
 }
 
 DetectKubernetesFile() {
@@ -92,16 +80,14 @@ DetectKubernetesFile() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is a Kubernetes descriptor..."
   if grep -q -v 'kustomize.config.k8s.io' "${FILE}" &&
     grep -q -E '(^apiVersion):' "${FILE}" &&
     grep -q -E '(^kind):' "${FILE}"; then
     debug "${FILE} is a Kubernetes descriptor"
     return 0
+  else
+    return 1
   fi
-
-  debug "${FILE} is NOT a Kubernetes descriptor"
-  return 1
 }
 
 DetectAWSStatesFIle() {
@@ -112,15 +98,14 @@ DetectAWSStatesFIle() {
     return 1
   fi
 
-  debug "Checking if ${FILE} is a AWS states descriptor..."
-
   # https://states-language.net/spec.html#example
   if grep -q '"Resource": *"arn' "${FILE}" &&
     grep -q '"States"' "${FILE}"; then
+    debug "${FILE} is an AWS states descriptor"
     return 0
+  else
+    return 1
   fi
-
-  return 1
 }
 
 function GetFileType() {
@@ -185,8 +170,6 @@ function IsValidShellScript() {
   FILE_EXTENSION="$(GetFileExtension "$FILE")"
   GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
 
-  debug "File:[${FILE}], File extension:[${FILE_EXTENSION}], File type: [${GET_FILE_TYPE_CMD}]"
-
   if [[ "${FILE_EXTENSION}" == "zsh" ]] ||
     [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
     warn "$FILE is a ZSH script. Skipping..."
@@ -211,7 +194,6 @@ function IsValidShellScript() {
     return 0
   fi
 
-  debug "$FILE is NOT a supported shell script. Skipping"
   return 1
 }
 
@@ -256,13 +238,10 @@ function IsGenerated() {
 function IsNotSymbolicLink() {
   local FILE="$1"
 
-  debug "Checking if ${FILE} is not a symbolic link..."
-
   if [[ -L "${FILE}" ]]; then
     debug "${FILE} is a symbolic link"
     return 1
   else
-    debug "${FILE} is NOT a symbolic link"
     return 0
   fi
 }
@@ -436,12 +415,10 @@ function IsAnsibleDirectory() {
   local FILE
   FILE="$1"
 
-  debug "Checking if ${FILE} is the Ansible directory (${ANSIBLE_DIRECTORY})"
   if [[ ("${FILE}" =~ .*${ANSIBLE_DIRECTORY}.*) ]] && [[ -d "${FILE}" ]]; then
     debug "${FILE} is the Ansible directory"
     return 0
   else
-    debug "${FILE} is not the Ansible directory"
     return 1
   fi
 }
