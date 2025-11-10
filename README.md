@@ -487,8 +487,8 @@ environments, see
 ### VALIDATE_ALL_CODEBASE
 
 To lint and format only the files that you changed or created, set
-`VALIDATE_ALL_CODEBASE` to `false` (the default). To lint and format all the
-files in the workspace, set `VALIDATE_ALL_CODEBASE` to `true`.
+`VALIDATE_ALL_CODEBASE` to `false`. To lint and format all the files in the
+workspace, set `VALIDATE_ALL_CODEBASE` to `true` (the default).
 
 The following linters and formatters ignore the `VALIDATE_ALL_CODEBASE`
 variable, and always check the entire workspace:
