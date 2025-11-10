@@ -11,7 +11,7 @@
 | CSS                   | Pass ✅           |
 | CSS_PRETTIER          | Pass ✅           |
 | ENV                   | Pass ✅           |
-| GITHUB_ACTIONS_ZIZMOR | Fail ❌           |
+| GITHUB_ACTIONS_ZIZMOR | Pass ✅           |
 | GO                    | Pass ✅           |
 | GO_MODULES            | Pass ✅           |
 | GOOGLE_JAVA_FORMAT    | Pass ✅           |
