@@ -8,7 +8,7 @@
     "@coffeelint/cli": "^5.2.11",
     "@commitlint/config-conventional": "^20.0.0",
     "@stoplight/spectral-cli": "^6.15.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
     "asl-validator": "^4.0.0",
     "commitlint": "^20.1.0",
     "eslint": "^9.39.0",
