@@ -184,7 +184,7 @@ RUN apk add --no-cache \
   libxml2-utils \
   npm \
   nodejs-current \
-  openjdk17-jre \
+  openjdk21-jre \
   openssh-client \
   parallel \
   perl \
