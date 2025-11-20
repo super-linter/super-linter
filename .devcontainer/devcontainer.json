@@ -19,6 +19,7 @@
         "prettier.resolveGlobalModules": true,
         "redhat.telemetry.enabled": false,
         "telemetry.telemetryLevel": "off",
+        "yaml.format.enable": false,
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
@@ -51,6 +52,7 @@
         "mkhl.shfmt",
         "ms-azuretools.vscode-containers",
         "ms-vscode.makefile-tools",
+        "redhat.vscode-yaml",
         "timonwong.shellcheck"
       ]
     }
