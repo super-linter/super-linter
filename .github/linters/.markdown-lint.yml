@@ -1,2 +1,10 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/DavidAnson/markdownlint/refs/heads/main/schema/markdownlint-config-schema.json
 extends: "markdownlint/style/prettier"
+
+default: true
+
+# MD060/table-column-style : Table column style
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md060.md
+MD060:
+  style: aligned

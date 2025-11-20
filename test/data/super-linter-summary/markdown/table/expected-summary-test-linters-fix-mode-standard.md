@@ -1,6 +1,8 @@
 # Super-linter summary
 
 <!-- textlint-disable terminology -->
+<!-- Disable MD060 to avoid false positives because of emojis -->
+<!-- markdownlint-disable MD060 -->
 
 | Language                     | Validation result |
 | ---------------------------- | ----------------- |
@@ -60,6 +62,7 @@
 | VUE_PRETTIER                 | Pass ✅           |
 | YAML_PRETTIER                | Pass ✅           |
 
+<!-- markdownlint-enable MD060 -->
 <!-- textlint-enable terminology -->
 
 Super-linter detected linting errors
