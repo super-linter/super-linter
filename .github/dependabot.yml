@@ -38,29 +38,22 @@ updates:
       npm:
         applies-to: version-updates
         patterns:
+          - "@babel/preset-react"
+          - "@babel/preset-typescript"
           - "@biomejs/biome"
           - "@commitlint/*"
+          - "@react-native/eslint-config"
+          - "@typescript-eslint/eslint-plugin"
           - "commitlint"
-          - "textlint*"
-          - "stylelint*"
-          - next
-          - next-pwa
-      eslint-plugins-configs:
-        applies-to: version-updates
-        patterns:
           - "eslint-config*"
           - "eslint-plugin*"
-      react:
-        applies-to: version-updates
-        patterns:
           - "react*"
-          - "@babel/preset-react"
-          - "@react-native/eslint-config"
-      typescript:
-        applies-to: version-updates
-        patterns:
-          - "@babel/preset-typescript"
-          - "@typescript-eslint/eslint-plugin"
+          - "stylelint*"
+          - "textlint*"
+          - markdownlint-cli
+          - next
+          - next-pwa
+          - renovate
           - typescript
 
   - package-ecosystem: "bundler"
