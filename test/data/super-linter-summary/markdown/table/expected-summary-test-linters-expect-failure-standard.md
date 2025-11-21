@@ -86,6 +86,7 @@
 | RUST_2015                    | Fail ❌           |
 | RUST_2018                    | Fail ❌           |
 | RUST_2021                    | Fail ❌           |
+| RUST_2024                    | Fail ❌           |
 | RUST_CLIPPY                  | Fail ❌           |
 | SCALAFMT                     | Fail ❌           |
 | SHELL_SHFMT                  | Fail ❌           |
