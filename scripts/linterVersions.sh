@@ -223,7 +223,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ "${LINTER}" == "sqlfluff" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $3 }')"
   elif [[ ${LINTER} == "terraform" ]]; then
-    GET_VERSION_CMD="$(CHECKPOINT_DISABLE="not needed for version checks" "${LINTER}" --version | head -n 1 | awk '{ print $2 }')"
+    GET_VERSION_CMD="$("${LINTER}" version -json | jq --raw-output .terraform_version)"
   elif [[ "${LINTER}" == "terragrunt" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ ${LINTER} == "terrascan" ]]; then
