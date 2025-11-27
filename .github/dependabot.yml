@@ -4,6 +4,8 @@ updates:
   - package-ecosystem: "devcontainers"
     commit-message:
       prefix: "chore(devcontainer)"
+    cooldown:
+      default-days: 4
     directory: "/"
     schedule:
       interval: weekly
@@ -12,6 +14,8 @@ updates:
   - package-ecosystem: github-actions
     commit-message:
       prefix: "ci(github-actions)"
+    cooldown:
+      default-days: 4
     directory: "/"
     schedule:
       interval: "weekly"
@@ -29,6 +33,8 @@ updates:
   - package-ecosystem: "npm"
     commit-message:
       prefix: "deps(npm)"
+    cooldown:
+      default-days: 4
     directories:
       - /dependencies
     schedule:
@@ -59,6 +65,8 @@ updates:
   - package-ecosystem: "bundler"
     commit-message:
       prefix: "deps(bundler)"
+    cooldown:
+      default-days: 4
     directory: "/dependencies"
     schedule:
       interval: "weekly"
@@ -72,6 +80,8 @@ updates:
   - package-ecosystem: "docker"
     commit-message:
       prefix: "deps(docker)"
+    cooldown:
+      default-days: 4
     directory: "/"
     schedule:
       interval: "weekly"
@@ -118,6 +128,8 @@ updates:
   - package-ecosystem: "pip"
     commit-message:
       prefix: "deps(python)"
+    cooldown:
+      default-days: 4
     directories:
       - /dependencies/python/
     schedule:
@@ -150,6 +162,8 @@ updates:
   - package-ecosystem: "gradle"
     commit-message:
       prefix: "deps(java)"
+    cooldown:
+      default-days: 4
     directories:
       - "/dependencies/checkstyle"
       - "/dependencies/google-java-format"
@@ -170,6 +184,8 @@ updates:
   - package-ecosystem: "docker"
     commit-message:
       prefix: "ci(dev-docker)"
+    cooldown:
+      default-days: 4
     directory: "/dev-dependencies"
     schedule:
       interval: "weekly"
@@ -178,6 +194,8 @@ updates:
   - package-ecosystem: "npm"
     commit-message:
       prefix: "ci(dev-npm)"
+    cooldown:
+      default-days: 4
     directories:
       - /dev-dependencies
     schedule:
@@ -187,6 +205,8 @@ updates:
   - package-ecosystem: "composer"
     commit-message:
       prefix: "deps(php)"
+    cooldown:
+      default-days: 4
     directories:
       - dependencies/composer
     schedule:
