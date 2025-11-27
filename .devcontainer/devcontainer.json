@@ -109,5 +109,11 @@
       "type": "bind"
     }
   ],
-  "runArgs": ["--env-file", ".devcontainer/devcontainer.env", "--rm"]
+  "runArgs": [
+    "--env-file",
+    ".devcontainer/devcontainer.env",
+    "--name",
+    "super-linter-dev",
+    "--rm"
+  ]
 }
