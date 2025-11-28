@@ -143,6 +143,8 @@ BuildFileArraysTest() {
   # shellcheck disable=SC2034
   local VALIDATE_GITHUB_ACTIONS="true"
   # shellcheck disable=SC2034
+  local VALIDATE_GITHUB_ACTIONS_ZIZMOR="true"
+  # shellcheck disable=SC2034
   local VALIDATE_KUBERNETES_KUBECONFORM="true"
   # shellcheck disable=SC2034
   local VALIDATE_OPENAPI="true"

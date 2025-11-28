@@ -266,6 +266,8 @@ Provide the logic to populate the list of files or directories to examine in
         `"${FILE}" == "${GITHUB_WORKSPACE}"`
      1. Add the logic to handle test cases for the new tool that lints the
         entire workspace.
+  1. Update the readme by adding the new tool to the list of tools that always
+     check the entire workspace.
 
 To avoid a performance penalties, you can combine the _file extension check_ and
 the _file contents check_ approaches to run the detection logic only on certain

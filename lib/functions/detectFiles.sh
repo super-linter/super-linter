@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DetectActions() {
-  FILE="${1}"
+DetectGitHubActionsWorkflows() {
+  local FILE="${1}"
 
   if [[ "${VALIDATE_GITHUB_ACTIONS}" == "false" ]] &&
     [[ "${VALIDATE_GITHUB_ACTIONS_ZIZMOR}" == "false" ]]; then
@@ -9,10 +9,50 @@ DetectActions() {
     return 1
   fi
 
+  local FILE_DIR_NAME
+  local RET_CODE
+  FILE_DIR_NAME="$(dirname "${FILE}")"
+  RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    fatal "Error while getting the directory name for ${FILE:-"not set"} when detecting GitHub Actions workflow files. Output: ${FILE_DIR_NAME:-"empty"}"
+  fi
+
   # Check if in the users .github, or the super linter test suite
-  if [[ "$(dirname "${FILE}")" == *".github/workflows"* ]] ||
-    [[ "$(dirname "${FILE}")" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
+  if [[ "${FILE_DIR_NAME}" == *".github/workflows"* ]] ||
+    [[ "${FILE_DIR_NAME}" == *"${TEST_CASE_FOLDER}/github_actions"* ]]; then
     debug "${FILE} is GitHub Actions file."
+    return 0
+  else
+    return 1
+  fi
+}
+
+DetectDependabot() {
+  local FILE="${1}"
+
+  if [[ "${VALIDATE_GITHUB_ACTIONS_ZIZMOR}" == "false" ]]; then
+    debug "Don't check if ${FILE} is a Dependabot file because VALIDATE_GITHUB_ACTIONS_ZIZMOR is ${VALIDATE_GITHUB_ACTIONS_ZIZMOR}"
+    return 1
+  fi
+
+  if [[ "${FILE}" =~ (^|/)\.github/dependabot\.ya?ml$ ]]; then
+    debug "${FILE} is a Dependabot file."
+    return 0
+  else
+    return 1
+  fi
+}
+
+DetectGitHubActions() {
+  local FILE="${1}"
+
+  if [[ "${VALIDATE_GITHUB_ACTIONS_ZIZMOR}" == "false" ]]; then
+    debug "Don't check if ${FILE} is a GitHub Action file because VALIDATE_GITHUB_ACTIONS_ZIZMOR is ${VALIDATE_GITHUB_ACTIONS_ZIZMOR}"
+    return 1
+  fi
+
+  if [[ "${FILE}" =~ (^|/)action\.ya?ml$ ]]; then
+    debug "${FILE} is a GitHub Action file."
     return 0
   else
     return 1
@@ -248,7 +288,9 @@ function IsNotSymbolicLink() {
 
 # We need these functions when building the file list with parallel
 export -f CheckFileType
-export -f DetectActions
+export -f DetectGitHubActionsWorkflows
+export -f DetectDependabot
+export -f DetectGitHubActions
 export -f DetectARMFile
 export -f DetectAWSStatesFIle
 export -f DetectCloudFormationFile

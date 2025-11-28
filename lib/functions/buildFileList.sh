@@ -666,8 +666,13 @@ BuildFileArrays() {
       else
         debug "Skip adding ${FILE} to YAML_PRETTIER file array because Prettier doesn't support following symbolic links"
       fi
-      if DetectActions "${FILE}"; then
+      if DetectGitHubActionsWorkflows "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS_ZIZMOR"
+      fi
+
+      if DetectDependabot "${FILE}" ||
+        DetectGitHubActions "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITHUB_ACTIONS_ZIZMOR"
       fi
 
