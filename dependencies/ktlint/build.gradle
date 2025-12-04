@@ -5,7 +5,7 @@ repositories {
 
 // Hold this dependency here so we can get automated updates using DependaBot
 dependencies {
-  implementation 'com.pinterest.ktlint:ktlint-cli:1.7.1'
+  implementation 'com.pinterest.ktlint:ktlint-cli:1.8.0'
 }
 
 group 'com.github.super-linter'
