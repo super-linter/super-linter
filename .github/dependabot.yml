@@ -56,9 +56,11 @@ updates:
           - "react*"
           - "stylelint*"
           - "textlint*"
+          - htmlhint
           - markdownlint-cli
           - next
           - next-pwa
+          - prettier
           - renovate
           - typescript
 
