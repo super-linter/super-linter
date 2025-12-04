@@ -25,7 +25,7 @@
     "htmlhint": "^1.7.1",
     "jscpd": "^4.0.5",
     "markdownlint-cli": "^0.46.0",
-    "next": "^16.0.3",
+    "next": "^16.0.7",
     "npm-groovy-lint": "^15.2.2",
     "prettier": "^3.6.2",
     "react": "^19.2.0",
