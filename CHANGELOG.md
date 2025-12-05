@@ -1,5 +1,22 @@
 # Changelog
 
+## [8.3.1](https://github.com/super-linter/super-linter/compare/v8.3.0...v8.3.1) (2025-12-05)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump rubocop-rails in /dependencies in the rubocop group ([#7251](https://github.com/super-linter/super-linter/issues/7251)) ([d8a2032](https://github.com/super-linter/super-linter/commit/d8a2032a5d9a067d05b55db58c52ebcff6620c11))
+* **java:** bump the java-gradle group across 3 directories with 3 updates ([#7252](https://github.com/super-linter/super-linter/issues/7252)) ([5306a0a](https://github.com/super-linter/super-linter/commit/5306a0a618372a73fe40d7e8c157ca632de75af7))
+* **npm:** bump @modelcontextprotocol/sdk in /dependencies ([#7248](https://github.com/super-linter/super-linter/issues/7248)) ([4d59852](https://github.com/super-linter/super-linter/commit/4d59852bbcda028357fdbbfeb61187fa28507200))
+* **npm:** bump express from 5.1.0 to 5.2.1 in /dependencies ([#7246](https://github.com/super-linter/super-linter/issues/7246)) ([50462d3](https://github.com/super-linter/super-linter/commit/50462d3ff8b4563663815874498977d4546e80eb))
+* **npm:** bump jws from 4.0.0 to 4.0.1 in /dependencies ([#7260](https://github.com/super-linter/super-linter/issues/7260)) ([cc90344](https://github.com/super-linter/super-linter/commit/cc90344711f7c84363cb32fff58a42f42dd05cbb))
+* **npm:** bump the npm group across 1 directory with 7 updates ([#7259](https://github.com/super-linter/super-linter/issues/7259)) ([0ab9ad4](https://github.com/super-linter/super-linter/commit/0ab9ad42083eb92b8794c962bfe942d433701e35))
+
+
+### 🧰 Maintenance
+
+* add prettier and htmlhint to the npm group ([#7257](https://github.com/super-linter/super-linter/issues/7257)) ([4692c1c](https://github.com/super-linter/super-linter/commit/4692c1cc3aa66f6d26c62a78534a168391a1a9d5))
+
 ## [8.3.0](https://github.com/super-linter/super-linter/compare/v8.2.1...v8.3.0) (2025-11-28)
 
 
