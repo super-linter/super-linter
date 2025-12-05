@@ -320,8 +320,6 @@ GetGitHubVars() {
 
     debug "This is a ${GITHUB_EVENT_NAME} event"
 
-    local -i GITHUB_EVENT_COMMIT_COUNT
-
     if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
       # GITHUB_SHA on PR events is not the latest commit.
       # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
@@ -336,25 +334,17 @@ GetGitHubVars() {
         fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
-
-      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPullRequestEventCommitCount "${GITHUB_EVENT_PATH}")
-      RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
-      else
-        debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
-      fi
     elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPushEventCommitCount "${GITHUB_EVENT_PATH}")
+      GITHUB_PUSH_EVENT_BEFORE="$(GetGitHubEventPushBefore "${GITHUB_EVENT_PATH}")"
       RET_CODE=$?
       if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT:-"not set"}"
+        fatal "Failed to get GITHUB_PUSH_EVENT_BEFORE. Output: ${GITHUB_PUSH_EVENT_BEFORE:-"not set"}"
       fi
-      debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
+      debug "Successfully found before for ${GITHUB_EVENT_NAME} event: ${GITHUB_PUSH_EVENT_BEFORE}"
     fi
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
-      if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
+      if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}" "${GITHUB_PUSH_EVENT_BEFORE:-}"; then
         fatal "Error while initializing GITHUB_BEFORE_SHA"
       fi
     fi
