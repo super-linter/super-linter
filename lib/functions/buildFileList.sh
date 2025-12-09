@@ -87,11 +87,19 @@ function BuildFileList() {
       fi
 
     else
-      DIFF_GIT_VALIDATE_ALL_CODEBASE="git -C \"${GITHUB_WORKSPACE}\" ls-tree -r --name-only HEAD | xargs -I % sh -c \"echo ${GITHUB_WORKSPACE}/%\" 2>&1"
-      debug "Populating the file list with: ${DIFF_GIT_VALIDATE_ALL_CODEBASE}"
-      if ! mapfile -t RAW_FILE_ARRAY < <(eval "set -eo pipefail; ${DIFF_GIT_VALIDATE_ALL_CODEBASE}; set +eo pipefail"); then
-        fatal "Failed to get a list of changed files. USE_FIND_ALGORITHM: ${USE_FIND_ALGORITHM}"
+
+      # Get the list of files in the codebase, and add ${GITHUB_WORKSPACE} as a
+      # prefix
+      local LIST_OF_FILES_IN_REPO
+      if ! LIST_OF_FILES_IN_REPO=$(
+        set -o pipefail
+        git -C "${GITHUB_WORKSPACE}" ls-tree -r --name-only HEAD | sed "s|^|${GITHUB_WORKSPACE}/|"
+      ); then
+        fatal "Failed to get a list of changed files. LIST_OF_FILES_IN_REPO: ${LIST_OF_FILES_IN_REPO}"
       fi
+
+      # Load the list of files in the repository in the list of files to check
+      mapfile -t RAW_FILE_ARRAY <<<"${LIST_OF_FILES_IN_REPO}"
     fi
   fi
 
