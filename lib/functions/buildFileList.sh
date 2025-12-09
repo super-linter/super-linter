@@ -256,7 +256,7 @@ BuildFileArrays() {
 
     if [ ! -e "${FILE}" ]; then
       # File not found in workspace
-      warn "{$FILE} exists in commit data, but not found on file system, skipping..."
+      warn "${FILE} exists in commit data, but not found on file system, skipping..."
       continue
     fi
 
