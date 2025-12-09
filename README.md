@@ -758,6 +758,7 @@ The following linters and formatters ignore the `FILTER_REGEX_INCLUDE`,
 `FILTER_REGEX_EXCLUDE`, `IGNORE_GENERATED_FILES`, `IGNORE_GITIGNORED_FILES`,
 `VALIDATE_ALL_CODEBASE` variables, and always check the entire workspace:
 
+- ansible-lint
 - Biome
 - Jscpd
 - Checkov
