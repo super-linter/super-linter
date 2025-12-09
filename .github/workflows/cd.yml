@@ -23,6 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         stages:
+          - stage-name: python-base
           - stage-name: base_image
           - stage-name: clang-format
           - stage-name: python-builder

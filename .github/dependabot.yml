@@ -53,6 +53,7 @@ updates:
           - "commitlint"
           - "eslint-config*"
           - "eslint-plugin*"
+          - npm-groovy-lint
           - "react*"
           - "stylelint*"
           - "textlint*"

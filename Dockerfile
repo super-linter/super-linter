@@ -32,21 +32,21 @@ FROM composer/composer:2.9.1 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.67.2 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
-FROM python:3.14.0-alpine3.22 AS python-base
+FROM python:3.13.11-alpine3.23 AS python-base
 
 FROM python-base AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang20 \
+  clang21 \
   cmake \
   git \
-  llvm20-dev \
+  llvm21-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
 RUN git clone \
-  --branch "llvmorg-$(llvm-config  --version)" \
+  --branch "llvmorg-$(llvm21-config  --version)" \
   --depth 1 \
   https://github.com/llvm/llvm-project.git
 
