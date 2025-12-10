@@ -232,3 +232,63 @@ BuildFileArraysFilterRegexExcludeStartOfStringTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 BuildFileArraysFilterRegexExcludeStartOfStringTest
+
+BuildFileListValidateAllCodeBaseTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  local -a TEST_FILES
+  # Keep this alphabetically sorted
+  TEST_FILES=(
+    "parentheses and spaces in the name (test).json"
+    "spaces in the name.json"
+    "test-file.json"
+  )
+
+  local -a EXPECTED_RAW_FILE_ARRAY
+  EXPECTED_RAW_FILE_ARRAY=()
+
+  local TEST_FILE_PATH
+
+  for test_file in "${TEST_FILES[@]}"; do
+    debug "Creating test file: ${test_file}"
+    TEST_FILE_PATH="${GITHUB_WORKSPACE}/${test_file}"
+    touch "${TEST_FILE_PATH}"
+
+    EXPECTED_RAW_FILE_ARRAY+=(
+      "${TEST_FILE_PATH}"
+    )
+  done
+  EXPECTED_RAW_FILE_ARRAY+=(
+    "${GITHUB_WORKSPACE}"
+  )
+
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "init"
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
+
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  initialize_github_sha "${GITHUB_WORKSPACE}"
+
+  # shellcheck disable=SC2034
+  local USE_FIND_ALGORITHM="false"
+  # shellcheck disable=SC2034
+  local SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}"
+  BuildFileList "true" "false"
+
+  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+
+  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+BuildFileListValidateAllCodeBaseTest
