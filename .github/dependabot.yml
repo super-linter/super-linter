@@ -5,20 +5,20 @@ updates:
     commit-message:
       prefix: "chore(devcontainer)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directory: "/"
     schedule:
-      interval: weekly
+      interval: daily
     open-pull-requests-limit: 100
 
   - package-ecosystem: github-actions
     commit-message:
       prefix: "ci(github-actions)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       dev-ci-tools:
@@ -34,11 +34,11 @@ updates:
     commit-message:
       prefix: "deps(npm)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directories:
       - /dependencies
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       npm:
@@ -69,10 +69,10 @@ updates:
     commit-message:
       prefix: "deps(bundler)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directory: "/dependencies"
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       rubocop:
@@ -84,10 +84,10 @@ updates:
     commit-message:
       prefix: "deps(docker)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       docker:
@@ -132,11 +132,11 @@ updates:
     commit-message:
       prefix: "deps(python)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directories:
       - /dependencies/python/
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       pip:
@@ -166,13 +166,13 @@ updates:
     commit-message:
       prefix: "deps(java)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directories:
       - "/dependencies/checkstyle"
       - "/dependencies/google-java-format"
       - "/dependencies/ktlint"
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       java-gradle:
@@ -188,32 +188,32 @@ updates:
     commit-message:
       prefix: "ci(dev-docker)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directory: "/dev-dependencies"
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
 
   - package-ecosystem: "npm"
     commit-message:
       prefix: "ci(dev-npm)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directories:
       - /dev-dependencies
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
 
   - package-ecosystem: "composer"
     commit-message:
       prefix: "deps(php)"
     cooldown:
-      default-days: 4
+      default-days: 7
     directories:
       - dependencies/composer
     schedule:
-      interval: "weekly"
+      interval: daily
     open-pull-requests-limit: 100
     groups:
       composer:
