@@ -404,6 +404,13 @@ InitializeGitBeforeShaReference() {
       if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
         GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
         debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+
+        # 2048 is the current maximum for the commits array on push events
+        # Ref: https://docs.github.com/en/webhooks/webhook-events-and-payloads#push
+        if [[ "${GITHUB_EVENT_COMMIT_COUNT}" -gt 2048 ]]; then
+          warn "The GitHub event (${GITHUB_EVENT_NAME}) contains more than ${GITHUB_EVENT_COMMIT_COUNT} commits. The list of files to check might not be accurate."
+        fi
+
       else
         debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
       fi

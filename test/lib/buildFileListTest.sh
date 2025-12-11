@@ -7,6 +7,69 @@ set -o pipefail
 # shellcheck source=/dev/null
 source "test/testUtils.sh"
 
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
+  debug "Simulate the push of a merge commit to a non-default branch. The merge commit merges the default branch in the non-default branch"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  debug "Create the first commit in ${DEFAULT_BRANCH}"
+  local INIT_COMMIT_FILE_NAME="init-commit.txt"
+  touch "${GITHUB_WORKSPACE}/${INIT_COMMIT_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${INIT_COMMIT_FILE_NAME}"
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
+
+  debug "Switch to ${NEW_BRANCH_NAME} branch"
+  git -C "${GITHUB_WORKSPACE}" switch --create "${NEW_BRANCH_NAME}"
+  local FEATURE_BRANCH_FILE_NAME="feature-branch.txt"
+  touch "${GITHUB_WORKSPACE}/${FEATURE_BRANCH_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${FEATURE_BRANCH_FILE_NAME}"
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  debug "Setting GITHUB_BEFORE_SHA to ${GITHUB_BEFORE_SHA}"
+
+  debug "Switch to ${DEFAULT_BRANCH} branch"
+  git -C "${GITHUB_WORKSPACE}" switch "${DEFAULT_BRANCH}"
+  local MAIN_BRANCH_NEW_FILE_NAME="main-new-file.txt"
+  touch "${GITHUB_WORKSPACE}/${MAIN_BRANCH_NEW_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${MAIN_BRANCH_NEW_FILE_NAME}"
+
+  debug "Switch to ${NEW_BRANCH_NAME} branch"
+  git -C "${GITHUB_WORKSPACE}" switch "${NEW_BRANCH_NAME}"
+  git -C "${GITHUB_WORKSPACE}" merge "${DEFAULT_BRANCH}"
+
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  initialize_github_sha "${GITHUB_WORKSPACE}"
+
+  # shellcheck source=/dev/null
+  source "lib/functions/buildFileList.sh"
+
+  GenerateFileDiff
+
+  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+
+  # shellcheck disable=SC2034
+  local EXPECTED_RAW_FILE_ARRAY=(
+    "${GITHUB_WORKSPACE}/${MAIN_BRANCH_NEW_FILE_NAME}"
+  )
+
+  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchTest
+
 GenerateFileDiffTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${1:-${FUNCNAME[0]}}"

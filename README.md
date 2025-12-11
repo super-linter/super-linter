@@ -787,7 +787,16 @@ on
 consider the following if you set `VALIDATE_ALL_CODEBASE` to `false`:
 
 - `push` events: Super-linter checks only the files that were modified in the
-  commits you pushed.
+  commits you pushed in the push event. Examples:
+  - If you push `commit-1` and `commit-2` to `branch-a`, Super-linter will lint
+    the files you modified in `commit-1` and `commit-2`. Then, if you push
+    `commit-3` to `branch-a`, Super-linter will check only the files you
+    modified in `commit-3`.
+  - If you push a merge commit that merges the default branch (example: `main`)
+    in a non-default branch, Super-linter will check only the files that you
+    modified in the merge commit. This might be surprising for some users,
+    because, in this case, Super-linter will check only files that you modified
+    in the default branch in the merge commit.
 - `pull_request`, `pull_request_target`, and `workflow_dispatch` events:
   Super-linter checks all the files that you modified compared to the repository
   default branch.
