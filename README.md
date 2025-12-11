@@ -49,6 +49,14 @@ Here are some notable Super-linter features:
   open-source, fully-containerized linting suite. Other projects borrow ideas
   and design choices from Super-linter (and we're cool with that :).
 
+## How to contribute
+
+If you would like to help contribute to Super-linter, see
+[CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md).
+
+For a guide on how to set up your development environment and contribute to
+Super-linter, see the [development guide](docs/DEVELOPMENT.md).
+
 ## Supported linters and formatters
 
 Super-linter supports the following tools:
@@ -903,11 +911,3 @@ Super-linter supports installing dependencies at runtime, on each Super-linter
 run. For more information about installing additional dependencies when running
 Super-linter, see
 [Install additional dependencies](docs/install-additional-dependencies.md).
-
-## How to contribute
-
-If you would like to help contribute to super-linter, see
-[CONTRIBUTING](https://github.com/super-linter/super-linter/blob/main/.github/CONTRIBUTING.md).
-
-For a guide on how to set up your development environment and contribute to
-Super-linter, see the [development guide](docs/DEVELOPMENT.md).

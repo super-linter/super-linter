@@ -277,7 +277,25 @@ function ValidateLocalGitRepository() {
     debug "${GITHUB_WORKSPACE} is a Git repository"
   fi
 
-  debug "Git branches: $(git -C "${GITHUB_WORKSPACE}" branch -a)"
+  debug "Git branches:\n$(git -C "${GITHUB_WORKSPACE}" branch -a)"
+
+  # Get an "anonymized" (no commit information) Git log graph limited to the
+  # last few commits in order to get debug information
+  GIT_LOG_GRAPH=$(
+    git -C "${GITHUB_WORKSPACE}" --no-pager log \
+      --all \
+      --decorate \
+      --graph \
+      --pretty=format:"%Cred%h%Creset%C(yellow)%d%Creset" \
+      -30
+  )
+  RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    # Don't block on this error
+    error "Cannot load the Git repository graph: ${GIT_LOG_GRAPH}"
+  else
+    debug "Git repository graph:\n${GIT_LOG_GRAPH}"
+  fi
 }
 
 function CheckIfGitRefExists() {
