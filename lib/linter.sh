@@ -285,11 +285,18 @@ GetGitHubVars() {
       fi
       info "Initialized GITHUB_SHA to: ${GITHUB_SHA}"
 
+      if ! ValidateGitShaReference "${GITHUB_SHA}"; then
+        fatal "Failed to validate GITHUB_SHA"
+      fi
+
       if ! InitializeRootCommitSha; then
         fatal "Failed to initialize root commit"
       fi
+
+      GITHUB_BEFORE_SHA="${DEFAULT_BRANCH}"
+      debug "Setting GITHUB_BEFORE_SHA to ${GITHUB_BEFORE_SHA}"
     else
-      debug "Skip the initalization of GITHUB_SHA because we don't need it"
+      debug "Skip the initalization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
     fi
 
     MULTI_STATUS="false"
@@ -314,13 +321,15 @@ GetGitHubVars() {
       info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
     fi
 
+    if ! ValidateGitShaReference "${GITHUB_SHA}"; then
+      fatal "Failed to validate GITHUB_SHA"
+    fi
+
     if ! InitializeRootCommitSha; then
       fatal "Failed to initialize root commit"
     fi
 
     debug "This is a ${GITHUB_EVENT_NAME} event"
-
-    local -i GITHUB_EVENT_COMMIT_COUNT
 
     if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
       # GITHUB_SHA on PR events is not the latest commit.
@@ -336,25 +345,34 @@ GetGitHubVars() {
         fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
       fi
       debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
-
-      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPullRequestEventCommitCount "${GITHUB_EVENT_PATH}")
-      RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT}"
-      else
-        debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
-      fi
     elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-      GITHUB_EVENT_COMMIT_COUNT=$(GetGithubPushEventCommitCount "${GITHUB_EVENT_PATH}")
+      local FORCE_PUSH_EVENT
+      FORCE_PUSH_EVENT=$(GetGitHubEventForced "${GITHUB_EVENT_PATH}")
       RET_CODE=$?
       if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_COMMIT_COUNT. Output: ${GITHUB_EVENT_COMMIT_COUNT:-"not set"}"
+        fatal "Failed to get FORCE_PUSH_EVENT. Output: ${FORCE_PUSH_EVENT:-"not set"}"
       fi
-      debug "Successfully found commit count for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_COMMIT_COUNT}"
+      debug "Successfully found 'forced' for ${GITHUB_EVENT_NAME} event: ${FORCE_PUSH_EVENT}"
+
+      local GITHUB_EVENT_PUSH_BEFORE
+      GITHUB_EVENT_PUSH_BEFORE=$(GetGitHubEventPushBefore "${GITHUB_EVENT_PATH}")
+      RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to get GITHUB_EVENT_PUSH_BEFORE. Output: ${GITHUB_EVENT_PUSH_BEFORE:-"not set"}"
+      fi
+      debug "Successfully found the commit hash of the 'before' commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_PUSH_BEFORE}"
+
+      local GITHUB_EVENT_FIRST_PUSHED_COMMIT
+      GITHUB_EVENT_FIRST_PUSHED_COMMIT=$(GetGithubPushFirstPushedCommitHash "${GITHUB_EVENT_PATH}")
+      RET_CODE=$?
+      if [[ "${RET_CODE}" -gt 0 ]]; then
+        fatal "Failed to get GITHUB_EVENT_FIRST_PUSHED_COMMIT. Output: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-"not set"}"
+      fi
+      debug "Successfully found the commit hash of the first pushed commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT}"
     fi
 
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
-      if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GITHUB_EVENT_COMMIT_COUNT:-}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}"; then
+      if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}" "${FORCE_PUSH_EVENT:-""}" "${GITHUB_EVENT_PUSH_BEFORE:-""}" "${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-""}"; then
         fatal "Error while initializing GITHUB_BEFORE_SHA"
       fi
     fi

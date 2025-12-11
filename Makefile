@@ -32,7 +32,9 @@ test: \
 	test-github-event-merge-group \
 	test-github-event-push-event-multiple-commits-default-branch \
 	test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch \
+	test-github-event-push-initial-commit-multiple-commits \
 	test-github-event-push-force-push \
+	test-github-event-push-force-push-multiple-commits \
 	test-runtime-dependencies-installation \
 	test-linters-expect-failure \
 	test-linters-expect-success \
@@ -545,11 +547,25 @@ test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch:
 		"run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_branch" \
 		"$(IMAGE)"
 
+.PHONY: test-github-event-push-initial-commit-multiple-commits
+test-github-event-push-initial-commit-multiple-commits: ## Run super-linter on a push event pushing the initial commit plus other commits
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_push_initial_commit_multiple_commits" \
+		"$(IMAGE)"
+
 .PHONY: test-github-event-push-force-push
 test-github-event-push-force-push: ## Run super-linter on a force push event
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_push_force_push" \
+		"$(IMAGE)"
+
+.PHONY: test-github-event-push-force-push-multiple-commits
+test-github-event-push-force-push-multiple-commits: ## Run super-linter on a force push event with multiple commits
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_push_force_push_multiple_commits" \
 		"$(IMAGE)"
 
 .PHONY: test-github-event-merge-group

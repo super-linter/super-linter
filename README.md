@@ -787,16 +787,31 @@ on
 consider the following if you set `VALIDATE_ALL_CODEBASE` to `false`:
 
 - `push` events: Super-linter checks only the files that were modified in the
-  commits you pushed.
-- `pull_request`, `pull_request_target`, and `workflow_dispatch` events:
-  Super-linter checks all the files that you modified compared to the repository
-  default branch.
-- `schedule` events: Super-linter will not find any files to check because
-  `schedule` events run against the repository default branch (GitHub Actions
-  set `GITHUB_SHA` to the last commit on the default branch, and `GITHUB_REF` to
-  the default branch on `schedule` events). So, Super-linter doesn't have enough
-  information to compute the set of files that changed. For `schedule` events,
-  we recommend that you set `VALIDATE_ALL_CODEBASE` to `true` (the default).
+  commits you pushed in the push event. Examples:
+  - If you push `commit-1` and `commit-2` to `branch-a`, Super-linter will lint
+    the files you modified in `commit-1` and `commit-2`. Then, if you push
+    `commit-3` to `branch-a`, Super-linter will check only the files you
+    modified in `commit-3`.
+  - If you push a merge commit that merges the default branch (example: `main`)
+    in a non-default branch, Super-linter will check only the files that you
+    modified in the merge commit. This might be surprising for some users,
+    because, in this case, Super-linter will check only files that you modified
+    in the default branch in the merge commit.
+- `merge_group`, `pull_request` events: Super-linter checks all the files that
+  you modified compared to the repository default branch.
+- `pull_request_target`, `schedule`, and `workflow_dispatch` events:
+  Super-linter will not find any files to check because `schedule` events run
+  against the repository default branch (GitHub Actions set `GITHUB_SHA` to the
+  last commit on the default branch, and `GITHUB_REF` to the default branch on
+  `pull_request_target`, `schedule`, and `workflow_dispatch` events). So,
+  Super-linter doesn't have enough information to compute the set of files that
+  changed. For `pull_request_target`, `schedule`, and `workflow_dispatch`
+  events, we recommend that you set `VALIDATE_ALL_CODEBASE` to `true` (the
+  default).
+
+By setting `FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION` to `true`,
+Super-linter exits with an error if the configuration is not suitable for the
+GitHub event that triggered the issue.
 
 ## Run Super-Linter outside GitHub Actions
 

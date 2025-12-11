@@ -369,63 +369,90 @@ InitializeGitBeforeShaReference() {
   debug "Initializing and validating GITHUB_BEFORE_SHA"
 
   local GITHUB_SHA="${1}"
-  local -i GITHUB_EVENT_COMMIT_COUNT="${2}"
-  local GIT_ROOT_COMMIT_SHA="${3}"
-  local GITHUB_EVENT_NAME="${4}"
-  local DEFAULT_BRANCH="${5:-}"
+  local GIT_ROOT_COMMIT_SHA="${2}"
+  local GITHUB_EVENT_NAME="${3}"
+  local DEFAULT_BRANCH="${4:-}"
+  local FORCE_PUSH_EVENT="${5:-}"
+  local GITHUB_EVENT_PUSH_BEFORE="${6:-}"
+  local GITHUB_EVENT_FIRST_PUSHED_COMMIT="${7:-}"
 
-  if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
-    debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there cannot be any commit before the initial commit"
-    return 0
-  fi
-  debug "${GITHUB_SHA} is not the initial commit. Initializing and validating GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event"
+  debug "Initializing and validating GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. GITHUB_SHA: ${GITHUB_SHA}"
+
+  local GIT_BEFORE_SHA_HEAD
 
   if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-    debug "Check if the ${GITHUB_SHA} commit is a merge commit by checking if it has more than one parent"
-    local -i GIT_COMMIT_PARENTS_COUNT
-    GIT_COMMIT_PARENTS_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)"
-    local RET_CODE=$?
-    if [[ "${RET_CODE}" -gt 0 ]]; then
-      error "Error while getting ${GITHUB_SHA} commit parents count. Output: ${GIT_COMMIT_PARENTS_COUNT}"
+
+    if ! ValidateBooleanVariable "FORCE_PUSH_EVENT" "${FORCE_PUSH_EVENT}"; then
+      error "Error while validating FORCE_PUSH_EVENT: ${FORCE_PUSH_EVENT:-"not set"}"
       return 1
     fi
-    debug "${GITHUB_SHA} git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
-    GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
-    debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the ${GITHUB_SHA} commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
 
-    # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
-    # Use GITHUB_SHA instead of HEAD because for pull requests, HEAD points that the PR merge commit
-    local GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
-    if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
-      debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
-      GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
-      debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
-
-      if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
-        GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
-        debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
-      else
-        debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
-      fi
-    else
-      debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
+    if [[ -z "${GITHUB_EVENT_PUSH_BEFORE:-}" ]]; then
+      error "GITHUB_EVENT_PUSH_BEFORE is not set or it's empty."
+      return 1
     fi
 
-    GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
+    if [[ -z "${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-}" ]]; then
+      error "GITHUB_EVENT_FIRST_PUSHED_COMMIT is not set or it's empty."
+      return 1
+    fi
+
+    debug "FORCE_PUSH_EVENT: ${FORCE_PUSH_EVENT}"
+    debug "GITHUB_EVENT_PUSH_BEFORE: ${GITHUB_EVENT_PUSH_BEFORE}"
+    debug "GITHUB_EVENT_FIRST_PUSHED_COMMIT: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT}"
+    # If this is NOT a force push event and not the initial commit (in this,
+    # case, the before field is set to all zeroes), rely on what GitHub believes
+    # to be the status before the push.
+    if [[ "${FORCE_PUSH_EVENT}" == "false" ]] &&
+      [[ ("${GITHUB_EVENT_PUSH_BEFORE}" != "${GITHUB_SHA_ALL_ZEROES}" && "${GITHUB_EVENT_PUSH_BEFORE}" != "null") ]]; then
+      debug "This is NOT a force push event, neither the user pushed the initial commit, nor created an empty ref."
+      GIT_BEFORE_SHA_HEAD="${GITHUB_EVENT_PUSH_BEFORE}"
+    else
+      debug "This is a force push event, or the user pushed the initial commit, or it's a push triggered by the merge queue"
+
+      # If GITHUB_EVENT_FIRST_PUSHED_COMMIT is
+      # ${GITHUB_PUSH_NO_COMMITS_PUSHED_RETURN_VALUE}, assume that the user
+      # created a new branch and pushed the branch ref without pushing any new
+      # commit
+      if [[ "${GITHUB_EVENT_FIRST_PUSHED_COMMIT}" == "${GITHUB_PUSH_NO_COMMITS_PUSHED_RETURN_VALUE}" ]]; then
+        debug "Assuming that no commits were pushed"
+        # The user didn't push any commit, so GITHUB_BEFORE_SHA should be the
+        # same as GITHUB_SHA because there are no new commits pushed, so no
+        # differences.
+        GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
+      else
+        debug "The push event contains commits"
+        if [[ "${GITHUB_EVENT_FIRST_PUSHED_COMMIT}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
+          debug "The first commit of the push event is the root commit"
+          # Set GIT_BEFORE_SHA_HEAD to the empty tree hash because there's no
+          # commit before the root commit
+          GIT_BEFORE_SHA_HEAD="${GIT_EMPTY_TREE_HASH}"
+          debug "Setting GIT_BEFORE_SHA_HEAD to the empty tree hash: ${GIT_BEFORE_SHA_HEAD}"
+        else
+          debug "The first commit of the push event is NOT the root commit"
+          GIT_BEFORE_SHA_HEAD="${GITHUB_EVENT_FIRST_PUSHED_COMMIT}^1"
+        fi
+      fi
+    fi
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "schedule" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-    GIT_BEFORE_SHA_HEAD="${DEFAULT_BRANCH}"
+    local GIT_MERGE_BASE
+    if ! GIT_MERGE_BASE="$(git -C "${GITHUB_WORKSPACE}" merge-base "${DEFAULT_BRANCH}" "${GITHUB_SHA}" 2>&1)"; then
+      error "Error while calculating GIT_MERGE_BASE: ${GIT_MERGE_BASE}"
+      return 1
+    fi
+    debug "GIT_MERGE_BASE for ${GITHUB_EVENT_NAME}: ${GIT_MERGE_BASE}"
+    GIT_BEFORE_SHA_HEAD="${GIT_MERGE_BASE}"
   else
     error "GitHub event not supported: ${GITHUB_EVENT_NAME}. Create a new issue in the Super-linter repository so the developers can look into this."
     return 1
   fi
 
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
-
-  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${GIT_BEFORE_SHA_HEAD}")"
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${GIT_BEFORE_SHA_HEAD}" 2>&1)"
   local RET_CODE=$?
   if [[ "${RET_CODE}" -gt 0 ]]; then
     error "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
@@ -446,7 +473,7 @@ ValidateGitShaReference() {
   debug "Validating SHA_REFERENCE: ${SHA_REFERENCE}"
   if [ -z "${SHA_REFERENCE:-}" ] ||
     [ "${SHA_REFERENCE:-}" == "null" ] ||
-    [ "${SHA_REFERENCE:-}" == "0000000000000000000000000000000000000000" ]; then
+    [ "${SHA_REFERENCE:-}" == "${GITHUB_SHA_ALL_ZEROES}" ]; then
     error "Failed to get SHA_REFERENCE: ${SHA_REFERENCE:-}"
     return 1
   fi
@@ -468,9 +495,11 @@ ValidateGitHubEvent() {
   local VALIDATE_ALL_CODEBASE="${1}" && shift
   debug "Validating Super-linter configuration for specific GitHub events"
 
-  if [[ "${GITHUB_EVENT_NAME:-"GITHUB_EVENT_NAME not set"}" == "schedule" ]]; then
+  if [[ "${GITHUB_EVENT_NAME:-"GITHUB_EVENT_NAME not set"}" == "pull_request_target" ]] ||
+    [[ "${GITHUB_EVENT_NAME:-"GITHUB_EVENT_NAME not set"}" == "schedule" ]] ||
+    [[ "${GITHUB_EVENT_NAME:-"GITHUB_EVENT_NAME not set"}" == "workflow_dispatch" ]]; then
     if [[ "${VALIDATE_ALL_CODEBASE:-"VALIDATE_ALL_CODEBASE not set"}" == "false" ]]; then
-      warn "${GITHUB_EVENT_NAME} (https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule) sets GITHUB_SHA as the last commit on the default branch, and GITHUB_REF to the default branch. When triggering schedule event, we recommend that you set VALIDATE_ALL_CODEBASE to true, otherwise Super-linter will not find any file to check."
+      warn "${GITHUB_EVENT_NAME} sets GITHUB_SHA as the last commit on the default branch, and GITHUB_REF to the default branch. When triggering ${GITHUB_EVENT_NAME} events, we recommend that you set VALIDATE_ALL_CODEBASE to true, otherwise Super-linter will not find any file to check."
       return 1
     fi
   fi

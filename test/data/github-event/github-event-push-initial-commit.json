@@ -15,11 +15,11 @@
         "username": "testuser"
       },
       "distinct": true,
-      "id": "a15934149b772d82713180257853c4908f9c3519",
+      "id": "first-pushed-commit-hash",
       "message": "fix: fix GITHUB_BEFORE_SHA initalization for push",
       "timestamp": "2024-01-04T23:56:39+01:00",
       "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
-      "url": "https://github.com/super-linter/super-linter/commit/a15934149b772d82713180257853c4908f9c3519"
+      "url": "https://github.com/super-linter/super-linter/commit/first-pushed-commit-hash"
     }
   ],
   "compare": "https://github.com/super-linter/super-linter/commit/a15934149b77",

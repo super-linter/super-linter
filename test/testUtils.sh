@@ -19,6 +19,8 @@ source "lib/functions/log.sh"
 source "lib/globals/main.sh"
 # shellcheck source=/dev/null
 source "lib/globals/languages.sh"
+# shellcheck source=/dev/null
+source "lib/globals/validation.sh"
 
 # Because we need variables defined there
 # shellcheck source=/dev/null
@@ -304,6 +306,13 @@ initialize_git_repository_contents() {
   local SKIP_GITHUB_BEFORE_SHA_INIT="${1}" && shift
   local COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE="${1}" && shift
   local INITIALIZE_GITHUB_SHA="${1}" && shift
+  local ADD_COMMIT_ON_DEFAULT_BRANCH_AFTER_MERGING_PR="${1}" && shift
+
+  unset GIT_ROOT_COMMIT_SHA
+  unset GITHUB_BEFORE_SHA
+  unset FIRST_COMMIT_HASH
+  unset GITHUB_PULL_REQUEST_HEAD_SHA
+  unset GITHUB_SHA
 
   debug "Creating the initial commit"
   local TEST_FILE_PATH
@@ -324,7 +333,11 @@ initialize_git_repository_contents() {
       debug "Skipping GITHUB_BEFORE_SHA initialization because SKIP_GITHUB_BEFORE_SHA_INIT is ${SKIP_GITHUB_BEFORE_SHA_INIT}"
     fi
   else
-    debug "Skipping GITHUB_BEFORE_SHA because there are no more commits other than the root commit"
+    GITHUB_BEFORE_SHA="${GIT_EMPTY_TREE_HASH}"
+    debug "Setting GITHUB_BEFORE_SHA to the empty tree commit hash (${GIT_EMPTY_TREE_HASH}) because there cannot be commits before the initial commit"
+
+    FIRST_COMMIT_HASH="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+    debug "Setting FIRST_COMMIT_HASH to ${FIRST_COMMIT_HASH}"
   fi
 
   if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
@@ -338,6 +351,12 @@ initialize_git_repository_contents() {
     cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
     git -C "${GIT_REPOSITORY_PATH}" add .
     git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}")"
+
+    if [[ "${i}" -eq 1 ]]; then
+      # shellcheck disable=SC2034
+      FIRST_COMMIT_HASH="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
+      debug "Setting FIRST_COMMIT_HASH to ${FIRST_COMMIT_HASH}"
+    fi
   done
 
   debug "Simulating a GitHub ${GITHUB_EVENT_NAME:-"not set"} event"
@@ -372,6 +391,10 @@ initialize_git_repository_contents() {
 
     # shellcheck disable=SC2034
     GITHUB_PULL_REQUEST_HEAD_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "${NEW_BRANCH_NAME}")"
+
+    debug "Print Git log graph before adding the pull request merge commit"
+    git_log_graph "${GIT_REPOSITORY_PATH}"
+
     debug "Create a branch to merge the pull request"
     git -C "${GIT_REPOSITORY_PATH}" switch --create "${PULL_REQUEST_BRANCH_NAME}"
 
@@ -384,6 +407,17 @@ initialize_git_repository_contents() {
       -m "chore: merge commit ${GITHUB_EVENT_NAME}" \
       --no-ff \
       "${NEW_BRANCH_NAME}"
+
+    if [[ "${ADD_COMMIT_ON_DEFAULT_BRANCH_AFTER_MERGING_PR}" == "true" ]]; then
+      debug "Adding another commit on the default branch after creating the pull request merge commit"
+      git -C "${GIT_REPOSITORY_PATH}" switch "${DEFAULT_BRANCH}"
+      TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test-additional-file-default-branch.json"
+      cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
+      git -C "${GIT_REPOSITORY_PATH}" add .
+      git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}")"
+      git -C "${GIT_REPOSITORY_PATH}" switch "${PULL_REQUEST_BRANCH_NAME}"
+    fi
+
   elif [[ "${GITHUB_EVENT_NAME}" == "push" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
@@ -410,7 +444,14 @@ initialize_git_repository_contents() {
 
   if [[ "${INITIALIZE_GITHUB_SHA:-}" == "true" ]]; then
     debug "Initializing GITHUB_SHA"
-    initialize_github_sha "${GIT_REPOSITORY_PATH}"
+    if [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
+      [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
+      # Ref: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request_target
+      # Ref: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+      GITHUB_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse "${DEFAULT_BRANCH}")"
+    else
+      initialize_github_sha "${GIT_REPOSITORY_PATH}"
+    fi
   fi
 
   git_log_graph "${GIT_REPOSITORY_PATH}"

@@ -254,7 +254,8 @@ LINTER_COMMANDS_ARRAY_PHP_PHPSTAN=(phpstan analyse --no-progress --no-ansi --mem
 LINTER_COMMANDS_ARRAY_PHP_PSALM=(psalm --config="${PHP_PSALM_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES}" -Path '{}')
 LINTER_COMMANDS_ARRAY_PRE_COMMIT=(pre-commit run --config "${PRE_COMMIT_LINTER_RULES}")
-if [[ "${VALIDATE_ALL_CODEBASE:-"not set"}" == "false" ]]; then
+if [[ "${VALIDATE_ALL_CODEBASE:-"not set"}" == "false" ]] &&
+  [[ -n "${GITHUB_BEFORE_SHA:-}" ]]; then
   LINTER_COMMANDS_ARRAY_PRE_COMMIT+=("${PRE_COMMIT_FROM_REF_OPTIONS[@]}" "${GITHUB_BEFORE_SHA}")
   LINTER_COMMANDS_ARRAY_PRE_COMMIT+=("${PRE_COMMIT_TO_REF_OPTIONS[@]}" "${GITHUB_SHA}")
 else
