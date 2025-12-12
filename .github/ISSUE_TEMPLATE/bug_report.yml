@@ -94,7 +94,10 @@ body:
         Copy and paste any relevant log output.
         This will be automatically formatted into code, so no need for backticks.
         Enable debug logging, either on GitHub Actions, or when running locally.
-        Not attaching debug logging will delay the issue triaging process.
+        Not attaching debug logging will delay the issue triaging process. For
+        more information about how to enable debug logging when running
+        Super-linter on GitHub Actions, see
+        https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs
       render: shell
     validations:
       required: true
