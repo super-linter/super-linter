@@ -784,8 +784,7 @@ their own ignoring mechanisms.
 When you trigger a workflow with a step that runs Super-linter on GitHub Actions
 on
 [specific events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows),
-consider the following if you set `VALIDATE_ALL_CODEBASE` to `false` (the
-default):
+consider the following if you set `VALIDATE_ALL_CODEBASE` to `false`:
 
 - `push` events: Super-linter checks only the files that were modified in the
   commits you pushed.
@@ -797,7 +796,7 @@ default):
   set `GITHUB_SHA` to the last commit on the default branch, and `GITHUB_REF` to
   the default branch on `schedule` events). So, Super-linter doesn't have enough
   information to compute the set of files that changed. For `schedule` events,
-  we recommend that you set `VALIDATE_ALL_CODEBASE` to `true`.
+  we recommend that you set `VALIDATE_ALL_CODEBASE` to `true` (the default).
 
 ## Run Super-Linter outside GitHub Actions
 
