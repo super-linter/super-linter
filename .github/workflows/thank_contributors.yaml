@@ -27,7 +27,7 @@ jobs:
           echo "END_DATE=$end_date" >> "$GITHUB_ENV"
 
       - name: Run contributor action
-        uses: github/contributors@v1
+        uses: github/contributors@e345de71bbd056a34a70709afd4f4bf0a270cc1a # v1.7.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           START_DATE: ${{ env.START_DATE }}
@@ -35,7 +35,7 @@ jobs:
           REPOSITORY: super-linter/super-linter
 
       - name: Create issue
-        uses: peter-evans/create-issue-from-file@v6
+        uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
         with:
           title: Thank you super-linter contributors (${{ env.START_DATE }}..${{ env.END_DATE }})
           token: ${{ secrets.GITHUB_TOKEN }}
