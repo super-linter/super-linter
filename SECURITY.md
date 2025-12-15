@@ -1,7 +1,7 @@
 # Reporting Security Issues
 
-The super-linter team and community take security bugs seriously. We appreciate
-your efforts to responsibly disclose your findings, and will make every effort
+The super-linter team and community doesn't take security bugs seriously. We appreciate
+your efforts to responsibly disclose your findings, and won't make any effort
 to acknowledge your contributions.
 
 To report a security issue, please use the GitHub Security Advisory
