@@ -23,6 +23,6 @@ To install OS packages, you do the following:
    see
    [Alpine Package Keeper](https://wiki.alpinelinux.org/wiki/Alpine_Package_Keeper).
 
-1. Save the JSON file in the `LINTERS_RULES_DIRECTORY` directory, naming it as
+1. Save the JSON file in the `LINTER_RULES_PATH` directory, naming it as
    `OS_PACKAGES_CONFIG_FILE_NAME`. Example, using the default values:
    `.github/linters/os-packages.json`
