@@ -1235,3 +1235,116 @@ InitializeDefaultBranchTest
 InitializeDefaultBranchDefaultValueTest
 InitializeGitHubWorkspaceTest
 ValidateConflictingToolsTest
+
+InitializeGitBeforeShaReferenceInitialCommitPushTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  touch "${GITHUB_WORKSPACE}/file1.txt"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "Initial commit"
+
+  local INITIAL_COMMIT_SHA
+  INITIAL_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  GIT_ROOT_COMMIT_SHA="${INITIAL_COMMIT_SHA}"
+
+  GITHUB_SHA="${INITIAL_COMMIT_SHA}"
+  local COMMIT_COUNT=1
+  local EXPECTED_BEFORE_SHA="${EMPTY_TREE_SHA}"
+
+  InitializeGitBeforeShaReference "${GITHUB_SHA}" "${COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}" "push" "main"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_BEFORE_SHA}" ]]; then
+    fatal "GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) is not equal to expected (${EXPECTED_BEFORE_SHA})"
+  else
+    info "GITHUB_BEFORE_SHA matches expected value."
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceComplexPushTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  # A (Root)
+  touch "${GITHUB_WORKSPACE}/A"
+  git -C "${GITHUB_WORKSPACE}" add A
+  git -C "${GITHUB_WORKSPACE}" commit -m "A"
+  local SHA_A
+  SHA_A="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  GIT_ROOT_COMMIT_SHA="${SHA_A}"
+
+  # B
+  touch "${GITHUB_WORKSPACE}/B"
+  git -C "${GITHUB_WORKSPACE}" add B
+  git -C "${GITHUB_WORKSPACE}" commit -m "B"
+  local SHA_B
+  SHA_B="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  # C
+  touch "${GITHUB_WORKSPACE}/C"
+  git -C "${GITHUB_WORKSPACE}" add C
+  git -C "${GITHUB_WORKSPACE}" commit -m "C"
+  local SHA_C
+  SHA_C="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  # Case 2: Linear Push C. Count=2 (pushed B and C).
+  local COMMIT_COUNT=2
+  local EXPECTED_BEFORE_SHA="${SHA_A}"
+
+  InitializeGitBeforeShaReference "${SHA_C}" "${COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}" "push" "main"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_BEFORE_SHA}" ]]; then
+    fatal "Case 2: Linear Push. Got ${GITHUB_BEFORE_SHA}, expected ${EXPECTED_BEFORE_SHA}"
+  fi
+
+  # Case 3: Merge Push.
+  git -C "${GITHUB_WORKSPACE}" checkout -b feature "${SHA_A}"
+  touch "${GITHUB_WORKSPACE}/F1"
+  git -C "${GITHUB_WORKSPACE}" add F1
+  git -C "${GITHUB_WORKSPACE}" commit -m "F1"
+  local SHA_F1
+  SHA_F1="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  touch "${GITHUB_WORKSPACE}/F2"
+  git -C "${GITHUB_WORKSPACE}" add F2
+  git -C "${GITHUB_WORKSPACE}" commit -m "F2"
+  local SHA_F2
+  SHA_F2="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  git -C "${GITHUB_WORKSPACE}" checkout main
+  git -C "${GITHUB_WORKSPACE}" merge feature -m "Merge Feature"
+  local SHA_M
+  SHA_M="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+
+  COMMIT_COUNT=3
+  EXPECTED_BEFORE_SHA="${SHA_C}"
+
+  InitializeGitBeforeShaReference "${SHA_M}" "${COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}" "push" "main"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_BEFORE_SHA}" ]]; then
+    fatal "Case 3: Merge Push. Got ${GITHUB_BEFORE_SHA}, expected ${EXPECTED_BEFORE_SHA}"
+  fi
+
+  COMMIT_COUNT=1
+  EXPECTED_BEFORE_SHA="${SHA_C}"
+  InitializeGitBeforeShaReference "${SHA_M}" "${COMMIT_COUNT}" "${GIT_ROOT_COMMIT_SHA}" "push" "main"
+
+  if [[ "${GITHUB_BEFORE_SHA}" != "${EXPECTED_BEFORE_SHA}" ]]; then
+    fatal "Case 4: Merge Push (Incremental). Got ${GITHUB_BEFORE_SHA}, expected ${EXPECTED_BEFORE_SHA}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceInitialCommitPushTest
+InitializeGitBeforeShaReferenceComplexPushTest

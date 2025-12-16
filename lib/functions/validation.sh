@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# The empty tree hash is a well-known Git object ID that represents an empty directory.
+# We use it to compare the first commit against an empty directory.
+# Ref: https://stackoverflow.com/a/53415397
+EMPTY_TREE_SHA="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+export EMPTY_TREE_SHA
+
 function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "ACTIONS_RUNNER_DEBUG" "${ACTIONS_RUNNER_DEBUG}"
   ValidateBooleanVariable "BASH_EXEC_IGNORE_LIBRARIES" "${BASH_EXEC_IGNORE_LIBRARIES}"
@@ -375,50 +381,63 @@ InitializeGitBeforeShaReference() {
   local DEFAULT_BRANCH="${5:-}"
 
   if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
-    debug "${GITHUB_SHA} is the initial commit. Skip initializing GITHUB_BEFORE_SHA because there cannot be any commit before the initial commit"
+    debug "${GITHUB_SHA} is the initial commit. Setting GITHUB_BEFORE_SHA to the empty tree SHA: ${EMPTY_TREE_SHA}"
+    GITHUB_BEFORE_SHA="${EMPTY_TREE_SHA}"
+    export GITHUB_BEFORE_SHA
     return 0
   fi
   debug "${GITHUB_SHA} is not the initial commit. Initializing and validating GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event"
 
   if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-    debug "Check if the ${GITHUB_SHA} commit is a merge commit by checking if it has more than one parent"
-    local -i GIT_COMMIT_PARENTS_COUNT
-    GIT_COMMIT_PARENTS_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${GITHUB_SHA}" | wc -w)"
-    local RET_CODE=$?
-    if [[ "${RET_CODE}" -gt 0 ]]; then
-      error "Error while getting ${GITHUB_SHA} commit parents count. Output: ${GIT_COMMIT_PARENTS_COUNT}"
-      return 1
-    fi
-    debug "${GITHUB_SHA} git commit parents count (GIT_COMMIT_PARENTS_COUNT): ${GIT_COMMIT_PARENTS_COUNT}"
-    GIT_COMMIT_PARENTS_COUNT=$((GIT_COMMIT_PARENTS_COUNT - 1))
-    debug "Subtract 1 from GIT_COMMIT_PARENTS_COUNT to get the actual number of merge parents because the count includes the ${GITHUB_SHA} commit itself. GIT_COMMIT_PARENTS_COUNT: ${GIT_COMMIT_PARENTS_COUNT}"
+    local CURRENT_SHA="${GITHUB_SHA}"
+    local -i COMMITS_TO_GO="${GITHUB_EVENT_COMMIT_COUNT}"
 
-    # Ref: https://git-scm.com/docs/git-rev-parse#Documentation/git-rev-parse.txt
-    # Use GITHUB_SHA instead of HEAD because for pull requests, HEAD points that the PR merge commit
-    local GIT_BEFORE_SHA_HEAD="${GITHUB_SHA}"
-    if [ ${GIT_COMMIT_PARENTS_COUNT} -gt 1 ]; then
-      debug "${GITHUB_SHA} is a merge commit because it has more than one parent."
-      GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}^2"
-      debug "Add the suffix to GIT_BEFORE_SHA_HEAD to get the second parent of the merge commit: ${GIT_BEFORE_SHA_HEAD}"
+    debug "Start looping back from ${CURRENT_SHA} to find the before SHA. Commits to go: ${COMMITS_TO_GO}"
 
-      if [ ${GITHUB_EVENT_COMMIT_COUNT} -gt 0 ]; then
-        GITHUB_EVENT_COMMIT_COUNT=$((GITHUB_EVENT_COMMIT_COUNT - 1))
-        debug "Remove one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+    while [[ "${COMMITS_TO_GO}" -gt 0 ]]; do
+      debug "Commits to go: ${COMMITS_TO_GO}. Current SHA: ${CURRENT_SHA}"
+      local PARENTS_OUTPUT
+      PARENTS_OUTPUT="$(git -C "${GITHUB_WORKSPACE}" rev-list --parents -n 1 "${CURRENT_SHA}")"
+      local -a PARENTS_ARRAY
+      read -r -a PARENTS_ARRAY <<< "${PARENTS_OUTPUT}"
 
-        # 2048 is the current maximum for the commits array on push events
-        # Ref: https://docs.github.com/en/webhooks/webhook-events-and-payloads#push
-        if [[ "${GITHUB_EVENT_COMMIT_COUNT}" -gt 2048 ]]; then
-          warn "The GitHub event (${GITHUB_EVENT_NAME}) contains more than ${GITHUB_EVENT_COMMIT_COUNT} commits. The list of files to check might not be accurate."
-        fi
+      # PARENTS_ARRAY[0] is CURRENT_SHA
+      # PARENTS_ARRAY[1] is First Parent
+      # PARENTS_ARRAY[2] is Second Parent...
 
-      else
-        debug "Don't subtract one commit from GITHUB_EVENT_COMMIT_COUNT to account for the merge commit because there were no commits pushed. GITHUB_EVENT_COMMIT_COUNT: ${GITHUB_EVENT_COMMIT_COUNT}"
+      local PARENT_SHA="${PARENTS_ARRAY[1]}"
+
+      if [[ -z "${PARENT_SHA}" ]]; then
+        debug "Reached root commit at ${CURRENT_SHA}. Setting GITHUB_BEFORE_SHA to EMPTY_TREE_SHA"
+        GIT_BEFORE_SHA_HEAD="${EMPTY_TREE_SHA}"
+        break
       fi
-    else
-      debug "${GITHUB_SHA} is not a merge commit because it has a single parent. No need to add the parent identifier (^) to the revision indicator because it's implicitly set to ^1 when there's only one parent."
-    fi
 
-    GIT_BEFORE_SHA_HEAD="${GIT_BEFORE_SHA_HEAD}~${GITHUB_EVENT_COMMIT_COUNT}"
+      local DIFF_ARGS="${PARENT_SHA}..${CURRENT_SHA}"
+
+      # If there are other parents (Merge commit), check if they are "known"
+      if [[ "${#PARENTS_ARRAY[@]}" -gt 2 ]]; then
+        for ((i=2; i<${#PARENTS_ARRAY[@]}; i++)); do
+          local OTHER_PARENT="${PARENTS_ARRAY[i]}"
+          # Check if OTHER_PARENT is an ancestor of the default branch (local or remote)
+          # If it is, it's likely a stable branch merged in, so we shouldn't count its commits against our budget
+          if git -C "${GITHUB_WORKSPACE}" merge-base --is-ancestor "${OTHER_PARENT}" "${DEFAULT_BRANCH}" 2>/dev/null || \
+             git -C "${GITHUB_WORKSPACE}" merge-base --is-ancestor "${OTHER_PARENT}" "origin/${DEFAULT_BRANCH}" 2>/dev/null; then
+             debug "Parent ${OTHER_PARENT} is ancestor of ${DEFAULT_BRANCH}. Excluding it from count."
+             DIFF_ARGS="${DIFF_ARGS} ^${OTHER_PARENT}"
+          fi
+        done
+      fi
+
+      local -i DIFF_COUNT
+      DIFF_COUNT="$(git -C "${GITHUB_WORKSPACE}" rev-list --count ${DIFF_ARGS})"
+      debug "Diff count args: ${DIFF_ARGS}. Count: ${DIFF_COUNT}"
+
+      COMMITS_TO_GO=$((COMMITS_TO_GO - DIFF_COUNT))
+      CURRENT_SHA="${PARENT_SHA}"
+      GIT_BEFORE_SHA_HEAD="${CURRENT_SHA}"
+    done
+
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
@@ -432,17 +451,21 @@ InitializeGitBeforeShaReference() {
 
   debug "GIT_BEFORE_SHA_HEAD: ${GIT_BEFORE_SHA_HEAD}"
 
-  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${GIT_BEFORE_SHA_HEAD}")"
-  local RET_CODE=$?
-  if [[ "${RET_CODE}" -gt 0 ]]; then
-    error "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
-    return 1
-  fi
+  if [[ "${GIT_BEFORE_SHA_HEAD}" == "${EMPTY_TREE_SHA}" ]]; then
+    GITHUB_BEFORE_SHA="${EMPTY_TREE_SHA}"
+  else
+    GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse "${GIT_BEFORE_SHA_HEAD}")"
+    local RET_CODE=$?
+    if [[ "${RET_CODE}" -gt 0 ]]; then
+      error "Failed to initialize GITHUB_BEFORE_SHA for a ${GITHUB_EVENT_NAME} event. Output: ${GITHUB_BEFORE_SHA}"
+      return 1
+    fi
 
-  debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA:-"not set"}"
-  if ! ValidateGitShaReference "${GITHUB_BEFORE_SHA}"; then
-    error "Failed to validate GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA:-"not set"})"
-    return 1
+    debug "Validating GITHUB_BEFORE_SHA: ${GITHUB_BEFORE_SHA:-"not set"}"
+    if ! ValidateGitShaReference "${GITHUB_BEFORE_SHA}"; then
+      error "Failed to validate GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA:-"not set"})"
+      return 1
+    fi
   fi
 
   export GITHUB_BEFORE_SHA
