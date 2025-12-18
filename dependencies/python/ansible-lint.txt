@@ -1,1 +1,1 @@
-ansible-lint==25.12.0
+ansible-lint==25.12.1
