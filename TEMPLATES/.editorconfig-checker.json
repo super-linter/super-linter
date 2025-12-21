@@ -1,7 +1,7 @@
 {
   "Verbose": false,
   "Debug": false,
-  "IgnoreDefaults": false,
+  "IgnoreDefaults": true,
   "SpacesAfterTabs": false,
   "NoColor": false,
   "exclude": ["testfiles"],
