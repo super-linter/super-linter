@@ -1,5 +1,10 @@
 ---
 rules:
+  # There is a bug with the Dependabot cooldown feature. Disabling this audit
+  # until the bug is fixed and we enable cooldown again.
+  # TODO: enable cooldown after the bug is fixed
+  dependabot-cooldown:
+    disable: true
   unpinned-uses:
     ignore:
       - ci.yml
