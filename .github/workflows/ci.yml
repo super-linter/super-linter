@@ -214,7 +214,7 @@ jobs:
           make info
 
       - name: Upload ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
@@ -246,7 +246,7 @@ jobs:
           persist-credentials: false
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp
@@ -348,7 +348,7 @@ jobs:
           persist-credentials: false
 
       - name: Download ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp
