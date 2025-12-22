@@ -7,6 +7,85 @@ set -o pipefail
 # shellcheck source=/dev/null
 source "test/testUtils.sh"
 
+GenerateFileDiffNoGitHubBeforeShaTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck source=/dev/null
+  source "lib/functions/buildFileList.sh"
+
+  if GenerateFileDiff; then
+    fatal "GenerateFileDiff with an undefined GITHUB_BEFORE_SHA should have failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+GenerateFileDiffNoGitHubBeforeShaTest
+
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
+  info "${FUNCTION_NAME} start"
+
+  debug "Simulate the push of a merge commit to a non-default branch. The merge commit merges the default branch in the non-default branch"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+
+  debug "Create the first commit in ${DEFAULT_BRANCH}"
+  local INIT_COMMIT_FILE_NAME="init-commit.txt"
+  touch "${GITHUB_WORKSPACE}/${INIT_COMMIT_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${INIT_COMMIT_FILE_NAME}"
+  GIT_ROOT_COMMIT_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  debug "GIT_ROOT_COMMIT_SHA: ${GIT_ROOT_COMMIT_SHA}"
+
+  debug "Switch to ${NEW_BRANCH_NAME} branch"
+  git -C "${GITHUB_WORKSPACE}" switch --create "${NEW_BRANCH_NAME}"
+  local FEATURE_BRANCH_FILE_NAME="feature-branch.txt"
+  touch "${GITHUB_WORKSPACE}/${FEATURE_BRANCH_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${FEATURE_BRANCH_FILE_NAME}"
+  GITHUB_BEFORE_SHA="$(git -C "${GITHUB_WORKSPACE}" rev-parse HEAD)"
+  debug "Setting GITHUB_BEFORE_SHA to ${GITHUB_BEFORE_SHA}"
+
+  debug "Switch to ${DEFAULT_BRANCH} branch"
+  git -C "${GITHUB_WORKSPACE}" switch "${DEFAULT_BRANCH}"
+  local MAIN_BRANCH_NEW_FILE_NAME="main-new-file.txt"
+  touch "${GITHUB_WORKSPACE}/${MAIN_BRANCH_NEW_FILE_NAME}"
+  git -C "${GITHUB_WORKSPACE}" add .
+  git -C "${GITHUB_WORKSPACE}" commit -m "${MAIN_BRANCH_NEW_FILE_NAME}"
+
+  debug "Switch to ${NEW_BRANCH_NAME} branch"
+  git -C "${GITHUB_WORKSPACE}" switch "${NEW_BRANCH_NAME}"
+  git -C "${GITHUB_WORKSPACE}" merge "${DEFAULT_BRANCH}"
+
+  git_log_graph "${GITHUB_WORKSPACE}"
+
+  initialize_github_sha "${GITHUB_WORKSPACE}"
+
+  # shellcheck source=/dev/null
+  source "lib/functions/buildFileList.sh"
+
+  GenerateFileDiff
+
+  debug "RAW_FILE_ARRAY contents: ${RAW_FILE_ARRAY[*]}"
+
+  # shellcheck disable=SC2034
+  local EXPECTED_RAW_FILE_ARRAY=(
+    "${GITHUB_WORKSPACE}/${MAIN_BRANCH_NEW_FILE_NAME}"
+  )
+
+  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+GenerateFileDiffMergeDefaultBranchInPullRequestBranchTest
+
 GenerateFileDiffTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${1:-${FUNCNAME[0]}}"
@@ -28,20 +107,21 @@ GenerateFileDiffTest() {
     TEST_FORCE_CREATE_MERGE_COMMIT="false"
   fi
 
-  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}" "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}" "true"
+  initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMITS_TO_CREATE}" "true" "${GITHUB_EVENT_NAME}" "${TEST_FORCE_CREATE_MERGE_COMMIT}" "${SKIP_GITHUB_BEFORE_SHA_INIT}" "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}" "true" "false"
 
   # shellcheck source=/dev/null
   source "lib/functions/buildFileList.sh"
 
   GenerateFileDiff
 
-  RAW_FILE_ARRAY_SIZE=${#RAW_FILE_ARRAY[@]}
-
   debug "RAW_FILE_ARRAY contents:\n${RAW_FILE_ARRAY[*]}"
 
   # Subtract 1 to account for the initial commit
   local -i EXPECTED_RAW_FILE_ARRAY_SIZE
   local -i EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START
+  local -a EXPECTED_RAW_FILE_ARRAY
+  EXPECTED_RAW_FILE_ARRAY=()
+
   if [[ "${COMMITS_TO_CREATE}" -eq 0 ]]; then
     debug "This test considers the initial commit only"
     EXPECTED_RAW_FILE_ARRAY_SIZE=1
@@ -51,21 +131,21 @@ GenerateFileDiffTest() {
     EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START=1
   fi
 
-  if [ "${RAW_FILE_ARRAY_SIZE}" -ne "${EXPECTED_RAW_FILE_ARRAY_SIZE}" ]; then
-    fatal "RAW_FILE_ARRAY_SIZE does not have exactly ${EXPECTED_RAW_FILE_ARRAY_SIZE} elements, but rather: ${RAW_FILE_ARRAY_SIZE}"
-  else
-    debug "RAW_FILE_ARRAY_SIZE (${RAW_FILE_ARRAY_SIZE}) matches the expected value"
+  for ((i = 0; i < EXPECTED_RAW_FILE_ARRAY_SIZE; i++)); do
+    EXPECTED_RAW_FILE_ARRAY+=("${GITHUB_WORKSPACE}/test$((i + EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START)).json")
+  done
+
+  if [[ "${COMMIT_BAD_FILE_ON_DEFAULT_BRANCH_AND_MERGE}" == "true" ]]; then
+    EXPECTED_RAW_FILE_ARRAY_SIZE=$((EXPECTED_RAW_FILE_ARRAY_SIZE + 1))
+    EXPECTED_RAW_FILE_ARRAY=(
+      "${GITHUB_WORKSPACE}/test-bad0.json"
+      "${EXPECTED_RAW_FILE_ARRAY[@]}"
+    )
   fi
 
-  local EXPECTED_FILE_PATH
-  for ((i = 0; i < RAW_FILE_ARRAY_SIZE; i++)); do
-    EXPECTED_FILE_PATH="${GITHUB_WORKSPACE}/test$((i + EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START)).json"
-    if [[ "${RAW_FILE_ARRAY[${i}]}" != "${EXPECTED_FILE_PATH}" ]]; then
-      fatal "${RAW_FILE_ARRAY[${i}]} does not match the expected value: ${EXPECTED_FILE_PATH}"
-    else
-      debug "${RAW_FILE_ARRAY[${i}]} matches the expected value"
-    fi
-  done
+  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -84,11 +164,6 @@ GenerateFileDiffInitialCommitPushEventTest() {
   GenerateFileDiffTest "${FUNCNAME[0]}" 0 "push" "false" "false"
 }
 GenerateFileDiffInitialCommitPushEventTest
-
-GenerateFileDiffPushEventNoGitHubBeforeShaTest() {
-  GenerateFileDiffTest "${FUNCNAME[0]}" 2 "push" "true" "false"
-}
-GenerateFileDiffPushEventNoGitHubBeforeShaTest
 
 GenerateFileDiffOneFilePullRequestEventTest() {
   GenerateFileDiffTest "${FUNCNAME[0]}" 1 "pull_request" "false" "false"

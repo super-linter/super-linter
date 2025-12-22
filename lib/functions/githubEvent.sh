@@ -39,6 +39,21 @@ GetGitHubEventPushBefore() {
   echo "${GITHUB_PUSH_BEFORE}"
 }
 
+GetGitHubEventForced() {
+  local GITHUB_EVENT_FILE_PATH
+  GITHUB_EVENT_FILE_PATH="${1}"
+  local GITHUB_FORCED
+
+  GITHUB_FORCED="$(jq -r '.forced' <"${GITHUB_EVENT_FILE_PATH}")"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to initialize GITHUB_FORCED. Output: ${GITHUB_FORCED}"
+    return 1
+  fi
+
+  echo "${GITHUB_FORCED}"
+}
+
 function GetGithubPullRequestEventCommitCount() {
   local GITHUB_EVENT_FILE_PATH
   GITHUB_EVENT_FILE_PATH="${1}"
@@ -88,4 +103,19 @@ function GetPullRequestHeadSha() {
   fi
 
   echo "${GITHUB_PULL_REQUEST_HEAD_SHA}"
+}
+
+GetGithubPushFirstPushedCommitHash() {
+  local GITHUB_EVENT_FILE_PATH
+  GITHUB_EVENT_FILE_PATH="${1}"
+  local GITHUB_FIRST_PUSHED_COMMIT_HASH
+
+  GITHUB_FIRST_PUSHED_COMMIT_HASH=$(jq -r '.commits | if length > 0 then .[0].id else "null" end' <"${GITHUB_EVENT_FILE_PATH}")
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to initialize GITHUB_FIRST_PUSHED_COMMIT_HASH. Output: ${GITHUB_FIRST_PUSHED_COMMIT_HASH}"
+    return 1
+  fi
+
+  echo "${GITHUB_FIRST_PUSHED_COMMIT_HASH}"
 }

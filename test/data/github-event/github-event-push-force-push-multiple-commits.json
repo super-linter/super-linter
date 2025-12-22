@@ -1,65 +1,83 @@
 {
   "after": "push-after",
   "base_ref": null,
-  "before": "push-before",
+  "before": "0629021f6d254872bb490716825a45f3a57742a5",
   "commits": [
     {
       "author": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "committer": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "distinct": true,
       "id": "first-pushed-commit-hash",
-      "message": "fix: fix GITHUB_BEFORE_SHA initalization for push",
-      "timestamp": "2024-01-04T23:56:39+01:00",
-      "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
+      "message": "chore: test commit 0",
+      "timestamp": "2025-12-03T16:13:27Z",
+      "tree_id": "17d5e4e0ba09b85aebb0c8912719ef5477f4f4ca",
       "url": "https://github.com/super-linter/super-linter/commit/first-pushed-commit-hash"
     },
     {
       "author": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "committer": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "distinct": true,
-      "id": "bcdef9b772d82713180257853c4908f9c3519",
-      "message": "fix: commit2",
-      "timestamp": "2024-01-04T23:56:39+01:00",
-      "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
-      "url": "https://github.com/super-linter/super-linter/commit/bcdef9b772d82713180257853c4908f9c3519"
+      "id": "5ac9d14205ba9a6a314db2b3955400ae879a22db",
+      "message": "chore: test commit 1",
+      "timestamp": "2025-12-03T16:13:40Z",
+      "tree_id": "152fe64ed49bd90fa9f07a90d2b6c7e5455752b3",
+      "url": "https://github.com/super-linter/super-linter/commit/5ac9d14205ba9a6a314db2b3955400ae879a22db"
     },
     {
       "author": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "committer": {
-        "email": "test@example.com",
-        "name": "Test user",
-        "username": "testuser"
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
       },
       "distinct": true,
-      "id": "bcdef9b772d82713180257853c4908f9c3519",
-      "message": "Merge commit",
-      "timestamp": "2024-01-04T23:56:39+01:00",
-      "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
-      "url": "https://github.com/super-linter/super-linter/commit/bcdef9b772d82713180257853c4908f9c3519"
+      "id": "e93e9bb38de3b1dba8fb4e68bb4221bb1c2c7792",
+      "message": "chore: test commit 2",
+      "timestamp": "2025-12-03T16:14:30Z",
+      "tree_id": "97d811f8b2fea6b0ff811eec061e39541a0fbfcb",
+      "url": "https://github.com/super-linter/super-linter/commit/e93e9bb38de3b1dba8fb4e68bb4221bb1c2c7792"
+    },
+    {
+      "author": {
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
+      },
+      "committer": {
+        "email": "email@domain.tld",
+        "name": "User Name",
+        "username": "user_name"
+      },
+      "distinct": true,
+      "id": "push-after",
+      "message": "chore: test commit 3",
+      "timestamp": "2025-12-03T16:14:50Z",
+      "tree_id": "ebea80e4a6b5b895535add10576b3babb2d0433b",
+      "url": "https://github.com/super-linter/super-linter/commit/push-after"
     }
   ],
-  "compare": "https://github.com/super-linter/super-linter/commit/a15934149b77",
-  "created": true,
+  "compare": "https://github.com/super-linter/super-linter/compare/0629021f6d25...1541aaaaa97e",
+  "created": false,
   "deleted": false,
   "enterprise": {
     "avatar_url": "https://avatars.githubusercontent.com/b/20446?v=4",
@@ -70,27 +88,27 @@
     "name": "GitHub Open Source",
     "node_id": "E_kgDNT94",
     "slug": "opensource",
-    "updated_at": "2023-02-28T14:58:45Z",
+    "updated_at": "2025-01-16T18:28:48Z",
     "website_url": "https://github.com/"
   },
-  "forced": false,
+  "forced": true,
   "head_commit": {
     "author": {
-      "email": "test@example.com",
-      "name": "Test user",
-      "username": "testuser"
+      "email": "email@domain.tld",
+      "name": "User Name",
+      "username": "user_name"
     },
     "committer": {
-      "email": "test@example.com",
-      "name": "Test user",
-      "username": "testuser"
+      "email": "email@domain.tld",
+      "name": "User Name",
+      "username": "user_name"
     },
     "distinct": true,
-    "id": "a15934149b772d82713180257853c4908f9c3519",
-    "message": "fix: fix GITHUB_BEFORE_SHA initalization for push",
-    "timestamp": "2024-01-04T23:56:39+01:00",
-    "tree_id": "ecee91366ca7c3d196eb46428632a93cc860a29e",
-    "url": "https://github.com/super-linter/super-linter/commit/a15934149b772d82713180257853c4908f9c3519"
+    "id": "1541aaaaa97e56b6ee537ee87cd333fc62a33a21",
+    "message": "chore: test commit 3",
+    "timestamp": "2025-12-03T16:14:50Z",
+    "tree_id": "ebea80e4a6b5b895535add10576b3babb2d0433b",
+    "url": "https://github.com/super-linter/super-linter/commit/1541aaaaa97e56b6ee537ee87cd333fc62a33a21"
   },
   "organization": {
     "avatar_url": "https://avatars.githubusercontent.com/u/74564708?v=4",
@@ -107,10 +125,10 @@
     "url": "https://api.github.com/orgs/super-linter"
   },
   "pusher": {
-    "email": "test@example.com",
-    "name": "testuser"
+    "email": "email@domain.tld",
+    "name": "user_name"
   },
-  "ref": "refs/heads/fix-before-sha-pull-events",
+  "ref": "refs/heads/test-force-push",
   "repository": {
     "allow_forking": true,
     "archive_url": "https://api.github.com/repos/super-linter/super-linter/{archive_format}{/ref}",
@@ -129,13 +147,13 @@
     "custom_properties": {},
     "default_branch": "main",
     "deployments_url": "https://api.github.com/repos/super-linter/super-linter/deployments",
-    "description": "Combination of multiple linters to install as a GitHub Action",
+    "description": "Combination of multiple linters to run as a GitHub Action or standalone",
     "disabled": false,
     "downloads_url": "https://api.github.com/repos/super-linter/super-linter/downloads",
     "events_url": "https://api.github.com/repos/super-linter/super-linter/events",
     "fork": false,
-    "forks": 1053,
-    "forks_count": 1053,
+    "forks": 1023,
+    "forks_count": 1023,
     "forks_url": "https://api.github.com/repos/super-linter/super-linter/forks",
     "full_name": "super-linter/super-linter",
     "git_commits_url": "https://api.github.com/repos/super-linter/super-linter/git/commits{/sha}",
@@ -174,8 +192,8 @@
     "name": "super-linter",
     "node_id": "MDEwOlJlcG9zaXRvcnkyMTY1ODE1Njc=",
     "notifications_url": "https://api.github.com/repos/super-linter/super-linter/notifications{?since,all,participating}",
-    "open_issues": 37,
-    "open_issues_count": 37,
+    "open_issues": 26,
+    "open_issues_count": 26,
     "organization": "super-linter",
     "owner": {
       "avatar_url": "https://avatars.githubusercontent.com/u/74564708?v=4",
@@ -197,16 +215,17 @@
       "starred_url": "https://api.github.com/users/super-linter/starred{/owner}{/repo}",
       "subscriptions_url": "https://api.github.com/users/super-linter/subscriptions",
       "type": "Organization",
-      "url": "https://api.github.com/users/super-linter"
+      "url": "https://api.github.com/users/super-linter",
+      "user_view_type": "public"
     },
     "private": false,
     "pulls_url": "https://api.github.com/repos/super-linter/super-linter/pulls{/number}",
-    "pushed_at": 1704409034,
+    "pushed_at": 1764778504,
     "releases_url": "https://api.github.com/repos/super-linter/super-linter/releases{/id}",
-    "size": 27390,
+    "size": 40902,
     "ssh_url": "git@github.com:super-linter/super-linter.git",
-    "stargazers": 8984,
-    "stargazers_count": 8984,
+    "stargazers": 10201,
+    "stargazers_count": 10201,
     "stargazers_url": "https://api.github.com/repos/super-linter/super-linter/stargazers",
     "statuses_url": "https://api.github.com/repos/super-linter/super-linter/statuses/{sha}",
     "subscribers_url": "https://api.github.com/repos/super-linter/super-linter/subscribers",
@@ -214,33 +233,42 @@
     "svn_url": "https://github.com/super-linter/super-linter",
     "tags_url": "https://api.github.com/repos/super-linter/super-linter/tags",
     "teams_url": "https://api.github.com/repos/super-linter/super-linter/teams",
-    "topics": ["actions", "ci", "hacktoberfest", "linter", "quality-check"],
+    "topics": [
+      "actions",
+      "ci",
+      "code-quality",
+      "code-quality-analyzer",
+      "linter",
+      "quality-check",
+      "super-linter"
+    ],
     "trees_url": "https://api.github.com/repos/super-linter/super-linter/git/trees{/sha}",
-    "updated_at": "2024-01-04T16:38:53Z",
-    "url": "https://github.com/super-linter/super-linter",
+    "updated_at": "2025-12-03T07:18:47Z",
+    "url": "https://api.github.com/repos/super-linter/super-linter",
     "visibility": "public",
-    "watchers": 8984,
-    "watchers_count": 8984,
+    "watchers": 10201,
+    "watchers_count": 10201,
     "web_commit_signoff_required": false
   },
   "sender": {
     "avatar_url": "https://avatars.githubusercontent.com/u/621939?v=4",
-    "events_url": "https://api.github.com/users/testuser/events{/privacy}",
-    "followers_url": "https://api.github.com/users/testuser/followers",
-    "following_url": "https://api.github.com/users/testuser/following{/other_user}",
-    "gists_url": "https://api.github.com/users/testuser/gists{/gist_id}",
+    "events_url": "https://api.github.com/users/user_name/events{/privacy}",
+    "followers_url": "https://api.github.com/users/user_name/followers",
+    "following_url": "https://api.github.com/users/user_name/following{/other_user}",
+    "gists_url": "https://api.github.com/users/user_name/gists{/gist_id}",
     "gravatar_id": "",
-    "html_url": "https://github.com/testuser",
-    "id": 123456,
-    "login": "testuser",
+    "html_url": "https://github.com/user_name",
+    "id": 621939,
+    "login": "user_name",
     "node_id": "MDQ6VXNlcjYyMTkzOQ==",
-    "organizations_url": "https://api.github.com/users/testuser/orgs",
-    "received_events_url": "https://api.github.com/users/testuser/received_events",
-    "repos_url": "https://api.github.com/users/testuser/repos",
+    "organizations_url": "https://api.github.com/users/user_name/orgs",
+    "received_events_url": "https://api.github.com/users/user_name/received_events",
+    "repos_url": "https://api.github.com/users/user_name/repos",
     "site_admin": false,
-    "starred_url": "https://api.github.com/users/testuser/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/testuser/subscriptions",
+    "starred_url": "https://api.github.com/users/user_name/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/user_name/subscriptions",
     "type": "User",
-    "url": "https://api.github.com/users/testuser"
+    "url": "https://api.github.com/users/user_name",
+    "user_view_type": "public"
   }
 }

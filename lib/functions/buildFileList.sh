@@ -11,38 +11,44 @@ function IssueHintForFullGitHistory() {
 export -f IssueHintForFullGitHistory
 
 function GenerateFileDiff() {
-  local DIFF_TREE_CMD
-  local GIT_DIFF_TERM
-  if [[ "${GITHUB_SHA}" == "${GIT_ROOT_COMMIT_SHA}" ]]; then
-    GIT_DIFF_TERM=""
-    debug "Setting GIT_DIFF_TERM to an empty string because there's no commit before the initial commit to diff against."
-  elif [[ -z "${GITHUB_BEFORE_SHA:-""}" ]] ||
-    [[ "${GITHUB_EVENT_NAME:-""}" == "pull_request" ]]; then
-    GIT_DIFF_TERM="${DEFAULT_BRANCH}"
-    debug "Setting GIT_DIFF_TERM to the value of DEFAULT_BRANCH because GITHUB_BEFORE_SHA was not initialized: ${GIT_DIFF_TERM}"
-  else
-    GIT_DIFF_TERM="${GITHUB_BEFORE_SHA}"
-    debug "Setting GIT_DIFF_TERM to the value of GITHUB_BEFORE_SHA: ${GIT_DIFF_TERM}"
+  if [[ ! -v GITHUB_BEFORE_SHA ]]; then
+    error "GITHUB_BEFORE_SHA is not initialized."
+    return 1
   fi
-  DIFF_TREE_CMD="git -C \"${GITHUB_WORKSPACE}\" diff-tree --no-commit-id --name-only -r --root ${GITHUB_SHA} ${GIT_DIFF_TERM} | xargs -I % sh -c 'echo \"${GITHUB_WORKSPACE}/%\"' 2>&1"
-  RunFileDiffCommand "${DIFF_TREE_CMD}"
-}
 
-function RunFileDiffCommand() {
-  local CMD
-  CMD="${1}"
-  debug "Generating Diff with:[$CMD]"
+  if [[ ! -v GITHUB_SHA ]]; then
+    error "GITHUB_SHA is not initialized."
+    return 1
+  fi
 
-  #################################################
-  # Get the Array of files changed in the commits #
-  #################################################
-  if ! CMD_OUTPUT=$(eval "set -eo pipefail; $CMD; set +eo pipefail"); then
-    error "Failed to get Diff with:[$CMD]"
+  debug "Getting the list of changed files considering GITHUB_BEFORE_SHA (${GITHUB_BEFORE_SHA}) and GITHUB_SHA (${GITHUB_SHA})"
+
+  # Get the list of files that changed between "${GITHUB_BEFORE_SHA}"
+  # "${GITHUB_SHA}" refs, and add ${GITHUB_WORKSPACE} as a prefix
+  local LIST_OF_CHANGED_FILES
+  if ! LIST_OF_CHANGED_FILES=$(
+    set -o pipefail
+
+    # Exclude deleted files (lowercase d in --diff-filter)
+    # Ref: https://git-scm.com/docs/git-diff-tree#Documentation/git-diff-tree.txt---diff-filterACDMRTUXB
+    git -C "${GITHUB_WORKSPACE}" diff-tree \
+      --diff-filter=d \
+      --no-commit-id \
+      --name-only \
+      -r \
+      --root \
+      "${GITHUB_BEFORE_SHA}" "${GITHUB_SHA}" | sed "s|^|${GITHUB_WORKSPACE}/|"
+  ); then
+    error "Failed to get a list of changed files. LIST_OF_CHANGED_FILES: ${LIST_OF_CHANGED_FILES}"
     IssueHintForFullGitHistory
-    fatal "Diff command output: ${CMD_OUTPUT}"
+    return 1
   fi
 
-  mapfile -t RAW_FILE_ARRAY < <(echo -n "$CMD_OUTPUT")
+  RAW_FILE_ARRAY=()
+  if [[ -n "${LIST_OF_CHANGED_FILES:-}" ]]; then
+    # Load the list of files in the repository in the list of files to check
+    mapfile -t RAW_FILE_ARRAY <<<"${LIST_OF_CHANGED_FILES}"
+  fi
 }
 
 function BuildFileList() {
@@ -57,7 +63,9 @@ function BuildFileList() {
   if [ "${VALIDATE_ALL_CODEBASE}" == "false" ] && [ "${TEST_CASE_RUN}" != "true" ]; then
     debug "Build the list of all changed files"
 
-    GenerateFileDiff
+    if ! GenerateFileDiff; then
+      fatal "Error while generating file diff"
+    fi
   else
     if [ "${USE_FIND_ALGORITHM}" == 'true' ]; then
       debug "Populating the file list with all the files in the ${GITHUB_WORKSPACE} workspace using FIND algorithm"
@@ -98,8 +106,11 @@ function BuildFileList() {
         fatal "Failed to get a list of changed files. LIST_OF_FILES_IN_REPO: ${LIST_OF_FILES_IN_REPO}"
       fi
 
-      # Load the list of files in the repository in the list of files to check
-      mapfile -t RAW_FILE_ARRAY <<<"${LIST_OF_FILES_IN_REPO}"
+      RAW_FILE_ARRAY=()
+      if [[ -n "${LIST_OF_FILES_IN_REPO:-}" ]]; then
+        # Load the list of files in the repository in the list of files to check
+        mapfile -t RAW_FILE_ARRAY <<<"${LIST_OF_FILES_IN_REPO}"
+      fi
     fi
   fi
 
@@ -107,6 +118,8 @@ function BuildFileList() {
 
   if [ ${#RAW_FILE_ARRAY[@]} -eq 0 ]; then
     warn "No files were found in the GITHUB_WORKSPACE:[${GITHUB_WORKSPACE}] to lint!"
+  else
+    debug "RAW_FILE_ARRAY contains ${#RAW_FILE_ARRAY[@]} items: ${RAW_FILE_ARRAY[*]}"
   fi
 
   ####################################################
@@ -252,6 +265,11 @@ BuildFileArrays() {
   debug "Categorizing the following files: ${RAW_FILE_ARRAY[*]}"
 
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
+    if [[ -z "${FILE:-""}" ]]; then
+      error "FILE is empty."
+      return 1
+    fi
+
     # Get the file extension
     FILE_TYPE="$(GetFileExtension "$FILE")"
     # We want a lowercase value

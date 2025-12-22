@@ -15,11 +15,11 @@
         "username": "lae"
       },
       "distinct": false,
-      "id": "74e0339cc37cf77494b723107bd803f6adfd0d9f",
+      "id": "first-pushed-commit-hash",
       "message": "add README",
       "timestamp": "2024-07-31T06:25:36+09:00",
       "tree_id": "807fa49be3c439afd7723e7e3a8fea2103bd7368",
-      "url": "https://github.com/amplify-security/sl-repro-5941/commit/74e0339cc37cf77494b723107bd803f6adfd0d9f"
+      "url": "https://github.com/amplify-security/sl-repro-5941/commit/first-pushed-commit-hash"
     },
     {
       "author": {
