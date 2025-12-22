@@ -45,6 +45,7 @@ updates:
           - "@react-native/eslint-config"
           - "@typescript-eslint/eslint-plugin"
           - "commitlint"
+          - eslint
           - "eslint-config*"
           - "eslint-plugin*"
           - npm-groovy-lint
