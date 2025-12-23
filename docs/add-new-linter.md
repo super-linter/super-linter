@@ -214,6 +214,9 @@ documentation of the new tool.
    the user if the tools that might conflict with each other are enabled at the
    same time.
 
+1. Update the [upgrade guide](./upgrade-guide.md) to mention the addition of a
+   potentially conflicting linter.
+
 ### Configure the new tool for the Super-linter repository
 
 If the default configuration of the new tool is unsuitable for the Super-linter

@@ -11,10 +11,33 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 ## Upgrade from v8.1.0 to v8.2.0
 
+This section helps you upgrade from super-linter `v8.1.0` to `v8.2.0`.
+
+### Kubeconform
+
 Super-linter `v8.2.0` adds back Kubeconform and related configuration variables:
 
 - `KUBERNETES_KUBECONFORM_OPTIONS`
 - `VALIDATE_KUBERNETES_KUBECONFORM`
+
+### Potentially conflicting linters and formatters
+
+Super-linter `v8.2.0` adds support for running:
+
+- Ruff as a formatter on Python files. This might conflict with Black
+  (Languages: `PYTHON_BLACK`).
+- Biome as a linter. This might conflict with stylelint (`CSS`), ESLint
+  (Languages: `JAVASCRIPT_ES`, `JSON`, `JSONC`, `JSX`, `TSX`, `TYPESCRIPT_ES`,
+  `VUE`)
+- Biome as a formatter. This might conflict with Prettier (Languages:
+  `CSS_PRETTIER`, `GRAPHQL_PRETTIER`, `HTML_PRETTIER`, `JAVASCRIPT_PRETTIER`,
+  `JSON_PRETTIER`, `JSONC_PRETTIER`, `JSX_PRETTIER`, `TYPESCRIPT_PRETTIER`,
+  `VUE_PRETTIER`).
+
+If you have potentially conflicting linters or formatters enabled, Super-linter
+will emit a warning message. To turn the conflicting tools warning into a
+failure that makes Super-linter exit with an error, set the
+`FAIL_ON_CONFLICTING_TOOLS_ENABLED` configuration variable to `true`.
 
 ## Upgrade from v7.4.0 to v8
 
