@@ -258,11 +258,93 @@ function BuildFileList() {
   info "Successfully gathered list of files..."
 }
 
+AddToPythonFileArrays() {
+  local FILE="${1}"
+
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_FLAKE8"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_ISORT"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYLINT"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF_FORMAT"
+}
+
+AddToShellFileArrays() {
+  local FILE="${1}"
+
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT"
+}
+
+AddToPerlFileArrays() {
+  local FILE="${1}"
+
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PERL"
+}
+
+AddToRubyFileArrays() {
+  local FILE="${1}"
+
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY"
+}
+
+CheckFileType() {
+  local FILE
+  FILE="$1"
+
+  local GET_FILE_TYPE_CMD
+  if ! GET_FILE_TYPE_CMD="$(file --brief "${FILE}" 2>&1)"; then
+    error "Error while checking file type: ${GET_FILE_TYPE_CMD}"
+    return 1
+  fi
+  debug "Detected file type for ${FILE}: ${GET_FILE_TYPE_CMD}"
+
+  local FILE_TYPE_MESSAGE
+
+  case "${GET_FILE_TYPE_CMD}" in
+  *"Python script"*)
+    FILE_TYPE_MESSAGE="Found Python script without extension: ${FILE}"
+    AddToPythonFileArrays "${FILE}"
+    ;;
+  *"Perl script"*)
+    FILE_TYPE_MESSAGE="Found Perl script without extension: ${FILE}"
+    AddToPerlFileArrays "${FILE}"
+    ;;
+  *"Ruby script"*)
+    FILE_TYPE_MESSAGE="Found Ruby file without extension: ${FILE}"
+    AddToRubyFileArrays "${FILE}"
+    ;;
+  *"POSIX shell script"* | *"Bourne-Again shell script"* | *"Dash shell script"* | *"Korn shell script"* | *"sh script"*)
+    FILE_TYPE_MESSAGE="Found a Shell script without extension: ${FILE}"
+    AddToShellFileArrays "${FILE}"
+    ;;
+  *)
+    FILE_TYPE_MESSAGE="Failed to get file type for: ${FILE}. Output: ${GET_FILE_TYPE_CMD}"
+    return 1
+    ;;
+  esac
+
+  if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
+    warn "${FILE_TYPE_MESSAGE}"
+  else
+    debug "${FILE_TYPE_MESSAGE}"
+  fi
+}
+
 BuildFileArrays() {
   local -a RAW_FILE_ARRAY
   RAW_FILE_ARRAY=("$@")
 
   debug "Categorizing the following files: ${RAW_FILE_ARRAY[*]}"
+
+  RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY=()
+  if [[ -n "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES:-}" ]]; then
+    # See https://docs.renovatebot.com/config-presets/
+    IFS="," read -r -a RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY <<<"${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES}"
+    debug "Initialized RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY with: ${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[*]}"
+  fi
 
   for FILE in "${RAW_FILE_ARRAY[@]}"; do
     if [[ -z "${FILE:-""}" ]]; then
@@ -390,66 +472,42 @@ BuildFileArrays() {
     fi
 
     # Handle test cases for tools that lint the entire workspace
-
-    # Handle BIOME_FORMAT test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for BIOME_FORMAT. Adding it to the list of items to lint with BIOME_FORMAT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_FORMAT"
+    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ -d "${FILE}" ]]; then
+      # Handle BIOME_FORMAT test cases
+      if [[ "${FILE}" =~ .*${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for BIOME_FORMAT. Adding it to the list of items to lint with BIOME_FORMAT"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_FORMAT"
+      # Handle BIOME_LINT test cases
+      elif [[ "${FILE}" =~ .*${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for BIOME_LINT. Adding it to the list of items to lint with BIOME_LINT"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
+      # Handle Commitlint test cases
+      elif [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
+      # Handle JSCPD test cases
+      elif [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for JSCPD. Adding it to the list of items to lint with JSCPD"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
+      # Handle pre-commit test cases
+      elif [[ "${FILE}" =~ .*${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for pre-commit. Adding it to the list of items to lint with pre-commit"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PRE_COMMIT"
+      # Handle Trivy test cases
+      elif [[ "${FILE}" =~ .*${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for Trivy. Adding it to the list of items to lint with Trivy"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
+      fi
     fi
 
-    # Handle BIOME_LINT test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_BIOME_LINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for BIOME_LINT. Adding it to the list of items to lint with BIOME_LINT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_LINT"
-    fi
+    # Select files by extension or file name
 
-    # Handle Commitlint test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_GIT_COMMITLINT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for Commitlint. Adding it to the list of items to lint with Commitlint"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_COMMITLINT"
-    fi
-
-    # Handle JSCPD test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_JSCPD_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for JSCPD. Adding it to the list of items to lint with JSCPD"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JSCPD"
-    fi
-
-    # Handle pre-commit test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_PRE_COMMIT_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for pre-commit. Adding it to the list of items to lint with pre-commit"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PRE_COMMIT"
-    fi
-
-    # Handle Trivy test cases
-    if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ "${FILE}" =~ .*${DEFAULT_TRIVY_TEST_CASE_DIRECTORY}.* ]] && [[ -d "${FILE}" ]]; then
-      debug "${FILE} is a test case for Trivy. Adding it to the list of items to lint with Trivy"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TRIVY"
-    fi
-
-    # Select files by extension or content
-
-    # See https://docs.renovatebot.com/configuration-options/
-    if [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
-      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
-    fi
-
-    if [[ -n "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES:-}" ]]; then
-      # See https://docs.renovatebot.com/config-presets/
-      IFS="," read -r -a RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY <<<"${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES}"
-      for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
-        if [ "${BASE_FILE}" == "${file_name}" ]; then
-          echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
-          break
-        fi
-      done
-    fi
-
-    if IsValidShellScript "${FILE}"; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT"
+    if [ "${FILE_TYPE}" == "sh" ] ||
+      [ "${FILE_TYPE}" == "bash" ] ||
+      [ "${FILE_TYPE}" == "bats" ] ||
+      [ "${FILE_TYPE}" == "dash" ] ||
+      [ "${FILE_TYPE}" == "ksh" ]; then
+      AddToShellFileArrays "${FILE}"
     elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
       [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOJURE"
@@ -605,7 +663,7 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PHP_PSALM"
     elif [ "${FILE_TYPE}" == "pl" ] || [ "${FILE_TYPE}" == "pm" ] ||
       [ "${FILE_TYPE}" == "t" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PERL"
+      AddToPerlFileArrays "${FILE}"
     elif [ "${FILE_TYPE}" == "ps1" ] ||
       [ "${FILE_TYPE}" == "psm1" ] ||
       [ "${FILE_TYPE}" == "psd1" ] ||
@@ -617,17 +675,11 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "proto" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PROTOBUF"
     elif [ "${FILE_TYPE}" == "py" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_FLAKE8"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_ISORT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYLINT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF_FORMAT"
+      AddToPythonFileArrays "${FILE}"
     elif [ "${FILE_TYPE}" == "r" ] || [ "${FILE_TYPE}" == "rmd" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-R"
     elif [ "${FILE_TYPE}" == "rb" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY"
+      AddToRubyFileArrays "${FILE}"
     elif [ "${FILE_TYPE}" == "rs" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUST_2015"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUST_2018"
@@ -713,11 +765,36 @@ BuildFileArrays() {
       if DetectKubernetesFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-KUBERNETES_KUBECONFORM"
       fi
+    # See https://docs.renovatebot.com/configuration-options/
+    elif [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
+      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
     else
-      CheckFileType "${FILE}"
+      # Fallback option: look at the file contents
+      if ! CheckFileType "${FILE}"; then
+        debug "Failed to get file type for ${FILE}"
+      fi
+    fi
+
+    # Handle the special case of Renovate shareable config presets
+    # Ref: https://docs.renovatebot.com/config-presets/
+    if [[ "$FILE_TYPE" == "json" ]] ||
+      [[ "$FILE_TYPE" == "json5" ]] ||
+      [[ "$FILE_TYPE" == "jsonc" ]]; then
+      for file_name in "${RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES_ARRAY[@]}"; do
+        if [ "${BASE_FILE}" == "${file_name}" ]; then
+          echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
+          break
+        fi
+      done
     fi
   done
 }
 
-# We need this for parallel
+# We need so subprocesses (such as GNU Parallel) have access to these functions
+export -f AddToPythonFileArrays
+export -f AddToShellFileArrays
+export -f AddToPerlFileArrays
+export -f AddToRubyFileArrays
 export -f BuildFileArrays
+export -f CheckFileType

@@ -148,48 +148,6 @@ DetectAWSStatesFIle() {
   fi
 }
 
-function GetFileType() {
-  # Need to run the file through the 'file' exec to help determine
-  # The type of file being parsed
-
-  FILE="$1"
-  GET_FILE_TYPE_CMD=$(file "${FILE}" 2>&1)
-
-  echo "${GET_FILE_TYPE_CMD}"
-}
-
-function CheckFileType() {
-  # Need to run the file through the 'file' exec to help determine
-  # The type of file being parsed
-
-  local FILE
-  FILE="$1"
-
-  local GET_FILE_TYPE_CMD
-  GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
-
-  local FILE_TYPE_MESSAGE
-
-  if [[ ${GET_FILE_TYPE_CMD} == *"Ruby script"* ]]; then
-    FILE_TYPE_MESSAGE="Found Ruby script without extension (${FILE}). Rename the file with proper extension for Ruby files."
-    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY"
-  elif [[ ${GET_FILE_TYPE_CMD} == *"Python script"* ]]; then
-    FILE_TYPE_MESSAGE="Found Python script without extension (${FILE}). Rename the file with proper extension for Python files."
-    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON"
-  elif [[ ${GET_FILE_TYPE_CMD} == *"Perl script"* ]]; then
-    FILE_TYPE_MESSAGE="Found Perl script without extension (${FILE}). Rename the file with proper extension for Perl files."
-    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PERL"
-  else
-    FILE_TYPE_MESSAGE="Failed to get file type for: ${FILE}"
-  fi
-
-  if [ "${SUPPRESS_FILE_TYPE_WARN}" == "false" ]; then
-    warn "${FILE_TYPE_MESSAGE}"
-  else
-    debug "${FILE_TYPE_MESSAGE}"
-  fi
-}
-
 function GetFileExtension() {
   FILE="$1"
   # We want a lowercase value
@@ -197,44 +155,6 @@ function GetFileExtension() {
   # Extract the file extension
   FILE_TYPE=${FILE##*.}
   echo "$FILE_TYPE"
-}
-
-function IsValidShellScript() {
-  FILE="$1"
-
-  if [ "${VALIDATE_BASH}" == "false" ] && [ "${VALIDATE_BASH_EXEC}" == "false" ] && [ "${VALIDATE_SHELL_SHFMT}" == "false" ]; then
-    debug "Don't check if ${FILE} is a shell script because VALIDATE_BASH, VALIDATE_BASH_EXEC, and VALIDATE_SHELL_SHFMT are set to: ${VALIDATE_BASH}, ${VALIDATE_BASH_EXEC}, ${VALIDATE_SHELL_SHFMT}"
-    return 1
-  fi
-
-  FILE_EXTENSION="$(GetFileExtension "$FILE")"
-  GET_FILE_TYPE_CMD="$(GetFileType "$FILE")"
-
-  if [[ "${FILE_EXTENSION}" == "zsh" ]] ||
-    [[ ${GET_FILE_TYPE_CMD} == *"zsh script"* ]]; then
-    warn "$FILE is a ZSH script. Skipping..."
-    return 1
-  fi
-
-  if [ "${FILE_EXTENSION}" == "sh" ] ||
-    [ "${FILE_EXTENSION}" == "bash" ] ||
-    [ "${FILE_EXTENSION}" == "bats" ] ||
-    [ "${FILE_EXTENSION}" == "dash" ] ||
-    [ "${FILE_EXTENSION}" == "ksh" ]; then
-    debug "$FILE is a valid shell script (has a valid extension: ${FILE_EXTENSION})"
-    return 0
-  fi
-
-  if [[ "${GET_FILE_TYPE_CMD}" == *"POSIX shell script"* ]] ||
-    [[ ${GET_FILE_TYPE_CMD} == *"Bourne-Again shell script"* ]] ||
-    [[ ${GET_FILE_TYPE_CMD} == *"dash script"* ]] ||
-    [[ ${GET_FILE_TYPE_CMD} == *"ksh script"* ]] ||
-    [[ ${GET_FILE_TYPE_CMD} == *"/usr/bin/env sh script"* ]]; then
-    debug "$FILE is a valid shell script (has a valid file type: ${GET_FILE_TYPE_CMD})"
-    return 0
-  fi
-
-  return 1
 }
 
 # HasNoShebang returns true if a file has no shebang line
@@ -287,7 +207,6 @@ function IsNotSymbolicLink() {
 }
 
 # We need these functions when building the file list with parallel
-export -f CheckFileType
 export -f DetectGitHubActionsWorkflows
 export -f DetectDependabot
 export -f DetectGitHubActions
@@ -297,8 +216,6 @@ export -f DetectCloudFormationFile
 export -f DetectKubernetesFile
 export -f DetectOpenAPIFile
 export -f GetFileExtension
-export -f GetFileType
-export -f IsValidShellScript
 export -f HasNoShebang
 export -f IsGenerated
 export -f IsNotSymbolicLink
