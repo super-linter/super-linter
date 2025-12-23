@@ -7,8 +7,6 @@ function LintCodebase() {
   local TEST_CASE_RUN
   TEST_CASE_RUN="${1}" && shift
 
-  startGitHubActionsLogGroup "${FILE_TYPE}"
-
   declare -n VALIDATE_LANGUAGE
   VALIDATE_LANGUAGE="VALIDATE_${FILE_TYPE}"
 
@@ -16,19 +14,21 @@ function LintCodebase() {
     if [[ "${TEST_CASE_RUN}" == "false" ]]; then
       debug "Skip validation of ${FILE_TYPE} because VALIDATE_LANGUAGE is ${VALIDATE_LANGUAGE}"
       unset -n VALIDATE_LANGUAGE
-      endGitHubActionsLogGroup "${FILE_TYPE}"
       return 0
     else
       if [[ "${FIX_MODE_TEST_CASE_RUN}" == "true" ]]; then
         debug "Don't fail the test even if VALIDATE_${FILE_TYPE} is set to ${VALIDATE_LANGUAGE} because ${FILE_TYPE} might not support fix mode"
-        endGitHubActionsLogGroup "${FILE_TYPE}"
         return 0
       else
-        endGitHubActionsLogGroup "${FILE_TYPE}"
         fatal "Don't disable any validation when running in test mode. VALIDATE_${FILE_TYPE} is set to: ${VALIDATE_LANGUAGE}. Set it to: true"
       fi
     fi
   fi
+
+  # Start the log group now that Super-linter checked that linting/formatting
+  # for FILE_TYPE is enabled, so it doesn't show users empty log groups if
+  # users didn't enable debug logging, and disabled some languages.
+  startGitHubActionsLogGroup "${FILE_TYPE}"
 
   debug "Running LintCodebase. FILE_TYPE: ${FILE_TYPE}. TEST_CASE_RUN: ${TEST_CASE_RUN}"
 
