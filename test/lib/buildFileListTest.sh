@@ -367,3 +367,145 @@ BuildFileListValidateAllCodeBaseTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 BuildFileListValidateAllCodeBaseTest
+
+CheckFileTypeTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_temp_directory_cleanup_traps "${GITHUB_WORKSPACE}"
+
+  FILE_ARRAYS_DIRECTORY_PATH="$(mktemp -d)"
+  export FILE_ARRAYS_DIRECTORY_PATH
+  initialize_temp_directory_cleanup_traps "${FILE_ARRAYS_DIRECTORY_PATH}"
+
+  # shellcheck disable=SC2034
+  local SUPPRESS_FILE_TYPE_WARN="true"
+
+  # Create test files
+  local PYTHON_SCRIPT_PATH="${GITHUB_WORKSPACE}/python-script"
+  echo "#!/usr/bin/env python3" >"${PYTHON_SCRIPT_PATH}"
+  chmod +x "${PYTHON_SCRIPT_PATH}"
+
+  local PERL_SCRIPT_PATH="${GITHUB_WORKSPACE}/perl-script"
+  echo "#!/usr/bin/env perl" >"${PERL_SCRIPT_PATH}"
+  chmod +x "${PERL_SCRIPT_PATH}"
+
+  local RUBY_SCRIPT_PATH="${GITHUB_WORKSPACE}/ruby-script"
+  echo "#!/usr/bin/env ruby" >"${RUBY_SCRIPT_PATH}"
+  chmod +x "${RUBY_SCRIPT_PATH}"
+
+  local POSIX_SHELL_SCRIPT_PATH="${GITHUB_WORKSPACE}/posix-shell-script"
+  echo "#!/bin/sh" >"${POSIX_SHELL_SCRIPT_PATH}"
+  chmod +x "${POSIX_SHELL_SCRIPT_PATH}"
+
+  local BASH_SHELL_SCRIPT_PATH="${GITHUB_WORKSPACE}/bash-shell-script"
+  echo "#!/bin/bash" >"${BASH_SHELL_SCRIPT_PATH}"
+  chmod +x "${BASH_SHELL_SCRIPT_PATH}"
+
+  local DASH_SHELL_SCRIPT_PATH="${GITHUB_WORKSPACE}/dash-shell-script"
+  echo "#!/bin/dash" >"${DASH_SHELL_SCRIPT_PATH}"
+  chmod +x "${DASH_SHELL_SCRIPT_PATH}"
+
+  local KSH_SHELL_SCRIPT_PATH="${GITHUB_WORKSPACE}/ksh-shell-script"
+  echo "#!/bin/ksh" >"${KSH_SHELL_SCRIPT_PATH}"
+  chmod +x "${KSH_SHELL_SCRIPT_PATH}"
+
+  local ENV_SH_SCRIPT_PATH="${GITHUB_WORKSPACE}/env-sh-script"
+  echo "#!/usr/bin/env sh" >"${ENV_SH_SCRIPT_PATH}"
+  chmod +x "${ENV_SH_SCRIPT_PATH}"
+
+  local ENV_BASH_SCRIPT_PATH="${GITHUB_WORKSPACE}/env-bash-script"
+  echo "#!/usr/bin/env bash" >"${ENV_BASH_SCRIPT_PATH}"
+  chmod +x "${ENV_BASH_SCRIPT_PATH}"
+
+  local ENV_DASH_SCRIPT_PATH="${GITHUB_WORKSPACE}/env-dash-script"
+  echo "#!/usr/bin/env dash" >"${ENV_DASH_SCRIPT_PATH}"
+  chmod +x "${ENV_DASH_SCRIPT_PATH}"
+
+  local ENV_KSH_SCRIPT_PATH="${GITHUB_WORKSPACE}/env-ksh-script"
+  echo "#!/usr/bin/env ksh" >"${ENV_KSH_SCRIPT_PATH}"
+  chmod +x "${ENV_KSH_SCRIPT_PATH}"
+
+  local UNKNOWN_FILE_PATH="${GITHUB_WORKSPACE}/unknown-file"
+  echo "some text" >"${UNKNOWN_FILE_PATH}"
+
+  local -a ALL_SCRIPTS=(
+    "${PYTHON_SCRIPT_PATH}"
+    "${PERL_SCRIPT_PATH}"
+    "${RUBY_SCRIPT_PATH}"
+    "${POSIX_SHELL_SCRIPT_PATH}"
+    "${BASH_SHELL_SCRIPT_PATH}"
+    "${DASH_SHELL_SCRIPT_PATH}"
+    "${KSH_SHELL_SCRIPT_PATH}"
+    "${ENV_SH_SCRIPT_PATH}"
+    "${ENV_BASH_SCRIPT_PATH}"
+    "${ENV_DASH_SCRIPT_PATH}"
+    "${ENV_KSH_SCRIPT_PATH}"
+  )
+
+  # Run CheckFileType on created files
+  for script_path in "${ALL_SCRIPTS[@]}"; do
+    if ! CheckFileType "${script_path}"; then
+      fatal "CheckFileType with ${script_path} should have passed"
+    fi
+  done
+
+  if CheckFileType "${UNKNOWN_FILE_PATH}"; then
+    fatal "CheckFileType with ${UNKNOWN_FILE_PATH} should have failed"
+  fi
+
+  # Assertions for Python script
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_FLAKE8" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_ISORT" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYLINT" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF" "${PYTHON_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF_FORMAT" "${PYTHON_SCRIPT_PATH}"
+
+  # Assertions for Perl script
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PERL" "${PERL_SCRIPT_PATH}"
+
+  # Assertions for Ruby script
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RUBY" "${RUBY_SCRIPT_PATH}"
+
+  # Assertions for all Shell scripts (direct and env variants)
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${POSIX_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${POSIX_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${POSIX_SHELL_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${BASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${BASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${BASH_SHELL_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${DASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${DASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${DASH_SHELL_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${KSH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${KSH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${KSH_SHELL_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_SH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_SH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_SH_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_BASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_BASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_BASH_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_DASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_DASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_DASH_SCRIPT_PATH}"
+
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_KSH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_KSH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_KSH_SCRIPT_PATH}"
+
+  unset SUPPRESS_FILE_TYPE_WARN
+  notice "${FUNCTION_NAME} PASS"
+}
+CheckFileTypeTest

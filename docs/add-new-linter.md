@@ -233,15 +233,20 @@ filename:
 Provide the logic to populate the list of files or directories to examine in
 `lib/functions/buildFileList.sh`:
 
-- _File extension check_: If the new tool supports only specific files and you
-  can select the files by looking at their extension:
+- _File extension or name check_: If the new tool supports only specific files
+  and you can select the files by looking at their extension or their name:
   1. Add an `elif` clause in the `BuildFileArrays` function to select files by
-     extension. Example:
+     extension. To build the new check, you can use the following variables:
+     - `FILE_TYPE`: file extension
+     - `BASE_FILE`: name of the file
+     - `FILE_DIR_NAME`: path to the directory containing the file
 
-  ```bash
-  elif [ "${FILE_TYPE}" == "ext" ]; then
-    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-<LANGUAGE_NAME>"
-  ```
+     Example:
+
+     ```bash
+     elif [ "${FILE_TYPE}" == "ext" ]; then
+       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-<LANGUAGE_NAME>"
+     ```
 
 - _File contents check_: If the tool supports only specific files and you need
   to examine the file contents to check if the new tool supports them:
@@ -250,10 +255,10 @@ Provide the logic to populate the list of files or directories to examine in
   1. Add an `elif` clause in the `BuildFileArrays` function to select files by
      extension. Example:
 
-  ```bash
-  elif DetectCloudFormationFile "${FILE}"; then
-    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOUDFORMATION"
-  ```
+     ```bash
+     elif DetectCloudFormationFile "${FILE}"; then
+       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOUDFORMATION"
+     ```
 
 - _Entire workspace check_: If the tool supports its own file detection logic,
   and supports customizing that logic using a configuration file, do the
@@ -276,8 +281,58 @@ YAML files (so files with the `.yml` and `.yaml` extensions).
 
 ### Fallback
 
-The `CheckFileType` function in `lib/functions/detectFiles.sh` attempts to get
-the file type in case no other case matched.
+The `CheckFileType` function in `lib/functions/buildFileList.sh` attempts to get
+the file type in case no other case matched by using the GNU `file` utility. If
+you need this fallback, do the following:
+
+1. Create a new function in `lib/functions/buildFileList.sh` named
+   `AddTo<Language name>FileArrays` and move the logic to add files to the file
+   array for the new language there, where `<Language name>` is the lowercase
+   `<LANGUAGE_NAME>`. Example:
+
+   ```bash
+   AddToPythonFileArrays() {
+     local FILE="${1}"
+
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_BLACK"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_FLAKE8"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_ISORT"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_PYLINT"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_MYPY"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF"
+     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF_FORMAT"
+   }
+   ```
+
+1. Export the new `AddTo<Language name>FileArrays` function by adding an
+   `export -f` command at the bottom of the `lib/functions/buildFileList.sh`
+   file. Example:
+
+   ```bash
+   export -f AddToPythonFileArrays
+   ```
+
+1. Refactor the file extension or name check to use the mew
+   `AddTo<Language name>FileArrays` instead of adding files to the file arrays
+   directly. Example:
+
+   ```bash
+   elif [ "${FILE_TYPE}" == "py" ]; then
+     AddToPythonFileArrays "${FILE}"
+   ```
+
+1. Extend the `CheckFileType` function to match the output of the `file` command
+   for your file type. Example:
+
+   ```bash
+   *"Python script"*)
+     FILE_TYPE_MESSAGE="Found Python script without extension: ${FILE}"
+     AddToPythonFileArrays "${FILE}"
+     ;;
+   ```
+
+1. Update the `CheckFileTypeTest` test function function in
+   `test/lib/buildFileListTest.sh` to cover the new case.
 
 ## Get the tool version
 
