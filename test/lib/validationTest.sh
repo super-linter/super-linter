@@ -766,6 +766,16 @@ InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+InitializeGitBeforeShaReferenceMergeCommitRepositoryDispatchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "repository_dispatch"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 InitializeGitBeforeShaReferenceMergeCommitScheduleTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
