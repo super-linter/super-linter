@@ -30,6 +30,7 @@ test: \
 	test-github-event-merge-commit-push-default-branch \
 	test-github-event-merge-commit-push-tag \
 	test-github-event-merge-group \
+	test-github-event-repository-dispatch \
 	test-github-event-push-event-multiple-commits-default-branch \
 	test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch \
 	test-github-event-push-initial-commit-multiple-commits \
@@ -573,6 +574,13 @@ test-github-event-merge-group: ## Run super-linter against a repository that sim
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_case_github_merge_group_event" \
+		"$(IMAGE)"
+
+.PHONY: test-github-event-repository-dispatch
+test-github-event-repository-dispatch: ## Run super-linter against a repository that simulates a repository_dispatch event
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_case_github_repository_dispatch" \
 		"$(IMAGE)"
 
 .PHONY: test-use-find-and-ignore-gitignored-files
