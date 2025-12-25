@@ -696,7 +696,6 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SQLFLUFF"
     elif [ "${FILE_TYPE}" == "tf" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TERRASCAN"
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_FMT"
     elif [ "${FILE_TYPE}" == "hcl" ] &&
       [[ ${FILE} != *".tflint.hcl"* ]] &&

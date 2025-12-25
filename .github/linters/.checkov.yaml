@@ -27,5 +27,4 @@ skip-path:
   - test/linters/openapi
   - test/linters/terraform_fmt
   - test/linters/terraform_tflint
-  - test/linters/terraform_terrascan
   - test/linters/trivy

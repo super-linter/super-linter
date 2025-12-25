@@ -124,7 +124,6 @@ function LintCodebase() {
     [[ "${FILE_TYPE}" == "SNAKEMAKE_LINT" ]] ||
     [[ "${FILE_TYPE}" == "STATES" ]] ||
     [[ "${FILE_TYPE}" == "TERRAFORM_TFLINT" ]] ||
-    [[ "${FILE_TYPE}" == "TERRAFORM_TERRASCAN" ]] ||
     [[ "${FILE_TYPE}" == "TERRAGRUNT" ]]; then
     debug "${FILE_TYPE} doesn't support linting files in batches. Configure the linter to run over the files to lint one by one"
     PARALLEL_COMMAND+=(--max-lines 1)

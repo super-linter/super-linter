@@ -19,7 +19,6 @@ scan:
     - "**/test/linters/jscpd"
     - "**/test/linters/kubernetes_kubeconform"
     - "**/test/linters/terraform_fmt"
-    - "**/test/linters/terraform_terrascan"
     - "**/test/linters/terraform_tflint"
     - "**/test/linters/trivy/bad"
   skip-files:

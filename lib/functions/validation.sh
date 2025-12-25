@@ -738,6 +738,10 @@ function ValidateDeprecatedVariables() {
   WarnIfVariableIsSet "${VALIDATE_RAKU:-}" "VALIDATE_RAKU"
   WarnIfVariableIsSet "${VALIDATE_TEKTON:-}" "VALIDATE_TEKTON"
   WarnIfVariableIsSet "${VALIDATE_TYPESCRIPT_STANDARD:-}" "VALIDATE_TYPESCRIPT_STANDARD"
+
+  # The following variables have been deprecated in v8.4.0
+  WarnIfVariableIsSet "${TERRAFORM_TERRASCAN_CONFIG_FILE:-}" "TERRAFORM_TERRASCAN_CONFIG_FILE"
+  WarnIfVariableIsSet "${VALIDATE_TERRAFORM_TERRASCAN:-}" "VALIDATE_TERRAFORM_TERRASCAN"
 }
 
 ValidateDeprecatedConfigurationFiles() {

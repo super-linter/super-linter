@@ -352,22 +352,6 @@ function RunAdditionalInstalls() {
       fi
     done
   fi
-
-  if [ "${VALIDATE_TERRAFORM_TERRASCAN}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TERRASCAN" ]; then
-    info "Initializing Terrascan repository"
-    local -a TERRASCAN_INIT_COMMAND
-    TERRASCAN_INIT_COMMAND=(terrascan init -c "${TERRAFORM_TERRASCAN_LINTER_RULES}")
-    if [[ "${LOG_DEBUG}" == "true" ]]; then
-      TERRASCAN_INIT_COMMAND+=(--log-level "debug")
-    fi
-    debug "Terrascan init command: ${TERRASCAN_INIT_COMMAND[*]}"
-
-    local TERRASCAN_INIT_COMMAND_OUTPUT
-    if ! TERRASCAN_INIT_COMMAND_OUTPUT="$("${TERRASCAN_INIT_COMMAND[@]}" 2>&1)"; then
-      fatal "Error while initializing Terrascan:\n${TERRASCAN_INIT_COMMAND_OUTPUT}"
-    fi
-    debug "Terrascan init command output:\n${TERRASCAN_INIT_COMMAND_OUTPUT}"
-  fi
 }
 
 function IsAnsibleDirectory() {

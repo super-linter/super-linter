@@ -7,7 +7,6 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM tenable/terrascan:1.19.9 AS terrascan
 FROM alpine/terragrunt:1.14.1 AS terragrunt
 FROM dotenvlinter/dotenv-linter:4.0.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.60.0 AS tflint
@@ -319,11 +318,6 @@ COPY --from=terraform /bin/terraform /usr/bin/
 ENV TFLINT_PLUGIN_DIR="/root/.tflint.d/plugins"
 COPY --from=tflint /usr/local/bin/tflint /usr/bin/
 COPY --from=tflint-plugins "${TFLINT_PLUGIN_DIR}" "${TFLINT_PLUGIN_DIR}"
-
-#####################
-# Install Terrascan #
-#####################
-COPY --from=terrascan /go/bin/terrascan /usr/bin/
 
 ######################
 # Install Terragrunt #
