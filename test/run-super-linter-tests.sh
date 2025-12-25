@@ -77,6 +77,11 @@ configure_command_arguments_for_test_git_repository() {
       sed -i "s/push-before/${GIT_BASE_REF}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
       debug "Updating the first pushed commit hash field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${FIRST_COMMIT_HASH}"
       sed -i "s/first-pushed-commit-hash/${FIRST_COMMIT_HASH}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+    elif [[ "${GITHUB_EVENT_NAME}" == "repository_dispatch" ]]; then
+      debug "Updating the client_payload.ref field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${BASE_REF}"
+      sed -i "s|base-ref|${BASE_REF}|g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
+      debug "Updating the client_payload.sha field of ${GITHUB_EVENT_FILE_DESTINATION_PATH} to: ${GIT_HEAD_REF}"
+      sed -i "s/repository-dispatch-head-sha/${GIT_HEAD_REF}/g" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
     else
       fatal "GitHub ${GITHUB_EVENT_NAME:-"not set"} event not supported"
     fi
@@ -211,6 +216,15 @@ run_test_case_github_merge_group_event() {
   initialize_git_repository "${GIT_REPOSITORY_PATH}"
   initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "merge_group" "false" "false" "false" "true" "false"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-merge-group.json" "merge_group"
+}
+
+run_test_case_github_repository_dispatch() {
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "1" "true" "repository_dispatch" "false" "false" "false" "true" "false"
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-repository-dispatch.json" "repository_dispatch"
 }
 
 run_test_case_merge_commit_push_tag() {
