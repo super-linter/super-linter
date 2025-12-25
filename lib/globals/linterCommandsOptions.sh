@@ -120,4 +120,10 @@ PRE_COMMIT_ALL_FILES_OPTION=("--all-files")
 PRE_COMMIT_FROM_REF_OPTIONS=("--from-ref")
 PRE_COMMIT_TO_REF_OPTIONS=("--to-ref")
 
+# Ref: https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
+SHFMT_OPTIONS=(
+  # Always apply EditorConfig ignore rules
+  "--apply-ignore"
+)
+
 XMLLINT_NOOUT_OPTIONS=("--noout")
