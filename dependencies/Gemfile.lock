@@ -36,7 +36,7 @@ GEM
     rack (3.2.4)
     rainbow (3.1.1)
     regexp_parser (2.11.3)
-    rubocop (1.82.0)
+    rubocop (1.82.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -47,9 +47,9 @@ GEM
       rubocop-ast (>= 1.48.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.48.0)
+    rubocop-ast (1.49.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.4)
+      prism (~> 1.7)
     rubocop-capybara (2.22.1)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
@@ -98,7 +98,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  rubocop (~> 1.82.0)
+  rubocop (~> 1.82.1)
   rubocop-capybara (~> 2.22)
   rubocop-factory_bot (~> 2.28)
   rubocop-github (~> 0.26.0)
