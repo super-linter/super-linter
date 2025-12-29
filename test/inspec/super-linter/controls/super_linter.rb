@@ -212,7 +212,6 @@ control "super-linter-installed-commands" do
     { linter_name: "stylelint" },
     { linter_name: "terraform" },
     { linter_name: "terragrunt" },
-    { linter_name: "terrascan", version_option: "version" },
     { linter_name: "textlint" },
     { linter_name: "tflint" },
     { linter_name: "trivy" },

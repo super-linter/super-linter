@@ -97,7 +97,6 @@ updates:
           - hadolint/hadolint
           - hashicorp/terraform
           - kustomize/kustomize
-          - tenable/terrascan
           - terraform-linters/tflint
           - koalaman/shellcheck
           - mstruebing/editorconfig-checker

@@ -85,7 +85,6 @@
 | SQLFLUFF                   | Pass ✅           |
 | TERRAFORM_FMT              | Pass ✅           |
 | TERRAFORM_TFLINT           | Pass ✅           |
-| TERRAFORM_TERRASCAN        | Pass ✅           |
 | TERRAGRUNT                 | Pass ✅           |
 | TRIVY                      | Pass ✅           |
 | TSX                        | Pass ✅           |

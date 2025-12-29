@@ -96,7 +96,6 @@
 | SQLFLUFF                     | Fail ❌           |
 | TERRAFORM_FMT                | Fail ❌           |
 | TERRAFORM_TFLINT             | Fail ❌           |
-| TERRAFORM_TERRASCAN          | Fail ❌           |
 | TERRAGRUNT                   | Fail ❌           |
 | TRIVY                        | Fail ❌           |
 | TSX                          | Fail ❌           |
