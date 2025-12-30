@@ -1,5 +1,28 @@
 # Changelog
 
+## [8.4.0](https://github.com/super-linter/super-linter/compare/v8.3.2...v8.4.0) (2025-12-30)
+
+
+### 🚀 Features
+
+* enable apply-ignore when running shfmt ([#7309](https://github.com/super-linter/super-linter/issues/7309)) ([ae0f44a](https://github.com/super-linter/super-linter/commit/ae0f44a2e18b3ca52aeff4a91646ecec7d059254)), closes [#7308](https://github.com/super-linter/super-linter/issues/7308)
+* handle repository_dispatch events ([#7335](https://github.com/super-linter/super-linter/issues/7335)) ([3587871](https://github.com/super-linter/super-linter/commit/3587871ba06260d7612e44787f5990a7d21eb1d6)), closes [#7245](https://github.com/super-linter/super-linter/issues/7245)
+* validate git vars only when needed ([#7342](https://github.com/super-linter/super-linter/issues/7342)) ([7aa6b2a](https://github.com/super-linter/super-linter/commit/7aa6b2aa6f29c33d4dc31baf7bded46475009f37)), closes [#7282](https://github.com/super-linter/super-linter/issues/7282)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump rubocop in /dependencies in the rubocop group ([#7332](https://github.com/super-linter/super-linter/issues/7332)) ([612347c](https://github.com/super-linter/super-linter/commit/612347c8413a07a27e78971d506d01ebdcb5c4f8))
+* **docker:** bump the docker group across 1 directory with 2 updates ([#7336](https://github.com/super-linter/super-linter/issues/7336)) ([9d05e2a](https://github.com/super-linter/super-linter/commit/9d05e2a91c0be94e6f28a34c526c52f9e8b095c5))
+* **npm:** bump the npm group across 1 directory with 3 updates ([#7341](https://github.com/super-linter/super-linter/issues/7341)) ([62ebdce](https://github.com/super-linter/super-linter/commit/62ebdce8dab77ccde99bce0d8a5d9af5f252cec8))
+* **npm:** bump the npm group across 1 directory with 4 updates ([#7338](https://github.com/super-linter/super-linter/issues/7338)) ([07b91bc](https://github.com/super-linter/super-linter/commit/07b91bc3ad16c692d57f0cf10a6916f11a2561a1))
+* **python:** bump checkov ([#7337](https://github.com/super-linter/super-linter/issues/7337)) ([d070c07](https://github.com/super-linter/super-linter/commit/d070c07c33a446c7a2d60d30d9fce41422568a74))
+
+
+### 🧰 Maintenance
+
+* remove terrascan ([#7330](https://github.com/super-linter/super-linter/issues/7330)) ([aa07c3d](https://github.com/super-linter/super-linter/commit/aa07c3db21cbc4e6f3aed3888ce18b6ba035fdb3)), closes [#7261](https://github.com/super-linter/super-linter/issues/7261)
+
 ## [8.3.2](https://github.com/super-linter/super-linter/compare/v8.3.1...v8.3.2) (2025-12-24)
 
 
