@@ -437,6 +437,7 @@ InitializeGitBeforeShaReference() {
   elif [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "repository_dispatch" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "schedule" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
     local GIT_MERGE_BASE

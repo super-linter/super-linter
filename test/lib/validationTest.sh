@@ -698,6 +698,7 @@ InitializeGitBeforeShaReferenceMergeCommitTest() {
 
   if [[ "${EVENT_NAME}" == "pull_request" ]] ||
     [[ "${EVENT_NAME}" == "pull_request_target" ]] ||
+    [[ "${EVENT_NAME}" == "repository_dispatch" ]] ||
     [[ "${EVENT_NAME}" == "schedule" ]] ||
     [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
     initialize_git_repository_contents "${GITHUB_WORKSPACE}" "${COMMIT_COUNT}" "true" "${EVENT_NAME}" "true" "false" "false" "true" "false"
@@ -709,7 +710,8 @@ InitializeGitBeforeShaReferenceMergeCommitTest() {
     fatal "Event not handled when testing InitializeGitBeforeShaReference: ${EVENT_NAME}"
   fi
 
-  if [[ "${EVENT_NAME}" == "schedule" ]]; then
+  if [[ "${EVENT_NAME}" == "repository_dispatch" ]] ||
+    [[ "${EVENT_NAME}" == "schedule" ]]; then
     EXPECTED_GITHUB_BEFORE_SHA="${GITHUB_SHA}"
   elif [[ "${EVENT_NAME}" == "pull_request" ]] ||
     [[ "${EVENT_NAME}" == "pull_request_target" ]]; then
@@ -762,6 +764,16 @@ InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest() {
   info "${FUNCTION_NAME} start"
 
   InitializeGitBeforeShaReferenceMergeCommitTest "merge_group"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+InitializeGitBeforeShaReferenceMergeCommitRepositoryDispatchTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitializeGitBeforeShaReferenceMergeCommitTest "repository_dispatch"
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -1316,6 +1328,7 @@ InitializeGitBeforeShaReferenceForcePushTest
 InitializeGitBeforeShaReferenceMergeCommitPullRequestTest
 InitializeGitBeforeShaReferenceMergeCommitPullRequestTargetTest
 InitializeGitBeforeShaReferenceMergeCommitMergeGroupTest
+InitializeGitBeforeShaReferenceMergeCommitRepositoryDispatchTest
 InitializeGitBeforeShaReferenceMergeCommitScheduleTest
 InitializeGitBeforeShaReferenceMergeCommitWorkflowDispatchTest
 InitializeGitBeforeShaReferenceMergeCommitPushTest

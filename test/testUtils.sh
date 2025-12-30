@@ -420,6 +420,7 @@ initialize_git_repository_contents() {
 
   elif [[ "${GITHUB_EVENT_NAME}" == "push" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "merge_group" ]] ||
+    [[ "${GITHUB_EVENT_NAME}" == "repository_dispatch" ]] ||
     [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
     if [[ "${CREATE_NEW_BRANCH}" == "true" ]]; then
       if [[ "${FORCE_MERGE_COMMIT}" == "true" ]]; then
