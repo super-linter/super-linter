@@ -231,13 +231,13 @@ Header() {
   fi
 
   info "---------------------------------------------"
-  info "--- GitHub Actions Multi Language Linter ----"
+  info " Super-linter"
   info " - Image Creation Date: ${BUILD_DATE}"
   info " - Image Revision: ${BUILD_REVISION}"
   info " - Image Version: ${BUILD_VERSION}"
   info "---------------------------------------------"
   info "---------------------------------------------"
-  info "The Super-Linter source code can be found at:"
+  info " Super-Linter source code can be found at:"
   info " - https://github.com/super-linter/super-linter"
   info "---------------------------------------------"
 
@@ -302,83 +302,85 @@ GetGitHubVars() {
     MULTI_STATUS="false"
     debug "Setting MULTI_STATUS to ${MULTI_STATUS} because we are not running on GitHub Actions"
   else
-    if [ -z "${GITHUB_EVENT_PATH:-}" ]; then
-      fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
-    else
-      info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
-    fi
-
-    if [[ ! -e "${GITHUB_EVENT_PATH}" ]]; then
-      fatal "${GITHUB_EVENT_PATH} doesn't exist or it's not readable"
-    else
-      debug "${GITHUB_EVENT_PATH} exists and it's readable"
-      debug "${GITHUB_EVENT_PATH} contents:\n$(cat "${GITHUB_EVENT_PATH}")"
-    fi
-
-    if [ -z "${GITHUB_SHA:-}" ]; then
-      fatal "Failed to get GITHUB_SHA: ${GITHUB_SHA}"
-    else
-      info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
-    fi
-
-    if ! ValidateGitShaReference "${GITHUB_SHA}"; then
-      fatal "Failed to validate GITHUB_SHA"
-    fi
-
-    if ! InitializeRootCommitSha; then
-      fatal "Failed to initialize root commit"
-    fi
-
-    debug "This is a ${GITHUB_EVENT_NAME} event"
-
-    if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-      # GITHUB_SHA on PR events is not the latest commit.
-      # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
-      # "Note that GITHUB_SHA for this [pull_request] event is the last merge commit of the pull request merge branch.
-      # If you want to get the commit ID for the last commit to the head branch of the pull request,
-      # use github.event.pull_request.head.sha instead."
-      debug "Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
-
-      GITHUB_SHA="$(GetPullRequestHeadSha "${GITHUB_EVENT_PATH}")"
-      local RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
-      fi
-      debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
-    elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-      local FORCE_PUSH_EVENT
-      FORCE_PUSH_EVENT=$(GetGitHubEventForced "${GITHUB_EVENT_PATH}")
-      RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get FORCE_PUSH_EVENT. Output: ${FORCE_PUSH_EVENT:-"not set"}"
-      fi
-      debug "Successfully found 'forced' for ${GITHUB_EVENT_NAME} event: ${FORCE_PUSH_EVENT}"
-
-      local GITHUB_EVENT_PUSH_BEFORE
-      GITHUB_EVENT_PUSH_BEFORE=$(GetGitHubEventPushBefore "${GITHUB_EVENT_PATH}")
-      RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_PUSH_BEFORE. Output: ${GITHUB_EVENT_PUSH_BEFORE:-"not set"}"
-      fi
-      debug "Successfully found the commit hash of the 'before' commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_PUSH_BEFORE}"
-
-      local GITHUB_EVENT_FIRST_PUSHED_COMMIT
-      GITHUB_EVENT_FIRST_PUSHED_COMMIT=$(GetGithubPushFirstPushedCommitHash "${GITHUB_EVENT_PATH}")
-      RET_CODE=$?
-      if [[ "${RET_CODE}" -gt 0 ]]; then
-        fatal "Failed to get GITHUB_EVENT_FIRST_PUSHED_COMMIT. Output: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-"not set"}"
-      fi
-      debug "Successfully found the commit hash of the first pushed commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT}"
-    fi
-
     if [[ "${USE_FIND_ALGORITHM}" == "false" ]]; then
+      if [ -z "${GITHUB_EVENT_PATH:-}" ]; then
+        fatal "Failed to get GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
+      else
+        info "Successfully found GITHUB_EVENT_PATH: ${GITHUB_EVENT_PATH}]"
+      fi
+
+      if [[ ! -e "${GITHUB_EVENT_PATH}" ]]; then
+        fatal "${GITHUB_EVENT_PATH} doesn't exist or it's not readable"
+      else
+        debug "${GITHUB_EVENT_PATH} exists and it's readable"
+        debug "${GITHUB_EVENT_PATH} contents:\n$(cat "${GITHUB_EVENT_PATH}")"
+      fi
+
+      if [ -z "${GITHUB_SHA:-}" ]; then
+        fatal "Failed to get GITHUB_SHA: ${GITHUB_SHA}"
+      else
+        info "Successfully found GITHUB_SHA: ${GITHUB_SHA}"
+      fi
+
+      if ! ValidateGitShaReference "${GITHUB_SHA}"; then
+        fatal "Failed to validate GITHUB_SHA"
+      fi
+
+      if ! InitializeRootCommitSha; then
+        fatal "Failed to initialize root commit"
+      fi
+
+      debug "This is a ${GITHUB_EVENT_NAME} event"
+
+      if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+        # GITHUB_SHA on PR events is not the latest commit.
+        # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request
+        # "Note that GITHUB_SHA for this [pull_request] event is the last merge commit of the pull request merge branch.
+        # If you want to get the commit ID for the last commit to the head branch of the pull request,
+        # use github.event.pull_request.head.sha instead."
+        debug "Updating the current GITHUB_SHA (${GITHUB_SHA}) to the pull request HEAD SHA"
+
+        GITHUB_SHA="$(GetPullRequestHeadSha "${GITHUB_EVENT_PATH}")"
+        local RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
+        fi
+        debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
+      elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+        local FORCE_PUSH_EVENT
+        FORCE_PUSH_EVENT=$(GetGitHubEventForced "${GITHUB_EVENT_PATH}")
+        RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to get FORCE_PUSH_EVENT. Output: ${FORCE_PUSH_EVENT:-"not set"}"
+        fi
+        debug "Successfully found 'forced' for ${GITHUB_EVENT_NAME} event: ${FORCE_PUSH_EVENT}"
+
+        local GITHUB_EVENT_PUSH_BEFORE
+        GITHUB_EVENT_PUSH_BEFORE=$(GetGitHubEventPushBefore "${GITHUB_EVENT_PATH}")
+        RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to get GITHUB_EVENT_PUSH_BEFORE. Output: ${GITHUB_EVENT_PUSH_BEFORE:-"not set"}"
+        fi
+        debug "Successfully found the commit hash of the 'before' commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_PUSH_BEFORE}"
+
+        local GITHUB_EVENT_FIRST_PUSHED_COMMIT
+        GITHUB_EVENT_FIRST_PUSHED_COMMIT=$(GetGithubPushFirstPushedCommitHash "${GITHUB_EVENT_PATH}")
+        RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to get GITHUB_EVENT_FIRST_PUSHED_COMMIT. Output: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-"not set"}"
+        fi
+        debug "Successfully found the commit hash of the first pushed commit for ${GITHUB_EVENT_NAME} event: ${GITHUB_EVENT_FIRST_PUSHED_COMMIT}"
+      fi
+
       if ! InitializeGitBeforeShaReference "${GITHUB_SHA}" "${GIT_ROOT_COMMIT_SHA}" "${GITHUB_EVENT_NAME}" "${DEFAULT_BRANCH}" "${FORCE_PUSH_EVENT:-""}" "${GITHUB_EVENT_PUSH_BEFORE:-""}" "${GITHUB_EVENT_FIRST_PUSHED_COMMIT:-""}"; then
         fatal "Error while initializing GITHUB_BEFORE_SHA"
       fi
-    fi
 
-    if ! ValidateGitHubEvent "${GITHUB_EVENT_NAME}" "${VALIDATE_ALL_CODEBASE}" && [[ "${FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION}" == "true" ]]; then
-      fatal "Error while validating Super-linter configuration for specific GitHub Actions events"
+      if ! ValidateGitHubEvent "${GITHUB_EVENT_NAME}" "${VALIDATE_ALL_CODEBASE}" && [[ "${FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION}" == "true" ]]; then
+        fatal "Error while validating Super-linter configuration for specific GitHub Actions events"
+      fi
+    else
+      debug "Skip the initalization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
     fi
   fi
 

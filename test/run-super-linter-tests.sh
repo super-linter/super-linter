@@ -268,6 +268,9 @@ run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_bran
   VALIDATE_ALL_CODEBASE="true"
   configure_test_case_github_event_multiple_commits "push" "test/data/github-event/github-event-push-multiple-commits.json" "2"
   configure_use_find_algorithm
+  # Override GITHUB_SHA to point to a non-existing commit SHA to ensure that
+  # Super-linter doesn't try to get validate it when USE_FIND_ALGORITHM=true
+  COMMAND_TO_RUN+=(-e GITHUB_SHA="non-existing-sha")
 }
 
 run_test_case_use_find_and_ignore_gitignored_files() {
