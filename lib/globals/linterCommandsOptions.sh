@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # Disable ununsed variables warning because we
+# shellcheck disable=SC2034 # Disable unused variables warning because we
 # source this script and use these variables as globals
 
 # "check only" mode options for linters that that we reuse across several languages
@@ -101,7 +101,7 @@ SQLFLUFF_FIX_MODE_OPTIONS+=("${SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS[@]}")
 
 # If there's no input argument, GNU Parallel adds a default {} at the end of the
 # command it runs. In a few cases, such as ANSIBLE, GO_MODULES, and RUST_CLIPPY,
-# consume the {} element by artifically adding it to the command to run because
+# consume the {} element by artificially adding it to the command to run because
 # we need the input to set the working directory, but we don't need it appended
 # at the end of the command.
 # Setting the -n 0 GNU Parallel would not help in this case, because the input
