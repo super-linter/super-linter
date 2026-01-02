@@ -417,7 +417,7 @@
 
 * add env var for npm-groovy-lint failon level ([#6530](https://github.com/super-linter/super-linter/issues/6530)) ([418c922](https://github.com/super-linter/super-linter/commit/418c922120006007fad0f1839b3dae7210c0a50b))
 * check in-progress commit msg with commitlint ([#6757](https://github.com/super-linter/super-linter/issues/6757)) ([57345c5](https://github.com/super-linter/super-linter/commit/57345c5c792fc2719987f110bd7fcb9c5973e1a1)), closes [#6411](https://github.com/super-linter/super-linter/issues/6411)
-* disable xmllint verbose output if debuging ([#6747](https://github.com/super-linter/super-linter/issues/6747)) ([e6c42ca](https://github.com/super-linter/super-linter/commit/e6c42ca463ef54ca2f2c2075f2e3e87f0d98577c)), closes [#6653](https://github.com/super-linter/super-linter/issues/6653)
+* disable xmllint verbose output if debugging ([#6747](https://github.com/super-linter/super-linter/issues/6747)) ([e6c42ca](https://github.com/super-linter/super-linter/commit/e6c42ca463ef54ca2f2c2075f2e3e87f0d98577c)), closes [#6653](https://github.com/super-linter/super-linter/issues/6653)
 * do not hide php composer output ([#6637](https://github.com/super-linter/super-linter/issues/6637)) ([1c62141](https://github.com/super-linter/super-linter/commit/1c621411943c1ca0b2e057424cff5f7158addc2a))
 * pass optional arguments to gitleaks ([#6756](https://github.com/super-linter/super-linter/issues/6756)) ([109384b](https://github.com/super-linter/super-linter/commit/109384b3f0f3398204739c8a4748e517e8c4a6d1)), closes [#6601](https://github.com/super-linter/super-linter/issues/6601)
 * set github_before_sha on pull requests ([#6687](https://github.com/super-linter/super-linter/issues/6687)) ([d7f5222](https://github.com/super-linter/super-linter/commit/d7f522206a7ce6f2a76be2e489fd69d590fcf1e8))
@@ -1443,7 +1443,7 @@
 * fail on errors when installing chktex ([#5214](https://github.com/super-linter/super-linter/issues/5214)) ([92e9cb3](https://github.com/super-linter/super-linter/commit/92e9cb3c85af9f774355c7e7057e7760802695ca))
 * install dotnet and powershell from images ([#5245](https://github.com/super-linter/super-linter/issues/5245)) ([49320c8](https://github.com/super-linter/super-linter/commit/49320c834ba153699196b8d45f27d61c6a819292)), closes [#5243](https://github.com/super-linter/super-linter/issues/5243)
 * install lintr in a dedicated stage ([#5247](https://github.com/super-linter/super-linter/issues/5247)) ([1f2fbb1](https://github.com/super-linter/super-linter/commit/1f2fbb14cde98f44fb4c6913769e7a2726864a1e))
-* move linter verions logic outside runtime ([#5197](https://github.com/super-linter/super-linter/issues/5197)) ([d7790e4](https://github.com/super-linter/super-linter/commit/d7790e4f1cba52debbceac83c5324cee61860cff))
+* move linter versions logic outside runtime ([#5197](https://github.com/super-linter/super-linter/issues/5197)) ([d7790e4](https://github.com/super-linter/super-linter/commit/d7790e4f1cba52debbceac83c5324cee61860cff))
 * take package-lock into account in devcontainer ([#5278](https://github.com/super-linter/super-linter/issues/5278)) ([7a6ab11](https://github.com/super-linter/super-linter/commit/7a6ab115a6366deadb6b20223f3d331bb0d4da76))
 
 ## [6.0.0](https://github.com/super-linter/super-linter/compare/v5.7.2...v6.0.0) (2024-01-31)
@@ -1488,7 +1488,7 @@
 * fail when validating as expected ([#5076](https://github.com/super-linter/super-linter/issues/5076)) ([ededa44](https://github.com/super-linter/super-linter/commit/ededa44d363adc015264156d9c093aa6d5957ec4))
 * fix file list when looking for changes ([#5044](https://github.com/super-linter/super-linter/issues/5044)) ([b214a59](https://github.com/super-linter/super-linter/commit/b214a59ca73c8e20811dbffe4055c612edbb62c2))
 * fix GITHUB_BEFORE_SHA diff on push events ([#5096](https://github.com/super-linter/super-linter/issues/5096)) ([1d5ed2c](https://github.com/super-linter/super-linter/commit/1d5ed2c386837bf3cc11e180ca3756d6b6020b14))
-* fix GITHUB_BEFORE_SHA initalization for push ([#5098](https://github.com/super-linter/super-linter/issues/5098)) ([cf2038d](https://github.com/super-linter/super-linter/commit/cf2038d90311f6d49b145d32a5c725bbfa2bfd33))
+* fix GITHUB_BEFORE_SHA initialization for push ([#5098](https://github.com/super-linter/super-linter/issues/5098)) ([cf2038d](https://github.com/super-linter/super-linter/commit/cf2038d90311f6d49b145d32a5c725bbfa2bfd33))
 * handle log messages in CheckFileType ([#5117](https://github.com/super-linter/super-linter/issues/5117)) ([5a2056d](https://github.com/super-linter/super-linter/commit/5a2056d77a436e86528a4347ee25f88008a07d42))
 * ignore changelog when running textlint ([#5204](https://github.com/super-linter/super-linter/issues/5204)) ([6015df2](https://github.com/super-linter/super-linter/commit/6015df21286bb39384b1c28c41c356da5b39a15a))
 * simplify file status checks ([#5119](https://github.com/super-linter/super-linter/issues/5119)) ([3a784fc](https://github.com/super-linter/super-linter/commit/3a784fcfd611789d6e592bf1fd69866758340911))

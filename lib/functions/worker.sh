@@ -56,7 +56,7 @@ function LintCodebase() {
         # In this case, we don't add a trailing slash so we don't fail validation.
         if [[ "${FILE_TYPE}" != "CHECKOV" ]]; then
           TEST_CASE_DIRECTORY="${TEST_CASE_DIRECTORY}/"
-          debug "Adding a traling slash to the test case directory for ${FILE_TYPE}: ${TEST_CASE_DIRECTORY}"
+          debug "Adding a trailing slash to the test case directory for ${FILE_TYPE}: ${TEST_CASE_DIRECTORY}"
         fi
 
         debug "TEST_CASE_DIRECTORY for ${FILE_TYPE}: ${TEST_CASE_DIRECTORY}"
@@ -97,7 +97,7 @@ function LintCodebase() {
   PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$(($(nproc) * 1))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
 
   if [ "${LOG_DEBUG}" == "true" ]; then
-    debug "LOG_DEBUG is enabled. Enable verbose ouput for parallel"
+    debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
     PARALLEL_COMMAND+=(--verbose)
   fi
   debug "PARALLEL_COMMAND for ${FILE_TYPE}: ${PARALLEL_COMMAND[*]}"

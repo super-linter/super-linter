@@ -121,7 +121,7 @@ This repository provides a DevContainer for
 ## Share Environment variables between environments
 
 To avoid duplication if you run super-linter both locally and in other
-environements, such as CI, you can define configuration options once, and load
+environments, such as CI, you can define configuration options once, and load
 them accordingly:
 
 1. Create a configuration file for super-linter `super-linter.env`. For example:
