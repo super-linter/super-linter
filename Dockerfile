@@ -245,6 +245,15 @@ WORKDIR /
 COPY scripts/install-lua.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-lua.sh && rm -rf /install-lua.sh
 
+#######################
+# Install shellharden #
+#######################
+ARG SHELLHARDEN_VERSION="v4.3.1"
+COPY scripts/install-shellharden.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+  SHELLHARDEN_VERSION="${SHELLHARDEN_VERSION}" /install-shellharden.sh \
+  && rm -rf /install-shellharden.sh
+
 ############################
 # Install PHP dependencies #
 ############################

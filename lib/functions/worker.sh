@@ -121,6 +121,7 @@ function LintCodebase() {
     [[ "${FILE_TYPE}" == "POWERSHELL" ]] ||
     [[ "${FILE_TYPE}" == "R" ]] ||
     [[ "${FILE_TYPE}" == "RUST_CLIPPY" ]] ||
+    [[ "${FILE_TYPE}" == "SHELL_SHELLHARDEN" ]] ||
     [[ "${FILE_TYPE}" == "SNAKEMAKE_LINT" ]] ||
     [[ "${FILE_TYPE}" == "STATES" ]] ||
     [[ "${FILE_TYPE}" == "TERRAFORM_TFLINT" ]] ||
