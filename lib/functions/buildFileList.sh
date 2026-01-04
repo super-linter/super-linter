@@ -275,6 +275,7 @@ AddToShellFileArrays() {
 
   echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
   echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN"
   echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT"
 }
 

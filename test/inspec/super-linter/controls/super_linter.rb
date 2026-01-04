@@ -203,6 +203,7 @@ control "super-linter-installed-commands" do
     { linter_name: "ruff" },
     { linter_name: "rustfmt" },
     { linter_name: "scalafmt" },
+    { linter_name: "shellharden" },
     { linter_name: "shellcheck" },
     { linter_name: "shfmt" },
     { linter_name: "snakefmt" },
