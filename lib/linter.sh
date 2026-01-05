@@ -48,7 +48,7 @@ RUN_LOCAL="${RUN_LOCAL:-"false"}"
 
 # Dynamically set the default behavior for GitHub Actions log markers because
 # we want to give users a chance to enable this even when running locally, but
-# we still want to provide a default value in case they don't want to explictly
+# we still want to provide a default value in case they don't want to explicitly
 # configure it.
 if [[ "${RUN_LOCAL}" == "true" ]]; then
   DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
@@ -219,7 +219,7 @@ source /action/lib/globals/linterRules.sh
 # shellcheck source=/dev/null
 source /action/lib/globals/languages.sh
 
-# Load runtime depenendencies variables
+# Load runtime dependencies variables
 # shellcheck source=/dev/null
 source /action/lib/globals/runtimeDependencies.sh
 
@@ -296,7 +296,7 @@ GetGitHubVars() {
       GITHUB_BEFORE_SHA="${DEFAULT_BRANCH}"
       debug "Setting GITHUB_BEFORE_SHA to ${GITHUB_BEFORE_SHA}"
     else
-      debug "Skip the initalization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
+      debug "Skip the initialization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
     fi
 
     MULTI_STATUS="false"
@@ -380,7 +380,7 @@ GetGitHubVars() {
         fatal "Error while validating Super-linter configuration for specific GitHub Actions events"
       fi
     else
-      debug "Skip the initalization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
+      debug "Skip the initialization of Git variables because USE_FIND_ALGORITHM is ${USE_FIND_ALGORITHM}"
     fi
   fi
 
@@ -891,11 +891,11 @@ fi
 declare -a PARALLEL_COMMAND
 PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$((LINTING_MAX_PROCS))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
 
-# Run one LANGUAGE per process. Each of these processes will run more processees in parellel if supported
+# Run one LANGUAGE per process. Each of these processes will run more processes in parallel if supported
 PARALLEL_COMMAND+=(--max-lines 1)
 
 if [ "${LOG_DEBUG}" == "true" ]; then
-  debug "LOG_DEBUG is enabled. Enable verbose ouput for parallel"
+  debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
   PARALLEL_COMMAND+=(--verbose)
 fi
 

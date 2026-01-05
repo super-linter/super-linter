@@ -501,7 +501,7 @@ workspace, set `VALIDATE_ALL_CODEBASE` to `true` (the default).
 The following linters and formatters ignore the `VALIDATE_ALL_CODEBASE`
 variable, and always check the entire workspace:
 
-- Biome, because it supports its own mechanim to check changed files only. For
+- Biome, because it supports its own mechanism to check changed files only. For
   more information, about configuring Biome to only check changed files, see
   [Biome VCS integration doc](https://biomejs.dev/guides/integrate-in-vcs/#process-only-changed-files).
 - Trivy, because while some Trivy scanners can work on changed files only,
