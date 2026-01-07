@@ -15,7 +15,7 @@ source "lib/functions/log.sh"
 source "test/testUtils.sh"
 
 # The sqlfluff command needs this, but we don't want to make this test
-# dependant on other files
+# dependent on other files
 # shellcheck disable=SC2034
 SQLFLUFF_LINTER_RULES="SQLFLUFF_LINTER_RULES"
 

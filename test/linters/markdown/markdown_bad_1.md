@@ -5,7 +5,7 @@ This is just standard good markdown.
 ## Second level header
 
 - Here it *is*
-  - Some more indention
+  - Some more indentation
       - why so much?
 
 We're all done **here**.

@@ -27,8 +27,8 @@ In this section, we explain the peculiarities of certain test cases.
 
 From version 0.12.0 SQLFluff requires a dialect to be set, and no longer sets a
 default. This can be provided as a command-line argument, or a `.sqlfluff`
-config file (either in the usualy place for SQLFluff config files, or within the
-folder containg the SQL).
+config file (either in the usually place for SQLFluff config files, or within the
+folder containing the SQL).
 
 For SQLFluff we have added a default `.sqlfluff` config file in its test
 directory.

@@ -196,7 +196,7 @@ function BuildFileList() {
   PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$(($(nproc) * 1))" --results "${PARALLEL_RESULTS_FILE_PATH}" --xargs)
 
   if [ "${LOG_DEBUG}" == "true" ]; then
-    debug "LOG_DEBUG is enabled. Enable verbose ouput for parallel"
+    debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
     PARALLEL_COMMAND+=(--verbose)
   fi
 

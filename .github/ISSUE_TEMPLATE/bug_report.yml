@@ -32,7 +32,7 @@ body:
           required: true
   - type: checkboxes
     attributes:
-      label: Are you resonably sure that it's a Super-linter issue, and not an issue related to a tool that Super-linter runs?
+      label: Are you reasonably sure that it's a Super-linter issue, and not an issue related to a tool that Super-linter runs?
       description: |
         If you encounter a specific issue, ensure that the issue is about
         Super-linter, and not about a tool that Super-linter runs. For example,
