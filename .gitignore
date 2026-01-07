@@ -4,7 +4,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/package-lock.json
 
 # Runtime data
 pids
@@ -94,7 +93,7 @@ test/linters/rust_clippy/**/target
 test/linters/**/src/bin
 test/linters/**/src/obj
 
-# Super-linter ouputs
+# Super-linter outputs
 super-linter-output/
 custom-super-linter-output-directory-name/
 super-linter-github-actions-step-summary-output*

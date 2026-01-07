@@ -31,7 +31,7 @@ DebugVariablesTest() {
 
     # Set LOG_LEVEL to a value that allows to emit all messages (as DEBUG), but
     # that's not DEBUG. This is useful to check that LOG_LEVEL will be set to
-    # DEBUG as exepcted after sourcing log.sh
+    # DEBUG as expected after sourcing log.sh
     LOG_LEVEL="TRACE"
     # shellcheck source=/dev/null
     source "lib/functions/log.sh"

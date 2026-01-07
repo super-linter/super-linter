@@ -53,9 +53,9 @@ module.exports = (robot) ->
     msg.send msg.match[1]
 
   ##################
-  # Whats going on #
+  # What's going on #
   ##################
-  robot.respond /whats going on/i, (msg) ->
+  robot.respond /what's going on/i, (msg) ->
     msg.send "not much... robot stuff..."
 
   ###################

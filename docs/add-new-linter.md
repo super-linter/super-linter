@@ -3,44 +3,6 @@
 If you want to propose a _Pull Request_ to add **new** language support or a new
 tool, do the following.
 
-## Update documentation
-
-Update the `README.md` to include:
-
-- `VALIDATE_<LANGUAGE_NAME>` and `FIX_<LANGUAGE_NAME>` variables.
-- If the new tool lints the entire workspace (`GITHUB_WORKSPACE`), explain that
-  the tool ignores the following variables:
-  - `FILTER_REGEX_EXCLUDE`
-  - `FILTER_REGEX_INCLUDE`
-  - `IGNORE_GENERATED_FILES`
-  - `IGNORE_GITIGNORED_FILES`
-- The table of supported linters and formatters.
-- If the new tool supports its own configuration file search mechanism.
-
-## Provide test cases
-
-1. Create the `test/linters/<LANGUAGE_NAME>` directory.
-2. Provide at least one test case with a file that is supposed to pass
-   validation, with the right file extension if needed:
-   `test/linters/<LANGUAGE_NAME>/<name-of-tool>-good`
-3. Provide at least one test case with a file that is supposed to fail
-   validation, with the right file extension if needed:
-   `test/linters/<LANGUAGE_NAME>/<name-of-tool>-bad`. If the tool supports fix
-   mode, the test case supposed to fail validation should only contain
-   violations that the fix mode can automatically fix. Avoid test cases that
-   fail only because of syntax errors, when possible.
-4. Update all the expected summary reports in `test/data/super-linter-summary`.
-5. If the tool supports check-only mode or fix mode, add the `<LANGUAGE>` to the
-   `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
-
-## Update the test suite
-
-Update the test suite to check for installed packages, the commands that your
-new tool needs in the `PATH`, the expected version command, and for the
-existence of any configuration file you added:
-
-- `test/inspec/super-linter/controls/super_linter.rb`
-
 ## Install the tool
 
 1. Install the latest version of the tool by pointing to specific package or
@@ -129,19 +91,25 @@ existence of any configuration file you added:
      1. Add the new dependency to the `docker` group in the DependaBot
         configuration file.
 
+For each dependency to install, also specify its version. Dynamically fetch the
+latest version from the dependency registry, such as PyPi, npm registry, or
+Docker Hub.
+
 ## Run the new tool
 
 To get the commands and command options to use to run the new tool, refer to the
 command-line interface documentation of the new tool. If it's not available on
 the tool's site, run the new tool with the option to print help text (often:
-`--help` or `-h`).
+`--help` or `-h`). When adding command options to the command, prefer long
+format for clarity.
 
 - Update the orchestration scripts to run the new tool:
-  - `lib/globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array. Use
-    the "name" of the language, then a `_`, and finally the name of the tool. To
-    allow for future additions, use a language name and a tool name for the new
-    item. Example: `PYTHON_RUFF`. In the context of this document, to avoid
-    repetitions we reference this new item as `<LANGUAGE_NAME>`.
+  - `lib/globals/languages.sh`: add a new item to `LANGUAGES_ARRAY` array over a
+    new line. Use the "name" of the language, then a `_`, and finally the name
+    of the tool, all surrounded by double quotes. Keep the array alphabetically
+    ordered. To allow for future additions, use a language name and a tool name
+    for the new item. Example: `PYTHON_RUFF`. In the context of this document,
+    to avoid repetitions we reference this new item as `<LANGUAGE_NAME>`.
 
   - Define the command to invoke the new tool:
     - `lib/functions/linterCommands.sh`: add the command to invoke the tool.
@@ -176,6 +144,47 @@ the tool's site, run the new tool with the option to print help text (often:
 
       - If the tool needs option for both the "check only mode" and the fix
         mode, define both variables as described in the previous points.
+
+## Update documentation
+
+Update the `README.md` to include:
+
+- `VALIDATE_<LANGUAGE_NAME>` and `FIX_<LANGUAGE_NAME>` variables.
+- If the new tool lints the entire workspace (`GITHUB_WORKSPACE`), explain that
+  the tool ignores the following variables:
+  - `FILTER_REGEX_EXCLUDE`
+  - `FILTER_REGEX_INCLUDE`
+  - `IGNORE_GENERATED_FILES`
+  - `IGNORE_GITIGNORED_FILES`
+- The table of supported linters and formatters.
+- If the new tool supports its own configuration file search mechanism.
+
+## Provide test cases
+
+1. Create the `test/linters/<lowercase_language_name>` directory. Use the same
+   `<LANGUAGE_NAME>` that you use to add the new tool to the `LANGUAGES_ARRAY`,
+   all lowercase. For example, if the `<LANGUAGE_NAME>` is `PYTHON_RUFF`, the
+   test case directory name is `python_ruff`.
+2. Provide at least one test case with a file that is supposed to pass
+   validation, with the right file extension if needed:
+   `test/linters/<LANGUAGE_NAME>/<name-of-tool>-good`
+3. Provide at least one test case with a file that is supposed to fail
+   validation, with the right file extension if needed:
+   `test/linters/<LANGUAGE_NAME>/<name-of-tool>-bad`. If the tool supports fix
+   mode, the test case supposed to fail validation should only contain
+   violations that the fix mode can automatically fix. Avoid test cases that
+   fail only because of syntax errors, when possible.
+4. Update all the expected summary reports in `test/data/super-linter-summary`.
+5. If the tool supports check-only mode or fix mode, add the `<LANGUAGE_NAME>`
+   to the `LANGUAGES_WITH_FIX_MODE` array in `test/testUtils.sh`
+
+## Update the test suite
+
+Update the test suite to check for installed packages, the commands that your
+new tool needs in the `PATH`, the expected version command, and for the
+existence of any configuration file you added:
+
+- `test/inspec/super-linter/controls/super_linter.rb`
 
 ## Configure the new tool
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # Disable ununsed variables warning because we
+# shellcheck disable=SC2034 # Disable unused variables warning because we
 # source this script and use these variables as globals
 
 # Load linter commands options so we don't need to load it every time we source

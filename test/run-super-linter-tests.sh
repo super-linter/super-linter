@@ -480,7 +480,7 @@ SUPER_LINTER_EXIT_CODE=$?
 # Enable the errexit option that we check later
 set -o errexit
 
-# Remove leftovers after runnint tests because we don't want other tests
+# Remove leftovers after running tests because we don't want other tests
 # to consider them
 RemoveTestLeftovers
 

@@ -158,7 +158,7 @@ function ValidateValidationVariables() {
       if [ -z "${!VALIDATE_LANGUAGE:-}" ]; then
         # Flag was not set, default to:
         # - true if the configuration provided any false value -> enable linters that the user didn't explicitly disable
-        # - false if the configuration didn't provid any false value -> disable linters that the user didn't explicitly enable
+        # - false if the configuration didn't provide any false value -> disable linters that the user didn't explicitly enable
         eval "${VALIDATE_LANGUAGE}='$ANY_FALSE'"
       fi
     else
@@ -584,7 +584,7 @@ function ValidateSuperLinterSummaryOutputPath() {
     error "SUPER_LINTER_SUMMARY_OUTPUT_PATH (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) is not a file."
     return 1
   fi
-  debug "Super-linter summary ouput path passed validation"
+  debug "Super-linter summary output path passed validation"
 }
 
 ValidateCommitlintConfiguration() {
@@ -598,7 +598,7 @@ ValidateCommitlintConfiguration() {
     COMMITLINT_VERSION_CHECK_OUTPUT="$(commitlint --cwd "${GITHUB_WORKSPACE}" --last)"
     local COMMITLINT_EXIT_CODE=$?
     debug "Commitlint configuration check output:\n${COMMITLINT_VERSION_CHECK_OUTPUT}"
-    # Commitlint exits with 9 if no configuration file is avaialble.
+    # Commitlint exits with 9 if no configuration file is available.
     # Ref: https://github.com/conventional-changelog/commitlint/pull/4143
     # Ref: https://commitlint.js.org/reference/cli.html
     # Set this here so we can reuse this variable for tests

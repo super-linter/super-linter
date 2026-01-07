@@ -167,7 +167,7 @@ function LintCodebase() {
   # Dynamically add arguments and commands to each linter command as needed
   if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
     endGitHubActionsLogGroup "${FILE_TYPE}"
-    fatal "Error while inizializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
+    fatal "Error while initializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
   fi
   InitInputConsumeCommands
 
