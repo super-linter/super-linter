@@ -1,0 +1,4 @@
+[codespell]
+check-filenames =
+check-hidden =
+skip = */package-lock.json,*.log,super-linter-output,.git

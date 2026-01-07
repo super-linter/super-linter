@@ -136,6 +136,7 @@ updates:
           - black
           - cfn-lint
           - checkov
+          - codespell
           - cpplint
           - flake8
           - isort

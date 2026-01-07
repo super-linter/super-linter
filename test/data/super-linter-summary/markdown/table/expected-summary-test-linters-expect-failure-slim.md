@@ -79,6 +79,7 @@
 | RUBY                       | Fail ❌           |
 | SCALAFMT                   | Fail ❌           |
 | SHELL_SHFMT                | Fail ❌           |
+| SPELL_CODESPELL            | Fail ❌           |
 | SNAKEMAKE_LINT             | Fail ❌           |
 | SNAKEMAKE_SNAKEFMT         | Fail ❌           |
 | STATES                     | Fail ❌           |

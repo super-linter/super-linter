@@ -92,6 +92,7 @@
 | SHELL_SHFMT                  | Fail ❌           |
 | SNAKEMAKE_LINT               | Fail ❌           |
 | SNAKEMAKE_SNAKEFMT           | Fail ❌           |
+| SPELL_CODESPELL              | Fail ❌           |
 | STATES                       | Fail ❌           |
 | SQLFLUFF                     | Fail ❌           |
 | TERRAFORM_FMT                | Fail ❌           |

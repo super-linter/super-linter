@@ -81,6 +81,7 @@
 | SHELL_SHFMT                | Pass ✅           |
 | SNAKEMAKE_LINT             | Pass ✅           |
 | SNAKEMAKE_SNAKEFMT         | Pass ✅           |
+| SPELL_CODESPELL            | Pass ✅           |
 | STATES                     | Pass ✅           |
 | SQLFLUFF                   | Pass ✅           |
 | TERRAFORM_FMT              | Pass ✅           |
