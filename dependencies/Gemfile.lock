@@ -78,7 +78,7 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.8.0)
+    rubocop-rspec (3.9.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     rubocop-rspec_rails (2.32.0)
@@ -107,7 +107,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.26.1)
   rubocop-rails (~> 2.34)
   rubocop-rake (~> 0.7.1)
-  rubocop-rspec (~> 3.8.0)
+  rubocop-rspec (~> 3.9.0)
   rubocop-rspec_rails (~> 2.32)
 
 BUNDLED WITH
