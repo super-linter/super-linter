@@ -1,0 +1,2 @@
+[codespell]
+skip = */package-lock.json,*.log,.git

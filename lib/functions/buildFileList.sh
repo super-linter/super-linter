@@ -466,6 +466,7 @@ BuildFileArrays() {
 
     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GIT_MERGE_CONFLICT_MARKERS"
     echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-GITLEAKS"
+    echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SPELL_CODESPELL"
 
     if IsAnsibleDirectory "${FILE}"; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
@@ -517,7 +518,7 @@ BuildFileArrays() {
       [ "${FILE_TYPE}" == "ksh" ]; then
       AddToShellFileArrays "${FILE}"
     elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
-      [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then
+      [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then # codespell:ignore edn
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOJURE"
     elif [ "${FILE_TYPE}" == "cpp" ] || [ "${FILE_TYPE}" == "h" ] ||
       [ "${FILE_TYPE}" == "cc" ] || [ "${FILE_TYPE}" == "hpp" ] ||

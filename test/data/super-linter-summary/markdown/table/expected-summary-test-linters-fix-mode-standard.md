@@ -54,6 +54,7 @@
 | SCALAFMT                     | Pass ✅           |
 | SHELL_SHFMT                  | Pass ✅           |
 | SNAKEMAKE_SNAKEFMT           | Pass ✅           |
+| SPELL_CODESPELL              | Pass ✅           |
 | SQLFLUFF                     | Pass ✅           |
 | TERRAFORM_FMT                | Pass ✅           |
 | TSX                          | Fail ❌           |
