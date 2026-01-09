@@ -471,6 +471,14 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ANSIBLE"
     fi
 
+    # Check for Renovate files because they might be JSON5 files that we
+    # also want to lint as JSON5 files.
+    # See https://docs.renovatebot.com/configuration-options/
+    if [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
+      [ "${BASE_FILE}" == ".renovaterc" ] ||
+      [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
+    fi
     # Handle test cases for tools that lint the entire workspace
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ -d "${FILE}" ]]; then
       # Handle BIOME_FORMAT test cases
@@ -764,10 +772,6 @@ BuildFileArrays() {
       if DetectKubernetesFile "${FILE}"; then
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-KUBERNETES_KUBECONFORM"
       fi
-    # See https://docs.renovatebot.com/configuration-options/
-    elif [[ "${BASE_FILE}" =~ renovate.json5? ]] ||
-      [ "${BASE_FILE}" == ".renovaterc" ] || [[ "${BASE_FILE}" =~ .renovaterc.json5? ]]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-RENOVATE"
     else
       # Fallback option: look at the file contents
       if ! CheckFileType "${FILE}"; then
