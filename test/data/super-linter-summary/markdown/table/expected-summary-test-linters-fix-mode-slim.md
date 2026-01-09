@@ -45,10 +45,11 @@
 | SHELL_SHFMT           | Pass ✅           |
 | SNAKEMAKE_SNAKEFMT    | Pass ✅           |
 | SQLFLUFF              | Pass ✅           |
-| TERRAFORM_FMT         | Pass ✅           |
-| TSX                   | Fail ❌           |
-| TYPESCRIPT_ES         | Pass ✅           |
-| TYPESCRIPT_PRETTIER   | Pass ✅           |
+| TERRAFORM_FMT             | Pass ✅           |
+| TSX                       | Pass ✅           |
+| TWIGCS                    | Pass ✅           |
+| TYPESCRIPT_ES             | Pass ✅           |
+| TYPESCRIPT_PRETTIER       | Pass ✅           |
 | VUE                   | Pass ✅           |
 | VUE_PRETTIER          | Pass ✅           |
 | YAML_PRETTIER         | Pass ✅           |

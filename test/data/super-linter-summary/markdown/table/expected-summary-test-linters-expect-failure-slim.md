@@ -88,6 +88,7 @@
 | TERRAGRUNT                 | Fail ❌           |
 | TRIVY                      | Fail ❌           |
 | TSX                        | Fail ❌           |
+| TWIGCS                     | Fail ❌           |
 | TYPESCRIPT_ES              | Fail ❌           |
 | TYPESCRIPT_PRETTIER        | Fail ❌           |
 | VUE                        | Fail ❌           |

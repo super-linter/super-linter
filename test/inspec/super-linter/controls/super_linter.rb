@@ -215,6 +215,7 @@ control "super-linter-installed-commands" do
     { linter_name: "textlint" },
     { linter_name: "tflint" },
     { linter_name: "trivy" },
+    { linter_name: "twig-cs-fixer" },
     { linter_name: "xmllint" },
     { linter_name: "yamllint" },
     { linter_name: "zizmor" },
