@@ -89,6 +89,7 @@
 | RUST_2024                    | Fail ❌           |
 | RUST_CLIPPY                  | Fail ❌           |
 | SCALAFMT                     | Fail ❌           |
+| SHELL_SHELLHARDEN            | Fail ❌           |
 | SHELL_SHFMT                  | Fail ❌           |
 | SNAKEMAKE_LINT               | Fail ❌           |
 | SNAKEMAKE_SNAKEFMT           | Fail ❌           |
