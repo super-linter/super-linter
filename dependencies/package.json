@@ -23,7 +23,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-vue": "^10.6.2",
     "htmlhint": "^1.8.0",
-    "jscpd": "^4.0.5",
+    "jscpd": "^4.0.7",
     "markdownlint-cli": "^0.47.0",
     "next": "^16.1.1",
     "npm-groovy-lint": "^16.1.1",
