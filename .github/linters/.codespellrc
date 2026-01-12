@@ -1,0 +1,6 @@
+[codespell]
+; TODO: enable check-filenames after
+; https://github.com/codespell-project/codespell/issues/3854 is resolved
+; check-filenames =
+check-hidden =
+skip = */package-lock.json,*.log,super-linter-output,.git
