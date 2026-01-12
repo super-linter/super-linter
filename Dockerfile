@@ -13,7 +13,7 @@ FROM ghcr.io/terraform-linters/tflint:v0.60.0 AS tflint
 FROM alpine/helm:4.0.4 AS helm
 FROM golang:1.25.5-alpine AS golang
 FROM golangci/golangci-lint:v2.8.0 AS golangci-lint
-FROM goreleaser/goreleaser:v2.13.2 AS goreleaser
+FROM goreleaser/goreleaser:v2.13.3 AS goreleaser
 FROM hadolint/hadolint:v2.14.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.8.0 AS kustomize
 FROM hashicorp/terraform:1.14.3 AS terraform
@@ -24,7 +24,7 @@ FROM rhysd/actionlint:1.7.10 AS actionlint
 FROM scalameta/scalafmt:v3.10.2 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.0 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
-FROM ghcr.io/clj-kondo/clj-kondo:2025.12.23-alpine AS clj-kondo
+FROM ghcr.io/clj-kondo/clj-kondo:2026.01.12-alpine AS clj-kondo
 FROM dart:3.10.7-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:10.0.101-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.9.3 AS php-composer
