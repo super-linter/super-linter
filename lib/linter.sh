@@ -53,9 +53,12 @@ RUN_LOCAL="${RUN_LOCAL:-"false"}"
 if [[ "${RUN_LOCAL}" == "true" ]]; then
   DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="false"
   DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="false"
+  DEFAULT_ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT="false"
 else
   DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true"
   DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="true"
+  # shellcheck disable=SC2034 # Variable is referenced in other scripts
+  DEFAULT_ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT="true"
 fi
 # Let users configure GitHub Actions log markers regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_GROUP_TITLE="${ENABLE_GITHUB_ACTIONS_GROUP_TITLE:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_GROUP_TITLE}"}"
@@ -70,6 +73,11 @@ fi
 debug "GitHub server URL: ${GITHUB_SERVER_URL}"
 debug "GitHub API URL: ${GITHUB_API_URL}"
 debug "GitHub meta URL: ${GITHUB_META_URL}"
+
+# Sourcing it here because we need to initialize default values and GitHub URLs
+# first
+# shellcheck source=/dev/null
+source /action/lib/globals/output.sh
 
 # Let users configure GitHub Actions step summary regardless of running locally or not
 ENABLE_GITHUB_ACTIONS_STEP_SUMMARY="${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY:-"${DEFAULT_ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}"}"
@@ -346,6 +354,13 @@ GetGitHubVars() {
           fatal "Failed to update GITHUB_SHA for ${GITHUB_EVENT_NAME} event: ${GITHUB_SHA}"
         fi
         debug "Updated GITHUB_SHA: ${GITHUB_SHA}"
+
+        GITHUB_PULL_REQUEST_NUMBER="$(GetPullRequestNumber "${GITHUB_EVENT_PATH}")"
+        RET_CODE=$?
+        if [[ "${RET_CODE}" -gt 0 ]]; then
+          fatal "Failed to get GITHUB_PULL_REQUEST_NUMBER. Output: ${GITHUB_PULL_REQUEST_NUMBER:-"not set"}"
+        fi
+        debug "Successfully found 'number' for ${GITHUB_EVENT_NAME} event: ${GITHUB_PULL_REQUEST_NUMBER}"
       elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
         local FORCE_PUSH_EVENT
         FORCE_PUSH_EVENT=$(GetGitHubEventForced "${GITHUB_EVENT_PATH}")
@@ -384,7 +399,8 @@ GetGitHubVars() {
     fi
   fi
 
-  if [ "${MULTI_STATUS}" == "true" ]; then
+  if [[ "${MULTI_STATUS}" == "true" ]] ||
+    [[ "${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true" ]]; then
 
     if [[ ${RUN_LOCAL} == "true" ]]; then
       # Safety check. This shouldn't occur because we forcefully set MULTI_STATUS=false above
@@ -410,62 +426,18 @@ GetGitHubVars() {
       info "Successfully found GITHUB_RUN_ID ${GITHUB_RUN_ID}"
     fi
 
+    # Initialize GitHub API URLs
+
     GITHUB_STATUS_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
-    debug "GitHub Status URL: ${GITHUB_STATUS_URL}"
+    debug "Setting GITHUB_STATUS_URL to: ${GITHUB_STATUS_URL}"
 
-    GITHUB_STATUS_TARGET_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-    debug "GitHub Status target URL: ${GITHUB_STATUS_TARGET_URL}"
+    GITHUB_WORKFLOW_RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+    debug "Setting GITHUB_WORKFLOW_RUN_URL to: ${GITHUB_WORKFLOW_RUN_URL}"
+
+    GITHUB_ISSUES_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues"
+    debug "Setting GITHUB_ISSUES_URL to: ${GITHUB_ISSUES_URL}"
   else
-    debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}"
-  fi
-}
-
-CallStatusAPI() {
-  LANGUAGE="${1}" # language that was validated
-  STATUS="${2}"   # success | error
-  SUCCESS_MSG='No errors were found in the linting process'
-  FAIL_MSG='Errors were detected, please view logs'
-  MESSAGE='' # Message to send to status API
-
-  debug "Calling Multi-Status API for $LANGUAGE with status $STATUS"
-
-  ######################################
-  # Check the status to create message #
-  ######################################
-  if [ "${STATUS}" == "success" ]; then
-    # Success
-    MESSAGE="${SUCCESS_MSG}"
-  else
-    # Failure
-    MESSAGE="${FAIL_MSG}"
-  fi
-
-  ##########################################################
-  # Check to see if were enabled for multi Status mesaages #
-  ##########################################################
-  if [ "${MULTI_STATUS}" == "true" ] && [ -n "${GITHUB_TOKEN}" ] && [ -n "${GITHUB_REPOSITORY}" ]; then
-
-    # make sure we honor DISABLE_ERRORS
-    if [ "${DISABLE_ERRORS}" == "true" ]; then
-      STATUS="success"
-    fi
-
-    ##############################################
-    # Call the status API to create status check #
-    ##############################################
-    if ! SEND_STATUS_CMD=$(
-      curl -f -s --show-error -X POST \
-        --url "${GITHUB_STATUS_URL}" \
-        -H 'accept: application/vnd.github.v3+json' \
-        -H "authorization: Bearer ${GITHUB_TOKEN}" \
-        -H 'content-type: application/json' \
-        -d "{ \"state\": \"${STATUS}\",
-        \"target_url\": \"${GITHUB_STATUS_TARGET_URL}\",
-        \"description\": \"${MESSAGE}\", \"context\": \"--> Linted: ${LANGUAGE}\"
-      }" 2>&1
-    ); then
-      info "Failed to call GitHub Status API: ${SEND_STATUS_CMD}"
-    fi
+    debug "Skip GITHUB_TOKEN, GITHUB_REPOSITORY, and GITHUB_RUN_ID validation because we don't need these variables for GitHub Actions status reports. MULTI_STATUS: ${MULTI_STATUS}, ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: ${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}"
   fi
 }
 
@@ -478,6 +450,12 @@ Footer() {
 
   local SUPER_LINTER_EXIT_CODE
   SUPER_LINTER_EXIT_CODE=0
+
+  declare -a FAILED_LANGUAGES
+  FAILED_LANGUAGES=()
+
+  local SUPER_LINTER_PARALLEL_STDOUT_PREFIX="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-"
+  local SUPER_LINTER_PARALLEL_STDERR_PREFIX="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-"
 
   if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
     debug "Saving Super-linter summary to ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
@@ -500,6 +478,7 @@ Footer() {
 
       if [[ ${ERROR_COUNTER} -ne 0 ]]; then
         error "Errors found in ${LANGUAGE}"
+        FAILED_LANGUAGES+=("${LANGUAGE}")
 
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
           WriteSummaryLineFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
@@ -508,23 +487,25 @@ Footer() {
         # Print stdout and stderr in case the log level is higher than INFO
         # so users still get feedback. Print output as error so it gets emitted
         if [[ "${LOG_VERBOSE}" != "true" ]]; then
-          local STDOUT_LINTER_FILE_PATH
-          STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stdout-${LANGUAGE}"
+          local STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDOUT_PREFIX}${LANGUAGE}"
           if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
             error "Stdout contents for ${LANGUAGE}:\n------\n$(cat "${STDOUT_LINTER_FILE_PATH}")\n------"
           else
             debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
           fi
 
-          local STDERR_LINTER_FILE_PATH
-          STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-stderr-${LANGUAGE}"
+          local STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDERR_PREFIX}${LANGUAGE}"
           if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
             error "Stderr contents for ${LANGUAGE}:\n------\n$(cat "${STDERR_LINTER_FILE_PATH}")\n------"
           else
             debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
           fi
         fi
-        CallStatusAPI "${LANGUAGE}" "error"
+        if [[ "${MULTI_STATUS}" == "true" ]]; then
+          if ! CreateGitHubCommitStatus "${LANGUAGE}" "error"; then
+            warn "Error while creating GitHub commit status for ${LANGUAGE}."
+          fi
+        fi
         SUPER_LINTER_EXIT_CODE=1
         debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
       elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
@@ -532,7 +513,11 @@ Footer() {
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
           WriteSummaryLineSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
-        CallStatusAPI "${LANGUAGE}" "success"
+        if [[ "${MULTI_STATUS}" == "true" ]]; then
+          if ! CreateGitHubCommitStatus "${LANGUAGE}" "success"; then
+            warn "Error while creating GitHub commit status for ${LANGUAGE}."
+          fi
+        fi
         ANY_LINTER_SUCCESS="true"
         debug "Set ANY_LINTER_SUCCESS to ${ANY_LINTER_SUCCESS} because ${LANGUAGE} reported a success"
       fi
@@ -562,6 +547,41 @@ Footer() {
   fi
 
   if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
+    WriteSummaryFooterMoreInfo "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+    WriteSummaryFooterSuperLinterInfo "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+
+    for LANGUAGE in "${FAILED_LANGUAGES[@]}"; do
+      local STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDOUT_PREFIX}${LANGUAGE}"
+      local STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDERR_PREFIX}${LANGUAGE}"
+      debug "Writing stdout (${STDOUT_LINTER_FILE_PATH}) and stderr (${STDERR_LINTER_FILE_PATH}) to summary file for ${LANGUAGE}"
+      local BODY=""
+      if [[ -s "${STDOUT_LINTER_FILE_PATH}" ]]; then
+        debug "Writing stdout for ${LANGUAGE} to body"
+        if ! BODY+="$(<"${STDOUT_LINTER_FILE_PATH}")"; then
+          fatal "Error while loading stdout for ${LANGUAGE}"
+        fi
+      fi
+
+      if [[ -s "${STDERR_LINTER_FILE_PATH}" ]] &&
+        # Exclude Trivy stderr because it only contains low-level debug info
+        [[ "${LANGUAGE}" != "TRIVY" ]]; then
+        debug "Writing stderr for ${LANGUAGE} to body"
+        if ! BODY+="$(<"${STDERR_LINTER_FILE_PATH}")"; then
+          fatal "Error while writing stderr for ${LANGUAGE}"
+        fi
+      fi
+
+      if [[ -n "${BODY}" ]]; then
+        debug "Writing body for ${LANGUAGE} to summary"
+        if ! BODY="$(WriteMarkdownCodeBlock "${BODY}" "text")"; then
+          fatal "Error while writing markdown code block for summary details"
+        fi
+        if ! WriteMarkdownCollapsedSection "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}" "${BODY}"; then
+          fatal "Error while writing summary details for ${LANGUAGE} to ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
+        fi
+      fi
+    done
+
     if ! FormatSuperLinterSummaryFile "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"; then
       fatal "Error while formatting the Super-linter summary file."
     fi
@@ -572,6 +592,15 @@ Footer() {
     debug "Appending Super-linter summary to ${GITHUB_STEP_SUMMARY}"
     if ! cat "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" >>"${GITHUB_STEP_SUMMARY}"; then
       fatal "Error while appending the content of ${SUPER_LINTER_SUMMARY_OUTPUT_PATH} to ${GITHUB_STEP_SUMMARY}"
+    fi
+  fi
+
+  if [[ "${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true" ]] &&
+    [[ "${GITHUB_EVENT_NAME:-}" == "pull_request" ]] &&
+    [[ -n "${GITHUB_PULL_REQUEST_NUMBER:-}" ]]; then
+    debug "Posting the Super-linter summary (${SUPER_LINTER_SUMMARY_OUTPUT_PATH}) as a pull request (number: ${GITHUB_PULL_REQUEST_NUMBER}) comment"
+    if ! CreateGitHubPullRequestSummaryComment "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
+      warn "Error while posting GitHub pull request comment."
     fi
   fi
 
@@ -630,9 +659,18 @@ cleanup() {
       rm -rf "${R_RULES_FILE_PATH_IN_ROOT}"
     fi
 
-    # Define this variable here so we can rely on it as soon as possible
-    local LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
-    debug "LOG_FILE_PATH: ${LOG_FILE_PATH}"
+    # Fall back in case Super-linter crashed before initializing LOG_FILE_PATH
+    if [[ ! -v LOG_FILE_PATH ]]; then
+      local LOG_FILE_PATH=""
+      if [[ -d "${GITHUB_WORKSPACE:-}" ]]; then
+        LOG_FILE_PATH="${GITHUB_WORKSPACE:-}/"
+      elif [[ -d "${DEFAULT_WORKSPACE:-}" ]]; then
+        LOG_FILE_PATH="${DEFAULT_WORKSPACE:-}/"
+      fi
+      LOG_FILE_PATH="${LOG_FILE_PATH}${LOG_FILE}"
+      debug "LOG_FILE_PATH is not defined. Falling back to ${LOG_FILE_PATH}"
+    fi
+
     if [ "${CREATE_LOG_FILE}" = "true" ]; then
       if [[ "${REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT}" == "true" ]] &&
         ! RemoveAnsiColorCodesFromFile "${LOG_TEMP}"; then
@@ -691,6 +729,12 @@ if ! InitializeGitHubWorkspace "${DEFAULT_WORKSPACE:-}"; then
   fatal "Error while initializing the GITHUB_WORKSPACE variable"
 fi
 
+# Define log file path as soon as possible (so after initializing the
+# GITHUB_WORKSPACE variable) because the cleanup function depends on that
+LOG_FILE_PATH="${GITHUB_WORKSPACE}/${LOG_FILE}"
+export LOG_FILE_PATH
+debug "Super-linter log file path: ${LOG_FILE_PATH}"
+
 if ! InitializeDefaultBranch "${USE_FIND_ALGORITHM}" "${GITHUB_EVENT_PATH:-}" "${RUN_LOCAL}"; then
   fatal "Error while initializing the DEFAULT_BRANCH variable"
 fi
@@ -722,10 +766,11 @@ SUPER_LINTER_SUMMARY_OUTPUT_PATH="${SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH}/${S
 export SUPER_LINTER_SUMMARY_OUTPUT_PATH
 debug "Super-linter summary output path: ${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
 
-if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]] && [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "false" ]]; then
-  debug "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}, but SAVE_SUPER_LINTER_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}"
+if [[ ("${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" || "${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true") ]] &&
+  [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "false" ]]; then
+  warn "ENABLE_GITHUB_ACTIONS_STEP_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}, ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT is set to ${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}, but SAVE_SUPER_LINTER_SUMMARY is set to ${SAVE_SUPER_LINTER_SUMMARY}. Set SAVE_SUPER_LINTER_SUMMARY to true if you set ENABLE_GITHUB_ACTIONS_STEP_SUMMARY or ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT to true."
   SAVE_SUPER_LINTER_SUMMARY="true"
-  debug "Set SAVE_SUPER_LINTER_SUMMARY to ${SAVE_SUPER_LINTER_SUMMARY} because we need to append its contents to ${GITHUB_STEP_SUMMARY} later"
+  debug "Setting SAVE_SUPER_LINTER_SUMMARY to ${SAVE_SUPER_LINTER_SUMMARY}"
 fi
 
 # Ensure that the main output directory and files exist because the user might not have created them

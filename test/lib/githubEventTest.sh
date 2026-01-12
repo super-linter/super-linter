@@ -134,6 +134,29 @@ function GetPullRequestHeadShaTest() {
 
 GetPullRequestHeadShaTest
 
+GetPullRequestNumberTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_PULL_REQUEST_NUMBER
+  if ! GITHUB_PULL_REQUEST_NUMBER=$(GetPullRequestNumber "test/data/github-event/github-event-pull-request-multiple-commits.json"); then
+    fatal "Failed to get pull request number"
+  fi
+
+  debug "GITHUB_PULL_REQUEST_NUMBER: ${GITHUB_PULL_REQUEST_NUMBER}"
+
+  local EXPECTED_GITHUB_PULL_REQUEST_NUMBER
+  EXPECTED_GITHUB_PULL_REQUEST_NUMBER="6637"
+
+  if [ "${GITHUB_PULL_REQUEST_NUMBER}" != "${EXPECTED_GITHUB_PULL_REQUEST_NUMBER}" ]; then
+    fatal "GITHUB_PULL_REQUEST_NUMBER (${GITHUB_PULL_REQUEST_NUMBER}) is not equal to: ${EXPECTED_GITHUB_PULL_REQUEST_NUMBER}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+GetPullRequestNumberTest
+
 GetGitHubEventForcedTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"

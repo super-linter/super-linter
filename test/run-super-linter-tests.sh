@@ -87,6 +87,7 @@ configure_command_arguments_for_test_git_repository() {
     fi
   fi
 
+  COMMAND_TO_RUN+=(-e ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT=false)
   COMMAND_TO_RUN+=(-e MULTI_STATUS=false)
   COMMAND_TO_RUN+=(-e VALIDATE_ALL_CODEBASE="${VALIDATE_ALL_CODEBASE:-"false"}")
   COMMAND_TO_RUN+=(-e VALIDATE_JSON="true")
@@ -286,11 +287,13 @@ run_test_cases_save_super_linter_output() {
 run_test_cases_save_super_linter_output_custom_path() {
   run_test_cases_save_super_linter_output
   SUPER_LINTER_OUTPUT_DIRECTORY_NAME="custom-super-linter-output-directory-name"
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-success-custom-output-dir-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 run_test_case_custom_summary() {
   run_test_cases_expect_success
   SUPER_LINTER_SUMMARY_FILE_NAME="custom-github-step-summary.md"
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-success-custom-summary-file-name-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 configure_git_worktree_test_cases() {
@@ -378,6 +381,7 @@ run_test_case_fix_mode() {
   cp -rv "test/linters-config/fix-mode/." "${FIX_MODE_LINTERS_CONFIG_DIR}/"
   cp -rv ".github/linters/eslint.config.mjs" "${FIX_MODE_LINTERS_CONFIG_DIR}/"
   cp -rv ".editorconfig" "${GIT_REPOSITORY_PATH}/"
+  cp -rv "prettier.config.js" "${GIT_REPOSITORY_PATH}/"
   git -C "${GIT_REPOSITORY_PATH}" add .
   git -C "${GIT_REPOSITORY_PATH}" commit --no-verify -m "feat: add fix mode test cases"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
@@ -577,14 +581,14 @@ else
 fi
 
 if [ -n "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH:-}" ]; then
-  if ! AssertFileContentsMatchIgnoreHtmlComments "${SUPER_LINTER_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"; then
+  if ! AssertSuperLinterSummaryMatches "${SUPER_LINTER_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}" "${SUPER_LINTER_EXIT_CODE}"; then
     debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else
     debug "Super-linter summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
   fi
 
-  if ! AssertFileContentsMatchIgnoreHtmlComments "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}"; then
+  if ! AssertSuperLinterSummaryMatches "${SUPER_LINTER_GITHUB_STEP_SUMMARY_FILE_PATH}" "${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH}" "${SUPER_LINTER_EXIT_CODE}"; then
     debug "Super-linter GitHub step summary (${SUPER_LINTER_SUMMARY_FILE_PATH}) contents don't match with the expected contents (${EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH})"
     exit 1
   else

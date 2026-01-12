@@ -487,6 +487,7 @@ control "super-linter-validate-files" do
     "/action/lib/globals/languages.sh",
     "/action/lib/globals/linterCommandsOptions.sh",
     "/action/lib/globals/linterRules.sh",
+    "/action/lib/globals/output.sh",
     "/action/lib/globals/runtimeDependencies.sh",
     "/action/lib/globals/validation.sh",
     "/action/lib/.automation/actionlint.yml",
