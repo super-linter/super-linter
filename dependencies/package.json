@@ -1,7 +1,7 @@
 {
   "name": "super-linter",
   "dependencies": {
-    "@babel/eslint-parser": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.6",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@biomejs/biome": "^2.3.11",
