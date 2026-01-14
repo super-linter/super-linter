@@ -38,6 +38,7 @@ updates:
       npm:
         applies-to: version-updates
         patterns:
+          - "@babel/eslint-parser"
           - "@babel/preset-react"
           - "@babel/preset-typescript"
           - "@biomejs/biome"
@@ -48,6 +49,7 @@ updates:
           - eslint
           - "eslint-config*"
           - "eslint-plugin*"
+          - jscpd
           - npm-groovy-lint
           - "react*"
           - "stylelint*"
