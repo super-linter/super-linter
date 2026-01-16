@@ -1,33 +1,6 @@
 ---
-##########################
-##########################
-## Ansible Linter rules ##
-##########################
-##########################
-
-#############################
-# Exclude paths from linter #
-#############################
-# exclude_paths:
-
-########################
-# Make output parsable #
-########################
-parseable: true
-
-#######################
-# Set output to quiet #
-#######################
 quiet: true
 
-#####################
-# Path to rules dir #
-#####################
-# rulesdir:
-
-################
-# Tags to skip #
-################
 skip_list:
   - "empty-string-compare" # Allow compare to empty string
   - "204" # Allow string length greater than 160 chars
@@ -38,17 +11,5 @@ skip_list:
   - "unnamed-task" # Allow tasks without a name
   - "yaml" # Disable YAML linting since it's done by yamllint
 
-##################
-# Tags to follow #
-##################
-# tags:
-
-#############
-# Use rules #
-#############
 use_default_rules: true
-
-#################
-# Set verbosity #
-#################
 verbosity: 1
