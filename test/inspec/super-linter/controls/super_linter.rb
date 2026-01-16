@@ -367,7 +367,6 @@ control "super-linter-installed-npm-packages" do
     "renovate",
     "stylelint",
     "stylelint-config-recommended-scss",
-    "stylelint-config-sass-guidelines",
     "stylelint-config-standard",
     "stylelint-config-standard-scss",
     "stylelint-prettier",

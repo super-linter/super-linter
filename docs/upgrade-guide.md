@@ -14,9 +14,15 @@ This document helps you upgrade from a super-linter version to newer ones:
 
 This section helps you upgrade from super-linter `>=v8.2.0` to `v8.4.0`.
 
+### stylelint-config-sass-guidelines
+
+Super-linter `v8.4.0` doesn't ship the `stylelint-config-sass-guidelines`
+anymore because it's not being maintained anymore, and it's blocking `stylelint`
+updates.
+
 ### Terrascan
 
-Super-linter `v8.4.0` removes support for Terrascan because it's not being
+Super-linter `v8.4.0` removes support for theTerrascan because it's not being
 maintained anymore.
 
 You can remove the following variables from your Super-linter configuration:
