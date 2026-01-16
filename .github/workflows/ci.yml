@@ -225,6 +225,10 @@ jobs:
     needs: build-container-image
     permissions:
       contents: read
+      issues: write
+      packages: read
+      pull-requests: write
+      statuses: write
     strategy:
       matrix:
         images:

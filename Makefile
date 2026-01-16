@@ -31,6 +31,7 @@ test: \
 	test-github-event-merge-commit-push-tag \
 	test-github-event-merge-group \
 	test-github-event-repository-dispatch \
+	test-github-event-pr-event-multiple-commits \
 	test-github-event-push-event-multiple-commits-default-branch \
 	test-github-event-push-event-multiple-commits-use-find-algorithm-default-branch \
 	test-github-event-push-initial-commit-multiple-commits \

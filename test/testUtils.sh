@@ -185,6 +185,63 @@ AssertFileContentsMatchIgnoreHtmlComments() {
   fi
 }
 
+AssertSuperLinterSummaryMatches() {
+  local ACTUAL_SUMMARY_FILE_PATH="${1}" && shift
+  local EXPECTED_SUMMARY_FILE_PATH="${1}" && shift
+  local EXIT_CODE="${1}" && shift
+
+  # 1. Verify that the actual summary starts with the content of the expected summary
+  # We ignore comments because Prettier might add blank lines or other minor differences
+  # that we handle in AssertFileContentsMatchIgnoreHtmlComments usually, but here we need prefix matching.
+  # However, for simplicity and robustness given the user requirement "starts with the exact content",
+  # let's try to match the expected content against the head of the actual content.
+
+  local EXPECTED_CONTENT_WITHOUT_COMMENTS
+  EXPECTED_CONTENT_WITHOUT_COMMENTS="$(grep -vE '^\s*<!--' "${EXPECTED_SUMMARY_FILE_PATH}" | cat -s)"
+
+  # calculating the number of lines in EXPECTED_CONTENT_WITHOUT_COMMENTS to grab the same amount from ACTUAL
+  local EXPECTED_LINE_COUNT
+  EXPECTED_LINE_COUNT="$(echo "${EXPECTED_CONTENT_WITHOUT_COMMENTS}" | wc -l)"
+
+  # Get the first EXPECTED_LINE_COUNT lines from ACTUAL_SUMMARY_FILE_PATH (ignoring comments)
+  local ACTUAL_CONTENT_WITHOUT_COMMENTS
+  ACTUAL_CONTENT_WITHOUT_COMMENTS="$(grep -vE '^\s*<!--' "${ACTUAL_SUMMARY_FILE_PATH}" | cat -s)"
+  local ACTUAL_HEAD
+  ACTUAL_HEAD="$(echo "${ACTUAL_CONTENT_WITHOUT_COMMENTS}" | head -n "${EXPECTED_LINE_COUNT}")"
+
+  if [[ "${ACTUAL_HEAD}" != "${EXPECTED_CONTENT_WITHOUT_COMMENTS}" ]]; then
+    error "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) does not start with the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
+    error "Actual head:\n${ACTUAL_HEAD}"
+    error "Expected content:\n${EXPECTED_CONTENT_WITHOUT_COMMENTS}"
+    return 1
+  else
+    debug "The actual summary file starts with the expected content."
+  fi
+
+  # 2. Extract failed linters from the EXPECTED summary table
+  # Look for lines containing "Fail ❌"
+  local -a FAILED_LINTERS
+  FAILED_LINTERS=()
+  readarray -t FAILED_LINTERS < <(grep "Fail ❌" "${EXPECTED_SUMMARY_FILE_PATH}" | awk -F '|' '{print $2}' | xargs -r -n 1)
+
+  if [[ "${#FAILED_LINTERS[@]}" -eq 0 ]] && [[ "${EXIT_CODE}" -ne 0 ]]; then
+    error "The number of failed linters cannot be (${#FAILED_LINTERS[@]}) when the Super-linter exit code is ${EXIT_CODE}."
+    return 1
+  fi
+
+  # 3. Verify that for each failed linter, there is a collapsible section in the ACTUAL summary
+  for LINTER in "${FAILED_LINTERS[@]}"; do
+    debug "Checking for collapsible section for ${LINTER}..."
+    local EXPECTED_SECTION_HEADER="<summary>${LINTER}</summary>"
+    if ! grep -Fq "${EXPECTED_SECTION_HEADER}" "${ACTUAL_SUMMARY_FILE_PATH}"; then
+      error "Missing collapsible section for failed linter ${LINTER} in ${ACTUAL_SUMMARY_FILE_PATH}"
+      return 1
+    else
+      debug "Found collapsible section for ${LINTER}"
+    fi
+  done
+}
+
 AssertFileContains() {
   local FILE_PATH="${1}" && shift
   local STRING_TO_SEARCH="${1}" && shift

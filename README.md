@@ -156,9 +156,15 @@ To run super-linter as a GitHub Action, you do the following:
        runs-on: ubuntu-latest
 
        permissions:
+         # contents permission to clone the repository
          contents: read
          packages: read
-         # To report GitHub Actions status checks
+         # To issues and pull-requests permissions to write results as pull
+         # request comments. Omit them if you don't need summary comments
+         issues: write
+         pull-requests: write
+         # To report GitHub Actions status checks. Omit if you don't need
+         # to update commit status
          statuses: write
 
        steps:
@@ -236,6 +242,7 @@ You can configure Super-linter using the following environment variables:
 | **ENABLE_COMMITLINT_EDIT_MODE**                        | `false`                                                                      | If set to `true` checks the commit message that is currently being edited with Commitlint. This is useful to run Super-linter in a `commit-msg` hook.                                                                                                                                                                                                                       |
 | **ENABLE_COMMITLINT_STRICT_MODE**                      | `false`                                                                      | If set to `true`, enables [commitlint strict mode](https://commitlint.js.org/reference/cli.html).                                                                                                                                                                                                                                                                           |
 | **ENABLE_GITHUB_ACTIONS_GROUP_TITLE**                  | `false` if `RUN_LOCAL=true`, `true` otherwise                                | Flag to enable [GitHub Actions log grouping](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#grouping-log-lines).                                                                                                                                                                                                                   |
+| **ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT**         | `false` if `RUN_LOCAL=true`, `true` otherwise                                | If set to `true`, Super-linter will post a comment to the pull request that triggered the Super-linter workflow.                                                                                                                                                                                                                                                            |
 | **ENABLE_GITHUB_ACTIONS_STEP_SUMMARY**                 | `false` if `RUN_LOCAL=true`, `true` otherwise                                | Flag to enable [GitHub Actions job summary](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary) for the Super-linter action. For more information, see [Summary outputs](#summary-outputs).                                                                                                                       |
 | **ENFORCE_COMMITLINT_CONFIGURATION_CHECK**             | `false`                                                                      | If set to `true` and `VALIDATE_GIT_COMMITLINT` is set to `true`, Super-linter exits with an error if there's no commitlint configuration file. Otherwise, Super-linter emits a warning and forcefully sets `VALIDATE_GIT_COMMITLINT` to `false`.                                                                                                                            |
 | **EXPORT_GITHUB_TOKEN**                                | `false`                                                                      | If set to `true`, exports the `GITHUB_TOKEN` variable so that subprocesses can access it. It's useful when linters and formatters need to authenticate, and support loading credentials from `GITHUB_TOKEN`.                                                                                                                                                                |
@@ -875,7 +882,11 @@ Super-linter writes a summary of all the checks:
   `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/${SUPER_LINTER_SUMMARY_FILE_NAME}`.
 - If `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` is set to `true`, Super-linter writes
   a GitHub Actions job summary. Setting `ENABLE_GITHUB_ACTIONS_STEP_SUMMARY` to
-  `true`, implies setting `SAVE_SUPER_LINTER_SUMMARY` to `true`.
+  `true` implies setting `SAVE_SUPER_LINTER_SUMMARY` to `true`.
+- If `ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT` is set to `true`, Super-linter
+  posts a comment on the pull request that triggered the Super-linter workflow.
+  Setting `ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT` to `true` implies setting
+  `SAVE_SUPER_LINTER_SUMMARY` to `true`.
 
 The summary is in Markdown format. Super-linter supports the following formats:
 

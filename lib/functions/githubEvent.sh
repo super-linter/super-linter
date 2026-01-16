@@ -75,6 +75,21 @@ function GetGithubPullRequestEventCommitCount() {
   fi
 }
 
+GetPullRequestNumber() {
+  local GITHUB_EVENT_FILE_PATH
+  GITHUB_EVENT_FILE_PATH="${1}"
+  local GITHUB_PULL_REQUEST_NUMBER
+
+  GITHUB_PULL_REQUEST_NUMBER="$(jq -r '.number' <"${GITHUB_EVENT_FILE_PATH}")"
+  local RET_CODE=$?
+  if [[ "${RET_CODE}" -gt 0 ]]; then
+    error "Failed to initialize GITHUB_PULL_REQUEST_NUMBER. Output: ${GITHUB_PULL_REQUEST_NUMBER}"
+    return 1
+  fi
+
+  echo "${GITHUB_PULL_REQUEST_NUMBER}"
+}
+
 function GetGithubRepositoryDefaultBranch() {
   local GITHUB_EVENT_FILE_PATH
   GITHUB_EVENT_FILE_PATH="${1}"
