@@ -100,6 +100,7 @@
 | TERRAGRUNT                   | Pass ✅           |
 | TRIVY                        | Pass ✅           |
 | TSX                          | Pass ✅           |
+| TWIGCS                       | Pass ✅           |
 | TYPESCRIPT_ES                | Pass ✅           |
 | TYPESCRIPT_PRETTIER          | Pass ✅           |
 | VUE                          | Pass ✅           |

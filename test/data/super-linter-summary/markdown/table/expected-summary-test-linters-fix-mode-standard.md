@@ -58,6 +58,7 @@
 | SQLFLUFF                     | Pass ✅           |
 | TERRAFORM_FMT                | Pass ✅           |
 | TSX                          | Fail ❌           |
+| TWIGCS                       | Pass ✅           |
 | TYPESCRIPT_ES                | Pass ✅           |
 | TYPESCRIPT_PRETTIER          | Pass ✅           |
 | VUE                          | Pass ✅           |

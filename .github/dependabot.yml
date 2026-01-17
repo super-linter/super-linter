@@ -205,3 +205,4 @@ updates:
           - squizlabs/php_codesniffer
           - phpstan/phpstan
           - vimeo/psalm
+          - vincentlanglet/twig-cs-fixer

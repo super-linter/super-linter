@@ -128,3 +128,5 @@ TYPESCRIPT_ES_FILE_NAME="${TYPESCRIPT_ES_CONFIG_FILE:-"eslint.config.mjs"}"
 VUE_FILE_NAME="${JAVASCRIPT_ES_CONFIG_FILE:-"eslint.config.mjs"}"
 # shellcheck disable=SC2034  # Variable is referenced indirectly
 YAML_FILE_NAME="${YAML_CONFIG_FILE:-.yaml-lint.yml}"
+# shellcheck disable=SC2034  # Variable is referenced indirectly
+TWIGCS_FILE_NAME=".twig-cs-fixer.php"

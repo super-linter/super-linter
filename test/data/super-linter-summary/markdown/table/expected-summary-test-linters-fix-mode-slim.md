@@ -46,10 +46,11 @@
 | SNAKEMAKE_SNAKEFMT    | Pass ✅           |
 | SPELL_CODESPELL       | Pass ✅           |
 | SQLFLUFF              | Pass ✅           |
-| TERRAFORM_FMT         | Pass ✅           |
-| TSX                   | Fail ❌           |
-| TYPESCRIPT_ES         | Pass ✅           |
-| TYPESCRIPT_PRETTIER   | Pass ✅           |
+| TERRAFORM_FMT             | Pass ✅           |
+| TSX                       | Pass ✅           |
+| TWIGCS                    | Pass ✅           |
+| TYPESCRIPT_ES             | Pass ✅           |
+| TYPESCRIPT_PRETTIER       | Pass ✅           |
 | VUE                   | Pass ✅           |
 | VUE_PRETTIER          | Pass ✅           |
 | YAML_PRETTIER         | Pass ✅           |
