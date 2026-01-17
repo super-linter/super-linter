@@ -6,7 +6,7 @@
 
 | Language                     | Validation result |
 | ---------------------------- | ----------------- |
-| ANSIBLE                      | Pass ✅           |
+| ANSIBLE                      | Fail ❌           |
 | BIOME_FORMAT                 | Pass ✅           |
 | BIOME_LINT                   | Pass ✅           |
 | CLANG_FORMAT                 | Pass ✅           |
