@@ -106,17 +106,17 @@ fi
 DOTNET_FORMAT_COMMAND=(dotnet format)
 
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
+LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES:-}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
 LINTER_COMMANDS_ARRAY_BASH=(shellcheck --color --rcfile "${BASH_LINTER_RULES}")
 # This check and the BASH_SEVERITY variable are needed until Shellcheck supports
 # setting severity using its config file.
 # Ref: https://github.com/koalaman/shellcheck/issues/2178
-if [ -n "${BASH_SEVERITY}" ]; then
+if [ -n "${BASH_SEVERITY:-}" ]; then
   export BASH_SEVERITY
   LINTER_COMMANDS_ARRAY_BASH+=(--severity="${BASH_SEVERITY}")
 fi
 LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec '{}')
-if [ "${BASH_EXEC_IGNORE_LIBRARIES}" == 'true' ]; then
+if [ "${BASH_EXEC_IGNORE_LIBRARIES:-}" == 'true' ]; then
   debug "Enabling bash-exec option to ignore shell library files."
   LINTER_COMMANDS_ARRAY_BASH_EXEC+=('true')
 fi
@@ -147,7 +147,7 @@ LINTER_COMMANDS_ARRAY_DOTNET_SLN_FORMAT_WHITESPACE=("${DOTNET_FORMAT_COMMAND[@]}
 LINTER_COMMANDS_ARRAY_EDITORCONFIG=(editorconfig-checker -config "${EDITORCONFIG_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_ENV=(dotenv-linter)
 LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=(actionlint -config-file "${GITHUB_ACTIONS_LINTER_RULES}")
-if [ "${GITHUB_ACTIONS_COMMAND_ARGS}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMMAND_ARGS}" ]; then
+if [ "${GITHUB_ACTIONS_COMMAND_ARGS:-}" != "null" ] && [ -n "${GITHUB_ACTIONS_COMMAND_ARGS:-}" ]; then
   export GITHUB_ACTIONS_COMMAND_ARGS
   if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS" "${GITHUB_ACTIONS_COMMAND_ARGS}"; then
     fatal "Error while adding options to GitHub Actions command"
@@ -228,7 +228,8 @@ LINTER_COMMANDS_ARRAY_KOTLIN=(ktlint "{/}")
 LINTER_COMMANDS_ARRAY_LATEX=(chktex -q -l "${LATEX_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_LUA=(luacheck --config "${LUA_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_MARKDOWN=(markdownlint -c "${MARKDOWN_LINTER_RULES}")
-if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS}" ]; then
+if [ -n "${MARKDOWN_CUSTOM_RULE_GLOBS:-}" ]; then
+  export MARKDOWN_CUSTOM_RULE_GLOBS
   IFS="," read -r -a MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY <<<"${MARKDOWN_CUSTOM_RULE_GLOBS}"
   for glob in "${MARKDOWN_CUSTOM_RULE_GLOBS_ARRAY[@]}"; do
     if [ -z "${LINTER_RULES_PATH}" ]; then
@@ -242,7 +243,7 @@ LINTER_COMMANDS_ARRAY_MARKDOWN_PRETTIER=("${PRETTIER_COMMAND[@]}")
 LINTER_COMMANDS_ARRAY_NATURAL_LANGUAGE=(textlint -c "${NATURAL_LANGUAGE_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_OPENAPI=(spectral lint -r "${OPENAPI_LINTER_RULES}" -D)
 LINTER_COMMANDS_ARRAY_PERL=(perlcritic)
-if [ "${PERL_PERLCRITIC_OPTIONS}" != "null" ] && [ -n "${PERL_PERLCRITIC_OPTIONS}" ]; then
+if [ "${PERL_PERLCRITIC_OPTIONS:-}" != "null" ] && [ -n "${PERL_PERLCRITIC_OPTIONS:-}" ]; then
   export PERL_PERLCRITIC_OPTIONS
   if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_PERL" "${PERL_PERLCRITIC_OPTIONS}"; then
     fatal "Error while adding options to Perlcritic command"
@@ -252,7 +253,7 @@ LINTER_COMMANDS_ARRAY_PHP_BUILTIN=(php -l -c "${PHP_BUILTIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPCS=(phpcs --standard="${PHP_PHPCS_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPSTAN=(phpstan analyse --no-progress --no-ansi --memory-limit 1G -c "${PHP_PHPSTAN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PSALM=(psalm --config="${PHP_PSALM_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES}" -Path '{}')
+LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES:-}" -Path '{}')
 LINTER_COMMANDS_ARRAY_PRE_COMMIT=(pre-commit run --config "${PRE_COMMIT_LINTER_RULES}")
 if [[ "${VALIDATE_ALL_CODEBASE:-"not set"}" == "false" ]] &&
   [[ -n "${GITHUB_BEFORE_SHA:-}" ]]; then
@@ -310,7 +311,8 @@ if [[ "${LOG_DEBUG}" == "false" ]]; then
   LINTER_COMMANDS_ARRAY_XML+=("${XMLLINT_NOOUT_OPTIONS[@]}")
 fi
 LINTER_COMMANDS_ARRAY_YAML=(yamllint -c "${YAML_LINTER_RULES}" -f parsable)
-if [ "${YAML_ERROR_ON_WARNING}" == 'true' ]; then
+if [ "${YAML_ERROR_ON_WARNING:-}" == 'true' ]; then
+  export YAML_ERROR_ON_WARNING
   LINTER_COMMANDS_ARRAY_YAML+=(--strict)
 fi
 LINTER_COMMANDS_ARRAY_YAML_PRETTIER=("${PRETTIER_COMMAND[@]}")

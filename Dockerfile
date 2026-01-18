@@ -475,6 +475,11 @@ ENV RENOVATE_X_IGNORE_RE2="true"
 ENV VERSION_FILE="/action/linterVersions.txt"
 RUN mkdir /action
 
+# Define this for all image variants to avoid that commands that depend on this
+# variable don't find it, and throw "unbound variable" errors when the Bash
+# nounset option is enabled.
+ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
+
 # create the homedir, so that in case it is not present (like on action-runner-controller based selfhosted runners)
 # we do not fail at setting /github/workspace as a safe git directory
 ENV HOME="/github/home"
@@ -550,7 +555,6 @@ FROM base_image AS standard
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
-ENV ARM_TTK_PSD1="/usr/lib/microsoft/arm-ttk/arm-ttk.psd1"
 ENV PATH="${PATH}:/var/cache/dotnet/tools:/usr/share/dotnet"
 
 # Install Rust linters
