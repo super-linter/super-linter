@@ -207,7 +207,7 @@ AssertSuperLinterSummaryMatches() {
   local ACTUAL_CONTENT_WITHOUT_COMMENTS
   ACTUAL_CONTENT_WITHOUT_COMMENTS="$(grep -vE '^\s*<!--' "${ACTUAL_SUMMARY_FILE_PATH}" | cat -s)"
   local ACTUAL_HEAD
-  ACTUAL_HEAD="$(echo "${ACTUAL_CONTENT_WITHOUT_COMMENTS}" | head -n "${EXPECTED_LINE_COUNT}")"
+  ACTUAL_HEAD="$(head -n "${EXPECTED_LINE_COUNT}" <<<"${ACTUAL_CONTENT_WITHOUT_COMMENTS}")"
 
   if [[ "${ACTUAL_HEAD}" != "${EXPECTED_CONTENT_WITHOUT_COMMENTS}" ]]; then
     error "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) does not start with the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
