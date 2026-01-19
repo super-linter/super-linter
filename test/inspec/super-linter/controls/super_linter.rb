@@ -10,6 +10,10 @@ control "super-linter-environment-variables" do
   title "Super-Linter environment variables check"
   desc "Check that environment variables that Super-Linter needs are defined."
 
+  describe os_env("ARM_TTK_PSD1") do
+    its("content") { should eq "/usr/lib/microsoft/arm-ttk/arm-ttk.psd1" }
+  end
+
   describe os_env("VERSION_FILE") do
     its("content") { should eq version_file_path }
   end
