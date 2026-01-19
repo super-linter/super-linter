@@ -5,7 +5,7 @@ import globals from "globals";
 import jsoncParser from "jsonc-eslint-parser";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
-import vueParser from "vue-eslint-parser";
+import pluginVue from "eslint-plugin-vue";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
@@ -115,20 +115,5 @@ export default defineConfig([
       sourceType: "module",
     },
   },
-  {
-    files: ["**/*.vue"],
-    extends: compat.extends("plugin:vue/recommended"),
-
-    languageOptions: {
-      parser: vueParser,
-      ecmaVersion: "latest",
-      sourceType: "module",
-
-      parserOptions: {
-        ecmaFeatures: {
-          modules: true,
-        },
-      },
-    },
-  },
+  ...pluginVue.configs["flat/recommended"],
 ]);

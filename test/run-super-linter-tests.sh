@@ -278,6 +278,7 @@ run_test_case_use_find_and_ignore_gitignored_files() {
   ignore_test_cases
   configure_use_find_algorithm
   COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-lint-codebase-success.md"
 }
 
 run_test_cases_save_super_linter_output() {
