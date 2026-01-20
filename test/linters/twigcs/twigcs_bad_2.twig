@@ -1,0 +1,15 @@
+{# Complex bad test 1: multiple forbidden spaces and nested filters #}
+<p>{{ 'Complex Test'  |  lower  |  capitalize }}</p> {# Multiple spaces before pipes #}
+
+{# Complex bad test 2: array and function with forbidden spaces #}
+<ul>
+  {% for item in [1, 2, 3]  |  reverse %}
+    <li>{{ item  |  number_format(2) }}</li>
+  {% endfor %}
+</ul> {# Spaces before pipes in array and function usage #}
+
+{# Complex bad test 3: filter on object property with forbidden space #}
+<span>{{ user.name  |  title }}</span> {# Space before pipe in property filter #}
+
+{# Complex bad test 4: conditional with forbidden space before pipe #}
+{% if 'error'  |  length > 0 %}Error detected{% endif %} {# Space before pipe in condition #}

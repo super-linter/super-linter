@@ -1,0 +1,15 @@
+{# Complex good test 1: nested filters without forbidden spaces #}
+<p>{{ 'Complex Test'|lower|capitalize }}</p> {# No spaces before pipes #}
+
+{# Complex good test 2: array and function without forbidden spaces #}
+<ul>
+  {% for item in [1, 2, 3]|reverse %}
+    <li>{{ item|number_format(2) }}</li>
+  {% endfor %}
+</ul> {# No spaces before pipes in array and function usage #}
+
+{# Complex good test 3: filter on object property without forbidden space #}
+<span>{{ user.name|title }}</span> {# No space before pipe in property filter #}
+
+{# Complex good test 4: conditional without forbidden space before pipe #}
+{% if 'error'|length > 0 %}Error detected{% endif %} {# No space before pipe in condition #}

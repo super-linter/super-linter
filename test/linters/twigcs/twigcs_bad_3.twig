@@ -1,0 +1,2 @@
+{# Bad test 3: forbidden space before pipe in a ternary operator #}
+{{ is_active  ?  'Active'  |  lower  :  'Inactive'  |  upper }} {# Spaces before pipes in ternary branches #}

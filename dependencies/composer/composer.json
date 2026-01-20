@@ -4,6 +4,7 @@
     "squizlabs/php_codesniffer": "^4.0",
     "phpstan/phpstan": "^2.1",
     "vimeo/psalm": "^6.13",
-    "php": "^8.4"
+    "php": "^8.4",
+    "vincentlanglet/twig-cs-fixer": "^3.11"
   }
 }
