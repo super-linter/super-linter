@@ -462,66 +462,138 @@ Footer() {
     WriteSummaryHeader "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}"
   fi
 
+  local STARTED_GITHUB_ACTIONS_LOG_GROUP="false"
+
   for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+
+    # Start the log group as soon as possible if debug logging is enabled so
+    # we group all messages for LANGUAGE even when debugging
+    if [[ "${LOG_DEBUG}" == "true" ]]; then
+      startGitHubActionsLogGroup "${LANGUAGE}"
+      STARTED_GITHUB_ACTIONS_LOG_GROUP="true"
+    fi
+
     # This used to be the count of errors found for a given LANGUAGE, but since
     # after we switched to running linters against a batch of files, it may not
     # represent the actual number of files that didn't pass the validation,
     # but a number that's less than that because of how GNU parallel returns
     # exit codes.
     # Ref: https://www.gnu.org/software/parallel/parallel.html#exit-status
-    ERROR_COUNTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${LANGUAGE}"
+    local ERROR_COUNTER_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-parallel-command-exit-code-${LANGUAGE}"
+    debug "ERROR_COUNTER_FILE_PATH for ${LANGUAGE}: ${ERROR_COUNTER_FILE_PATH}"
+
     if [ ! -f "${ERROR_COUNTER_FILE_PATH}" ]; then
       debug "Error counter ${ERROR_COUNTER_FILE_PATH} doesn't exist"
     else
       ERROR_COUNTER=$(<"${ERROR_COUNTER_FILE_PATH}")
       debug "ERROR_COUNTER for ${LANGUAGE}: ${ERROR_COUNTER}"
+      local GITHUB_COMMIT_STATUS_MESSAGE
+
+      local STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDOUT_PREFIX}${LANGUAGE}"
+      debug "STDOUT_LINTER_FILE_PATH for ${LANGUAGE}: ${STDOUT_LINTER_FILE_PATH}"
+      local STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDERR_PREFIX}${LANGUAGE}"
+      debug "STDERR_LINTER_FILE_PATH for ${LANGUAGE}: ${STDERR_LINTER_FILE_PATH}"
+
+      local STDOUT_LINTER_MESSAGE=""
+      if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
+        STDOUT_LINTER_MESSAGE="Stdout contents for ${LANGUAGE}:\n------\n$(<"${STDOUT_LINTER_FILE_PATH}")\n------"
+      else
+        debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
+      fi
+
+      local STDERR_LINTER_MESSAGE=""
+      if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
+        STDERR_LINTER_MESSAGE="Stderr contents for ${LANGUAGE}:\n------\n$(<"${STDERR_LINTER_FILE_PATH}")\n------"
+      else
+        debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
+      fi
 
       if [[ ${ERROR_COUNTER} -ne 0 ]]; then
+        # Start the log group if we didn't start it before. There's no need to
+        # check if other log levels are enabled because the user cannot silence
+        # errors
+        if [[ "${STARTED_GITHUB_ACTIONS_LOG_GROUP}" == "false" ]]; then
+          startGitHubActionsLogGroup "${LANGUAGE}"
+          STARTED_GITHUB_ACTIONS_LOG_GROUP="true"
+        fi
+
         error "Errors found in ${LANGUAGE}"
+        if [[ -n "${STDOUT_LINTER_MESSAGE:-}" ]]; then
+          error "${STDOUT_LINTER_MESSAGE}"
+        fi
+        if [[ -n "${STDERR_LINTER_MESSAGE:-}" ]]; then
+          error "${STDERR_LINTER_MESSAGE}"
+        fi
+
         FAILED_LANGUAGES+=("${LANGUAGE}")
 
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
           WriteSummaryLineFailure "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
 
-        # Print stdout and stderr in case the log level is higher than INFO
-        # so users still get feedback. Print output as error so it gets emitted
-        if [[ "${LOG_VERBOSE}" != "true" ]]; then
-          local STDOUT_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDOUT_PREFIX}${LANGUAGE}"
-          if [[ -e "${STDOUT_LINTER_FILE_PATH}" ]]; then
-            error "Stdout contents for ${LANGUAGE}:\n------\n$(cat "${STDOUT_LINTER_FILE_PATH}")\n------"
-          else
-            debug "Stdout output file path for ${LANGUAGE} (${STDOUT_LINTER_FILE_PATH}) doesn't exist"
-          fi
+        GITHUB_COMMIT_STATUS_MESSAGE="error"
 
-          local STDERR_LINTER_FILE_PATH="${SUPER_LINTER_PARALLEL_STDERR_PREFIX}${LANGUAGE}"
-          if [[ -e "${STDERR_LINTER_FILE_PATH}" ]]; then
-            error "Stderr contents for ${LANGUAGE}:\n------\n$(cat "${STDERR_LINTER_FILE_PATH}")\n------"
-          else
-            debug "Stderr output file path for ${LANGUAGE} (${STDERR_LINTER_FILE_PATH}) doesn't exist"
-          fi
-        fi
-        if [[ "${MULTI_STATUS}" == "true" ]]; then
-          if ! CreateGitHubCommitStatus "${LANGUAGE}" "error"; then
-            warn "Error while creating GitHub commit status for ${LANGUAGE}."
-          fi
-        fi
         SUPER_LINTER_EXIT_CODE=1
         debug "Setting super-linter exit code to ${SUPER_LINTER_EXIT_CODE} because there were errors for ${LANGUAGE}"
       elif [[ ${ERROR_COUNTER} -eq 0 ]]; then
-        notice "Successfully linted ${LANGUAGE}"
+        if [[ "${SUPPRESS_OUTPUT_ON_SUCCESS}" == "true" ]]; then
+          debug "SUPPRESS_OUTPUT_ON_SUCCESS is ${SUPPRESS_OUTPUT_ON_SUCCESS}. Emitting success for ${LANGUAGE} at debug level"
+          debug "Successfully linted ${LANGUAGE}"
+          if [[ -n "${STDOUT_LINTER_MESSAGE:-}" ]]; then
+            debug "${STDOUT_LINTER_MESSAGE}"
+          fi
+          if [[ -n "${STDERR_LINTER_MESSAGE:-}" ]]; then
+            debug "${STDERR_LINTER_MESSAGE}"
+          fi
+        else
+          # Start the log group if we didn't start it before and if LOG_NOTICE is
+          # enabled because the success message is printed at NOTICE level, or if
+          # LOG_VERBOSE is enabled because stdout and stderr for LANGUAGE are
+          # printed at INFO level.
+          if [[ "${STARTED_GITHUB_ACTIONS_LOG_GROUP}" == "false" ]] &&
+            [[ ("${LOG_NOTICE}" == "true" || "${LOG_VERBOSE}" == "true") ]]; then
+            startGitHubActionsLogGroup "${LANGUAGE}"
+            STARTED_GITHUB_ACTIONS_LOG_GROUP="true"
+          fi
+
+          notice "Successfully linted ${LANGUAGE}"
+          if [[ -n "${STDOUT_LINTER_MESSAGE:-}" ]]; then
+            info "${STDOUT_LINTER_MESSAGE}"
+          fi
+          if [[ -n "${STDERR_LINTER_MESSAGE:-}" ]]; then
+            info "${STDERR_LINTER_MESSAGE}"
+          fi
+        fi
+
         if [[ "${SAVE_SUPER_LINTER_SUMMARY}" == "true" ]]; then
           WriteSummaryLineSuccess "${SUPER_LINTER_SUMMARY_OUTPUT_PATH}" "${LANGUAGE}"
         fi
-        if [[ "${MULTI_STATUS}" == "true" ]]; then
-          if ! CreateGitHubCommitStatus "${LANGUAGE}" "success"; then
-            warn "Error while creating GitHub commit status for ${LANGUAGE}."
-          fi
-        fi
+        GITHUB_COMMIT_STATUS_MESSAGE="success"
+
         ANY_LINTER_SUCCESS="true"
         debug "Set ANY_LINTER_SUCCESS to ${ANY_LINTER_SUCCESS} because ${LANGUAGE} reported a success"
       fi
+
+      if [[ "${MULTI_STATUS}" == "true" ]]; then
+        if ! CreateGitHubCommitStatus "${LANGUAGE}" "${GITHUB_COMMIT_STATUS_MESSAGE}"; then
+          # Start the log group if we didn't start it before and if LOG_WARN is
+          # enabled because the following error message is printed at WARNING
+          # level
+          if [[ "${STARTED_GITHUB_ACTIONS_LOG_GROUP}" == "false" ]] &&
+            [[ "${LOG_WARN}" == "true" ]]; then
+            startGitHubActionsLogGroup "${LANGUAGE}"
+            STARTED_GITHUB_ACTIONS_LOG_GROUP="true"
+          fi
+          warn "Error while creating GitHub commit status for ${LANGUAGE}."
+        fi
+      fi
     fi
+
+    if [[ "${STARTED_GITHUB_ACTIONS_LOG_GROUP}" == "true" ]]; then
+      endGitHubActionsLogGroup "${LANGUAGE}"
+      STARTED_GITHUB_ACTIONS_LOG_GROUP="false"
+    fi
+
   done
 
   if [[ "${ANY_LINTER_SUCCESS}" == "true" ]] && [[ ${SUPER_LINTER_EXIT_CODE} -ne 0 ]]; then
@@ -920,7 +992,7 @@ endGitHubActionsLogGroup "${SUPER_LINTER_INITIALIZATION_LOG_GROUP_TITLE}"
 ###############
 declare PARALLEL_RESULTS_FILE_PATH
 PARALLEL_RESULTS_FILE_PATH="${SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH}/super-linter-results.json"
-debug "PARALLEL_RESULTS_FILE_PATH: ${PARALLEL_RESULTS_FILE_PATH}"
+debug "PARALLEL_RESULTS_FILE_PATH when running linters: ${PARALLEL_RESULTS_FILE_PATH}"
 
 declare -i LINTING_MAX_PROCS
 LINTING_MAX_PROCS=$(nproc)
@@ -950,40 +1022,9 @@ debug "PARALLEL_COMMAND: ${PARALLEL_COMMAND[*]}"
 PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${LANGUAGE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
 PARALLEL_COMMAND_RETURN_CODE=$?
 debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
-debug "Parallel output file (${PARALLEL_RESULTS_FILE_PATH}) contents when running linters:\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
-
-RESULTS_OBJECT=
-if ! RESULTS_OBJECT=$(jq --raw-output -n '[inputs]' "${PARALLEL_RESULTS_FILE_PATH}"); then
-  fatal "Error loading results when building the file list: ${RESULTS_OBJECT}"
-fi
-debug "RESULTS_OBJECT when running linters:\n${RESULTS_OBJECT}"
-
-# Get raw output so we can strip quotes from the data we load. Also, strip the final newline to avoid adding it two times
-if ! STDOUT_LINTERS="$(jq --raw-output '.[] | select(.Stdout[:-1] | length > 0) | .Stdout[:-1]' <<<"${RESULTS_OBJECT}")"; then
-  fatal "Error when loading stdout when running linters:\n${STDOUT_LINTERS}"
-fi
-
-if [ -n "${STDOUT_LINTERS}" ]; then
-  info "Command output when running linters:\n------\n${STDOUT_LINTERS}\n------"
-else
-  debug "Stdout when running linters is empty"
-fi
-
-if ! STDERR_LINTERS="$(jq --raw-output '.[] | select(.Stderr[:-1] | length > 0) | .Stderr[:-1]' <<<"${RESULTS_OBJECT}")"; then
-  fatal "Error when loading stderr for ${FILE_TYPE}:\n${STDERR_LINTERS}"
-fi
-
-if [ -n "${STDERR_LINTERS}" ]; then
-  info "Stderr when running linters:\n------\n${STDERR_LINTERS}\n------"
-else
-  debug "Stderr when running linters is empty"
-fi
 
 if [[ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]]; then
   fatal "Error when running linters. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}"
 fi
 
-##########
-# Footer #
-##########
 Footer

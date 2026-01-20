@@ -138,7 +138,27 @@ run_test_cases_expect_success() {
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
-run_test_cases_log_level() {
+run_test_cases_expect_failure_suppress_output_on_success() {
+  run_test_cases_expect_failure
+  COMMAND_TO_RUN+=(-e SUPPRESS_OUTPUT_ON_SUCCESS="true")
+}
+
+run_test_cases_expect_success_suppress_output_on_success() {
+  run_test_cases_expect_success
+  COMMAND_TO_RUN+=(-e SUPPRESS_OUTPUT_ON_SUCCESS="true")
+}
+
+run_test_cases_expect_failure_suppress_output_on_success_notice_log() {
+  run_test_cases_expect_failure_suppress_output_on_success
+  LOG_LEVEL="NOTICE"
+}
+
+run_test_cases_expect_success_suppress_output_on_success_notice_log() {
+  run_test_cases_expect_success_suppress_output_on_success
+  LOG_LEVEL="NOTICE"
+}
+
+run_test_cases_expect_success_notice_log() {
   run_test_cases_expect_success
   LOG_LEVEL="NOTICE"
 }

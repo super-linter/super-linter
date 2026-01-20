@@ -16,9 +16,7 @@ test: \
 	fix-codebase \
 	lint-subset-files \
 	test-non-default-home-directory \
-	test-log-level \
 	test-use-find-and-ignore-gitignored-files \
-	test-linters-expect-failure-log-level-notice \
 	test-save-super-linter-output \
 	test-save-super-linter-output-custom-path \
 	test-save-super-linter-custom-summary \
@@ -39,7 +37,13 @@ test: \
 	test-github-event-push-force-push-multiple-commits \
 	test-runtime-dependencies-installation \
 	test-linters-expect-failure \
+	test-linters-expect-failure-log-level-notice \
+	test-linters-expect-failure-suppress-output-on-success \
+	test-linters-expect-failure-suppress-output-on-success-log-level-notice \
 	test-linters-expect-success \
+	test-linters-expect-success-log-level-notice \
+	test-linters-expect-success-suppress-output-on-success \
+	test-linters-expect-success-suppress-output-on-success-log-level-notice \
 	test-linters-fix-mode
 
 # if this session isn't interactive, then we don't want to allocate a
@@ -493,11 +497,40 @@ test-linters-expect-failure: ## Run the linters test suite expecting failures
 		"run_test_cases_expect_failure" \
 		"$(IMAGE)"
 
-.PHONY: test-log-level
-test-log-level: ## Run a test to check if there are conflicts with the LOG_LEVEL variable
+# Useful to check if any tool is using the LOG_LEVEL variable, besides Super-linter
+.PHONY: test-linters-expect-success-log-level-notice
+test-linters-expect-success-log-level-notice: ## Run the linters test suite expecting success with a LOG_LEVEL set to NOTICE
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		"run_test_cases_log_level" \
+		"run_test_cases_expect_success_notice_log" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-expect-success-suppress-output-on-success
+test-linters-expect-success-suppress-output-on-success: ## Run the linters test suite expecting successes but suppressing output
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_success_suppress_output_on_success" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-expect-failure-suppress-output-on-success-log-level-notice
+test-linters-expect-failure-suppress-output-on-success-log-level-notice: ## Run the linters test suite expecting failures but suppressing output, with a LOG_LEVEL set to NOTICE
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_failure_suppress_output_on_success_notice_log" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-expect-success-suppress-output-on-success-log-level-notice
+test-linters-expect-success-suppress-output-on-success-log-level-notice: ## Run the linters test suite expecting successes but suppressing output, with a LOG_LEVEL set to NOTICE
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_success_suppress_output_on_success_notice_log" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-expect-failure-suppress-output-on-success
+test-linters-expect-failure-suppress-output-on-success: ## Run the linters test suite expecting falires but suppressing output
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_expect_failure_suppress_output_on_success" \
 		"$(IMAGE)"
 
 .PHONY: test-linters-expect-failure-log-level-notice
