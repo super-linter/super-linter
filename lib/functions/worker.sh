@@ -102,21 +102,22 @@ function LintCodebase() {
   if [[ "${FILE_TYPE}" == "ANSIBLE" ]] ||
     [[ "${FILE_TYPE}" == "ARM" ]] ||
     [[ "${FILE_TYPE}" == "BASH_EXEC" ]] ||
+    [[ "${FILE_TYPE}" == "CHECKOV" ]] ||
     [[ "${FILE_TYPE}" == "CLOJURE" ]] ||
     [[ "${FILE_TYPE}" == "CSHARP" ]] ||
     [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
     [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
     [[ "${FILE_TYPE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
+    [[ "${FILE_TYPE}" == "GIT_COMMITLINT" ]] ||
     [[ "${FILE_TYPE}" == "GITLEAKS" ]] ||
     [[ "${FILE_TYPE}" == "GO_MODULES" ]] ||
     [[ "${FILE_TYPE}" == "JSCPD" ]] ||
     [[ "${FILE_TYPE}" == "KOTLIN" ]] ||
-    [[ "${FILE_TYPE}" == "SQLFLUFF" ]] ||
-    [[ "${FILE_TYPE}" == "CHECKOV" ]] ||
     [[ "${FILE_TYPE}" == "POWERSHELL" ]] ||
     [[ "${FILE_TYPE}" == "R" ]] ||
     [[ "${FILE_TYPE}" == "RUST_CLIPPY" ]] ||
     [[ "${FILE_TYPE}" == "SNAKEMAKE_LINT" ]] ||
+    [[ "${FILE_TYPE}" == "SQLFLUFF" ]] ||
     [[ "${FILE_TYPE}" == "STATES" ]] ||
     [[ "${FILE_TYPE}" == "TERRAFORM_TFLINT" ]] ||
     [[ "${FILE_TYPE}" == "TERRAGRUNT" ]]; then
@@ -158,16 +159,6 @@ function LintCodebase() {
   if ! source /action/lib/functions/linterCommands.sh; then
     fatal "Error while sourcing linter commands"
   fi
-  # Dynamically add arguments and commands to each linter command as needed
-  if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
-    fatal "Error while initializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
-  fi
-  InitInputConsumeCommands
-
-  if [[ "${FILE_TYPE}" == "POWERSHELL" ]]; then
-    debug "Language: ${FILE_TYPE}. Initialize PowerShell command"
-    InitPowerShellCommand
-  fi
 
   local -n LINTER_COMMAND_ARRAY
   LINTER_COMMAND_ARRAY="LINTER_COMMANDS_ARRAY_${FILE_TYPE}"
@@ -177,8 +168,48 @@ function LintCodebase() {
     debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements: ${LINTER_COMMAND_ARRAY[*]}"
   fi
 
+  if [[ "${FILE_TYPE}" == "ARM" ]] ||
+    [[ "${FILE_TYPE}" == "POWERSHELL" ]]; then
+    # Explicitly add a GNU Parallel replacement string before wrapping the
+    # command in the Powershell executable and before appending fix mode options
+    LINTER_COMMAND_ARRAY+=("'{}'")
+  fi
+
+  # Dynamically add arguments and commands to each linter command as needed
+  if ! InitFixModeOptionsAndCommands "${FILE_TYPE}"; then
+    fatal "Error while initializing fix mode and check only options and commands before running linter for ${FILE_TYPE}"
+  fi
+
   # From GNU Parallel manpage (https://www.gnu.org/software/parallel/parallel.html#options)
   # "If the command line contains no replacement strings then {} will be appended to the command line."
+  # shellcheck disable=SC2016 # Don't expand $_ on purpose because we want Parallel to interpret it instead of the shell
+  local INPUT_CONSUME_COMMAND='# {= $_="" =}'
+  if [[ "${FILE_TYPE}" == "ANSIBLE" ]] ||
+    [[ "${FILE_TYPE}" == "GO_MODULE" ]] ||
+    [[ "${FILE_TYPE}" == "PRE_COMMIT" ]] ||
+    [[ "${FILE_TYPE}" == "RUST_CLIPPY" ]]; then
+    # These commands don't accept passing a path as input, so add a no-op (a comment)
+    # so that GNU Parallel doesn't automatically add the default replacement
+    # string
+    LINTER_COMMAND_ARRAY+=("${INPUT_CONSUME_COMMAND}")
+  elif [[ "${FILE_TYPE}" == "CHECKOV" ]]; then
+    # For checkov, add the no-op command only if it loads the list of directories
+    # to check from the configuration file
+    if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
+      LINTER_COMMAND_ARRAY+=("${INPUT_CONSUME_COMMAND}")
+    else
+      LINTER_COMMAND_ARRAY+=("${CHECKOV_DIRECTORY_OPTIONS[@]}")
+    fi
+  fi
+
+  if [[ "${FILE_TYPE}" == "ARM" ]] ||
+    [[ "${FILE_TYPE}" == "POWERSHELL" ]]; then
+    # Run as a Powershell command
+    LINTER_COMMAND_ARRAY=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMAND_ARRAY[*]}; if (\\\${Error}.Count) { exit 1 }\"")
+  fi
+
+  debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements after initializing command arguments: ${LINTER_COMMAND_ARRAY[*]}"
+
   PARALLEL_COMMAND+=("${LINTER_COMMAND_ARRAY[@]}")
   debug "PARALLEL_COMMAND for ${FILE_TYPE} after LINTER_COMMAND_ARRAY concatenation: ${PARALLEL_COMMAND[*]}"
 

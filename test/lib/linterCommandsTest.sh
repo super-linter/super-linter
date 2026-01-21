@@ -53,12 +53,10 @@ source "lib/functions/linterCommands.sh"
 
 # Initialize the variables we're going to use to verify tests before running tests
 # because some tests modify LINTER_COMMANDS_xxx variables
-BASE_LINTER_COMMANDS_ARRAY_ANSIBLE=("${LINTER_COMMANDS_ARRAY_ANSIBLE[@]}")
 BASE_LINTER_COMMANDS_ARRAY_BASH_EXEC=("${LINTER_COMMANDS_ARRAY_BASH_EXEC[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=("${LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
-BASE_LINTER_COMMANDS_ARRAY_GO_MODULES=("${LINTER_COMMANDS_ARRAY_GO_MODULES[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JAVA=("${LINTER_COMMANDS_ARRAY_JAVA[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
@@ -144,9 +142,11 @@ EnableCommitlintEditModeCommandTest() {
   source "lib/functions/linterCommands.sh"
 
   local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
-  # remove the last argument because we replace it with COMMITLINT_EDIT_MODE_OPTIONS
+  # remove the last two options because we replace them with the expected ones.
+  unset "EXPECTED_COMMAND[-1]"
   unset "EXPECTED_COMMAND[-1]"
   EXPECTED_COMMAND+=("${COMMITLINT_EDIT_MODE_OPTIONS[@]}")
+  EXPECTED_COMMAND+=("${COMMITLINT_CWD_OPTIONS[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GIT_COMMITLINT" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
@@ -167,7 +167,11 @@ EnableCommitlintStrictModeCommandTest() {
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
-  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}" "${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
+  # remove the last two options because we replace them with the expected ones.
+  unset "EXPECTED_COMMAND[-1]"
+  EXPECTED_COMMAND+=("${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
+  EXPECTED_COMMAND+=("${COMMITLINT_CWD_OPTIONS[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GIT_COMMITLINT" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
@@ -216,47 +220,6 @@ function GitleaksCommandCustomLogLevelTest() {
 
   local EXPECTED_GITLEAKS_LOG_LEVEL="debug"
   GitleaksCommandTest
-
-  notice "${FUNCTION_NAME} PASS"
-}
-
-function InitInputConsumeCommandsTest() {
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
-  info "${FUNCTION_NAME} start"
-
-  # shellcheck disable=SC2034
-  local EXPECTED_LINTER_COMMANDS_ARRAY_ANSIBLE=("${BASE_LINTER_COMMANDS_ARRAY_ANSIBLE[@]}" "${INPUT_CONSUME_COMMAND[@]}")
-  # shellcheck disable=SC2034
-  local EXPECTED_LINTER_COMMANDS_ARRAY_GO_MODULES=("${BASE_LINTER_COMMANDS_ARRAY_GO_MODULES[@]}" "${INPUT_CONSUME_COMMAND[@]}")
-
-  # Add some custom options to the Rust command to ensure that they are added before the "input consume" command
-  # shellcheck disable=SC2034
-  local RUST_CLIPPY_COMMAND_OPTIONS_ARRAY=("--verbose --help")
-  RUST_CLIPPY_COMMAND_OPTIONS="${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[*]}"
-
-  # Source the file again so it accounts for modifications
-  # shellcheck source=/dev/null
-  source "lib/functions/linterCommands.sh"
-
-  # shellcheck disable=SC2034
-  local EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY=("${BASE_LINTER_COMMANDS_ARRAY_RUST_CLIPPY[@]}" "${RUST_CLIPPY_COMMAND_OPTIONS_ARRAY[@]}" "${INPUT_CONSUME_COMMAND[@]}")
-
-  if ! InitInputConsumeCommands; then
-    fatal "Error while initializing GNU parallel input consume commands"
-  fi
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_ANSIBLE" "EXPECTED_LINTER_COMMANDS_ARRAY_ANSIBLE"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_GO_MODULES" "EXPECTED_LINTER_COMMANDS_ARRAY_GO_MODULES"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_RUST_CLIPPY" "EXPECTED_LINTER_COMMANDS_ARRAY_RUST_CLIPPY"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -366,22 +329,6 @@ function InitFixModeOptionsAndCommandsTest() {
     unset -n FIX_LANGUAGE_VARIABLE_NAME
     unset -n LINTER_COMMANDS_ARRAY
   done
-
-  notice "${FUNCTION_NAME} PASS"
-}
-
-function InitPowerShellCommandTest() {
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
-  info "${FUNCTION_NAME} start"
-
-  # shellcheck disable=SC2034
-  EXPECTED_LINTER_COMMANDS_ARRAY_POWERSHELL=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}; if (\\\${Error}.Count) { exit 1 }\"")
-  InitPowerShellCommand
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_POWERSHELL" "EXPECTED_LINTER_COMMANDS_ARRAY_POWERSHELL"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -595,9 +542,7 @@ EnableCommitlintEditModeCommandTest
 EnableCommitlintStrictModeCommandTest
 GitleaksCommandTest
 GitleaksCommandCustomLogLevelTest
-InitInputConsumeCommandsTest
 InitFixModeOptionsAndCommandsTest
-InitPowerShellCommandTest
 BashExecIgnoreLibrariesTest
 CommandOptionsTest
 PreCommitCommandTest

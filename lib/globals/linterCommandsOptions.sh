@@ -100,15 +100,9 @@ SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS=(--config "${SQLFLUFF_LINTER_RULES}")
 SQLFLUFF_CHECK_ONLY_MODE_OPTIONS+=("${SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS[@]}")
 SQLFLUFF_FIX_MODE_OPTIONS+=("${SQLFLUFF_SHARED_SUBCOMMAND_OPTIONS[@]}")
 
-# If there's no input argument, GNU Parallel adds a default {} at the end of the
-# command it runs. In a few cases, such as ANSIBLE, GO_MODULES, and RUST_CLIPPY,
-# consume the {} element by artificially adding it to the command to run because
-# we need the input to set the working directory, but we don't need it appended
-# at the end of the command.
-# Setting the -n 0 GNU Parallel would not help in this case, because the input
-# will not be passed to the --workdir option as well.
-INPUT_CONSUME_COMMAND=("&& echo \"Linted: {}\"")
+CHECKOV_DIRECTORY_OPTIONS=(--directory)
 
+COMMITLINT_CWD_OPTIONS=("--cwd")
 COMMITLINT_EDIT_MODE_OPTIONS=("--edit")
 COMMITLINT_STRICT_MODE_OPTIONS=("--strict")
 
