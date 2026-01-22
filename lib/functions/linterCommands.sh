@@ -317,6 +317,8 @@ if [ "${YAML_ERROR_ON_WARNING:-}" == 'true' ]; then
 fi
 LINTER_COMMANDS_ARRAY_YAML_PRETTIER=("${PRETTIER_COMMAND[@]}")
 
+LINTER_COMMANDS_ARRAY_TWIGCS=(php ../dependencies/composer/vendor/bin/twig-cs-fixer lint --config="${TWIGCS_LINTER_RULES}" "{}")
+
 # Reuse executable names from python tools.
 # But use different args to allow for different config files.
 # The format is: nbqa <code quality tool> <notebook or directory> <nbqa options> <code quality tool arguments>

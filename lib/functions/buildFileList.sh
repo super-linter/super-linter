@@ -721,6 +721,8 @@ BuildFileArrays() {
       fi
     elif [ "${FILE_TYPE}" == "tsx" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TSX"
+    elif [ "${FILE_TYPE}" == "twig" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TWIGCS"
     elif [ "${FILE_TYPE}" == "txt" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TXT"
     elif [ "${FILE_TYPE}" == "xml" ] ||
