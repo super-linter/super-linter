@@ -93,7 +93,7 @@ function LintCodebase() {
 
   if [ "${LOG_DEBUG}" == "true" ]; then
     debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
-    PARALLEL_COMMAND+=(--verbose)
+    PARALLEL_COMMAND+=(-v)
   fi
   debug "PARALLEL_COMMAND for ${FILE_TYPE}: ${PARALLEL_COMMAND[*]}"
 

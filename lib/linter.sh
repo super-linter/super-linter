@@ -1006,15 +1006,20 @@ if [[ "${FIX_MODE_ENABLED}" == "true" ]]; then
 fi
 
 declare -a PARALLEL_COMMAND
-PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$((LINTING_MAX_PROCS))" --xargs --results "${PARALLEL_RESULTS_FILE_PATH}")
+PARALLEL_COMMAND=(parallel --will-cite --keep-order --max-procs "$((LINTING_MAX_PROCS))" --results "${PARALLEL_RESULTS_FILE_PATH}")
 
 # Run one LANGUAGE per process. Each of these processes will run more processes in parallel if supported
 PARALLEL_COMMAND+=(--max-lines 1)
 
 if [ "${LOG_DEBUG}" == "true" ]; then
   debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
-  PARALLEL_COMMAND+=(--verbose)
+  PARALLEL_COMMAND+=(-v --tag)
 fi
+
+# Disable saving the output to the Super-linter log file to avoid that output
+# shows as interleaved with output from other jobs running in parallel.
+# Post-processing logic after running GNU Parallel will print the logs
+PARALLEL_COMMAND+=(CREATE_LOG_FILE="false")
 
 PARALLEL_COMMAND+=("LintCodebase" "{}" "\"${TEST_CASE_RUN}\"")
 debug "PARALLEL_COMMAND: ${PARALLEL_COMMAND[*]}"
@@ -1022,6 +1027,12 @@ debug "PARALLEL_COMMAND: ${PARALLEL_COMMAND[*]}"
 PARALLEL_COMMAND_OUTPUT=$(printf "%s\n" "${LANGUAGE_ARRAY[@]}" | "${PARALLEL_COMMAND[@]}" 2>&1)
 PARALLEL_COMMAND_RETURN_CODE=$?
 debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
+
+if [[ -f "${PARALLEL_RESULTS_FILE_PATH}" ]]; then
+  debug "Contents of the Parallel results file (${PARALLEL_RESULTS_FILE_PATH}):\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
+else
+  debug "Parallel results file (${PARALLEL_RESULTS_FILE_PATH}) doesn't exist, or it's not readable"
+fi
 
 if [[ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]]; then
   fatal "Error when running linters. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}"
