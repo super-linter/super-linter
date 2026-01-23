@@ -206,11 +206,16 @@ function BuildFileList() {
 
   if [ "${LOG_DEBUG}" == "true" ]; then
     debug "LOG_DEBUG is enabled. Enable verbose output for parallel"
-    PARALLEL_COMMAND+=(--verbose)
+    PARALLEL_COMMAND+=(-v)
   fi
 
   # Max number of files to categorize per process
   PARALLEL_COMMAND+=(--max-lines 10)
+
+  # Disable saving the output to the Super-linter log file to avoid that output
+  # shows as interleaved with output from other jobs running in parallel.
+  # Post-processing logic after running GNU Parallel will print the logs
+  PARALLEL_COMMAND+=(CREATE_LOG_FILE="false")
 
   PARALLEL_COMMAND+=("BuildFileArrays")
   debug "PARALLEL_COMMAND to build the list of files and directories to lint: ${PARALLEL_COMMAND[*]}"
