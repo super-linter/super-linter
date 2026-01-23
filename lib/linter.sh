@@ -1024,6 +1024,12 @@ PARALLEL_COMMAND_RETURN_CODE=$?
 debug "PARALLEL_COMMAND_OUTPUT when running linters (exit code: ${PARALLEL_COMMAND_RETURN_CODE}):\n${PARALLEL_COMMAND_OUTPUT}"
 
 if [[ ${PARALLEL_COMMAND_RETURN_CODE} -ne 0 ]]; then
+  # When this happens, there's a failure that might have prevented running
+  # GNU parallel, so we print the output in case we didn't get to the point
+  # of processing stdout and stderr, and save them on files.
+  if [[ -f "${PARALLEL_RESULTS_FILE_PATH}" ]]; then
+    debug "Contents of the Parallel results file (${PARALLEL_RESULTS_FILE_PATH}):\n$(cat "${PARALLEL_RESULTS_FILE_PATH}")"
+  fi
   fatal "Error when running linters. Exit code: ${PARALLEL_COMMAND_RETURN_CODE}"
 fi
 

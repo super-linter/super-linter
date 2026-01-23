@@ -368,6 +368,40 @@ BuildFileListValidateAllCodeBaseTest() {
 }
 BuildFileListValidateAllCodeBaseTest
 
+BuildFileListAnsibleDirectoryWorkspaceRootTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_git_repository "${GITHUB_WORKSPACE}"
+  git -C "${GITHUB_WORKSPACE}" commit --allow-empty -m "initial empty commit"
+
+  local ANSIBLE_DIRECTORY="."
+  # shellcheck disable=SC2034
+  local USE_FIND_ALGORITHM="false"
+  # shellcheck disable=SC2034
+  local SUPER_LINTER_PRIVATE_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}"
+
+  local -a EXPECTED_RAW_FILE_ARRAY
+  EXPECTED_RAW_FILE_ARRAY=()
+
+  EXPECTED_RAW_FILE_ARRAY+=(
+    "${GITHUB_WORKSPACE}"
+  )
+
+  cd "${GITHUB_WORKSPACE}"
+  BuildFileList "true" "false"
+
+  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+BuildFileListAnsibleDirectoryWorkspaceRootTest
+
 CheckFileTypeTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"

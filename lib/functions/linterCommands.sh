@@ -61,19 +61,6 @@ InitFixModeOptionsAndCommands() {
   fi
 }
 
-function InitInputConsumeCommands() {
-  LINTER_COMMANDS_ARRAY_ANSIBLE+=("${INPUT_CONSUME_COMMAND[@]}")
-  LINTER_COMMANDS_ARRAY_GO_MODULES+=("${INPUT_CONSUME_COMMAND[@]}")
-  LINTER_COMMANDS_ARRAY_RUST_CLIPPY+=("${INPUT_CONSUME_COMMAND[@]}")
-  LINTER_COMMANDS_ARRAY_PRE_COMMIT+=("${INPUT_CONSUME_COMMAND[@]}")
-}
-
-function InitPowerShellCommand() {
-  debug "PowerShell command before initialization: ${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}"
-  LINTER_COMMANDS_ARRAY_POWERSHELL=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}; if (\\\${Error}.Count) { exit 1 }\"")
-  debug "PowerShell command after initialization: ${LINTER_COMMANDS_ARRAY_POWERSHELL[*]}"
-}
-
 AddOptionsToCommand() {
   local -n COMMAND_ARRAY_NAME="${1}"
   local COMMAND_OPTIONS_TO_ADD="${2}"
@@ -106,7 +93,8 @@ fi
 DOTNET_FORMAT_COMMAND=(dotnet format)
 
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_ARM=(pwsh -NoProfile -NoLogo -Command "\"Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES:-}) ; Test-AzTemplate @config -TemplatePath '{}'; if (\\\${Error}.Count) { exit 1 }\"")
+# This is a Powershell command. LintCodebase will take care of wrapping it in a Poweshell instance
+LINTER_COMMANDS_ARRAY_ARM=("Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES:-}) ; Test-AzTemplate @config -TemplatePath")
 LINTER_COMMANDS_ARRAY_BASH=(shellcheck --color --rcfile "${BASH_LINTER_RULES}")
 # This check and the BASH_SEVERITY variable are needed until Shellcheck supports
 # setting severity using its config file.
@@ -115,7 +103,7 @@ if [ -n "${BASH_SEVERITY:-}" ]; then
   export BASH_SEVERITY
   LINTER_COMMANDS_ARRAY_BASH+=(--severity="${BASH_SEVERITY}")
 fi
-LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec '{}')
+LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec)
 if [ "${BASH_EXEC_IGNORE_LIBRARIES:-}" == 'true' ]; then
   debug "Enabling bash-exec option to ignore shell library files."
   LINTER_COMMANDS_ARRAY_BASH_EXEC+=('true')
@@ -123,14 +111,6 @@ fi
 LINTER_COMMANDS_ARRAY_BIOME_FORMAT=(biome format --error-on-warnings --no-errors-on-unmatched)
 LINTER_COMMANDS_ARRAY_BIOME_LINT=(biome lint --error-on-warnings --no-errors-on-unmatched)
 LINTER_COMMANDS_ARRAY_CHECKOV=(checkov --config-file "${CHECKOV_LINTER_RULES}")
-if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
-  # Consume the input as we do with ANSIBLE
-  debug "Consume the input of the Checkov command because we don't need to add it as an argument."
-  LINTER_COMMANDS_ARRAY_CHECKOV+=("&& echo \"Got the list of directories to lint from the configuration file: {}\"")
-else
-  debug "Adding the '--directory' option to the Checkov command."
-  LINTER_COMMANDS_ARRAY_CHECKOV+=(--directory)
-fi
 LINTER_COMMANDS_ARRAY_CLANG_FORMAT=(clang-format --style=file:"${CLANG_FORMAT_LINTER_RULES}" --Werror)
 LINTER_COMMANDS_ARRAY_CLOJURE=(clj-kondo --config "${CLOJURE_LINTER_RULES}" --lint)
 LINTER_COMMANDS_ARRAY_CLOUDFORMATION=(cfn-lint --config-file "${CLOUDFORMATION_LINTER_RULES}")
@@ -166,7 +146,7 @@ if [ -n "${GITLEAKS_COMMAND_OPTIONS:-}" ]; then
     fatal "Error while adding options to GITLEAKS command"
   fi
 fi
-LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=(commitlint --verbose --cwd "{}")
+LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=(commitlint --verbose)
 if [[ -n "${GITHUB_BEFORE_SHA:-}" ]]; then
   LINTER_COMMANDS_ARRAY_GIT_COMMITLINT+=(--from "${GITHUB_BEFORE_SHA}" --to "${GITHUB_SHA}")
 elif [[ "${ENABLE_COMMITLINT_EDIT_MODE}" == "true" ]]; then
@@ -177,6 +157,7 @@ fi
 if [ "${ENABLE_COMMITLINT_STRICT_MODE:-}" == 'true' ]; then
   LINTER_COMMANDS_ARRAY_GIT_COMMITLINT+=("${COMMITLINT_STRICT_MODE_OPTIONS[@]}")
 fi
+LINTER_COMMANDS_ARRAY_GIT_COMMITLINT+=("${COMMITLINT_CWD_OPTIONS[@]}")
 LINTER_COMMANDS_ARRAY_GIT_MERGE_CONFLICT_MARKERS=(git-merge-conflict-markers)
 LINTER_COMMANDS_ARRAY_GO=(golangci-lint run -c "${GO_LINTER_RULES}" --fast-only)
 LINTER_COMMANDS_ARRAY_GO_MODULES=(golangci-lint run --allow-parallel-runners -c "${GO_LINTER_RULES}")
@@ -253,7 +234,8 @@ LINTER_COMMANDS_ARRAY_PHP_BUILTIN=(php -l -c "${PHP_BUILTIN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPCS=(phpcs --standard="${PHP_PHPCS_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PHPSTAN=(phpstan analyse --no-progress --no-ansi --memory-limit 1G -c "${PHP_PHPSTAN_LINTER_RULES}")
 LINTER_COMMANDS_ARRAY_PHP_PSALM=(psalm --config="${PHP_PSALM_LINTER_RULES}")
-LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES:-}" -Path '{}')
+# This is a Powershell command. LintCodebase will take care of wrapping it in a Poweshell instance
+LINTER_COMMANDS_ARRAY_POWERSHELL=(Invoke-ScriptAnalyzer -EnableExit -Settings "${POWERSHELL_LINTER_RULES:-}" -Path)
 LINTER_COMMANDS_ARRAY_PRE_COMMIT=(pre-commit run --config "${PRE_COMMIT_LINTER_RULES}")
 if [[ "${VALIDATE_ALL_CODEBASE:-"not set"}" == "false" ]] &&
   [[ -n "${GITHUB_BEFORE_SHA:-}" ]]; then
