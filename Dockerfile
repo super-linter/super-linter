@@ -126,8 +126,7 @@ FROM php-composer AS php-linters
 
 COPY dependencies/composer/composer.json dependencies/composer/composer.lock /app/
 
-RUN composer update \
-  && composer audit
+RUN composer update
 
 FROM python-base AS ruby-installer
 

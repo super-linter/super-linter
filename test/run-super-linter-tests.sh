@@ -27,6 +27,9 @@ configure_command_arguments_for_test_git_repository() {
   GITHUB_EVENT_FILE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/$(basename "${GITHUB_EVENT_FILE_PATH}")"
   cp -v "${GITHUB_EVENT_FILE_PATH}" "${GITHUB_EVENT_FILE_DESTINATION_PATH}"
 
+  local PRETTIER_CONFIG_FILE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/${PRETTIER_CONFIG_FILE_NAME}"
+  cp -v "${PRETTIER_CONFIG_FILE_NAME}" "${PRETTIER_CONFIG_FILE_DESTINATION_PATH}"
+
   # shellcheck disable=SC2034
   RUN_LOCAL="${RUN_LOCAL:-"false"}"
   SUPER_LINTER_WORKSPACE="${GIT_REPOSITORY_PATH}"
@@ -274,6 +277,8 @@ configure_test_case_github_event_multiple_commits() {
   COMMAND_TO_RUN+=(--env ENABLE_COMMITLINT_STRICT_MODE="true")
   COMMAND_TO_RUN+=(--env ENFORCE_COMMITLINT_CONFIGURATION_CHECK="true")
   COMMAND_TO_RUN+=(--env VALIDATE_GIT_COMMITLINT="true")
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-github-event-success.md"
 }
 
 run_test_case_github_pr_event_multiple_commits() {
@@ -294,11 +299,9 @@ run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_bran
   COMMAND_TO_RUN+=(-e GITHUB_SHA="non-existing-sha")
 }
 
-run_test_case_use_find_and_ignore_gitignored_files() {
-  ignore_test_cases
-  configure_use_find_algorithm
+run_test_case_github_push_event_multiple_commits_use_find_and_ignore_gitignored_files() {
+  run_test_case_github_push_event_multiple_commits_use_find_algorithm_default_branch
   COMMAND_TO_RUN+=(-e IGNORE_GITIGNORED_FILES="true")
-  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-lint-codebase-success.md"
 }
 
 run_test_cases_save_super_linter_output() {
@@ -379,17 +382,16 @@ run_test_case_fix_mode() {
   local LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH="${GIT_REPOSITORY_PATH}/${TEST_CASE_FOLDER}"
   mkdir -p "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}"
 
+  configure_linters_for_fix_mode
+
   for LANGUAGE in "${LANGUAGES_WITH_FIX_MODE[@]}"; do
     if [[ "${SUPER_LINTER_CONTAINER_IMAGE_TYPE}" == "slim" ]] &&
       ! IsLanguageInSlimImage "${LANGUAGE}"; then
       debug "Skip ${LANGUAGE} because it's not available in the Super-linter ${SUPER_LINTER_CONTAINER_IMAGE_TYPE} image"
       continue
     fi
-    debug "Enabling validate and fix mode for ${LANGUAGE}"
     local -l LOWERCASE_LANGUAGE="${LANGUAGE}"
     cp -rv "${TEST_CASE_FOLDER}/${LOWERCASE_LANGUAGE}" "${LINTERS_TEST_CASES_FIX_MODE_DESTINATION_PATH}/"
-    eval "COMMAND_TO_RUN+=(--env FIX_${LANGUAGE}=\"true\")"
-    eval "COMMAND_TO_RUN+=(--env VALIDATE_${LANGUAGE}=\"true\")"
   done
 
   # Copy gitignore so we don't commit eventual leftovers from previous runs
@@ -417,6 +419,41 @@ run_test_case_fix_mode() {
   EXPECTED_EXIT_CODE=2
 
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-fix-mode-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
+}
+
+configure_linters_for_fix_mode() {
+  for LANGUAGE in "${LANGUAGES_WITH_FIX_MODE[@]}"; do
+    if [[ "${SUPER_LINTER_CONTAINER_IMAGE_TYPE}" == "slim" ]] &&
+      ! IsLanguageInSlimImage "${LANGUAGE}"; then
+      debug "Skip ${LANGUAGE} because it's not available in the Super-linter ${SUPER_LINTER_CONTAINER_IMAGE_TYPE} image"
+      continue
+    fi
+    debug "Enabling validate and fix mode for ${LANGUAGE}"
+    eval "COMMAND_TO_RUN+=(--env FIX_${LANGUAGE}=\"true\")"
+    eval "COMMAND_TO_RUN+=(--env VALIDATE_${LANGUAGE}=\"true\")"
+  done
+}
+
+configure_linters_for_super_linter_codebase() {
+  COMMAND_TO_RUN+=(--env GITLEAKS_CONFIG_FILE=".gitleaks-ignore-tests.toml")
+  VALIDATE_ALL_CODEBASE="true"
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-fix-mode-super-linter-code-base-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
+}
+
+fix_codebase() {
+  ignore_test_cases
+  configure_linters_for_super_linter_codebase
+  configure_linters_for_fix_mode
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-fix-codebase-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
+}
+
+lint_codebase() {
+  ignore_test_cases
+  configure_linters_for_super_linter_codebase
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-lint-codebase-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
 # Run the test setup function
