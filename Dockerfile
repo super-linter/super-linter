@@ -499,15 +499,6 @@ RUN git config --system --add safe.directory "*"
 # hadolint ignore=DL3059
 RUN dart --disable-analytics
 
-# Patch npm-groovy-lint to allow running CodeNarc on Java 21, so that we don't
-# need to include both Java JRE 17 and 21
-COPY patches/npm-groovy-lint-java-21.patch /patches/
-RUN apk add --no-cache --virtual .apply-patches \
-  patch \
-  && patch -p1 < /patches/npm-groovy-lint-java-21.patch \
-  && rm -rfv /patches \
-  && apk del --no-network --purge .apply-patches
-
 FROM base_image AS slim
 
 # Run to build version file and validate image
