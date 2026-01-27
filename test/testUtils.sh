@@ -27,6 +27,9 @@ source "lib/globals/validation.sh"
 source "lib/functions/output.sh"
 
 # shellcheck disable=SC2034
+PRETTIER_CONFIG_FILE_NAME="prettier.config.js"
+
+# shellcheck disable=SC2034
 TEST_DATA_DIRECTORY="test/data/test-repository-contents"
 
 # Use arbitrary JSON files in case we want trigger some validation
