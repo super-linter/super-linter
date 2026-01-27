@@ -127,7 +127,6 @@ info: ## Gather information about the runtime environment
 	echo "Build version: ${BUILD_VERSION}"; \
 	echo "SUPER_LINTER_TEST_CONTAINER_URL: $(SUPER_LINTER_TEST_CONTAINER_URL)"; \
 	echo "ls -ahl:\n$$(ls -ahl)"; \
-	echo "Git log:\n$$(git log --all --graph --abbrev-commit --decorate --format=oneline)" \
 	docker images; \
 	docker ps; \
 	echo "Container image layers size:"; \
