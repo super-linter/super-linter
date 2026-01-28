@@ -1,5 +1,19 @@
 # Changelog
 
+## [8.4.1](https://github.com/super-linter/super-linter/compare/v8.4.0...v8.4.1) (2026-01-28)
+
+
+### ⬆️ Dependency updates
+
+* **docker:** bump the docker group with 3 updates ([#7455](https://github.com/super-linter/super-linter/issues/7455)) ([a1b44ab](https://github.com/super-linter/super-linter/commit/a1b44ab603af174c580891fb513e31aad5ce360a))
+* **npm:** bump the npm group across 1 directory with 2 updates ([#7457](https://github.com/super-linter/super-linter/issues/7457)) ([962a22b](https://github.com/super-linter/super-linter/commit/962a22b4cc228dc288e1f1222736ca3c228118c7))
+
+
+### 🧰 Maintenance
+
+* **github-actions:** bump docker/login-action in the dev-ci-tools group ([#7454](https://github.com/super-linter/super-linter/issues/7454)) ([a2a7292](https://github.com/super-linter/super-linter/commit/a2a729287be00a15565a9b7d25ffaff26731dc67))
+* update tar ([#7462](https://github.com/super-linter/super-linter/issues/7462)) ([c082d16](https://github.com/super-linter/super-linter/commit/c082d1672788853a18cf12ad8b9a0ef0e3c4b1a8))
+
 ## [8.4.0](https://github.com/super-linter/super-linter/compare/v8.3.2...v8.4.0) (2026-01-28)
 
 
