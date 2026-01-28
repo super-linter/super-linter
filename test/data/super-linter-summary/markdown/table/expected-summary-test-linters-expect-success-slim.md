@@ -78,6 +78,7 @@
 | RENOVATE                   | Pass ✅           |
 | RUBY                       | Pass ✅           |
 | SCALAFMT                   | Pass ✅           |
+| SHELL_SHELLHARDEN          | Pass ✅           |
 | SHELL_SHFMT                | Pass ✅           |
 | SNAKEMAKE_LINT             | Pass ✅           |
 | SNAKEMAKE_SNAKEFMT         | Pass ✅           |
