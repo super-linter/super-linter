@@ -29,15 +29,15 @@ GEM
     minitest (6.0.1)
       prism (~> 1.5)
     parallel (1.27.0)
-    parser (3.3.10.0)
+    parser (3.3.10.1)
       ast (~> 2.4.1)
       racc
-    prism (1.7.0)
+    prism (1.9.0)
     racc (1.8.1)
     rack (3.2.4)
     rainbow (3.1.1)
     regexp_parser (2.11.3)
-    rubocop (1.82.1)
+    rubocop (1.84.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -45,7 +45,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.48.0, < 2.0)
+      rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.49.0)
@@ -99,7 +99,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  rubocop (~> 1.82.1)
+  rubocop (~> 1.84.0)
   rubocop-capybara (~> 2.22)
   rubocop-factory_bot (~> 2.28)
   rubocop-github (~> 0.26.0)
