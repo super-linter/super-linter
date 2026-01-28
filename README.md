@@ -159,7 +159,7 @@ To run super-linter as a GitHub Action, you do the following:
          # contents permission to clone the repository
          contents: read
          packages: read
-         # To issues and pull-requests permissions to write results as pull
+         # issues and pull-requests permissions to write results as pull
          # request comments. Omit them if you don't need summary comments
          issues: write
          pull-requests: write
