@@ -47,6 +47,6 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "tar": "^7.5.4"
+    "tar": "^7.5.7"
   }
 }
