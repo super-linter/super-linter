@@ -38,6 +38,8 @@ test: \
 	test-github-event-push-force-push \
 	test-github-event-push-force-push-multiple-commits \
 	test-runtime-dependencies-installation \
+	test-linters-bash-exec-ignore-libraries-expect-failure \
+	test-linters-bash-exec-ignore-libraries-expect-success \
 	test-linters-expect-failure \
 	test-linters-expect-failure-log-level-notice \
 	test-linters-expect-failure-suppress-output-on-success \
@@ -137,9 +139,23 @@ info: ## Gather information about the runtime environment
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		| sort --human
 
-.PHONY: check-github-token
-check-github-token:
+.PHONY: check-github-token-file
+check-github-token-file:
 	@if [ ! -f "${GITHUB_TOKEN_PATH}" ]; then echo "Cannot find the file to load the GitHub access token: $(GITHUB_TOKEN_PATH). Create a readable file there, and populate it with a GitHub personal access token."; exit 1; fi
+
+.PHONY: check-github-token
+check-github-token: check-github-token-file
+	@if ! curl \
+		--fail \
+		-o /dev/null \
+		--silent \
+		-H "Authorization: Bearer $(shell cat "${GITHUB_TOKEN_PATH}")" \
+	https://api.github.com/rate_limit; then \
+		echo "GitHub token not valid or might be expired"; \
+		exit 1; \
+	else \
+		echo "GitHub token successfully validated"; \
+	fi
 
 .PHONY: inspec
 inspec: inspec-check ## Run InSpec tests
@@ -474,6 +490,20 @@ test-linters-expect-success: ## Run the linters test suite expecting successes
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_expect_success" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-bash-exec-ignore-libraries-expect-failure
+test-linters-bash-exec-ignore-libraries-expect-failure: ## Run the bash-exec linter test expecting failures
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_bash_exec_ignore_libraries_expect_failure" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-bash-exec-ignore-libraries-expect-success
+test-linters-bash-exec-ignore-libraries-expect-success: ## Run the bash-exec linter test expecting successes
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_bash_exec_ignore_libraries_expect_success" \
 		"$(IMAGE)"
 
 .PHONY: test-linters-expect-failure

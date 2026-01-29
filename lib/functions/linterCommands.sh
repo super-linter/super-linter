@@ -103,7 +103,7 @@ if [ -n "${BASH_SEVERITY:-}" ]; then
   export BASH_SEVERITY
   LINTER_COMMANDS_ARRAY_BASH+=(--severity="${BASH_SEVERITY}")
 fi
-LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec)
+LINTER_COMMANDS_ARRAY_BASH_EXEC=(bash-exec '{}')
 if [ "${BASH_EXEC_IGNORE_LIBRARIES:-}" == 'true' ]; then
   debug "Enabling bash-exec option to ignore shell library files."
   LINTER_COMMANDS_ARRAY_BASH_EXEC+=('true')

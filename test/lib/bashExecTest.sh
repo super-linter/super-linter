@@ -15,7 +15,9 @@ BashExecIgnoreLibrariesTest() {
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
 
-  local TEST_FILE_PATH="test/linters/bash_exec/libraries/noShebang_bad.sh"
+  local TEST_FILE_PATH
+
+  TEST_FILE_PATH="test/linters/bash_exec_ignore_libraries_true/bad/bash_exec_ignore_libraries_true_bad_1.sh"
 
   if scripts/bash-exec.sh "${TEST_FILE_PATH}"; then
     fatal "bash-exec without any option should have failed"
@@ -25,6 +27,7 @@ BashExecIgnoreLibrariesTest() {
     fatal "bash-exec with 'false' should have failed"
   fi
 
+  TEST_FILE_PATH="test/linters/bash_exec_ignore_libraries_true/good/bash_exec_ignore_libraries_true_good_1.sh"
   if ! scripts/bash-exec.sh "${TEST_FILE_PATH}" "true"; then
     fatal "bash-exec with 'false' should not have failed"
   fi

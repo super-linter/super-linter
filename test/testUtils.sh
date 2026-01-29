@@ -44,6 +44,9 @@ TEST_OS_PACKAGES_TO_INSTALL_FILE_PATH="test/data/install-dependencies/os-package
 # shellcheck disable=SC2034
 TEST_ROOT_CA_CERT_FILE_PATH="test/data/ssl-certificate/rootCA-test.crt"
 
+# shellcheck disable=SC2034
+TEST_DETECT_FILES_SHEBANG_DIRECTORY="test/data/detect-files-scripts"
+
 # Set an arbitrary pull request name
 PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
 

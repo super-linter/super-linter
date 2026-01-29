@@ -15,7 +15,7 @@ debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 COMMAND_TO_RUN=(docker run --rm -t -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
 
 ignore_test_cases() {
-  COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*")
+  COMMAND_TO_RUN+=(-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/detect-files-scripts/|/test/data/test-repository-contents/).*")
 }
 
 configure_command_arguments_for_test_git_repository() {
@@ -139,6 +139,50 @@ run_test_cases_expect_success() {
   COMMAND_TO_RUN+=(-e ANSIBLE_DIRECTORY="/test/linters/ansible/good" -e CHECKOV_FILE_NAME=".checkov-test-linters-success.yaml" -e FILTER_REGEX_INCLUDE=".*good.*")
   COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE=".pre-commit-config-test-linters-success.yaml")
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-expect-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
+}
+
+configure_bash_exec_ignore_libraries_test_case() {
+  local EXPECTED_EXIT_CODE="${1}"
+  local GIT_REPOSITORY_PATH
+  GIT_REPOSITORY_PATH="$(mktemp -d)"
+
+  local GITHUB_EVENT_NAME="push"
+
+  initialize_git_repository "${GIT_REPOSITORY_PATH}"
+  initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" "2" "true" "${GITHUB_EVENT_NAME}" "true" "false" "false" "true" "false"
+
+  local TEST_FILES_DIRECTORY_NAME
+  if [[ "${EXPECTED_EXIT_CODE}" -eq 0 ]]; then
+    TEST_FILES_DIRECTORY_NAME="good"
+  else
+    TEST_FILES_DIRECTORY_NAME="bad"
+  fi
+  cp -rv "test/linters/bash_exec_ignore_libraries_true/${TEST_FILES_DIRECTORY_NAME}/"* "${GIT_REPOSITORY_PATH}/"
+
+  VALIDATE_ALL_CODEBASE="true"
+
+  configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-multiple-commits.json" "${GITHUB_EVENT_NAME}"
+  COMMAND_TO_RUN+=(-e VALIDATE_BASH_EXEC="true")
+
+  configure_use_find_algorithm
+
+  COMMAND_TO_RUN+=(-e BASH_EXEC_IGNORE_LIBRARIES="true")
+}
+
+run_test_cases_bash_exec_ignore_libraries_expect_success() {
+  configure_bash_exec_ignore_libraries_test_case "0"
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-bash-exec-ignore-libraries-expect-success.md"
+}
+
+run_test_cases_bash_exec_ignore_libraries_expect_failure() {
+  # 2 because the JSON linter will report a success
+  # (2 means that at least one linter reported a success, and at least one
+  # linter reported an error)
+  EXPECTED_EXIT_CODE=2
+  configure_bash_exec_ignore_libraries_test_case "${EXPECTED_EXIT_CODE}"
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-bash-exec-ignore-libraries-expect-failure.md"
 }
 
 run_test_cases_expect_failure_suppress_output_on_success() {
