@@ -18,7 +18,7 @@ FROM hadolint/hadolint:v2.14.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.8.0 AS kustomize
 FROM hashicorp/terraform:1.14.4 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
-FROM mstruebing/editorconfig-checker:v3.6.0 AS editorconfig-checker
+FROM mstruebing/editorconfig-checker:v3.6.1 AS editorconfig-checker
 FROM mvdan/shfmt:v3.12.0 AS shfmt
 FROM rhysd/actionlint:1.7.10 AS actionlint
 FROM scalameta/scalafmt:v3.10.5 AS scalafmt
@@ -27,7 +27,7 @@ FROM yoheimuta/protolint:0.56.4 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2026.01.19-alpine AS clj-kondo
 FROM dart:3.10.8-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:10.0.102-alpine3.23 AS dotnet-sdk
-FROM composer/composer:2.9.4 AS php-composer
+FROM composer/composer:2.9.5 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.68.2 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
