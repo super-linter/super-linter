@@ -50,6 +50,8 @@ test: \
 	test-linters-expect-success-suppress-output-on-success-log-level-notice \
 	test-linters-fix-mode
 
+SHELL := /bin/bash
+
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
 # so that the user can send e.g. ^C through.
@@ -87,21 +89,11 @@ ifeq ($(IMAGE),slim)
 IMAGE_PREFIX := slim-
 endif
 
-# Default to latest
 ifeq ($(SUPER_LINTER_TEST_CONTAINER_URL),)
+# Default to the latest tag
 SUPER_LINTER_TEST_CONTAINER_URL := "ghcr.io/super-linter/super-linter:${IMAGE_PREFIX}latest"
-endif
-
-ifeq ($(BUILD_DATE),)
-BUILD_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
-endif
-
-ifeq ($(BUILD_REVISION),)
-BUILD_REVISION := $(shell git rev-parse HEAD)
-endif
-
-ifeq ($(BUILD_VERSION),)
-BUILD_VERSION := $(shell git rev-parse HEAD)
+else
+SUPER_LINTER_TEST_CONTAINER_URL := ${CONTAINER_IMAGE_ID}
 endif
 
 GITHUB_TOKEN_PATH := "$(CURDIR)/.github-personal-access-token"
@@ -120,13 +112,13 @@ endif
 
 .PHONY: info
 info: ## Gather information about the runtime environment
+	set -o errexit; \
+	. scripts/build-metadata.sh; \
 	echo "whoami: $$(whoami)"; \
 	echo "pwd: $$(pwd)"; \
 	echo "IMAGE:" $(IMAGE); \
 	echo "IMAGE_PREFIX: $(IMAGE_PREFIX)"; \
-	echo "Build date: ${BUILD_DATE}"; \
-	echo "Build revision: ${BUILD_REVISION}"; \
-	echo "Build version: ${BUILD_VERSION}"; \
+	echo "Container image ID: ${CONTAINER_IMAGE_ID}"; \
 	echo "SUPER_LINTER_TEST_CONTAINER_URL: $(SUPER_LINTER_TEST_CONTAINER_URL)"; \
 	echo "ls -ahl:\n$$(ls -ahl)"; \
 	docker images; \
@@ -179,10 +171,12 @@ inspec: inspec-check ## Run InSpec tests
 
 .PHONY: docker
 docker: docker-build-check check-github-token ## Build the container image
+	set -o errexit; \
+	. scripts/build-metadata.sh; \
 	DOCKER_BUILDKIT=1 docker buildx build --load \
-		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg BUILD_REVISION=$(BUILD_REVISION) \
-		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
+		--build-arg BUILD_DATE=$${BUILD_DATE} \
+		--build-arg BUILD_REVISION=$${BUILD_REVISION} \
+		--build-arg BUILD_VERSION=$${BUILD_VERSION} \
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:${IMAGE_PREFIX}latest-buildcache \
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-base_image \
 		--cache-from type=registry,ref=ghcr.io/super-linter/super-linter:latest-buildcache-clang-format \
@@ -225,11 +219,13 @@ open-shell-super-linter-container: ## Open a shell in the Super-linter container
 
 .PHONY: validate-container-image-labels
 validate-container-image-labels: ## Validate container image labels
+	set -o errexit; \
+	. scripts/build-metadata.sh; \
 	$(CURDIR)/test/validate-docker-labels.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		$(BUILD_DATE) \
-		$(BUILD_REVISION) \
-		$(BUILD_VERSION)
+		$${BUILD_DATE} \
+		$${BUILD_REVISION} \
+		$${BUILD_VERSION}
 
 .PHONY: composer-audit
 composer-audit: ## Run composer audit to check for known vulnerable dependencies

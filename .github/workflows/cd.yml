@@ -60,7 +60,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build clang-format stage
+      - name: Build ${{ matrix.stages.stage-name }} stage
         uses: docker/build-push-action@v6
         with:
           context: .

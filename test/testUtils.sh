@@ -47,6 +47,9 @@ TEST_ROOT_CA_CERT_FILE_PATH="test/data/ssl-certificate/rootCA-test.crt"
 # shellcheck disable=SC2034
 TEST_DETECT_FILES_SHEBANG_DIRECTORY="test/data/detect-files-scripts"
 
+# shellcheck disable=SC2016 # purposely add a file name that has a subshell in the name
+SUBSHELL_TEST_FILE_NAME='subshell-test-file-$(touch test-subshell-file).json'
+
 # Set an arbitrary pull request name
 PULL_REQUEST_BRANCH_NAME="pull/6637/merge"
 
@@ -142,7 +145,7 @@ function AssertArraysElementsContentMatch() {
     debug "${ARRAY_1_VARIABLE_NAME} (${ARRAY_1[*]}) matches the expected value: ${ARRAY_2[*]}"
     RETURN_CODE=0
   else
-    error "${ARRAY_1_VARIABLE_NAME} (${ARRAY_1[*]}) doesn't match the expected value: ${ARRAY_2[*]}"
+    error "${ARRAY_1_VARIABLE_NAME} doesn't match the expected value. ${ARRAY_1_VARIABLE_NAME}:\n${ARRAY_1[*]})\nExpected value:\n${ARRAY_2[*]}"
     RETURN_CODE=1
   fi
   unset -n ARRAY_1
@@ -382,8 +385,12 @@ initialize_git_repository_contents() {
   local TEST_FILE_PATH
   TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test0.json"
   cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
+  local SUBSHELL_TEST_FILE_PATH
+  SUBSHELL_TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/0-${SUBSHELL_TEST_FILE_NAME}"
+  cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${SUBSHELL_TEST_FILE_PATH}"
   git -C "${GIT_REPOSITORY_PATH}" add .
-  git -C "${GIT_REPOSITORY_PATH}" commit -m "Add ${TEST_FILE_PATH}"
+  git -C "${GIT_REPOSITORY_PATH}" status
+  git -C "${GIT_REPOSITORY_PATH}" commit -m "Add ${TEST_FILE_PATH} and subshell test file"
 
   # shellcheck disable=SC2034
   GIT_ROOT_COMMIT_SHA="$(git -C "${GIT_REPOSITORY_PATH}" rev-parse HEAD)"
@@ -413,8 +420,12 @@ initialize_git_repository_contents() {
   for ((i = 1; i <= COMMITS_TO_CREATE; i++)); do
     local TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/test${i}.json"
     cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${TEST_FILE_PATH}"
+    SUBSHELL_TEST_FILE_PATH="${GIT_REPOSITORY_PATH}/${i}-${SUBSHELL_TEST_FILE_NAME}"
+    cp -v "${TEST_DATA_JSON_FILE_GOOD}" "${SUBSHELL_TEST_FILE_PATH}"
     git -C "${GIT_REPOSITORY_PATH}" add .
-    git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}")"
+    git -C "${GIT_REPOSITORY_PATH}" status
+    git -C "${GIT_REPOSITORY_PATH}" commit -m "feat: add $(basename "${TEST_FILE_PATH}") and subshell test file"
+    git -C "${GIT_REPOSITORY_PATH}" diff-tree --no-commit-id --name-only HEAD -r
 
     if [[ "${i}" -eq 1 ]]; then
       # shellcheck disable=SC2034

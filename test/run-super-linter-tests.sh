@@ -238,6 +238,8 @@ run_test_case_git_initial_commit() {
   initialize_git_repository_contents "${GIT_REPOSITORY_PATH}" 0 "false" "push" "false" "true" "false" "true" "false"
   configure_command_arguments_for_test_git_repository "${GIT_REPOSITORY_PATH}" "test/data/github-event/github-event-push-initial-commit.json" "push"
   initialize_github_sha "${GIT_REPOSITORY_PATH}"
+
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-github-event-success-json.md"
 }
 
 run_test_case_github_push_initial_commit_multiple_commits() {
@@ -322,7 +324,7 @@ configure_test_case_github_event_multiple_commits() {
   COMMAND_TO_RUN+=(--env ENFORCE_COMMITLINT_CONFIGURATION_CHECK="true")
   COMMAND_TO_RUN+=(--env VALIDATE_GIT_COMMITLINT="true")
 
-  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-github-event-success.md"
+  EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-github-event-success-json-commitlint.md"
 }
 
 run_test_case_github_pr_event_multiple_commits() {
@@ -782,13 +784,26 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
   done
 fi
 
+# Check if Super-linter created files if any file to lint contains a subshell
+# Enable nullglob to prevent the loop from running if no files match
+shopt -s nullglob
+TEST_SUBSHELL_FILE_PATH="${SUPER_LINTER_WORKSPACE}/test-subshell-file"
+SUBSHELL_FILES=("${TEST_SUBSHELL_FILE_PATH}"*)
+if [ ${#SUBSHELL_FILES[@]} -gt 0 ]; then
+  ls -alh "${SUPER_LINTER_WORKSPACE}"
+  fatal "Found ${#SUBSHELL_FILES[@]} file(s) created by subshells, and they shouldn't been there: ${SUBSHELL_FILES[*]}"
+else
+  debug "Found no files created by subshells (${TEST_SUBSHELL_FILE_PATH}) in ${SUPER_LINTER_WORKSPACE}"
+fi
+shopt -u nullglob
+
 # Check if super-linter leaves leftovers behind
 declare -a TEMP_ITEMS_TO_CLEAN
 TEMP_ITEMS_TO_CLEAN=()
-TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.lintr")
-TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.mypy_cache")
-TEMP_ITEMS_TO_CLEAN+=("$(pwd)/.ruff_cache")
-TEMP_ITEMS_TO_CLEAN+=("$(pwd)/logback.log")
+TEMP_ITEMS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/.lintr")
+TEMP_ITEMS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/.mypy_cache")
+TEMP_ITEMS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/.ruff_cache")
+TEMP_ITEMS_TO_CLEAN+=("${SUPER_LINTER_WORKSPACE}/logback.log")
 
 for item in "${TEMP_ITEMS_TO_CLEAN[@]}"; do
   debug "Check if ${item} exists"

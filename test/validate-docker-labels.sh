@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o nounset
+set -o pipefail
 
 CONTAINER_IMAGE_ID="${1}"
 shift
@@ -22,10 +23,15 @@ ValidateLabel() {
     echo "[ERROR] Invalid container image label: ${LABEL_KEY}: ${LABEL}. Expected: ${CONTAINER_VALUE}"
     exit 1
   else
-    echo "${LABEL_KEY} is valid: ${LABEL}. Expected: ${CONTAINER_VALUE}"
+    echo "${LABEL_KEY} is valid: ${LABEL}"
   fi
 }
 
-ValidateLabel "org.opencontainers.image.created" "${BUILD_DATE}"
+# Validate build date only if we loaded it from an existing container image
+# because, if not, it defaults to the current date
+if [[ -v LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE ]] &&
+  [[ "${LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE:-"false"}" == "true" ]]; then
+  ValidateLabel "org.opencontainers.image.created" "${BUILD_DATE}"
+fi
 ValidateLabel "org.opencontainers.image.revision" "${BUILD_REVISION}"
 ValidateLabel "org.opencontainers.image.version" "${BUILD_VERSION}"
