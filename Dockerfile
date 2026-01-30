@@ -28,7 +28,7 @@ FROM ghcr.io/clj-kondo/clj-kondo:2026.01.19-alpine AS clj-kondo
 FROM dart:3.10.8-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:10.0.102-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.9.5 AS php-composer
-FROM ghcr.io/aquasecurity/trivy:0.68.2 AS trivy
+FROM ghcr.io/aquasecurity/trivy:0.69.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
 FROM python:3.13.11-alpine3.23 AS python-base
