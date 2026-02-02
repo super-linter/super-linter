@@ -7,7 +7,7 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.14.1 AS terragrunt
+FROM alpine/terragrunt:1.14.4 AS terragrunt
 FROM dotenvlinter/dotenv-linter:4.0.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.60.0 AS tflint
 FROM alpine/helm:4.1.0 AS helm
@@ -21,14 +21,14 @@ FROM koalaman/shellcheck:v0.11.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.6.1 AS editorconfig-checker
 FROM mvdan/shfmt:v3.12.0 AS shfmt
 FROM rhysd/actionlint:1.7.10 AS actionlint
-FROM scalameta/scalafmt:v3.10.5 AS scalafmt
+FROM scalameta/scalafmt:v3.10.6 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.0 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2026.01.19-alpine AS clj-kondo
 FROM dart:3.10.8-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:10.0.102-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.9.5 AS php-composer
-FROM ghcr.io/aquasecurity/trivy:0.68.2 AS trivy
+FROM ghcr.io/aquasecurity/trivy:0.69.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
 FROM python:3.13.11-alpine3.23 AS python-base
