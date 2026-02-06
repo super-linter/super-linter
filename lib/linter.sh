@@ -409,7 +409,7 @@ GetGitHubVars() {
     fi
 
     if [ -z "${GITHUB_TOKEN:-}" ]; then
-      fatal "Failed to get [GITHUB_TOKEN]. Terminating because status reports were explicitly enabled, but GITHUB_TOKEN was not provided."
+      fatal "Failed to get GITHUB_TOKEN. Terminating because status reports (MULTI_STATUS: ${MULTI_STATUS}) or pull request summary comments (ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: ${ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}) were explicitly enabled, but GITHUB_TOKEN was not provided."
     else
       info "Successfully found GITHUB_TOKEN."
     fi
