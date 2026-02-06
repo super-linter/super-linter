@@ -42,6 +42,7 @@
 | PYTHON_RUFF_FORMAT    | Pass ✅           |
 | RUBY                  | Fail ❌           |
 | SCALAFMT              | Pass ✅           |
+| SHELL_SHELLHARDEN     | Pass ✅           |
 | SHELL_SHFMT           | Pass ✅           |
 | SNAKEMAKE_SNAKEFMT    | Pass ✅           |
 | SPELL_CODESPELL       | Pass ✅           |
