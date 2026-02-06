@@ -14,7 +14,7 @@ function RecognizeNoShebangTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/noShebang_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/noShebang_bad.sh"
 
   debug "Confirming ${FILE} has no shebang"
 
@@ -29,7 +29,7 @@ RecognizeCommentIsNotShebangTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/comment_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/comment_bad.sh"
 
   debug "Confirming ${FILE} starting with a comment has no shebang"
 
@@ -44,7 +44,7 @@ RecognizeIndentedShebangAsCommentTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/indentedShebang_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/indentedShebang_bad.sh"
 
   debug "Confirming indented shebang in ${FILE} is considered a comment"
 
@@ -59,7 +59,7 @@ RecognizeSecondLineShebangAsCommentTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/secondLineShebang_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/secondLineShebang_bad.sh"
 
   debug "Confirming shebang on second line in ${FILE} is considered a comment"
 
@@ -74,7 +74,7 @@ function RecognizeShebangTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/shebang_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/shebang_bad.sh"
 
   debug "Confirming ${FILE} has a shebang"
 
@@ -89,7 +89,7 @@ function RecognizeShebangWithBlankTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
   info "${FUNCTION_NAME} start"
-  local FILE="test/linters/bash_exec/libraries/shebangWithBlank_bad.sh"
+  local FILE="${TEST_DETECT_FILES_SHEBANG_DIRECTORY}/shebangWithBlank_bad.sh"
 
   debug "Confirming shebang with blank in ${FILE} is recognized"
 

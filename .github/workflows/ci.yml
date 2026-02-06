@@ -272,10 +272,11 @@ jobs:
         env:
           LOG_LEVEL: DEBUG
           CREATE_LOG_FILE: true
+          REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
-          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*"
+          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/detect-files-scripts/|/test/data/test-repository-contents/).*"
           RENOVATE_SHAREABLE_CONFIG_PRESET_FILE_NAMES: "default.json,hoge.json"
 
       - name: Get the contents of the log file
@@ -286,10 +287,11 @@ jobs:
       - name: Test Local Action (default log)
         uses: ./
         env:
+          REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
-          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*"
+          FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/detect-files-scripts/|/test/data/test-repository-contents/).*"
 
   build-test-suite-matrix:
     name: Build test suite matrix
