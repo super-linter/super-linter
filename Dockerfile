@@ -11,7 +11,7 @@ FROM alpine/terragrunt:1.14.4 AS terragrunt
 FROM dotenvlinter/dotenv-linter:4.0.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.60.0 AS tflint
 FROM alpine/helm:4.1.0 AS helm
-FROM golang:1.25.6-alpine AS golang
+FROM golang:1.26rc3-alpine AS golang
 FROM golangci/golangci-lint:v2.8.0 AS golangci-lint
 FROM goreleaser/goreleaser:v2.13.3 AS goreleaser
 FROM hadolint/hadolint:v2.14.0-alpine AS dockerfile-lint
@@ -25,10 +25,10 @@ FROM scalameta/scalafmt:v3.10.6 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.0 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2026.01.19-alpine AS clj-kondo
-FROM dart:3.10.8-sdk AS dart
+FROM dart:3.10.9-sdk AS dart
 FROM mcr.microsoft.com/dotnet/sdk:10.0.102-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.9.5 AS php-composer
-FROM ghcr.io/aquasecurity/trivy:0.69.0 AS trivy
+FROM ghcr.io/aquasecurity/trivy:0.69.1 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.7.0 AS kubeconform
 
 FROM python:3.13.11-alpine3.23 AS python-base
