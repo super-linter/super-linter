@@ -80,6 +80,7 @@ LINTER_NAMES_ARRAY['R']="R"
 LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
 LINTER_NAMES_ARRAY['RUBY']="rubocop"
 LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
+LINTER_NAMES_ARRAY['SHELL_SHELLHARDEN']="shellharden"
 LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
 LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
 LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
@@ -216,6 +217,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "scalafmt" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
+  elif [[ "${LINTER}" == "shellharden" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)"
   elif [[ "${LINTER}" == "shellcheck" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | grep 'version:' | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "snakefmt" ]]; then

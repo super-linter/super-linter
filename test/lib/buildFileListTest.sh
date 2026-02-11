@@ -224,6 +224,8 @@ BuildFileArraysTest() {
   # shellcheck disable=SC2034
   local VALIDATE_OPENAPI="true"
   # shellcheck disable=SC2034
+  local VALIDATE_SHELL_SHELLHARDEN="true"
+  # shellcheck disable=SC2034
   local VALIDATE_SHELL_SHFMT="true"
 
   local CHECKOV_LINTER_RULES
@@ -509,34 +511,42 @@ CheckFileTypeTest() {
   # Assertions for all Shell scripts (direct and env variants)
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${POSIX_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${POSIX_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${POSIX_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${POSIX_SHELL_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${BASH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${BASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${BASH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${BASH_SHELL_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${DASH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${DASH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${DASH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${DASH_SHELL_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${KSH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${KSH_SHELL_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${KSH_SHELL_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${KSH_SHELL_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_SH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_SH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${ENV_SH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_SH_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_BASH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_BASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${ENV_BASH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_BASH_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_DASH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_DASH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${ENV_DASH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_DASH_SCRIPT_PATH}"
 
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH" "${ENV_KSH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC" "${ENV_KSH_SCRIPT_PATH}"
+  AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHELLHARDEN" "${ENV_KSH_SCRIPT_PATH}"
   AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT" "${ENV_KSH_SCRIPT_PATH}"
 
   unset SUPPRESS_FILE_TYPE_WARN

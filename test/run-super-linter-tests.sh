@@ -758,6 +758,7 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
         [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
+        [[ "${LANGUAGE}" == "SHELL_SHELLHARDEN" ]] ||
         [[ "${LANGUAGE}" == "SHELL_SHFMT" ]] ||
         [[ "${LANGUAGE}" == "SQLFLUFF" ]]; then
         debug "${LANGUAGE} is a known case of a tool that doesn't preserve the ownership of files or directories in fix mode. Need to recursively change ownership of ${BAD_TEST_CASE_DESTINATION_PATH}"
