@@ -94,6 +94,56 @@ We recommend the following workflow for contributing to Super-linter:
 If you are adding a new linter, please follow the instructions in the
 [add a new linter guide](add-new-linter.md).
 
+## Build the container image and run the test suite locally
+
+To run the build and test process locally, in the top-level super-linter
+directory, do the following:
+
+1. [Create a fine-grained GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token).
+   The token only needs to have public/read-only access.
+
+1. Store the generated personal access token in a file in the top-level
+   directory (This file is ignored by Git).
+
+   ```bash
+   echo "github_pat_XXXXXX_XXXXXX" > .github-personal-access-token
+   ```
+
+1. Run the build process:
+
+   ```bash
+   . ./scripts/build-metadata.sh && make
+   ```
+
+### Run the test suite against an arbitrary Super-linter container image
+
+You can run the test suite against an arbitrary super-linter container image.
+
+Here is an example that runs the test suite against the `v8.2.1` container image
+version.
+
+```shell
+CONTAINER_IMAGE_ID="ghcr.io/super-linter/super-linter:v8.2.1" \
+make docker-pull test
+```
+
+### Get the list of available build targets
+
+To get the list of the available `Make` targets, run the following command:
+
+```shell
+make help
+```
+
+### Automatically fix formatting and linting issues
+
+To automatically fix linting and formatting issues when supported, run the
+following command:
+
+```shell
+make fix-codebase
+```
+
 ## Additional documentation
 
 Here are some other documents that you might find useful:

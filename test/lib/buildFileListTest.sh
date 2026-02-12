@@ -132,6 +132,7 @@ GenerateFileDiffTest() {
   fi
 
   for ((i = 0; i < EXPECTED_RAW_FILE_ARRAY_SIZE; i++)); do
+    EXPECTED_RAW_FILE_ARRAY+=("${GITHUB_WORKSPACE}/$((i + EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START))-${SUBSHELL_TEST_FILE_NAME}")
     EXPECTED_RAW_FILE_ARRAY+=("${GITHUB_WORKSPACE}/test$((i + EXPECTED_RAW_FILE_ARRAY_SCAN_INDEX_START)).json")
   done
 
@@ -143,7 +144,13 @@ GenerateFileDiffTest() {
     )
   fi
 
-  if ! AssertArraysElementsContentMatch "RAW_FILE_ARRAY" "EXPECTED_RAW_FILE_ARRAY"; then
+  # Sort the arrays because we don't care about the order of elements
+  # shellcheck disable=SC2034
+  mapfile -t SORTED_RAW_FILE_ARRAY < <(printf "%s\n" "${RAW_FILE_ARRAY[@]}" | sort)
+  # shellcheck disable=SC2034
+  mapfile -t SORTED_EXPECTED_RAW_FILE_ARRAY < <(printf "%s\n" "${RAW_FILE_ARRAY[@]}" | sort)
+
+  if ! AssertArraysElementsContentMatch "SORTED_RAW_FILE_ARRAY" "SORTED_EXPECTED_RAW_FILE_ARRAY"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
 
@@ -318,12 +325,18 @@ BuildFileListValidateAllCodeBaseTest() {
   initialize_git_repository "${GITHUB_WORKSPACE}"
 
   local -a TEST_FILES
-  # Keep this alphabetically sorted
+
+  # shellcheck disable=SC2016 # purposely add a file name that has a subshell in the name
   TEST_FILES=(
     "parentheses and spaces in the name (test).json"
     "spaces in the name.json"
     "test-file.json"
+    'prefix-$(touch file-${BUILD_VERSION})'
   )
+
+  # Sort the arrays because we don't care about the order of elements
+  # shellcheck disable=SC2034
+  mapfile -t TEST_FILES < <(printf "%s\n" "${TEST_FILES[@]}" | sort)
 
   local -a EXPECTED_RAW_FILE_ARRAY
   EXPECTED_RAW_FILE_ARRAY=()

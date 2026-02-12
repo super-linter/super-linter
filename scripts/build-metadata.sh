@@ -32,13 +32,34 @@ GetBuildVersion() {
   fi
 }
 
-BUILD_DATE="${BUILD_DATE:-"$(GetBuildDate)"}"
+GetLabelFromContainerImage() {
+  local LABEL_KEY="${1}" && shift
+  local CONTAINER_IMAGE_ID="${1}" && shift
+  docker inspect --format "{{ index .Config.Labels \"${LABEL_KEY}\" }}" "${CONTAINER_IMAGE_ID}"
+}
+
+LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE="false"
+
+if [[ -v CONTAINER_IMAGE_ID ]] &&
+  [[ -n "${CONTAINER_IMAGE_ID:-}" ]]; then
+  echo "Getting BUILD_DATE, BUILD_REVISION, and BUILD_VERSION from the ${CONTAINER_IMAGE_ID} container image"
+  BUILD_DATE="${BUILD_DATE:-"$(GetLabelFromContainerImage "org.opencontainers.image.created" "${CONTAINER_IMAGE_ID}")"}"
+  BUILD_REVISION="${BUILD_REVISION:-"$(GetLabelFromContainerImage "org.opencontainers.image.revision" "${CONTAINER_IMAGE_ID}")"}"
+  BUILD_VERSION="${BUILD_VERSION:-"$(GetLabelFromContainerImage "org.opencontainers.image.version" "${CONTAINER_IMAGE_ID}")"}"
+  LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE="true"
+else
+  echo "Initializing BUILD_DATE, BUILD_REVISION, and BUILD_VERSION"
+  BUILD_DATE="${BUILD_DATE:-"$(GetBuildDate)"}"
+  BUILD_REVISION="${BUILD_REVISION:-"$(GetBuildRevision)"}"
+  BUILD_VERSION="${BUILD_VERSION:-"$(GetBuildVersion "${BUILD_REVISION}")"}"
+fi
+
 export BUILD_DATE
-BUILD_REVISION="${BUILD_REVISION:-"$(GetBuildRevision)"}"
 export BUILD_REVISION
-BUILD_VERSION="${BUILD_VERSION:-"$(GetBuildVersion "${BUILD_REVISION}")"}"
 export BUILD_VERSION
+export LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE
 
 echo "Build date: ${BUILD_DATE}"
 echo "Build revision: ${BUILD_REVISION}"
 echo "Build version: ${BUILD_VERSION}"
+echo "Loaded build metadata from container image: ${LOADED_BUILD_METADATA_FROM_CONTAINER_IMAGE}"
