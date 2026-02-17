@@ -330,6 +330,9 @@ CheckFileType() {
     FILE_TYPE_MESSAGE="Found Ruby file without extension: ${FILE}"
     AddToRubyFileArrays "${FILE}"
     ;;
+  *"zsh script"*)
+    FILE_TYPE_MESSAGE="Found a ZSH script. ignoring: ${FILE}"
+    ;;
   *"POSIX shell script"* | *"Bourne-Again shell script"* | *"Dash shell script"* | *"Korn shell script"* | *"sh script"*)
     FILE_TYPE_MESSAGE="Found a Shell script without extension: ${FILE}"
     AddToShellFileArrays "${FILE}"
