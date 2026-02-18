@@ -1,5 +1,26 @@
 # Changelog
 
+## [8.5.1](https://github.com/super-linter/super-linter/compare/v8.5.0...v8.5.1) (2026-02-14)
+
+
+### ⬆️ Dependency updates
+
+* **bundler:** bump rubocop in /dependencies in the rubocop group ([#7514](https://github.com/super-linter/super-linter/issues/7514)) ([f2264d2](https://github.com/super-linter/super-linter/commit/f2264d2192a8a6d1783784d35f38e2614fe1246b))
+* **docker:** bump python in the docker-base-images group ([#7319](https://github.com/super-linter/super-linter/issues/7319)) ([717c087](https://github.com/super-linter/super-linter/commit/717c087c8da4648e7e994f3fe23b6b5d07db22c6))
+* **docker:** bump the docker group across 1 directory with 9 updates ([#7513](https://github.com/super-linter/super-linter/issues/7513)) ([89e3725](https://github.com/super-linter/super-linter/commit/89e3725c94fd83a92e60bd5f2f945c2ca093356c))
+* **npm:** bump axios from 1.12.2 to 1.13.5 in /dependencies ([#7510](https://github.com/super-linter/super-linter/issues/7510)) ([a891169](https://github.com/super-linter/super-linter/commit/a8911692ade5ecb39076a28caa9d256b4f6e37c5))
+* **npm:** bump markdown-it and renovate in /dependencies ([#7529](https://github.com/super-linter/super-linter/issues/7529)) ([9b794c2](https://github.com/super-linter/super-linter/commit/9b794c2ca549d14a7040bd85fe371ae95d8f4238))
+* **npm:** bump qs from 6.14.1 to 6.14.2 in /dependencies ([#7520](https://github.com/super-linter/super-linter/issues/7520)) ([a9e6534](https://github.com/super-linter/super-linter/commit/a9e65346be4ff66dc0e8882c318c518b4c369dfb))
+* **npm:** bump renovate from 43.4.0 to 43.4.4 in /dependencies ([#7524](https://github.com/super-linter/super-linter/issues/7524)) ([2ab5b9c](https://github.com/super-linter/super-linter/commit/2ab5b9c7207c98b04244c2d32080b0923193e419))
+* **python:** bump the pip group across 1 directory with 3 updates ([#7509](https://github.com/super-linter/super-linter/issues/7509)) ([d580241](https://github.com/super-linter/super-linter/commit/d580241614bec581a5054e51a0739416c1c5f849))
+
+
+### 🧰 Maintenance
+
+* define container image id after build meta ([#7519](https://github.com/super-linter/super-linter/issues/7519)) ([3ac699e](https://github.com/super-linter/super-linter/commit/3ac699e7a1338c7a74b4ff1a43c01b1bb57ded5d)), closes [#7517](https://github.com/super-linter/super-linter/issues/7517)
+* **dev-docker:** bump node in /dev-dependencies ([#7515](https://github.com/super-linter/super-linter/issues/7515)) ([27e3b04](https://github.com/super-linter/super-linter/commit/27e3b04ffb244136b8ccbb40a7bd33afa77da017))
+* extend filelist tests ([#7511](https://github.com/super-linter/super-linter/issues/7511)) ([4e9c814](https://github.com/super-linter/super-linter/commit/4e9c814e89af04446bbebdf6d31c71f2edbfe0c5))
+
 ## [8.5.0](https://github.com/super-linter/super-linter/compare/v8.4.0...v8.5.0) (2026-02-06)
 
 
