@@ -46,7 +46,9 @@ updates:
           - "@react-native/eslint-config"
           - "@typescript-eslint/eslint-plugin"
           - "commitlint"
-          - eslint
+          # TODO: add eslint back to this group after other dependencies are
+          # compatible with eslint >= 10.0.0
+          # - eslint
           - "eslint-config*"
           - "eslint-plugin*"
           - jscpd
