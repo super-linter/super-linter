@@ -4,9 +4,9 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem "rubocop", "~> 1.84.2"
+gem "rubocop", "~> 1.85.0"
 gem "rubocop-github", "~> 0.26.0"
-gem "rubocop-minitest", "~> 0.38.2"
+gem "rubocop-minitest", "~> 0.39.1"
 gem "rubocop-performance", "~>1.26.1"
 gem "rubocop-rails", "~> 2.34"
 gem "rubocop-rake", "~> 0.7.1"
