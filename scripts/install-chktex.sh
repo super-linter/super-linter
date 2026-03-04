@@ -9,7 +9,8 @@ apk add --no-cache --virtual .chktex-build-deps \
   git \
   libc-dev \
   libtool \
-  make
+  make \
+  ncurses-dev
 
 RETRIES=5
 DELAY=5
@@ -31,6 +32,7 @@ if [[ ! -d "./chktex/chktex" ]]; then
 fi
 
 cd chktex/chktex
+sed -i 's/\[termcap termlib\]/[termcap termlib tinfo ncurses]/g' configure.ac
 ./autogen.sh --prefix=/usr/bin
 ./configure
 make
