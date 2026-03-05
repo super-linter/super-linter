@@ -23,6 +23,7 @@
 | DOCKERFILE_HADOLINT        | Fail ❌           |
 | EDITORCONFIG               | Fail ❌           |
 | ENV                        | Fail ❌           |
+| FORTRAN_FPRETTIFY          | Fail ❌           |
 | GITHUB_ACTIONS             | Fail ❌           |
 | GITHUB_ACTIONS_ZIZMOR      | Fail ❌           |
 | GITLEAKS                   | Fail ❌           |
