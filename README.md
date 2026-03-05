@@ -177,7 +177,7 @@ To run super-linter as a GitHub Action, you do the following:
              persist-credentials: false
 
          - name: Super-linter
-           uses: super-linter/super-linter@v8.5.0 # x-release-please-version
+           uses: super-linter/super-linter@v8.5.1 # x-release-please-version
            env:
              # To report GitHub Actions status checks
              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -619,7 +619,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Super-Linter
-        uses: super-linter/super-linter@v8.5.0 # x-release-please-version
+        uses: super-linter/super-linter@v8.5.1 # x-release-please-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set your fix mode variables to true
