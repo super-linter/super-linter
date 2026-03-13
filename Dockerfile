@@ -429,6 +429,7 @@ COPY --from=lintr-installer /usr/lib/R /usr/lib/R
 # Install linters implemented as scripts #
 ##########################################
 COPY --chmod=555 scripts/bash-exec.sh /usr/bin/bash-exec
+COPY --chmod=555 scripts/fprettify-check.sh /usr/bin/fprettify-check
 COPY --chmod=555 scripts/git-merge-conflict-markers.sh /usr/bin/git-merge-conflict-markers
 
 #########################
@@ -446,6 +447,7 @@ ENV PATH="${PATH}:/venvs/checkov/bin"
 ENV PATH="${PATH}:/venvs/codespell/bin"
 ENV PATH="${PATH}:/venvs/cpplint/bin"
 ENV PATH="${PATH}:/venvs/flake8/bin"
+ENV PATH="${PATH}:/venvs/fprettify/bin"
 ENV PATH="${PATH}:/venvs/isort/bin"
 ENV PATH="${PATH}:/venvs/mypy/bin"
 ENV PATH="${PATH}:/venvs/nbqa/bin"
