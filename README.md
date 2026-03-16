@@ -169,7 +169,7 @@ To run super-linter as a GitHub Action, you do the following:
 
        steps:
          - name: Checkout code
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
            with:
              # super-linter needs the full git history to get the
              # list of files that changed across commits
@@ -614,7 +614,7 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -663,7 +663,7 @@ To work around these limitations, you do the following:
 1. Use the authentication token in the `actions/checkout` step:
 
    ```yaml
-   - uses: actions/checkout@v5
+   - uses: actions/checkout@v6
      with:
        fetch-depth: 0
        token: ${{ secrets.SUPER_LINTER_TOKEN }}
