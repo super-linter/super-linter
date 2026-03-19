@@ -44,6 +44,8 @@ the most important targets:
 - `make fix-codebase`: Automatically fixes linting and formatting issues.
 - `make test`: Runs the complete test suite. To run a specific subset of tests,
   you can use `make help` to find the relevant targets.
+- `make open-shell-super-linter-container`: Opens an interactive shell in the
+  Super-linter container.
 
 The implementation of the Make targets of this project that use Docker to run
 tests in isolated environments assumes that you can
