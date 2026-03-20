@@ -331,7 +331,7 @@ CheckFileType() {
     AddToRubyFileArrays "${FILE}"
     ;;
   *"zsh script"*)
-    FILE_TYPE_MESSAGE="Found a ZSH script. ignoring: ${FILE}"
+    FILE_TYPE_MESSAGE="Found a ZSH script without extension: ${FILE}"
     ;;
   *"POSIX shell script"* | *"Bourne-Again shell script"* | *"Dash shell script"* | *"Korn shell script"* | *"sh script"*)
     FILE_TYPE_MESSAGE="Found a Shell script without extension: ${FILE}"

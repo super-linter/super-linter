@@ -214,7 +214,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
       # potentially conflicting with the Super-linter LOG_LEVEL variable. Set
       # the Renovate log level to WARN so that we don't get INFO level messages
       # in the output when fetching the renovate version.
-      LOG_LEVEL=WARN renovate --version 2>/dev/null
+      LOG_LEVEL=WARN "${LINTER}" --version
     )"
   elif [[ "${LINTER}" == "ruff" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
