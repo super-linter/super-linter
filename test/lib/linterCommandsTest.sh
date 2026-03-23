@@ -60,6 +60,7 @@ BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JAVA=("${LINTER_COMMANDS_ARRAY_JAVA[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
+BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_MARKDOWN=("${LINTER_COMMANDS_ARRAY_MARKDOWN[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PERL=("${LINTER_COMMANDS_ARRAY_PERL[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${LINTER_COMMANDS_ARRAY_PRE_COMMIT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PRETTIER=("${PRETTIER_COMMAND[@]}")
@@ -535,6 +536,38 @@ AddOptionsToCommandTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+MarkdownCustomRuleGlobsTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  unset LINTER_RULES_PATH
+
+  local MARKDOWN_CUSTOM_RULE_GLOBS
+  # shellcheck disable=SC2034
+  MARKDOWN_CUSTOM_RULE_GLOBS="custom-rules/*.js"
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_MARKDOWN=(
+    "${BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_MARKDOWN[@]}"
+    "-r" "$(dirname "${MARKDOWN_LINTER_RULES}")/${MARKDOWN_CUSTOM_RULE_GLOBS}"
+  )
+
+  # Initialize linter commands again
+  # shellcheck source=/dev/null
+  source "lib/functions/linterCommands.sh"
+
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_MARKDOWN" "EXPECTED_LINTER_COMMANDS_ARRAY_MARKDOWN"; then
+    fatal "LINTER_COMMANDS_ARRAY_MARKDOWN doesn't match the expected value when MARKDOWN_CUSTOM_RULE_GLOBS is ${MARKDOWN_CUSTOM_RULE_GLOBS} and LINTER_RULES_PATH is not set"
+  fi
+
+  # Initialize the rules again because we unset LINTER_RULES_PATH at the beginning of the test
+  # shellcheck source=/dev/null
+  source "lib/globals/linterRules.sh"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 LinterCommandPresenceTest
 IgnoreGitIgnoredFilesJscpdCommandTest
 JscpdCommandTest
@@ -548,3 +581,4 @@ CommandOptionsTest
 PreCommitCommandTest
 AddOptionsToCommandTest
 AddDebugOptionsToCommandsTest
+MarkdownCustomRuleGlobsTest
