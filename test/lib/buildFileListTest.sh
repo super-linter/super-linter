@@ -480,6 +480,10 @@ CheckFileTypeTest() {
   echo "#!/usr/bin/env ksh" >"${ENV_KSH_SCRIPT_PATH}"
   chmod +x "${ENV_KSH_SCRIPT_PATH}"
 
+  local SHELL_SCRIPT_WITHOUT_SHEBANG_PATH="${GITHUB_WORKSPACE}/shell-script-no-shebang.sh"
+  echo "echo 'hello'" >"${SHELL_SCRIPT_WITHOUT_SHEBANG_PATH}"
+  chmod +x "${SHELL_SCRIPT_WITHOUT_SHEBANG_PATH}"
+
   local UNKNOWN_FILE_PATH="${GITHUB_WORKSPACE}/unknown-file"
   echo "some text" >"${UNKNOWN_FILE_PATH}"
 
@@ -496,6 +500,7 @@ CheckFileTypeTest() {
     "${ENV_BASH_SCRIPT_PATH}"
     "${ENV_DASH_SCRIPT_PATH}"
     "${ENV_KSH_SCRIPT_PATH}"
+    "${SHELL_SCRIPT_WITHOUT_SHEBANG_PATH}"
   )
 
   # Run CheckFileType on created files
@@ -536,8 +541,15 @@ CheckFileTypeTest() {
 
     # Assertions for ZSH shell scripts
 
-    if AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ZSH_SCRIPT_PATH}"; then
-      fatal "${ZSH_SCRIPT_PATH} should NOT be in file-array-${shell_language}"
+    # bash-exec supports ZSH scripts
+    # shfmt supports ZSH scripts on versions >= 3.13.0
+    if [[ "${shell_language}" == "BASH_EXEC" ]] ||
+      [[ "${shell_language}" == "SHELL_SHFMT" ]]; then
+      AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ZSH_SCRIPT_PATH}"
+    else
+      if AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ZSH_SCRIPT_PATH}"; then
+        fatal "${ZSH_SCRIPT_PATH} should NOT be in file-array-${shell_language}"
+      fi
     fi
 
     # Assertions for all Shell scripts (direct and env variants)
@@ -550,6 +562,7 @@ CheckFileTypeTest() {
     AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ENV_BASH_SCRIPT_PATH}"
     AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ENV_DASH_SCRIPT_PATH}"
     AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${ENV_KSH_SCRIPT_PATH}"
+    AssertFileContains "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-${shell_language}" "${SHELL_SCRIPT_WITHOUT_SHEBANG_PATH}"
   done
 
   unset SUPPRESS_FILE_TYPE_WARN
