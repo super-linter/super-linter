@@ -284,12 +284,25 @@ AddToPythonFileArrays() {
   echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-PYTHON_RUFF_FORMAT"
 }
 
+AddToShfmtFileArray() {
+  local FILE="${1}"
+  debug "Adding ${FILE} to SHELL_SHFMT file array"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT"
+}
+
+AddToBashExecFileArray() {
+  local FILE="${1}"
+  debug "Adding ${FILE} to BASH_EXEC file array"
+  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
+}
+
 AddToShellFileArrays() {
   local FILE="${1}"
+  debug "Adding ${FILE} to shell file arrays"
 
   echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH"
-  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BASH_EXEC"
-  echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-SHELL_SHFMT"
+  AddToBashExecFileArray "${FILE}"
+  AddToShfmtFileArray "${FILE}"
 }
 
 AddToPerlFileArrays() {
@@ -308,12 +321,18 @@ CheckFileType() {
   local FILE
   FILE="$1"
 
+  local FILE_EXTENSION
+  if ! FILE_EXTENSION="$(GetFileExtension "$FILE" 2>&1)"; then
+    error "Error while getting the file extension for $FILE: $FILE_EXTENSION"
+    return 1
+  fi
+
   local GET_FILE_TYPE_CMD
   if ! GET_FILE_TYPE_CMD="$(file --brief "${FILE}" 2>&1)"; then
     error "Error while checking file type: ${GET_FILE_TYPE_CMD}"
     return 1
   fi
-  debug "Detected file type for ${FILE}: ${GET_FILE_TYPE_CMD}"
+  debug "Detected file type for ${FILE}: ${GET_FILE_TYPE_CMD}. File extension: ${FILE_EXTENSION:-"not set"}"
 
   local FILE_TYPE_MESSAGE
 
@@ -331,11 +350,23 @@ CheckFileType() {
     AddToRubyFileArrays "${FILE}"
     ;;
   *"zsh script"*)
-    FILE_TYPE_MESSAGE="Found a ZSH script without extension: ${FILE}"
+    FILE_TYPE_MESSAGE="Found a ZSH script: ${FILE}"
+    AddToBashExecFileArray "${FILE}"
+    AddToShfmtFileArray "${FILE}"
     ;;
   *"POSIX shell script"* | *"Bourne-Again shell script"* | *"Dash shell script"* | *"Korn shell script"* | *"sh script"*)
-    FILE_TYPE_MESSAGE="Found a Shell script without extension: ${FILE}"
+    FILE_TYPE_MESSAGE="Found a Shell script: ${FILE}"
     AddToShellFileArrays "${FILE}"
+    ;;
+  *"ASCII text"*)
+    FILE_TYPE_MESSAGE="Found ASCII text: ${FILE}"
+    # Check if the file is a shell script with the sh extension, without shebang
+    if [[ "$FILE_EXTENSION" == "sh" ]]; then
+      FILE_TYPE_MESSAGE="Found a shell script without shebang: ${FILE}"
+      AddToShellFileArrays "${FILE}"
+    else
+      return 1
+    fi
     ;;
   *)
     FILE_TYPE_MESSAGE="Failed to get file type for: ${FILE}. Output: ${GET_FILE_TYPE_CMD}"
@@ -528,12 +559,17 @@ BuildFileArrays() {
 
     # Select files by extension or file name
 
-    if [ "${FILE_TYPE}" == "sh" ] ||
-      [ "${FILE_TYPE}" == "bash" ] ||
+    # Don't include .sh scripts so they fall in the 'else' clause where we
+    # dynamically check their file type to avoid that we add ZSH scripts when
+    # they are not supported.
+    if [ "${FILE_TYPE}" == "bash" ] ||
       [ "${FILE_TYPE}" == "bats" ] ||
       [ "${FILE_TYPE}" == "dash" ] ||
       [ "${FILE_TYPE}" == "ksh" ]; then
       AddToShellFileArrays "${FILE}"
+    elif [ "${FILE_TYPE}" == "zsh" ]; then
+      AddToBashExecFileArray "${FILE}"
+      AddToShfmtFileArray "${FILE}"
     elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
       [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then # codespell:ignore edn
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOJURE"
@@ -813,9 +849,11 @@ BuildFileArrays() {
 }
 
 # We need so subprocesses (such as GNU Parallel) have access to these functions
-export -f AddToPythonFileArrays
-export -f AddToShellFileArrays
+export -f AddToBashExecFileArray
 export -f AddToPerlFileArrays
+export -f AddToPythonFileArrays
 export -f AddToRubyFileArrays
+export -f AddToShellFileArrays
+export -f AddToShfmtFileArray
 export -f BuildFileArrays
 export -f CheckFileType
