@@ -1,5 +1,23 @@
 # Changelog
 
+## [8.6.1](https://github.com/super-linter/super-linter/compare/v8.6.0...v8.6.1) (2026-04-03)
+
+
+### 🐛 Bugfixes
+
+* **docs:** don't mention extension in bash-exec ([#7708](https://github.com/super-linter/super-linter/issues/7708)) ([56c7c3c](https://github.com/super-linter/super-linter/commit/56c7c3cfede3262a8a7da4f803010947445458d7))
+
+
+### ⬆️ Dependency updates
+
+* **docker:** bump goreleaser/goreleaser in the docker group ([#7705](https://github.com/super-linter/super-linter/issues/7705)) ([487d0d8](https://github.com/super-linter/super-linter/commit/487d0d80e66b54831132fe7b2095f9388a624462))
+
+
+### 🧰 Maintenance
+
+* **dev-npm:** bump @xmldom/xmldom ([#7701](https://github.com/super-linter/super-linter/issues/7701)) ([06b4165](https://github.com/super-linter/super-linter/commit/06b4165382979c5349513a150db3cf6d46108b14))
+* update deps ([#7713](https://github.com/super-linter/super-linter/issues/7713)) ([31ee13d](https://github.com/super-linter/super-linter/commit/31ee13dc93557323a40e7ee76797c2ac9a10348a))
+
 ## [8.6.0](https://github.com/super-linter/super-linter/compare/v8.5.0...v8.6.0) (2026-03-31)
 
 
