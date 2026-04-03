@@ -1,0 +1,10 @@
+# fprettify configuration file
+# See https://github.com/pseewald/fprettify for details
+
+# Number of spaces for indentation (default: 3)
+indent=3
+
+# Whitespace formatting preset (default: 2)
+# 0: minimal | 1: operators, print/read | 2: +plus/minus
+# 3: +multiply/divide | 4: +type component selector
+whitespace=2
