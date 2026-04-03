@@ -145,7 +145,6 @@ updates:
           - flake8
           - isort
           - mypy
-          - nbqa
           - pre-commit
           - pylint
           - ruff
