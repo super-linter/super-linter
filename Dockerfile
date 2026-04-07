@@ -19,7 +19,7 @@ FROM registry.k8s.io/kustomize/kustomize:v5.8.1 AS kustomize
 FROM hashicorp/terraform:1.14.8 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.6.1 AS editorconfig-checker
-FROM mvdan/shfmt:v3.13.0 AS shfmt
+FROM mvdan/shfmt:v3.13.1 AS shfmt
 FROM rhysd/actionlint:1.7.12 AS actionlint
 FROM scalameta/scalafmt:v3.10.7 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.1 AS gitleaks
