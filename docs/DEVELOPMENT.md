@@ -46,6 +46,12 @@ the most important targets:
   you can use `make help` to find the relevant targets.
 - `make open-shell-super-linter-container`: Opens an interactive shell in the
   Super-linter container.
+- To run an arbitrary command in the Super-linter container, you can pipe
+  output:
+
+  ```bash
+  echo "command" | make open-shell-super-linter-container
+  ```
 
 The implementation of the Make targets of this project that use Docker to run
 tests in isolated environments assumes that you can

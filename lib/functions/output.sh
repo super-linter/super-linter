@@ -95,8 +95,12 @@ WriteMarkdownCodeBlock() {
 }
 
 FormatSuperLinterSummaryFile() {
+  # Load npx commands to run prettier
+  # shellcheck source=/dev/null
+  source /action/lib/globals/npxLinterCommands.sh
+
   local SUPER_LINTER_SUMMARY_OUTPUT_PATH="${1}"
-  local SUPER_LINTER_SUMMARY_FORMAT_COMMAND=(prettier --write)
+  local SUPER_LINTER_SUMMARY_FORMAT_COMMAND=("${NPX_PRETTIER_COMMAND[@]}" --write)
 
   # Avoid emitting output except of warnings and errors if debug logging is
   # disabled.
