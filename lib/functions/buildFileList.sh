@@ -697,13 +697,6 @@ BuildFileArrays() {
       else
         debug "Skip adding ${FILE} to JSX_PRETTIER file array because Prettier doesn't support following symbolic links"
       fi
-    elif [ "${FILE_TYPE}" == "ipynb" ]; then
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_BLACK"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_FLAKE8"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_ISORT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_MYPY"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_PYLINT"
-      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-JUPYTER_NBQA_RUFF"
     elif [ "${FILE_TYPE}" == "kt" ] || [ "${FILE_TYPE}" == "kts" ]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-KOTLIN"
     elif [ "$FILE_TYPE" == "lua" ]; then

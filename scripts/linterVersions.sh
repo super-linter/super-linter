@@ -48,12 +48,6 @@ LINTER_NAMES_ARRAY['JSONC']="eslint"
 LINTER_NAMES_ARRAY['JSONC_PRETTIER']="prettier"
 LINTER_NAMES_ARRAY['JSX']="eslint"
 LINTER_NAMES_ARRAY['JSX_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_BLACK']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_FLAKE8']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_ISORT']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_MYPY']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_PYLINT']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_RUFF']="nbqa"
 LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
 LINTER_NAMES_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform"
 LINTER_NAMES_ARRAY['LATEX']="chktex"
@@ -250,7 +244,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   elif [[ "${LINTER}" == "zizmor" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   # Some linters don't support a "get version" command
-  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "nbqa" ]]; then
+  elif [[ ${LINTER} == "bash-exec" ]]; then
     GET_VERSION_CMD="Version command not supported"
   else
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
