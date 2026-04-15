@@ -38,7 +38,14 @@ the most important targets:
   current user, directory, and details about the container image being used for
   testing.
 - `make docker`: Builds the Super-linter container image. This is necessary
-  before running tests that depend on the image.
+  before running tests that depend on the image. Defaults to building the
+  `standard` image. To build the `slim` image, set the `CONTAINER_IMAGE_TARGET`
+  environment variable to `slim` before running `make`:
+
+  ```bash
+  CONTAINER_IMAGE_TARGET="slim" make docker
+  ```
+
 - `make lint-codebase`: Runs a comprehensive set of linters against the entire
   codebase to check for style and formatting issues.
 - `make fix-codebase`: Automatically fixes linting and formatting issues.
