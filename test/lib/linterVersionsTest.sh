@@ -58,5 +58,29 @@ VersionsFileCompletenessTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+VersionsFileFormatTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # Ensure each line matches one of the following formats:
+  # - [LANGUAGE NAME] linter name: linter_version (e.g., x.y.z, vx.y.z, x.y.z@commit-hash)
+  # - [LANGUAGE NAME] linter name: Version command not supported
+  local REGEX="^\[[A-Z0-9_]+\] [a-zA-Z0-9._-]+: (v?[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9.-]+)?(@[0-9a-f]+)?|Version command not supported)$"
+
+  local LINE_NUMBER=1
+  while IFS= read -r LINE; do
+    if [[ ! "${LINE}" =~ ${REGEX} ]]; then
+      fatal "Line ${LINE_NUMBER} in versions file does not match expected format: ${LINE}"
+    else
+      debug "Line ${LINE_NUMBER} matches format: ${LINE}"
+    fi
+    ((LINE_NUMBER++))
+  done <"${VERSION_FILE}"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 VersionsFileSortTest
 VersionsFileCompletenessTest
+VersionsFileFormatTest

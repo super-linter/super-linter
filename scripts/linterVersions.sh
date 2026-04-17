@@ -4,114 +4,19 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# shellcheck source=/dev/null
+. /action/lib/globals/npxLinterCommands.sh
+
 ##############################
 # Linter command names array #
 ##############################
-declare -A LINTER_NAMES_ARRAY
-LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
-LINTER_NAMES_ARRAY['BASH']="shellcheck"
-LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
-LINTER_NAMES_ARRAY['BIOME_FORMAT']="biome"
-LINTER_NAMES_ARRAY['BIOME_LINT']="biome"
-LINTER_NAMES_ARRAY['CHECKOV']="checkov"
-LINTER_NAMES_ARRAY['CLANG_FORMAT']="clang-format"
-LINTER_NAMES_ARRAY['CLOJURE']="clj-kondo"
-LINTER_NAMES_ARRAY['CLOUDFORMATION']="cfn-lint"
-LINTER_NAMES_ARRAY['COFFEESCRIPT']="coffeelint"
-LINTER_NAMES_ARRAY['CPP']="cpplint"
-LINTER_NAMES_ARRAY['CSS']="stylelint"
-LINTER_NAMES_ARRAY['CSS_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['DART']="dart"
-LINTER_NAMES_ARRAY['DOCKERFILE_HADOLINT']="hadolint"
-LINTER_NAMES_ARRAY['EDITORCONFIG']="editorconfig-checker"
-LINTER_NAMES_ARRAY['ENV']="dotenv-linter"
-LINTER_NAMES_ARRAY['GITHUB_ACTIONS']="actionlint"
-LINTER_NAMES_ARRAY['GITHUB_ACTIONS_ZIZMOR']="zizmor"
-LINTER_NAMES_ARRAY['GITLEAKS']="gitleaks"
-LINTER_NAMES_ARRAY['GIT_COMMITLINT']="commitlint"
-LINTER_NAMES_ARRAY['GIT_MERGE_CONFLICT_MARKERS']="git-merge-conflict-markers"
-LINTER_NAMES_ARRAY['GO']="golangci-lint"
-LINTER_NAMES_ARRAY['GO_MODULES']="${LINTER_NAMES_ARRAY['GO']}"
-LINTER_NAMES_ARRAY['GO_RELEASER']="goreleaser"
-LINTER_NAMES_ARRAY['GOOGLE_JAVA_FORMAT']="google-java-format"
-LINTER_NAMES_ARRAY['GRAPHQL_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['GROOVY']="npm-groovy-lint"
-LINTER_NAMES_ARRAY['HTML']="htmlhint"
-LINTER_NAMES_ARRAY['HTML_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JAVA']="checkstyle"
-LINTER_NAMES_ARRAY['JAVASCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY['JAVASCRIPT_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JSCPD']="jscpd"
-LINTER_NAMES_ARRAY['JSON']="eslint"
-LINTER_NAMES_ARRAY['JSON_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JSONC']="eslint"
-LINTER_NAMES_ARRAY['JSONC_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JSX']="eslint"
-LINTER_NAMES_ARRAY['JSX_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_BLACK']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_FLAKE8']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_ISORT']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_MYPY']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_PYLINT']="nbqa"
-LINTER_NAMES_ARRAY['JUPYTER_NBQA_RUFF']="nbqa"
-LINTER_NAMES_ARRAY['KOTLIN']="ktlint"
-LINTER_NAMES_ARRAY['KUBERNETES_KUBECONFORM']="kubeconform"
-LINTER_NAMES_ARRAY['LATEX']="chktex"
-LINTER_NAMES_ARRAY['LUA']="lua"
-LINTER_NAMES_ARRAY['MARKDOWN']="markdownlint"
-LINTER_NAMES_ARRAY['MARKDOWN_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['NATURAL_LANGUAGE']="textlint"
-LINTER_NAMES_ARRAY['OPENAPI']="spectral"
-LINTER_NAMES_ARRAY['PERL']="perl"
-LINTER_NAMES_ARRAY['PHP_BUILTIN']="php"
-LINTER_NAMES_ARRAY['PHP_PHPCS']="phpcs"
-LINTER_NAMES_ARRAY['PHP_PHPSTAN']="phpstan"
-LINTER_NAMES_ARRAY['PHP_PSALM']="psalm"
-LINTER_NAMES_ARRAY['PRE_COMMIT']="pre-commit"
-LINTER_NAMES_ARRAY['PROTOBUF']="protolint"
-LINTER_NAMES_ARRAY['PYTHON_BLACK']="black"
-LINTER_NAMES_ARRAY['PYTHON_PYLINT']="pylint"
-LINTER_NAMES_ARRAY['PYTHON_FLAKE8']="flake8"
-LINTER_NAMES_ARRAY['PYTHON_ISORT']="isort"
-LINTER_NAMES_ARRAY['PYTHON_MYPY']="mypy"
-LINTER_NAMES_ARRAY['PYTHON_RUFF']="ruff"
-LINTER_NAMES_ARRAY['PYTHON_RUFF_FORMAT']="ruff"
-LINTER_NAMES_ARRAY['R']="R"
-LINTER_NAMES_ARRAY['RENOVATE']="renovate-config-validator"
-LINTER_NAMES_ARRAY['RUBY']="rubocop"
-LINTER_NAMES_ARRAY['SCALAFMT']="scalafmt"
-LINTER_NAMES_ARRAY['SHELL_SHFMT']="shfmt"
-LINTER_NAMES_ARRAY['SNAKEMAKE_LINT']="snakemake"
-LINTER_NAMES_ARRAY['SNAKEMAKE_SNAKEFMT']="snakefmt"
-LINTER_NAMES_ARRAY['SPELL_CODESPELL']="codespell"
-LINTER_NAMES_ARRAY['STATES']="asl-validator"
-LINTER_NAMES_ARRAY['SQLFLUFF']="sqlfluff"
-LINTER_NAMES_ARRAY['TERRAFORM_FMT']="terraform"
-LINTER_NAMES_ARRAY['TERRAFORM_TFLINT']="tflint"
-LINTER_NAMES_ARRAY['TERRAGRUNT']="terragrunt"
-LINTER_NAMES_ARRAY['TRIVY']="trivy"
-LINTER_NAMES_ARRAY['TSX']="eslint"
-LINTER_NAMES_ARRAY['TYPESCRIPT_ES']="eslint"
-LINTER_NAMES_ARRAY['TYPESCRIPT_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['VUE']="eslint"
-LINTER_NAMES_ARRAY['VUE_PRETTIER']="prettier"
-LINTER_NAMES_ARRAY['XML']="xmllint"
-LINTER_NAMES_ARRAY['YAML']="yamllint"
-LINTER_NAMES_ARRAY['YAML_PRETTIER']="prettier"
 
-if [[ "${IMAGE}" == "standard" ]]; then
-  LINTER_NAMES_ARRAY['ARM']="arm-ttk"
-  LINTER_NAMES_ARRAY['CSHARP']="dotnet"
-  LINTER_NAMES_ARRAY['DOTNET_SLN_FORMAT_ANALYZERS']="dotnet"
-  LINTER_NAMES_ARRAY['DOTNET_SLN_FORMAT_STYLE']="dotnet"
-  LINTER_NAMES_ARRAY['DOTNET_SLN_FORMAT_WHITESPACE']="dotnet"
-  LINTER_NAMES_ARRAY['POWERSHELL']="pwsh"
-  LINTER_NAMES_ARRAY['RUST_2015']="rustfmt"
-  LINTER_NAMES_ARRAY['RUST_2018']="rustfmt"
-  LINTER_NAMES_ARRAY['RUST_2021']="rustfmt"
-  LINTER_NAMES_ARRAY['RUST_2024']="rustfmt"
-  LINTER_NAMES_ARRAY['RUST_CLIPPY']="clippy"
-fi
+set +o nounset # Disable temporarily to ignore unbound variables like rule paths
+# shellcheck source=/dev/null
+source /action/lib/globals/languages.sh
+# shellcheck source=/dev/null
+source /action/lib/functions/linterCommands.sh
+set -o nounset
 
 echo "Building linter version file: ${VERSION_FILE}"
 
@@ -119,10 +24,59 @@ echo "Building linter version file: ${VERSION_FILE}"
 # stage, so we start fresh here.
 rm -rfv "${VERSION_FILE}"
 
-echo "Building linter version file ${VERSION_FILE} for the following linters: ${LINTER_NAMES_ARRAY[*]}..."
+echo "Building linter version file ${VERSION_FILE} for ${#LANGUAGE_ARRAY[@]} languages..."
 
-for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
-  LINTER="${LINTER_NAMES_ARRAY[${LANGUAGE}]}"
+for LANGUAGE in "${LANGUAGE_ARRAY[@]}"; do
+  echo "Getting version for ${LANGUAGE} language"
+
+  if [[ "${IMAGE}" != "standard" ]]; then
+    case "${LANGUAGE}" in
+    ARM | CSHARP | DOTNET_SLN_FORMAT_ANALYZERS | DOTNET_SLN_FORMAT_STYLE | DOTNET_SLN_FORMAT_WHITESPACE | POWERSHELL | RUST_2015 | RUST_2018 | RUST_2021 | RUST_2024 | RUST_CLIPPY)
+      echo "Skipping ${LANGUAGE} because the image is not standard."
+      continue
+      ;;
+    esac
+  fi
+
+  declare -n CMD_ARRAY="LINTER_COMMANDS_ARRAY_${LANGUAGE}"
+  LINTER=""
+
+  # 1. Skip environment variables (like TF_DATA_DIR=...)
+  for elem in "${CMD_ARRAY[@]}"; do
+    first_word="${elem%% *}"
+    if [[ "$first_word" != *=* ]]; then
+      LINTER="$first_word"
+      break
+    fi
+  done
+
+  # 2. Handle wrappers (npx, java -jar, cargo, powershell)
+  case "$LINTER" in
+  npx)
+    # Extract the linter command that comes after the `--` separator
+    for i in "${!CMD_ARRAY[@]}"; do
+      if [[ "${CMD_ARRAY[$i]}" == "--" ]]; then
+        LINTER="${CMD_ARRAY[$((i + 1))]}"
+        break
+      fi
+    done
+    ;;
+  java)
+    # Extract the basename of the .jar file
+    for i in "${!CMD_ARRAY[@]}"; do
+      if [[ "${CMD_ARRAY[$i]}" == "-jar" ]]; then
+        LINTER="$(basename "${CMD_ARRAY[$((i + 1))]}")"
+        break
+      fi
+    done
+    ;;
+  cargo) LINTER="clippy" ;;
+  Import-Module) LINTER="arm-ttk" ;;
+  Invoke-ScriptAnalyzer) LINTER="pwsh" ;;
+  esac
+
+  unset -n CMD_ARRAY
+
   echo "Get version for ${LINTER}"
 
   # Disable errexit because we want to get the error output
@@ -131,130 +85,148 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
   # Some linters need to account for special commands to get their version instead
   # of the default --version option
 
-  if [[ "${LINTER}" == "actionlint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | head -n 1)"
-  elif [[ "${LINTER}" == "ansible-lint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep -v 'available' | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "arm-ttk" ]]; then
+  # Execute the command, suppressing stderr if successful, but capturing it otherwise
+  # for npm dependencies we should suppress npm warnings from stderr that pollute the version output.
+  # Let's run the command and parse the output, but in the case statement below, we redirect 2>/dev/null for npx wrappers.
+
+  case "${LINTER}" in
+  actionlint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | head -n 1)"
+    ;;
+  ansible-lint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $2 }')"
+    ;;
+  arm-ttk)
     GET_VERSION_CMD="$(grep -iE 'version' "/usr/bin/arm-ttk" | xargs 2>&1 | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "biome" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "black" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'black' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "cfn-lint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "chktex" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version 2>/dev/null | grep 'ChkTeX' | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "checkstyle" ]] || [[ ${LINTER} == "google-java-format" ]]; then
+    ;;
+  asl-validator)
+    GET_VERSION_CMD="$("${NPX_STATES_COMMAND[@]}" --version 2>&1 | tail -n 1)"
+    ;;
+  bash-exec | nbqa)
+    GET_VERSION_CMD="Version command not supported"
+    ;;
+  biome)
+    GET_VERSION_CMD="$("${NPX_BIOME_COMMAND[@]}" --version 2>&1 | grep -i 'version' | awk '{ print $2 }')"
+    ;;
+  black | pylint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep "${LINTER}" | awk '{ print $2 }')"
+    ;;
+  cfn-lint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>/dev/null | awk '{ print $2 }')"
+    ;;
+  checkov)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $1 }')"
+    ;;
+  checkstyle | google-java-format)
     GET_VERSION_CMD="$(java -jar "/usr/bin/${LINTER}" --version 2>&1 | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "clang-format" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "clj-kondo" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "clippy" ]]; then
+    ;;
+  chktex)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'ChkTeX' | awk '{ print $2 }')"
+    ;;
+  clang-format | ktlint | phpcs | snakefmt | sqlfluff | terragrunt)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $3 }')"
+    ;;
+  clippy)
     GET_VERSION_CMD="$(cargo clippy --version 2>&1 | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "cpplint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'cpplint' | grep -v 'github' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "dart" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $4 }')"
-  elif [[ "${LINTER}" == "dotenv-linter" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "editorconfig-checker" ]]; then
-    GET_VERSION_CMD="$(${LINTER} -version)"
-  elif [[ "${LINTER}" == "flake8" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | grep 'mccabe' | awk '{ print $1 }')"
-  elif [[ ${LINTER} == "gitleaks" ]]; then
-    GET_VERSION_CMD="$(${LINTER} version)"
-  elif [[ "${LINTER}" == "golangci-lint" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $4 }')"
-  elif [[ "${LINTER}" == "goreleaser" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | grep 'GitVersion' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "hadolint" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $4 }')"
-  elif [[ "${LINTER}" == "isort" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | grep 'VERSION' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "ktlint" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $3 }')"
-  elif [[ ${LINTER} == "kubeconform" ]]; then
-    GET_VERSION_CMD="$(${LINTER} -v)"
-  elif [[ ${LINTER} == "lintr" ]]; then
-    # Need specific command for lintr (--slave is deprecated in R 4.0 and replaced by --no-echo)
-    GET_VERSION_CMD="$(R --slave -e "r_ver <- R.Version()\$version.string; \
-                lintr_ver <- packageVersion('lintr'); \
-                glue::glue('lintr { lintr_ver } on { r_ver }')")"
-  elif [[ "${LINTER}" == "perl" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'This' | awk '{ print $9 }')"
-  elif [[ "${LINTER}" == "php" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'cli' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "phpcs" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "phpstan" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $7 }')"
-  elif [[ ${LINTER} == "protolint" ]]; then
-    GET_VERSION_CMD="$(${LINTER} version | awk '{ print $3 }')"
-  elif [[ ${LINTER} == "psalm" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "pre-commit" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "pylint" ]]; then
-    GET_VERSION_CMD="$(${LINTER} --version | grep 'pylint' | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "lua" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" -v 2>&1 | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "mypy" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "npm-groovy-lint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'npm-groovy-lint' | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "pwsh" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "R" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | head -n 1 | awk '{ print $3 }')"
-  elif [[ ${LINTER} == "renovate-config-validator" ]]; then
-    GET_VERSION_CMD="$(
-      # Renovate uses LOG_LEVEL as the variable to set its log level,
-      # potentially conflicting with the Super-linter LOG_LEVEL variable. Set
-      # the Renovate log level to WARN so that we don't get INFO level messages
-      # in the output when fetching the renovate version.
-      LOG_LEVEL=WARN "${LINTER}" --version
-    )"
-  elif [[ "${LINTER}" == "ruff" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "rustfmt" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "scalafmt" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "shellcheck" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | grep 'version:' | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "snakefmt" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $3 }')"
-  elif [[ "${LINTER}" == "sqlfluff" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $3 }')"
-  elif [[ ${LINTER} == "terraform" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" version -json | jq --raw-output .terraform_version)"
-  elif [[ "${LINTER}" == "terragrunt" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "tflint" ]]; then
-    # Unset TF_LOG_LEVEL so that the version file doesn't contain debug log when running
-    # commands that read TF_LOG_LEVEL or TFLINT_LOG, which are likely set to DEBUG when
-    # building the versions file
+    ;;
+  clj-kondo | dotenv-linter | mypy | pre-commit | psalm | pwsh | ruff | rustfmt | scalafmt | yamllint | zizmor)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | tail -n 1 | awk '{ print $2 }')"
+    ;;
+  coffeelint)
+    GET_VERSION_CMD="$("${NPX_COFFEESCRIPT_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  commitlint)
+    GET_VERSION_CMD="$("${NPX_COMMITLINT_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1 | awk -F'@' '{print $NF}')"
+    ;;
+  cpplint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep '^cpplint ' | awk '{ print $2 }')"
+    ;;
+  dart | golangci-lint | hadolint)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $4 }')"
+    ;;
+  eslint)
+    GET_VERSION_CMD="$("${NPX_ESLINT_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  flake8)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | head -n 1 | awk '{ print $1 }')"
+    ;;
+  gitleaks)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $3 }')"
+    ;;
+  goreleaser)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'GitVersion' | awk '{ print $2 }')"
+    ;;
+  htmlhint)
+    GET_VERSION_CMD="$("${NPX_HTML_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  isort)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'VERSION' | awk '{ print $2 }')"
+    ;;
+  jscpd)
+    GET_VERSION_CMD="$("${NPX_JSCPD_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  kubeconform)
+    GET_VERSION_CMD="$("${LINTER}" -v 2>&1)"
+    ;;
+  luacheck)
+    GET_VERSION_CMD="$("${LINTER}" -v 2>&1 | grep -i '^Luacheck:' | awk '{ print $2 }')"
+    ;;
+  markdownlint)
+    GET_VERSION_CMD="$("${NPX_MARKDOWN_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  npm-groovy-lint)
+    GET_VERSION_CMD="$("${NPX_GROOVY_COMMAND[@]}" --version 2>&1 | grep 'npm-groovy-lint' | awk '{ print $3 }')"
+    ;;
+  php)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'cli' | awk '{ print $2 }')"
+    ;;
+  phpstan)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $7 }')"
+    ;;
+  prettier)
+    GET_VERSION_CMD="$("${NPX_PRETTIER_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  protolint)
+    GET_VERSION_CMD="$("${LINTER}" version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)"
+    ;;
+  R)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | head -n 1 | awk '{ print $3 }')"
+    ;;
+  renovate-config-validator)
+    GET_VERSION_CMD="$(LOG_LEVEL=WARN "${NPX_RENOVATE_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  shellcheck)
+    GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'version:' | awk '{ print $2 }')"
+    ;;
+  spectral)
+    GET_VERSION_CMD="$("${NPX_OPENAPI_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  stylelint)
+    GET_VERSION_CMD="$("${NPX_STYLELINT_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  terraform)
+    GET_VERSION_CMD="$("${LINTER}" version -json 2>&1 | jq --raw-output .terraform_version)"
+    ;;
+  textlint)
+    GET_VERSION_CMD="$("${NPX_TEXTLINT_COMMAND[@]}" --version 2>&1 | grep -v 'npm warn' | tail -n 1)"
+    ;;
+  tflint)
     GET_VERSION_CMD="$(
       unset TF_LOG_LEVEL
       unset TFLINT_LOG
-      "${LINTER}" --version | grep 'version' | awk '{ print $3 }'
+      "${LINTER}" --version 2>&1 | grep 'version' | awk '{ print $3 }'
     )"
-  elif [[ ${LINTER} == "trivy" ]]; then
+    ;;
+  trivy)
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $2 }')"
-  elif [[ ${LINTER} == "xmllint" ]]; then
+    ;;
+  xmllint)
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | grep 'xmllint' | awk '{ print $5 }')"
-  elif [[ "${LINTER}" == "yamllint" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  elif [[ "${LINTER}" == "zizmor" ]]; then
-    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
-  # Some linters don't support a "get version" command
-  elif [[ ${LINTER} == "bash-exec" ]] || [[ ${LINTER} == "nbqa" ]]; then
-    GET_VERSION_CMD="Version command not supported"
-  else
+    ;;
+  *)
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1)"
-  fi
+    ;;
+  esac
 
   ERROR_CODE=$?
   # Enable errexit back

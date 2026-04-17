@@ -82,6 +82,7 @@ RUN apk add --no-cache \
 
 # The chown fixes broken uid/gid in ast-types-flow dependency
 # (see https://github.com/super-linter/super-linter/issues/3901)
+# Keeping the command for future reference: && chown -R "$(id -u)":"$(id -g)" node_modules \
 # Npm is not a runtime dependency but we need it to ensure that npm packages
 # are installed when we run the test suite. If we decide to remove it, add
 # the following command to the RUN instruction below:
@@ -91,7 +92,6 @@ RUN apk add --no-cache --virtual .node-build-deps \
   npm \
   && npm install --strict-peer-deps \
   && npm cache clean --force \
-  && chown -R "$(id -u)":"$(id -g)" node_modules \
   && rm -rfv package.json package-lock.json
 
 FROM tflint AS tflint-plugins
@@ -283,7 +283,8 @@ COPY --from=helm /usr/bin/helm /usr/bin/
 COPY --from=kustomize /app/kustomize /usr/bin/
 
 # Copy Node tools
-COPY --from=npm-builder /node_modules /node_modules
+# Keeping it for reference
+# COPY --from=npm-builder /node_modules /node_modules
 
 ######################
 # Install shellcheck #
@@ -501,12 +502,6 @@ RUN dart --disable-analytics
 
 FROM base_image AS slim
 
-# Run to build version file and validate image
-ENV IMAGE="slim"
-COPY scripts/linterVersions.sh /
-RUN /linterVersions.sh \
-  && rm -rfv /linterVersions.sh
-
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -522,6 +517,13 @@ RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation
 # Copy super-linter executables #
 #################################
 COPY lib /action/lib
+
+# Run to build version file and validate image
+ENV IMAGE="slim"
+COPY scripts/linterVersions.sh /
+RUN /linterVersions.sh \
+  && rm -rfv /linterVersions.sh \
+  && rm -rfv "${HOME}/.npm"
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
@@ -581,12 +583,6 @@ RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
-# Run to build version file and validate image again because we installed more linters
-ENV IMAGE="standard"
-COPY scripts/linterVersions.sh /
-RUN /linterVersions.sh \
-  && rm -rfv /linterVersions.sh
-
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -602,6 +598,15 @@ RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation
 # Copy super-linter executables #
 #################################
 COPY lib /action/lib
+
+# Run to build version file and validate image again because we installed more
+# linters.
+# Don't delete the "${HOME}/.npm" directory so the full image doesn't need to
+# download npm packages
+ENV IMAGE="standard"
+COPY scripts/linterVersions.sh /
+RUN /linterVersions.sh \
+  && rm -rfv /linterVersions.sh
 
 # Set build metadata here so we don't invalidate the container image cache if we
 # change the values of these arguments
