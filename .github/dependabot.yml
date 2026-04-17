@@ -22,6 +22,7 @@ updates:
         patterns:
           - actions/*
           - akhilerm/tag-push-action
+          - dependabot/*
           - docker/*
           - googleapis/*
           - peter-evans/create-issue-from-file
