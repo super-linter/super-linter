@@ -20,7 +20,7 @@
     "eslint-plugin-n": "^17.24.0",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-hooks": "^7.1.0",
     "eslint-plugin-vue": "^10.8.0",
     "htmlhint": "^1.9.2",
     "jscpd": "^4.0.9",
@@ -33,7 +33,7 @@
     "react-intl": "^10.1.2",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.14.1",
-    "renovate": "^43.124.0",
+    "renovate": "^43.127.3",
     "stylelint": "^17.8.0",
     "stylelint-config-recommended-scss": "^17.0.1",
     "stylelint-config-standard": "^40.0.0",
@@ -44,7 +44,7 @@
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.3.0",
     "textlint-rule-terminology": "^5.2.16",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "overrides": {
     "@stoplight/spectral-cli": {
