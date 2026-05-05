@@ -205,7 +205,7 @@ function LintCodebase() {
   if [[ "${FILE_TYPE}" == "ARM" ]] ||
     [[ "${FILE_TYPE}" == "POWERSHELL" ]]; then
     # Run as a Powershell command
-    LINTER_COMMAND_ARRAY=(pwsh -NoProfile -NoLogo -Command "\"${LINTER_COMMAND_ARRAY[*]}; if (\\\${Error}.Count) { exit 1 }\"")
+    LINTER_COMMAND_ARRAY=(pwsh -NoProfile -NoLogo -Command "\"\\\$PSStyle.OutputRendering = 'Ansi'; ${LINTER_COMMAND_ARRAY[*]} | Out-String; if (\\\${Error}.Count) { exit 1 }\"")
   fi
 
   debug "LINTER_COMMAND_ARRAY for ${FILE_TYPE} has ${#LINTER_COMMAND_ARRAY[@]} elements after initializing command arguments: ${LINTER_COMMAND_ARRAY[*]}"
