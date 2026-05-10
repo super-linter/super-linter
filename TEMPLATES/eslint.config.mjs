@@ -69,8 +69,8 @@ export default defineConfig([
     files: ["**/*.ts", "**/*.cts", "**/*.mts", "**/*.tsx"],
 
     extends: compat.extends(
+      "n/recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:n/recommended",
       "plugin:react/recommended",
       "prettier",
     ),

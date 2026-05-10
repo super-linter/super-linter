@@ -37,6 +37,7 @@
     "**/test/linters/python_pylint",
     "**/test/linters/python_ruff",
     "**/test/linters/r",
+    "**/test/linters/renovate",
     "**/test/linters/ruby",
     "**/test/linters/rust_2015",
     "**/test/linters/rust_2018",
