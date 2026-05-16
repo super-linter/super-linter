@@ -17,6 +17,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      github-actions-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       dev-ci-tools:
         applies-to: version-updates
         patterns:
@@ -36,6 +40,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      npm-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       npm:
         applies-to: version-updates
         patterns:
@@ -73,6 +81,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      bundler-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       rubocop:
         applies-to: version-updates
         patterns:
@@ -86,6 +98,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      docker-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       docker:
         applies-to: version-updates
         # We can group all Docker dependencies because they are isolated from
@@ -132,6 +148,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      pip-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       pip:
         applies-to: version-updates
         # We can group all python dependencies because each uses its own
@@ -167,6 +187,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      gradle-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       java-gradle:
         applies-to: version-updates
         # We can group all Java dependencies because they are isolated from
@@ -183,6 +207,15 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 100
+    groups:
+      docker-dev-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      docker-dev:
+        applies-to: version-updates
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     commit-message:
@@ -192,6 +225,15 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 100
+    groups:
+      npm-dev-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      npm-dev:
+        applies-to: version-updates
+        patterns:
+          - "*"
 
   - package-ecosystem: "composer"
     commit-message:
@@ -202,6 +244,10 @@ updates:
       interval: daily
     open-pull-requests-limit: 100
     groups:
+      composer-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
       composer:
         applies-to: version-updates
         patterns:
