@@ -59,10 +59,14 @@ the most important targets:
   make format-prettier FILES_TO_FORMAT="test/linters/html/html_good_01.html"
   ```
 
-- `make test`: Runs the complete test suite. To run a specific subset of tests,
-  you can use `make help` to find the relevant targets.
+- `make test`: Runs the complete test suite. The full test suite runs complex
+  container actions and is resource-intensive. To run a specific subset of
+  tests, you can use `make help` to find the relevant targets.
 - `make open-shell-super-linter-container`: Opens an interactive shell in the
   Super-linter container.
+- `make run-command-super-linter-container CMD="your command"`: Runs a one-off
+  command inside the Super-linter container. Example:
+  `make run-command-super-linter-container CMD="ls -alh"`.
 
 The implementation of the Make targets of this project that use Docker to run
 tests in isolated environments assumes that you can

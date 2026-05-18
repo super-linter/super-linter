@@ -897,13 +897,47 @@ The summary output of previous Super-linter runs is not preserved.
 
 ### Super-linter outputs
 
-If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its output
-to `${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter`, so
+If you set `SAVE_SUPER_LINTER_OUTPUT` to `true`, Super-linter saves its detailed
+outputs to
+`${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter`, so
 you can further process it, if needed.
 
 Most outputs are in JSON format.
 
 The output of previous Super-linter runs is not preserved.
+
+#### Directory Structure
+
+When outputs (and optionally the summary) are saved, the output directory
+`${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}` has the following structure:
+
+- `${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/`
+  - `${SUPER_LINTER_SUMMARY_FILE_NAME}`: A Markdown summary containing a table
+    of the validation results for each language/linter (see
+    [Summary outputs](#summary-outputs) for details).
+  - `super-linter/`: Contains detailed execution logs and results:
+    - `super-linter-results.json`: Top-level execution log in JSON format (GNU
+      Parallel output), recording the execution of `LintCodebase` for each
+      language.
+    - `super-linter-parallel-results-build-file-list.json`: JSON file containing
+      the results of the file discovery and categorization phase.
+    - `super-linter-file-arrays/`: Contains files listing the discovered files
+      for each linter:
+      - `file-array-<LINTER>`: List of files mapped to the specific `<LINTER>`.
+    - For each language `<LANGUAGE>` (e.g., `BASH`, `TYPESCRIPT_ES`):
+      - `super-linter-parallel-command-exit-code-<LANGUAGE>`: The exit code of
+        the linter command execution.
+      - `super-linter-parallel-stdout-<LANGUAGE>`: Standard output of the linter
+        command.
+      - `super-linter-parallel-stderr-<LANGUAGE>`: Standard error of the linter
+        command.
+      - `super-linter-worker-results-<LANGUAGE>.json`: Detailed execution
+        results of the linter worker in JSON format (GNU Parallel job log).
+
+### Super-linter logs
+
+If you set `CREATE_LOG_FILE` to `true`, Super-linter saves its log to
+`${DEFAULT_WORKSPACE}/${LOG_FILE}`.
 
 ### Linter reports and outputs
 

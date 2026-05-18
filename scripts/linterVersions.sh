@@ -239,7 +239,7 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(
       unset TF_LOG_LEVEL
       unset TFLINT_LOG
-      "${LINTER}" --version | grep 'version' | awk '{ print $3 }'
+      "${LINTER}" --version | awk '/^TFLint version/ { print $3 }'
     )"
   elif [[ ${LINTER} == "trivy" ]]; then
     GET_VERSION_CMD="$("${LINTER}" --version 2>&1 | awk '{ print $2 }')"
