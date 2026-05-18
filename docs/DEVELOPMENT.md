@@ -49,6 +49,16 @@ the most important targets:
 - `make lint-codebase`: Runs a comprehensive set of linters against the entire
   codebase to check for style and formatting issues.
 - `make fix-codebase`: Automatically fixes linting and formatting issues.
+- `make format-codebase`: Runs all formatter targets (such as Prettier) to
+  format files in the repository.
+- `make format-prettier`: Runs Prettier to format the codebase. You can format
+  specific files or directories in isolation by passing the `FILES_TO_FORMAT`
+  variable:
+
+  ```bash
+  make format-prettier FILES_TO_FORMAT="test/linters/html/html_good_01.html"
+  ```
+
 - `make test`: Runs the complete test suite. To run a specific subset of tests,
   you can use `make help` to find the relevant targets.
 - `make open-shell-super-linter-container`: Opens an interactive shell in the
