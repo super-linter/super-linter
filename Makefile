@@ -200,22 +200,29 @@ docker-build-check:
 docker-pull: ## Pull the container image from registry
 	docker pull $(SUPER_LINTER_TEST_CONTAINER_URL)
 
+SUPER_LINTER_CONTAINER_RUN := docker run $(DOCKER_FLAGS) \
+	--rm \
+	-v "$(CURDIR)":/tmp/lint \
+	-v "$(CURDIR)/dependencies/Gemfile.lock":/Gemfile.lock \
+	-v "$(CURDIR)/dependencies/Gemfile":/Gemfile \
+	-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
+	-v "$(CURDIR)/dependencies/package.json":/package.json \
+	-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
+	-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
+	-v "$(CURDIR)/scripts/bash-exec.sh":/usr/bin/bash-exec \
+	-v "$(CURDIR)/scripts/git-merge-conflict-markers.sh":/usr/bin/git-merge-conflict-markers \
+	-w /tmp/lint \
+	-e IMAGE=$(IMAGE) \
+	-e VERSION_FILE=/tmp/linterVersions.txt
+
 .PHONY: open-shell-super-linter-container
 open-shell-super-linter-container: ## Open a shell in the Super-linter container
-	docker run $(DOCKER_FLAGS) \
-		--interactive \
-		--entrypoint /bin/bash \
-		--rm \
-		-v "$(CURDIR)":/tmp/lint \
-		-v "$(CURDIR)/dependencies/Gemfile.lock":/Gemfile.lock \
-		-v "$(CURDIR)/dependencies/Gemfile":/Gemfile \
-		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
-		-v "$(CURDIR)/dependencies/package.json":/package.json \
-		-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
-		-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
-		-v "$(CURDIR)/scripts/bash-exec.sh":/usr/bin/bash-exec \
-		-v "$(CURDIR)/scripts/git-merge-conflict-markers.sh":/usr/bin/git-merge-conflict-markers \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
+	$(SUPER_LINTER_CONTAINER_RUN) --interactive --entrypoint /bin/bash $(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: run-command-super-linter-container
+run-command-super-linter-container: ## Run a one-off command in the Super-linter container. Use CMD="your command"
+	@if [ -z "$(CMD)" ]; then echo "Error: CMD parameter is required. Example: make run-command-super-linter-container CMD=\"ls -alh\""; exit 1; fi
+	$(SUPER_LINTER_CONTAINER_RUN) --entrypoint /bin/bash $(SUPER_LINTER_TEST_CONTAINER_URL) -c "$(CMD)"
 
 .PHONY: validate-container-image-labels
 validate-container-image-labels: ## Validate container image labels
@@ -287,7 +294,7 @@ format-prettier: ## Run prettier to format the codebase
 		-v "$(CURDIR):/tmp/lint" \
 		--workdir "/tmp/lint" \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		-c "prettier --write $(FILES_TO_FORMAT)"
+		-c "prettier --write $(FILES_TO_FORMAT) '!test/linters/**/*bad*' '!test/linters/**/*bad*/**'"
 
 # This is a smoke test to check how much time it takes to lint only a small
 # subset of files, compared to linting the whole codebase.

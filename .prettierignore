@@ -1,6 +1,2 @@
 # Generated files
 CHANGELOG.md
-
-# Some test files have linting errors, on purpose
-test/linters/**/*bad*
-test/linters/**/*bad*/**
