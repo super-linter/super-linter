@@ -1,1 +1,1 @@
-snakefmt==1.1.0
+snakefmt==2.0.0
