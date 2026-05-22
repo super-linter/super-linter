@@ -134,28 +134,33 @@ CallGitHubApi() {
   local GITHUB_URL="${1}" && shift
   local GITHUB_TOKEN="${1}" && shift
   local PAYLOAD="${1}" && shift
+  local HTTP_METHOD="${1:-POST}"
 
   if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     warn "Provide a GitHub token to call the GitHub API: ${GITHUB_URL}"
     return 1
   fi
 
-  debug "Calling GitHub API (${GITHUB_URL}) with payloaad: ${PAYLOAD}"
+  debug "Calling GitHub API (${GITHUB_URL}) with method: ${HTTP_METHOD}, payload: ${PAYLOAD}"
 
-  if ! CALL_GITHUB_API_OUT=$(
-    curl \
-      --fail \
-      --location \
-      --request POST \
-      --show-error \
-      --silent \
-      --url "${GITHUB_URL}" \
-      -H "accept: application/vnd.github+json" \
-      -H "authorization: Bearer ${GITHUB_TOKEN}" \
-      -H "content-type: application/json" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
-      -d "${PAYLOAD}" 2>&1
-  ); then
+  local CURL_ARGS=(
+    --fail
+    --location
+    --request "${HTTP_METHOD}"
+    --show-error
+    --silent
+    --url "${GITHUB_URL}"
+    -H "accept: application/vnd.github+json"
+    -H "authorization: Bearer ${GITHUB_TOKEN}"
+    -H "content-type: application/json"
+    -H "X-GitHub-Api-Version: 2022-11-28"
+  )
+
+  if [[ -n "${PAYLOAD}" ]]; then
+    CURL_ARGS+=(-d "${PAYLOAD}")
+  fi
+
+  if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
     warn "Failed to call GitHub API (${GITHUB_URL}): ${CALL_GITHUB_API_OUT}"
     return 1
   fi
@@ -215,6 +220,91 @@ CreateGitHubIssueComment() {
   fi
 }
 
+SUPER_LINTER_SUMMARY_COMMENT_MARKER="<!-- super-linter-summary-comment -->"
+
+# Ref: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#list-issue-comments
+FindExistingSummaryComment() {
+  local GITHUB_ISSUE_NUMBER="${1}" && shift
+
+  local GITHUB_ISSUE_COMMENTS_URL
+  GITHUB_ISSUE_COMMENTS_URL="${GITHUB_ISSUES_URL}/${GITHUB_ISSUE_NUMBER}/comments"
+  debug "Listing comments for issue #${GITHUB_ISSUE_NUMBER} to find existing summary comment"
+
+  if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+    warn "Provide a GitHub token to call the GitHub API: ${GITHUB_ISSUE_COMMENTS_URL}"
+    return 1
+  fi
+
+  local NEXT_URL="${GITHUB_ISSUE_COMMENTS_URL}?per_page=100"
+  while [[ -n "${NEXT_URL}" ]]; do
+    local RESPONSE_HEADERS
+    RESPONSE_HEADERS="$(mktemp)"
+
+    local LIST_COMMENTS_OUT
+    if ! LIST_COMMENTS_OUT=$(
+      curl \
+        --fail \
+        --location \
+        --request GET \
+        --show-error \
+        --silent \
+        --dump-header "${RESPONSE_HEADERS}" \
+        --url "${NEXT_URL}" \
+        -H "accept: application/vnd.github+json" \
+        -H "authorization: Bearer ${GITHUB_TOKEN}" \
+        -H "X-GitHub-Api-Version: 2022-11-28"
+    ); then
+      rm -f "${RESPONSE_HEADERS}"
+      warn "Failed to list comments for issue #${GITHUB_ISSUE_NUMBER}: ${LIST_COMMENTS_OUT}"
+      return 1
+    fi
+
+    local EXISTING_COMMENT_ID
+    if ! EXISTING_COMMENT_ID=$(echo "${LIST_COMMENTS_OUT}" | jq -r --arg marker "${SUPER_LINTER_SUMMARY_COMMENT_MARKER}" '[.[] | select((.body // "") | startswith($marker))] | last | .id // empty'); then
+      rm -f "${RESPONSE_HEADERS}"
+      warn "Error while parsing comments response"
+      return 1
+    fi
+
+    if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
+      rm -f "${RESPONSE_HEADERS}"
+      debug "Found existing summary comment with ID: ${EXISTING_COMMENT_ID}"
+      echo "${EXISTING_COMMENT_ID}"
+      return 0
+    fi
+
+    # Check for next page via Link header
+    NEXT_URL=""
+    if grep -qi '^link:' "${RESPONSE_HEADERS}"; then
+      NEXT_URL=$(grep -i '^link:' "${RESPONSE_HEADERS}" | sed -n 's/.*<\([^>]*\)>; rel="next".*/\1/p')
+    fi
+    rm -f "${RESPONSE_HEADERS}"
+  done
+
+  return 0
+}
+
+# Ref: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#update-an-issue-comment
+UpdateGitHubIssueComment() {
+  local COMMENT_PAYLOAD="${1}" && shift
+  local COMMENT_ID="${1}" && shift
+
+  local UPDATE_ISSUE_COMMENT_API_PAYLOAD
+  if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}')"; then
+    warn "Error while loading the contents of COMMENT_PAYLOAD to UPDATE_ISSUE_COMMENT_API_PAYLOAD"
+    return 1
+  fi
+
+  local GITHUB_ISSUE_COMMENT_URL
+  GITHUB_ISSUE_COMMENT_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
+  debug "Updating GitHub issue comment (URL: ${GITHUB_ISSUE_COMMENT_URL}). COMMENT_ID: ${COMMENT_ID}"
+
+  if ! CallGitHubApi "${GITHUB_ISSUE_COMMENT_URL}" "${GITHUB_TOKEN}" "${UPDATE_ISSUE_COMMENT_API_PAYLOAD}" "PATCH"; then
+    warn "Failed to update GitHub issue comment"
+    return 1
+  fi
+}
+
 CreateGitHubPullRequestSummaryComment() {
   local SUPER_LINTER_SUMMARY_OUTPUT_PATH="${1}" && shift
   local GITHUB_PULL_REQUEST_NUMBER="${1}" && shift
@@ -227,8 +317,32 @@ CreateGitHubPullRequestSummaryComment() {
     return 1
   fi
 
-  if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
-    warn "Error while posting pull request summary"
-    return 1
+  # Prepend the marker so we can find this comment later
+  SUMMARY_COMMENT_BODY="${SUPER_LINTER_SUMMARY_COMMENT_MARKER}
+${SUMMARY_COMMENT_BODY}"
+
+  # Check if there's an existing summary comment to update
+  local EXISTING_COMMENT_ID
+  if ! EXISTING_COMMENT_ID=$(FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}"); then
+    warn "Error while looking up existing summary comment, falling back to creating a new one"
+    if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
+      warn "Error while posting pull request summary"
+      return 1
+    fi
+    return 0
+  fi
+
+  if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
+    debug "Updating existing summary comment (ID: ${EXISTING_COMMENT_ID}) on PR #${GITHUB_PULL_REQUEST_NUMBER}"
+    if ! UpdateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${EXISTING_COMMENT_ID}"; then
+      warn "Error while updating pull request summary comment"
+      return 1
+    fi
+  else
+    debug "No existing summary comment found, creating a new one"
+    if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
+      warn "Error while posting pull request summary"
+      return 1
+    fi
   fi
 }
