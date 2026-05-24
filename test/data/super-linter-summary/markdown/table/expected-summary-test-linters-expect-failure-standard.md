@@ -28,6 +28,7 @@
 | DOTNET_SLN_FORMAT_WHITESPACE | Fail ❌           |
 | EDITORCONFIG                 | Fail ❌           |
 | ENV                          | Fail ❌           |
+| FORTRAN_FPRETTIFY            | Fail ❌           |
 | GITHUB_ACTIONS               | Fail ❌           |
 | GITHUB_ACTIONS_ZIZMOR        | Fail ❌           |
 | GITLEAKS                     | Fail ❌           |

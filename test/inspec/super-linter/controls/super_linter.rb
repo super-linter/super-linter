@@ -172,6 +172,8 @@ control "super-linter-installed-commands" do
     { linter_name: "editorconfig-checker", version_option: "-version" },
     { linter_name: "eslint" },
     { linter_name: "flake8" },
+    { linter_name: "fprettify" },
+    { linter_name: "fprettify-check", expected_exit_status: 1 },
     { linter_name: "git-merge-conflict-markers" },
     { linter_name: "gitleaks", version_option: "version" },
     { linter_name: "golangci-lint" },
@@ -405,6 +407,7 @@ control "super-linter-installed-pypi-packages" do
     "codespell",
     "cpplint",
     "flake8",
+    "fprettify",
     "isort",
     "mypy",
     "nbqa",
@@ -505,6 +508,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/.codespellrc",
     "/action/lib/.automation/.editorconfig-checker.json",
     "/action/lib/.automation/.flake8",
+    "/action/lib/.automation/.fprettify.rc",
     "/action/lib/.automation/.golangci.yml",
     "/action/lib/.automation/.groovylintrc.json",
     "/action/lib/.automation/.hadolint.yaml",
@@ -539,6 +543,7 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/trivy.yaml",
     "/action/lib/.automation/zizmor.yaml",
     "/usr/bin/bash-exec",
+    "/usr/bin/fprettify-check",
     "/usr/bin/git-merge-conflict-markers",
     "/usr/bin/helm", # needed for checkov's helm framework
     "/usr/bin/kustomize", # needed for checkov's kustomize checks
