@@ -134,7 +134,8 @@ CallGitHubApi() {
   local GITHUB_URL="${1}" && shift
   local GITHUB_TOKEN="${1}" && shift
   local PAYLOAD="${1}" && shift
-  local HTTP_METHOD="${1:-POST}"
+  local HTTP_METHOD="${1:-POST}" && shift
+  local INCLUDE_RESPONSE_HEADERS="${1:-false}"
 
   if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     warn "Provide a GitHub token to call the GitHub API: ${GITHUB_URL}"
@@ -156,10 +157,15 @@ CallGitHubApi() {
     -H "X-GitHub-Api-Version: 2022-11-28"
   )
 
+  if [[ "${INCLUDE_RESPONSE_HEADERS}" == "true" ]]; then
+    CURL_ARGS+=(--include)
+  fi
+
   if [[ -n "${PAYLOAD}" ]]; then
     CURL_ARGS+=(-d "${PAYLOAD}")
   fi
 
+  CALL_GITHUB_API_OUT=""
   if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
     warn "Failed to call GitHub API (${GITHUB_URL}): ${CALL_GITHUB_API_OUT}"
     return 1
@@ -220,11 +226,14 @@ CreateGitHubIssueComment() {
   fi
 }
 
-SUPER_LINTER_SUMMARY_COMMENT_MARKER="<!-- super-linter-summary-comment -->"
-
 # Ref: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#list-issue-comments
+# Sets the global SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID variable; does not use stdout
+# so that log output from this function doesn't contaminate callers using command substitution.
+SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID=""
 FindExistingSummaryComment() {
   local GITHUB_ISSUE_NUMBER="${1}" && shift
+
+  SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID=""
 
   local GITHUB_ISSUE_COMMENTS_URL
   GITHUB_ISSUE_COMMENTS_URL="${GITHUB_ISSUES_URL}/${GITHUB_ISSUE_NUMBER}/comments"
@@ -237,48 +246,40 @@ FindExistingSummaryComment() {
 
   local NEXT_URL="${GITHUB_ISSUE_COMMENTS_URL}?per_page=100"
   while [[ -n "${NEXT_URL}" ]]; do
-    local RESPONSE_HEADERS
-    RESPONSE_HEADERS="$(mktemp)"
-
-    local LIST_COMMENTS_OUT
-    if ! LIST_COMMENTS_OUT=$(
-      curl \
-        --fail \
-        --location \
-        --request GET \
-        --show-error \
-        --silent \
-        --dump-header "${RESPONSE_HEADERS}" \
-        --url "${NEXT_URL}" \
-        -H "accept: application/vnd.github+json" \
-        -H "authorization: Bearer ${GITHUB_TOKEN}" \
-        -H "X-GitHub-Api-Version: 2022-11-28"
-    ); then
-      rm -f "${RESPONSE_HEADERS}"
-      warn "Failed to list comments for issue #${GITHUB_ISSUE_NUMBER}: ${LIST_COMMENTS_OUT}"
+    if ! CallGitHubApi "${NEXT_URL}" "${GITHUB_TOKEN}" "" "GET" "true"; then
+      error "Failed to list comments for issue #${GITHUB_ISSUE_NUMBER}: ${CALL_GITHUB_API_OUT}"
       return 1
     fi
 
+    # Extract the response body from the last HTTP response block.
+    # curl --include --location can produce multiple header blocks (one per redirect);
+    # reset on each new HTTP/ status line so we only parse the final response body.
+    local RESPONSE_BODY
+    RESPONSE_BODY=$(printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
+      /^HTTP\//{in_headers=1; body=""; next}
+      in_headers && /^\r?$/{in_headers=0; next}
+      !in_headers{body = body ? body "\n" $0 : $0}
+      END{print body}
+    ')
+
     local EXISTING_COMMENT_ID
-    if ! EXISTING_COMMENT_ID=$(echo "${LIST_COMMENTS_OUT}" | jq -r --arg marker "${SUPER_LINTER_SUMMARY_COMMENT_MARKER}" '[.[] | select((.body // "") | startswith($marker))] | last | .id // empty'); then
-      rm -f "${RESPONSE_HEADERS}"
-      warn "Error while parsing comments response"
+    if ! EXISTING_COMMENT_ID=$(printf '%s' "${RESPONSE_BODY}" | jq -r --arg marker "${SUPER_LINTER_SUMMARY_COMMENT_MARKER}" '[.[] | select((.body // "") | startswith($marker))] | last | .id // empty'); then
+      error "Error while parsing comments response"
       return 1
     fi
 
     if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
-      rm -f "${RESPONSE_HEADERS}"
       debug "Found existing summary comment with ID: ${EXISTING_COMMENT_ID}"
-      echo "${EXISTING_COMMENT_ID}"
+      SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID="${EXISTING_COMMENT_ID}"
       return 0
     fi
 
-    # Check for next page via Link header
-    NEXT_URL=""
-    if grep -qi '^link:' "${RESPONSE_HEADERS}"; then
-      NEXT_URL=$(grep -i '^link:' "${RESPONSE_HEADERS}" | sed -n 's/.*<\([^>]*\)>; rel="next".*/\1/p')
-    fi
-    rm -f "${RESPONSE_HEADERS}"
+    # Parse the Link header from the last response block for the next page URL
+    NEXT_URL=$(printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
+      /^HTTP\//{link=""; next}
+      /^[Ll]ink:/{link=$0}
+      END{print link}
+    ' | sed -n 's/^[Ll]ink:.*<\([^>]*\)>; rel="next".*/\1/p' | tr -d '\r')
   done
 
   return 0
@@ -321,25 +322,32 @@ CreateGitHubPullRequestSummaryComment() {
   SUMMARY_COMMENT_BODY="${SUPER_LINTER_SUMMARY_COMMENT_MARKER}
 ${SUMMARY_COMMENT_BODY}"
 
-  # Check if there's an existing summary comment to update
-  local EXISTING_COMMENT_ID
-  if ! EXISTING_COMMENT_ID=$(FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}"); then
-    warn "Error while looking up existing summary comment, falling back to creating a new one"
-    if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
-      warn "Error while posting pull request summary"
-      return 1
+  if [[ "${UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true" ]]; then
+    # Check if there's an existing summary comment to update
+    if ! FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}"; then
+      warn "Error while looking up existing summary comment, falling back to creating a new one"
+      if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
+        warn "Error while posting pull request summary"
+        return 1
+      fi
+      return 0
     fi
-    return 0
-  fi
 
-  if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
-    debug "Updating existing summary comment (ID: ${EXISTING_COMMENT_ID}) on PR #${GITHUB_PULL_REQUEST_NUMBER}"
-    if ! UpdateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${EXISTING_COMMENT_ID}"; then
-      warn "Error while updating pull request summary comment"
-      return 1
+    if [[ -n "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}" ]]; then
+      debug "Updating existing summary comment (ID: ${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}) on PR #${GITHUB_PULL_REQUEST_NUMBER}"
+      if ! UpdateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}"; then
+        warn "Error while updating pull request summary comment"
+        return 1
+      fi
+    else
+      debug "No existing summary comment found, creating a new one"
+      if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
+        warn "Error while posting pull request summary"
+        return 1
+      fi
     fi
   else
-    debug "No existing summary comment found, creating a new one"
+    debug "UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT is false, creating a new comment"
     if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
       warn "Error while posting pull request summary"
       return 1
