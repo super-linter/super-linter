@@ -35,6 +35,7 @@ function ValidateBooleanConfigurationVariables() {
   ValidateBooleanVariable "SUPPRESS_OUTPUT_ON_SUCCESS" "${SUPPRESS_OUTPUT_ON_SUCCESS}"
   ValidateBooleanVariable "SUPPRESS_POSSUM" "${SUPPRESS_POSSUM}"
   ValidateBooleanVariable "TEST_CASE_RUN" "${TEST_CASE_RUN}"
+  ValidateBooleanVariable "UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT" "${UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}"
   ValidateBooleanVariable "USE_FIND_ALGORITHM" "${USE_FIND_ALGORITHM}"
   ValidateBooleanVariable "VALIDATE_ALL_CODEBASE" "${VALIDATE_ALL_CODEBASE}"
   ValidateBooleanVariable "YAML_ERROR_ON_WARNING" "${YAML_ERROR_ON_WARNING}"

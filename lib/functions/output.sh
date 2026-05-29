@@ -165,11 +165,12 @@ CallGitHubApi() {
     CURL_ARGS+=(-d "${PAYLOAD}")
   fi
 
-  CALL_GITHUB_API_OUT=""
+  local CALL_GITHUB_API_OUT
   if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
     warn "Failed to call GitHub API (${GITHUB_URL}): ${CALL_GITHUB_API_OUT}"
     return 1
   fi
+  echo "${CALL_GITHUB_API_OUT}"
 }
 
 # Ref: https://docs.github.com/en/rest/commits/statuses?apiVersion=2022-11-28#create-a-commit-status
@@ -227,13 +228,11 @@ CreateGitHubIssueComment() {
 }
 
 # Ref: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#list-issue-comments
-# Sets the global SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID variable; does not use stdout
-# so that log output from this function doesn't contaminate callers using command substitution.
-SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID=""
+# Echoes the ID of the existing super-linter summary comment, or empty string if not found.
 FindExistingSummaryComment() {
   local GITHUB_ISSUE_NUMBER="${1}" && shift
 
-  SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID=""
+  local EXISTING_SUMMARY_COMMENT_ID=""
 
   local GITHUB_ISSUE_COMMENTS_URL
   GITHUB_ISSUE_COMMENTS_URL="${GITHUB_ISSUES_URL}/${GITHUB_ISSUE_NUMBER}/comments"
@@ -246,7 +245,8 @@ FindExistingSummaryComment() {
 
   local NEXT_URL="${GITHUB_ISSUE_COMMENTS_URL}?per_page=100"
   while [[ -n "${NEXT_URL}" ]]; do
-    if ! CallGitHubApi "${NEXT_URL}" "${GITHUB_TOKEN}" "" "GET" "true"; then
+    local CALL_GITHUB_API_OUT
+    if ! CALL_GITHUB_API_OUT="$(CallGitHubApi "${NEXT_URL}" "${GITHUB_TOKEN}" "" "GET" "true")"; then
       error "Failed to list comments for issue #${GITHUB_ISSUE_NUMBER}: ${CALL_GITHUB_API_OUT}"
       return 1
     fi
@@ -255,33 +255,49 @@ FindExistingSummaryComment() {
     # curl --include --location can produce multiple header blocks (one per redirect);
     # reset on each new HTTP/ status line so we only parse the final response body.
     local RESPONSE_BODY
-    RESPONSE_BODY=$(printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
-      /^HTTP\//{in_headers=1; body=""; next}
-      in_headers && /^\r?$/{in_headers=0; next}
-      !in_headers{body = body ? body "\n" $0 : $0}
-      END{print body}
-    ')
+    if ! RESPONSE_BODY=$(
+      set -o pipefail
+      printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
+        /^HTTP\//{in_headers=1; body=""; next}
+        in_headers && /^\r?$/{in_headers=0; next}
+        !in_headers{body = body ? body "\n" $0 : $0}
+        END{print body}
+      ' 2>&1
+    ); then
+      error "Error while extracting response body from API response"
+      return 1
+    fi
 
     local EXISTING_COMMENT_ID
-    if ! EXISTING_COMMENT_ID=$(printf '%s' "${RESPONSE_BODY}" | jq -r --arg marker "${SUPER_LINTER_SUMMARY_COMMENT_MARKER}" '[.[] | select((.body // "") | startswith($marker))] | last | .id // empty'); then
+    if ! EXISTING_COMMENT_ID=$(
+      set -o pipefail
+      printf '%s' "${RESPONSE_BODY}" | jq -r --arg marker "${SUPER_LINTER_SUMMARY_COMMENT_MARKER}" '[.[] | select((.body // "") | startswith($marker))] | last | .id // empty' 2>&1
+    ); then
       error "Error while parsing comments response"
       return 1
     fi
 
     if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
       debug "Found existing summary comment with ID: ${EXISTING_COMMENT_ID}"
-      SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID="${EXISTING_COMMENT_ID}"
+      echo "${EXISTING_COMMENT_ID}"
       return 0
     fi
 
     # Parse the Link header from the last response block for the next page URL
-    NEXT_URL=$(printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
-      /^HTTP\//{link=""; next}
-      /^[Ll]ink:/{link=$0}
-      END{print link}
-    ' | sed -n 's/^[Ll]ink:.*<\([^>]*\)>; rel="next".*/\1/p' | tr -d '\r')
+    if ! NEXT_URL=$(
+      set -o pipefail
+      printf '%s' "${CALL_GITHUB_API_OUT}" | awk '
+        /^HTTP\//{link=""; next}
+        /^[Ll]ink:/{link=$0}
+        END{print link}
+      ' | sed -n 's/^[Ll]ink:.*<\([^>]*\)>; rel="next".*/\1/p' | tr -d '\r' 2>&1
+    ); then
+      error "Error while parsing next page URL from API response"
+      return 1
+    fi
   done
 
+  echo "${EXISTING_SUMMARY_COMMENT_ID}"
   return 0
 }
 
@@ -291,10 +307,11 @@ UpdateGitHubIssueComment() {
   local COMMENT_ID="${1}" && shift
 
   local UPDATE_ISSUE_COMMENT_API_PAYLOAD
-  if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}')"; then
+  if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}' 2>&1)"; then
     warn "Error while loading the contents of COMMENT_PAYLOAD to UPDATE_ISSUE_COMMENT_API_PAYLOAD"
     return 1
   fi
+  : "${UPDATE_ISSUE_COMMENT_API_PAYLOAD}"
 
   local GITHUB_ISSUE_COMMENT_URL
   GITHUB_ISSUE_COMMENT_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
@@ -324,7 +341,8 @@ ${SUMMARY_COMMENT_BODY}"
 
   if [[ "${UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true" ]]; then
     # Check if there's an existing summary comment to update
-    if ! FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}"; then
+    local SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID
+    if ! SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID="$(FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}")"; then
       warn "Error while looking up existing summary comment, falling back to creating a new one"
       if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
         warn "Error while posting pull request summary"
