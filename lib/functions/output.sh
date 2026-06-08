@@ -236,7 +236,6 @@ FindExistingSummaryComment() {
 
   local GITHUB_ISSUE_COMMENTS_URL
   GITHUB_ISSUE_COMMENTS_URL="${GITHUB_ISSUES_URL}/${GITHUB_ISSUE_NUMBER}/comments"
-  debug "Listing comments for issue #${GITHUB_ISSUE_NUMBER} to find existing summary comment"
 
   if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     warn "Provide a GitHub token to call the GitHub API: ${GITHUB_ISSUE_COMMENTS_URL}"
@@ -277,8 +276,7 @@ FindExistingSummaryComment() {
       return 1
     fi
 
-    if [[ -n "${EXISTING_COMMENT_ID}" ]]; then
-      debug "Found existing summary comment with ID: ${EXISTING_COMMENT_ID}"
+    if [[ -n "${EXISTING_COMMENT_ID:-}" ]]; then
       echo "${EXISTING_COMMENT_ID}"
       return 0
     fi
@@ -341,6 +339,7 @@ ${SUMMARY_COMMENT_BODY}"
   if [[ "${UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT}" == "true" ]]; then
     # Check if there's an existing summary comment to update
     local SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID
+    debug "Listing comments for issue #${GITHUB_PULL_REQUEST_NUMBER} to find existing summary comment"
     if ! SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID="$(FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}")"; then
       warn "Error while looking up existing summary comment, falling back to creating a new one"
       if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
@@ -350,7 +349,7 @@ ${SUMMARY_COMMENT_BODY}"
       return 0
     fi
 
-    if [[ -n "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}" ]]; then
+    if [[ -n "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID:-}" ]]; then
       debug "Updating existing summary comment (ID: ${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}) on PR #${GITHUB_PULL_REQUEST_NUMBER}"
       if ! UpdateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}"; then
         warn "Error while updating pull request summary comment"
