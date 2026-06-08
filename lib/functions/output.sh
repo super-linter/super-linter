@@ -308,10 +308,9 @@ UpdateGitHubIssueComment() {
 
   local UPDATE_ISSUE_COMMENT_API_PAYLOAD
   if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}' 2>&1)"; then
-    warn "Error while loading the contents of COMMENT_PAYLOAD to UPDATE_ISSUE_COMMENT_API_PAYLOAD"
+    warn "Error while loading the contents of COMMENT_PAYLOAD to UPDATE_ISSUE_COMMENT_API_PAYLOAD: ${UPDATE_ISSUE_COMMENT_API_PAYLOAD}"
     return 1
   fi
-  : "${UPDATE_ISSUE_COMMENT_API_PAYLOAD}"
 
   local GITHUB_ISSUE_COMMENT_URL
   GITHUB_ISSUE_COMMENT_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
