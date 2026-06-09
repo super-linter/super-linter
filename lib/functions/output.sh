@@ -167,7 +167,7 @@ CallGitHubApi() {
 
   local CALL_GITHUB_API_OUT
   if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
-    warn "Failed to call GitHub API (${GITHUB_URL}): ${CALL_GITHUB_API_OUT}"
+    warn "Failed to call GitHub API (${GITHUB_URL}) with ${HTTP_METHOD} HTTP method: ${CALL_GITHUB_API_OUT}"
     return 1
   fi
   echo "${CALL_GITHUB_API_OUT}"
