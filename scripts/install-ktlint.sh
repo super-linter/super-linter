@@ -8,14 +8,22 @@ KTLINT_VERSION="$(
 )"
 echo "Installing Ktlint: ${KTLINT_VERSION}"
 
-url=$(
+ktlint_tags=$(
   set -euo pipefail
   curl -s \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-    "https://api.github.com/repos/pinterest/ktlint/releases/tags/${KTLINT_VERSION}" |
-    jq -r '.assets | .[] | select(.name=="ktlint") | .url'
+    "https://api.github.com/repos/ktlint/ktlint/releases/tags/${KTLINT_VERSION}"
 )
+
+echo "ktlint tags: ${ktlint_tags}"
+
+url=$(
+  set -euo pipefail
+  jq -r '.assets | .[] | select(.name=="ktlint") | .url' <<<"${ktlint_tags}"
+)
+echo "ktlint asset URL: ${url}"
+
 curl --retry 5 --retry-delay 5 -sL -o "/usr/bin/ktlint" \
   -H "Accept: application/octet-stream" \
   -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
