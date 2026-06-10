@@ -138,11 +138,9 @@ CallGitHubApi() {
   local INCLUDE_RESPONSE_HEADERS="${1:-false}"
 
   if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    warn "Provide a GitHub token to call the GitHub API: ${GITHUB_URL}"
+    error "Provide a GitHub token to call the GitHub API: ${GITHUB_URL}"
     return 1
   fi
-
-  debug "Calling GitHub API (${GITHUB_URL}) with method: ${HTTP_METHOD}, payload: ${PAYLOAD}"
 
   local CURL_ARGS=(
     --fail
@@ -167,7 +165,7 @@ CallGitHubApi() {
 
   local CALL_GITHUB_API_OUT
   if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
-    warn "Failed to call GitHub API (${GITHUB_URL}) with ${HTTP_METHOD} HTTP method: ${CALL_GITHUB_API_OUT}"
+    error "Failed to call GitHub API (${GITHUB_URL}) with ${HTTP_METHOD} HTTP method: ${CALL_GITHUB_API_OUT}"
     return 1
   fi
   echo "${CALL_GITHUB_API_OUT}"
@@ -198,6 +196,7 @@ CreateGitHubCommitStatus() {
     \"context\": \"--> Linted: ${LANGUAGE}\"
   }"
 
+  debug "Calling GitHub API (${GITHUB_STATUS_URL}), payload: ${GITHUB_STATUS_API_PAYLOAD}"
   if ! CallGitHubApi "${GITHUB_STATUS_URL}" "${GITHUB_TOKEN}" "${GITHUB_STATUS_API_PAYLOAD}"; then
     warn "Failed to create GitHub Commit Status"
     return 1
@@ -221,6 +220,7 @@ CreateGitHubIssueComment() {
 
   debug "Creating GitHub issue comment (URL: ${GITHUB_ISSUE_COMMENT_URL}). GITHUB_ISSUE_NUMBER: ${GITHUB_ISSUE_NUMBER}, payload: ${CREATE_ISSUE_COMMENT_API_PAYLOAD}"
 
+  debug "Calling GitHub API (${GITHUB_ISSUE_COMMENT_URL}), payload: ${CREATE_ISSUE_COMMENT_API_PAYLOAD}"
   if ! CallGitHubApi "${GITHUB_ISSUE_COMMENT_URL}" "${GITHUB_TOKEN}" "${CREATE_ISSUE_COMMENT_API_PAYLOAD}"; then
     warn "Failed to create GitHub issue comment"
     return 1
@@ -245,7 +245,10 @@ FindExistingSummaryComment() {
   local NEXT_URL="${GITHUB_ISSUE_COMMENTS_URL}?per_page=100"
   while [[ -n "${NEXT_URL}" ]]; do
     local CALL_GITHUB_API_OUT
-    if ! CALL_GITHUB_API_OUT="$(CallGitHubApi "${NEXT_URL}" "${GITHUB_TOKEN}" "" "GET" "true")"; then
+    local GITHUB_API_HTTP_METHOD
+    GITHUB_API_HTTP_METHOD="GET"
+    if ! CALL_GITHUB_API_OUT="$(CallGitHubApi "${NEXT_URL}" "${GITHUB_TOKEN}" "" "${GITHUB_API_HTTP_METHOD}" "true")"; then
+      debug "Calling GitHub API (${NEXT_URL}), HTTP method: ${GITHUB_API_HTTP_METHOD}"
       error "Failed to list comments for issue #${GITHUB_ISSUE_NUMBER}: ${CALL_GITHUB_API_OUT}"
       return 1
     fi
@@ -314,7 +317,10 @@ UpdateGitHubIssueComment() {
   GITHUB_ISSUE_COMMENT_URL="${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
   debug "Updating GitHub issue comment (URL: ${GITHUB_ISSUE_COMMENT_URL}). COMMENT_ID: ${COMMENT_ID}"
 
-  if ! CallGitHubApi "${GITHUB_ISSUE_COMMENT_URL}" "${GITHUB_TOKEN}" "${UPDATE_ISSUE_COMMENT_API_PAYLOAD}" "PATCH"; then
+  local GITHUB_API_HTTP_METHOD
+  GITHUB_API_HTTP_METHOD="PATCH"
+  debug "Calling GitHub API (${GITHUB_ISSUE_COMMENT_URL}), HTTP method: ${GITHUB_API_HTTP_METHOD}, payload: ${UPDATE_ISSUE_COMMENT_API_PAYLOAD}"
+  if ! CallGitHubApi "${GITHUB_ISSUE_COMMENT_URL}" "${GITHUB_TOKEN}" "${UPDATE_ISSUE_COMMENT_API_PAYLOAD}" "${GITHUB_API_HTTP_METHOD}"; then
     warn "Failed to update GitHub issue comment"
     return 1
   fi
@@ -328,7 +334,7 @@ CreateGitHubPullRequestSummaryComment() {
 
   local SUMMARY_COMMENT_BODY
   if ! SUMMARY_COMMENT_BODY="$(<"${SUPER_LINTER_SUMMARY_OUTPUT_PATH}")"; then
-    warn "Error while loading the contents of COMMENT_PAYLOAD to SUMMARY_COMMENT_BODY"
+    error "Error while loading the contents of COMMENT_PAYLOAD to SUMMARY_COMMENT_BODY: ${SUMMARY_COMMENT_BODY}"
     return 1
   fi
 
@@ -341,9 +347,9 @@ ${SUMMARY_COMMENT_BODY}"
     local SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID
     debug "Listing comments for issue #${GITHUB_PULL_REQUEST_NUMBER} to find existing summary comment"
     if ! SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID="$(FindExistingSummaryComment "${GITHUB_PULL_REQUEST_NUMBER}")"; then
-      warn "Error while looking up existing summary comment, falling back to creating a new one"
+      error "Error while looking up existing summary comment, falling back to creating a new one"
       if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
-        warn "Error while posting pull request summary"
+        error "Error while posting pull request summary"
         return 1
       fi
       return 0
@@ -352,20 +358,20 @@ ${SUMMARY_COMMENT_BODY}"
     if [[ -n "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID:-}" ]]; then
       debug "Updating existing summary comment (ID: ${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}) on PR #${GITHUB_PULL_REQUEST_NUMBER}"
       if ! UpdateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${SUPER_LINTER_EXISTING_SUMMARY_COMMENT_ID}"; then
-        warn "Error while updating pull request summary comment"
+        error "Error while updating pull request summary comment"
         return 1
       fi
     else
       debug "No existing summary comment found, creating a new one"
       if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
-        warn "Error while posting pull request summary"
+        error "Error while posting pull request summary"
         return 1
       fi
     fi
   else
     debug "UPDATE_EXISTING_GITHUB_PULL_REQUEST_SUMMARY_COMMENT is false, creating a new comment"
     if ! CreateGitHubIssueComment "${SUMMARY_COMMENT_BODY}" "${GITHUB_PULL_REQUEST_NUMBER}"; then
-      warn "Error while posting pull request summary"
+      error "Error while posting pull request summary"
       return 1
     fi
   fi
