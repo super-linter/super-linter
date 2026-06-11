@@ -16,7 +16,7 @@ FROM golangci/golangci-lint:v2.12.2 AS golangci-lint
 FROM goreleaser/goreleaser:v2.16.0 AS goreleaser
 FROM hadolint/hadolint:v2.14.0-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.8.1 AS kustomize
-FROM hashicorp/terraform:1.15.5 AS terraform
+FROM hashicorp/terraform:1.15.6 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
 FROM mstruebing/editorconfig-checker:v3.7.0 AS editorconfig-checker
 FROM mvdan/shfmt:v3.13.1 AS shfmt
@@ -25,8 +25,8 @@ FROM scalameta/scalafmt:v3.11.1 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.1 AS gitleaks
 FROM yoheimuta/protolint:0.56.4 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2026.05.25-alpine AS clj-kondo
-FROM dart:3.12.1-sdk AS dart
-FROM mcr.microsoft.com/dotnet/sdk:10.0.300-alpine3.23 AS dotnet-sdk
+FROM dart:3.12.2-sdk AS dart
+FROM mcr.microsoft.com/dotnet/sdk:10.0.301-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.10.1 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.71.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.8.0 AS kubeconform
