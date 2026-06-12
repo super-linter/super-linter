@@ -54,7 +54,7 @@ jobs:
           sudo rm -rf /usr/local/.ghcup || true
 
       - name: Login to GHCR
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -207,7 +207,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to GHCR
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -308,7 +308,7 @@ jobs:
 
       - name: Login to GHCR
         if: steps.release.outputs.release_created
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -318,7 +318,7 @@ jobs:
       # Instead, we pull the latest image and tag it.
       - name: Retag and Push Images
         if: steps.release.outputs.release_created
-        uses: akhilerm/tag-push-action@v2.2.0
+        uses: akhilerm/tag-push-action@v2.3.0
         with:
           src: ghcr.io/super-linter/super-linter:latest
           dst: |
@@ -327,7 +327,7 @@ jobs:
 
       - name: Retag and Push Images slim
         if: steps.release.outputs.release_created
-        uses: akhilerm/tag-push-action@v2.2.0
+        uses: akhilerm/tag-push-action@v2.3.0
         with:
           src: ghcr.io/super-linter/super-linter:slim-latest
           dst: |
