@@ -58,5 +58,53 @@ VersionsFileCompletenessTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+VersionsFileFormatTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LINE_NUMBER=0
+  local FAILED=false
+
+  while IFS= read -r LINE; do
+    LINE_NUMBER=$((LINE_NUMBER + 1))
+    if [[ -z "${LINE}" ]]; then
+      continue
+    fi
+
+    if [[ "${LINE}" =~ ^\[(.*?)\]\ (.*?):\ (.*)$ ]]; then
+      local LANGUAGE="${BASH_REMATCH[1]}"
+      local LINTER="${BASH_REMATCH[2]}"
+      local VERSION_STRING="${BASH_REMATCH[3]}"
+
+      if [[ "${VERSION_STRING}" == "Version command not supported" ]]; then
+        continue
+      fi
+
+      # Check for unexpected whitespace
+      if [[ "${VERSION_STRING}" =~ [[:space:]] ]]; then
+        error "Version string contains whitespace in line ${LINE_NUMBER} for ${LANGUAGE} (${LINTER}): '${VERSION_STRING}'"
+        FAILED=true
+      fi
+
+      # Check for SemVer-like (X.Y) OR 4+ digit build number (like xmllint's 21309)
+      if [[ ! "${VERSION_STRING}" =~ ([0-9]+\.[0-9]+)|([0-9]{4,}) ]]; then
+        error "Invalid version format in line ${LINE_NUMBER} for ${LANGUAGE} (${LINTER}): '${VERSION_STRING}'"
+        FAILED=true
+      fi
+    else
+      error "Invalid line format in line ${LINE_NUMBER}: '${LINE}'"
+      FAILED=true
+    fi
+  done <"${VERSION_FILE}"
+
+  if [[ "${FAILED}" == "true" ]]; then
+    fatal "One or more version strings are not well formatted"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 VersionsFileSortTest
 VersionsFileCompletenessTest
+VersionsFileFormatTest
