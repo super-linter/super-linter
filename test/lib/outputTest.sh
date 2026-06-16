@@ -319,6 +319,64 @@ RemoveAnsiColorCodesFromFileTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+GenerateIssueCommentPayloadLargeInputTest() {
+  local FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LARGE_INPUT="$(printf 'a%.0s' {1..200000})"
+
+  local PAYLOAD
+  if ! PAYLOAD="$(GenerateIssueCommentPayload "${LARGE_INPUT}")"; then
+    fatal "GenerateIssueCommentPayload failed with large input"
+  fi
+
+  if ! echo "${PAYLOAD}" | jq -e . >/dev/null; then
+    fatal "GenerateIssueCommentPayload produced invalid JSON"
+  fi
+
+  local PARSED_BODY="$(echo "${PAYLOAD}" | jq -r .body)"
+  if [[ "${PARSED_BODY}" != "${LARGE_INPUT}" ]]; then
+    fatal "Parsed body doesn't match input"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+CallGitHubApiLargePayloadTest() {
+  local FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LARGE_INPUT
+  LARGE_INPUT="$(printf 'a%.0s' {1..200000})"
+
+  local CURL_CALLED="false"
+  local CURL_ARGS_OBSERVED=""
+  local CURL_STDIN_OBSERVED=""
+
+  curl() {
+    CURL_CALLED="true"
+    CURL_ARGS_OBSERVED="$*"
+    CURL_STDIN_OBSERVED="$(cat)"
+    return 0
+  }
+
+  CallGitHubApi "http://fake-url" "fake-token" "${LARGE_INPUT}" "POST" >/dev/null
+
+  if [[ "${CURL_CALLED}" != "true" ]]; then
+    fatal "curl was not called"
+  fi
+
+  if [[ "${CURL_ARGS_OBSERVED}" != *"-d @-"* ]]; then
+    fatal "curl was not called with -d @-. Args: ${CURL_ARGS_OBSERVED}"
+  fi
+
+  if [[ "${CURL_STDIN_OBSERVED}" != "${LARGE_INPUT}" ]]; then
+    fatal "curl did not receive the expected payload via stdin"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 WriteSummaryMarkdownTableHeaderTest
 WriteMarkdownCodeBlockTest
 WriteSummaryMarkdownTableLineSuccessTest
@@ -331,3 +389,5 @@ WriteSummaryMarkdownTableFooterMoreInfoLogTest
 WriteSummaryFooterSuperLinterInfoTest
 WriteMarkdownCollapsedSectionTest
 RemoveAnsiColorCodesFromFileTest
+GenerateIssueCommentPayloadLargeInputTest
+CallGitHubApiLargePayloadTest
