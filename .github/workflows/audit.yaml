@@ -1,0 +1,70 @@
+name: Dependency Audits
+
+on:
+  workflow_run:
+    workflows: ["Publish Images"]
+    types:
+      - completed
+    branches:
+      - main
+  schedule:
+    # Fire every Monday at 04:00 UTC
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+  # Trigger on pushes to any branch except main, because main pushes already trigger
+  # the Publish Images workflow, which we monitor via the workflow_run event above.
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+
+# Don't grant any access by default
+permissions: {}
+
+jobs:
+  audit:
+    name: Dependency Audits
+    # Execute on all events except failed or cancelled workflow_run completions
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ github.event_name }}-audit-${{ matrix.package-ecosystems.target }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      issues: write
+    strategy:
+      fail-fast: false
+      # Run on the standard image only, assuming that it contains all the packages of the slim version
+      matrix:
+        package-ecosystems:
+          - name: composer
+            target: composer-audit
+          - name: npm
+            target: npm-audit
+          - name: pip
+            target: pip-audit
+    timeout-minutes: 120
+    env:
+      CONTAINER_IMAGE_TARGET: standard
+      STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Run Audits
+        run: make ${{ matrix.package-ecosystems.target }} AUDIT_OUTPUT_DIR=super-linter-output/audit-results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub issue if necessary
+        # Only create persistent GitHub issues on manual dispatches, upstream releases, scheduled cron runs, or main branch pushes
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run' || github.event_name == 'schedule' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+        run: ./scripts/manage-vulnerability-issues.sh super-linter-output/audit-results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

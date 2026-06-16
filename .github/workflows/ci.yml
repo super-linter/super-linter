@@ -309,7 +309,7 @@ jobs:
       - name: Generate test cases matrix
         id: generate-matrix
         run: |
-          TEST_TARGETS=$(awk '/^test:/ {p=1} p {if ($1 ~ /:$/) start=2; else start=1; for (i=start; i<=NF; ++i) if ($i != "\\") print $i; if ($NF != "\\") p=0}' Makefile | jq --compact-output --raw-input --slurp 'split("\n") | map(select(length > 0))')
+          TEST_TARGETS=$(awk '/^(test|audit):/ {p=1} p {if ($1 ~ /:$/) start=2; else start=1; for (i=start; i<=NF; ++i) if ($i != "\\") print $i; if ($NF != "\\") p=0}' Makefile | jq --compact-output --raw-input --slurp 'split("\n") | map(select(length > 0))')
           echo "TEST_TARGETS: ${TEST_TARGETS}"
           echo "test-cases=${TEST_TARGETS}" >> "${GITHUB_OUTPUT}"
 
@@ -339,6 +339,7 @@ jobs:
           # Also run the test target to check if running the whole test suite
           # in the same execution environment prevents it from succeeding
           - test-case: test
+          - test-case: audit
     env:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"

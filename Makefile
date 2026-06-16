@@ -9,9 +9,6 @@ test: \
 	validate-container-image-labels \
 	docker-build-check \
 	docker-dev-container-build-check \
-	composer-audit \
-	npm-audit \
-	pip-audit \
 	test-lib \
 	inspec \
 	lint-codebase \
@@ -59,6 +56,8 @@ INTERACTIVE := $(shell [ -t 0 ] && echo 1 || echo 0)
 ifeq ($(INTERACTIVE), 1)
 	DOCKER_FLAGS += -t
 endif
+
+DOCKER_FLAGS_NO_TTY := $(filter-out -t,$(DOCKER_FLAGS))
 
 .PHONY: help
 help: ## Show help
@@ -234,36 +233,63 @@ validate-container-image-labels: ## Validate container image labels
 		$${BUILD_REVISION} \
 		$${BUILD_VERSION}
 
+AUDIT_OUTPUT_DIR ?=
+ifeq ($(AUDIT_OUTPUT_DIR),)
+AUDIT_DOCKER_FLAGS := $(DOCKER_FLAGS)
+AUDIT_EXTRA_ARGS :=
+else
+AUDIT_DOCKER_FLAGS := $(DOCKER_FLAGS_NO_TTY)
+AUDIT_EXTRA_ARGS := /tmp/lint/$(AUDIT_OUTPUT_DIR)
+endif
+
+.PHONY: audit ## Run dependency audits
+audit: composer-audit npm-audit pip-audit
+
+COMPOSER_AUDIT_RUN := docker run $(AUDIT_DOCKER_FLAGS) \
+	--entrypoint /bin/bash \
+	--rm \
+	-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
+	-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
+	--workdir /php-composer \
+	$(SUPER_LINTER_TEST_CONTAINER_URL) \
+	-c
+
 .PHONY: composer-audit
 composer-audit: ## Run composer audit to check for known vulnerable dependencies
-	docker run $(DOCKER_FLAGS) \
-		--entrypoint /bin/bash \
-		--rm \
-		-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
-		-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
-		--workdir /php-composer \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		-c "composer audit"
+ifneq ($(AUDIT_OUTPUT_DIR),)
+	@mkdir -p $(CURDIR)/$(AUDIT_OUTPUT_DIR)
+	$(COMPOSER_AUDIT_RUN) "composer audit --format=json" | tee $(CURDIR)/$(AUDIT_OUTPUT_DIR)/composer-audit.json
+else
+	$(COMPOSER_AUDIT_RUN) "composer audit"
+endif
+
+NPM_AUDIT_RUN := docker run $(AUDIT_DOCKER_FLAGS) \
+	--entrypoint /bin/bash \
+	--rm \
+	-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
+	-v "$(CURDIR)/dependencies/package.json":/package.json \
+	--workdir / \
+	$(SUPER_LINTER_TEST_CONTAINER_URL) \
+	-c
 
 .PHONY: npm-audit
 npm-audit: ## Run npm audit to check for known vulnerable dependencies
-	docker run $(DOCKER_FLAGS) \
-		--entrypoint /bin/bash \
-		--rm \
-		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
-		-v "$(CURDIR)/dependencies/package.json":/package.json \
-		--workdir / \
-		$(SUPER_LINTER_TEST_CONTAINER_URL) \
-		-c "npm audit"
+ifneq ($(AUDIT_OUTPUT_DIR),)
+	@mkdir -p $(CURDIR)/$(AUDIT_OUTPUT_DIR)
+	$(NPM_AUDIT_RUN) "npm audit --json" | tee $(CURDIR)/$(AUDIT_OUTPUT_DIR)/npm-audit.json
+else
+	$(NPM_AUDIT_RUN) "npm audit"
+endif
 
 .PHONY: pip-audit
 pip-audit:  ## Run pip-audit to check for known vulnerable dependencies
-	docker run $(DOCKER_FLAGS) \
+	docker run $(AUDIT_DOCKER_FLAGS) \
 		--entrypoint /run-pip-audit.sh \
 		--rm \
+		-v "$(CURDIR)":/tmp/lint \
 		-v "$(CURDIR)/scripts/run-pip-audit.sh":/run-pip-audit.sh \
 		--workdir / \
-		$(SUPER_LINTER_TEST_CONTAINER_URL)
+		$(SUPER_LINTER_TEST_CONTAINER_URL) $(AUDIT_EXTRA_ARGS)
 
 .PHONY: lint-codebase
 lint-codebase: ## Lint the entire codebase
