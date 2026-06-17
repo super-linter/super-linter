@@ -35,7 +35,6 @@
 | RUBY                       | Pass ✅           |
 | SHELL_SHFMT                | Pass ✅           |
 | SPELL_CODESPELL            | Pass ✅           |
-| TRIVY                      | Pass ✅           |
 | XML                        | Pass ✅           |
 | YAML                       | Pass ✅           |
 | YAML_PRETTIER              | Pass ✅           |

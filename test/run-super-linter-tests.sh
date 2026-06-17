@@ -487,6 +487,10 @@ configure_linters_for_super_linter_codebase() {
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-fix-mode-super-linter-code-base-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }
 
+disable_dependency_security_audits() {
+  COMMAND_TO_RUN+=(--env VALIDATE_TRIVY="false")
+}
+
 fix_codebase() {
   ignore_test_cases
   configure_linters_for_super_linter_codebase
@@ -498,6 +502,11 @@ fix_codebase() {
 lint_codebase() {
   ignore_test_cases
   configure_linters_for_super_linter_codebase
+
+  # Disable dependency security audits because we have dedicated jobs for those,
+  # and we don't want to fail the whole linting job because vulnerabilities
+  # might not necessarily be fixable until patches are out.
+  disable_dependency_security_audits
 
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-lint-codebase-success-${SUPER_LINTER_CONTAINER_IMAGE_TYPE}.md"
 }

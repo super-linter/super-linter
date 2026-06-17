@@ -274,6 +274,10 @@ jobs:
           CREATE_LOG_FILE: true
           REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false
+          # Disable dependency security audits because we have dedicated jobs for those,
+          # and we don't want to fail the whole linting job because vulnerabilities
+          # might not necessarily be fixable until patches are out.
+          VALIDATE_TRIVY: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/detect-files-scripts/|/test/data/test-repository-contents/).*"
@@ -289,6 +293,10 @@ jobs:
         env:
           REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false
+          # Disable dependency security audits because we have dedicated jobs for those,
+          # and we don't want to fail the whole linting job because vulnerabilities
+          # might not necessarily be fixable until patches are out.
+          VALIDATE_TRIVY: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: .gitleaks-ignore-tests.toml
           FILTER_REGEX_EXCLUDE: ".*(/test/linters/|CHANGELOG.md|/test/data/detect-files-scripts/|/test/data/test-repository-contents/).*"

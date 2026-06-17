@@ -51,7 +51,8 @@ test: \
 audit: \
 	composer-audit \
 	npm-audit \
-	pip-audit
+	pip-audit \
+	trivy
 
 SHELL := /bin/bash
 
@@ -266,6 +267,19 @@ pip-audit:  ## Run pip-audit to check for known vulnerable dependencies
 		--rm \
 		-v "$(CURDIR)/scripts/run-pip-audit.sh":/run-pip-audit.sh \
 		--workdir / \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: trivy
+trivy: ## Run trivy to check for known vulnerable dependencies
+	docker run \
+		-e RUN_LOCAL=true \
+		-e DEFAULT_BRANCH=main \
+		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
+		-e SAVE_SUPER_LINTER_SUMMARY=true \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-e VALIDATE_TRIVY=true \
+		-v "$(CURDIR):/tmp/lint" \
+		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 
 .PHONY: lint-codebase
