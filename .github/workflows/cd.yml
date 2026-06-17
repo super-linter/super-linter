@@ -368,3 +368,12 @@ jobs:
                 "zkoppert", "Hanse00", "ferrarimarco"
               ]
             })
+
+  trigger-audit:
+    name: Trigger Dependency Audits
+    needs:
+      - test
+    uses: ./.github/workflows/audit.yaml
+    permissions:
+      contents: read
+      issues: write
