@@ -61,6 +61,9 @@ Super-linter, see the [development guide](docs/DEVELOPMENT.md).
 
 Super-linter supports the following tools:
 
+<!-- Ignore the table otherwise jscpd returns a false positive on the table header -->
+<!-- jscpd:ignore-start -->
+
 | Language                              | Linters                                                                                                                                                                                                                   | Formatters                                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Ansible**                           | [ansible-lint](https://github.com/ansible/ansible-lint)                                                                                                                                                                   | See YAML and Python formatters                                                                                     |
@@ -128,6 +131,8 @@ Super-linter supports the following tools:
 | **Vulnerabilities**                   | [Trivy](https://trivy.dev/)                                                                                                                                                                                               | N/A                                                                                                                |
 | **XML**                               | [LibXML](http://xmlsoft.org/)                                                                                                                                                                                             |                                                                                                                    |
 | **YAML**                              | [YamlLint](https://github.com/adrienverge/yamllint)                                                                                                                                                                       | [Prettier](https://prettier.io/)                                                                                   |
+
+<!-- jscpd:ignore-end -->
 
 ## Get started
 
@@ -222,6 +227,9 @@ Super-Linter provides several variants:
 ## Configure Super-linter
 
 You can configure Super-linter using the following environment variables:
+
+<!-- Ignore the table otherwise jscpd returns a false positive on the table header -->
+<!-- jscpd:ignore-start -->
 
 | **Environment variable**                                | **Default Value**                                                            | **Description**                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -489,6 +497,8 @@ You can configure Super-linter using the following environment variables:
 | **VALIDATE_YAML_PRETTIER**                              | `true`                                                                       | Flag to enable or disable checking the formatting of YAML files with Prettier.                                                                                                                                                                                                                                                                                              |
 | **YAML_CONFIG_FILE**                                    | `.yaml-lint.yml`                                                             | Filename for [Yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html) (ex:`.yaml-lint.yml`, `.yamllint.yml`)                                                                                                                                                                                                                                  |
 | **YAML_ERROR_ON_WARNING**                               | `false`                                                                      | Flag to enable or disable the error on warning for Yamllint.                                                                                                                                                                                                                                                                                                                |
+
+<!-- jscpd:ignore-end -->
 
 The `VALIDATE_[LANGUAGE]` variables work as follows:
 

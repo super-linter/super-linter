@@ -173,6 +173,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $4 }')"
   elif [[ "${LINTER}" == "isort" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | grep 'VERSION' | awk '{ print $2 }')"
+  elif [[ ${LINTER} == "jscpd" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" -v 2>&1 | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "ktlint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $3 }')"
   elif [[ ${LINTER} == "kubeconform" ]]; then
