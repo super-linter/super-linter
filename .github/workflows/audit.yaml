@@ -37,6 +37,8 @@ jobs:
             target: npm-audit
           - name: pip
             target: pip-audit
+          - name: trivy
+            target: trivy
     timeout-minutes: 120
     env:
       CONTAINER_IMAGE_TARGET: standard
