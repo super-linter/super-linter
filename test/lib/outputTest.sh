@@ -319,6 +319,65 @@ RemoveAnsiColorCodesFromFileTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+GenerateIssueCommentPayloadLargeInputTest() {
+  local FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LARGE_INPUT
+  LARGE_INPUT="$(printf 'a%.0s' {1..200000})"
+
+  local PAYLOAD
+  if ! PAYLOAD="$(GenerateIssueCommentPayload "${LARGE_INPUT}")"; then
+    fatal "GenerateIssueCommentPayload failed with large input"
+  fi
+
+  if ! echo "${PAYLOAD}" | jq -e . >/dev/null; then
+    fatal "GenerateIssueCommentPayload produced invalid JSON"
+  fi
+
+  local PARSED_BODY
+  PARSED_BODY="$(echo "${PAYLOAD}" | jq -r .body)"
+  if [[ "${PARSED_BODY}" != "${LARGE_INPUT}" ]]; then
+    fatal "Parsed body doesn't match input"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+CallGitHubApiLargePayloadTest() {
+  local FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local LARGE_INPUT
+  LARGE_INPUT="$(printf 'a%.0s' {1..200000})"
+
+  curl() {
+    echo "MOCKED_CURL_CALLED"
+    echo "ARGS: $*"
+    echo "STDIN: $(cat)"
+    return 0
+  }
+
+  local GITHUB_API_OUT
+  if ! GITHUB_API_OUT="$(CallGitHubApi "http://fake-url" "fake-token" "${LARGE_INPUT}" "POST")"; then
+    fatal "Error while calling the GitHub API: ${GITHUB_API_OUT}"
+  fi
+
+  if [[ "${GITHUB_API_OUT}" != *"MOCKED_CURL_CALLED"* ]]; then
+    fatal "curl was not called. Output: ${GITHUB_API_OUT}"
+  fi
+
+  if [[ "${GITHUB_API_OUT}" != *"-d @-"* ]]; then
+    fatal "curl was not called with -d @-. Output: ${GITHUB_API_OUT}"
+  fi
+
+  if [[ "${GITHUB_API_OUT}" != *"${LARGE_INPUT}"* ]]; then
+    fatal "curl did not receive the expected payload via stdin"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 WriteSummaryMarkdownTableHeaderTest
 WriteMarkdownCodeBlockTest
 WriteSummaryMarkdownTableLineSuccessTest
@@ -331,3 +390,5 @@ WriteSummaryMarkdownTableFooterMoreInfoLogTest
 WriteSummaryFooterSuperLinterInfoTest
 WriteMarkdownCollapsedSectionTest
 RemoveAnsiColorCodesFromFileTest
+GenerateIssueCommentPayloadLargeInputTest
+CallGitHubApiLargePayloadTest
