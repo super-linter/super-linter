@@ -160,11 +160,11 @@ CallGitHubApi() {
   fi
 
   if [[ -n "${PAYLOAD}" ]]; then
-    CURL_ARGS+=(-d "${PAYLOAD}")
+    CURL_ARGS+=(-d @-)
   fi
 
   local CALL_GITHUB_API_OUT
-  if ! CALL_GITHUB_API_OUT=$(curl "${CURL_ARGS[@]}" 2>&1); then
+  if ! CALL_GITHUB_API_OUT=$(printf '%s' "${PAYLOAD:-}" | curl "${CURL_ARGS[@]}" 2>&1); then
     error "Failed to call GitHub API (${GITHUB_URL}) with ${HTTP_METHOD} HTTP method: ${CALL_GITHUB_API_OUT}"
     return 1
   fi
@@ -203,13 +203,21 @@ CreateGitHubCommitStatus() {
   fi
 }
 
+GenerateIssueCommentPayload() {
+  local COMMENT_PAYLOAD="${1}"
+  if ! printf '%s' "${COMMENT_PAYLOAD}" | jq -R -s '{body: .} ' 2>&1; then
+    error "Error while generating payload comment."
+    return 1
+  fi
+}
+
 # Ref: https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
 CreateGitHubIssueComment() {
   local COMMENT_PAYLOAD="${1}" && shift
   local GITHUB_ISSUE_NUMBER="${1}" && shift
 
   local CREATE_ISSUE_COMMENT_API_PAYLOAD
-  if ! CREATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}')"; then
+  if ! CREATE_ISSUE_COMMENT_API_PAYLOAD="$(GenerateIssueCommentPayload "${COMMENT_PAYLOAD}")"; then
     warn "Error while loading the contents of COMMENT_PAYLOAD to CREATE_ISSUE_COMMENT_API_PAYLOAD"
     return 1
   fi
@@ -308,7 +316,7 @@ UpdateGitHubIssueComment() {
   local COMMENT_ID="${1}" && shift
 
   local UPDATE_ISSUE_COMMENT_API_PAYLOAD
-  if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(jq --null-input --arg body "${COMMENT_PAYLOAD}" '{body: $body}' 2>&1)"; then
+  if ! UPDATE_ISSUE_COMMENT_API_PAYLOAD="$(GenerateIssueCommentPayload "${COMMENT_PAYLOAD}" 2>&1)"; then
     warn "Error while loading the contents of COMMENT_PAYLOAD to UPDATE_ISSUE_COMMENT_API_PAYLOAD: ${UPDATE_ISSUE_COMMENT_API_PAYLOAD}"
     return 1
   fi
