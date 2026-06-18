@@ -2,9 +2,14 @@
 name: "Super-Linter"
 author: "Super-linter contributors"
 description: "Super-linter is a ready-to-run collection of linters and code analyzers, to help validate your source code."
+inputs:
+  image_prefix:
+    description: "The image prefix to use for the Super-Linter image. Default is 'docker://'."
+    required: false
+    default: "docker://"
 runs:
   using: "docker"
-  image: "docker://ghcr.io/super-linter/super-linter:v8.6.0" # x-release-please-version
+  image: "${{ inputs.image_prefix }}ghcr.io/super-linter/super-linter:v8.6.0" # x-release-please-version
 branding:
   icon: "check-square"
   color: "white"
