@@ -30,9 +30,9 @@ jobs:
           days-before-stale: 30
           days-before-close: 14
           stale-issue-label: "O: stale 🤖"
-          exempt-issue-labels: "O: backlog 🤖,dependencies"
+          exempt-issue-labels: "O: backlog 🤖,dependencies,autorelease: pending"
           stale-pr-label: "O: stale 🤖"
-          exempt-pr-labels: "O: backlog 🤖,dependencies"
+          exempt-pr-labels: "O: backlog 🤖,dependencies,autorelease: pending"
 
   marknotstale:
     permissions:
