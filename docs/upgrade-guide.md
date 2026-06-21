@@ -2,7 +2,7 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
-- [Upgrade from >=v8.4.0 to v8.6.0](#upgrade-from-v840-to-v900)
+- [Upgrade from >=v8.4.0 to v9.0.0](#upgrade-from-v840-to-v900)
 - [Upgrade from >=v8.2.0 to v8.4.0](#upgrade-from-v820-to-v840)
 - [Upgrade from v8.1.0 to v8.2.0](#upgrade-from-v810-to-v820)
 - [Upgrade from v7.4.0 to v8.0.0](#upgrade-from-v740-to-v8)
