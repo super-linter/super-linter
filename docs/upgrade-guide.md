@@ -45,6 +45,12 @@ according to the value of `IGNORE_GITIGNORED_FILES`. For more information, see
 the
 [Jscpd documentation](https://github.com/kucherenko/jscpd/blob/master/docs/rust.md#config-file).
 
+### Stylelint configuration file
+
+Change the stylelint configuration filename to `stylelint.config.mjs` and format
+from JSON to ES Module, as recommended by the
+[Stylelint documentation](https://stylelint.io/user-guide/configure).
+
 ## Upgrade from >=v8.2.0 to v8.4.0
 
 This section helps you upgrade from super-linter `>=v8.2.0` to `v8.4.0`.
