@@ -93,17 +93,20 @@ function IgnoreGitIgnoredFilesJscpdCommandTest() {
   info "${FUNCTION_NAME} start"
 
   # shellcheck disable=SC2034
-  local IGNORE_GITIGNORED_FILES="true"
+  local IGNORE_GITIGNORED_FILES="false"
 
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
 
-  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTION}")
+  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTIONS[@]}")
 
   if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
     fatal "${FUNCTION_NAME} test failed"
   fi
+
+  # Try running the jscpd command to check if the options actually work
+  "${LINTER_COMMANDS_ARRAY_JSCPD[@]}" "test/data/test-repository-contents"
 
   notice "${FUNCTION_NAME} PASS"
 }
