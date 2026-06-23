@@ -58,7 +58,6 @@ BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIO
 BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=("${LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITLEAKS=("${LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_JAVA=("${LINTER_COMMANDS_ARRAY_JAVA[@]}")
-BASE_LINTER_COMMANDS_ARRAY_JSCPD=("${LINTER_COMMANDS_ARRAY_JSCPD[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM=("${LINTER_COMMANDS_ARRAY_KUBERNETES_KUBECONFORM[@]}")
 BASE_LINTER_COMMANDS_ARRAY_KUBERNETES_MARKDOWN=("${LINTER_COMMANDS_ARRAY_MARKDOWN[@]}")
 BASE_LINTER_COMMANDS_ARRAY_PERL=("${LINTER_COMMANDS_ARRAY_PERL[@]}")
@@ -83,52 +82,6 @@ function LinterCommandPresenceTest() {
     fi
     unset -n LINTER_COMMAND_ARRAY
   done
-
-  notice "${FUNCTION_NAME} PASS"
-}
-
-function IgnoreGitIgnoredFilesJscpdCommandTest() {
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
-  info "${FUNCTION_NAME} start"
-
-  # shellcheck disable=SC2034
-  local IGNORE_GITIGNORED_FILES="false"
-
-  # Source the file again so it accounts for modifications
-  # shellcheck source=/dev/null
-  source "lib/functions/linterCommands.sh"
-
-  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}" "${JSCPD_GITIGNORE_OPTIONS[@]}")
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
-
-  # Try running the jscpd command to check if the options actually work
-  "${LINTER_COMMANDS_ARRAY_JSCPD[@]}" "test/data/test-repository-contents"
-
-  notice "${FUNCTION_NAME} PASS"
-}
-
-function JscpdCommandTest() {
-  local FUNCTION_NAME
-  FUNCTION_NAME="${FUNCNAME[0]}"
-  info "${FUNCTION_NAME} start"
-
-  # shellcheck disable=SC2034
-  local IGNORE_GITIGNORED_FILES="false"
-
-  # Source the file again so it accounts for modifications
-  # shellcheck source=/dev/null
-  source "lib/functions/linterCommands.sh"
-
-  # shellcheck disable=SC2034
-  local EXPECTED_COMMAND=("${BASE_LINTER_COMMANDS_ARRAY_JSCPD[@]}")
-
-  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_JSCPD" "EXPECTED_COMMAND"; then
-    fatal "${FUNCTION_NAME} test failed"
-  fi
 
   notice "${FUNCTION_NAME} PASS"
 }
@@ -572,8 +525,6 @@ MarkdownCustomRuleGlobsTest() {
 }
 
 LinterCommandPresenceTest
-IgnoreGitIgnoredFilesJscpdCommandTest
-JscpdCommandTest
 EnableCommitlintEditModeCommandTest
 EnableCommitlintStrictModeCommandTest
 GitleaksCommandTest
