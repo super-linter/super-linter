@@ -45,10 +45,5 @@
     "textlint-filter-rule-comments": "^1.3.0",
     "textlint-rule-terminology": "^5.2.16",
     "typescript": "^6.0.3"
-  },
-  "overrides": {
-    "next": {
-      "postcss": "^8.5.14"
-    }
   }
 }
