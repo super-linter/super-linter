@@ -38,6 +38,13 @@ You can remove the following variables from your Super-linter configuration:
 - `VALIDATE_JUPYTER_NBQA_PYLINT`
 - `VALIDATE_JUPYTER_NBQA_RUFF`
 
+### Jscpd and .gitignore
+
+Super-linter doesn't add the `--no-gitignore` or the `--gitignore` options
+according to the value of `IGNORE_GITIGNORED_FILES`. For more information, see
+the
+[Jscpd documentation](https://github.com/kucherenko/jscpd/blob/master/docs/rust.md#config-file).
+
 ## Upgrade from >=v8.2.0 to v8.4.0
 
 This section helps you upgrade from super-linter `>=v8.2.0` to `v8.4.0`.
