@@ -215,13 +215,16 @@ Super-Linter provides several variants:
 
 - `standard`: `super-linter/super-linter@[VERSION]`: includes all supported
   linters.
-- `slim`: `super-linter/super-linter/slim@[VERSION]`: includes all supported
-  linters except:
-  - Rustfmt
-  - Rust Clippy
-  - Azure Resource Manager Template Toolkit (arm-ttk)
-  - PSScriptAnalyzer
-  - `dotnet` (.NET) commands and subcommands
+- `slim`: `super-linter/super-linter/slim@[VERSION]`:
+  - includes all supported linters except:
+    - Rustfmt
+    - Rust Clippy
+    - Azure Resource Manager Template Toolkit (arm-ttk)
+    - PSScriptAnalyzer
+    - `dotnet` (.NET) commands and subcommands
+  - Installs linters at runtime. To avoid re-downloading linters and formatters
+    on each Super-linter run, see
+    [Caching downloaded packages](docs/caching-dowloaded-packages.md).
 
 ## Configure Super-linter
 

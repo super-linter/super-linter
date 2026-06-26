@@ -22,8 +22,9 @@ tool, do the following.
         configuration file (`.github/dependabot.yaml`).
 
    - If there are npm packages:
-     1. Update `dependencies/package.json` and `dependencies/package-lock.json`.
-        by adding the new packages.
+     1. Update `dependencies/package.json`. by adding the new packages.
+     1. Update `scripts/create-node-wrappers.sh` by adding the creation of the
+        wrapper to run `npm install`.
      1. Add the new npm packages to the `npm` group in the DependaBot
         configuration file (`.github/dependabot.yaml`).
 

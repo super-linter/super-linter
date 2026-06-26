@@ -213,6 +213,8 @@ function LintCodebase() {
   PARALLEL_COMMAND+=("${LINTER_COMMAND_ARRAY[@]}")
   debug "PARALLEL_COMMAND for ${FILE_TYPE} after LINTER_COMMAND_ARRAY concatenation: ${PARALLEL_COMMAND[*]}"
 
+  debug "type of the first entry of LINTER_COMMAND_ARRAY for ${FILE_TYPE}: $(type -a "${LINTER_COMMAND_ARRAY[0]}")"
+
   unset -n LINTER_COMMAND_ARRAY
 
   local PARALLEL_COMMAND_OUTPUT
