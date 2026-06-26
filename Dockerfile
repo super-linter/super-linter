@@ -82,17 +82,17 @@ RUN apk add --no-cache \
 
 # The chown fixes broken uid/gid in ast-types-flow dependency
 # (see https://github.com/super-linter/super-linter/issues/3901)
+# Keeping the command for future reference:
 # Npm is not a runtime dependency but we need it to ensure that npm packages
 # are installed when we run the test suite. If we decide to remove it, add
 # the following command to the RUN instruction below:
 # apk del --no-network --purge .node-build-deps
-COPY dependencies/package.json dependencies/package-lock.json /
+COPY dependencies/package.json /
 RUN apk add --no-cache --virtual .node-build-deps \
   npm \
   && npm install --strict-peer-deps \
   && npm cache clean --force \
-  && chown -R "$(id -u)":"$(id -g)" node_modules \
-  && rm -rfv package.json package-lock.json
+  && chown -R "$(id -u)":"$(id -g)" node_modules
 
 FROM tflint AS tflint-plugins
 
@@ -283,7 +283,8 @@ COPY --from=helm /usr/bin/helm /usr/bin/
 COPY --from=kustomize /app/kustomize /usr/bin/
 
 # Copy Node tools
-COPY --from=npm-builder /node_modules /node_modules
+# Keeping it for reference
+# COPY --from=npm-builder /node_modules /node_modules
 
 ######################
 # Install shellcheck #
@@ -500,12 +501,6 @@ RUN dart --disable-analytics
 
 FROM base_image AS slim
 
-# Run to build version file and validate image
-ENV IMAGE="slim"
-COPY scripts/linterVersions.sh /
-RUN /linterVersions.sh \
-  && rm -rfv /linterVersions.sh
-
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -517,9 +512,16 @@ COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
 RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
   && rm /tmp/scalafmt-version.txt
 
-#################################
-# Copy super-linter executables #
-#################################
+# Run to build version file and validate image
+ENV IMAGE="slim"
+COPY --from=npm-builder /package.json /action/dependencies/package.json
+COPY scripts/create-npx-wrappers.sh scripts/linterVersions.sh /
+RUN /create-npx-wrappers.sh \
+  && rm -rfv /create-npx-wrappers.sh \
+  && /linterVersions.sh \
+  && rm -rfv /linterVersions.sh \
+  && rm -rfv "${HOME}/.npm"
+
 COPY lib /action/lib
 
 # Set build metadata here so we don't invalidate the container image cache if we
@@ -580,12 +582,6 @@ RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
-# Run to build version file and validate image again because we installed more linters
-ENV IMAGE="standard"
-COPY scripts/linterVersions.sh /
-RUN /linterVersions.sh \
-  && rm -rfv /linterVersions.sh
-
 ###################################
 # Copy linter configuration files #
 ###################################
@@ -597,9 +593,15 @@ COPY --from=base_image /tmp/scalafmt-version.txt /tmp/scalafmt-version.txt
 RUN echo "version = $(cat /tmp/scalafmt-version.txt)" >> /action/lib/.automation/.scalafmt.conf \
   && rm /tmp/scalafmt-version.txt
 
-#################################
-# Copy super-linter executables #
-#################################
+# Run to build version file and validate image
+ENV IMAGE="standard"
+COPY --from=npm-builder /package.json /action/dependencies/package.json
+COPY scripts/create-npx-wrappers.sh scripts/linterVersions.sh /
+RUN /create-npx-wrappers.sh \
+  && rm -rfv /create-npx-wrappers.sh \
+  && /linterVersions.sh \
+  && rm -rfv /linterVersions.sh
+
 COPY lib /action/lib
 
 # Set build metadata here so we don't invalidate the container image cache if we
