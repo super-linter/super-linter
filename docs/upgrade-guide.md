@@ -51,6 +51,14 @@ Change the stylelint configuration filename to `stylelint.config.mjs` and format
 from JSON to ES Module, as recommended by the
 [Stylelint documentation](https://stylelint.io/user-guide/configure).
 
+### `slim` variant downloads tools at runtime
+
+To reduce the size of the Super-linter container images, the `slim` variant of
+Super-linter now downloads linters and formatters at runtime. To avoid that
+Super-linter re-downloads tools on each run, you can cache them. For more
+information about caching downloaded tools, see
+[Cache downloaded packages](/docs/caching-dowloaded-packages.md).
+
 ## Upgrade from >=v8.2.0 to v8.4.0
 
 This section helps you upgrade from super-linter `>=v8.2.0` to `v8.4.0`.

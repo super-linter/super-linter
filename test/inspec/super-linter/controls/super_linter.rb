@@ -435,6 +435,7 @@ control "super-linter-validate-directories" do
   dirs = [
     "/github/home",
     "/node_modules",
+    "/action/dependencies",
     "/action/lib",
     "/action/lib/functions",
     "/action/lib/.automation",
@@ -470,6 +471,7 @@ control "super-linter-validate-files" do
   desc "Check that files that Super-Linter needs are installed."
 
   files = [
+    "/action/dependencies/package.json",
     "/action/lib/linter.sh",
     "/action/lib/functions/buildFileList.sh",
     "/action/lib/functions/detectFiles.sh",
@@ -535,10 +537,24 @@ control "super-linter-validate-files" do
     "/action/lib/.automation/stylelint.config.mjs",
     "/action/lib/.automation/trivy.yaml",
     "/action/lib/.automation/zizmor.yaml",
+    "/usr/bin/asl-validator",
     "/usr/bin/bash-exec",
+    "/usr/bin/biome",
+    "/usr/bin/coffeelint",
+    "/usr/bin/commitlint",
+    "/usr/bin/eslint",
     "/usr/bin/git-merge-conflict-markers",
     "/usr/bin/helm", # needed for checkov's helm framework
+    "/usr/bin/htmlhint",
+    "/usr/bin/jscpd",
     "/usr/bin/kustomize", # needed for checkov's kustomize checks
+    "/usr/bin/markdownlint",
+    "/usr/bin/npm-groovy-lint",
+    "/usr/bin/prettier",
+    "/usr/bin/renovate-config-validator",
+    "/usr/bin/spectral",
+    "/usr/bin/stylelint",
+    "/usr/bin/textlint",
     "/usr/bin/trivy",
   ]
 
