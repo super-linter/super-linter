@@ -1,4 +1,4 @@
-FROM node:26.3.0-trixie
+FROM node:26.4.0-trixie
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
