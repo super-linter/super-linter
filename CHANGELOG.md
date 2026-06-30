@@ -1,5 +1,36 @@
 # Changelog
 
+## [9.0.0](https://github.com/super-linter/super-linter/compare/v8.7.0...v9.0.0) (2026-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* update stylelint config file (https://github.com/super-linter/super-linter/pull/7957), closes #7644
+* rely on jscpd config file for gitignore ([#7958](https://github.com/super-linter/super-linter/issues/7958))
+* remove nbqa ([#7697](https://github.com/super-linter/super-linter/issues/7697))
+
+### 🚀 Features
+
+* update stylelint config file (https://github.com/super-linter/super-linter/pull/7957), closes [#7644](https://github.com/super-linter/super-linter/issues/7644) ([c358755](https://github.com/super-linter/super-linter/commit/c3587558093f7d9040cc17df500b621d71e49ac6))
+
+
+### 🐛 Bugfixes
+
+* jscpd gitgnore option ([#7951](https://github.com/super-linter/super-linter/issues/7951)) ([70dc6a6](https://github.com/super-linter/super-linter/commit/70dc6a613c587e430a778fd70bff1a4617d8948e)), closes [#7949](https://github.com/super-linter/super-linter/issues/7949)
+* rely on jscpd config file for gitignore ([#7958](https://github.com/super-linter/super-linter/issues/7958)) ([9fa9f40](https://github.com/super-linter/super-linter/commit/9fa9f4069ec4ab24c48e0090124a74fc0ac1543c))
+
+
+### ⬆️ Dependency updates
+
+* **java:** bump com.puppycrawl.tools:checkstyle ([#7969](https://github.com/super-linter/super-linter/issues/7969)) ([a363fc9](https://github.com/super-linter/super-linter/commit/a363fc93ea3a366f524b0d0413784c2376ce5475))
+
+
+### 🧰 Maintenance
+
+* remove nbqa ([#7697](https://github.com/super-linter/super-linter/issues/7697)) ([fd4f537](https://github.com/super-linter/super-linter/commit/fd4f53794707f60086982318a13b70344afd65b8))
+* update dependencies and fix trivy check ([#7955](https://github.com/super-linter/super-linter/issues/7955)) ([d331763](https://github.com/super-linter/super-linter/commit/d33176323437c4f0548d20cc4106ac8dfc9bd53e))
+* update upgrade guide ([#7948](https://github.com/super-linter/super-linter/issues/7948)) ([e5fdb88](https://github.com/super-linter/super-linter/commit/e5fdb8849886794a1dadb6e74ff9de16bcc58ed9))
+
 ## [8.7.0](https://github.com/super-linter/super-linter/compare/v8.6.0...v8.7.0) (2026-06-18)
 
 
