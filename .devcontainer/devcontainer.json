@@ -84,11 +84,6 @@
       "type": "bind"
     },
     {
-      "source": "${localWorkspaceFolder}/dependencies/package-lock.json",
-      "target": "/package-lock.json",
-      "type": "bind"
-    },
-    {
       "source": "${localWorkspaceFolder}/dependencies/composer/composer.json",
       "target": "/php-composer/composer.json",
       "type": "bind"

@@ -209,7 +209,6 @@ SUPER_LINTER_CONTAINER_RUN := docker run $(DOCKER_FLAGS) \
 	-v "$(CURDIR)":/tmp/lint \
 	-v "$(CURDIR)/dependencies/Gemfile.lock":/Gemfile.lock \
 	-v "$(CURDIR)/dependencies/Gemfile":/Gemfile \
-	-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
 	-v "$(CURDIR)/dependencies/package.json":/package.json \
 	-v "$(CURDIR)/dependencies/composer/composer.json":/php-composer/composer.json \
 	-v "$(CURDIR)/dependencies/composer/composer.lock":/php-composer/composer.lock \
@@ -254,7 +253,6 @@ npm-audit: ## Run npm audit to check for known vulnerable dependencies
 	docker run $(DOCKER_FLAGS) \
 		--entrypoint /bin/bash \
 		--rm \
-		-v "$(CURDIR)/dependencies/package-lock.json":/package-lock.json \
 		-v "$(CURDIR)/dependencies/package.json":/package.json \
 		--workdir / \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
@@ -769,6 +767,5 @@ open-shell-dev-container: build-dev-container-image ## Open a shell in the dev t
 		--interactive \
 		--entrypoint /bin/bash \
 		--rm \
-		-v "$(CURDIR)/dev-dependencies/package-lock.json":/app/package-lock.json \
 		-v "$(CURDIR)/dev-dependencies/package.json":/app/package.json \
 		$(DEV_CONTAINER_URL)

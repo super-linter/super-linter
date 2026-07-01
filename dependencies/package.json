@@ -1,5 +1,6 @@
 {
   "name": "super-linter",
+  "description": "package-lock.json missing on by design because we install packages at runtime from package.json",
   "dependencies": {
     "@babel/eslint-parser": "^8.0.1",
     "@babel/preset-react": "^8.0.1",
