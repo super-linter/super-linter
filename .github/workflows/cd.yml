@@ -38,7 +38,7 @@ jobs:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -54,7 +54,7 @@ jobs:
           sudo rm -rf /usr/local/.ghcup || true
 
       - name: Login to GHCR
-        uses: docker/login-action@v4.2.0
+        uses: docker/login-action@v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -114,7 +114,7 @@ jobs:
       STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -207,7 +207,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to GHCR
-        uses: docker/login-action@v4.2.0
+        uses: docker/login-action@v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -308,7 +308,7 @@ jobs:
 
       - name: Login to GHCR
         if: steps.release.outputs.release_created
-        uses: docker/login-action@v4.2.0
+        uses: docker/login-action@v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -334,7 +334,7 @@ jobs:
             ghcr.io/super-linter/super-linter:slim-${{ env.SEMVER_MAJOR_VERSION }}
             ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           # Persist credentials because we update Git tags
