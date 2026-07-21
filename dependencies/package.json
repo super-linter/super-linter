@@ -26,7 +26,7 @@
     "jscpd": "^5.0.10",
     "markdownlint-cli": "^0.49.0",
     "next": "^16.2.6",
-    "npm-groovy-lint": "^17.0.5",
+    "npm-groovy-lint": "^18.0.0",
     "prettier": "^3.8.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
