@@ -71,7 +71,9 @@ updates:
           - next-pwa
           - prettier
           - renovate
-          - typescript
+          # TODO: add typescript back to this group after other dependencies are
+          # compatible with typescript >= 7.0.0
+          # - typescript
 
   - package-ecosystem: "bundler"
     commit-message:
