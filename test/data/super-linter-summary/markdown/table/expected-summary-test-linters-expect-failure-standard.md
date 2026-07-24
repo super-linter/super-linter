@@ -10,6 +10,7 @@
 | ARM                          | Fail ❌           |
 | BASH                         | Fail ❌           |
 | BASH_EXEC                    | Fail ❌           |
+| BICEP                        | Fail ❌           |
 | BIOME_FORMAT                 | Fail ❌           |
 | BIOME_LINT                   | Fail ❌           |
 | CHECKOV                      | Fail ❌           |
