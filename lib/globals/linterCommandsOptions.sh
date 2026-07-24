@@ -11,6 +11,7 @@ DOTNET_FORMAT_CHECK_ONLY_MODE_OPTIONS=(--verify-no-changes)
 # Define configuration options to enable "check only" mode.
 # Some linters and formatters only support a "check only" mode so there's no
 # need to define a "check only" mode option for those.
+BICEP_FORMAT_CHECK_ONLY_MODE_OPTIONS=(--check)
 CLANG_FORMAT_CHECK_ONLY_MODE_OPTIONS=(--dry-run)
 CSHARP_CHECK_ONLY_MODE_OPTIONS=("${DOTNET_FORMAT_CHECK_ONLY_MODE_OPTIONS[@]}")
 CSS_PRETTIER_CHECK_ONLY_MODE_OPTIONS=("${PRETTIER_CHECK_ONLY_MODE_OPTIONS[@]}")
@@ -50,6 +51,7 @@ PRETTIER_FIX_MODE_OPTIONS=(--write)
 # Define configuration options to enable "fix mode".
 # Not all linters and formatters support this.
 ANSIBLE_FIX_MODE_OPTIONS=(--fix)
+BICEP_FORMAT_FIX_MODE_OPTIONS=(--fix)
 BIOME_FORMAT_FIX_MODE_OPTIONS=(--write)
 BIOME_LINT_FIX_MODE_OPTIONS=(--write)
 CLANG_FORMAT_FIX_MODE_OPTIONS=(-i)

@@ -689,6 +689,8 @@ UpdateLoopsForImage() {
     #############################################
     REMOVE_ARRAY=(
       "ARM"
+      "BICEP_FORMAT"
+      "BICEP_LINT"
       "CSHARP"
       "DOTNET_SLN_FORMAT_ANALYZERS"
       "DOTNET_SLN_FORMAT_STYLE"
@@ -714,6 +716,8 @@ UpdateLoopsForImage() {
   fi
 }
 
+SUPER_LINTER_COPIED_BICEP_CONFIG_FILE="false"
+
 # shellcheck disable=SC2317,SC2329 # Shellcheck doesn't correctly detect usage in trap
 cleanup() {
   local -ri EXIT_CODE=$?
@@ -729,6 +733,11 @@ cleanup() {
     if [[ "${SUPER_LINTER_COPIED_R_LINTER_RULES_FILE:-}" == "true" ]]; then
       debug "Deleting ${R_RULES_FILE_PATH_IN_ROOT} because super-linter created it."
       rm -rf "${R_RULES_FILE_PATH_IN_ROOT}"
+    fi
+
+    if [[ "${SUPER_LINTER_COPIED_BICEP_CONFIG_FILE:-}" == "true" ]]; then
+      debug "Deleting ${BICEP_CONFIG_FILE_PATH} because super-linter created it."
+      rm -f -- "${BICEP_CONFIG_FILE_PATH}"
     fi
 
     # Fall back in case Super-linter crashed before initializing LOG_FILE_PATH
@@ -825,6 +834,8 @@ SetupGithubComSshKeys
 ########################################################
 R_RULES_FILE_PATH_IN_ROOT="${GITHUB_WORKSPACE}/${R_FILE_NAME}"
 debug "R_RULES_FILE_PATH_IN_ROOT: ${R_RULES_FILE_PATH_IN_ROOT}"
+BICEP_CONFIG_FILE_PATH="${GITHUB_WORKSPACE}/bicepconfig.json"
+debug "BICEP_CONFIG_FILE_PATH: ${BICEP_CONFIG_FILE_PATH}"
 
 SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH="${GITHUB_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}"
 export SUPER_LINTER_MAIN_OUTPUT_DIRECTORY_PATH

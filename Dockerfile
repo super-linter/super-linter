@@ -580,6 +580,13 @@ RUN PS_INSTALL_FOLDER="$(cat /tmp/PS_INSTALL_FOLDER)" \
 COPY scripts/install-arm-ttk.sh /
 RUN --mount=type=secret,id=GITHUB_TOKEN /install-arm-ttk.sh && rm -rf /install-arm-ttk.sh
 
+#############################################################
+# Install Azure Bicep CLI #
+#############################################################
+COPY scripts/install-bicep-cli.sh /
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    /install-bicep-cli.sh && rm -rf /install-bicep-cli.sh
+
 # Run to build version file and validate image again because we installed more linters
 ENV IMAGE="standard"
 COPY scripts/linterVersions.sh /
