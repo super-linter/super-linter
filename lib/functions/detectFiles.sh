@@ -91,28 +91,6 @@ DetectARMFile() {
   fi
 }
 
-DetectBicepFile() {
-  FILE="${1}"
-
-  FILE_EXTENSION="$(GetFileExtension "$FILE")"
-  debug "File: [${FILE}], File extension:[${FILE_EXTENSION}]"
-
-  if [ "${VALIDATE_BICEP}" == "false" ]; then
-    debug "Don't check if ${FILE} is a BICEP file because VALIDATE_BICEP is: ${VALIDATE_BICEP}"
-    return 1
-  fi
-
-  debug "Checking if ${FILE} is a BICEP file..."
-
-  if [[ "${FILE_EXTENSION}" == "bicep" ]]; then
-    debug "$FILE is a valid bicep template (has a valid extension: ${FILE_EXTENSION})"
-    return 0
-  else
-    debug "$FILE is NOT a valid bicep template (has an invalid extension: ${FILE_EXTENSION})"
-    return 1
-  fi
-}
-
 DetectCloudFormationFile() {
   FILE="${1}"
 
@@ -234,7 +212,6 @@ export -f DetectDependabot
 export -f DetectGitHubActions
 export -f DetectARMFile
 export -f DetectAWSStatesFIle
-export -f DetectBicepFile
 export -f DetectCloudFormationFile
 export -f DetectKubernetesFile
 export -f DetectOpenAPIFile

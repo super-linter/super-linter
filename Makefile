@@ -351,7 +351,6 @@ lint-subset-files-enable-expensive-io-checks: ## Lint a small subset of files in
 		-e FILTER_REGEX_EXCLUDE=".*(/test/linters/|CHANGELOG.md|/test/data/test-repository-contents/).*" \
 		-e VALIDATE_ALL_CODEBASE=true \
 		-e VALIDATE_ARM=true \
-		-e VALIDATE_BICEP=true \
 		-e VALIDATE_CLOUDFORMATION=true \
 		-e VALIDATE_KUBERNETES_KUBECONFORM=true \
 		-e VALIDATE_MARKDOWN=true \
