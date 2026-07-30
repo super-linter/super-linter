@@ -173,7 +173,7 @@ control "super-linter-installed-commands" do
     { linter_name: "eslint" },
     { linter_name: "flake8" },
     { linter_name: "fprettify" },
-    { linter_name: "fprettify-check", expected_exit_status: 1 },
+    { linter_name: "fprettify-check" },
     { linter_name: "git-merge-conflict-markers" },
     { linter_name: "gitleaks", version_option: "version" },
     { linter_name: "golangci-lint" },
