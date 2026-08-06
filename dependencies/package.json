@@ -7,7 +7,7 @@
     "@biomejs/biome": "^2.5.5",
     "@coffeelint/cli": "^5.2.11",
     "@commitlint/config-conventional": "^21.2.0",
-    "@stoplight/spectral-cli": "^6.16.2",
+    "@stoplight/spectral-cli": "^6.16.3",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "asl-validator": "^4.0.0",
     "commitlint": "^21.2.1",
