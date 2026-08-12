@@ -23,6 +23,7 @@ ENV PATH="${NODE_PATH}/.bin:${PATH}"
 RUN release-please --version \
   && git config --global --add safe.directory /source-repository
 
+# hadolint ignore=DL3064
 ARG USERNAME=super-linter-dev
 ARG UID=1000
 ARG GID=1000
