@@ -3,6 +3,3 @@ cache-dir = "/tmp/.ruff_cache"
 
 # Same as .flake8
 line-length = 120
-
-[lint]
-ignore = ["E203"]
