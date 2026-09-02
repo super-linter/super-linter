@@ -139,6 +139,30 @@ function LinterRulesVariablesExportTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function CodespellDefaultConfigurationSkipsPackageLockFilesTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local TEST_DIRECTORY
+  TEST_DIRECTORY="$(mktemp -d)"
+  initialize_temp_directory_cleanup_traps "${TEST_DIRECTORY}"
+  mkdir -p "${TEST_DIRECTORY}/nested"
+  printf '{"description":"t%sh"}\n' "e" >"${TEST_DIRECTORY}/package-lock.json"
+  printf '{"description":"t%sh"}\n' "e" >"${TEST_DIRECTORY}/nested/package-lock.json"
+
+  local CODESPELL_DEFAULT_CONFIGURATION
+  CODESPELL_DEFAULT_CONFIGURATION="$(realpath "TEMPLATES/.codespellrc")"
+  if ! (
+    cd "${TEST_DIRECTORY}"
+    codespell --config "${CODESPELL_DEFAULT_CONFIGURATION}" package-lock.json nested/package-lock.json
+  ); then
+    fatal "The default codespell configuration should skip package-lock.json files at the workspace root and in nested directories"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 LoadDefaultRulesTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -160,4 +184,5 @@ GetLinterRulesTest
 GetLinterRulesEmptyDotRulesPathTest
 GetLinterRulesEmptyRootRulesPathTest
 LinterRulesVariablesExportTest
+CodespellDefaultConfigurationSkipsPackageLockFilesTest
 LoadDefaultRulesTest
