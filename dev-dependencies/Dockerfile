@@ -1,4 +1,4 @@
-FROM node:26.5.0-trixie
+FROM node:26.8.1-trixie
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
@@ -23,6 +23,7 @@ ENV PATH="${NODE_PATH}/.bin:${PATH}"
 RUN release-please --version \
   && git config --global --add safe.directory /source-repository
 
+# hadolint ignore=DL3064
 ARG USERNAME=super-linter-dev
 ARG UID=1000
 ARG GID=1000
