@@ -40,3 +40,8 @@ ktlint_standard_filename = disabled
 # Indentation in Markdown files might not be constant, or a multiple of 2.
 # Prettier takes care of formatting Markdown files.
 indent_size = unset
+
+# editorconfig-checker detects this file as not being UTF-8 encoded
+# Ref: https://github.com/editorconfig-checker/editorconfig-checker/issues/627
+[test/data/output/ansi-color-codes/super-linter-parallel-stdout-ARM]
+charset = unset
