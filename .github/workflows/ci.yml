@@ -268,7 +268,7 @@ jobs:
           cat action.yml
 
       - name: Test Local Action (debug log)
-        uses: ./
+        uses: $/
         env:
           LOG_LEVEL: DEBUG
           CREATE_LOG_FILE: true
@@ -289,7 +289,7 @@ jobs:
           sudo rm -v super-linter.log
 
       - name: Test Local Action (default log)
-        uses: ./
+        uses: $/
         env:
           REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false
