@@ -768,6 +768,7 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
+        [[ "${LANGUAGE}" == "EDITORCONFIG" ]] ||
         [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
         [[ "${LANGUAGE}" == "SHELL_SHFMT" ]] ||
         [[ "${LANGUAGE}" == "SQLFLUFF" ]]; then
