@@ -68,6 +68,7 @@ LANGUAGES_WITH_FIX_MODE=(
   "DOTNET_SLN_FORMAT_ANALYZERS"
   "DOTNET_SLN_FORMAT_STYLE"
   "DOTNET_SLN_FORMAT_WHITESPACE"
+  "EDITORCONFIG"
   "ENV"
   "GITHUB_ACTIONS_ZIZMOR"
   "GO_MODULES"
@@ -219,9 +220,23 @@ AssertSuperLinterSummaryMatches() {
     error "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) does not start with the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
     error "Actual head:\n${ACTUAL_HEAD}"
     error "Expected content:\n${EXPECTED_CONTENT_WITHOUT_COMMENTS}"
+
+    local DIFF_OUTPUT
+    # diff exits with 0 if there's no diff, 1 if there's a diff, >1 if there's a processing error
+    set +o errexit
+    DIFF_OUTPUT="$(diff <(echo "${ACTUAL_HEAD}") <(echo "${EXPECTED_CONTENT_WITHOUT_COMMENTS}") 2>&1)"
+    DIFF_EXIT_CODE=$?
+    set -o errexit
+    if [[ "${DIFF_EXIT_CODE}" -gt 1 ]]; then
+      error "Error while getting the diff when asserting if contents match:"
+    else
+      error "Diff:"
+    fi
+    error "${DIFF_OUTPUT}"
+
     return 1
   else
-    debug "The actual summary file starts with the expected content."
+    debug "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) starts with the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
   fi
 
   # 2. Extract failed linters from the EXPECTED summary table

@@ -8,6 +8,7 @@
 | --------------------- | ----------------- |
 | BIOME_FORMAT          | Pass ✅           |
 | BIOME_LINT            | Pass ✅           |
+| EDITORCONFIG          | Pass ✅           |
 | ENV                   | Pass ✅           |
 | GITHUB_ACTIONS_ZIZMOR | Pass ✅           |
 | GROOVY                | Pass ✅           |

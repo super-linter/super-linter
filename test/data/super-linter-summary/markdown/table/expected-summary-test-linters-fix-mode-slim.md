@@ -12,6 +12,7 @@
 | CLANG_FORMAT          | Pass ✅           |
 | CSS                   | Pass ✅           |
 | CSS_PRETTIER          | Pass ✅           |
+| EDITORCONFIG          | Pass ✅           |
 | ENV                   | Pass ✅           |
 | GITHUB_ACTIONS_ZIZMOR | Pass ✅           |
 | GO                    | Pass ✅           |
