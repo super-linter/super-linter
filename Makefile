@@ -378,7 +378,7 @@ test-lib: \
 
 .PHONY: test-log
 test-log: ## Test log initialization and functions
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/logTest.sh \
@@ -387,7 +387,7 @@ test-log: ## Test log initialization and functions
 
 .PHONY: test-globals-languages
 test-globals-languages: ## Test globals/languages.sh
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/globalsLanguagesTest.sh \
@@ -396,7 +396,7 @@ test-globals-languages: ## Test globals/languages.sh
 
 .PHONY: test-globals-linter-command-options
 test-globals-linter-command-options: ## Test globals/LinterCommandsOptions.sh
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/globalsLinterCommandsOptionsTest.sh \
@@ -405,7 +405,7 @@ test-globals-linter-command-options: ## Test globals/LinterCommandsOptions.sh
 
 .PHONY: test-linter-rules
 test-linter-rules: ## Test linterRules.sh
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterRulesTest.sh \
@@ -414,7 +414,7 @@ test-linter-rules: ## Test linterRules.sh
 
 .PHONY: test-build-file-list
 test-build-file-list: ## Test buildFileList
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/buildFileListTest.sh \
@@ -423,7 +423,7 @@ test-build-file-list: ## Test buildFileList
 
 .PHONY: test-detect-files
 test-detect-files: ## Test detectFiles
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/detectFilesTest.sh \
@@ -432,7 +432,7 @@ test-detect-files: ## Test detectFiles
 
 .PHONY: test-github-event
 test-github-event: ## Test githubEvent
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/githubEventTest.sh \
@@ -441,7 +441,7 @@ test-github-event: ## Test githubEvent
 
 .PHONY: test-setup-ssh
 test-setup-ssh: ## Test setupSSH
-	@docker run \
+	docker run $(DOCKER_FLAGS) \
 		-e GITHUB_TOKEN=${GITHUB_TOKEN} \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
@@ -451,7 +451,7 @@ test-setup-ssh: ## Test setupSSH
 
 .PHONY: test-validation
 test-validation: ## Test validation
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/validationTest.sh \
@@ -460,7 +460,7 @@ test-validation: ## Test validation
 
 .PHONY: test-output
 test-output: ## Test output
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/outputTest.sh \
@@ -469,7 +469,7 @@ test-output: ## Test output
 
 .PHONY: test-linter-commands
 test-linter-commands: ## Test linterCommands
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterCommandsTest.sh \
@@ -478,7 +478,7 @@ test-linter-commands: ## Test linterCommands
 
 .PHONY: test-linter-versions
 test-linter-versions: ## Test linterVersions
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterVersionsTest.sh \
@@ -487,7 +487,7 @@ test-linter-versions: ## Test linterVersions
 
 .PHONY: test-update-ssl
 test-update-ssl: ## Test updateSSL
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/updateSSLTest.sh \
@@ -496,7 +496,7 @@ test-update-ssl: ## Test updateSSL
 
 .PHONY: test-bash-exec
 test-bash-exec: ## Test bash-exec
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/bashExecTest.sh \
@@ -509,7 +509,7 @@ test-runtime-dependencies-installation: \
 
 .PHONY: test-os-packages-installation
 test-os-packages-installation: ## Test installing OS packages
-	docker run \
+	docker run $(DOCKER_FLAGS) \
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/osPackagesInstallationTest.sh \
