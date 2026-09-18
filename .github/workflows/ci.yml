@@ -156,6 +156,7 @@ jobs:
       CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:${{ matrix.images.prefix }}latest"
       CONTAINER_IMAGE_TARGET: "${{ matrix.images.target }}"
       CONTAINER_IMAGE_OUTPUT_IMAGE_NAME: "super-linter-${{ matrix.images.prefix }}latest"
+      LINTER_VERSIONS_FILE_NAME: "${{ matrix.images.prefix }}linterVersions.txt"
       STAGES_BUILD_CACHE_CONTAINER_IMAGE_ID: "ghcr.io/super-linter/super-linter:latest"
     steps:
       - name: Checkout Code
@@ -218,6 +219,19 @@ jobs:
         with:
           name: ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}
           path: /tmp/${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }}.tar
+
+      - name: Extract linter versions file
+        run: |
+          CONTAINER_ID="$(docker create "${CONTAINER_IMAGE_ID}")"
+          docker cp "${CONTAINER_ID}:/action/linterVersions.txt" "${RUNNER_TEMP}/${LINTER_VERSIONS_FILE_NAME}"
+          docker rm -v "${CONTAINER_ID}"
+          cat "${RUNNER_TEMP}/${LINTER_VERSIONS_FILE_NAME}"
+
+      - name: Upload ${{ env.LINTER_VERSIONS_FILE_NAME }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ env.LINTER_VERSIONS_FILE_NAME }}
+          path: ${{ runner.temp }}/${{ env.LINTER_VERSIONS_FILE_NAME }}
 
   test-local-action:
     name: Test the Super-linter GitHub Action
