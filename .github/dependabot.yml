@@ -167,6 +167,7 @@ updates:
           - cpplint
           - flake8
           - isort
+          - lintlang
           - mypy
           - pre-commit
           - pylint
