@@ -173,6 +173,14 @@ function LintCodebase() {
     # Explicitly add a GNU Parallel replacement string before wrapping the
     # command in the Powershell executable and before appending fix mode options
     LINTER_COMMAND_ARRAY+=("'{}'")
+  elif [[ "${FILE_TYPE}" == "GO_MODULES" ]]; then
+    # Pass the module directory to golangci-lint with a recursive `/...` suffix
+    # so it scans every package in the module instead of just the module root.
+    # Without this, a module whose root has no .go files (for example a
+    # Kubernetes operator that keeps all sources in cmd/, api/, pkg/, ...) fails
+    # with "no go files to analyze" when only go.mod changes. Adding an explicit
+    # replacement string also stops GNU Parallel from appending its default `{}`.
+    LINTER_COMMAND_ARRAY+=("{}/...")
   fi
 
   # Dynamically add arguments and commands to each linter command as needed

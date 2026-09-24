@@ -133,6 +133,12 @@ Super-linter supports the following tools:
 
 <!-- jscpd:ignore-end -->
 
+Super-linter records the installed version of each linter and formatter in
+`/action/linterVersions.txt` inside the container image, and attaches
+`linterVersions.txt` (`standard` image) and `slim-linterVersions.txt` (`slim`
+image) as release assets on each
+[GitHub release](https://github.com/super-linter/super-linter/releases).
+
 ## Get started
 
 More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s)
@@ -268,6 +274,7 @@ You can configure Super-linter using the following environment variables:
 | **FIX_DOTNET_SLN_FORMAT_ANALYZERS**                     | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
 | **FIX_DOTNET_SLN_FORMAT_STYLE**                         | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
 | **FIX_DOTNET_SLN_FORMAT_WHITESPACE**                    | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
+| **FIX_EDITORCONFIG**                                    | `false`                                                                      | Option to enable fix mode for `EDITORCONFIG`.                                                                                                                                                                                                                                                                                                                               |
 | **FIX_ENV**                                             | `false`                                                                      | Option to enable fix mode for `ENV`.                                                                                                                                                                                                                                                                                                                                        |
 | **FIX_GITHUB_ACTIONS_ZIZMOR**                           | `false`                                                                      | Option to enable fix mode for `GITHUB_ACTIONS_ZIZMOR`.                                                                                                                                                                                                                                                                                                                      |
 | **FIX_GO_MODULES**                                      | `false`                                                                      | Option to enable fix mode for `GO_MODULES`.                                                                                                                                                                                                                                                                                                                                 |

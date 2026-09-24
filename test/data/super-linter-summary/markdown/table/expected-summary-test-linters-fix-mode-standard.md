@@ -16,6 +16,7 @@
 | DOTNET_SLN_FORMAT_ANALYZERS  | Pass ✅           |
 | DOTNET_SLN_FORMAT_STYLE      | Pass ✅           |
 | DOTNET_SLN_FORMAT_WHITESPACE | Pass ✅           |
+| EDITORCONFIG                 | Pass ✅           |
 | ENV                          | Pass ✅           |
 | GITHUB_ACTIONS_ZIZMOR        | Pass ✅           |
 | GO                           | Pass ✅           |
@@ -70,4 +71,6 @@ For more information, see the Super-linter summary
 (super-linter-output/super-linter-summary.md) and the Super-linter log
 (super-linter.log)
 
-Powered by [Super-linter](https://github.com/super-linter/super-linter)
+Powered by [Super-linter](https://github.com/super-linter/super-linter)\
+Super-linter revision: `${BUILD_REVISION}`\
+Super-linter version: `${BUILD_VERSION}`

@@ -68,6 +68,7 @@ LANGUAGES_WITH_FIX_MODE=(
   "DOTNET_SLN_FORMAT_ANALYZERS"
   "DOTNET_SLN_FORMAT_STYLE"
   "DOTNET_SLN_FORMAT_WHITESPACE"
+  "EDITORCONFIG"
   "ENV"
   "GITHUB_ACTIONS_ZIZMOR"
   "GO_MODULES"
@@ -191,37 +192,64 @@ AssertFileContentsMatchIgnoreHtmlComments() {
   fi
 }
 
+AssertStringsMatch() {
+  local ACTUAL_CONTENT="${1}"
+  local EXPECTED_CONTENT="${2}"
+
+  if [[ "${ACTUAL_CONTENT}" != "${EXPECTED_CONTENT}" ]]; then
+    error "Actual content:\n${ACTUAL_CONTENT}"
+    error "Expected content:\n${EXPECTED_CONTENT}"
+
+    local DIFF_OUTPUT
+    # diff exits with 0 if there's no diff, 1 if there's a diff, >1 if there's a processing error
+    set +o errexit
+    DIFF_OUTPUT="$(diff <(echo "${ACTUAL_CONTENT}") <(echo "${EXPECTED_CONTENT}") 2>&1)"
+    local DIFF_EXIT_CODE=$?
+    set -o errexit
+    if [[ "${DIFF_EXIT_CODE}" -gt 1 ]]; then
+      error "Error while getting the diff when asserting if contents match:"
+    else
+      error "Diff:"
+    fi
+    error "${DIFF_OUTPUT}"
+
+    return 1
+  else
+    debug "Actual content matches expected content:\n${ACTUAL_CONTENT}"
+    return 0
+  fi
+}
+
 AssertSuperLinterSummaryMatches() {
   local ACTUAL_SUMMARY_FILE_PATH="${1}" && shift
   local EXPECTED_SUMMARY_FILE_PATH="${1}" && shift
   local EXIT_CODE="${1}" && shift
 
-  # 1. Verify that the actual summary starts with the content of the expected summary
-  # We ignore comments because Prettier might add blank lines or other minor differences
-  # that we handle in AssertFileContentsMatchIgnoreHtmlComments usually, but here we need prefix matching.
-  # However, for simplicity and robustness given the user requirement "starts with the exact content",
-  # let's try to match the expected content against the head of the actual content.
+  if [[ -z "${BUILD_REVISION:-}" ]]; then
+    error "BUILD_REVISION is not set."
+    return 1
+  fi
 
+  if [[ -z "${BUILD_VERSION:-}" ]]; then
+    error "BUILD_VERSION is not set."
+    return 1
+  fi
+
+  # 1. Verify that the main summary content (everything before collapsible <details> sections)
+  # matches the expected summary content (ignoring HTML comments and substituting build metadata).
   local EXPECTED_CONTENT_WITHOUT_COMMENTS
   EXPECTED_CONTENT_WITHOUT_COMMENTS="$(grep -vE '^\s*<!--' "${EXPECTED_SUMMARY_FILE_PATH}" | cat -s)"
+  EXPECTED_CONTENT_WITHOUT_COMMENTS="${EXPECTED_CONTENT_WITHOUT_COMMENTS//\$\{BUILD_REVISION\}/${BUILD_REVISION}}"
+  EXPECTED_CONTENT_WITHOUT_COMMENTS="${EXPECTED_CONTENT_WITHOUT_COMMENTS//\$\{BUILD_VERSION\}/${BUILD_VERSION}}"
 
-  # calculating the number of lines in EXPECTED_CONTENT_WITHOUT_COMMENTS to grab the same amount from ACTUAL
-  local EXPECTED_LINE_COUNT
-  EXPECTED_LINE_COUNT="$(echo "${EXPECTED_CONTENT_WITHOUT_COMMENTS}" | wc -l)"
+  local ACTUAL_CONTENT_BEFORE_DETAILS
+  ACTUAL_CONTENT_BEFORE_DETAILS="$(sed '/^<details>/,$d' "${ACTUAL_SUMMARY_FILE_PATH}" | grep -vE '^\s*<!--' | cat -s)"
 
-  # Get the first EXPECTED_LINE_COUNT lines from ACTUAL_SUMMARY_FILE_PATH (ignoring comments)
-  local ACTUAL_CONTENT_WITHOUT_COMMENTS
-  ACTUAL_CONTENT_WITHOUT_COMMENTS="$(grep -vE '^\s*<!--' "${ACTUAL_SUMMARY_FILE_PATH}" | cat -s)"
-  local ACTUAL_HEAD
-  ACTUAL_HEAD="$(head -n "${EXPECTED_LINE_COUNT}" <<<"${ACTUAL_CONTENT_WITHOUT_COMMENTS}")"
-
-  if [[ "${ACTUAL_HEAD}" != "${EXPECTED_CONTENT_WITHOUT_COMMENTS}" ]]; then
-    error "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) does not start with the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
-    error "Actual head:\n${ACTUAL_HEAD}"
-    error "Expected content:\n${EXPECTED_CONTENT_WITHOUT_COMMENTS}"
+  if ! AssertStringsMatch "${ACTUAL_CONTENT_BEFORE_DETAILS}" "${EXPECTED_CONTENT_WITHOUT_COMMENTS}"; then
+    error "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) does not match the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
     return 1
   else
-    debug "The actual summary file starts with the expected content."
+    debug "The actual summary file (${ACTUAL_SUMMARY_FILE_PATH}) matches the expected content (${EXPECTED_SUMMARY_FILE_PATH})."
   fi
 
   # 2. Extract failed linters from the EXPECTED summary table
@@ -235,7 +263,15 @@ AssertSuperLinterSummaryMatches() {
     return 1
   fi
 
-  # 3. Verify that for each failed linter, there is a collapsible section in the ACTUAL summary
+  # 3. Verify that the number of collapsible sections matches the number of failed linters
+  local ACTUAL_DETAILS_COUNT
+  ACTUAL_DETAILS_COUNT="$(grep -c "<summary>" "${ACTUAL_SUMMARY_FILE_PATH}" || true)"
+  if [[ "${ACTUAL_DETAILS_COUNT}" -ne "${#FAILED_LINTERS[@]}" ]]; then
+    error "Expected ${#FAILED_LINTERS[@]} collapsible sections in ${ACTUAL_SUMMARY_FILE_PATH}, but found ${ACTUAL_DETAILS_COUNT}."
+    return 1
+  fi
+
+  # 4. Verify that for each failed linter, there is a collapsible section in the ACTUAL summary
   for LINTER in "${FAILED_LINTERS[@]}"; do
     debug "Checking for collapsible section for ${LINTER}..."
     local EXPECTED_SECTION_HEADER="<summary>${LINTER}</summary>"
