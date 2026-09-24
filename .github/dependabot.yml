@@ -185,6 +185,7 @@ updates:
           - snakemake
           - sqlfluff
           - yamllint
+          - yq
           - zizmor
     cooldown:
       default-days: 7
