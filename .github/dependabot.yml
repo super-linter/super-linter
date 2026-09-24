@@ -8,6 +8,8 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 100
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: github-actions
     commit-message:
@@ -30,6 +32,8 @@ updates:
           - docker/*
           - googleapis/*
           - peter-evans/create-issue-from-file
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "npm"
     commit-message:
@@ -74,6 +78,8 @@ updates:
           # TODO: add typescript back to this group after other dependencies are
           # compatible with typescript >= 7.0.0
           # - typescript
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "bundler"
     commit-message:
@@ -91,6 +97,8 @@ updates:
         applies-to: version-updates
         patterns:
           - "rubocop*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "docker"
     commit-message:
@@ -140,6 +148,8 @@ updates:
           # dependencies in the case of wheel not being available for more
           # recent Python version
           - python
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "pip"
     commit-message:
@@ -176,6 +186,8 @@ updates:
           - sqlfluff
           - yamllint
           - zizmor
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "gradle"
     commit-message:
@@ -200,6 +212,8 @@ updates:
           - "com.google.googlejavaformat:google-java-format"
           - "com.pinterest.ktlint:ktlint-cli"
           - "com.puppycrawl.tools:checkstyle"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "docker"
     commit-message:
@@ -217,6 +231,8 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "npm"
     commit-message:
@@ -235,6 +251,8 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "composer"
     commit-message:
@@ -255,3 +273,5 @@ updates:
           - squizlabs/php_codesniffer
           - phpstan/phpstan
           - vimeo/psalm
+    cooldown:
+      default-days: 7
