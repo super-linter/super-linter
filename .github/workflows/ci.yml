@@ -282,7 +282,10 @@ jobs:
           cat action.yml
 
       - name: Test Local Action (debug log)
-        uses: ./
+        # We need to use ./ instead of $/ because the previous step modifies
+        # action.yml in the workspace at runtime, whereas $/ resolves action.yml
+        # from the repository commit before the job steps run.
+        uses: ./ # zizmor: ignore[self-repository]
         env:
           LOG_LEVEL: DEBUG
           CREATE_LOG_FILE: true
@@ -303,7 +306,10 @@ jobs:
           sudo rm -v super-linter.log
 
       - name: Test Local Action (default log)
-        uses: ./
+        # We need to use ./ instead of $/ because a previous step modifies
+        # action.yml in the workspace at runtime, whereas $/ resolves action.yml
+        # from the repository commit before the job steps run.
+        uses: ./ # zizmor: ignore[self-repository]
         env:
           REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
           VALIDATE_ALL_CODEBASE: false

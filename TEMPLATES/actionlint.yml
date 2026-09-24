@@ -1,1 +1,9 @@
 ---
+paths:
+  .github/workflows/**/*.{yaml,yml}:
+    # actionlint doesn't yet support $/ syntax
+    # Ref: https://github.com/rhysd/actionlint/issues/711
+    # TODO: remove this exclusion as actionlint supports it
+    ignore:
+      - 'reusable workflow call "\$/.+" at "uses" is not following the format'
+      - 'specifying action "\$/.*" in invalid format because ref is missing'

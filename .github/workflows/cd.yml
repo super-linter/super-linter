@@ -405,7 +405,7 @@ jobs:
     name: Trigger Dependency Audits
     needs:
       - test
-    uses: ./.github/workflows/audit.yaml
+    uses: $/.github/workflows/audit.yaml
     permissions:
       contents: read
       issues: write
