@@ -287,6 +287,18 @@ lint-codebase: ## Lint the entire codebase
 		"lint_codebase" \
 		"$(IMAGE)"
 
+COMMITLINT_ARGS ?= --from main --to HEAD
+
+.PHONY: lint-commit
+lint-commit: ## Validate commit messages
+	docker run $(DOCKER_FLAGS) \
+		--entrypoint /bin/bash \
+		--rm \
+		-v "$(CURDIR):/tmp/lint" \
+		--workdir "/tmp/lint" \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		-c "commitlint --verbose $(COMMITLINT_ARGS)"
+
 # Return an error if there are changes to commit
 .PHONY: fix-codebase
 fix-codebase: ## Fix and format the entire codebase
