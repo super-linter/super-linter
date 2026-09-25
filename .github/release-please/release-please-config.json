@@ -33,6 +33,7 @@
   "packages": {
     ".": {
       "changelog-path": "CHANGELOG.md",
+      "draft": true,
       "release-type": "simple",
       "extra-files": ["action.yml", "README.md", "slim/action.yml"]
     }
