@@ -197,6 +197,18 @@ To run super-linter as a GitHub Action, you do the following:
 1. Push the new commit to the remote repository.
 1. Create a new pull request to observe the results.
 
+> [!NOTE]
+>
+> Super-linter uses
+> [GitHub immutable releases](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
+> Full semantic version releases, their associated Git tags (for example,
+> `v9.0.0`), and their release assets cannot be modified or deleted after
+> publication. However, short version tags (for example, `v9` and `slim-v9`) and
+> `latest` tags (`latest` and `slim-latest`) are **not** immutable, because they
+> are updated to point to newer releases. For reproducible builds and supply
+> chain security, pin Super-linter to a full semantic version tag or a commit
+> SHA.
+
 ## Upgrade to newer super-linter versions
 
 For more information about upgrading super-linter to a new major version, see

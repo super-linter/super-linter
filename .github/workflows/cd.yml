@@ -385,6 +385,14 @@ jobs:
             "${RUNNER_TEMP}/slim-linterVersions.txt" \
             --clobber
 
+      - name: Publish release
+        if: steps.release.outputs.release_created
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit "${RELEASE_VERSION}" \
+            --draft=false
+
       - name: Create Issue on Failure
         uses: actions/github-script@v9
         if: failure()
