@@ -344,9 +344,13 @@ jobs:
         uses: akhilerm/tag-push-action@v2.3.0
         with:
           src: ghcr.io/super-linter/super-linter:slim-latest
+          # Also tag {version}-slim so Renovate can update those tags with its
+          # default configuration
           dst: |
             ghcr.io/super-linter/super-linter:slim-${{ env.SEMVER_MAJOR_VERSION }}
             ghcr.io/super-linter/super-linter:slim-${{ env.RELEASE_VERSION }}
+            ghcr.io/super-linter/super-linter:${{ env.SEMVER_MAJOR_VERSION }}-slim
+            ghcr.io/super-linter/super-linter:${{ env.RELEASE_VERSION }}-slim
 
       - uses: actions/checkout@v7
         with:
