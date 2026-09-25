@@ -31,21 +31,21 @@ FROM composer/composer:2.10.3 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.74.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.8.0 AS kubeconform
 
-FROM python:3.14.7-alpine3.23 AS python-base
+FROM python:3.14.7-alpine3.24 AS python-base
 
 FROM python-base AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang21 \
+  clang22 \
   cmake \
   git \
-  llvm21-dev \
+  llvm22-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
 RUN git clone \
-  --branch "llvmorg-$(llvm21-config  --version)" \
+  --branch "llvmorg-$(llvm22-config  --version)" \
   --depth 1 \
   https://github.com/llvm/llvm-project.git
 
@@ -186,19 +186,19 @@ RUN apk add --no-cache \
   openssh-client \
   parallel \
   perl \
-  php84 \
-  php84-ctype \
-  php84-curl \
-  php84-dom \
-  php84-iconv \
-  php84-pecl-igbinary \
-  php84-intl \
-  php84-mbstring \
-  php84-openssl \
-  php84-phar \
-  php84-simplexml \
-  php84-tokenizer \
-  php84-xmlwriter \
+  php85 \
+  php85-ctype \
+  php85-curl \
+  php85-dom \
+  php85-iconv \
+  php85-pecl-igbinary \
+  php85-intl \
+  php85-mbstring \
+  php85-openssl \
+  php85-phar \
+  php85-simplexml \
+  php85-tokenizer \
+  php85-xmlwriter \
   R \
   ruby
 
