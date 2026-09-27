@@ -14,6 +14,7 @@
 | CSS_PRETTIER          | Pass ✅           |
 | EDITORCONFIG          | Pass ✅           |
 | ENV                   | Pass ✅           |
+| FORTRAN_FPRETTIFY     | Pass ✅           |
 | GITHUB_ACTIONS_ZIZMOR | Pass ✅           |
 | GO                    | Pass ✅           |
 | GO_MODULES            | Pass ✅           |
