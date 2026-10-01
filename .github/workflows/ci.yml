@@ -272,19 +272,17 @@ jobs:
       - name: Load ${{ env.CONTAINER_IMAGE_OUTPUT_IMAGE_NAME }} container image
         run: |
           docker load --input "/tmp/${CONTAINER_IMAGE_OUTPUT_IMAGE_NAME}.tar"
+          # Tag the loaded image with the reference in action.yml so that
+          # running the local action uses the newly built image without
+          # modifying action.yml in the working tree.
+          ACTION_IMAGE="$(yq '.runs.image | sub("^docker://", "")' action.yml)"
+          docker tag "${CONTAINER_IMAGE_ID}" "${ACTION_IMAGE}"
           docker image ls -a
 
-      - name: Update action.yml
-        run: |
-          echo "yq version: $(yq --version)"
-          yq '.runs.image = "docker://" + env(CONTAINER_IMAGE_ID)' -i action.yml
-          echo "Action file contents:"
-          cat action.yml
-
       - name: Test Local Action (debug log)
-        # We need to use ./ instead of $/ because the previous step modifies
-        # action.yml in the workspace at runtime, whereas $/ resolves action.yml
-        # from the repository commit before the job steps run.
+        # Use ./ instead of $/ so the runner resolves action.yml at step runtime
+        # against the locally loaded container image, rather than pulling the
+        # image from the registry before the job steps run.
         uses: ./ # zizmor: ignore[self-repository]
         env:
           LOG_LEVEL: DEBUG
@@ -306,9 +304,9 @@ jobs:
           sudo rm -v super-linter.log
 
       - name: Test Local Action (default log)
-        # We need to use ./ instead of $/ because a previous step modifies
-        # action.yml in the workspace at runtime, whereas $/ resolves action.yml
-        # from the repository commit before the job steps run.
+        # Use ./ instead of $/ so the runner resolves action.yml at step runtime
+        # against the locally loaded container image, rather than pulling the
+        # image from the registry before the job steps run.
         uses: ./ # zizmor: ignore[self-repository]
         env:
           REMOVE_ANSI_COLOR_CODES_FROM_OUTPUT: true
