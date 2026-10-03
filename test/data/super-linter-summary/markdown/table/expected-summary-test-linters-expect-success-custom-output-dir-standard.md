@@ -6,6 +6,7 @@
 
 | Language                     | Validation result |
 | ---------------------------- | ----------------- |
+| AI_LINTLANG                  | Pass ✅           |
 | ANSIBLE                      | Pass ✅           |
 | ARM                          | Pass ✅           |
 | BASH                         | Pass ✅           |
