@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.1](https://github.com/super-linter/super-linter/compare/v9.0.0...v9.0.1) (2026-10-03)
+
+
+### 🧰 Maintenance
+
+* create release tag before draft release ([#8175](https://github.com/super-linter/super-linter/issues/8175)) ([660f794](https://github.com/super-linter/super-linter/commit/660f7941b2c2793aa514a737ee4043f8e9c2269f))
+
 ## [9.0.0](https://github.com/super-linter/super-linter/compare/v8.7.0...v9.0.0) (2026-10-01)
 
 
