@@ -12,6 +12,11 @@ TEST_FUNCTION_NAME="${2}"
 SUPER_LINTER_CONTAINER_IMAGE_TYPE="${3}"
 debug "Super-linter container image type: ${SUPER_LINTER_CONTAINER_IMAGE_TYPE}"
 
+# shellcheck disable=SC2034
+CONTAINER_IMAGE_ID="${SUPER_LINTER_TEST_CONTAINER_URL}"
+# shellcheck source=/dev/null
+source "scripts/build-metadata.sh"
+
 COMMAND_TO_RUN=(docker run --rm -t -e ENABLE_GITHUB_ACTIONS_GROUP_TITLE="true")
 
 ignore_test_cases() {
@@ -768,6 +773,7 @@ if [[ "${VERIFY_FIX_MODE:-}" == "true" ]]; then
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_ANALYZERS" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_STYLE" ]] ||
         [[ "${LANGUAGE}" == "DOTNET_SLN_FORMAT_WHITESPACE" ]] ||
+        [[ "${LANGUAGE}" == "EDITORCONFIG" ]] ||
         [[ "${LANGUAGE}" == "RUST_CLIPPY" ]] ||
         [[ "${LANGUAGE}" == "SHELL_SHFMT" ]] ||
         [[ "${LANGUAGE}" == "SQLFLUFF" ]]; then

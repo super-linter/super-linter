@@ -7,45 +7,45 @@
 #########################################
 # Get dependency images as build stages #
 #########################################
-FROM alpine/terragrunt:1.16.0 AS terragrunt
+FROM alpine/terragrunt:1.16.2 AS terragrunt
 FROM dotenvlinter/dotenv-linter:4.0.0 AS dotenv-linter
 FROM ghcr.io/terraform-linters/tflint:v0.64.0 AS tflint
-FROM alpine/helm:4.2.4 AS helm
-FROM golang:1.27.0-alpine AS golang
+FROM alpine/helm:4.3.0 AS helm
+FROM golang:1.27.1-alpine AS golang
 FROM golangci/golangci-lint:v2.13.2 AS golangci-lint
-FROM goreleaser/goreleaser:v2.18.0 AS goreleaser
+FROM goreleaser/goreleaser:v2.18.2 AS goreleaser
 FROM hadolint/hadolint:v2.15.1-alpine AS dockerfile-lint
 FROM registry.k8s.io/kustomize/kustomize:v5.8.1 AS kustomize
-FROM hashicorp/terraform:1.16.0 AS terraform
+FROM hashicorp/terraform:1.16.3 AS terraform
 FROM koalaman/shellcheck:v0.11.0 AS shellcheck
-FROM mstruebing/editorconfig-checker:v3.11.2 AS editorconfig-checker
-FROM mvdan/shfmt:v3.14.0 AS shfmt
+FROM mstruebing/editorconfig-checker:4.0.2 AS editorconfig-checker
+FROM mvdan/shfmt:v3.14.1 AS shfmt
 FROM rhysd/actionlint:1.7.12 AS actionlint
 FROM scalameta/scalafmt:v3.11.5 AS scalafmt
 FROM zricethezav/gitleaks:v8.30.1 AS gitleaks
 FROM yoheimuta/protolint:0.57.0 AS protolint
 FROM ghcr.io/clj-kondo/clj-kondo:2026.08.04-alpine AS clj-kondo
-FROM dart:3.13.2-sdk AS dart
-FROM mcr.microsoft.com/dotnet/sdk:10.0.400-alpine3.23 AS dotnet-sdk
+FROM dart:3.13.4-sdk AS dart
+FROM mcr.microsoft.com/dotnet/sdk:10.0.401-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.10.3 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.74.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.8.0 AS kubeconform
 
-FROM python:3.14.7-alpine3.23 AS python-base
+FROM python:3.14.7-alpine3.24 AS python-base
 
 FROM python-base AS clang-format
 
 RUN apk add --no-cache \
   build-base \
-  clang21 \
+  clang22 \
   cmake \
   git \
-  llvm21-dev \
+  llvm22-dev \
   ninja-is-really-ninja
 
 WORKDIR /tmp
 RUN git clone \
-  --branch "llvmorg-$(llvm21-config  --version)" \
+  --branch "llvmorg-$(llvm22-config  --version)" \
   --depth 1 \
   https://github.com/llvm/llvm-project.git
 
@@ -186,19 +186,19 @@ RUN apk add --no-cache \
   openssh-client \
   parallel \
   perl \
-  php84 \
-  php84-ctype \
-  php84-curl \
-  php84-dom \
-  php84-iconv \
-  php84-pecl-igbinary \
-  php84-intl \
-  php84-mbstring \
-  php84-openssl \
-  php84-phar \
-  php84-simplexml \
-  php84-tokenizer \
-  php84-xmlwriter \
+  php85 \
+  php85-ctype \
+  php85-curl \
+  php85-dom \
+  php85-iconv \
+  php85-pecl-igbinary \
+  php85-intl \
+  php85-mbstring \
+  php85-openssl \
+  php85-phar \
+  php85-simplexml \
+  php85-tokenizer \
+  php85-xmlwriter \
   R \
   ruby
 
@@ -337,7 +337,7 @@ COPY --from=protolint /usr/local/bin/protolint /usr/bin/
 ################################
 # Install editorconfig-checker #
 ################################
-COPY --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
+COPY --from=editorconfig-checker /usr/bin/editorconfig-checker /usr/bin/editorconfig-checker
 
 ###############################
 # Install hadolint dockerfile #

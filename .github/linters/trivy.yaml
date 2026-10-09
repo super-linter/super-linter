@@ -5,6 +5,8 @@ exit-on-eol: 2
 ignorefile: .github/linters/.trivyignore.yaml
 quiet: true
 scan:
+  file-patterns:
+    - "pip:dependencies/python/.*\\.txt"
   scanners:
     - vuln
     - misconfig

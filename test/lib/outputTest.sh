@@ -14,16 +14,16 @@ LOG_FILE_NAME="super-linter.log"
 function InitWorkspace() {
   TEMP_WORKSPACE="$(mktemp -d)"
   initialize_temp_directory_cleanup_traps "${TEMP_WORKSPACE}"
+  cp "${PRETTIER_CONFIG_FILE_NAME}" "${TEMP_WORKSPACE}/"
 }
 
 CheckIfContentsDiff() {
+  local INPUT_FILE_PATH="${1}"
   local INPUT_FILE_CONTENT
-  INPUT_FILE_CONTENT="$(cat "${1}")"
+  INPUT_FILE_CONTENT="$(cat "${INPUT_FILE_PATH}")"
   local EXPECTED_CONTENT="${2}"
-  if [[ "${INPUT_FILE_CONTENT}" != "${EXPECTED_CONTENT}" ]]; then
-    fatal "\n${INPUT_FILE_CONTENT}\ncontents don't match the expected contents:\n${EXPECTED_CONTENT}"
-  else
-    debug "\n${INPUT_FILE_CONTENT}\ncontents match the expected contents\n${EXPECTED_CONTENT}"
+  if ! AssertStringsMatch "${INPUT_FILE_CONTENT}" "${EXPECTED_CONTENT}"; then
+    fatal "${INPUT_FILE_PATH} contents don't match the expected contents"
   fi
 }
 
@@ -141,11 +141,13 @@ WriteSummaryFooterSuperLinterInfoTest() {
   local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output-${FUNCTION_NAME}.md"
 
   WriteSummaryFooterSuperLinterInfo "${RESULTS_FILE}"
+  FormatSuperLinterSummaryFile "${RESULTS_FILE}"
   local EXPECTED_CONTENT
   EXPECTED_CONTENT=$(
     cat <<EOF
-
-Powered by [Super-linter](https://github.com/super-linter/super-linter)
+Powered by [Super-linter](https://github.com/super-linter/super-linter)\\
+Super-linter revision: \`${BUILD_REVISION}\`\\
+Super-linter version: \`${BUILD_VERSION}\`
 EOF
   )
   CheckIfContentsDiff "${RESULTS_FILE}" "${EXPECTED_CONTENT}"

@@ -1,10 +1,5 @@
 ---
 rules:
-  # There is a bug with the Dependabot cooldown feature. Disabling this audit
-  # until the bug is fixed and we enable cooldown again.
-  # TODO: enable cooldown after the bug is fixed
-  dependabot-cooldown:
-    disable: true
   # TODO: disable these ignores after we pin versions
   unpinned-uses:
     ignore:

@@ -26,6 +26,50 @@ To get started with the devcontainer, open the repository in Visual Studio Code,
 and when prompted, select "Reopen in Container". This will build the container
 image and start a development environment with all the tools you need.
 
+## Architecture & Directory Structure
+
+Super-linter is packaged as a multi-stage Docker image running on Alpine Linux:
+
+- **Core Runtime**: Bash.
+- **Packaging**: Multi-stage Docker builds ([`Dockerfile`](../Dockerfile)).
+- **Orchestration**: GNU Make ([`Makefile`](../Makefile)).
+- **Package Managers**: npm (Node), pip (Python), bundler (Ruby), composer
+  (PHP).
+
+### Core Directory Structure
+
+- **`lib/`**: Contains the core logic scripts.
+  - [`lib/linter.sh`](../lib/linter.sh): The main entry point. Orchestrates the
+    initialization, file discovery, worker allocation, and execution of all
+    linters.
+  - **`lib/functions/`**: Utility modules handling specific operational phases.
+    - [`buildFileList.sh`](../lib/functions/buildFileList.sh): Discovers,
+      filters, and maps files to correspond to each linter.
+    - [`detectFiles.sh`](../lib/functions/detectFiles.sh): Contains helper
+      utilities for file identification.
+    - [`linterCommands.sh`](../lib/functions/linterCommands.sh): Constructs the
+      command strings to invoke each linter binary.
+    - [`validation.sh`](../lib/functions/validation.sh): Validates environment
+      configuration and manages execution flags.
+    - [`worker.sh`](../lib/functions/worker.sh): Manages parallel orchestration
+      and task worker threads.
+  - **`lib/globals/`**: Static configuration and variable definitions.
+    - [`languages.sh`](../lib/globals/languages.sh): Maps programming languages,
+      extensions, and linter association names.
+    - [`linterCommandsOptions.sh`](../lib/globals/linterCommandsOptions.sh):
+      Configuration flags for invoking each linter.
+    - [`linterRules.sh`](../lib/globals/linterRules.sh): Maps configuration rule
+      filenames for each linter.
+- **`dependencies/`**: Subdirectories mapping and pinning package manager
+  dependencies (npm packages, Python requirements, Ruby gems, PHP packages,
+  etc.).
+- **`scripts/`**: Script tools used primarily during container builds or
+  development testing (e.g., installer helpers).
+- **`TEMPLATES/`**: Default configuration templates for the individual linters.
+- **`test/`**: Contains integration and unit test suites.
+- **Outputs**: Super-linter generates several outputs, described in the
+  [Super-linter outputs section in the readme](../README.md#super-linter-outputs).
+
 ## Using Make to run development tasks
 
 This project uses `make` to automate common development tasks. Here are some of
@@ -48,13 +92,21 @@ the most important targets:
 
 - `make lint-codebase`: Runs a comprehensive set of linters against the entire
   codebase to check for style and formatting issues.
+- `make lint-commit`: Runs `commitlint` to validate commit messages between
+  `main` and `HEAD`. You can customize the arguments by passing the
+  `COMMITLINT_ARGS` variable:
+
+  ```bash
+  make lint-commit COMMITLINT_ARGS="--last"
+  ```
+
 - `make audit`: Runs all security audit targets (`composer-audit`, `npm-audit`,
-  `pip-audit`) to check for known vulnerabilities in downstream dependencies and
-  container filesystems. You can also execute each target in isolation (e.g.,
-  `make npm-audit`).
+  `pip-audit`, `trivy`) to check for known vulnerabilities in downstream
+  dependencies and container filesystems. You can also execute each target in
+  isolation (e.g., `make npm-audit`).
 - `make fix-codebase`: Automatically fixes linting and formatting issues.
-- `make format-codebase`: Runs all formatter targets (such as Prettier) to
-  format files in the repository.
+- `make format-codebase`: Runs all formatter targets (such as Prettier and
+  `shfmt`) to format files in the repository.
 - `make format-prettier`: Runs Prettier to format the codebase. You can format
   specific files or directories in isolation by passing the `FILES_TO_FORMAT`
   variable:
@@ -71,6 +123,19 @@ the most important targets:
   make format-shfmt FILES_TO_FORMAT="scripts/manage-vulnerability-issues.sh"
   ```
 
+  > [!NOTE]
+  >
+  > Do not run formatters or linters on files inside `test/linters/` containing
+  > `"bad"` in their filename or path (e.g., `html_bad_01.html`). These files
+  > are intentionally syntactically malformed to test linter failure coverage.
+  > Always respect `.prettierignore` and other configuration-specific ignore
+  > files.
+
+- `make test-lib`: Runs the unit test suites for Super-linter's core library
+  functions and globals (`test-log`, `test-validation`, `test-build-file-list`,
+  etc.). Each sub-target can also be run individually.
+- `make inspec`: Runs the InSpec profile test suite to verify installed
+  packages, binaries, and versions inside the built container image.
 - `make test`: Runs the complete test suite. The full test suite runs complex
   container actions and is resource-intensive. To run a specific subset of
   tests, you can use `make help` to find the relevant targets.
@@ -80,9 +145,49 @@ the most important targets:
   command inside the Super-linter container. Example:
   `make run-command-super-linter-container CMD="ls -alh"`.
 
+  > [!NOTE]
+  >
+  > Inside container actions launched via `make`, the repository root is mounted
+  > at `/tmp/lint` (not `/app` or `.`). Always reference `/tmp/lint` when
+  > specifying absolute container paths.
+
 The implementation of the Make targets of this project that use Docker to run
 tests in isolated environments assumes that you can
 [run Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/).
+
+## Managing Dependencies & Lockfiles
+
+When updating dependencies or fixing security audit issues:
+
+- **Run package manager commands inside the container**: Do not run `npm`,
+  `pip`, `bundler`, or `composer` directly on the host. Always run them inside
+  the Super-linter container (or the corresponding stage image) to guarantee
+  matching runtime and tool versions.
+- **Mount parent directories, not individual files**: When mounting files into a
+  container to write updates back to the host, mount the parent directory (e.g.,
+  `-v "$(CURDIR)/dependencies":/app`) rather than individual files (e.g.,
+  `-v package.json:/package.json`). Mounting individual files can break Docker
+  bind-mount inodes when tools perform atomic writes (creating a temporary file
+  and renaming it).
+- **Use lockfile-only updates**:
+  - **npm**: Use `npm install --package-lock-only` or
+    `npm update --package-lock-only` to update `package-lock.json` without
+    creating `node_modules` on the host.
+  - **Composer**: Use `composer update --no-install` to update `composer.lock`
+    without creating `vendor` on the host.
+
+Example for updating npm dependencies:
+
+```bash
+docker run -t \
+  --entrypoint /bin/bash \
+  --rm \
+  --user "$(id -u):$(id -g)" \
+  -v "$(CURDIR)/dependencies":/app \
+  --workdir /app \
+  ghcr.io/super-linter/super-linter:latest \
+  -c "npm update --package-lock-only"
+```
 
 ## Recommended development flow
 

@@ -134,6 +134,12 @@ Super-linter supports the following tools:
 
 <!-- jscpd:ignore-end -->
 
+Super-linter records the installed version of each linter and formatter in
+`/action/linterVersions.txt` inside the container image, and attaches
+`linterVersions.txt` (`standard` image) and `slim-linterVersions.txt` (`slim`
+image) as release assets on each
+[GitHub release](https://github.com/super-linter/super-linter/releases).
+
 ## Get started
 
 More in-depth [tutorial](https://www.youtube.com/watch?v=EDAmFKO4Zt0&t=118s)
@@ -182,7 +188,7 @@ To run super-linter as a GitHub Action, you do the following:
              persist-credentials: false
 
          - name: Super-linter
-           uses: super-linter/super-linter@v8.7.0 # x-release-please-version
+           uses: super-linter/super-linter@v9.0.0 # x-release-please-version
            env:
              # To report GitHub Actions status checks
              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -191,6 +197,18 @@ To run super-linter as a GitHub Action, you do the following:
 1. Commit that file to a new branch.
 1. Push the new commit to the remote repository.
 1. Create a new pull request to observe the results.
+
+> [!NOTE]
+>
+> Super-linter uses
+> [GitHub immutable releases](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
+> Full semantic version releases, their associated Git tags (for example,
+> `v9.0.0`), and their release assets cannot be modified or deleted after
+> publication. However, short version tags (for example, `v9` and `slim-v9`) and
+> `latest` tags (`latest` and `slim-latest`) are **not** immutable, because they
+> are updated to point to newer releases. For reproducible builds and supply
+> chain security, pin Super-linter to a full semantic version tag or a commit
+> SHA.
 
 ## Upgrade to newer super-linter versions
 
@@ -269,6 +287,7 @@ You can configure Super-linter using the following environment variables:
 | **FIX_DOTNET_SLN_FORMAT_ANALYZERS**                     | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
 | **FIX_DOTNET_SLN_FORMAT_STYLE**                         | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
 | **FIX_DOTNET_SLN_FORMAT_WHITESPACE**                    | `false`                                                                      | Option to enable or disable fix mode for Dotnet solutions.                                                                                                                                                                                                                                                                                                                  |
+| **FIX_EDITORCONFIG**                                    | `false`                                                                      | Option to enable fix mode for `EDITORCONFIG`.                                                                                                                                                                                                                                                                                                                               |
 | **FIX_ENV**                                             | `false`                                                                      | Option to enable fix mode for `ENV`.                                                                                                                                                                                                                                                                                                                                        |
 | **FIX_FORTRAN_FPRETTIFY**                               | `false`                                                                      | Option to enable fix mode for `FORTRAN_FPRETTIFY`.                                                                                                                                                                                                                                                                                                                          |
 | **FIX_GITHUB_ACTIONS_ZIZMOR**                           | `false`                                                                      | Option to enable fix mode for `GITHUB_ACTIONS_ZIZMOR`.                                                                                                                                                                                                                                                                                                                      |
@@ -617,7 +636,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Super-Linter
-        uses: super-linter/super-linter@v8.7.0 # x-release-please-version
+        uses: super-linter/super-linter@v9.0.0 # x-release-please-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set your fix mode variables to true

@@ -27,6 +27,9 @@ Every push to the default branch triggers GitHub Actions workflows that:
   - `super-linter/super-linter:slim-latest`
 
 - Update the next release pull request.
+- When a release is created, publish the release container images, update the
+  major and `latest` Git tags, and attach `linterVersions.txt` (`standard`
+  image) and `slim-linterVersions.txt` (`slim` image) to the GitHub release.
 
 ## Release automation tooling
 
