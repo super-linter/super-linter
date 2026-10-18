@@ -270,6 +270,9 @@ LINTER_COMMANDS_ARRAY_SPELL_CODESPELL=(codespell --config "${SPELL_CODESPELL_LIN
 LINTER_COMMANDS_ARRAY_STATES=(asl-validator --json-path)
 LINTER_COMMANDS_ARRAY_SQLFLUFF=(sqlfluff)
 LINTER_COMMANDS_ARRAY_TERRAFORM_FMT=(terraform fmt)
+# The TF_DATA_DIR path must match the one that RunAdditionalInstalls (in
+# detectFiles.sh) uses when fetching Terraform modules, so that TFLint finds
+# the modules fetched for the directory that contains the file to lint.
 LINTER_COMMANDS_ARRAY_TERRAFORM_TFLINT=("TF_DATA_DIR=\"/tmp/.terraform-TERRAFORM_TFLINT-{//}\"" tflint -c "${TERRAFORM_TFLINT_LINTER_RULES}" "--filter=\"{/}\"")
 LINTER_COMMANDS_ARRAY_TERRAGRUNT=(terragrunt hcl format --check --log-level error --file)
 LINTER_COMMANDS_ARRAY_TRIVY=(trivy filesystem --config "${TRIVY_LINTER_RULES}")
