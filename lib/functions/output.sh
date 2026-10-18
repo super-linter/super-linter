@@ -111,6 +111,12 @@ FormatSuperLinterSummaryFile() {
   # ignore files, which is usually the case for generated files.
   # Ref: https://prettier.io/docs/en/cli#--ignore-path
   SUPER_LINTER_SUMMARY_FORMAT_COMMAND+=(--ignore-path /dev/null)
+  # The Prettier configuration of the repository being linted might reference
+  # plugins that aren't installed in the Super-linter container.
+  # Ref: https://prettier.io/docs/en/cli#--no-config
+  if [[ "${SUPER_LINTER_SUMMARY_IGNORE_PRETTIER_CONFIG:-}" == "true" ]]; then
+    SUPER_LINTER_SUMMARY_FORMAT_COMMAND+=(--no-config)
+  fi
   SUPER_LINTER_SUMMARY_FORMAT_COMMAND+=("${SUPER_LINTER_SUMMARY_OUTPUT_PATH}")
   debug "Formatting the Super-linter summary file by running: ${SUPER_LINTER_SUMMARY_FORMAT_COMMAND[*]}"
   if ! "${SUPER_LINTER_SUMMARY_FORMAT_COMMAND[@]}"; then
