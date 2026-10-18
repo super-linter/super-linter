@@ -2,6 +2,7 @@
 
 This document helps you upgrade from a super-linter version to newer ones:
 
+- [Upgrade from >=v9.0.0 to v10.0.0](#upgrade-from-v900-to-v1000)
 - [Upgrade from >=v8.4.0 to v9.0.0](#upgrade-from-v840-to-v900)
 - [Upgrade from >=v8.2.0 to v8.4.0](#upgrade-from-v820-to-v840)
 - [Upgrade from v8.1.0 to v8.2.0](#upgrade-from-v810-to-v820)
@@ -10,6 +11,33 @@ This document helps you upgrade from a super-linter version to newer ones:
 - [Upgrade from v6 to v7](#upgrade-from-v6-to-v7)
 - [Upgrade from v6.7.0 to v6.8.0](#upgrade-from-v670-to-v680)
 - [Upgrade from v5 to v6](#upgrade-from-v5-to-v6)
+
+## Upgrade from >=v9.0.0 to v10.0.0
+
+This section helps you upgrade from Super-linter `>=v9.0.0` to `v10.0.0`.
+
+### Unused npm packages
+
+Super-linter `v10.0.0` doesn't ship the following npm packages anymore because
+no linter, and none of the configuration files that Super-linter ships, uses
+them:
+
+- `@babel/eslint-parser`
+- `@babel/preset-react`
+- `@babel/preset-typescript`
+- `eslint-plugin-react-hooks`
+- `next`
+- `react-dom`
+- `react-intl`
+- `react-redux`
+- `react-router-dom`
+
+This affects you if your ESLint configuration depends on one of these packages,
+for example if it sets `parser` to `@babel/eslint-parser`, or if ESLint resolved
+imports of `next` or `react-dom` from your code using the copies that
+Super-linter shipped. In that case, install the dependencies of your repository
+before running Super-linter, or build a container image based on the
+Super-linter image that includes the packages you need.
 
 ## Upgrade from >=v8.4.0 to v9.0.0
 
