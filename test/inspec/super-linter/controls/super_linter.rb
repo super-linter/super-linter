@@ -417,9 +417,13 @@ control "super-linter-installed-pypi-packages" do
     "zizmor",
   ]
 
+  # The virtual environments don't ship their own pip (see
+  # scripts/build-venvs.sh), so the InSpec pip resource, which needs a pip
+  # binary inside the environment, can't inspect them. Ask the pip of the base
+  # interpreter about the environment instead.
   pypi_packages.each do |item|
-    describe pip(item, "/venvs/#{item}/bin/pip") do
-      it { should be_installed }
+    describe command("pip --python /venvs/#{item}/bin/python show #{item}") do
+      its("exit_status") { should eq 0 }
     end
   end
 end

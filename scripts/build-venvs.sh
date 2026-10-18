@@ -30,17 +30,20 @@ for DEP_FILE in *.txt; do
   mkdir -p "/venvs/${PACKAGE_NAME}"
   cp "${DEP_FILE}" "/venvs/${PACKAGE_NAME}/requirements.txt"
   echo "Generating virtualenv for: [${PACKAGE_NAME}]"
-  pushd "/venvs/${PACKAGE_NAME}"
-  python -m venv .
-  # shellcheck disable=SC1091
-  source bin/activate
-  pip install \
+
+  # Create the virtual environment without its own copy of pip, and install
+  # packages into it with the pip of the base interpreter instead. Each copy of
+  # pip takes about 13 MB, and the tools don't need it at runtime.
+  VENV_OPTIONS=(--without-pip)
+  # mypy is the exception: Super-linter runs it with --install-types, which
+  # invokes pip from the mypy virtual environment to install missing stubs.
+  if [[ "${PACKAGE_NAME}" == "mypy" ]]; then
+    VENV_OPTIONS=()
+  fi
+  python -m venv "${VENV_OPTIONS[@]}" "/venvs/${PACKAGE_NAME}"
+  pip --python "/venvs/${PACKAGE_NAME}/bin/python" install \
     --no-cache-dir \
-    --requirement requirements.txt
-  # deactivate the python virtualenv
-  deactivate
-  # pop the stack
-  popd
+    --requirement "/venvs/${PACKAGE_NAME}/requirements.txt"
 done
 
 apk del --no-network --purge .python-build-deps
