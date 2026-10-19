@@ -51,9 +51,6 @@ updates:
       npm:
         applies-to: version-updates
         patterns:
-          - "@babel/eslint-parser"
-          - "@babel/preset-react"
-          - "@babel/preset-typescript"
           - "@biomejs/biome"
           - "@commitlint/*"
           - "@react-native/eslint-config"
@@ -71,8 +68,6 @@ updates:
           - "textlint*"
           - htmlhint
           - markdownlint-cli
-          - next
-          - next-pwa
           - prettier
           - renovate
           # TODO: add typescript back to this group after other dependencies are
