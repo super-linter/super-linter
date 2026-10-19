@@ -129,6 +129,13 @@ function BuildFileList() {
   if [ "${TEST_CASE_RUN}" == "true" ]; then
     debug "We are running in test mode."
 
+    debug "Adding test case directories to the list of directories to analyze with LintLang."
+    DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/ai_lintlang"
+    export DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY
+    debug "DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY: ${DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY}"
+    RAW_FILE_ARRAY+=("${DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY}/bad")
+    RAW_FILE_ARRAY+=("${DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY}/good")
+
     debug "Adding test case directories to the list of directories to analyze with BIOME_FORMAT."
     DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY="${GITHUB_WORKSPACE}/${TEST_CASE_FOLDER}/biome_format"
     # We need this for parallel
@@ -422,6 +429,11 @@ BuildFileArrays() {
     if [[ "${FILE}" == "${GITHUB_WORKSPACE}" ]]; then
       debug "${FILE} matches with ${GITHUB_WORKSPACE}. Adding it to the list of directories to lint for linters that are expected to lint the whole codebase"
 
+      if [[ "${TEST_CASE_RUN}" == "false" ]]; then
+        debug "Adding ${FILE} to the list of directories to analyze with LintLang."
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-AI_LINTLANG"
+      fi
+
       if CheckovConfigurationFileContainsDirectoryOption "${CHECKOV_LINTER_RULES}"; then
         debug "No need to configure the directories to check for Checkov because its configuration file contains the list of directories to analyze."
         debug "Add the Checkov configuration file path to the list of items to check to consume as output later."
@@ -531,7 +543,10 @@ BuildFileArrays() {
     # Handle test cases for tools that lint the entire workspace
     if [[ "${TEST_CASE_RUN}" == "true" ]] && [[ -d "${FILE}" ]]; then
       # Handle BIOME_FORMAT test cases
-      if [[ "${FILE}" =~ .*${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}.* ]]; then
+      if [[ "${FILE}" =~ .*${DEFAULT_AI_LINTLANG_TEST_CASE_DIRECTORY}.* ]]; then
+        debug "${FILE} is a test case for LintLang. Adding it to the list of items to lint with LintLang"
+        echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-AI_LINTLANG"
+      elif [[ "${FILE}" =~ .*${DEFAULT_BIOME_FORMAT_TEST_CASE_DIRECTORY}.* ]]; then
         debug "${FILE} is a test case for BIOME_FORMAT. Adding it to the list of items to lint with BIOME_FORMAT"
         echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BIOME_FORMAT"
       # Handle BIOME_LINT test cases
