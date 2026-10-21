@@ -171,6 +171,7 @@ updates:
           - codespell
           - cpplint
           - flake8
+          - fprettify
           - isort
           - mypy
           - pre-commit

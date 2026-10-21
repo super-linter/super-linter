@@ -603,6 +603,11 @@ BuildFileArrays() {
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-DOCKERFILE_HADOLINT"
     elif [ "${FILE_TYPE}" == "env" ] || [[ "${BASE_FILE}" == *".env."* ]]; then
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-ENV"
+    elif [ "${FILE_TYPE}" == "f90" ] || [ "${FILE_TYPE}" == "f95" ] ||
+      [ "${FILE_TYPE}" == "f03" ] || [ "${FILE_TYPE}" == "f08" ] ||
+      [ "${FILE_TYPE}" == "f" ] || [ "${FILE_TYPE}" == "for" ] ||
+      [ "${FILE_TYPE}" == "fpp" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-FORTRAN_FPRETTIFY"
     elif [ "${FILE_TYPE}" == "go" ] ||
       [[ "${BASE_FILE}" == "go.mod" ]]; then
 
