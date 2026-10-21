@@ -121,6 +121,38 @@ function IsAnsibleDirectoryTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function EnsureBicepConfigurationTest() {
+  local FUNCTION_NAME="${FUNCNAME[0]}"
+  local TEST_DIRECTORY
+  TEST_DIRECTORY="$(mktemp -d)"
+  local GITHUB_WORKSPACE="${TEST_DIRECTORY}"
+  local DEFAULT_RULES_LOCATION
+  DEFAULT_RULES_LOCATION="$(pwd)/TEMPLATES"
+  local BICEP_CONFIG_FILE_PATH="${GITHUB_WORKSPACE}/bicepconfig.json"
+  local SUPER_LINTER_COPIED_BICEP_CONFIG_FILE=""
+
+  EnsureBicepConfiguration
+  if ! cmp -s "${DEFAULT_RULES_LOCATION}/bicepconfig.json" "${BICEP_CONFIG_FILE_PATH}"; then
+    fatal "${FUNCTION_NAME} did not copy the default Bicep configuration"
+  fi
+  if [[ "${SUPER_LINTER_COPIED_BICEP_CONFIG_FILE:-}" != "true" ]]; then
+    fatal "${FUNCTION_NAME} did not mark the copied Bicep configuration for cleanup"
+  fi
+
+  printf '%s\n' '{"custom":true}' >"${BICEP_CONFIG_FILE_PATH}"
+  SUPER_LINTER_COPIED_BICEP_CONFIG_FILE=""
+  EnsureBicepConfiguration
+  if [[ "$(<"${BICEP_CONFIG_FILE_PATH}")" != '{"custom":true}' ]]; then
+    fatal "${FUNCTION_NAME} overwrote the existing Bicep configuration"
+  fi
+  if [[ -n "${SUPER_LINTER_COPIED_BICEP_CONFIG_FILE}" ]]; then
+    fatal "${FUNCTION_NAME} marked the existing Bicep configuration for cleanup"
+  fi
+
+  rm -rf -- "${TEST_DIRECTORY}"
+  notice "${FUNCTION_NAME} PASS"
+}
+
 function RecognizeNotSymbolicLink() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -298,6 +330,7 @@ RecognizeNotSymbolicLink
 RecognizeSymbolicLink
 
 IsAnsibleDirectoryTest
+EnsureBicepConfigurationTest
 
 DetectGitHubActionsWorkflowsTest
 DetectDependabotTest

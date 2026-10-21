@@ -570,6 +570,9 @@ BuildFileArrays() {
     elif [ "${FILE_TYPE}" == "zsh" ]; then
       AddToBashExecFileArray "${FILE}"
       AddToShfmtFileArray "${FILE}"
+    elif [ "${FILE_TYPE}" == "bicep" ]; then
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BICEP_FORMAT"
+      echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BICEP_LINT"
     elif [ "${FILE_TYPE}" == "clj" ] || [ "${FILE_TYPE}" == "cljs" ] ||
       [ "${FILE_TYPE}" == "cljc" ] || [ "${FILE_TYPE}" == "edn" ]; then # codespell:ignore edn
       echo "${FILE}" >>"${FILE_ARRAYS_DIRECTORY_PATH}/file-array-CLOJURE"
