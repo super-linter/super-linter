@@ -2,7 +2,7 @@
   "name": "super-linter",
   "dependencies": {
     "@biomejs/biome": "^2.5.14",
-    "@coffeelint/cli": "^5.2.11",
+    "@coffeelint/cli": "^5.2.12",
     "@commitlint/config-conventional": "^21.2.3",
     "@stoplight/spectral-cli": "^6.16.3",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
