@@ -190,6 +190,20 @@ run_test_cases_bash_exec_ignore_libraries_expect_failure() {
   EXPECTED_SUPER_LINTER_SUMMARY_FILE_PATH="test/data/super-linter-summary/markdown/table/expected-summary-test-linters-bash-exec-ignore-libraries-expect-failure.md"
 }
 
+configure_pre_commit_prek_test_case() {
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_ENGINE="prek")
+}
+
+run_test_cases_pre_commit_prek_expect_success() {
+  run_test_cases_expect_success
+  configure_pre_commit_prek_test_case
+}
+
+run_test_cases_pre_commit_prek_expect_failure() {
+  run_test_cases_expect_failure
+  configure_pre_commit_prek_test_case
+}
+
 run_test_cases_expect_failure_suppress_output_on_success() {
   run_test_cases_expect_failure
   COMMAND_TO_RUN+=(-e SUPPRESS_OUTPUT_ON_SUCCESS="true")

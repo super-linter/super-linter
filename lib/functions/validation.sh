@@ -90,6 +90,19 @@ function ValidateFindMode() {
   fi
 }
 
+function ValidatePreCommitEngine() {
+  debug "Validating the pre-commit engine. PRE_COMMIT_ENGINE: ${PRE_COMMIT_ENGINE:-"not set"}"
+  case "${PRE_COMMIT_ENGINE:-}" in
+  "pre-commit" | "prek")
+    debug "PRE_COMMIT_ENGINE is valid: ${PRE_COMMIT_ENGINE}"
+    ;;
+  *)
+    error "PRE_COMMIT_ENGINE is set to an unsupported value: ${PRE_COMMIT_ENGINE:-"not set"}. Supported values: pre-commit, prek"
+    return 1
+    ;;
+  esac
+}
+
 function ValidateAnsibleDirectory() {
   if [ -z "${ANSIBLE_DIRECTORY:-}" ]; then
     ANSIBLE_DIRECTORY="${GITHUB_WORKSPACE}/ansible"

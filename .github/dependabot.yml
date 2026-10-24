@@ -136,6 +136,7 @@ updates:
           - powershell
           - composer/composer
           - yannh/kubeconform
+          - j178/prek
       docker-base-images:
         applies-to: version-updates
         patterns:

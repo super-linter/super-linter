@@ -180,6 +180,10 @@ declare GROOVY_LOG_LEVEL
 GROOVY_LOG_LEVEL="${GROOVY_LOG_LEVEL:-"info"}"
 export GROOVY_LOG_LEVEL
 
+declare -l PRE_COMMIT_ENGINE
+PRE_COMMIT_ENGINE="${PRE_COMMIT_ENGINE:-"pre-commit"}"
+export PRE_COMMIT_ENGINE
+
 declare -l FAIL_ON_CONFLICTING_TOOLS_ENABLED
 FAIL_ON_CONFLICTING_TOOLS_ENABLED="${FAIL_ON_CONFLICTING_TOOLS_ENABLED:-"false"}"
 export FAIL_ON_CONFLICTING_TOOLS_ENABLED
@@ -882,6 +886,9 @@ if ! ValidateValidationVariables; then
 fi
 if ! ValidateAnsibleDirectory; then
   fatal "Error while validating the configuration of the Ansible directory"
+fi
+if ! ValidatePreCommitEngine; then
+  fatal "Error while validating the configuration of the pre-commit engine"
 fi
 
 if [[ "${ENABLE_GITHUB_ACTIONS_STEP_SUMMARY}" == "true" ]] ||

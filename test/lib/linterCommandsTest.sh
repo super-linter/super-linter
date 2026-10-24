@@ -468,6 +468,20 @@ PreCommitCommandTest() {
   unset GITHUB_BEFORE_SHA
   unset GITHUB_SHA
 
+  local PRE_COMMIT_ENGINE
+  for PRE_COMMIT_ENGINE in "pre-commit" "prek"; do
+    # shellcheck disable=SC2034
+    EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT=("${BASE_LINTER_COMMANDS_ARRAY_PRE_COMMIT[@]}")
+    EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT[0]="${PRE_COMMIT_ENGINE}"
+    # Source the file again so it accounts for modifications
+    # shellcheck source=/dev/null
+    source "lib/functions/linterCommands.sh"
+    if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_PRE_COMMIT" "EXPECTED_LINTER_COMMANDS_ARRAY_PRE_COMMIT"; then
+      fatal "LINTER_COMMANDS_ARRAY_PRE_COMMIT doesn't match the expected value when PRE_COMMIT_ENGINE is ${PRE_COMMIT_ENGINE}"
+    fi
+  done
+  unset PRE_COMMIT_ENGINE
+
   notice "${FUNCTION_NAME} PASS"
 }
 
