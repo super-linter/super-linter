@@ -932,6 +932,7 @@ unset LOG_LEVEL
 # Get the linter rules location #
 #################################
 LinterRulesLocation
+InitializePreCommitConfigurationFileName
 
 ########################
 # Get the linter rules #

@@ -273,6 +273,22 @@ function ValidatePreCommitEngineTest() {
     fi
   done
 
+  local PRE_COMMIT_CONFIG_FILE="prek.toml"
+
+  PRE_COMMIT_ENGINE="prek"
+  if ValidatePreCommitEngine; then
+    info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} passed validation as expected"
+  else
+    fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} should have passed validation"
+  fi
+
+  PRE_COMMIT_ENGINE="pre-commit"
+  if ValidatePreCommitEngine; then
+    fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} should have failed validation"
+  else
+    info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} failed validation as expected"
+  fi
+
   notice "${FUNCTION_NAME} PASS"
 }
 

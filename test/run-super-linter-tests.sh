@@ -197,11 +197,13 @@ configure_pre_commit_prek_test_case() {
 run_test_cases_pre_commit_prek_expect_success() {
   run_test_cases_expect_success
   configure_pre_commit_prek_test_case
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE="prek-test-linters-success.toml")
 }
 
 run_test_cases_pre_commit_prek_expect_failure() {
   run_test_cases_expect_failure
   configure_pre_commit_prek_test_case
+  COMMAND_TO_RUN+=(-e PRE_COMMIT_CONFIG_FILE="prek-test-linters-failure.toml")
 }
 
 run_test_cases_expect_failure_suppress_output_on_success() {

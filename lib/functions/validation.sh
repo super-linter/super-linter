@@ -101,6 +101,11 @@ function ValidatePreCommitEngine() {
     return 1
     ;;
   esac
+
+  if [[ "${PRE_COMMIT_ENGINE}" == "pre-commit" ]] && [[ "${PRE_COMMIT_CONFIG_FILE:-}" == *.toml ]]; then
+    error "PRE_COMMIT_CONFIG_FILE is set to a TOML file (${PRE_COMMIT_CONFIG_FILE}), but pre-commit doesn't support TOML configuration files. Set PRE_COMMIT_ENGINE to prek, or use a YAML configuration file."
+    return 1
+  fi
 }
 
 function ValidateAnsibleDirectory() {

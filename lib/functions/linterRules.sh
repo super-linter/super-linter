@@ -8,6 +8,35 @@ LinterRulesLocation() {
   fi
 }
 
+InitializePreCommitConfigurationFileName() {
+  if [[ -n "${PRE_COMMIT_CONFIG_FILE:-}" ]]; then
+    debug "PRE_COMMIT_CONFIG_FILE is set to ${PRE_COMMIT_CONFIG_FILE}. Skipping the pre-commit configuration file discovery."
+    return 0
+  fi
+
+  if [[ "${PRE_COMMIT_ENGINE:-}" != "prek" ]]; then
+    debug "PRE_COMMIT_ENGINE is set to ${PRE_COMMIT_ENGINE:-"not set"}. Skipping the prek configuration file discovery."
+    return 0
+  fi
+
+  local PRE_COMMIT_CONFIGURATION_DIRECTORY="${GITHUB_WORKSPACE}"
+  if [[ -n "${LINTER_RULES_PATH}" ]]; then
+    PRE_COMMIT_CONFIGURATION_DIRECTORY="${PRE_COMMIT_CONFIGURATION_DIRECTORY}/${LINTER_RULES_PATH}"
+  fi
+
+  # Same precedence as prek: https://prek.j178.dev/configuration/#choose-a-config-file
+  local PREK_CONFIGURATION_FILE_NAME
+  for PREK_CONFIGURATION_FILE_NAME in "prek.toml" ".pre-commit-config.yaml" ".pre-commit-config.yml"; do
+    if [[ -f "${PRE_COMMIT_CONFIGURATION_DIRECTORY}/${PREK_CONFIGURATION_FILE_NAME}" ]]; then
+      debug "Found prek configuration file: ${PRE_COMMIT_CONFIGURATION_DIRECTORY}/${PREK_CONFIGURATION_FILE_NAME}"
+      PRE_COMMIT_FILE_NAME="${PREK_CONFIGURATION_FILE_NAME}"
+      return 0
+    fi
+  done
+
+  debug "No prek configuration file found in ${PRE_COMMIT_CONFIGURATION_DIRECTORY}. Using the default: ${PRE_COMMIT_FILE_NAME}"
+}
+
 GetLinterRules() {
   LANGUAGE_NAME="${1}"
   DEFAULT_RULES_LOCATION="${2}"
