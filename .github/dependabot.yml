@@ -127,7 +127,7 @@ updates:
           - koalaman/shellcheck
           - mstruebing/editorconfig-checker
           - mvdan/shfmt
-          - rhysd/actionlint
+          - kjanat/actionlint
           - scalameta/scalafmt
           - zricethezav/gitleaks
           - yoheimuta/protolint
