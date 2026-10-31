@@ -198,6 +198,7 @@ control "super-linter-installed-commands" do
     { linter_name: "psalm" },
     { linter_name: "pwsh" },
     { linter_name: "pre-commit" },
+    { linter_name: "prek" },
     { linter_name: "pylint" },
     { linter_name: "R", version_command: "R --slave -e \"r_ver <- R.Version()\\$version.string; \
             lintr_ver <- packageVersion('lintr'); \

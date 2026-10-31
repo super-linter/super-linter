@@ -163,6 +163,77 @@ function CodespellDefaultConfigurationSkipsPackageLockFilesTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+AssertPreCommitConfigurationFileName() {
+  local EXPECTED_PRE_COMMIT_FILE_NAME="${1}"
+  local TEST_DESCRIPTION="${2}"
+
+  InitializePreCommitConfigurationFileName
+
+  if [[ "${PRE_COMMIT_FILE_NAME}" == "${EXPECTED_PRE_COMMIT_FILE_NAME}" ]]; then
+    debug "PRE_COMMIT_FILE_NAME (${PRE_COMMIT_FILE_NAME}) matches the expected value when ${TEST_DESCRIPTION}"
+  else
+    fatal "PRE_COMMIT_FILE_NAME (${PRE_COMMIT_FILE_NAME}) doesn't match the expected value (${EXPECTED_PRE_COMMIT_FILE_NAME}) when ${TEST_DESCRIPTION}"
+  fi
+}
+
+InitializePreCommitConfigurationFileNameTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE
+  GITHUB_WORKSPACE="$(mktemp -d)"
+  initialize_temp_directory_cleanup_traps "${GITHUB_WORKSPACE}"
+
+  local LINTER_RULES_PATH=".github/linters"
+  local PRE_COMMIT_CONFIGURATION_DIRECTORY="${GITHUB_WORKSPACE}/${LINTER_RULES_PATH}"
+  mkdir -p "${PRE_COMMIT_CONFIGURATION_DIRECTORY}"
+
+  local DEFAULT_PRE_COMMIT_FILE_NAME=".pre-commit-config.yaml"
+  local PRE_COMMIT_CONFIG_FILE=""
+  local PRE_COMMIT_ENGINE="prek"
+  local PRE_COMMIT_FILE_NAME
+
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName "${DEFAULT_PRE_COMMIT_FILE_NAME}" "there are no configuration files"
+
+  touch "${PRE_COMMIT_CONFIGURATION_DIRECTORY}/.pre-commit-config.yml"
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName ".pre-commit-config.yml" "there is only .pre-commit-config.yml"
+
+  touch "${PRE_COMMIT_CONFIGURATION_DIRECTORY}/.pre-commit-config.yaml"
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName ".pre-commit-config.yaml" "there are .pre-commit-config.yaml and .pre-commit-config.yml"
+
+  touch "${PRE_COMMIT_CONFIGURATION_DIRECTORY}/prek.toml"
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName "prek.toml" "there are prek.toml and YAML configuration files"
+
+  local PRE_COMMIT_LINTER_RULES
+  GetLinterRules "PRE_COMMIT" "TEMPLATES"
+  if [[ "${PRE_COMMIT_LINTER_RULES}" != "${PRE_COMMIT_CONFIGURATION_DIRECTORY}/prek.toml" ]]; then
+    fatal "PRE_COMMIT_LINTER_RULES (${PRE_COMMIT_LINTER_RULES}) doesn't match the expected value (${PRE_COMMIT_CONFIGURATION_DIRECTORY}/prek.toml)"
+  fi
+
+  PRE_COMMIT_ENGINE="pre-commit"
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName "${DEFAULT_PRE_COMMIT_FILE_NAME}" "PRE_COMMIT_ENGINE is pre-commit"
+
+  # shellcheck disable=SC2034 # Used by InitializePreCommitConfigurationFileName
+  PRE_COMMIT_ENGINE="prek"
+  PRE_COMMIT_CONFIG_FILE="custom-pre-commit-config.yaml"
+  PRE_COMMIT_FILE_NAME="${PRE_COMMIT_CONFIG_FILE}"
+  AssertPreCommitConfigurationFileName "${PRE_COMMIT_CONFIG_FILE}" "PRE_COMMIT_CONFIG_FILE is set"
+  PRE_COMMIT_CONFIG_FILE=""
+
+  LINTER_RULES_PATH=""
+  touch "${GITHUB_WORKSPACE}/prek.toml"
+  PRE_COMMIT_FILE_NAME="${DEFAULT_PRE_COMMIT_FILE_NAME}"
+  AssertPreCommitConfigurationFileName "prek.toml" "LINTER_RULES_PATH is the workspace root"
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 LoadDefaultRulesTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -185,4 +256,5 @@ GetLinterRulesEmptyDotRulesPathTest
 GetLinterRulesEmptyRootRulesPathTest
 LinterRulesVariablesExportTest
 CodespellDefaultConfigurationSkipsPackageLockFilesTest
+InitializePreCommitConfigurationFileNameTest
 LoadDefaultRulesTest

@@ -30,6 +30,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0.401-alpine3.23 AS dotnet-sdk
 FROM composer/composer:2.10.3 AS php-composer
 FROM ghcr.io/aquasecurity/trivy:0.74.0 AS trivy
 FROM ghcr.io/yannh/kubeconform:v0.8.0 AS kubeconform
+FROM ghcr.io/j178/prek:0.5.7 AS prek
 
 FROM python:3.14.7-alpine3.24 AS python-base
 
@@ -435,6 +436,11 @@ COPY --chmod=555 scripts/git-merge-conflict-markers.sh /usr/bin/git-merge-confli
 # Install dotenv-linter #
 #########################
 COPY --from=dotenv-linter /dotenv-linter /usr/bin/
+
+################
+# Install prek #
+################
+COPY --from=prek /prek /usr/bin/
 
 #########################
 # Configure Environment #
