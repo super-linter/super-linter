@@ -1,0 +1,18 @@
+{
+  "system_prompt": "Use the search tool when needed. Tool call limit: 3.",
+  "tools": [
+    {
+      "name": "search",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The documentation search query."
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  ]
+}
