@@ -1,5 +1,30 @@
 # Changelog
 
+## [10.0.0](https://github.com/super-linter/super-linter/compare/v9.0.0...v10.0.0) (2026-10-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* the image doesn't ship next, react-dom, react-intl, react-redux, react-router-dom, eslint-plugin-react-hooks, @babel/eslint-parser, @babel/preset-react, and @babel/preset-typescript anymore. ESLint configurations that depend on them, for example by setting parser to @babel/eslint-parser, need the repository's own dependencies installed before running Super-linter, or an image based on the Super-linter image that adds them.
+
+### 🚀 Features
+
+* add an option to ignore the repository prettier config for the summary ([#8180](https://github.com/super-linter/super-linter/issues/8180)) ([c61846c](https://github.com/super-linter/super-linter/commit/c61846cda28f5b8f0dbdbfe02fa766ceaa0d0d92))
+
+
+### 🐛 Bugfixes
+
+* fetch Terraform modules before running TFLint ([#8204](https://github.com/super-linter/super-linter/issues/8204)) ([449977a](https://github.com/super-linter/super-linter/commit/449977ab2aa7b236fbe6f8153e4b416722e9c019))
+* honor ENABLE_COMMITLINT_EDIT_MODE ([#8203](https://github.com/super-linter/super-linter/issues/8203)) ([f3d2be9](https://github.com/super-linter/super-linter/commit/f3d2be9641b5e0f7da01410903e3a0ab803dd0d1))
+
+
+### 🧰 Maintenance
+
+* create Python venvs without a bundled pip ([#8205](https://github.com/super-linter/super-linter/issues/8205)) ([3b13f96](https://github.com/super-linter/super-linter/commit/3b13f9624694543371f93e26666f39dfd8660389))
+* create release tag before draft release ([#8175](https://github.com/super-linter/super-linter/issues/8175)) ([660f794](https://github.com/super-linter/super-linter/commit/660f7941b2c2793aa514a737ee4043f8e9c2269f))
+* fix dead jscpd documentation link in upgrade guide ([#8229](https://github.com/super-linter/super-linter/issues/8229)) ([60f993c](https://github.com/super-linter/super-linter/commit/60f993c4ab1cd9156df93b98fa0b564fd421c1fa))
+* remove unused npm dependencies ([#8206](https://github.com/super-linter/super-linter/issues/8206)) ([0209c20](https://github.com/super-linter/super-linter/commit/0209c200ae860f13235e78f50a36ed21c198ba4f))
+
 ## [9.0.0](https://github.com/super-linter/super-linter/compare/v8.7.0...v9.0.0) (2026-10-01)
 
 
