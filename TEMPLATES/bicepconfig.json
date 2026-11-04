@@ -1,0 +1,128 @@
+{
+  "analyzers": {
+    "core": {
+      "enabled": true,
+      "verbose": false,
+      "rules": {
+        "adminusername-should-not-be-literal": {
+          "level": "error"
+        },
+        "artifacts-parameters": {
+          "level": "error"
+        },
+        "decompiler-cleanup": {
+          "level": "error"
+        },
+        "explicit-values-for-loc-params": {
+          "level": "off"
+        },
+        "max-asserts": {
+          "level": "error"
+        },
+        "max-outputs": {
+          "level": "error"
+        },
+        "max-params": {
+          "level": "error"
+        },
+        "max-resources": {
+          "level": "error"
+        },
+        "max-variables": {
+          "level": "error"
+        },
+        "nested-deployment-template-scoping": {
+          "level": "error"
+        },
+        "no-conflicting-metadata": {
+          "level": "error"
+        },
+        "no-deployments-resources": {
+          "level": "error"
+        },
+        "no-hardcoded-env-urls": {
+          "level": "error"
+        },
+        "no-hardcoded-location": {
+          "level": "off"
+        },
+        "no-loc-expr-outside-params": {
+          "level": "off"
+        },
+        "no-unnecessary-dependson": {
+          "level": "error"
+        },
+        "no-unused-existing-resources": {
+          "level": "error"
+        },
+        "no-unused-imports": {
+          "level": "error"
+        },
+        "no-unused-params": {
+          "level": "error"
+        },
+        "no-unused-vars": {
+          "level": "error"
+        },
+        "outputs-should-not-contain-secrets": {
+          "level": "error"
+        },
+        "prefer-interpolation": {
+          "level": "error"
+        },
+        "prefer-unquoted-property-names": {
+          "level": "error"
+        },
+        "protect-commandtoexecute-secrets": {
+          "level": "error"
+        },
+        "secure-parameter-default": {
+          "level": "error"
+        },
+        "secure-params-in-nested-deploy": {
+          "level": "error"
+        },
+        "secure-secrets-in-params": {
+          "level": "error"
+        },
+        "simplify-interpolation": {
+          "level": "error"
+        },
+        "simplify-json-null": {
+          "level": "error"
+        },
+        "use-parent-property": {
+          "level": "error"
+        },
+        "use-recent-api-versions": {
+          "level": "off",
+          "maxAllowedAgeInDays": 730
+        },
+        "use-recent-module-versions": {
+          "level": "off"
+        },
+        "use-resource-id-functions": {
+          "level": "off"
+        },
+        "use-resource-symbol-reference": {
+          "level": "error"
+        },
+        "use-safe-access": {
+          "level": "error"
+        },
+        "use-secure-value-for-secure-inputs": {
+          "level": "error"
+        },
+        "use-stable-resource-identifiers": {
+          "level": "error"
+        },
+        "use-stable-vm-image": {
+          "level": "error"
+        },
+        "what-if-short-circuiting": {
+          "level": "off"
+        }
+      }
+    }
+  }
+}

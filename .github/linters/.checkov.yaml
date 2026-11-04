@@ -17,6 +17,8 @@ quiet: true
 skip-path:
   - test/linters/ansible
   - test/linters/arm
+  - test/linters/bicep_format
+  - test/linters/bicep_lint
   # We can't exclude just test/linters/checkov/bad because of
   # https://github.com/bridgecrewio/checkov/issues/6468
   - test/linters/checkov

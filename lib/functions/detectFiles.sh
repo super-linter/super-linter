@@ -220,6 +220,20 @@ export -f HasNoShebang
 export -f IsGenerated
 export -f IsNotSymbolicLink
 
+EnsureBicepConfiguration() {
+  if [[ -f "${BICEP_CONFIG_FILE_PATH}" ]]; then
+    debug "Found Bicep configuration file at ${BICEP_CONFIG_FILE_PATH}; leaving it unchanged."
+    return 0
+  fi
+
+  info "No root bicepconfig.json found. Copying the default Bicep configuration to the workspace."
+  if ! cp "${DEFAULT_RULES_LOCATION}/bicepconfig.json" "${BICEP_CONFIG_FILE_PATH}"; then
+    fatal "Failed to copy the default Bicep configuration to ${BICEP_CONFIG_FILE_PATH}."
+  fi
+  # shellcheck disable=SC2034
+  SUPER_LINTER_COPIED_BICEP_CONFIG_FILE="true"
+}
+
 function RunAdditionalInstalls() {
 
   if [ -z "${FILE_ARRAYS_DIRECTORY_PATH}" ] || [ ! -d "${FILE_ARRAYS_DIRECTORY_PATH}" ]; then
@@ -302,6 +316,12 @@ function RunAdditionalInstalls() {
       # shellcheck disable=SC2034
       SUPER_LINTER_COPIED_R_LINTER_RULES_FILE="true"
     fi
+  fi
+
+  if [[ ("${VALIDATE_BICEP_FORMAT:-false}" == "true" || "${VALIDATE_BICEP_LINT:-false}" == "true") ]] &&
+    { [[ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BICEP_FORMAT" ]] ||
+      [[ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-BICEP_LINT" ]]; }; then
+    EnsureBicepConfiguration
   fi
 
   ####################################

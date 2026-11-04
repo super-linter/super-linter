@@ -108,6 +108,17 @@ if [ "${BASH_EXEC_IGNORE_LIBRARIES:-}" == 'true' ]; then
   debug "Enabling bash-exec option to ignore shell library files."
   LINTER_COMMANDS_ARRAY_BASH_EXEC+=('true')
 fi
+# Bicep has no format check mode, so compare its stdout to the source in check mode.
+LINTER_COMMANDS_ARRAY_BICEP_FORMAT=(
+  bash -o pipefail -c
+  "'case \"\$1\" in
+    --check) bicep format --stdout \"\$2\" | diff - \"\$2\" ;;
+    --fix) bicep format \"\$2\" ;;
+    *) exit 2 ;;
+  esac'"
+  _
+)
+LINTER_COMMANDS_ARRAY_BICEP_LINT=(bicep lint)
 LINTER_COMMANDS_ARRAY_BIOME_FORMAT=(biome format --error-on-warnings --no-errors-on-unmatched)
 LINTER_COMMANDS_ARRAY_BIOME_LINT=(biome lint --error-on-warnings --no-errors-on-unmatched)
 LINTER_COMMANDS_ARRAY_CHECKOV=(checkov --config-file "${CHECKOV_LINTER_RULES}")
