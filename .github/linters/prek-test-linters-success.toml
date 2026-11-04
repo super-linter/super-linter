@@ -1,0 +1,8 @@
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+
+[[repos.hooks]]
+id = "mixed-line-ending"
+args = ["--fix=no"]
+files = '^test/linters/pre_commit/good/.*$'

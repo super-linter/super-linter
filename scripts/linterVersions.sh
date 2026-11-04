@@ -192,6 +192,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
   elif [[ ${LINTER} == "pre-commit" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
+  elif [[ ${LINTER} == "prek" ]]; then
+    GET_VERSION_CMD="$(${LINTER} --version | awk '{ print $2 }')"
   elif [[ ${LINTER} == "pylint" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | grep 'pylint' | awk '{ print $2 }')"
   elif [[ ${LINTER} == "lua" ]]; then
