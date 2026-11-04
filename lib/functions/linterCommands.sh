@@ -92,6 +92,13 @@ fi
 
 DOTNET_FORMAT_COMMAND=(dotnet format)
 
+LINTER_COMMANDS_ARRAY_AI_LINTLANG=(/action/lib/functions/lintlang.sh "{}" --format terminal --fail-on fail)
+if [ -n "${AI_LINTLANG_COMMAND_ARGS:-}" ]; then
+  export AI_LINTLANG_COMMAND_ARGS
+  if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_AI_LINTLANG" "${AI_LINTLANG_COMMAND_ARGS}"; then
+    fatal "Failed to add AI_LINTLANG_COMMAND_ARGS to the LintLang command"
+  fi
+fi
 LINTER_COMMANDS_ARRAY_ANSIBLE=(ansible-lint -c "${ANSIBLE_LINTER_RULES}")
 # This is a Powershell command. LintCodebase will take care of wrapping it in a Poweshell instance
 LINTER_COMMANDS_ARRAY_ARM=("Import-Module ${ARM_TTK_PSD1} ; \\\${config} = \\\$(Import-PowerShellDataFile -Path ${ARM_LINTER_RULES:-}) ; Test-AzTemplate @config -TemplatePath")

@@ -8,6 +8,7 @@ set -o pipefail
 # Linter command names array #
 ##############################
 declare -A LINTER_NAMES_ARRAY
+LINTER_NAMES_ARRAY['AI_LINTLANG']="lintlang"
 LINTER_NAMES_ARRAY['ANSIBLE']="ansible-lint"
 LINTER_NAMES_ARRAY['BASH']="shellcheck"
 LINTER_NAMES_ARRAY['BASH_EXEC']="bash-exec"
@@ -155,6 +156,8 @@ for LANGUAGE in "${!LINTER_NAMES_ARRAY[@]}"; do
     GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ ${LINTER} == "editorconfig-checker" ]]; then
     GET_VERSION_CMD="$(${LINTER} -version)"
+  elif [[ "${LINTER}" == "lintlang" ]]; then
+    GET_VERSION_CMD="$("${LINTER}" --version | awk '{ print $2 }')"
   elif [[ "${LINTER}" == "flake8" ]]; then
     GET_VERSION_CMD="$(${LINTER} --version | grep 'mccabe' | awk '{ print $1 }')"
   elif [[ ${LINTER} == "gitleaks" ]]; then

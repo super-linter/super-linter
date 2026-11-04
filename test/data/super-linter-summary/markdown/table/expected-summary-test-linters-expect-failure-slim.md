@@ -6,6 +6,7 @@
 
 | Language                   | Validation result |
 | -------------------------- | ----------------- |
+| AI_LINTLANG                | Fail ❌           |
 | ANSIBLE                    | Fail ❌           |
 | BASH                       | Fail ❌           |
 | BASH_EXEC                  | Fail ❌           |

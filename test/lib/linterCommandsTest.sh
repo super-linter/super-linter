@@ -53,6 +53,7 @@ source "lib/functions/linterCommands.sh"
 
 # Initialize the variables we're going to use to verify tests before running tests
 # because some tests modify LINTER_COMMANDS_xxx variables
+BASE_LINTER_COMMANDS_ARRAY_AI_LINTLANG=("${LINTER_COMMANDS_ARRAY_AI_LINTLANG[@]}")
 BASE_LINTER_COMMANDS_ARRAY_BASH_EXEC=("${LINTER_COMMANDS_ARRAY_BASH_EXEC[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS=("${LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS[@]}")
 BASE_LINTER_COMMANDS_ARRAY_GIT_COMMITLINT=("${LINTER_COMMANDS_ARRAY_GIT_COMMITLINT[@]}")
@@ -323,6 +324,8 @@ CommandOptionsTest() {
   ARGS_TO_ADD="--arg1 --arg2"
 
   # shellcheck disable=SC2034
+  local AI_LINTLANG_COMMAND_ARGS="${ARGS_TO_ADD}"
+  # shellcheck disable=SC2034
   local GITHUB_ACTIONS_COMMAND_ARGS="${ARGS_TO_ADD}"
   # shellcheck disable=SC2034
   local GITLEAKS_COMMAND_OPTIONS="${ARGS_TO_ADD}"
@@ -344,6 +347,13 @@ CommandOptionsTest() {
   # Source the file again so it accounts for modifications
   # shellcheck source=/dev/null
   source "lib/functions/linterCommands.sh"
+
+  # shellcheck disable=SC2034
+  local EXPECTED_LINTER_COMMANDS_ARRAY_AI_LINTLANG=("${BASE_LINTER_COMMANDS_ARRAY_AI_LINTLANG[@]}")
+  AddOptionsToCommand "EXPECTED_LINTER_COMMANDS_ARRAY_AI_LINTLANG" "${AI_LINTLANG_COMMAND_ARGS}"
+  if ! AssertArraysElementsContentMatch "LINTER_COMMANDS_ARRAY_AI_LINTLANG" "EXPECTED_LINTER_COMMANDS_ARRAY_AI_LINTLANG"; then
+    fatal "${FUNCTION_NAME} test failed"
+  fi
 
   # shellcheck disable=SC2034
   local EXPECTED_LINTER_COMMANDS_ARRAY_GITLEAKS=("${BASE_LINTER_COMMANDS_ARRAY_GITLEAKS[@]}")

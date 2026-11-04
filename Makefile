@@ -384,6 +384,7 @@ test-lib: \
 	test-validation \
 	test-output \
 	test-linter-commands \
+	test-lintlang \
 	test-linter-versions \
 	test-update-ssl \
 	test-bash-exec
@@ -485,6 +486,15 @@ test-linter-commands: ## Test linterCommands
 		-v "$(CURDIR):/tmp/lint" \
 		-w /tmp/lint \
 		--entrypoint /tmp/lint/test/lib/linterCommandsTest.sh \
+		--rm \
+		$(SUPER_LINTER_TEST_CONTAINER_URL)
+
+.PHONY: test-lintlang
+test-lintlang: ## Test LintLang integration behavior
+	docker run $(DOCKER_FLAGS) \
+		-v "$(CURDIR):/tmp/lint" \
+		-w /tmp/lint \
+		--entrypoint /tmp/lint/test/lib/lintlangTest.sh \
 		--rm \
 		$(SUPER_LINTER_TEST_CONTAINER_URL)
 

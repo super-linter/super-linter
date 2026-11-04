@@ -213,6 +213,8 @@ BuildFileArraysTest() {
   # shellcheck disable=SC2034
   local TEST_CASE_RUN=false
   # shellcheck disable=SC2034
+  local VALIDATE_AI_LINTLANG="true"
+  # shellcheck disable=SC2034
   local IGNORE_GENERATED_FILES=false
   # shellcheck disable=SC2034
   local IGNORE_GITIGNORED_FILES=false
@@ -277,6 +279,30 @@ BuildFileArraysAnsibleGitHubWorkspaceTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 BuildFileArraysAnsibleGitHubWorkspaceTest
+
+BuildFileArraysLintLangGitHubWorkspaceTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local GITHUB_WORKSPACE="${DEFAULT_SUPER_LINTER_WORKSPACE}"
+  local FILE_ARRAYS_DIRECTORY_PATH
+  FILE_ARRAYS_DIRECTORY_PATH="$(mktemp -d)"
+
+  BuildFileArraysTest "${GITHUB_WORKSPACE}" "" "" "${FILE_ARRAYS_DIRECTORY_PATH}" "false"
+
+  local FILE_ARRAY_AI_LINTLANG_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-AI_LINTLANG"
+  if [[ ! -e "${FILE_ARRAY_AI_LINTLANG_PATH}" ]]; then
+    fatal "${FILE_ARRAY_AI_LINTLANG_PATH} doesn't exist"
+  fi
+
+  if ! AssertFileContains "${FILE_ARRAY_AI_LINTLANG_PATH}" "${GITHUB_WORKSPACE}"; then
+    fatal "${FILE_ARRAY_AI_LINTLANG_PATH} should contain ${GITHUB_WORKSPACE}"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+BuildFileArraysLintLangGitHubWorkspaceTest
 
 BuildFileArraysFilterRegexExcludeStartOfStringTest() {
   local FUNCTION_NAME
