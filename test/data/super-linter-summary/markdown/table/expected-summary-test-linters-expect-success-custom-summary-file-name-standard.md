@@ -28,6 +28,7 @@
 | DOTNET_SLN_FORMAT_WHITESPACE | Pass ✅           |
 | EDITORCONFIG                 | Pass ✅           |
 | ENV                          | Pass ✅           |
+| FORTRAN_FPRETTIFY            | Pass ✅           |
 | GITHUB_ACTIONS               | Pass ✅           |
 | GITHUB_ACTIONS_ZIZMOR        | Pass ✅           |
 | GITLEAKS                     | Pass ✅           |
