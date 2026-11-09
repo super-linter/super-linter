@@ -307,7 +307,8 @@ function RunAdditionalInstalls() {
   ####################################
   # Run installs for TFLINT language #
   ####################################
-  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ -e "${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT" ]; then
+  local TERRAFORM_TFLINT_FILE_ARRAY_PATH="${FILE_ARRAYS_DIRECTORY_PATH}/file-array-TERRAFORM_TFLINT"
+  if [ "${VALIDATE_TERRAFORM_TFLINT}" == "true" ] && [ -e "${TERRAFORM_TFLINT_FILE_ARRAY_PATH}" ]; then
     info "Detected TFLint Language files to lint."
     info "Initializing TFLint in ${GITHUB_WORKSPACE}"
     local BUILD_CMD
@@ -317,6 +318,10 @@ function RunAdditionalInstalls() {
       info "Successfully initialized tflint with the ${TERRAFORM_TFLINT_LINTER_RULES} config file"
       debug "Tflint output: ${BUILD_CMD}"
     fi
+
+    local -a FILE_ARRAY_TERRAFORM_TFLINT
+    mapfile -t FILE_ARRAY_TERRAFORM_TFLINT <"${TERRAFORM_TFLINT_FILE_ARRAY_PATH}"
+    debug "Fetching Terraform modules for ${#FILE_ARRAY_TERRAFORM_TFLINT[@]} TFLint files listed in ${TERRAFORM_TFLINT_FILE_ARRAY_PATH}"
 
     # Array to track directories where tflint was run
     local -A TFLINT_SEEN_DIRS
@@ -335,15 +340,20 @@ function RunAdditionalInstalls() {
         # want to modify it.
         # TFlint considers this variable as well.
         # Ref: https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/compatibility.md#environment-variables
-        TF_DATA_DIR="/tmp/.terraform-${TERRAFORM_TFLINT}-${DIR_NAME}"
+        # This path must match the one that LINTER_COMMANDS_ARRAY_TERRAFORM_TFLINT
+        # sets when running TFLint, so that TFLint finds the modules fetched here.
+        local TF_DATA_DIR
+        TF_DATA_DIR="/tmp/.terraform-TERRAFORM_TFLINT-${DIR_NAME}"
 
-        # Fetch Terraform modules
+        # Fetch Terraform modules from the directory that contains the file,
+        # because terraform get operates on the current working directory.
         debug "Fetch Terraform modules for ${FILE} in ${DIR_NAME} in ${TF_DATA_DIR}"
         local FETCH_TERRAFORM_MODULES_CMD
-        if ! FETCH_TERRAFORM_MODULES_CMD="$(terraform get)"; then
-          fatal "Error when fetching Terraform modules while linting ${FILE}. Command output: ${FETCH_TERRAFORM_MODULES_CMD}"
+        if ! FETCH_TERRAFORM_MODULES_CMD="$(cd "${DIR_NAME}" && TF_DATA_DIR="${TF_DATA_DIR}" terraform get 2>&1)"; then
+          warn "Error when fetching Terraform modules for ${DIR_NAME} while linting ${FILE}. TFLint fails later if it needs those modules. Command output: ${FETCH_TERRAFORM_MODULES_CMD}"
+        else
+          debug "Fetch Terraform modules command for ${FILE} output: ${FETCH_TERRAFORM_MODULES_CMD}"
         fi
-        debug "Fetch Terraform modules command for ${FILE} output: ${FETCH_TERRAFORM_MODULES_CMD}"
         # Let the cache know we've seen this before
         # Set the value to an arbitrary non-empty string.
         TFLINT_SEEN_DIRS[${DIR_NAME}]="false"

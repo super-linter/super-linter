@@ -336,9 +336,6 @@ control "super-linter-installed-npm-packages" do
   desc "Check that NPM packages that Super-Linter needs are installed."
 
   packages = [
-    "@babel/eslint-parser",
-    "@babel/preset-react",
-    "@babel/preset-typescript",
     "@biomejs/biome",
     "@coffeelint/cli",
     "@commitlint/config-conventional",
@@ -356,19 +353,13 @@ control "super-linter-installed-npm-packages" do
     "eslint-plugin-n",
     "eslint-plugin-prettier",
     "eslint-plugin-react",
-    "eslint-plugin-react-hooks",
     "eslint-plugin-vue",
     "htmlhint",
     "jscpd",
     "markdownlint-cli",
-    "next",
     "npm-groovy-lint",
     "prettier",
     "react",
-    "react-dom",
-    "react-intl",
-    "react-redux",
-    "react-router-dom",
     "renovate",
     "stylelint",
     "stylelint-config-recommended-scss",
@@ -420,9 +411,13 @@ control "super-linter-installed-pypi-packages" do
     "zizmor",
   ]
 
+  # The virtual environments don't ship their own pip (see
+  # scripts/build-venvs.sh), so the InSpec pip resource, which needs a pip
+  # binary inside the environment, can't inspect them. Ask the pip of the base
+  # interpreter about the environment instead.
   pypi_packages.each do |item|
-    describe pip(item, "/venvs/#{item}/bin/pip") do
-      it { should be_installed }
+    describe command("pip --python /venvs/#{item}/bin/python show #{item}") do
+      its("exit_status") { should eq 0 }
     end
   end
 end

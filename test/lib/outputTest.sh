@@ -380,6 +380,51 @@ CallGitHubApiLargePayloadTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+FormatSuperLinterSummaryFileUsesWorkspacePrettierConfigTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  InitWorkspace
+  cat <<EOF >"${TEMP_WORKSPACE}/.prettierrc.json"
+{
+  "plugins": ["prettier-plugin-that-is-not-installed"]
+}
+EOF
+  local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output.md"
+
+  WriteSummaryFooterSuperLinterInfo "${RESULTS_FILE}"
+  if FormatSuperLinterSummaryFile "${RESULTS_FILE}"; then
+    fatal "${FUNCTION_NAME}: formatting didn't load the workspace Prettier configuration"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
+FormatSuperLinterSummaryFileIgnoresWorkspacePrettierConfigTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  # shellcheck disable=SC2034
+  local SUPER_LINTER_SUMMARY_IGNORE_PRETTIER_CONFIG="true"
+
+  InitWorkspace
+  cat <<EOF >"${TEMP_WORKSPACE}/.prettierrc.json"
+{
+  "plugins": ["prettier-plugin-that-is-not-installed"]
+}
+EOF
+  local RESULTS_FILE="${TEMP_WORKSPACE}/${FUNCTION_NAME}-output.md"
+
+  WriteSummaryFooterSuperLinterInfo "${RESULTS_FILE}"
+  if ! FormatSuperLinterSummaryFile "${RESULTS_FILE}"; then
+    fatal "${FUNCTION_NAME}: formatting loaded the workspace Prettier configuration"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 WriteSummaryMarkdownTableHeaderTest
 WriteMarkdownCodeBlockTest
 WriteSummaryMarkdownTableLineSuccessTest
@@ -394,3 +439,5 @@ WriteMarkdownCollapsedSectionTest
 RemoveAnsiColorCodesFromFileTest
 GenerateIssueCommentPayloadLargeInputTest
 CallGitHubApiLargePayloadTest
+FormatSuperLinterSummaryFileUsesWorkspacePrettierConfigTest
+FormatSuperLinterSummaryFileIgnoresWorkspacePrettierConfigTest
