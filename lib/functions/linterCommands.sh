@@ -134,6 +134,12 @@ if [ "${GITHUB_ACTIONS_COMMAND_ARGS:-}" != "null" ] && [ -n "${GITHUB_ACTIONS_CO
   fi
 fi
 LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS_ZIZMOR=(zizmor --config "${GITHUB_ACTIONS_ZIZMOR_LINTER_RULES}")
+if [ -n "${GITHUB_ACTIONS_ZIZMOR_COMMAND_ARGS:-}" ]; then
+  export GITHUB_ACTIONS_ZIZMOR_COMMAND_ARGS
+  if ! AddOptionsToCommand "LINTER_COMMANDS_ARRAY_GITHUB_ACTIONS_ZIZMOR" "${GITHUB_ACTIONS_ZIZMOR_COMMAND_ARGS}"; then
+    fatal "Error while adding options to zizmor command"
+  fi
+fi
 LINTER_COMMANDS_ARRAY_GITLEAKS=(gitleaks directory --no-banner --redact --config "${GITLEAKS_LINTER_RULES}" --verbose)
 if [ -n "${GITLEAKS_LOG_LEVEL:-}" ]; then
   export GITLEAKS_LOG_LEVEL
