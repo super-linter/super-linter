@@ -3,7 +3,7 @@
   "require": {
     "squizlabs/php_codesniffer": "^4.0",
     "phpstan/phpstan": "^2.1",
-    "vimeo/psalm": "^6.13",
+    "vimeo/psalm": "^7.12",
     "php": "~8.5.0"
   }
 }
