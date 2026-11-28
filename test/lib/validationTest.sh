@@ -250,6 +250,48 @@ function ValidateFindModeTest() {
   notice "${FUNCTION_NAME} PASS"
 }
 
+function ValidatePreCommitEngineTest() {
+  local FUNCTION_NAME
+  FUNCTION_NAME="${FUNCNAME[0]}"
+  info "${FUNCTION_NAME} start"
+
+  local PRE_COMMIT_ENGINE
+
+  for PRE_COMMIT_ENGINE in "pre-commit" "prek"; do
+    if ValidatePreCommitEngine; then
+      info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} passed validation as expected"
+    else
+      fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} should have passed validation"
+    fi
+  done
+
+  for PRE_COMMIT_ENGINE in "" "pre_commit" "unsupported"; do
+    if ValidatePreCommitEngine; then
+      fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} should have failed validation"
+    else
+      info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} failed validation as expected"
+    fi
+  done
+
+  local PRE_COMMIT_CONFIG_FILE="prek.toml"
+
+  PRE_COMMIT_ENGINE="prek"
+  if ValidatePreCommitEngine; then
+    info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} passed validation as expected"
+  else
+    fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} should have passed validation"
+  fi
+
+  PRE_COMMIT_ENGINE="pre-commit"
+  if ValidatePreCommitEngine; then
+    fatal "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} should have failed validation"
+  else
+    info "PRE_COMMIT_ENGINE=${PRE_COMMIT_ENGINE} with PRE_COMMIT_CONFIG_FILE=${PRE_COMMIT_CONFIG_FILE} failed validation as expected"
+  fi
+
+  notice "${FUNCTION_NAME} PASS"
+}
+
 function ValidateAnsibleDirectoryTest() {
   local FUNCTION_NAME
   FUNCTION_NAME="${FUNCNAME[0]}"
@@ -1316,6 +1358,7 @@ ValidateDeprecatedVariablesTest
 ValidateGitHubUrlsTest
 ValidateSuperLinterSummaryOutputPathTest
 ValidateFindModeTest
+ValidatePreCommitEngineTest
 ValidateAnsibleDirectoryTest
 ValidateValidationVariablesTest
 ValidationVariablesExportTest

@@ -45,7 +45,9 @@ test: \
 	test-linters-expect-success-log-level-notice \
 	test-linters-expect-success-suppress-output-on-success \
 	test-linters-expect-success-suppress-output-on-success-log-level-notice \
-	test-linters-fix-mode
+	test-linters-fix-mode \
+	test-linters-pre-commit-prek-expect-failure \
+	test-linters-pre-commit-prek-expect-success
 
 .PHONY: audit ## Run dependency audits
 audit: \
@@ -561,6 +563,20 @@ test-linters-bash-exec-ignore-libraries-expect-success: ## Run the bash-exec lin
 	$(CURDIR)/test/run-super-linter-tests.sh \
 		$(SUPER_LINTER_TEST_CONTAINER_URL) \
 		"run_test_cases_bash_exec_ignore_libraries_expect_success" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-pre-commit-prek-expect-failure
+test-linters-pre-commit-prek-expect-failure: ## Run the pre-commit test cases with prek expecting failures
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_pre_commit_prek_expect_failure" \
+		"$(IMAGE)"
+
+.PHONY: test-linters-pre-commit-prek-expect-success
+test-linters-pre-commit-prek-expect-success: ## Run the pre-commit test cases with prek expecting successes
+	$(CURDIR)/test/run-super-linter-tests.sh \
+		$(SUPER_LINTER_TEST_CONTAINER_URL) \
+		"run_test_cases_pre_commit_prek_expect_success" \
 		"$(IMAGE)"
 
 .PHONY: test-linters-expect-failure
